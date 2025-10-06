@@ -30,9 +30,9 @@ export default function VulnerabilitiesPage() {
   const getSeverityVariant = (severity: string) => {
     switch (severity) {
       case 'Critical': return 'destructive';
-      case 'High': return 'destructive'; // No orange, using destructive for high as well.
-      case 'Medium': return 'default'; // No yellow, using default.
-      case 'Low': return 'secondary'; // No green, using secondary.
+      case 'High': return 'destructive';
+      case 'Medium': return 'default';
+      case 'Low': return 'secondary';
       default: return 'outline';
     }
   }
@@ -128,7 +128,7 @@ export default function VulnerabilitiesPage() {
                 <TableRow key={vuln.id}>
                   <TableCell className="font-medium">{vuln.title_en}</TableCell>
                   <TableCell>
-                    <Badge variant={getSeverityVariant(vuln.severity)}>{vuln.severity}</Badge>
+                    <Badge variant={getSeverityVariant(vuln.severity) as any}>{vuln.severity}</Badge>
                   </TableCell>
                   <TableCell>{vuln.cvss.score.toFixed(1)}</TableCell>
                   <TableCell className="font-code text-sm text-muted-foreground">{vuln.cwe}</TableCell>

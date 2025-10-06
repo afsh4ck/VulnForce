@@ -9,13 +9,13 @@ export const projectTemplates: ProjectTemplate[] = [
     description_es: 'Una auditoría de seguridad completa que cubre pruebas externas, internas y de aplicaciones web.',
     scope:
 `Web Applications:
-- *.example.com
+- [TODO: Specify web application domains, e.g., *.example.com]
 
 External Infrastructure:
-- 192.0.2.0/24
+- [TODO: Specify external IP ranges, e.g., 192.0.2.0/24]
 
 Internal Network:
-- 10.0.0.0/8`,
+- [TODO: Specify internal IP ranges, e.g., 10.0.0.0/8]`,
   },
   {
     id: 'template-2',
@@ -25,12 +25,10 @@ Internal Network:
     description_es: 'Se enfoca en los activos públicamente accesibles de la organización para identificar vulnerabilidades.',
     scope:
 `Web Applications:
-- www.example.com
-- api.example.com
+- [TODO: Specify web application domains, e.g., www.example.com, api.example.com]
 
 External Infrastructure:
-- 198.51.100.0/28
-- 203.0.113.10`,
+- [TODO: Specify external IP ranges, e.g., 198.51.100.0/28, 203.0.113.10]`,
   },
   {
     id: 'template-3',
@@ -40,12 +38,10 @@ External Infrastructure:
     description_es: 'Una evaluación de la red interna para encontrar debilidades de seguridad desde dentro del perímetro.',
     scope:
 `Internal Corporate Network:
-- 192.168.1.0/24
-- 172.16.0.0/16
+- [TODO: Specify internal IP ranges, e.g., 192.168.1.0/24, 172.16.0.0/16]
 
 Specific Servers:
-- FILESERV01 (192.168.1.10)
-- AD-DC01 (192.168.1.5)`,
+- [TODO: Specify specific servers, e.g., FILESERV01 (192.168.1.10), AD-DC01 (192.168.1.5)]`,
   },
   {
     id: 'cpts-template',
@@ -71,11 +67,11 @@ The scope of this penetration test was limited to the hosts and networks provide
 - Any actions that could disrupt the stability of the exam environment for other users.
 
 ## Timeline
-- **Start Date:** [DD/MM/YYYY]
-- **End Date:** [DD/MM/YYYY]
+- **Start Date:** [TODO: DD/MM/YYYY]
+- **End Date:** [TODO: DD/MM/YYYY]
 
 ## Summary of Findings
-[Provide a high-level executive summary of the key findings and the overall security posture of the network. Mention the most critical vulnerabilities discovered and the potential impact.]
+[TODO: Provide a high-level executive summary of the key findings and the overall security posture of the network. Mention the most critical vulnerabilities discovered and the potential impact.]
 
 ---
 
@@ -90,7 +86,7 @@ The penetration test followed a structured methodology aligned with industry bes
 ---
 
 ## Attack Narrative
-[Provide a step-by-step narrative of the attack path, from initial reconnaissance to the final flag capture. This should be detailed and easy to follow.]
+[TODO: Provide a step-by-step narrative of the attack path, from initial reconnaissance to the final flag capture. This should be detailed and easy to follow.]
 
 1.  **Initial Reconnaissance:** ...
 2.  **Gaining a Foothold:** ...
@@ -101,26 +97,26 @@ The penetration test followed a structured methodology aligned with industry bes
 ---
 
 ## Findings
-[List all the individual findings here. Each finding should be a separate section. Use the findings editor to detail each one.]
+[TODO: List all the individual findings here. Each finding should be a separate section. Use the findings editor to detail each one.]
 
 ---
 
 ## Appendix
 
 ### A. Compromised Users
-List all user accounts that were compromised during the assessment.
+[TODO: List all user accounts that were compromised during the assessment.]
 - \`user1@domain.local\`
 - \`admin_user\`
 - \`local_admin\`
 
 ### B. Exploited Hosts
-List all hosts that were successfully exploited.
+[TODO: List all hosts that were successfully exploited.]
 - WEB01 (192.168.X.X) - Initial Foothold
 - DC01 (192.168.Y.Y) - Domain Controller Compromise
 - FILESRV (192.168.Z.Z) - Sensitive Data Exposure
 
 ### C. Flags Captured
-List all the flags obtained during the assessment.
+[TODO: List all the flags obtained during the assessment.]
 - **user.txt (Host1):** \`[flag_value]\`
 - **root.txt (Host1):** \`[flag_value]\`
 - **user.txt (Host2):** \`[flag_value]\`
