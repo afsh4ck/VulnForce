@@ -52,3 +52,12 @@ export interface Report {
   options: Record<string, any>;
   createdAt: string;
 }
+
+export interface ProjectTemplate {
+  id: string;
+  name_en: string;
+  name_es: string;
+  description_en: string;
+  description_es: string;
+  scope: string;
+}

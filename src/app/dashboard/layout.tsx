@@ -1,7 +1,7 @@
 'use client';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { Home, ShieldCheck, FolderKanban, Users, Settings, FileText, PanelLeft, User } from 'lucide-react';
+import { Home, ShieldCheck, FolderKanban, Users, Settings, FileText, PanelLeft, User, LayoutTemplate } from 'lucide-react';
 
 import {
   Sidebar,
@@ -31,6 +31,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
       projects: 'Projects',
       clients: 'Clients',
       vulnerabilities: 'Vulnerabilities',
+      templates: 'Templates',
       settings: 'Settings',
       profile: 'Profile',
     },
@@ -39,6 +40,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
       projects: 'Proyectos',
       clients: 'Clientes',
       vulnerabilities: 'Vulnerabilidades',
+      templates: 'Plantillas',
       settings: 'Ajustes',
       profile: 'Perfil',
     },
@@ -49,6 +51,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
     { href: '/dashboard/projects', icon: FolderKanban, label: t[language].projects },
     { href: '/dashboard/clients', icon: Users, label: t[language].clients },
     { href: '/dashboard/vulnerabilities', icon: ShieldCheck, label: t[language].vulnerabilities },
+    { href: '/dashboard/templates', icon: LayoutTemplate, label: t[language].templates },
   ];
   
   const bottomNavItems = [
