@@ -3,6 +3,7 @@ import { Toaster } from '@/components/ui/toaster';
 import './globals.css';
 import { SidebarProvider } from '@/components/ui/sidebar';
 import { LanguageProvider } from '@/context/language-context';
+import { ThemeProvider } from '@/context/theme-context';
 
 export const metadata: Metadata = {
   title: 'VulnForce',
@@ -15,7 +16,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="es" className="dark">
+    <html lang="es" suppressHydrationWarning>
       <head>
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
@@ -24,12 +25,14 @@ export default function RootLayout({
         <link href="https://fonts.googleapis.com/css2?family=Source+Code+Pro:wght@400;500&display=swap" rel="stylesheet" />
       </head>
       <body className="font-body antialiased">
-        <LanguageProvider>
-          <SidebarProvider>
-            {children}
-            <Toaster />
-          </SidebarProvider>
-        </LanguageProvider>
+        <ThemeProvider>
+          <LanguageProvider>
+            <SidebarProvider>
+              {children}
+              <Toaster />
+            </SidebarProvider>
+          </LanguageProvider>
+        </ThemeProvider>
       </body>
     </html>
   );

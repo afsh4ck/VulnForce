@@ -1,7 +1,7 @@
 'use client';
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { FileDown, FileUp, Languages } from "lucide-react";
+import { FileDown, FileUp, Languages, Moon, Sun } from "lucide-react";
 import { clients, projects, findings, vulnerabilities } from '@/lib/data';
 import { useToast } from "@/hooks/use-toast";
 import { Input } from "@/components/ui/input";
@@ -19,12 +19,15 @@ import {
 } from "@/components/ui/alert-dialog";
 import { useLanguage } from "@/context/language-context";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { useTheme } from "@/context/theme-context";
+import { Switch } from "@/components/ui/switch";
 
 export default function SettingsPage() {
   const { toast } = useToast();
   const [showConfirmDialog, setShowConfirmDialog] = React.useState(false);
   const [backupFile, setBackupFile] = React.useState<File | null>(null);
   const { language, setLanguage } = useLanguage();
+  const { theme, setTheme } = useTheme();
 
   const t = {
     en: {
@@ -53,7 +56,11 @@ export default function SettingsPage() {
       languageDesc: "Change the application language.",
       selectLanguage: "Select Language",
       english: "English",
-      spanish: "Spanish"
+      spanish: "Spanish",
+      themeTitle: "Appearance",
+      themeDesc: "Switch between light and dark mode.",
+      light: "Light",
+      dark: "Dark"
     },
     es: {
       title: "Ajustes",
@@ -81,7 +88,11 @@ export default function SettingsPage() {
       languageDesc: "Cambia el idioma de la aplicación.",
       selectLanguage: "Seleccionar Idioma",
       english: "Inglés",
-      spanish: "Español"
+      spanish: "Español",
+      themeTitle: "Apariencia",
+      themeDesc: "Cambia entre el modo claro y oscuro.",
+      light: "Claro",
+      dark: "Oscuro"
     }
   }
 
@@ -165,6 +176,24 @@ export default function SettingsPage() {
     <div className="space-y-6">
       <h1 className="font-headline text-3xl font-bold tracking-tight">{t[language].title}</h1>
       
+       <Card>
+          <CardHeader>
+            <CardTitle>{t[language].themeTitle}</CardTitle>
+            <CardDescription>{t[language].themeDesc}</CardDescription>
+          </CardHeader>
+          <CardContent>
+            <div className="flex items-center space-x-2">
+                <Sun className="h-5 w-5" />
+                <Switch
+                    id="theme-switch"
+                    checked={theme === 'dark'}
+                    onCheckedChange={(checked) => setTheme(checked ? 'dark' : 'light')}
+                />
+                <Moon className="h-5 w-5" />
+            </div>
+          </CardContent>
+        </Card>
+
       <Card>
           <CardHeader>
             <CardTitle>{t[language].languageTitle}</CardTitle>
