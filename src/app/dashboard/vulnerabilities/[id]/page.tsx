@@ -91,12 +91,6 @@ export default function VulnerabilityEditorPage() {
       medium: 'Media',
       low: 'Baja',
       informational: 'Informativa',
-      referenceLabel: 'Referencia (ej., CWE-ID)',
-      tagsLabel: 'Etiquetas (separadas por coma)',
-      descriptionEnLabel: 'Descripción (Inglés)',
-      descriptionEsLabel: 'Descripción (Español)',
-      mitigationEnLabel: 'Mitigación (Inglés)',
-      mitigationEsLabel: 'Mitigación (Español)',
       saveSuccessTitle: 'Vulnerabilidad Guardada',
       saveSuccessDescription: 'La plantilla se ha actualizado correctamente.',
     }
@@ -116,7 +110,7 @@ export default function VulnerabilityEditorPage() {
               {t[language].back}
             </Link>
           </Button>
-          <h1 className="font-headline text-xl font-bold">{language === 'es' ? vuln.title_es : vuln.title_en}</h1>
+          <h1 className="font-headline text-xl font-bold">{vuln.title_en}</h1>
         </div>
         <Button onClick={handleSave}><Save className="mr-2 h-4 w-4" /> {t[language].save}</Button>
       </header>
