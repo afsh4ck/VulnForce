@@ -60,7 +60,9 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
     <>
       <Sidebar collapsible="icon" className="border-r border-sidebar-border">
         <SidebarHeader>
-          <Logo isCollapsed={isCollapsed} />
+          <Link href="/dashboard">
+            <Logo isCollapsed={isCollapsed} />
+          </Link>
         </SidebarHeader>
         <SidebarContent>
           <SidebarMenu className="mt-4">
