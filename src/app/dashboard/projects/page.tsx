@@ -1,18 +1,24 @@
 'use client';
 
+import React, { useState, useMemo } from 'react';
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
-import { PlusCircle, Search } from "lucide-react";
-import { projects, clients } from "@/lib/data";
+import { PlusCircle, Search, ArrowUpDown } from "lucide-react";
+import { projects as allProjects, clients } from "@/lib/data";
 import { Badge } from "@/components/ui/badge";
 import Link from 'next/link';
 import { Input } from "@/components/ui/input";
 import { useLanguage } from "@/context/language-context";
+import type { Project } from '@/lib/types';
+
+type SortKey = keyof Project | 'clientName';
 
 export default function ProjectsPage() {
   const { language } = useLanguage();
-
+  const [searchTerm, setSearchTerm] = useState('');
+  const [sortConfig, setSortConfig] = useState<{ key: SortKey; direction: 'ascending' | 'descending' } | null>(null);
+  
   const getStatusVariant = (status: string) => {
     switch (status) {
       case 'In Progress': return 'default';
@@ -29,6 +35,46 @@ export default function ProjectsPage() {
       if (status === 'On Hold') return 'En Espera';
     }
     return status;
+  }
+  
+  const enrichedProjects = useMemo(() => allProjects.map(p => ({
+    ...p,
+    clientName: clients.find(c => c.id === p.clientId)?.name || ''
+  })), [allProjects, clients]);
+
+  const sortedAndFilteredProjects = useMemo(() => {
+    let filteredProjects = enrichedProjects.filter(project =>
+      project.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      project.clientName.toLowerCase().includes(searchTerm.toLowerCase())
+    );
+
+    if (sortConfig !== null) {
+      filteredProjects.sort((a, b) => {
+        if (a[sortConfig.key] < b[sortConfig.key]) {
+          return sortConfig.direction === 'ascending' ? -1 : 1;
+        }
+        if (a[sortConfig.key] > b[sortConfig.key]) {
+          return sortConfig.direction === 'ascending' ? 1 : -1;
+        }
+        return 0;
+      });
+    }
+    return filteredProjects;
+  }, [enrichedProjects, searchTerm, sortConfig]);
+
+  const requestSort = (key: SortKey) => {
+    let direction: 'ascending' | 'descending' = 'ascending';
+    if (sortConfig && sortConfig.key === key && sortConfig.direction === 'ascending') {
+      direction = 'descending';
+    }
+    setSortConfig({ key, direction });
+  };
+
+  const getSortIcon = (key: SortKey) => {
+    if (!sortConfig || sortConfig.key !== key) {
+      return <ArrowUpDown className="ml-2 h-4 w-4" />;
+    }
+    return sortConfig.direction === 'ascending' ? ' ▲' : ' ▼';
   }
 
   const t = {
@@ -59,7 +105,12 @@ export default function ProjectsPage() {
         <div className="flex items-center gap-2">
           <div className="relative flex-1">
             <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
-            <Input placeholder={t[language].searchPlaceholder} className="pl-8" />
+            <Input 
+              placeholder={t[language].searchPlaceholder} 
+              className="pl-8" 
+              value={searchTerm}
+              onChange={e => setSearchTerm(e.target.value)}
+            />
           </div>
            <Button asChild>
             <Link href="/dashboard/projects/new">
@@ -74,19 +125,27 @@ export default function ProjectsPage() {
           <Table>
             <TableHeader>
               <TableRow>
-                <TableHead>{t[language].projectNameHeader}</TableHead>
-                <TableHead>{t[language].clientHeader}</TableHead>
-                <TableHead>{t[language].statusHeader}</TableHead>
-                <TableHead>{t[language].endDateHeader}</TableHead>
+                <TableHead onClick={() => requestSort('name')} className="cursor-pointer hover:bg-muted/50">
+                  <div className="flex items-center">{t[language].projectNameHeader} {getSortIcon('name')}</div>
+                </TableHead>
+                <TableHead onClick={() => requestSort('clientName')} className="cursor-pointer hover:bg-muted/50">
+                  <div className="flex items-center">{t[language].clientHeader} {getSortIcon('clientName')}</div>
+                </TableHead>
+                <TableHead onClick={() => requestSort('status')} className="cursor-pointer hover:bg-muted/50">
+                  <div className="flex items-center">{t[language].statusHeader} {getSortIcon('status')}</div>
+                </TableHead>
+                <TableHead onClick={() => requestSort('endDate')} className="cursor-pointer hover:bg-muted/50">
+                  <div className="flex items-center">{t[language].endDateHeader} {getSortIcon('endDate')}</div>
+                </TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
-              {projects.map(project => (
+              {sortedAndFilteredProjects.map(project => (
                 <TableRow key={project.id}>
                   <TableCell className="font-medium">
                     <Link href={`/dashboard/projects/${project.id}`} className="hover:underline">{project.name}</Link>
                   </TableCell>
-                  <TableCell>{clients.find(c => c.id === project.clientId)?.name}</TableCell>
+                  <TableCell>{project.clientName}</TableCell>
                   <TableCell>
                     <Badge variant={getStatusVariant(project.status) as any}>{getStatus(project.status)}</Badge>
                   </TableCell>

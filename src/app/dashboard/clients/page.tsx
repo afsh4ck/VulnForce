@@ -1,10 +1,11 @@
 'use client';
 
+import React, { useState, useMemo } from 'react';
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
-import { PlusCircle, Search } from "lucide-react";
-import { clients } from "@/lib/data";
+import { PlusCircle, Search, ArrowUpDown } from "lucide-react";
+import { clients as allClients } from "@/lib/data";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { PlaceHolderImages } from "@/lib/placeholder-images";
 import Image from "next/image";
@@ -20,13 +21,53 @@ import {
 } from "@/components/ui/dialog"
 import { Label } from "@/components/ui/label";
 import { useLanguage } from "@/context/language-context";
+import type { Client } from '@/lib/types';
 
+type SortKey = keyof Client;
 
 export default function ClientsPage() {
   const { language } = useLanguage();
+  const [searchTerm, setSearchTerm] = useState('');
+  const [sortConfig, setSortConfig] = useState<{ key: SortKey; direction: 'ascending' | 'descending' } | null>(null);
+
   const getLogo = (logoUrl: string) => {
     const image = PlaceHolderImages.find(img => img.id === logoUrl);
     return image ? image.imageUrl : `https://picsum.photos/seed/${logoUrl}/40/40`;
+  }
+
+  const sortedAndFilteredClients = useMemo(() => {
+    let filteredClients = allClients.filter(client =>
+      client.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      client.contact.toLowerCase().includes(searchTerm.toLowerCase())
+    );
+
+    if (sortConfig !== null) {
+      filteredClients.sort((a, b) => {
+        if (a[sortConfig.key] < b[sortConfig.key]) {
+          return sortConfig.direction === 'ascending' ? -1 : 1;
+        }
+        if (a[sortConfig.key] > b[sortConfig.key]) {
+          return sortConfig.direction === 'ascending' ? 1 : -1;
+        }
+        return 0;
+      });
+    }
+    return filteredClients;
+  }, [allClients, searchTerm, sortConfig]);
+
+  const requestSort = (key: SortKey) => {
+    let direction: 'ascending' | 'descending' = 'ascending';
+    if (sortConfig && sortConfig.key === key && sortConfig.direction === 'ascending') {
+      direction = 'descending';
+    }
+    setSortConfig({ key, direction });
+  };
+  
+  const getSortIcon = (key: SortKey) => {
+    if (!sortConfig || sortConfig.key !== key) {
+      return <ArrowUpDown className="ml-2 h-4 w-4" />;
+    }
+    return sortConfig.direction === 'ascending' ? ' ▲' : ' ▼';
   }
 
   const t = {
@@ -75,7 +116,12 @@ export default function ClientsPage() {
         <div className="flex items-center gap-2">
           <div className="relative flex-1">
             <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
-            <Input placeholder={t[language].searchPlaceholder} className="pl-8" />
+            <Input 
+              placeholder={t[language].searchPlaceholder} 
+              className="pl-8" 
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+            />
           </div>
           <Dialog>
             <DialogTrigger asChild>
@@ -114,14 +160,20 @@ export default function ClientsPage() {
             <TableHeader>
               <TableRow>
                 <TableHead className="w-[80px]">{t[language].logoHeader}</TableHead>
-                <TableHead>{t[language].nameHeader}</TableHead>
-                <TableHead>{t[language].contactHeader}</TableHead>
-                <TableHead>{t[language].languageHeader}</TableHead>
+                <TableHead onClick={() => requestSort('name')} className="cursor-pointer hover:bg-muted/50">
+                  <div className="flex items-center">{t[language].nameHeader} {getSortIcon('name')}</div>
+                </TableHead>
+                <TableHead onClick={() => requestSort('contact')} className="cursor-pointer hover:bg-muted/50">
+                   <div className="flex items-center">{t[language].contactHeader} {getSortIcon('contact')}</div>
+                </TableHead>
+                <TableHead onClick={() => requestSort('language')} className="cursor-pointer hover:bg-muted/50">
+                  <div className="flex items-center">{t[language].languageHeader} {getSortIcon('language')}</div>
+                </TableHead>
                 <TableHead className="text-right">{t[language].actionsHeader}</TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
-              {clients.map(client => (
+              {sortedAndFilteredClients.map(client => (
                 <TableRow key={client.id}>
                   <TableCell>
                     <Avatar className="h-10 w-10">

@@ -1,26 +1,31 @@
 'use client';
 
-import { projects, clients, findings } from "@/lib/data";
+import React, { useState, useMemo } from 'react';
+import { projects, clients, findings as allFindings } from "@/lib/data";
 import { notFound } from "next/navigation";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import Link from 'next/link';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
-import { PlusCircle, FileText } from "lucide-react";
+import { PlusCircle, FileText, ArrowUpDown } from "lucide-react";
 import { Separator } from "@/components/ui/separator";
 import { useLanguage } from "@/context/language-context";
+import type { Finding } from '@/lib/types';
+
+type SortKey = keyof Finding;
 
 export default function ProjectDetailsPage({ params }: { params: { id: string } }) {
   const project = projects.find(p => p.id === params.id);
   const { language } = useLanguage();
-  
+  const [sortConfig, setSortConfig] = useState<{ key: SortKey; direction: 'ascending' | 'descending' } | null>(null);
+
   if (!project) {
     notFound();
   }
 
   const client = clients.find(c => c.id === project.clientId);
-  const projectFindings = findings.filter(f => f.projectId === project.id);
+  const projectFindings = allFindings.filter(f => f.projectId === project.id);
 
   const getSeverityVariant = (severity: string) => {
     switch (severity) {
@@ -31,6 +36,37 @@ export default function ProjectDetailsPage({ params }: { params: { id: string } 
       default: return 'outline';
     }
   }
+
+  const sortedFindings = useMemo(() => {
+    let sortableFindings = [...projectFindings];
+    if (sortConfig !== null) {
+      sortableFindings.sort((a, b) => {
+        if (a[sortConfig.key] < b[sortConfig.key]) {
+          return sortConfig.direction === 'ascending' ? -1 : 1;
+        }
+        if (a[sortConfig.key] > b[sortConfig.key]) {
+          return sortConfig.direction === 'ascending' ? 1 : -1;
+        }
+        return 0;
+      });
+    }
+    return sortableFindings;
+  }, [projectFindings, sortConfig]);
+
+  const requestSort = (key: SortKey) => {
+    let direction: 'ascending' | 'descending' = 'ascending';
+    if (sortConfig && sortConfig.key === key && sortConfig.direction === 'ascending') {
+      direction = 'descending';
+    }
+    setSortConfig({ key, direction });
+  };
+
+  const getSortIcon = (key: SortKey) => {
+    if (!sortConfig || sortConfig.key !== key) {
+      return <ArrowUpDown className="ml-2 h-4 w-4" />;
+    }
+    return sortConfig.direction === 'ascending' ? ' ▲' : ' ▼';
+  };
 
   const t = {
     en: {
@@ -111,13 +147,19 @@ export default function ProjectDetailsPage({ params }: { params: { id: string } 
             <Table>
               <TableHeader>
                 <TableRow>
-                  <TableHead>{t[language].title}</TableHead>
-                  <TableHead>{t[language].severity}</TableHead>
-                  <TableHead>{t[language].cvss}</TableHead>
+                  <TableHead onClick={() => requestSort('title')} className="cursor-pointer hover:bg-muted/50">
+                    <div className="flex items-center">{t[language].title} {getSortIcon('title')}</div>
+                  </TableHead>
+                  <TableHead onClick={() => requestSort('severity')} className="cursor-pointer hover:bg-muted/50">
+                    <div className="flex items-center">{t[language].severity} {getSortIcon('severity')}</div>
+                  </TableHead>
+                  <TableHead onClick={() => requestSort('cvss')} className="cursor-pointer hover:bg-muted/50">
+                    <div className="flex items-center">{t[language].cvss} {getSortIcon('cvss')}</div>
+                  </TableHead>
                 </TableRow>
               </TableHeader>
               <TableBody>
-                {projectFindings.map(finding => (
+                {sortedFindings.map(finding => (
                   <TableRow key={finding.id}>
                     <TableCell className="font-medium">
                       <Link href={`/dashboard/projects/${project.id}/findings/${finding.id}`} className="hover:underline">{finding.title}</Link>

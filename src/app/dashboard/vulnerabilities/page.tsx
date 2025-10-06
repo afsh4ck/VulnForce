@@ -1,5 +1,6 @@
 'use client';
 
+import React, { useState, useMemo } from 'react';
 import { Input } from "@/components/ui/input";
 import {
   Select,
@@ -18,15 +19,21 @@ import {
 } from "@/components/ui/table";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent } from "@/components/ui/card";
-import { Search, Pencil, PlusCircle } from "lucide-react";
-import { vulnerabilities } from "@/lib/data";
+import { Search, Pencil, PlusCircle, ArrowUpDown } from "lucide-react";
+import { vulnerabilities as allVulnerabilities } from "@/lib/data";
 import { useLanguage } from "@/context/language-context";
 import Link from 'next/link';
 import { Button } from "@/components/ui/button";
+import type { Vulnerability, Severity } from '@/lib/types';
+
+type SortKey = keyof Vulnerability | 'cvssScore';
 
 export default function VulnerabilitiesPage() {
   const { language } = useLanguage();
-  
+  const [searchTerm, setSearchTerm] = useState('');
+  const [severityFilter, setSeverityFilter] = useState<Severity | 'all'>('all');
+  const [sortConfig, setSortConfig] = useState<{ key: SortKey; direction: 'ascending' | 'descending' } | null>(null);
+
   const getSeverityVariant = (severity: string) => {
     switch (severity) {
       case 'Critical': return 'destructive';
@@ -37,6 +44,54 @@ export default function VulnerabilitiesPage() {
     }
   }
 
+  const sortedAndFilteredVulnerabilities = useMemo(() => {
+    let filtered = allVulnerabilities.filter(vuln => {
+      const term = searchTerm.toLowerCase();
+      const severityMatch = severityFilter === 'all' || vuln.severity === severityFilter;
+      const searchMatch = vuln.title_en.toLowerCase().includes(term) ||
+                          vuln.cwe.toLowerCase().includes(term) ||
+                          vuln.tags.some(tag => tag.toLowerCase().includes(term));
+      return severityMatch && searchMatch;
+    });
+
+    if (sortConfig !== null) {
+      filtered.sort((a, b) => {
+        let aValue, bValue;
+        if (sortConfig.key === 'cvssScore') {
+          aValue = a.cvss.score;
+          bValue = b.cvss.score;
+        } else {
+          aValue = a[sortConfig.key as keyof Vulnerability];
+          bValue = b[sortConfig.key as keyof Vulnerability];
+        }
+
+        if (aValue < bValue) {
+          return sortConfig.direction === 'ascending' ? -1 : 1;
+        }
+        if (aValue > bValue) {
+          return sortConfig.direction === 'ascending' ? 1 : -1;
+        }
+        return 0;
+      });
+    }
+
+    return filtered;
+  }, [searchTerm, severityFilter, sortConfig, allVulnerabilities]);
+
+  const requestSort = (key: SortKey) => {
+    let direction: 'ascending' | 'descending' = 'ascending';
+    if (sortConfig && sortConfig.key === key && sortConfig.direction === 'ascending') {
+      direction = 'descending';
+    }
+    setSortConfig({ key, direction });
+  };
+  
+  const getSortIcon = (key: SortKey) => {
+    if (!sortConfig || sortConfig.key !== key) {
+      return <ArrowUpDown className="ml-2 h-4 w-4" />;
+    }
+    return sortConfig.direction === 'ascending' ? ' ▲' : ' ▼';
+  };
 
   const t = {
     en: {
@@ -48,6 +103,7 @@ export default function VulnerabilitiesPage() {
       high: "High",
       medium: "Medium",
       low: "Low",
+      informational: 'Informational',
       tableTitle: "Title",
       tableSeverity: "Severity",
       tableCvss: "CVSS",
@@ -65,6 +121,7 @@ export default function VulnerabilitiesPage() {
       high: "Alta",
       medium: "Media",
       low: "Baja",
+      informational: 'Informativa',
       tableTitle: "Título",
       tableSeverity: "Severidad",
       tableCvss: "CVSS",
@@ -89,18 +146,21 @@ export default function VulnerabilitiesPage() {
                 type="search"
                 placeholder={t[language].search}
                 className="w-full rounded-lg bg-background pl-8 md:w-[200px] lg:w-[320px]"
+                value={searchTerm}
+                onChange={e => setSearchTerm(e.target.value)}
                 />
             </div>
-            <Select>
+            <Select value={severityFilter} onValueChange={(value) => setSeverityFilter(value as Severity | 'all')}>
                 <SelectTrigger className="w-[180px]">
                 <SelectValue placeholder={t[language].filterSeverity} />
                 </SelectTrigger>
                 <SelectContent>
-                <SelectItem value="all">{t[language].allSeverities}</SelectItem>
-                <SelectItem value="critical">{t[language].critical}</SelectItem>
-                <SelectItem value="high">{t[language].high}</SelectItem>
-                <SelectItem value="medium">{t[language].medium}</SelectItem>
-                <SelectItem value="low">{t[language].low}</SelectItem>
+                  <SelectItem value="all">{t[language].allSeverities}</SelectItem>
+                  <SelectItem value="Critical">{t[language].critical}</SelectItem>
+                  <SelectItem value="High">{t[language].high}</SelectItem>
+                  <SelectItem value="Medium">{t[language].medium}</SelectItem>
+                  <SelectItem value="Low">{t[language].low}</SelectItem>
+                  <SelectItem value="Informational">{t[language].informational}</SelectItem>
                 </SelectContent>
             </Select>
         </div>
@@ -116,15 +176,23 @@ export default function VulnerabilitiesPage() {
           <Table>
             <TableHeader>
               <TableRow>
-                <TableHead>{t[language].tableTitle}</TableHead>
-                <TableHead>{t[language].tableSeverity}</TableHead>
-                <TableHead>{t[language].tableCvss}</TableHead>
-                <TableHead>{t[language].tableReference}</TableHead>
+                <TableHead onClick={() => requestSort('title_en')} className="cursor-pointer hover:bg-muted/50">
+                  <div className="flex items-center">{t[language].tableTitle} {getSortIcon('title_en')}</div>
+                </TableHead>
+                <TableHead onClick={() => requestSort('severity')} className="cursor-pointer hover:bg-muted/50">
+                  <div className="flex items-center">{t[language].tableSeverity} {getSortIcon('severity')}</div>
+                </TableHead>
+                <TableHead onClick={() => requestSort('cvssScore')} className="cursor-pointer hover:bg-muted/50">
+                  <div className="flex items-center">{t[language].tableCvss} {getSortIcon('cvssScore')}</div>
+                </TableHead>
+                <TableHead onClick={() => requestSort('cwe')} className="cursor-pointer hover:bg-muted/50">
+                  <div className="flex items-center">{t[language].tableReference} {getSortIcon('cwe')}</div>
+                </TableHead>
                 <TableHead className="text-right">{t[language].tableActions}</TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
-              {vulnerabilities.map((vuln) => (
+              {sortedAndFilteredVulnerabilities.map((vuln) => (
                 <TableRow key={vuln.id}>
                   <TableCell className="font-medium">{vuln.title_en}</TableCell>
                   <TableCell>
