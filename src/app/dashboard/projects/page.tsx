@@ -4,20 +4,26 @@ import React, { useState, useMemo } from 'react';
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
-import { PlusCircle, Search, ArrowUpDown } from "lucide-react";
+import { PlusCircle, Search, ArrowUpDown, MoreHorizontal, Trash2 } from "lucide-react";
 import { projects as allProjects, clients } from "@/lib/data";
 import { Badge } from "@/components/ui/badge";
 import Link from 'next/link';
 import { Input } from "@/components/ui/input";
 import { useLanguage } from "@/context/language-context";
 import type { Project } from '@/lib/types';
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '@/components/ui/dropdown-menu';
+import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from '@/components/ui/alert-dialog';
+import { useToast } from '@/hooks/use-toast';
 
 type SortKey = keyof Project | 'clientName';
 
 export default function ProjectsPage() {
   const { language } = useLanguage();
+  const { toast } = useToast();
   const [searchTerm, setSearchTerm] = useState('');
   const [sortConfig, setSortConfig] = useState<{ key: SortKey; direction: 'ascending' | 'descending' } | null>(null);
+  const [projects, setProjects] = useState(allProjects);
+  const [projectToDelete, setProjectToDelete] = useState<Project | null>(null);
   
   const getStatusVariant = (status: string) => {
     switch (status) {
@@ -36,11 +42,19 @@ export default function ProjectsPage() {
     }
     return status;
   }
+
+  const handleDeleteProject = () => {
+    if (!projectToDelete) return;
+    setProjects(projects.filter(p => p.id !== projectToDelete.id));
+    console.log("Deleted project:", projectToDelete.id);
+    toast({ title: t[language].projectDeleted });
+    setProjectToDelete(null);
+  };
   
-  const enrichedProjects = useMemo(() => allProjects.map(p => ({
+  const enrichedProjects = useMemo(() => projects.map(p => ({
     ...p,
     clientName: clients.find(c => c.id === p.clientId)?.name || ''
-  })), [allProjects, clients]);
+  })), [projects, clients]);
 
   const sortedAndFilteredProjects = useMemo(() => {
     let filteredProjects = enrichedProjects.filter(project =>
@@ -85,7 +99,13 @@ export default function ProjectsPage() {
       projectNameHeader: "Project Name",
       clientHeader: "Client",
       statusHeader: "Status",
-      endDateHeader: "End Date"
+      endDateHeader: "End Date",
+      actionsHeader: "Actions",
+      delete: "Delete",
+      confirmDeleteTitle: "Are you sure?",
+      confirmDeleteDesc: "This action cannot be undone. This will permanently delete the project and all its findings.",
+      cancel: "Cancel",
+      projectDeleted: "Project deleted successfully."
     },
     es: {
       title: "Proyectos",
@@ -94,11 +114,18 @@ export default function ProjectsPage() {
       projectNameHeader: "Nombre del Proyecto",
       clientHeader: "Cliente",
       statusHeader: "Estado",
-      endDateHeader: "Fecha de Fin"
+      endDateHeader: "Fecha de Fin",
+      actionsHeader: "Acciones",
+      delete: "Eliminar",
+      confirmDeleteTitle: "¿Estás seguro?",
+      confirmDeleteDesc: "Esta acción no se puede deshacer. Esto eliminará permanentemente el proyecto y todos sus hallazgos.",
+      cancel: "Cancelar",
+      projectDeleted: "Proyecto eliminado correctamente."
     }
   }
 
   return (
+    <>
     <div className="space-y-6">
       <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
         <h1 className="font-headline text-3xl font-bold tracking-tight">{t[language].title}</h1>
@@ -137,6 +164,7 @@ export default function ProjectsPage() {
                 <TableHead onClick={() => requestSort('endDate')} className="cursor-pointer hover:bg-muted/50">
                   <div className="flex items-center">{t[language].endDateHeader} {getSortIcon('endDate')}</div>
                 </TableHead>
+                <TableHead className="text-right">{t[language].actionsHeader}</TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
@@ -150,6 +178,22 @@ export default function ProjectsPage() {
                     <Badge variant={getStatusVariant(project.status) as any}>{getStatus(project.status)}</Badge>
                   </TableCell>
                   <TableCell>{new Date(project.endDate).toLocaleDateString()}</TableCell>
+                  <TableCell className="text-right">
+                    <DropdownMenu>
+                      <DropdownMenuTrigger asChild>
+                        <Button variant="ghost" className="h-8 w-8 p-0">
+                          <span className="sr-only">Open menu</span>
+                          <MoreHorizontal className="h-4 w-4" />
+                        </Button>
+                      </DropdownMenuTrigger>
+                      <DropdownMenuContent align="end">
+                        <DropdownMenuItem onSelect={() => setProjectToDelete(project)}>
+                          <Trash2 className="mr-2 h-4 w-4" />
+                          <span>{t[language].delete}</span>
+                        </DropdownMenuItem>
+                      </DropdownMenuContent>
+                    </DropdownMenu>
+                  </TableCell>
                 </TableRow>
               ))}
             </TableBody>
@@ -157,5 +201,19 @@ export default function ProjectsPage() {
         </CardContent>
       </Card>
     </div>
+
+    <AlertDialog open={!!projectToDelete} onOpenChange={() => setProjectToDelete(null)}>
+        <AlertDialogContent>
+            <AlertDialogHeader>
+                <AlertDialogTitle>{t[language].confirmDeleteTitle}</AlertDialogTitle>
+                <AlertDialogDescription>{t[language].confirmDeleteDesc}</AlertDialogDescription>
+            </AlertDialogHeader>
+            <AlertDialogFooter>
+                <AlertDialogCancel>{t[language].cancel}</AlertDialogCancel>
+                <AlertDialogAction onClick={handleDeleteProject}>{t[language].delete}</AlertDialogAction>
+            </AlertDialogFooter>
+        </AlertDialogContent>
+    </AlertDialog>
+    </>
   )
 }

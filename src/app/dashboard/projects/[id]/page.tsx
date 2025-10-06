@@ -2,24 +2,35 @@
 
 import React, { useState, useMemo } from 'react';
 import { projects, clients, findings as allFindings } from "@/lib/data";
-import { notFound } from "next/navigation";
+import { notFound, useRouter } from "next/navigation";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import Link from 'next/link';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
-import { PlusCircle, FileText, ArrowUpDown, Edit, Save } from "lucide-react";
+import { PlusCircle, FileText, ArrowUpDown, Edit, Save, Trash2 } from "lucide-react";
 import { Separator } from "@/components/ui/separator";
 import { useLanguage } from "@/context/language-context";
 import type { Finding } from '@/lib/types';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Textarea } from '@/components/ui/textarea';
 import { MarkdownPreview } from '@/components/markdown-preview';
+import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from "@/components/ui/alert-dialog";
+import { useToast } from '@/hooks/use-toast';
+
 
 type SortKey = keyof Finding;
 
 export default function ProjectDetailsPage({ params }: { params: { id: string } }) {
-  const project = projects.find(p => p.id === params.id);
+  const router = useRouter();
+  const { toast } = useToast();
+
+  const [project, setProject] = useState(() => projects.find(p => p.id === params.id));
+
   const { language } = useLanguage();
   const [sortConfig, setSortConfig] = useState<{ key: SortKey; direction: 'ascending' | 'descending' } | null>(null);
   const [isEditingScope, setIsEditingScope] = useState(false);
@@ -31,6 +42,27 @@ export default function ProjectDetailsPage({ params }: { params: { id: string } 
 
   const client = clients.find(c => c.id === project.clientId);
   const projectFindings = allFindings.filter(f => f.projectId === project.id);
+  
+  const handleUpdateProject = (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    const formData = new FormData(e.currentTarget);
+    const newName = formData.get('projectName') as string;
+    const newClientId = formData.get('client') as string;
+
+    if (project) {
+        setProject({ ...project, name: newName, clientId: newClientId });
+        // Here you would typically call an API to save the changes
+        console.log("Updated project:", { ...project, name: newName, clientId: newClientId });
+        toast({ title: t[language].projectUpdated });
+    }
+  };
+
+  const handleDeleteProject = () => {
+    console.log("Deleting project:", project.id);
+    // Here you would typically call an API to delete the project
+    toast({ title: t[language].projectDeleted });
+    router.push('/dashboard/projects');
+  };
 
   const getSeverityVariant = (severity: string) => {
     switch (severity) {
@@ -92,7 +124,16 @@ export default function ProjectDetailsPage({ params }: { params: { id: string } 
       completed: "Completed",
       onHold: "On Hold",
       editScope: "Edit Scope",
-      saveScope: "Save Scope"
+      saveScope: "Save Scope",
+      editProject: "Edit Project",
+      deleteProject: "Delete Project",
+      updateProject: "Update Project",
+      confirmDeleteTitle: "Are you sure?",
+      confirmDeleteDesc: "This action cannot be undone. This will permanently delete the project and all its findings.",
+      cancel: "Cancel",
+      delete: "Delete",
+      projectUpdated: "Project updated successfully.",
+      projectDeleted: "Project deleted successfully.",
     },
     es: {
       status: "Estado",
@@ -112,7 +153,16 @@ export default function ProjectDetailsPage({ params }: { params: { id: string } 
       completed: "Completado",
       onHold: "En Espera",
       editScope: "Editar Alcance",
-      saveScope: "Guardar Alcance"
+      saveScope: "Guardar Alcance",
+      editProject: "Editar Proyecto",
+      deleteProject: "Eliminar Proyecto",
+      updateProject: "Actualizar Proyecto",
+      confirmDeleteTitle: "¿Estás seguro?",
+      confirmDeleteDesc: "Esta acción no se puede deshacer. Esto eliminará permanentemente el proyecto y todos sus hallazgos.",
+      cancel: "Cancelar",
+      delete: "Eliminar",
+      projectUpdated: "Proyecto actualizado correctamente.",
+      projectDeleted: "Proyecto eliminado correctamente.",
     }
   }
 
@@ -128,17 +178,71 @@ export default function ProjectDetailsPage({ params }: { params: { id: string } 
   const handleSaveScope = () => {
     // Here you would save the scopeContent to your data source
     console.log("Saving scope:", scopeContent);
+    setProject({...project, scope: scopeContent});
     setIsEditingScope(false);
   }
 
   return (
     <div className="space-y-6">
-      <div className="space-y-2">
-        <p className="text-sm text-muted-foreground">{client?.name}</p>
-        <h1 className="font-headline text-3xl font-bold tracking-tight">{project.name}</h1>
-        <div className="flex items-center gap-4 text-sm text-muted-foreground">
-          <span>{t[language].status}: <Badge variant={project.status === 'Completed' ? 'secondary' : 'default'}>{getStatus(project.status)}</Badge></span>
-          <span>{new Date(project.startDate).toLocaleDateString()} - {new Date(project.endDate).toLocaleDateString()}</span>
+       <div className="flex justify-between items-start">
+        <div className="space-y-2">
+            <p className="text-sm text-muted-foreground">{client?.name}</p>
+            <h1 className="font-headline text-3xl font-bold tracking-tight">{project.name}</h1>
+            <div className="flex items-center gap-4 text-sm text-muted-foreground">
+            <span>{t[language].status}: <Badge variant={project.status === 'Completed' ? 'secondary' : 'default'}>{getStatus(project.status)}</Badge></span>
+            <span>{new Date(project.startDate).toLocaleDateString()} - {new Date(project.endDate).toLocaleDateString()}</span>
+            </div>
+        </div>
+        <div className="flex gap-2">
+            <Dialog>
+                <DialogTrigger asChild>
+                    <Button variant="outline"><Edit className="mr-2 h-4 w-4" />{t[language].editProject}</Button>
+                </DialogTrigger>
+                <DialogContent>
+                    <DialogHeader>
+                        <DialogTitle>{t[language].editProject}</DialogTitle>
+                    </DialogHeader>
+                    <form onSubmit={handleUpdateProject}>
+                        <div className="grid gap-4 py-4">
+                            <div className="space-y-2">
+                                <Label htmlFor="projectName">{t[language].projectName}</Label>
+                                <Input id="projectName" name="projectName" defaultValue={project.name} />
+                            </div>
+                            <div className="space-y-2">
+                                <Label htmlFor="client">{t[language].client}</Label>
+                                <Select name="client" defaultValue={project.clientId}>
+                                    <SelectTrigger id="client">
+                                        <SelectValue placeholder={t[language].client} />
+                                    </SelectTrigger>
+                                    <SelectContent>
+                                        {clients.map(c => (
+                                            <SelectItem key={c.id} value={c.id}>{c.name}</SelectItem>
+                                        ))}
+                                    </SelectContent>
+                                </Select>
+                            </div>
+                        </div>
+                        <DialogFooter>
+                            <Button type="submit">{t[language].updateProject}</Button>
+                        </DialogFooter>
+                    </form>
+                </DialogContent>
+            </Dialog>
+            <AlertDialog>
+                <AlertDialogTrigger asChild>
+                    <Button variant="destructive"><Trash2 className="mr-2 h-4 w-4" />{t[language].deleteProject}</Button>
+                </AlertDialogTrigger>
+                <AlertDialogContent>
+                    <AlertDialogHeader>
+                        <AlertDialogTitle>{t[language].confirmDeleteTitle}</AlertDialogTitle>
+                        <AlertDialogDescription>{t[language].confirmDeleteDesc}</AlertDialogDescription>
+                    </AlertDialogHeader>
+                    <AlertDialogFooter>
+                        <AlertDialogCancel>{t[language].cancel}</AlertDialogCancel>
+                        <AlertDialogAction onClick={handleDeleteProject}>{t[language].delete}</AlertDialogAction>
+                    </AlertDialogFooter>
+                </AlertDialogContent>
+            </AlertDialog>
         </div>
       </div>
       
