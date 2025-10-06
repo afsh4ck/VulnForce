@@ -1,7 +1,7 @@
 'use client';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { Home, ShieldCheck, FolderKanban, Users, Settings, FileText, PanelLeft } from 'lucide-react';
+import { Home, ShieldCheck, FolderKanban, Users, Settings, FileText, PanelLeft, User } from 'lucide-react';
 
 import {
   Sidebar,
@@ -32,6 +32,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
       clients: 'Clients',
       vulnerabilities: 'Vulnerabilities',
       settings: 'Settings',
+      profile: 'Profile',
     },
     es: {
       dashboard: 'Dashboard',
@@ -39,6 +40,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
       clients: 'Clientes',
       vulnerabilities: 'Vulnerabilidades',
       settings: 'Ajustes',
+      profile: 'Perfil',
     },
   };
 
@@ -47,8 +49,12 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
     { href: '/dashboard/projects', icon: FolderKanban, label: t[language].projects },
     { href: '/dashboard/clients', icon: Users, label: t[language].clients },
     { href: '/dashboard/vulnerabilities', icon: ShieldCheck, label: t[language].vulnerabilities },
-    { href: '/dashboard/settings', icon: Settings, label: t[language].settings },
   ];
+  
+  const bottomNavItems = [
+      { href: '/dashboard/profile', icon: User, label: t[language].profile },
+      { href: '/dashboard/settings', icon: Settings, label: t[language].settings },
+  ]
 
   return (
     <>
@@ -57,7 +63,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
           <Logo isCollapsed={isCollapsed} />
         </SidebarHeader>
         <SidebarContent>
-          <SidebarMenu>
+          <SidebarMenu className="mt-4">
             {navItems.map((item) => (
               <SidebarMenuItem key={item.href}>
                 <SidebarMenuButton
@@ -74,12 +80,30 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
             ))}
           </SidebarMenu>
         </SidebarContent>
+         <SidebarHeader>
+          <SidebarMenu>
+            {bottomNavItems.map((item) => (
+              <SidebarMenuItem key={item.href}>
+                <SidebarMenuButton
+                  asChild
+                  isActive={pathname === item.href}
+                  tooltip={{ children: item.label }}
+                >
+                  <Link href={item.href}>
+                    <item.icon />
+                    <span>{item.label}</span>
+                  </Link>
+                </SidebarMenuButton>
+              </SidebarMenuItem>
+            ))}
+          </SidebarMenu>
+        </SidebarHeader>
       </Sidebar>
       <SidebarInset>
         <header className="sticky top-0 z-10 flex h-14 items-center gap-4 border-b bg-background px-4 sm:px-6">
            <SidebarTrigger className="md:hidden" />
           <div className="flex-1">
-            {/* Breadcrumbs or Title could go here */}
+            <SidebarTrigger className="hidden md:flex" />
           </div>
           <UserNav />
         </header>

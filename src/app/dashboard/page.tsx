@@ -46,7 +46,7 @@ export default function DashboardPage() {
         <h1 className="font-headline text-3xl font-bold tracking-tight">{t[language].dashboard}</h1>
         <div className="flex gap-2">
           <Button asChild>
-            <Link href="/dashboard/projects">
+            <Link href="/dashboard/projects/new">
               <PlusCircle className="mr-2 h-4 w-4" /> {t[language].newProject}
             </Link>
           </Button>
@@ -54,46 +54,54 @@ export default function DashboardPage() {
       </div>
 
       <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
-        <Card>
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">{t[language].totalProjects}</CardTitle>
-            <FolderKanban className="h-4 w-4 text-muted-foreground" />
-          </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold">{projects.length}</div>
-            <p className="text-xs text-muted-foreground">{t[language].acrossAllClients}</p>
-          </CardContent>
-        </Card>
-        <Card>
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">{t[language].totalClients}</CardTitle>
-            <Users className="h-4 w-4 text-muted-foreground" />
-          </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold">{clients.length}</div>
-            <p className="text-xs text-muted-foreground">{t[language].managedInSystem}</p>
-          </CardContent>
-        </Card>
-        <Card>
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">{t[language].totalFindings}</CardTitle>
-            <ShieldCheck className="h-4 w-4 text-muted-foreground" />
-          </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold">{findings.length}</div>
-            <p className="text-xs text-muted-foreground">{t[language].inActiveProjects}</p>
-          </CardContent>
-        </Card>
-        <Card className="border-destructive">
+        <Link href="/dashboard/projects">
+          <Card className="hover:bg-muted/50 transition-colors">
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                <CardTitle className="text-sm font-medium">{t[language].criticalFindings}</CardTitle>
-                <ShieldCheck className="h-4 w-4 text-destructive" />
+              <CardTitle className="text-sm font-medium">{t[language].totalProjects}</CardTitle>
+              <FolderKanban className="h-4 w-4 text-muted-foreground" />
             </CardHeader>
             <CardContent>
-                <div className="text-2xl font-bold text-destructive">{criticalFindings}</div>
-                <p className="text-xs text-muted-foreground">{t[language].immediateAttention}</p>
+              <div className="text-2xl font-bold">{projects.length}</div>
+              <p className="text-xs text-muted-foreground">{t[language].acrossAllClients}</p>
             </CardContent>
-        </Card>
+          </Card>
+        </Link>
+        <Link href="/dashboard/clients">
+          <Card className="hover:bg-muted/50 transition-colors">
+            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+              <CardTitle className="text-sm font-medium">{t[language].totalClients}</CardTitle>
+              <Users className="h-4 w-4 text-muted-foreground" />
+            </CardHeader>
+            <CardContent>
+              <div className="text-2xl font-bold">{clients.length}</div>
+              <p className="text-xs text-muted-foreground">{t[language].managedInSystem}</p>
+            </CardContent>
+          </Card>
+        </Link>
+        <Link href="/dashboard/vulnerabilities">
+          <Card className="hover:bg-muted/50 transition-colors">
+            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+              <CardTitle className="text-sm font-medium">{t[language].totalFindings}</CardTitle>
+              <ShieldCheck className="h-4 w-4 text-muted-foreground" />
+            </CardHeader>
+            <CardContent>
+              <div className="text-2xl font-bold">{findings.length}</div>
+              <p className="text-xs text-muted-foreground">{t[language].inActiveProjects}</p>
+            </CardContent>
+          </Card>
+        </Link>
+        <Link href="/dashboard/vulnerabilities">
+          <Card className="border-destructive hover:bg-destructive/10 transition-colors">
+              <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                  <CardTitle className="text-sm font-medium">{t[language].criticalFindings}</CardTitle>
+                  <ShieldCheck className="h-4 w-4 text-destructive" />
+              </CardHeader>
+              <CardContent>
+                  <div className="text-2xl font-bold text-destructive">{criticalFindings}</div>
+                  <p className="text-xs text-muted-foreground">{t[language].immediateAttention}</p>
+              </CardContent>
+          </Card>
+        </Link>
       </div>
 
       <div>
