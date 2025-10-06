@@ -6,7 +6,7 @@ import { Logo } from '@/components/logo';
 export default function Home() {
   return (
     <div className="flex min-h-screen flex-col items-center justify-center bg-background p-4">
-      <main className="flex flex-1 flex-col items-center justify-center">
+      <main className="flex w-full flex-1 flex-col items-center justify-center">
         <Card className="w-full max-w-md shadow-2xl">
           <CardHeader className="items-center text-center">
             <div className="mb-4">
