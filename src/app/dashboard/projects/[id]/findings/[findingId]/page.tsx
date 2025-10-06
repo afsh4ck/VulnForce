@@ -16,6 +16,25 @@ import { generateFindingTemplates } from '@/ai/flows/generate-finding-templates'
 import { useLanguage } from '@/context/language-context';
 import type { Vulnerability } from '@/lib/types';
 
+const HighlightedMarkdown = ({ text }: { text: string | undefined }) => {
+    if (!text) return null;
+    const parts = text.split(/(TODO)/g);
+    return (
+        <pre className="whitespace-pre-wrap font-sans text-sm">
+        {parts.map((part, index) =>
+            part === 'TODO' ? (
+            <span key={index} className="font-bold text-red-500">
+                TODO
+            </span>
+            ) : (
+            part
+            )
+        )}
+        </pre>
+    );
+};
+
+
 export default function FindingEditorPage() {
   const params = useParams();
   const { id: projectId, findingId } = params;
@@ -184,7 +203,7 @@ export default function FindingEditorPage() {
             <div className="flex flex-col space-y-4">
               <Label>{t[language].livePreview}</Label>
               <div className="prose prose-sm dark:prose-invert h-full min-h-[400px] w-full max-w-none rounded-md border bg-muted p-4">
-                 <pre className="whitespace-pre-wrap font-sans text-sm">{markdown || t[language].previewAppear}</pre>
+                 <HighlightedMarkdown text={markdown || t[language].previewAppear} />
               </div>
             </div>
           </div>
