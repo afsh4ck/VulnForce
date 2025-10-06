@@ -8,16 +8,6 @@ import { projects, clients } from "@/lib/data";
 import { Badge } from "@/components/ui/badge";
 import Link from 'next/link';
 import { Input } from "@/components/ui/input";
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogFooter,
-  DialogHeader,
-  DialogTitle,
-  DialogTrigger,
-} from "@/components/ui/dialog"
-import { Label } from "@/components/ui/label";
 import { useLanguage } from "@/context/language-context";
 
 export default function ProjectsPage() {
@@ -46,13 +36,6 @@ export default function ProjectsPage() {
       title: "Projects",
       searchPlaceholder: "Search projects...",
       newProject: "New Project",
-      newProjectTitle: "Create New Project",
-      newProjectDescription: "Start a new security assessment for a client.",
-      projectNameLabel: "Project Name",
-      projectNamePlaceholder: "e.g., Q4 Web App Pentest",
-      scopeLabel: "Scope",
-      scopePlaceholder: "e.g., *.example.com",
-      createProject: "Create Project",
       projectNameHeader: "Project Name",
       clientHeader: "Client",
       statusHeader: "Status",
@@ -62,13 +45,6 @@ export default function ProjectsPage() {
       title: "Proyectos",
       searchPlaceholder: "Buscar proyectos...",
       newProject: "Nuevo Proyecto",
-      newProjectTitle: "Crear Nuevo Proyecto",
-      newProjectDescription: "Inicia una nueva evaluación de seguridad para un cliente.",
-      projectNameLabel: "Nombre del Proyecto",
-      projectNamePlaceholder: "p.ej., Pentest App Web Q4",
-      scopeLabel: "Alcance",
-      scopePlaceholder: "p.ej., *.ejemplo.com",
-      createProject: "Crear Proyecto",
       projectNameHeader: "Nombre del Proyecto",
       clientHeader: "Cliente",
       statusHeader: "Estado",
@@ -85,34 +61,11 @@ export default function ProjectsPage() {
             <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
             <Input placeholder={t[language].searchPlaceholder} className="pl-8" />
           </div>
-           <Dialog>
-            <DialogTrigger asChild>
-              <Button>
+           <Button asChild>
+            <Link href="/dashboard/projects/new">
                 <PlusCircle className="mr-2 h-4 w-4" /> {t[language].newProject}
-              </Button>
-            </DialogTrigger>
-            <DialogContent>
-              <DialogHeader>
-                <DialogTitle>{t[language].newProjectTitle}</DialogTitle>
-                <DialogDescription>
-                  {t[language].newProjectDescription}
-                </DialogDescription>
-              </DialogHeader>
-              <div className="grid gap-4 py-4">
-                <div className="grid grid-cols-4 items-center gap-4">
-                  <Label htmlFor="name" className="text-right">{t[language].projectNameLabel}</Label>
-                  <Input id="name" placeholder={t[language].projectNamePlaceholder} className="col-span-3" />
-                </div>
-                <div className="grid grid-cols-4 items-center gap-4">
-                  <Label htmlFor="scope" className="text-right">{t[language].scopeLabel}</Label>
-                  <Input id="scope" placeholder={t[language].scopePlaceholder} className="col-span-3" />
-                </div>
-              </div>
-              <DialogFooter>
-                <Button type="submit">{t[language].createProject}</Button>
-              </DialogFooter>
-            </DialogContent>
-          </Dialog>
+            </Link>
+          </Button>
         </div>
       </div>
 
