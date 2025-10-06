@@ -18,10 +18,12 @@ import {
 } from "@/components/ui/table";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent } from "@/components/ui/card";
-import { Search } from "lucide-react";
+import { Search, Pencil } from "lucide-react";
 import { vulnerabilities } from "@/lib/data";
 import { useLanguage } from "@/context/language-context";
 import type { Vulnerability } from "@/lib/types";
+import Link from 'next/link';
+import { Button } from "@/components/ui/button";
 
 export default function VulnerabilitiesPage() {
   const { language } = useLanguage();
@@ -53,6 +55,8 @@ export default function VulnerabilitiesPage() {
       tableSeverity: "Severity",
       tableCvss: "CVSS",
       tableReference: "Reference",
+      tableActions: "Actions",
+      edit: "Edit"
     },
     es: {
       title: "Base de Datos de Vulnerabilidades",
@@ -67,6 +71,8 @@ export default function VulnerabilitiesPage() {
       tableSeverity: "Severidad",
       tableCvss: "CVSS",
       tableReference: "Referencia",
+      tableActions: "Acciones",
+      edit: "Editar"
     }
   }
 
@@ -106,6 +112,7 @@ export default function VulnerabilitiesPage() {
                 <TableHead>{t[language].tableSeverity}</TableHead>
                 <TableHead>{t[language].tableCvss}</TableHead>
                 <TableHead>{t[language].tableReference}</TableHead>
+                <TableHead className="text-right">{t[language].tableActions}</TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
@@ -117,6 +124,14 @@ export default function VulnerabilitiesPage() {
                   </TableCell>
                   <TableCell>{vuln.cvss.toFixed(1)}</TableCell>
                   <TableCell className="font-code text-sm text-muted-foreground">{vuln.reference}</TableCell>
+                  <TableCell className="text-right">
+                    <Button variant="ghost" size="sm" asChild>
+                      <Link href={`/dashboard/vulnerabilities/${vuln.id}`}>
+                        <Pencil className="mr-2 h-4 w-4" />
+                        {t[language].edit}
+                      </Link>
+                    </Button>
+                  </TableCell>
                 </TableRow>
               ))}
             </TableBody>
