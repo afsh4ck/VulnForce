@@ -229,10 +229,35 @@ export default function FindingEditorPage() {
               <Select onValueChange={(vulnId) => {
                   const vuln = vulnerabilities.find(v => v.id === vulnId);
                   if (vuln) {
-                      setTitle(getVulnTitle(vuln));
+                      const isSpanish = language === 'es';
+                      setTitle(isSpanish ? vuln.title_es : vuln.title_en);
                       setSeverity(vuln.severity);
-                      setCvss(vuln.cvss.toString());
-                      setMarkdown(`### Description\n\n${language === 'es' ? vuln.description_es : vuln.description_en}\n\n### Mitigation\n\n${language === 'es' ? vuln.mitigation_es : vuln.mitigation_en}`);
+                      setCvss(vuln.cvss.score.toString());
+                      const md = `
+### Overview
+${isSpanish ? vuln.overview_es : vuln.overview_en}
+
+### Technical Description
+${isSpanish ? vuln.technicalDescription_es : vuln.technicalDescription_en}
+
+### Affected Components
+${isSpanish ? vuln.affectedComponents_es : vuln.affectedComponents_en}
+
+### Impact
+${isSpanish ? vuln.impact_es : vuln.impact_en}
+
+### Recommendations
+${isSpanish ? vuln.recommendations_es : vuln.recommendations_en}
+
+### Remediation
+**Short Term:** ${isSpanish ? vuln.remediation_es.shortTerm : vuln.remediation_en.shortTerm}
+**Medium Term:** ${isSpanish ? vuln.remediation_es.mediumTerm : vuln.remediation_en.mediumTerm}
+**Long Term:** ${isSpanish ? vuln.remediation_es.longTerm : vuln.remediation_en.longTerm}
+
+### References
+${vuln.references.map(ref => `- ${ref}`).join('\n')}
+                      `;
+                      setMarkdown(md.trim());
                   }
               }}>
                 <SelectTrigger>

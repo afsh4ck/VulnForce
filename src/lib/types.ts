@@ -30,18 +30,48 @@ export interface Finding {
   updatedAt: string;
 }
 
+export interface CVSS {
+  score: number;
+  vectorString: string;
+  attackVector: string;
+  attackComplexity: string;
+  privilegesRequired: string;
+  userInteraction: string;
+  scope: string;
+  confidentiality: string;
+  integrity: string;
+  availability: string;
+}
+
+export interface Remediation {
+  shortTerm?: string;
+  mediumTerm?: string;
+  longTerm?: string;
+}
+
 export interface Vulnerability {
   id: string;
-  title_es: string;
   title_en: string;
-  cvss: number;
+  title_es: string;
+  overview_en: string;
+  overview_es: string;
+  technicalDescription_en: string;
+  technicalDescription_es: string;
+  affectedComponents_en: string;
+  affectedComponents_es: string;
+  impact_en: string;
+  impact_es: string;
+  recommendations_en: string;
+  recommendations_es: string;
+  details_en: string;
+  details_es: string;
+  remediation_en: Remediation;
+  remediation_es: Remediation;
+  cwe: string;
+  cvss: CVSS;
   severity: Severity;
-  description_es: string;
-  description_en: string;
-  mitigation_es: string;
-  mitigation_en: string;
+  references: string[];
   tags: string[];
-  reference: string;
 }
 
 export interface Report {

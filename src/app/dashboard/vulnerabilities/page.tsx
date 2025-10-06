@@ -21,20 +21,19 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Search, Pencil, PlusCircle } from "lucide-react";
 import { vulnerabilities } from "@/lib/data";
 import { useLanguage } from "@/context/language-context";
-import type { Vulnerability } from "@/lib/types";
 import Link from 'next/link';
 import { Button } from "@/components/ui/button";
 
 export default function VulnerabilitiesPage() {
   const { language } = useLanguage();
   
-  const getSeverityClass = (severity: string) => {
+  const getSeverityVariant = (severity: string) => {
     switch (severity) {
-      case 'Critical': return 'bg-red-500 hover:bg-red-500/80 text-white';
-      case 'High': return 'bg-orange-500 hover:bg-orange-500/80 text-white';
-      case 'Medium': return 'bg-yellow-500 hover:bg-yellow-500/80 text-black';
-      case 'Low': return 'bg-green-500 hover:bg-green-500/80 text-white';
-      default: return 'bg-gray-500 hover:bg-gray-500/80 text-white';
+      case 'Critical': return 'destructive';
+      case 'High': return 'destructive'; // No orange, using destructive for high as well.
+      case 'Medium': return 'default'; // No yellow, using default.
+      case 'Low': return 'secondary'; // No green, using secondary.
+      default: return 'outline';
     }
   }
 
@@ -52,7 +51,7 @@ export default function VulnerabilitiesPage() {
       tableTitle: "Title",
       tableSeverity: "Severity",
       tableCvss: "CVSS",
-      tableReference: "Reference",
+      tableReference: "CWE",
       tableActions: "Actions",
       edit: "Edit",
       newVulnerability: "New Vulnerability"
@@ -69,7 +68,7 @@ export default function VulnerabilitiesPage() {
       tableTitle: "Título",
       tableSeverity: "Severidad",
       tableCvss: "CVSS",
-      tableReference: "Referencia",
+      tableReference: "CWE",
       tableActions: "Acciones",
       edit: "Editar",
       newVulnerability: "Nueva Vulnerabilidad"
@@ -78,7 +77,9 @@ export default function VulnerabilitiesPage() {
 
   return (
     <div className="space-y-6">
-      <h1 className="font-headline text-3xl font-bold tracking-tight">{t[language].title}</h1>
+       <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
+         <h1 className="font-headline text-3xl font-bold tracking-tight">{t[language].title}</h1>
+      </div>
       
       <div className="flex items-center justify-between gap-2">
         <div className="flex items-center gap-2">
@@ -127,10 +128,10 @@ export default function VulnerabilitiesPage() {
                 <TableRow key={vuln.id}>
                   <TableCell className="font-medium">{vuln.title_en}</TableCell>
                   <TableCell>
-                    <Badge className={getSeverityClass(vuln.severity)}>{vuln.severity}</Badge>
+                    <Badge variant={getSeverityVariant(vuln.severity)}>{vuln.severity}</Badge>
                   </TableCell>
-                  <TableCell>{vuln.cvss.toFixed(1)}</TableCell>
-                  <TableCell className="font-code text-sm text-muted-foreground">{vuln.reference}</TableCell>
+                  <TableCell>{vuln.cvss.score.toFixed(1)}</TableCell>
+                  <TableCell className="font-code text-sm text-muted-foreground">{vuln.cwe}</TableCell>
                   <TableCell className="text-right">
                     <Button variant="ghost" size="sm" asChild>
                       <Link href={`/dashboard/vulnerabilities/${vuln.id}`}>
