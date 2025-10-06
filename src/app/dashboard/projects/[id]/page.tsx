@@ -194,9 +194,10 @@ export default function ProjectDetailsPage({ params }: { params: { id: string } 
             </div>
         </div>
         <div className="flex gap-2">
+            <Button variant="outline"><FileText className="mr-2 h-4 w-4" />{t[language].exportReport}</Button>
             <Dialog>
                 <DialogTrigger asChild>
-                    <Button variant="outline"><Edit className="mr-2 h-4 w-4" />{t[language].editProject}</Button>
+                    <Button variant="outline" size="icon"><Edit className="h-4 w-4" /></Button>
                 </DialogTrigger>
                 <DialogContent>
                     <DialogHeader>
@@ -230,7 +231,7 @@ export default function ProjectDetailsPage({ params }: { params: { id: string } 
             </Dialog>
             <AlertDialog>
                 <AlertDialogTrigger asChild>
-                    <Button variant="destructive"><Trash2 className="mr-2 h-4 w-4" />{t[language].deleteProject}</Button>
+                    <Button variant="destructive" size="icon"><Trash2 className="h-4 w-4" /></Button>
                 </AlertDialogTrigger>
                 <AlertDialogContent>
                     <AlertDialogHeader>
@@ -292,7 +293,6 @@ export default function ProjectDetailsPage({ params }: { params: { id: string } 
                     <CardDescription>{projectFindings.length} {t[language].findings.toLowerCase()} {language === 'es' ? 'encontrados' : 'found'}</CardDescription>
                 </div>
                 <div className="flex gap-2">
-                <Button variant="outline" size="sm"><FileText className="mr-2 h-4 w-4" /> {t[language].exportReport}</Button>
                 <Button size="sm" asChild>
                     <Link href={`/dashboard/projects/${project.id}/findings/new`}>
                     <PlusCircle className="mr-2 h-4 w-4" /> {t[language].addFinding}
