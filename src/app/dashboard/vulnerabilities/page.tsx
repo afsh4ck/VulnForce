@@ -1,3 +1,5 @@
+'use client';
+
 import { Input } from "@/components/ui/input";
 import {
   Select,
@@ -18,8 +20,11 @@ import { Badge } from "@/components/ui/badge";
 import { Card, CardContent } from "@/components/ui/card";
 import { Search } from "lucide-react";
 import { vulnerabilities } from "@/lib/data";
+import { useLanguage } from "@/context/language-context";
+import type { Vulnerability } from "@/lib/types";
 
 export default function VulnerabilitiesPage() {
+  const { language } = useLanguage();
   const getSeverityVariant = (severity: string) => {
     switch (severity) {
       case 'Critical': return 'destructive';
@@ -30,29 +35,64 @@ export default function VulnerabilitiesPage() {
     }
   }
 
+  const getVulnTitle = (vuln: Vulnerability) => {
+    return language === 'es' ? vuln.title_es : vuln.title_en;
+  }
+
+  const t = {
+    en: {
+      title: "Vulnerability Database",
+      search: "Search...",
+      filterSeverity: "Filter by severity",
+      allSeverities: "All Severities",
+      critical: "Critical",
+      high: "High",
+      medium: "Medium",
+      low: "Low",
+      tableTitle: "Title",
+      tableSeverity: "Severity",
+      tableCvss: "CVSS",
+      tableReference: "Reference",
+    },
+    es: {
+      title: "Base de Datos de Vulnerabilidades",
+      search: "Buscar...",
+      filterSeverity: "Filtrar por severidad",
+      allSeverities: "Todas las Severidades",
+      critical: "Crítica",
+      high: "Alta",
+      medium: "Media",
+      low: "Baja",
+      tableTitle: "Título",
+      tableSeverity: "Severidad",
+      tableCvss: "CVSS",
+      tableReference: "Referencia",
+    }
+  }
+
   return (
     <div className="space-y-6">
       <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
-        <h1 className="font-headline text-3xl font-bold tracking-tight">Vulnerability Database</h1>
+        <h1 className="font-headline text-3xl font-bold tracking-tight">{t[language].title}</h1>
         <div className="flex items-center gap-2">
           <div className="relative flex-1 md:grow-0">
             <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
             <Input
               type="search"
-              placeholder="Search..."
+              placeholder={t[language].search}
               className="w-full rounded-lg bg-background pl-8 md:w-[200px] lg:w-[320px]"
             />
           </div>
           <Select>
             <SelectTrigger className="w-[180px]">
-              <SelectValue placeholder="Filter by severity" />
+              <SelectValue placeholder={t[language].filterSeverity} />
             </SelectTrigger>
             <SelectContent>
-              <SelectItem value="all">All Severities</SelectItem>
-              <SelectItem value="critical">Critical</SelectItem>
-              <SelectItem value="high">High</SelectItem>
-              <SelectItem value="medium">Medium</SelectItem>
-              <SelectItem value="low">Low</SelectItem>
+              <SelectItem value="all">{t[language].allSeverities}</SelectItem>
+              <SelectItem value="critical">{t[language].critical}</SelectItem>
+              <SelectItem value="high">{t[language].high}</SelectItem>
+              <SelectItem value="medium">{t[language].medium}</SelectItem>
+              <SelectItem value="low">{t[language].low}</SelectItem>
             </SelectContent>
           </Select>
         </div>
@@ -62,16 +102,16 @@ export default function VulnerabilitiesPage() {
           <Table>
             <TableHeader>
               <TableRow>
-                <TableHead>Title</TableHead>
-                <TableHead>Severity</TableHead>
-                <TableHead>CVSS</TableHead>
-                <TableHead>Reference</TableHead>
+                <TableHead>{t[language].tableTitle}</TableHead>
+                <TableHead>{t[language].tableSeverity}</TableHead>
+                <TableHead>{t[language].tableCvss}</TableHead>
+                <TableHead>{t[language].tableReference}</TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
               {vulnerabilities.map((vuln) => (
                 <TableRow key={vuln.id}>
-                  <TableCell className="font-medium">{vuln.title_en}</TableCell>
+                  <TableCell className="font-medium">{getVulnTitle(vuln)}</TableCell>
                   <TableCell>
                     <Badge variant={getSeverityVariant(vuln.severity)}>{vuln.severity}</Badge>
                   </TableCell>

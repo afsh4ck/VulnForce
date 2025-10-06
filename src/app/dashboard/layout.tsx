@@ -17,19 +17,38 @@ import {
 import { Button } from '@/components/ui/button';
 import { UserNav } from '@/components/user-nav';
 import { Logo } from '@/components/logo';
-
-const navItems = [
-  { href: '/dashboard', icon: Home, label: 'Dashboard' },
-  { href: '/dashboard/projects', icon: FolderKanban, label: 'Projects' },
-  { href: '/dashboard/clients', icon: Users, label: 'Clients' },
-  { href: '/dashboard/vulnerabilities', icon: ShieldCheck, label: 'Vulnerabilities' },
-  { href: '/dashboard/settings', icon: Settings, label: 'Settings' },
-];
+import { useLanguage } from '@/context/language-context';
 
 export default function DashboardLayout({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
   const { state, isMobile } = useSidebar();
+  const { language } = useLanguage();
   const isCollapsed = state === 'collapsed';
+
+  const t = {
+    en: {
+      dashboard: 'Dashboard',
+      projects: 'Projects',
+      clients: 'Clients',
+      vulnerabilities: 'Vulnerabilities',
+      settings: 'Settings',
+    },
+    es: {
+      dashboard: 'Dashboard',
+      projects: 'Proyectos',
+      clients: 'Clientes',
+      vulnerabilities: 'Vulnerabilidades',
+      settings: 'Ajustes',
+    },
+  };
+
+  const navItems = [
+    { href: '/dashboard', icon: Home, label: t[language].dashboard },
+    { href: '/dashboard/projects', icon: FolderKanban, label: t[language].projects },
+    { href: '/dashboard/clients', icon: Users, label: t[language].clients },
+    { href: '/dashboard/vulnerabilities', icon: ShieldCheck, label: t[language].vulnerabilities },
+    { href: '/dashboard/settings', icon: Settings, label: t[language].settings },
+  ];
 
   return (
     <>

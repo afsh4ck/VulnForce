@@ -1,4 +1,4 @@
-"use client";
+'use client';
 
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
@@ -12,10 +12,26 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { PlaceHolderImages } from "@/lib/placeholder-images";
-import Image from "next/image";
+import { useLanguage } from "@/context/language-context";
+import Link from "next/link";
 
 export function UserNav() {
     const userAvatar = PlaceHolderImages.find(img => img.imageHint.includes("person"));
+    const { language } = useLanguage();
+
+    const t = {
+      en: {
+        profile: "Profile",
+        settings: "Settings",
+        logout: "Log out"
+      },
+      es: {
+        profile: "Perfil",
+        settings: "Ajustes",
+        logout: "Cerrar sesión"
+      }
+    }
+
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
@@ -29,7 +45,7 @@ export function UserNav() {
       <DropdownMenuContent className="w-56" align="end" forceMount>
         <DropdownMenuLabel className="font-normal">
           <div className="flex flex-col space-y-1">
-            <p className="text-sm font-medium leading-none">Security Auditor</p>
+            <p className="text-sm font-medium leading-none">Auditor de Seguridad</p>
             <p className="text-xs leading-none text-muted-foreground">
               auditor@vulnforce.local
             </p>
@@ -37,12 +53,16 @@ export function UserNav() {
         </DropdownMenuLabel>
         <DropdownMenuSeparator />
         <DropdownMenuGroup>
-          <DropdownMenuItem>Profile</DropdownMenuItem>
-          <DropdownMenuItem>Settings</DropdownMenuItem>
+          <DropdownMenuItem asChild>
+            <Link href="/dashboard/profile">{t[language].profile}</Link>
+          </DropdownMenuItem>
+          <DropdownMenuItem asChild>
+            <Link href="/dashboard/settings">{t[language].settings}</Link>
+          </DropdownMenuItem>
         </DropdownMenuGroup>
         <DropdownMenuSeparator />
         <DropdownMenuItem>
-          Log out
+          {t[language].logout}
         </DropdownMenuItem>
       </DropdownMenuContent>
     </DropdownMenu>

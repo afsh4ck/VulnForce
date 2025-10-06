@@ -2,10 +2,11 @@ import type { Metadata } from 'next';
 import { Toaster } from '@/components/ui/toaster';
 import './globals.css';
 import { SidebarProvider } from '@/components/ui/sidebar';
+import { LanguageProvider } from '@/context/language-context';
 
 export const metadata: Metadata = {
   title: 'VulnForce',
-  description: 'Professional pentesting reporting tool.',
+  description: 'Herramienta profesional para informes de pentesting.',
 };
 
 export default function RootLayout({
@@ -14,7 +15,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" className="dark">
+    <html lang="es" className="dark">
       <head>
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
@@ -23,10 +24,12 @@ export default function RootLayout({
         <link href="https://fonts.googleapis.com/css2?family=Source+Code+Pro:wght@400;500&display=swap" rel="stylesheet" />
       </head>
       <body className="font-body antialiased">
-        <SidebarProvider>
-          {children}
-          <Toaster />
-        </SidebarProvider>
+        <LanguageProvider>
+          <SidebarProvider>
+            {children}
+            <Toaster />
+          </SidebarProvider>
+        </LanguageProvider>
       </body>
     </html>
   );
