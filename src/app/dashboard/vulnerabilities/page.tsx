@@ -18,7 +18,7 @@ import {
 } from "@/components/ui/table";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent } from "@/components/ui/card";
-import { Search, Pencil } from "lucide-react";
+import { Search, Pencil, PlusCircle } from "lucide-react";
 import { vulnerabilities } from "@/lib/data";
 import { useLanguage } from "@/context/language-context";
 import type { Vulnerability } from "@/lib/types";
@@ -56,7 +56,8 @@ export default function VulnerabilitiesPage() {
       tableCvss: "CVSS",
       tableReference: "Reference",
       tableActions: "Actions",
-      edit: "Edit"
+      edit: "Edit",
+      newVulnerability: "New Vulnerability"
     },
     es: {
       title: "Base de Datos de Vulnerabilidades",
@@ -72,7 +73,8 @@ export default function VulnerabilitiesPage() {
       tableCvss: "CVSS",
       tableReference: "Referencia",
       tableActions: "Acciones",
-      edit: "Editar"
+      edit: "Editar",
+      newVulnerability: "Nueva Vulnerabilidad"
     }
   }
 
@@ -101,6 +103,11 @@ export default function VulnerabilitiesPage() {
               <SelectItem value="low">{t[language].low}</SelectItem>
             </SelectContent>
           </Select>
+           <Button asChild>
+              <Link href="/dashboard/vulnerabilities/new">
+                <PlusCircle className="mr-2 h-4 w-4" /> {t[language].newVulnerability}
+              </Link>
+            </Button>
         </div>
       </div>
       <Card>

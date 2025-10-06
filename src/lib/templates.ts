@@ -47,4 +47,94 @@ Specific Servers:
 - FILESERV01 (192.168.1.10)
 - AD-DC01 (192.168.1.5)`,
   },
+  {
+    id: 'cpts-template',
+    name_en: 'CPTS Certification Report by Hack The Box',
+    name_es: 'Informe de Certificación CPTS por Hack The Box',
+    description_en: 'A detailed template for the Certified Penetration Testing Specialist (CPTS) certification report. It includes all necessary sections to pass the exam.',
+    description_es: 'Una plantilla detallada para el informe de la certificación Certified Penetration Testing Specialist (CPTS). Incluye todas las secciones necesarias para aprobar el examen.',
+    scope: 
+`## Introduction
+A penetration test was performed against the Hack The Box enterprise network. The objective of this assessment was to identify and report on security vulnerabilities that could be exploited by an external attacker to compromise the internal network and gain access to sensitive data or systems, simulating a real-world attack scenario. This report details the findings of the assessment and provides recommendations for remediation.
+
+## Scope
+The scope of this penetration test was limited to the hosts and networks provided within the CPTS exam environment. The assessment was conducted from an external attacker's perspective, with no prior knowledge of the internal network architecture.
+
+**Included in scope:**
+- External IP addresses provided in the exam.
+- Any hosts discovered and accessible from the initial foothold within the specified subnets.
+
+**Excluded from scope:**
+- Any hosts or networks outside of the designated exam infrastructure.
+- Denial of Service (DoS) attacks.
+- Social engineering attacks against Hack The Box staff.
+- Any actions that could disrupt the stability of the exam environment for other users.
+
+## Timeline
+- **Start Date:** [DD/MM/YYYY]
+- **End Date:** [DD/MM/YYYY]
+
+## Summary of Findings
+[Provide a high-level executive summary of the key findings and the overall security posture of the network. Mention the most critical vulnerabilities discovered and the potential impact.]
+
+---
+
+## Methodology
+The penetration test followed a structured methodology aligned with industry best practices:
+1.  **Information Gathering:** Passive and active reconnaissance to map the external attack surface.
+2.  **Threat Modeling & Vulnerability Identification:** Identifying potential weaknesses and entry points.
+3.  **Exploitation:** Gaining an initial foothold and escalating privileges.
+4.  **Post-Exploitation:** Pivoting through the internal network, identifying high-value targets, and exfiltrating data (flags).
+5.  **Reporting:** Documenting all findings, exploitation paths, and recommendations.
+
+---
+
+## Attack Narrative
+[Provide a step-by-step narrative of the attack path, from initial reconnaissance to the final flag capture. This should be detailed and easy to follow.]
+
+1.  **Initial Reconnaissance:** ...
+2.  **Gaining a Foothold:** ...
+3.  **Internal Enumeration:** ...
+4.  **Lateral Movement & Privilege Escalation:** ...
+5.  **Domain Compromise:** ...
+
+---
+
+## Findings
+[List all the individual findings here. Each finding should be a separate section. Use the findings editor to detail each one.]
+
+---
+
+## Appendix
+
+### A. Compromised Users
+List all user accounts that were compromised during the assessment.
+- \`user1@domain.local\`
+- \`admin_user\`
+- \`local_admin\`
+
+### B. Exploited Hosts
+List all hosts that were successfully exploited.
+- WEB01 (192.168.X.X) - Initial Foothold
+- DC01 (192.168.Y.Y) - Domain Controller Compromise
+- FILESRV (192.168.Z.Z) - Sensitive Data Exposure
+
+### C. Flags Captured
+List all the flags obtained during the assessment.
+- **user.txt (Host1):** \`[flag_value]\`
+- **root.txt (Host1):** \`[flag_value]\`
+- **user.txt (Host2):** \`[flag_value]\`
+- **root.txt (Host2):** \`[flag_value]\`
+- **dcorp.local flag:** \`[flag_value]\`
+
+### D. Tools Used
+List the primary tools used during the assessment.
+- Nmap
+- Metasploit Framework
+- Mimikatz
+- BloodHound
+- Impacket Suite
+- Burp Suite
+`
+  }
 ];
