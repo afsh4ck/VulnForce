@@ -194,7 +194,11 @@ export default function ProjectDetailsPage({ params }: { params: { id: string } 
             </div>
         </div>
         <div className="flex gap-2">
-            <Button variant="outline"><FileText className="mr-2 h-4 w-4" />{t[language].exportReport}</Button>
+            <Button variant="outline" asChild>
+                <Link href={`/dashboard/projects/${project.id}/report`} target="_blank">
+                    <FileText className="mr-2 h-4 w-4" />{t[language].exportReport}
+                </Link>
+            </Button>
             <Dialog>
                 <DialogTrigger asChild>
                     <Button variant="outline" size="icon"><Edit className="h-4 w-4" /></Button>
@@ -336,3 +340,5 @@ export default function ProjectDetailsPage({ params }: { params: { id: string } 
     </div>
   );
 }
+
+    
