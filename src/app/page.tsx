@@ -5,8 +5,8 @@ import { Logo } from '@/components/logo';
 
 export default function Home() {
   return (
-    <div className="flex min-h-screen flex-col items-center justify-center bg-background p-4">
-      <main className="flex w-full flex-1 flex-col items-center justify-center">
+    <div className="flex min-h-screen flex-col bg-background">
+      <main className="flex flex-1 flex-col items-center justify-center p-4">
         <Card className="w-full max-w-md shadow-2xl">
           <CardHeader className="items-center text-center">
             <div className="mb-4">
@@ -27,7 +27,7 @@ export default function Home() {
           </CardContent>
         </Card>
       </main>
-      <footer className="py-4 text-sm text-muted-foreground">
+      <footer className="py-4 text-center text-sm text-muted-foreground">
         <p>&copy; {new Date().getFullYear()} VulnForce. Todos los derechos reservados.</p>
       </footer>
     </div>
