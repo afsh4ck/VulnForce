@@ -20,7 +20,7 @@ import { UserNav } from '@/components/user-nav';
 import { Logo } from '@/components/logo';
 import { useLanguage } from '@/context/language-context';
 
-function DashboardNav() {
+function DashboardNav({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
   const { state, isMobile } = useSidebar();
   const { language } = useLanguage();
@@ -123,7 +123,7 @@ function DashboardNav() {
 export default function DashboardLayout({ children }: { children: React.ReactNode }) {
   return (
     <SidebarProvider>
-        <DashboardNav>{children}</DashboardNav>
+      <DashboardNav>{children}</DashboardNav>
     </SidebarProvider>
   )
 }
