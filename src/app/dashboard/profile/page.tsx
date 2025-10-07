@@ -90,7 +90,6 @@ export default function ProfilePage() {
 
       <Card>
         <CardHeader>
-          <CardTitle>{t[language].title}</CardTitle>
           <CardDescription>{t[language].description}</CardDescription>
         </CardHeader>
         <CardContent className="space-y-6">
