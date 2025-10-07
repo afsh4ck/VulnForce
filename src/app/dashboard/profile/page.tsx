@@ -89,10 +89,7 @@ export default function ProfilePage() {
       <h1 className="font-headline text-3xl font-bold tracking-tight">{t[language].title}</h1>
 
       <Card>
-        <CardHeader>
-          <CardDescription>{t[language].description}</CardDescription>
-        </CardHeader>
-        <CardContent className="space-y-6">
+        <CardContent className="pt-6 space-y-6">
           <div className="flex items-center gap-6">
             <Avatar className="h-24 w-24">
               <AvatarImage src={avatar} alt={name} />
