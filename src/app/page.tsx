@@ -1,4 +1,3 @@
-
 'use client';
 
 import React, { useState } from 'react';
@@ -112,69 +111,69 @@ export default function LoginPage() {
     setConfirmPassword('');
   };
 
-  if (!hasPassword) {
+  const renderContent = () => {
+    if (!hasPassword) {
+      return (
+        <Card className="w-full max-w-md shadow-2xl">
+          <CardHeader className="items-center text-center">
+            <div className="mb-4"><Logo /></div>
+            <CardTitle className="font-headline text-3xl">{t.es.setupTitle}</CardTitle>
+            <CardDescription className="text-base">{t.es.setupDescription}</CardDescription>
+          </CardHeader>
+          <CardContent>
+            <form onSubmit={handleSetPassword} className="space-y-4">
+              <div className="space-y-2">
+                <Label htmlFor="username-setup">{t.es.usernameLabel}</Label>
+                <Input id="username-setup" value={username} onChange={(e) => setUsername(e.target.value)} required />
+              </div>
+              <div className="space-y-2">
+                <Label htmlFor="new-password">{t.es.newPasswordLabel}</Label>
+                <Input id="new-password" type="password" value={newPassword} onChange={handleNewPasswordChange} required />
+              </div>
+              {newPassword.length > 0 && (
+                <div className="space-y-2">
+                  <Progress value={passwordStrength.score * (100/6)} className={passwordStrength.color} />
+                  <p className="text-sm text-muted-foreground">{t.es[passwordStrength.label.replace(' ', '') as keyof typeof t.es]}</p>
+                </div>
+              )}
+              <div className="space-y-2">
+                <Label htmlFor="confirm-password">{t.es.confirmPasswordLabel}</Label>
+                <Input id="confirm-password" type="password" value={confirmPassword} onChange={(e) => setConfirmPassword(e.target.value)} required />
+              </div>
+              <Button type="submit" className="w-full">{t.es.setPasswordButton}</Button>
+            </form>
+          </CardContent>
+        </Card>
+      );
+    }
+  
     return (
-      <div className="flex min-h-screen flex-col items-center justify-center bg-background">
-        <main className="flex flex-1 flex-col items-center justify-center p-4">
-          <Card className="w-full max-w-md shadow-2xl">
-            <CardHeader className="items-center text-center">
-              <div className="mb-4"><Logo /></div>
-              <CardTitle className="font-headline text-3xl">{t.es.setupTitle}</CardTitle>
-              <CardDescription className="text-base">{t.es.setupDescription}</CardDescription>
-            </CardHeader>
-            <CardContent>
-              <form onSubmit={handleSetPassword} className="space-y-4">
-                <div className="space-y-2">
-                  <Label htmlFor="username-setup">{t.es.usernameLabel}</Label>
-                  <Input id="username-setup" value={username} onChange={(e) => setUsername(e.target.value)} required />
-                </div>
-                <div className="space-y-2">
-                  <Label htmlFor="new-password">{t.es.newPasswordLabel}</Label>
-                  <Input id="new-password" type="password" value={newPassword} onChange={handleNewPasswordChange} required />
-                </div>
-                {newPassword.length > 0 && (
-                  <div className="space-y-2">
-                    <Progress value={passwordStrength.score * (100/6)} className={passwordStrength.color} />
-                    <p className="text-sm text-muted-foreground">{t.es[passwordStrength.label.replace(' ', '') as keyof typeof t.es]}</p>
-                  </div>
-                )}
-                <div className="space-y-2">
-                  <Label htmlFor="confirm-password">{t.es.confirmPasswordLabel}</Label>
-                  <Input id="confirm-password" type="password" value={confirmPassword} onChange={(e) => setConfirmPassword(e.target.value)} required />
-                </div>
-                <Button type="submit" className="w-full">{t.es.setPasswordButton}</Button>
-              </form>
-            </CardContent>
-          </Card>
-        </main>
-      </div>
+      <Card className="w-full max-w-md shadow-2xl">
+        <CardHeader className="items-center text-center">
+          <div className="mb-4"><Logo /></div>
+          <CardTitle className="font-headline text-3xl">{t.es.welcome}</CardTitle>
+          <CardDescription className="text-base">{t.es.description}</CardDescription>
+        </CardHeader>
+        <CardContent>
+          <form onSubmit={handleLogin} className="space-y-4">
+            <div className="space-y-2">
+              <Label htmlFor="username">{t.es.usernameLabel}</Label>
+              <Input id="username" value={username} onChange={(e) => setUsername(e.target.value)} required />
+            </div>
+            <div className="space-y-2">
+              <Label htmlFor="password">{t.es.passwordLabel}</Label>
+              <Input id="password" type="password" value={password} onChange={(e) => setPasswordState(e.target.value)} required />
+            </div>
+            <Button type="submit" className="w-full">{t.es.loginButton}</Button>
+          </form>
+        </CardContent>
+      </Card>
     );
   }
 
   return (
-    <div className="flex min-h-screen flex-col items-center justify-center bg-background">
-      <main className="flex flex-1 flex-col items-center justify-center p-4">
-        <Card className="w-full max-w-md shadow-2xl">
-          <CardHeader className="items-center text-center">
-            <div className="mb-4"><Logo /></div>
-            <CardTitle className="font-headline text-3xl">{t.es.welcome}</CardTitle>
-            <CardDescription className="text-base">{t.es.description}</CardDescription>
-          </CardHeader>
-          <CardContent>
-            <form onSubmit={handleLogin} className="space-y-4">
-              <div className="space-y-2">
-                <Label htmlFor="username">{t.es.usernameLabel}</Label>
-                <Input id="username" value={username} onChange={(e) => setUsername(e.target.value)} required />
-              </div>
-              <div className="space-y-2">
-                <Label htmlFor="password">{t.es.passwordLabel}</Label>
-                <Input id="password" type="password" value={password} onChange={(e) => setPasswordState(e.target.value)} required />
-              </div>
-              <Button type="submit" className="w-full">{t.es.loginButton}</Button>
-            </form>
-          </CardContent>
-        </Card>
+      <main className="flex min-h-screen flex-col items-center justify-center p-4 bg-background">
+        {renderContent()}
       </main>
-    </div>
   );
 }
