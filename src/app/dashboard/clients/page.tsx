@@ -22,13 +22,51 @@ import {
 import { Label } from "@/components/ui/label";
 import { useLanguage } from "@/context/language-context";
 import type { Client } from '@/lib/types';
+import { useToast } from '@/hooks/use-toast';
 
 type SortKey = keyof Client;
 
 export default function ClientsPage() {
   const { language } = useLanguage();
+  const { toast } = useToast();
+  const [clients, setClients] = useState<Client[]>(allClients);
   const [searchTerm, setSearchTerm] = useState('');
   const [sortConfig, setSortConfig] = useState<{ key: SortKey; direction: 'ascending' | 'descending' } | null>(null);
+  const [isDialogOpen, setIsDialogOpen] = useState(false);
+  const [newClientName, setNewClientName] = useState('');
+  const [newClientContact, setNewClientContact] = useState('');
+
+
+  const handleCreateClient = () => {
+    if (!newClientName || !newClientContact) {
+      toast({
+        variant: 'destructive',
+        title: language === 'es' ? 'Campos incompletos' : 'Incomplete fields',
+        description: language === 'es' ? 'Por favor, rellena todos los campos.' : 'Please fill in all fields.',
+      });
+      return;
+    }
+
+    const newClient: Client = {
+      id: `cli-${Date.now()}`,
+      name: newClientName,
+      contact: newClientContact,
+      logoUrl: `client-logo-${(clients.length % 4) + 1}`,
+      language: 'en', 
+    };
+
+    setClients(prevClients => [...prevClients, newClient]);
+    toast({
+        title: language === 'es' ? 'Cliente Creado' : 'Client Created',
+        description: `${newClient.name} ${language === 'es' ? 'ha sido añadido.' : 'has been added.'}`,
+    });
+
+    // Reset form and close dialog
+    setNewClientName('');
+    setNewClientContact('');
+    setIsDialogOpen(false);
+  };
+
 
   const getLogo = (logoUrl: string) => {
     const image = PlaceHolderImages.find(img => img.id === logoUrl);
@@ -36,7 +74,7 @@ export default function ClientsPage() {
   }
 
   const sortedAndFilteredClients = useMemo(() => {
-    let filteredClients = allClients.filter(client =>
+    let filteredClients = clients.filter(client =>
       client.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
       client.contact.toLowerCase().includes(searchTerm.toLowerCase())
     );
@@ -53,7 +91,7 @@ export default function ClientsPage() {
       });
     }
     return filteredClients;
-  }, [allClients, searchTerm, sortConfig]);
+  }, [clients, searchTerm, sortConfig]);
 
   const requestSort = (key: SortKey) => {
     let direction: 'ascending' | 'descending' = 'ascending';
@@ -123,7 +161,7 @@ export default function ClientsPage() {
               onChange={(e) => setSearchTerm(e.target.value)}
             />
           </div>
-          <Dialog>
+          <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
             <DialogTrigger asChild>
               <Button>
                 <PlusCircle className="mr-2 h-4 w-4" /> {t[language].newClient}
@@ -139,15 +177,15 @@ export default function ClientsPage() {
               <div className="grid gap-4 py-4">
                 <div className="grid grid-cols-4 items-center gap-4">
                   <Label htmlFor="name" className="text-right">{t[language].nameLabel}</Label>
-                  <Input id="name" placeholder={t[language].namePlaceholder} className="col-span-3" />
+                  <Input id="name" placeholder={t[language].namePlaceholder} className="col-span-3" value={newClientName} onChange={(e) => setNewClientName(e.target.value)} />
                 </div>
                 <div className="grid grid-cols-4 items-center gap-4">
                   <Label htmlFor="contact" className="text-right">{t[language].contactLabel}</Label>
-                  <Input id="contact" placeholder={t[language].contactPlaceholder} className="col-span-3" />
+                  <Input id="contact" placeholder={t[language].contactPlaceholder} className="col-span-3" value={newClientContact} onChange={(e) => setNewClientContact(e.target.value)} />
                 </div>
               </div>
               <DialogFooter>
-                <Button type="submit">{t[language].createClient}</Button>
+                <Button onClick={handleCreateClient}>{t[language].createClient}</Button>
               </DialogFooter>
             </DialogContent>
           </Dialog>
