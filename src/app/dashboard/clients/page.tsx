@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useMemo } from 'react';
+import React, { useState, useMemo, useEffect } from 'react';
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
@@ -32,9 +32,54 @@ export default function ClientsPage() {
   const [clients, setClients] = useState<Client[]>(allClients);
   const [searchTerm, setSearchTerm] = useState('');
   const [sortConfig, setSortConfig] = useState<{ key: SortKey; direction: 'ascending' | 'descending' } | null>(null);
-  const [isDialogOpen, setIsDialogOpen] = useState(false);
+  
+  // State for creating a client
+  const [isCreateDialogOpen, setIsCreateDialogOpen] = useState(false);
   const [newClientName, setNewClientName] = useState('');
   const [newClientContact, setNewClientContact] = useState('');
+
+  // State for editing a client
+  const [isEditDialogOpen, setIsEditDialogOpen] = useState(false);
+  const [editingClient, setEditingClient] = useState<Client | null>(null);
+  const [editClientName, setEditClientName] = useState('');
+  const [editClientContact, setEditClientContact] = useState('');
+
+  useEffect(() => {
+    if (editingClient) {
+      setEditClientName(editingClient.name);
+      setEditClientContact(editingClient.contact);
+    }
+  }, [editingClient]);
+
+  const handleEditClick = (client: Client) => {
+    setEditingClient(client);
+    setIsEditDialogOpen(true);
+  };
+
+  const handleUpdateClient = () => {
+    if (!editingClient || !editClientName || !editClientContact) {
+      toast({
+        variant: 'destructive',
+        title: language === 'es' ? 'Campos incompletos' : 'Incomplete fields',
+        description: language === 'es' ? 'Por favor, rellena todos los campos.' : 'Please fill in all fields.',
+      });
+      return;
+    }
+
+    setClients(clients.map(c => 
+      c.id === editingClient.id 
+        ? { ...c, name: editClientName, contact: editClientContact } 
+        : c
+    ));
+
+    toast({
+      title: language === 'es' ? 'Cliente Actualizado' : 'Client Updated',
+      description: `${editClientName} ${language === 'es' ? 'ha sido actualizado.' : 'has been updated.'}`,
+    });
+
+    setEditingClient(null);
+    setIsEditDialogOpen(false);
+  };
 
 
   const handleCreateClient = () => {
@@ -64,7 +109,7 @@ export default function ClientsPage() {
     // Reset form and close dialog
     setNewClientName('');
     setNewClientContact('');
-    setIsDialogOpen(false);
+    setIsCreateDialogOpen(false);
   };
 
 
@@ -115,11 +160,14 @@ export default function ClientsPage() {
       newClient: "New Client",
       newClientTitle: "Create New Client",
       newClientDescription: "Add a new client to manage their projects and findings.",
+      editClientTitle: "Edit Client",
+      editClientDescription: "Update the client's information.",
       nameLabel: "Name",
       namePlaceholder: "Client Company Name",
       contactLabel: "Contact",
       contactPlaceholder: "contact@email.com",
       createClient: "Create Client",
+      updateClient: "Update Client",
       logoHeader: "Logo",
       nameHeader: "Name",
       contactHeader: "Contact",
@@ -133,11 +181,14 @@ export default function ClientsPage() {
       newClient: "Nuevo Cliente",
       newClientTitle: "Crear Nuevo Cliente",
       newClientDescription: "Añade un nuevo cliente para gestionar sus proyectos y hallazgos.",
+      editClientTitle: "Editar Cliente",
+      editClientDescription: "Actualiza la información del cliente.",
       nameLabel: "Nombre",
       namePlaceholder: "Nombre de la Empresa Cliente",
       contactLabel: "Contacto",
       contactPlaceholder: "contacto@email.com",
       createClient: "Crear Cliente",
+      updateClient: "Actualizar Cliente",
       logoHeader: "Logo",
       nameHeader: "Nombre",
       contactHeader: "Contacto",
@@ -161,7 +212,7 @@ export default function ClientsPage() {
               onChange={(e) => setSearchTerm(e.target.value)}
             />
           </div>
-          <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
+          <Dialog open={isCreateDialogOpen} onOpenChange={setIsCreateDialogOpen}>
             <DialogTrigger asChild>
               <Button>
                 <PlusCircle className="mr-2 h-4 w-4" /> {t[language].newClient}
@@ -225,7 +276,7 @@ export default function ClientsPage() {
                   <TableCell className="text-muted-foreground">{client.contact}</TableCell>
                   <TableCell className="text-muted-foreground uppercase">{client.language}</TableCell>
                   <TableCell className="text-right">
-                    <Button variant="ghost" size="sm">{t[language].edit}</Button>
+                    <Button variant="ghost" size="sm" onClick={() => handleEditClick(client)}>{t[language].edit}</Button>
                   </TableCell>
                 </TableRow>
               ))}
@@ -233,6 +284,32 @@ export default function ClientsPage() {
           </Table>
         </CardContent>
       </Card>
+
+      {/* Edit Client Dialog */}
+      <Dialog open={isEditDialogOpen} onOpenChange={setIsEditDialogOpen}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>{t[language].editClientTitle}</DialogTitle>
+            <DialogDescription>
+              {t[language].editClientDescription}
+            </DialogDescription>
+          </DialogHeader>
+          <div className="grid gap-4 py-4">
+            <div className="grid grid-cols-4 items-center gap-4">
+              <Label htmlFor="edit-name" className="text-right">{t[language].nameLabel}</Label>
+              <Input id="edit-name" placeholder={t[language].namePlaceholder} className="col-span-3" value={editClientName} onChange={(e) => setEditClientName(e.target.value)} />
+            </div>
+            <div className="grid grid-cols-4 items-center gap-4">
+              <Label htmlFor="edit-contact" className="text-right">{t[language].contactLabel}</Label>
+              <Input id="edit-contact" placeholder={t[language].contactPlaceholder} className="col-span-3" value={editClientContact} onChange={(e) => setEditClientContact(e.target.value)} />
+            </div>
+          </div>
+          <DialogFooter>
+            <Button onClick={handleUpdateClient}>{t[language].updateClient}</Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+
     </div>
   )
 }
