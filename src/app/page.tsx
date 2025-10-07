@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Logo } from '@/components/logo';
@@ -17,7 +17,7 @@ export default function LoginPage() {
   const router = useRouter();
   const { toast } = useToast();
   
-  const [username, setUsername] = useState('Pentester');
+  const [username, setUsername] = useState(user.name);
   const [password, setPasswordState] = useState('');
   const [newPassword, setNewPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
@@ -26,6 +26,12 @@ export default function LoginPage() {
   const [showPassword, setShowPassword] = useState(false);
   const [showNewPassword, setShowNewPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+
+  useEffect(() => {
+    if (user.name) {
+      setUsername(user.name);
+    }
+  }, [user.name]);
 
 
   const t = {
