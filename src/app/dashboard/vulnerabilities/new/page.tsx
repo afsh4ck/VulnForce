@@ -178,6 +178,57 @@ export default function NewVulnerabilityPage() {
     }
   };
 
+  const renderContentFields = (lang: 'en' | 'es') => {
+    const remediation = lang === 'en' ? vuln.remediation_en : vuln.remediation_es;
+    const langT = t[language];
+
+    return (
+        <div className="space-y-4">
+            <div className="space-y-2">
+                <Label>{langT.overview}</Label>
+                <Textarea value={lang === 'en' ? vuln.overview_en : vuln.overview_es} onChange={e => handleInputChange(lang === 'en' ? 'overview_en' : 'overview_es', e.target.value)} className="min-h-[100px] font-code" />
+            </div>
+            <div className="space-y-2">
+                <Label>{langT.technicalDescription}</Label>
+                <Textarea value={lang === 'en' ? vuln.technicalDescription_en : vuln.technicalDescription_es} onChange={e => handleInputChange(lang === 'en' ? 'technicalDescription_en' : 'technicalDescription_es', e.target.value)} className="min-h-[150px] font-code" />
+            </div>
+            <div className="space-y-2">
+                <Label>{langT.affectedComponents}</Label>
+                <Textarea value={lang === 'en' ? vuln.affectedComponents_en : vuln.affectedComponents_es} onChange={e => handleInputChange(lang === 'en' ? 'affectedComponents_en' : 'affectedComponents_es', e.target.value)} className="min-h-[80px] font-code" />
+            </div>
+            <div className="space-y-2">
+                <Label>{langT.impact}</Label>
+                <Textarea value={lang === 'en' ? vuln.impact_en : vuln.impact_es} onChange={e => handleInputChange(lang === 'en' ? 'impact_en' : 'impact_es', e.target.value)} className="min-h-[100px] font-code" />
+            </div>
+            <div className="space-y-2">
+                <Label>{langT.recommendations}</Label>
+                <Textarea value={lang === 'en' ? vuln.recommendations_en : vuln.recommendations_es} onChange={e => handleInputChange(lang === 'en' ? 'recommendations_en' : 'recommendations_es', e.target.value)} className="min-h-[100px] font-code" />
+            </div>
+             <div className="space-y-2">
+                <Label>{langT.details}</Label>
+                <Textarea value={lang === 'en' ? vuln.details_en : vuln.details_es} onChange={e => handleInputChange(lang === 'en' ? 'details_en' : 'details_es', e.target.value)} className="min-h-[150px] font-code" />
+            </div>
+            <Card>
+                <CardHeader><CardTitle>{langT.remediationTitle}</CardTitle></CardHeader>
+                <CardContent className="space-y-4">
+                     <div className="space-y-2">
+                        <Label>{langT.shortTerm}</Label>
+                        <Textarea value={remediation.shortTerm} onChange={e => handleRemediationChange(lang, 'shortTerm', e.target.value)} className="min-h-[80px] font-code" />
+                    </div>
+                     <div className="space-y-2">
+                        <Label>{langT.mediumTerm}</Label>
+                        <Textarea value={remediation.mediumTerm} onChange={e => handleRemediationChange(lang, 'mediumTerm', e.target.value)} className="min-h-[80px] font-code" />
+                    </div>
+                     <div className="space-y-2">
+                        <Label>{langT.longTerm}</Label>
+                        <Textarea value={remediation.longTerm} onChange={e => handleRemediationChange(lang, 'longTerm', e.target.value)} className="min-h-[80px] font-code" />
+                    </div>
+                </CardContent>
+            </Card>
+        </div>
+    )
+  }
+
   return (
     <div className="space-y-6">
       <header className="flex items-center justify-between">
@@ -246,94 +297,14 @@ export default function NewVulnerabilityPage() {
                 <Accordion type="multiple" defaultValue={['en-content', 'es-content']} className="w-full">
                     <AccordionItem value="en-content">
                         <AccordionTrigger className="text-lg font-semibold">{t[language].englishContent}</AccordionTrigger>
-                        <AccordionContent className="space-y-4 pt-2">
-                            <Card>
-                                <CardHeader><CardTitle>{t[language].overview}</CardTitle></CardHeader>
-                                <CardContent><Textarea value={vuln.overview_en} onChange={e => handleInputChange('overview_en', e.target.value)} className="min-h-[100px] font-code" /></CardContent>
-                            </Card>
-                            <Card>
-                                <CardHeader><CardTitle>{t[language].technicalDescription}</CardTitle></CardHeader>
-                                <CardContent><Textarea value={vuln.technicalDescription_en} onChange={e => handleInputChange('technicalDescription_en', e.target.value)} className="min-h-[150px] font-code" /></CardContent>
-                            </Card>
-                            <Card>
-                                <CardHeader><CardTitle>{t[language].affectedComponents}</CardTitle></CardHeader>
-                                <CardContent><Textarea value={vuln.affectedComponents_en} onChange={e => handleInputChange('affectedComponents_en', e.target.value)} className="min-h-[80px] font-code" /></CardContent>
-                            </Card>
-                            <Card>
-                                <CardHeader><CardTitle>{t[language].impact}</CardTitle></CardHeader>
-                                <CardContent><Textarea value={vuln.impact_en} onChange={e => handleInputChange('impact_en', e.target.value)} className="min-h-[100px] font-code" /></CardContent>
-                            </Card>
-                            <Card>
-                                <CardHeader><CardTitle>{t[language].recommendations}</CardTitle></CardHeader>
-                                <CardContent><Textarea value={vuln.recommendations_en} onChange={e => handleInputChange('recommendations_en', e.target.value)} className="min-h-[100px] font-code" /></CardContent>
-                            </Card>
-                            <Card>
-                                <CardHeader><CardTitle>{t[language].details}</CardTitle></CardHeader>
-                                <CardContent><Textarea value={vuln.details_en} onChange={e => handleInputChange('details_en', e.target.value)} className="min-h-[150px] font-code" /></CardContent>
-                            </Card>
-                            <Card>
-                                <CardHeader><CardTitle>{t[language].remediationTitle}</CardTitle></CardHeader>
-                                <CardContent className="space-y-4">
-                                    <div className="space-y-2">
-                                        <Label>{t[language].shortTerm}</Label>
-                                        <Textarea value={vuln.remediation_en.shortTerm} onChange={e => handleRemediationChange('en', 'shortTerm', e.target.value)} className="min-h-[80px] font-code" />
-                                    </div>
-                                    <div className="space-y-2">
-                                        <Label>{t[language].mediumTerm}</Label>
-                                        <Textarea value={vuln.remediation_en.mediumTerm} onChange={e => handleRemediationChange('en', 'mediumTerm', e.target.value)} className="min-h-[80px] font-code" />
-                                    </div>
-                                    <div className="space-y-2">
-                                        <Label>{t[language].longTerm}</Label>
-                                        <Textarea value={vuln.remediation_en.longTerm} onChange={e => handleRemediationChange('en', 'longTerm', e.target.value)} className="min-h-[80px] font-code" />
-                                    </div>
-                                </CardContent>
-                            </Card>
+                        <AccordionContent className="space-y-4 pt-4">
+                            {renderContentFields('en')}
                         </AccordionContent>
                     </AccordionItem>
                     <AccordionItem value="es-content">
                         <AccordionTrigger className="text-lg font-semibold">{t[language].spanishContent}</AccordionTrigger>
-                        <AccordionContent className="space-y-4 pt-2">
-                            <Card>
-                                <CardHeader><CardTitle>{t[language].overview}</CardTitle></CardHeader>
-                                <CardContent><Textarea value={vuln.overview_es} onChange={e => handleInputChange('overview_es', e.target.value)} className="min-h-[100px] font-code" /></CardContent>
-                            </Card>
-                            <Card>
-                                <CardHeader><CardTitle>{t[language].technicalDescription}</CardTitle></CardHeader>
-                                <CardContent><Textarea value={vuln.technicalDescription_es} onChange={e => handleInputChange('technicalDescription_es', e.target.value)} className="min-h-[150px] font-code" /></CardContent>
-                            </Card>
-                            <Card>
-                                <CardHeader><CardTitle>{t[language].affectedComponents}</CardTitle></CardHeader>
-                                <CardContent><Textarea value={vuln.affectedComponents_es} onChange={e => handleInputChange('affectedComponents_es', e.target.value)} className="min-h-[80px] font-code" /></CardContent>
-                            </Card>
-                             <Card>
-                                <CardHeader><CardTitle>{t[language].impact}</CardTitle></CardHeader>
-                                <CardContent><Textarea value={vuln.impact_es} onChange={e => handleInputChange('impact_es', e.target.value)} className="min-h-[100px] font-code" /></CardContent>
-                            </Card>
-                            <Card>
-                                <CardHeader><CardTitle>{t[language].recommendations}</CardTitle></CardHeader>
-                                <CardContent><Textarea value={vuln.recommendations_es} onChange={e => handleInputChange('recommendations_es', e.target.value)} className="min-h-[100px] font-code" /></CardContent>
-                            </Card>
-                            <Card>
-                                <CardHeader><CardTitle>{t[language].details}</CardTitle></CardHeader>
-                                <CardContent><Textarea value={vuln.details_es} onChange={e => handleInputChange('details_es', e.target.value)} className="min-h-[150px] font-code" /></CardContent>
-                            </Card>
-                            <Card>
-                                <CardHeader><CardTitle>{t[language].remediationTitle}</CardTitle></CardHeader>
-                                <CardContent className="space-y-4">
-                                    <div className="space-y-2">
-                                        <Label>{t[language].shortTerm}</Label>
-                                        <Textarea value={vuln.remediation_es.shortTerm} onChange={e => handleRemediationChange('es', 'shortTerm', e.target.value)} className="min-h-[80px] font-code" />
-                                    </div>
-                                    <div className="space-y-2">
-                                        <Label>{t[language].mediumTerm}</Label>
-                                        <Textarea value={vuln.remediation_es.mediumTerm} onChange={e => handleRemediationChange('es', 'mediumTerm', e.target.value)} className="min-h-[80px] font-code" />
-                                    </div>
-                                    <div className="space-y-2">
-                                        <Label>{t[language].longTerm}</Label>
-                                        <Textarea value={vuln.remediation_es.longTerm} onChange={e => handleRemediationChange('es', 'longTerm', e.target.value)} className="min-h-[80px] font-code" />
-                                    </div>
-                                </CardContent>
-                            </Card>
+                        <AccordionContent className="space-y-4 pt-4">
+                           {renderContentFields('es')}
                         </AccordionContent>
                     </AccordionItem>
                 </Accordion>
