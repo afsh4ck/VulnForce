@@ -13,7 +13,7 @@ import { Progress } from '@/components/ui/progress';
 import { Eye, EyeOff } from 'lucide-react';
 
 export default function LoginPage() {
-  const { user, login, setPassword, hasPassword } = useUser();
+  const { user, login, setPassword, hasPassword, forgotPassword } = useUser();
   const router = useRouter();
   const { toast } = useToast();
   
@@ -50,6 +50,8 @@ export default function LoginPage() {
       passwordStrengthStrong: "Fuerte",
       passwordStrengthVeryStrong: "Muy Fuerte",
       passwordLengthError: "La contraseña debe tener al menos 8 caracteres.",
+      forgotPassword: "¿Olvidaste tu contraseña?",
+      passwordReset: "Contraseña reiniciada. Por favor, establece una nueva.",
     }
   }
 
@@ -122,6 +124,13 @@ export default function LoginPage() {
     toast({ title: t.es.passwordSetSuccess });
   };
 
+  const handleForgotPassword = () => {
+    forgotPassword();
+    toast({
+      title: t.es.passwordReset,
+    });
+  };
+
   if (!hasPassword()) {
       return (
         <main className="flex min-h-screen flex-col items-center justify-center p-4 bg-background">
@@ -192,7 +201,12 @@ export default function LoginPage() {
               <Input id="username" value={username} onChange={(e) => setUsername(e.target.value)} required />
             </div>
             <div className="space-y-2">
-              <Label htmlFor="password">{t.es.passwordLabel}</Label>
+                <div className="flex items-center justify-between">
+                    <Label htmlFor="password">{t.es.passwordLabel}</Label>
+                     <Button variant="link" type="button" onClick={handleForgotPassword} className="p-0 h-auto text-xs">
+                        {t.es.forgotPassword}
+                    </Button>
+                </div>
                <div className="relative">
                 <Input id="password" type={showPassword ? 'text' : 'password'} value={password} onChange={(e) => setPasswordState(e.target.value)} required />
                   <div className="absolute inset-y-0 right-0 pr-3 flex items-center">

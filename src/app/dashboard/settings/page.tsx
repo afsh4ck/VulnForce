@@ -1,7 +1,7 @@
 'use client';
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { FileDown, FileUp, Languages, Moon, Sun, KeyRound } from "lucide-react";
+import { FileDown, FileUp, Languages, Moon, Sun, KeyRound, Eye, EyeOff } from "lucide-react";
 import { clients, projects, findings, vulnerabilities } from '@/lib/data';
 import { useToast } from "@/hooks/use-toast";
 import { Input } from "@/components/ui/input";
@@ -34,6 +34,11 @@ export default function SettingsPage() {
   const [currentPassword, setCurrentPassword] = useState('');
   const [newPassword, setNewPassword] = useState('');
   const [confirmNewPassword, setConfirmNewPassword] = useState('');
+
+  const [showCurrentPassword, setShowCurrentPassword] = useState(false);
+  const [showNewPassword, setShowNewPassword] = useState(false);
+  const [showConfirmNewPassword, setShowConfirmNewPassword] = useState(false);
+
 
   const t = {
     en: {
@@ -263,16 +268,43 @@ export default function SettingsPage() {
             <CardContent className="space-y-4">
                 <div className="space-y-2">
                     <Label htmlFor="current-password">{t[language].currentPasswordLabel}</Label>
-                    <Input id="current-password" type="password" value={currentPassword} onChange={(e) => setCurrentPassword(e.target.value)} />
+                    <div className="relative">
+                        <Input id="current-password" type={showCurrentPassword ? 'text' : 'password'} value={currentPassword} onChange={(e) => setCurrentPassword(e.target.value)} />
+                        <div className="absolute inset-y-0 right-0 pr-3 flex items-center">
+                            {showCurrentPassword ? (
+                                <EyeOff className="h-5 w-5 text-gray-400 cursor-pointer" onClick={() => setShowCurrentPassword(false)} />
+                            ) : (
+                                <Eye className="h-5 w-5 text-gray-400 cursor-pointer" onClick={() => setShowCurrentPassword(true)} />
+                            )}
+                        </div>
+                    </div>
                 </div>
                 <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
                     <div className="space-y-2">
                         <Label htmlFor="new-password">{t[language].newPasswordLabel}</Label>
-                        <Input id="new-password" type="password" value={newPassword} onChange={(e) => setNewPassword(e.target.value)} />
+                         <div className="relative">
+                            <Input id="new-password" type={showNewPassword ? 'text' : 'password'} value={newPassword} onChange={(e) => setNewPassword(e.target.value)} />
+                            <div className="absolute inset-y-0 right-0 pr-3 flex items-center">
+                                {showNewPassword ? (
+                                    <EyeOff className="h-5 w-5 text-gray-400 cursor-pointer" onClick={() => setShowNewPassword(false)} />
+                                ) : (
+                                    <Eye className="h-5 w-5 text-gray-400 cursor-pointer" onClick={() => setShowNewPassword(true)} />
+                                )}
+                            </div>
+                        </div>
                     </div>
                     <div className="space-y-2">
                         <Label htmlFor="confirm-new-password">{t[language].confirmNewPasswordLabel}</Label>
-                        <Input id="confirm-new-password" type="password" value={confirmNewPassword} onChange={(e) => setConfirmNewPassword(e.target.value)} />
+                        <div className="relative">
+                            <Input id="confirm-new-password" type={showConfirmNewPassword ? 'text' : 'password'} value={confirmNewPassword} onChange={(e) => setConfirmNewPassword(e.target.value)} />
+                            <div className="absolute inset-y-0 right-0 pr-3 flex items-center">
+                                {showConfirmNewPassword ? (
+                                    <EyeOff className="h-5 w-5 text-gray-400 cursor-pointer" onClick={() => setShowConfirmNewPassword(false)} />
+                                ) : (
+                                    <Eye className="h-5 w-5 text-gray-400 cursor-pointer" onClick={() => setShowConfirmNewPassword(true)} />
+                                )}
+                            </div>
+                        </div>
                     </div>
                 </div>
                  <div className="flex justify-end">

@@ -32,6 +32,7 @@ interface UserContextType {
   setPassword: (name: string, pass: string) => void;
   hasPassword: () => boolean;
   changePassword: (oldPass: string, newPass: string) => boolean;
+  forgotPassword: () => void;
 }
 
 const UserContext = createContext<UserContextType | undefined>(undefined);
@@ -82,6 +83,9 @@ export function UserProvider({ children }: { children: ReactNode }) {
   };
 
   const login = (name: string, pass: string): boolean => {
+    if (!hasPassword()) {
+        return false;
+    }
     const passHash = simpleHash(pass);
     if (user.name.toLowerCase() === name.toLowerCase() && user.passwordHash === passHash) {
       sessionStorage.setItem('vulnforce-authenticated', 'true');
@@ -109,6 +113,13 @@ export function UserProvider({ children }: { children: ReactNode }) {
     return true;
   }
   
+  const forgotPassword = () => {
+    const updatedUser = { ...user };
+    delete updatedUser.passwordHash;
+    localStorage.setItem('vulnforce-user', JSON.stringify(updatedUser));
+    setUserState(updatedUser);
+  };
+
   const hasPassword = () => !!user.passwordHash;
   
   if (!isLoaded) {
@@ -116,7 +127,7 @@ export function UserProvider({ children }: { children: ReactNode }) {
   }
 
   return (
-    <UserContext.Provider value={{ user, setUser, logout, login, setPassword, hasPassword, changePassword }}>
+    <UserContext.Provider value={{ user, setUser, logout, login, setPassword, hasPassword, changePassword, forgotPassword }}>
       {children}
     </UserContext.Provider>
   );
