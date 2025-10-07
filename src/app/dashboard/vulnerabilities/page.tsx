@@ -41,13 +41,13 @@ export default function VulnerabilitiesPage() {
   const [vulnerabilities, setVulnerabilities] = useState(allVulnerabilities);
   const [vulnerabilityToDelete, setVulnerabilityToDelete] = useState<Vulnerability | null>(null);
 
-  const getSeverityVariant = (severity: string) => {
+  const getSeverityVariant = (severity: string): 'destructive' | 'high' | 'medium' | 'low' | 'secondary' => {
     switch (severity) {
       case 'Critical': return 'destructive';
-      case 'High': return 'destructive';
-      case 'Medium': return 'default';
-      case 'Low': return 'secondary';
-      default: return 'outline';
+      case 'High': return 'high';
+      case 'Medium': return 'medium';
+      case 'Low': return 'low';
+      default: return 'secondary';
     }
   }
 
@@ -234,7 +234,7 @@ export default function VulnerabilitiesPage() {
                      </Link>
                   </TableCell>
                   <TableCell>
-                    <Badge variant={getSeverityVariant(vuln.severity) as any}>{vuln.severity}</Badge>
+                    <Badge variant={getSeverityVariant(vuln.severity)}>{vuln.severity}</Badge>
                   </TableCell>
                   <TableCell>{vuln.cvss.score.toFixed(1)}</TableCell>
                   <TableCell className="font-code text-sm text-muted-foreground">{vuln.cwe}</TableCell>

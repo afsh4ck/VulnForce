@@ -65,13 +65,13 @@ export default function ReportPreviewPage() {
     },
   };
 
-  const getSeverityVariant = (severity: string) => {
+  const getSeverityVariant = (severity: string): 'destructive' | 'high' | 'medium' | 'low' | 'secondary' => {
     switch (severity) {
       case 'Critical': return 'destructive';
-      case 'High': return 'destructive';
-      case 'Medium': return 'default';
-      case 'Low': return 'secondary';
-      default: return 'outline';
+      case 'High': return 'high';
+      case 'Medium': return 'medium';
+      case 'Low': return 'low';
+      default: return 'secondary';
     }
   };
 
@@ -168,7 +168,7 @@ export default function ReportPreviewPage() {
                 <div key={finding.id} className="break-after-page">
                   <div className="flex justify-between items-center mb-2">
                     <h3 className="font-headline text-xl font-bold">{index + 1}. {finding.title}</h3>
-                    <Badge variant={getSeverityVariant(finding.severity) as any} className="text-base px-3 py-1">{finding.severity}</Badge>
+                    <Badge variant={getSeverityVariant(finding.severity)} className="text-base px-3 py-1">{finding.severity}</Badge>
                   </div>
                   <p className="font-code text-sm text-muted-foreground mb-6">CVSS: {finding.cvss.toFixed(1)}</p>
                   <Separator className="my-6" />

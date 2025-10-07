@@ -64,13 +64,13 @@ export default function ProjectDetailsPage({ params }: { params: { id: string } 
     router.push('/dashboard/projects');
   };
 
-  const getSeverityVariant = (severity: string) => {
+  const getSeverityVariant = (severity: string): 'destructive' | 'high' | 'medium' | 'low' | 'secondary' => {
     switch (severity) {
       case 'Critical': return 'destructive';
-      case 'High': return 'destructive';
-      case 'Medium': return 'default';
-      case 'Low': return 'secondary';
-      default: return 'outline';
+      case 'High': return 'high';
+      case 'Medium': return 'medium';
+      case 'Low': return 'low';
+      default: return 'secondary';
     }
   }
 
@@ -326,7 +326,7 @@ export default function ProjectDetailsPage({ params }: { params: { id: string } 
                         <Link href={`/dashboard/projects/${project.id}/findings/${finding.id}`} className="hover:underline">{finding.title}</Link>
                         </TableCell>
                         <TableCell>
-                        <Badge variant={getSeverityVariant(finding.severity) as any}>{finding.severity}</Badge>
+                        <Badge variant={getSeverityVariant(finding.severity)}>{finding.severity}</Badge>
                         </TableCell>
                         <TableCell>{finding.cvss.toFixed(1)}</TableCell>
                     </TableRow>
