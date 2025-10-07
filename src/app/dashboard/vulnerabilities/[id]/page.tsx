@@ -1,8 +1,9 @@
+
 'use client';
 
 import { useState, useEffect } from 'react';
-import { notFound, useParams } from 'next/navigation';
-import { vulnerabilities } from '@/lib/data';
+import { useParams, useRouter } from 'next/navigation';
+import { vulnerabilities as allVulnerabilities, updateVulnerability, addVulnerability } from '@/lib/data';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
@@ -20,12 +21,15 @@ import {
   AccordionItem,
   AccordionTrigger,
 } from "@/components/ui/accordion"
+import { useData } from '@/context/data-context';
 
 export default function VulnerabilityEditorPage() {
   const params = useParams();
+  const router = useRouter();
   const { id } = params;
   const { toast } = useToast();
   const { language } = useLanguage();
+  const { vulnerabilities, updateVulnerability } = useData();
 
   const [vuln, setVuln] = useState<Vulnerability | null>(null);
 
@@ -34,9 +38,9 @@ export default function VulnerabilityEditorPage() {
     if (vulnerability) {
       setVuln(JSON.parse(JSON.stringify(vulnerability))); // Deep copy to avoid direct state mutation
     } else {
-      notFound();
+      router.push('/dashboard/vulnerabilities');
     }
-  }, [id]);
+  }, [id, vulnerabilities, router]);
 
   const handleInputChange = <T extends keyof Vulnerability>(field: T, value: Vulnerability[T]) => {
     if (vuln) {
@@ -60,11 +64,13 @@ export default function VulnerabilityEditorPage() {
   }
 
   const handleSave = () => {
-    console.log("Saving vulnerability:", vuln);
-    toast({
-      title: t[language].saveSuccessTitle,
-      description: t[language].saveSuccessDescription,
-    });
+    if (vuln) {
+        updateVulnerability(vuln);
+        toast({
+        title: t[language].saveSuccessTitle,
+        description: t[language].saveSuccessDescription,
+        });
+    }
   };
 
   const t = {

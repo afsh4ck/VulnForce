@@ -1,7 +1,8 @@
+
 'use client';
 
 import { useState, useEffect } from 'react';
-import { notFound, useParams, useRouter } from 'next/navigation';
+import { useParams, useRouter } from 'next/navigation';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
@@ -59,12 +60,12 @@ export default function FindingEditorPage() {
         setContentEn(prev => ({ ...prev, overview: finding.markdown }));
         setContentEs(prev => ({ ...prev, overview: finding.markdown }));
       } else {
-        notFound();
+        router.push(`/dashboard/projects/${projectId}`);
       }
     } else {
       setTitle(language === 'es' ? 'Nuevo Hallazgo' : 'New Finding');
     }
-  }, [findingId, projectId, language, findings]);
+  }, [findingId, projectId, language, findings, router]);
 
 
   const handleSave = () => {

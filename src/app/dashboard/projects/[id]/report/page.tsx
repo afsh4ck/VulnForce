@@ -1,18 +1,19 @@
 
 'use client';
 
-import { notFound, useParams, useRouter } from 'next/navigation';
-import { projects, clients, findings as allFindings } from '@/lib/data';
+import { useParams, useRouter } from 'next/navigation';
 import { MarkdownPreview } from '@/components/markdown-preview';
 import { Badge } from '@/components/ui/badge';
 import { Separator } from '@/components/ui/separator';
 import { Logo } from '@/components/logo';
-import React, { useMemo } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import { Button } from '@/components/ui/button';
-import { AlertCircle, ArrowRight, CheckCircle, Download, Printer } from 'lucide-react';
+import { AlertCircle, ArrowRight, CheckCircle, Printer } from 'lucide-react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import Link from 'next/link';
 import { useLanguage } from '@/context/language-context';
+import { useData } from '@/context/data-context';
+import type { Finding, Project, Client } from '@/lib/types';
 
 interface TodoItem {
   location: string;
@@ -25,14 +26,23 @@ export default function ReportPreviewPage() {
   const router = useRouter();
   const { language } = useLanguage();
   const { id: projectId } = params;
+  const { projects, clients, findings } = useData();
 
-  const project = projects.find(p => p.id === projectId);
-  if (!project) {
-    notFound();
-  }
+  const [project, setProject] = useState<Project | undefined>();
+  const [client, setClient] = useState<Client | undefined>();
+  const [projectFindings, setProjectFindings] = useState<Finding[]>([]);
 
-  const client = clients.find(c => c.id === project.clientId);
-  const projectFindings = allFindings.filter(f => f.projectId === project.id);
+  useEffect(() => {
+    const currentProject = projects.find(p => p.id === projectId);
+    if (currentProject) {
+      setProject(currentProject);
+      setClient(clients.find(c => c.id === currentProject.clientId));
+      setProjectFindings(findings.filter(f => f.projectId === currentProject.id));
+    } else {
+      router.push('/dashboard/projects'); // Redirect if project not found
+    }
+  }, [projectId, projects, clients, findings, router]);
+  
 
   const t = {
     en: {
@@ -76,6 +86,7 @@ export default function ReportPreviewPage() {
   };
 
   const todos = useMemo(() => {
+    if (!project) return [];
     const foundTodos: TodoItem[] = [];
     const todoRegex = /TODO/g;
 
@@ -100,11 +111,15 @@ export default function ReportPreviewPage() {
     });
 
     return foundTodos;
-  }, [project, projectFindings, language]);
+  }, [project, projectFindings, language, projectId, t]);
 
   const handlePrint = () => {
     window.print();
   };
+  
+  if (!project) {
+    return null; // or a loading spinner
+  }
 
   return (
     <div className="bg-background text-foreground min-h-screen">
@@ -221,4 +236,3 @@ export default function ReportPreviewPage() {
     </div>
   );
 }
-

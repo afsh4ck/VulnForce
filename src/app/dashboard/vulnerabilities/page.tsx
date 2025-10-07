@@ -1,3 +1,4 @@
+
 'use client';
 
 import React, { useState, useMemo } from 'react';
@@ -13,7 +14,6 @@ import {
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent } from "@/components/ui/card";
 import { Search, PlusCircle, ArrowUpDown, Edit, Trash2 } from "lucide-react";
-import { vulnerabilities as allVulnerabilities } from "@/lib/data";
 import { useLanguage } from "@/context/language-context";
 import Link from 'next/link';
 import { Button } from "@/components/ui/button";
@@ -21,6 +21,7 @@ import type { Vulnerability, Severity } from '@/lib/types';
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from '@/components/ui/alert-dialog';
 import { useToast } from '@/hooks/use-toast';
 import { useRouter } from 'next/navigation';
+import { useData } from '@/context/data-context';
 
 type SortKey = keyof Vulnerability | 'cvssScore';
 
@@ -28,9 +29,9 @@ export default function VulnerabilitiesPage() {
   const { language } = useLanguage();
   const { toast } = useToast();
   const router = useRouter();
+  const { vulnerabilities, deleteVulnerability } = useData();
   const [searchTerm, setSearchTerm] = useState('');
   const [sortConfig, setSortConfig] = useState<{ key: SortKey; direction: 'ascending' | 'descending' } | null>(null);
-  const [vulnerabilities, setVulnerabilities] = useState(allVulnerabilities);
   const [vulnerabilityToDelete, setVulnerabilityToDelete] = useState<Vulnerability | null>(null);
 
   const getSeverityVariant = (severity: string): 'destructive' | 'high' | 'medium' | 'low' | 'secondary' => {
@@ -45,7 +46,7 @@ export default function VulnerabilitiesPage() {
 
   const handleDeleteVulnerability = () => {
     if (!vulnerabilityToDelete) return;
-    setVulnerabilities(vulnerabilities.filter(v => v.id !== vulnerabilityToDelete.id));
+    deleteVulnerability(vulnerabilityToDelete.id);
     toast({ title: t[language].vulnerabilityDeleted });
     setVulnerabilityToDelete(null);
   };
