@@ -20,6 +20,7 @@ import { useSearchParams, useRouter } from "next/navigation";
 import { useToast } from "@/hooks/use-toast";
 import { useData } from "@/context/data-context";
 import type { Project } from "@/lib/types";
+import { DateRange } from "react-day-picker";
 
 
 export default function NewProjectPage() {
@@ -32,8 +33,7 @@ export default function NewProjectPage() {
   const [name, setName] = useState('');
   const [clientId, setClientId] = useState<string>('');
   const [scope, setScope] = useState('');
-  const [startDate, setStartDate] = React.useState<Date>();
-  const [endDate, setEndDate] = React.useState<Date>();
+  const [date, setDate] = React.useState<DateRange | undefined>();
   const [templateId, setTemplateId] = useState<string | null>(searchParams.get('template'));
   const [projectLanguage, setProjectLanguage] = useState<Project['language']>('es');
 
@@ -58,7 +58,7 @@ export default function NewProjectPage() {
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    if (!name || !clientId || !scope || !startDate || !endDate) {
+    if (!name || !clientId || !scope || !date?.from || !date?.to) {
       toast({
         variant: 'destructive',
         title: uiLanguage === 'es' ? 'Campos Incompletos' : 'Incomplete Fields',
@@ -71,8 +71,8 @@ export default function NewProjectPage() {
       clientId,
       name,
       scope,
-      startDate: format(startDate, 'yyyy-MM-dd'),
-      endDate: format(endDate, 'yyyy-MM-dd'),
+      startDate: format(date.from, 'yyyy-MM-dd'),
+      endDate: format(date.to, 'yyyy-MM-dd'),
       status: 'In Progress' as const,
       language: projectLanguage,
     };
@@ -97,8 +97,7 @@ export default function NewProjectPage() {
         selectClient: "Select a client",
         scopeLabel: "Scope",
         scopePlaceholder: "e.g., *.example.com, 192.168.1.0/24",
-        startDateLabel: "Start Date",
-        endDateLabel: "End Date",
+        datesLabel: "Project Dates",
         createProject: "Create Project",
         cancel: "Cancel",
         importTemplate: "Import from Template",
@@ -117,8 +116,7 @@ export default function NewProjectPage() {
         selectClient: "Selecciona un cliente",
         scopeLabel: "Alcance",
         scopePlaceholder: "p.ej., *.ejemplo.com, 192.168.1.0/24",
-        startDateLabel: "Fecha de Inicio",
-        endDateLabel: "Fecha de Fin",
+        datesLabel: "Fechas del Proyecto",
         createProject: "Crear Proyecto",
         cancel: "Cancelar",
         importTemplate: "Importar desde Plantilla",
@@ -189,59 +187,45 @@ export default function NewProjectPage() {
                 <Label htmlFor="scope">{t[uiLanguage].scopeLabel}</Label>
                 <Textarea id="scope" placeholder={t[uiLanguage].scopePlaceholder} className="font-code min-h-[120px]" value={scope} onChange={e => setScope(e.target.value)} required />
             </div>
-            <div className="grid grid-cols-2 gap-4">
-                <div className="space-y-2">
-                    <Label>{t[uiLanguage].startDateLabel}</Label>
-                     <Popover>
-                        <PopoverTrigger asChild>
-                        <Button
-                            variant={"outline"}
-                            className={cn(
-                            "w-full justify-start text-left font-normal",
-                            !startDate && "text-muted-foreground"
-                            )}
-                        >
-                            <CalendarIcon className="mr-2 h-4 w-4" />
-                            {startDate ? format(startDate, "PPP", { locale: uiLanguage === 'es' ? es : undefined }) : <span>Pick a date</span>}
-                        </Button>
-                        </PopoverTrigger>
-                        <PopoverContent className="w-auto p-0">
-                        <Calendar
-                            mode="single"
-                            selected={startDate}
-                            onSelect={setStartDate}
-                            initialFocus
-                            locale={uiLanguage === 'es' ? es : undefined}
-                        />
-                        </PopoverContent>
-                    </Popover>
-                </div>
-                 <div className="space-y-2">
-                    <Label>{t[uiLanguage].endDateLabel}</Label>
-                     <Popover>
-                        <PopoverTrigger asChild>
-                        <Button
-                            variant={"outline"}
-                            className={cn(
-                            "w-full justify-start text-left font-normal",
-                            !endDate && "text-muted-foreground"
-                            )}
-                        >
-                            <CalendarIcon className="mr-2 h-4 w-4" />
-                            {endDate ? format(endDate, "PPP", { locale: uiLanguage === 'es' ? es : undefined }) : <span>Pick a date</span>}
-                        </Button>
-                        </PopoverTrigger>
-                        <PopoverContent className="w-auto p-0">
-                        <Calendar
-                            mode="single"
-                            selected={endDate}
-                            onSelect={setEndDate}
-                            initialFocus
-                            locale={uiLanguage === 'es' ? es : undefined}
-                        />
-                        </PopoverContent>
-                    </Popover>
-                </div>
+            <div className="space-y-2">
+                <Label>{t[uiLanguage].datesLabel}</Label>
+                 <Popover>
+                    <PopoverTrigger asChild>
+                    <Button
+                        id="date"
+                        variant={"outline"}
+                        className={cn(
+                        "w-full justify-start text-left font-normal",
+                        !date && "text-muted-foreground"
+                        )}
+                    >
+                        <CalendarIcon className="mr-2 h-4 w-4" />
+                        {date?.from ? (
+                        date.to ? (
+                            <>
+                            {format(date.from, "LLL dd, y", { locale: uiLanguage === 'es' ? es : undefined })} -{" "}
+                            {format(date.to, "LLL dd, y", { locale: uiLanguage === 'es' ? es : undefined })}
+                            </>
+                        ) : (
+                            format(date.from, "LLL dd, y", { locale: uiLanguage === 'es' ? es : undefined })
+                        )
+                        ) : (
+                        <span>Pick a date</span>
+                        )}
+                    </Button>
+                    </PopoverTrigger>
+                    <PopoverContent className="w-auto p-0" align="start">
+                    <Calendar
+                        initialFocus
+                        mode="range"
+                        defaultMonth={date?.from}
+                        selected={date}
+                        onSelect={setDate}
+                        numberOfMonths={2}
+                        locale={uiLanguage === 'es' ? es : undefined}
+                    />
+                    </PopoverContent>
+                </Popover>
             </div>
              <div className="flex justify-end gap-2 pt-4">
                 <Button variant="outline" asChild><Link href="/dashboard/projects">{t[uiLanguage].cancel}</Link></Button>

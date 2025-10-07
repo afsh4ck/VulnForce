@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useState, useMemo, useEffect } from 'react';
-import { notFound, useRouter, useParams } from "next/navigation";
+import { useRouter, useParams } from "next/navigation";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -26,6 +26,7 @@ import { cn } from '@/lib/utils';
 import { format } from 'date-fns';
 import { es } from 'date-fns/locale';
 import { useData } from '@/context/data-context';
+import { DateRange } from 'react-day-picker';
 
 
 type SortKey = keyof Finding;
@@ -36,47 +37,45 @@ export default function ProjectDetailsPage() {
   const { toast } = useToast();
   const { projects, clients, findings, updateProject, deleteProject: removeProject } = useData();
 
-  const [project, setProject] = useState(() => projects.find(p => p.id === params.id));
+  const [project, setProject] = useState<Project | undefined>();
   const { language } = useLanguage();
   const [sortConfig, setSortConfig] = useState<{ key: SortKey; direction: 'ascending' | 'descending' } | null>(null);
   const [isEditingScope, setIsEditingScope] = useState(false);
-  const [scopeContent, setScopeContent] = useState(project?.scope || '');
+  const [scopeContent, setScopeContent] = useState('');
   
   // Edit Dialog State
   const [isEditDialogOpen, setIsEditDialogOpen] = useState(false);
   const [editName, setEditName] = useState('');
   const [editClientId, setEditClientId] = useState('');
-  const [editStartDate, setEditStartDate] = useState<Date | undefined>();
-  const [editEndDate, setEditEndDate] = useState<Date | undefined>();
+  const [editDate, setEditDate] = useState<DateRange | undefined>();
   const [editStatus, setEditStatus] = useState<Project['status']>('In Progress');
   const [editLanguage, setEditLanguage] = useState<Project['language']>('en');
 
   useEffect(() => {
     const currentProject = projects.find(p => p.id === params.id);
-    setProject(currentProject);
-  }, [params.id, projects]);
-  
-  useEffect(() => {
-    if (project) {
-        setScopeContent(project.scope);
-        setEditName(project.name);
-        setEditClientId(project.clientId);
-        setEditStartDate(new Date(project.startDate));
-        setEditEndDate(new Date(project.endDate));
-        setEditStatus(project.status);
-        setEditLanguage(project.language);
+    if (!currentProject) {
+        router.push('/dashboard/projects');
+        return;
     }
-  }, [project]);
+    setProject(currentProject);
+    setScopeContent(currentProject.scope);
+    setEditName(currentProject.name);
+    setEditClientId(currentProject.clientId);
+    setEditDate({ from: new Date(currentProject.startDate), to: new Date(currentProject.endDate) });
+    setEditStatus(currentProject.status);
+    setEditLanguage(currentProject.language);
+  }, [params.id, projects, router]);
+  
 
   if (!project) {
-    notFound();
+    return null; // Or a loading spinner while redirecting
   }
 
   const client = clients.find(c => c.id === project.clientId);
   const projectFindings = findings.filter(f => f.projectId === project.id);
   
   const handleUpdateProject = () => {
-    if (!project || !editName || !editClientId || !editStartDate || !editEndDate) {
+    if (!project || !editName || !editClientId || !editDate?.from || !editDate?.to) {
         toast({
             variant: "destructive",
             title: t[language].incompleteFields,
@@ -89,8 +88,8 @@ export default function ProjectDetailsPage() {
         ...project,
         name: editName,
         clientId: editClientId,
-        startDate: format(editStartDate, 'yyyy-MM-dd'),
-        endDate: format(editEndDate, 'yyyy-MM-dd'),
+        startDate: format(editDate.from, 'yyyy-MM-dd'),
+        endDate: format(editDate.to, 'yyyy-MM-dd'),
         status: editStatus,
         language: editLanguage,
     };
@@ -161,8 +160,7 @@ export default function ProjectDetailsPage() {
       projectDetails: "Project Details",
       client: "Client",
       projectName: "Project Name",
-      startDate: "Start Date",
-      endDate: "End Date",
+      dates: "Dates",
       inProgress: "In Progress",
       completed: "Completed",
       onHold: "On Hold",
@@ -196,8 +194,7 @@ export default function ProjectDetailsPage() {
       projectDetails: "Detalles del Proyecto",
       client: "Cliente",
       projectName: "Nombre del Proyecto",
-      startDate: "Fecha de Inicio",
-      endDate: "Fecha de Fin",
+      dates: "Fechas",
       inProgress: "En Progreso",
       completed: "Completado",
       onHold: "En Espera",
@@ -292,41 +289,45 @@ export default function ProjectDetailsPage() {
                                 </SelectContent>
                             </Select>
                         </div>
-                         <div className="grid grid-cols-2 gap-4">
-                            <div className="space-y-2">
-                                <Label>{t[language].startDate}</Label>
-                                <Popover>
-                                    <PopoverTrigger asChild>
-                                    <Button
-                                        variant={"outline"}
-                                        className={cn("w-full justify-start text-left font-normal", !editStartDate && "text-muted-foreground")}
-                                    >
-                                        <CalendarIcon className="mr-2 h-4 w-4" />
-                                        {editStartDate ? format(editStartDate, "PPP", { locale: language === 'es' ? es : undefined }) : <span>Pick a date</span>}
-                                    </Button>
-                                    </PopoverTrigger>
-                                    <PopoverContent className="w-auto p-0">
-                                    <Calendar locale={language === 'es' ? es : undefined} mode="single" selected={editStartDate} onSelect={setEditStartDate} initialFocus />
-                                    </PopoverContent>
-                                </Popover>
-                            </div>
-                            <div className="space-y-2">
-                                <Label>{t[language].endDate}</Label>
-                                <Popover>
-                                    <PopoverTrigger asChild>
-                                    <Button
-                                        variant={"outline"}
-                                        className={cn("w-full justify-start text-left font-normal", !editEndDate && "text-muted-foreground")}
-                                    >
-                                        <CalendarIcon className="mr-2 h-4 w-4" />
-                                        {editEndDate ? format(editEndDate, "PPP", { locale: language === 'es' ? es : undefined }) : <span>Pick a date</span>}
-                                    </Button>
-                                    </PopoverTrigger>
-                                    <PopoverContent className="w-auto p-0">
-                                    <Calendar locale={language === 'es' ? es : undefined} mode="single" selected={editEndDate} onSelect={setEditEndDate} initialFocus />
-                                    </PopoverContent>
-                                </Popover>
-                            </div>
+                         <div className="space-y-2">
+                            <Label>{t[language].dates}</Label>
+                            <Popover>
+                                <PopoverTrigger asChild>
+                                <Button
+                                    id="date"
+                                    variant={"outline"}
+                                    className={cn(
+                                    "w-full justify-start text-left font-normal",
+                                    !editDate && "text-muted-foreground"
+                                    )}
+                                >
+                                    <CalendarIcon className="mr-2 h-4 w-4" />
+                                    {editDate?.from ? (
+                                    editDate.to ? (
+                                        <>
+                                        {format(editDate.from, "LLL dd, y", { locale: language === 'es' ? es : undefined })} -{" "}
+                                        {format(editDate.to, "LLL dd, y", { locale: language === 'es' ? es : undefined })}
+                                        </>
+                                    ) : (
+                                        format(editDate.from, "LLL dd, y", { locale: language === 'es' ? es : undefined })
+                                    )
+                                    ) : (
+                                    <span>Pick a date</span>
+                                    )}
+                                </Button>
+                                </PopoverTrigger>
+                                <PopoverContent className="w-auto p-0" align="start">
+                                <Calendar
+                                    initialFocus
+                                    mode="range"
+                                    defaultMonth={editDate?.from}
+                                    selected={editDate}
+                                    onSelect={setEditDate}
+                                    numberOfMonths={2}
+                                    locale={language === 'es' ? es : undefined}
+                                />
+                                </PopoverContent>
+                            </Popover>
                         </div>
                          <div className="space-y-2">
                             <Label htmlFor="status">{t[language].status}</Label>
