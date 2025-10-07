@@ -6,7 +6,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { useLanguage } from "@/context/language-context";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { clients } from "@/lib/data";
+import { clients, projects } from "@/lib/data";
 import { projectTemplates } from "@/lib/templates";
 import { Textarea } from "@/components/ui/textarea";
 import { Calendar } from "@/components/ui/calendar";
@@ -16,19 +16,24 @@ import { cn } from "@/lib/utils";
 import { format } from "date-fns";
 import React, { useEffect, useState } from "react";
 import Link from "next/link";
-import { useSearchParams } from "next/navigation";
+import { useSearchParams, useRouter } from "next/navigation";
+import { useToast } from "@/hooks/use-toast";
 
 
 export default function NewProjectPage() {
   const { language } = useLanguage();
   const searchParams = useSearchParams();
+  const router = useRouter();
+  const { toast } = useToast();
+
   const [name, setName] = useState('');
+  const [clientId, setClientId] = useState<string>('');
   const [scope, setScope] = useState('');
   const [startDate, setStartDate] = React.useState<Date>();
   const [endDate, setEndDate] = React.useState<Date>();
+  const [templateId, setTemplateId] = useState<string | null>(searchParams.get('template'));
 
   useEffect(() => {
-    const templateId = searchParams.get('template');
     if (templateId) {
       const template = projectTemplates.find(t => t.id === templateId);
       if (template) {
@@ -36,7 +41,49 @@ export default function NewProjectPage() {
         setScope(template.scope);
       }
     }
-  }, [searchParams, language]);
+  }, [templateId, language]);
+
+  const handleTemplateChange = (newTemplateId: string) => {
+    const template = projectTemplates.find(t => t.id === newTemplateId);
+    if (template) {
+        setTemplateId(newTemplateId);
+        setName(language === 'es' ? template.name_es : template.name_en);
+        setScope(template.scope);
+    }
+  }
+
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!name || !clientId || !scope || !startDate || !endDate) {
+      toast({
+        variant: 'destructive',
+        title: language === 'es' ? 'Campos Incompletos' : 'Incomplete Fields',
+        description: language === 'es' ? 'Por favor, rellena todos los campos.' : 'Please fill in all fields.',
+      });
+      return;
+    }
+
+    const newProject = {
+      id: `proj-${Date.now()}`,
+      clientId,
+      name,
+      scope,
+      startDate: format(startDate, 'yyyy-MM-dd'),
+      endDate: format(endDate, 'yyyy-MM-dd'),
+      status: 'In Progress' as const,
+    };
+
+    // In a real app, you would send this to an API
+    // For now, we just add it to the mock data. This won't persist.
+    projects.push(newProject); 
+    
+    toast({
+      title: language === 'es' ? 'Proyecto Creado' : 'Project Created',
+      description: `${name} ${language === 'es' ? 'ha sido creado.' : 'has been created.'}`
+    });
+
+    router.push('/dashboard/projects');
+  };
 
   const t = {
     en: {
@@ -80,16 +127,11 @@ export default function NewProjectPage() {
         <p className="text-muted-foreground">{t[language].description}</p>
       </div>
       <Card>
-        <CardContent className="pt-6 space-y-4">
+        <CardContent className="pt-6">
+          <form onSubmit={handleSubmit} className="space-y-4">
              <div className="space-y-2">
                 <Label>{t[language].importTemplate}</Label>
-                <Select onValueChange={(templateId) => {
-                    const template = projectTemplates.find(t => t.id === templateId);
-                    if (template) {
-                        setName(language === 'es' ? template.name_es : template.name_en);
-                        setScope(template.scope);
-                    }
-                }}>
+                <Select onValueChange={handleTemplateChange} value={templateId || ''}>
                     <SelectTrigger>
                         <SelectValue placeholder={t[language].selectTemplate} />
                     </SelectTrigger>
@@ -104,11 +146,11 @@ export default function NewProjectPage() {
             </div>
             <div className="space-y-2">
                 <Label htmlFor="name">{t[language].projectNameLabel}</Label>
-                <Input id="name" placeholder={t[language].projectNamePlaceholder} value={name} onChange={e => setName(e.target.value)} />
+                <Input id="name" placeholder={t[language].projectNamePlaceholder} value={name} onChange={e => setName(e.target.value)} required />
             </div>
              <div className="space-y-2">
                 <Label htmlFor="client">{t[language].clientLabel}</Label>
-                <Select>
+                <Select onValueChange={setClientId} value={clientId} required>
                     <SelectTrigger id="client">
                         <SelectValue placeholder={t[language].selectClient} />
                     </SelectTrigger>
@@ -121,7 +163,7 @@ export default function NewProjectPage() {
             </div>
             <div className="space-y-2">
                 <Label htmlFor="scope">{t[language].scopeLabel}</Label>
-                <Textarea id="scope" placeholder={t[language].scopePlaceholder} className="font-code" value={scope} onChange={e => setScope(e.target.value)} />
+                <Textarea id="scope" placeholder={t[language].scopePlaceholder} className="font-code min-h-[120px]" value={scope} onChange={e => setScope(e.target.value)} required />
             </div>
             <div className="grid grid-cols-2 gap-4">
                 <div className="space-y-2">
@@ -177,8 +219,9 @@ export default function NewProjectPage() {
             </div>
              <div className="flex justify-end gap-2 pt-4">
                 <Button variant="outline" asChild><Link href="/dashboard/projects">{t[language].cancel}</Link></Button>
-                <Button><FilePlus2 className="mr-2 h-4 w-4" />{t[language].createProject}</Button>
+                <Button type="submit"><FilePlus2 className="mr-2 h-4 w-4" />{t[language].createProject}</Button>
             </div>
+          </form>
         </CardContent>
       </Card>
     </div>
