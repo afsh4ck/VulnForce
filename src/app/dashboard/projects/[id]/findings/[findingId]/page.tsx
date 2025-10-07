@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { notFound, useParams } from 'next/navigation';
+import { notFound, useParams, useRouter } from 'next/navigation';
 import { findings as allFindings, projects, vulnerabilities, clients } from '@/lib/data';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -10,11 +10,10 @@ import { Textarea } from '@/components/ui/textarea';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import Link from 'next/link';
-import { Bot, ChevronLeft, Save } from 'lucide-react';
+import { ChevronLeft, Save } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
-import { generateFindingTemplates } from '@/ai/flows/generate-finding-templates';
 import { useLanguage } from '@/context/language-context';
-import type { Vulnerability } from '@/lib/types';
+import type { Vulnerability, Finding } from '@/lib/types';
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@/components/ui/accordion';
 
 // A simple representation of finding content, can be expanded later
@@ -29,6 +28,7 @@ interface FindingContent {
 
 export default function FindingEditorPage() {
   const params = useParams();
+  const router = useRouter();
   const { id: projectId, findingId } = params;
   const { toast } = useToast();
   const { language } = useLanguage();
@@ -36,7 +36,6 @@ export default function FindingEditorPage() {
   const [title, setTitle] = useState('');
   const [severity, setSeverity] = useState<string>('');
   const [cvss, setCvss] = useState<string>('');
-  const [isGenerating, setIsGenerating] = useState(false);
   
   // State for bilingual content
   const [contentEn, setContentEn] = useState<FindingContent>({ overview: '', technicalDescription: '', affectedComponents: '', impact: '', recommendations: '', details: '' });
@@ -52,8 +51,10 @@ export default function FindingEditorPage() {
         setTitle(finding.title);
         setSeverity(finding.severity);
         setCvss(finding.cvss.toString());
-        // For now, we'll just put the whole markdown in the overview.
-        // A proper migration would be needed for existing data.
+        // This is a simplified parsing logic.
+        // A real implementation would need a more robust markdown parser
+        // to split the content back into the respective fields.
+        // For now, we'll just show the full markdown in the overview for both.
         setContentEn(prev => ({ ...prev, overview: finding.markdown }));
         setContentEs(prev => ({ ...prev, overview: finding.markdown }));
       } else {
@@ -65,12 +66,55 @@ export default function FindingEditorPage() {
   }, [findingId, projectId, language]);
 
 
-  const handleGenerate = async () => {
-    // This function would need to be updated to populate the new structured fields
-    setIsGenerating(true);
-    toast({ title: "AI Generation is not implemented for the new structure yet." });
-    setIsGenerating(false);
+  const handleSave = () => {
+    if (!title || !severity || !cvss) {
+      toast({
+        variant: 'destructive',
+        title: language === 'es' ? 'Campos Incompletos' : 'Incomplete Fields',
+        description: language === 'es' ? 'Por favor, rellena todos los detalles del hallazgo.' : 'Please fill in all finding details.',
+      });
+      return;
+    }
+
+    const createMarkdown = (content: FindingContent, langT: any) => {
+      return `### ${langT.overview}\n${content.overview}\n\n### ${langT.technicalDescription}\n${content.technicalDescription}\n\n### ${langT.affectedComponents}\n${content.affectedComponents}\n\n### ${langT.impact}\n${content.impact}\n\n### ${langT.recommendations}\n${content.recommendations}\n\n### ${langT.details}\n${content.details}`;
+    };
+
+    const combinedMarkdown = `## English Content\n\n${createMarkdown(contentEn, t.en)}\n\n---\n\n## Contenido en Español\n\n${createMarkdown(contentEs, t.es)}`;
+
+    const findingData = {
+      title,
+      severity,
+      cvss: parseFloat(cvss) || 0,
+      projectId: Array.isArray(projectId) ? projectId[0] : projectId,
+      markdown: combinedMarkdown,
+    };
+
+    if (findingId === 'new') {
+      const newFinding: Finding = {
+        ...findingData,
+        id: `find-${Date.now()}`,
+        vulnerabilityId: `vuln-${Date.now()}`,
+        createdAt: new Date().toISOString(),
+        updatedAt: new Date().toISOString(),
+      };
+      allFindings.push(newFinding);
+      toast({ title: t[language].saveSuccessTitle, description: `${title} ${t[language].saveSuccessNew}` });
+    } else {
+      const findingIndex = allFindings.findIndex(f => f.id === findingId);
+      if (findingIndex !== -1) {
+        allFindings[findingIndex] = {
+          ...allFindings[findingIndex],
+          ...findingData,
+          updatedAt: new Date().toISOString(),
+        };
+        toast({ title: t[language].saveSuccessTitle, description: `${title} ${t[language].saveSuccessUpdate}` });
+      }
+    }
+    
+    router.push(`/dashboard/projects/${projectId}`);
   };
+
 
   const handleContentChange = (lang: 'en' | 'es', field: keyof FindingContent, value: string) => {
     if (lang === 'en') {
@@ -83,8 +127,6 @@ export default function FindingEditorPage() {
   const t = {
     en: {
       backToProject: 'Back to Project',
-      generateWithAI: 'Generate with AI',
-      generating: 'Generating...',
       saveFinding: 'Save Finding',
       findingDetails: 'Finding Details',
       importFromDB: 'Import from Database',
@@ -107,11 +149,12 @@ export default function FindingEditorPage() {
       recommendations: 'Recommendations',
       details: 'Details (PoC, Evidence)',
       content: 'Content',
+      saveSuccessTitle: 'Finding Saved',
+      saveSuccessNew: 'has been created.',
+      saveSuccessUpdate: 'has been updated.',
     },
     es: {
       backToProject: 'Volver al Proyecto',
-      generateWithAI: 'Generar con IA',
-      generating: 'Generando...',
       saveFinding: 'Guardar Hallazgo',
       findingDetails: 'Detalles del Hallazgo',
       importFromDB: 'Importar desde Base de Datos',
@@ -134,6 +177,9 @@ export default function FindingEditorPage() {
       recommendations: 'Recomendaciones',
       details: 'Detalles (PoC, Evidencia)',
       content: 'Contenido',
+      saveSuccessTitle: 'Hallazgo Guardado',
+      saveSuccessNew: 'ha sido creado.',
+      saveSuccessUpdate: 'ha sido actualizado.',
     }
   }
 
@@ -216,10 +262,7 @@ export default function FindingEditorPage() {
           </div>
         </div>
         <div className="flex items-center gap-2">
-          <Button variant="outline" onClick={handleGenerate} disabled={isGenerating}>
-            <Bot className="mr-2 h-4 w-4" /> {isGenerating ? t[language].generating : t[language].generateWithAI}
-          </Button>
-          <Button><Save className="mr-2 h-4 w-4" /> {t[language].saveFinding}</Button>
+          <Button onClick={handleSave}><Save className="mr-2 h-4 w-4" /> {t[language].saveFinding}</Button>
         </div>
       </header>
 
