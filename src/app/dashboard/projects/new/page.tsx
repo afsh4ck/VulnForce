@@ -14,6 +14,7 @@ import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover
 import { CalendarIcon, FilePlus2 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { format } from "date-fns";
+import { es } from "date-fns/locale";
 import React, { useEffect, useState } from "react";
 import Link from "next/link";
 import { useSearchParams, useRouter } from "next/navigation";
@@ -178,7 +179,7 @@ export default function NewProjectPage() {
                             )}
                         >
                             <CalendarIcon className="mr-2 h-4 w-4" />
-                            {startDate ? format(startDate, "PPP") : <span>Pick a date</span>}
+                            {startDate ? format(startDate, "PPP", { locale: language === 'es' ? es : undefined }) : <span>Pick a date</span>}
                         </Button>
                         </PopoverTrigger>
                         <PopoverContent className="w-auto p-0">
@@ -187,6 +188,7 @@ export default function NewProjectPage() {
                             selected={startDate}
                             onSelect={setStartDate}
                             initialFocus
+                            locale={language === 'es' ? es : undefined}
                         />
                         </PopoverContent>
                     </Popover>
@@ -203,7 +205,7 @@ export default function NewProjectPage() {
                             )}
                         >
                             <CalendarIcon className="mr-2 h-4 w-4" />
-                            {endDate ? format(endDate, "PPP") : <span>Pick a date</span>}
+                            {endDate ? format(endDate, "PPP", { locale: language === 'es' ? es : undefined }) : <span>Pick a date</span>}
                         </Button>
                         </PopoverTrigger>
                         <PopoverContent className="w-auto p-0">
@@ -212,6 +214,7 @@ export default function NewProjectPage() {
                             selected={endDate}
                             onSelect={setEndDate}
                             initialFocus
+                            locale={language === 'es' ? es : undefined}
                         />
                         </PopoverContent>
                     </Popover>

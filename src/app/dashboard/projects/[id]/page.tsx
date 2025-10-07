@@ -25,6 +25,7 @@ import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover
 import { Calendar } from '@/components/ui/calendar';
 import { cn } from '@/lib/utils';
 import { format } from 'date-fns';
+import { es } from 'date-fns/locale';
 
 
 type SortKey = keyof Finding;
@@ -277,11 +278,11 @@ export default function ProjectDetailsPage({ params }: { params: { id: string } 
                                         className={cn("w-full justify-start text-left font-normal", !editStartDate && "text-muted-foreground")}
                                     >
                                         <CalendarIcon className="mr-2 h-4 w-4" />
-                                        {editStartDate ? format(editStartDate, "PPP") : <span>Pick a date</span>}
+                                        {editStartDate ? format(editStartDate, "PPP", { locale: language === 'es' ? es : undefined }) : <span>Pick a date</span>}
                                     </Button>
                                     </PopoverTrigger>
                                     <PopoverContent className="w-auto p-0">
-                                    <Calendar mode="single" selected={editStartDate} onSelect={setEditStartDate} initialFocus />
+                                    <Calendar locale={language === 'es' ? es : undefined} mode="single" selected={editStartDate} onSelect={setEditStartDate} initialFocus />
                                     </PopoverContent>
                                 </Popover>
                             </div>
@@ -294,11 +295,11 @@ export default function ProjectDetailsPage({ params }: { params: { id: string } 
                                         className={cn("w-full justify-start text-left font-normal", !editEndDate && "text-muted-foreground")}
                                     >
                                         <CalendarIcon className="mr-2 h-4 w-4" />
-                                        {editEndDate ? format(editEndDate, "PPP") : <span>Pick a date</span>}
+                                        {editEndDate ? format(editEndDate, "PPP", { locale: language === 'es' ? es : undefined }) : <span>Pick a date</span>}
                                     </Button>
                                     </PopoverTrigger>
                                     <PopoverContent className="w-auto p-0">
-                                    <Calendar mode="single" selected={editEndDate} onSelect={setEditEndDate} initialFocus />
+                                    <Calendar locale={language === 'es' ? es : undefined} mode="single" selected={editEndDate} onSelect={setEditEndDate} initialFocus />
                                     </PopoverContent>
                                 </Popover>
                             </div>
