@@ -111,43 +111,45 @@ export default function LoginPage() {
     setConfirmPassword('');
   };
 
-  const renderContent = () => {
-    if (!hasPassword) {
+  if (!hasPassword()) {
       return (
-        <Card className="w-full max-w-md shadow-2xl">
-          <CardHeader className="items-center text-center">
-            <div className="mb-4"><Logo /></div>
-            <CardTitle className="font-headline text-3xl">{t.es.setupTitle}</CardTitle>
-            <CardDescription className="text-base">{t.es.setupDescription}</CardDescription>
-          </CardHeader>
-          <CardContent>
-            <form onSubmit={handleSetPassword} className="space-y-4">
-              <div className="space-y-2">
-                <Label htmlFor="username-setup">{t.es.usernameLabel}</Label>
-                <Input id="username-setup" value={username} onChange={(e) => setUsername(e.target.value)} required />
-              </div>
-              <div className="space-y-2">
-                <Label htmlFor="new-password">{t.es.newPasswordLabel}</Label>
-                <Input id="new-password" type="password" value={newPassword} onChange={handleNewPasswordChange} required />
-              </div>
-              {newPassword.length > 0 && (
+        <main className="flex min-h-screen flex-col items-center justify-center p-4 bg-background">
+            <Card className="w-full max-w-md shadow-2xl">
+            <CardHeader className="items-center text-center">
+                <div className="mb-4"><Logo /></div>
+                <CardTitle className="font-headline text-3xl">{t.es.setupTitle}</CardTitle>
+                <CardDescription className="text-base">{t.es.setupDescription}</CardDescription>
+            </CardHeader>
+            <CardContent>
+                <form onSubmit={handleSetPassword} className="space-y-4">
                 <div className="space-y-2">
-                  <Progress value={passwordStrength.score * (100/6)} className={passwordStrength.color} />
-                  <p className="text-sm text-muted-foreground">{t.es[passwordStrength.label.replace(' ', '') as keyof typeof t.es]}</p>
+                    <Label htmlFor="username-setup">{t.es.usernameLabel}</Label>
+                    <Input id="username-setup" value={username} onChange={(e) => setUsername(e.target.value)} required />
                 </div>
-              )}
-              <div className="space-y-2">
-                <Label htmlFor="confirm-password">{t.es.confirmPasswordLabel}</Label>
-                <Input id="confirm-password" type="password" value={confirmPassword} onChange={(e) => setConfirmPassword(e.target.value)} required />
-              </div>
-              <Button type="submit" className="w-full !mt-6">{t.es.setPasswordButton}</Button>
-            </form>
-          </CardContent>
-        </Card>
+                <div className="space-y-2">
+                    <Label htmlFor="new-password">{t.es.newPasswordLabel}</Label>
+                    <Input id="new-password" type="password" value={newPassword} onChange={handleNewPasswordChange} required />
+                </div>
+                {newPassword.length > 0 && (
+                    <div className="space-y-2">
+                    <Progress value={passwordStrength.score * (100/6)} className={passwordStrength.color} />
+                    <p className="text-sm text-muted-foreground">{passwordStrength.label}</p>
+                    </div>
+                )}
+                <div className="space-y-2">
+                    <Label htmlFor="confirm-password">{t.es.confirmPasswordLabel}</Label>
+                    <Input id="confirm-password" type="password" value={confirmPassword} onChange={(e) => setConfirmPassword(e.target.value)} required />
+                </div>
+                <Button type="submit" className="w-full !mt-6">{t.es.setPasswordButton}</Button>
+                </form>
+            </CardContent>
+            </Card>
+        </main>
       );
-    }
-  
-    return (
+  }
+
+  return (
+    <main className="flex min-h-screen flex-col items-center justify-center p-4 bg-background">
       <Card className="w-full max-w-md shadow-2xl">
         <CardHeader className="items-center text-center">
           <div className="mb-4"><Logo /></div>
@@ -164,16 +166,10 @@ export default function LoginPage() {
               <Label htmlFor="password">{t.es.passwordLabel}</Label>
               <Input id="password" type="password" value={password} onChange={(e) => setPasswordState(e.target.value)} required />
             </div>
-            <Button type="submit" className="w-full !mt-6">{t.es.loginButton}</Button>
+            <Button type="submit" className="w-full !mt-8">{t.es.loginButton}</Button>
           </form>
         </CardContent>
       </Card>
-    );
-  }
-
-  return (
-    <main className="flex min-h-screen flex-col items-center justify-center p-4 bg-background">
-      {renderContent()}
     </main>
   );
 }
