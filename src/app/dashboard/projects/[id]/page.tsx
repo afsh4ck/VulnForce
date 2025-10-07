@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useMemo } from 'react';
+import React, { useState, useMemo, useEffect } from 'react';
 import { projects, clients, findings as allFindings } from "@/lib/data";
 import { notFound, useRouter } from "next/navigation";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
@@ -8,10 +8,10 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import Link from 'next/link';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
-import { PlusCircle, FileText, ArrowUpDown, Edit, Save, Trash2 } from "lucide-react";
+import { PlusCircle, FileText, ArrowUpDown, Edit, Save, Trash2, CalendarIcon } from "lucide-react";
 import { Separator } from "@/components/ui/separator";
 import { useLanguage } from "@/context/language-context";
-import type { Finding } from '@/lib/types';
+import type { Finding, Project } from '@/lib/types';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Textarea } from '@/components/ui/textarea';
 import { MarkdownPreview } from '@/components/markdown-preview';
@@ -19,8 +19,12 @@ import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, D
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from "@/components/ui/alert-dialog";
+import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from "@/components/ui/alert-dialog";
 import { useToast } from '@/hooks/use-toast';
+import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
+import { Calendar } from '@/components/ui/calendar';
+import { cn } from '@/lib/utils';
+import { format } from 'date-fns';
 
 
 type SortKey = keyof Finding;
@@ -30,11 +34,29 @@ export default function ProjectDetailsPage({ params }: { params: { id: string } 
   const { toast } = useToast();
 
   const [project, setProject] = useState(() => projects.find(p => p.id === params.id));
-
   const { language } = useLanguage();
   const [sortConfig, setSortConfig] = useState<{ key: SortKey; direction: 'ascending' | 'descending' } | null>(null);
   const [isEditingScope, setIsEditingScope] = useState(false);
   const [scopeContent, setScopeContent] = useState(project?.scope || '');
+  
+  // Edit Dialog State
+  const [isEditDialogOpen, setIsEditDialogOpen] = useState(false);
+  const [editName, setEditName] = useState('');
+  const [editClientId, setEditClientId] = useState('');
+  const [editStartDate, setEditStartDate] = useState<Date | undefined>();
+  const [editEndDate, setEditEndDate] = useState<Date | undefined>();
+  const [editStatus, setEditStatus] = useState<Project['status']>('In Progress');
+
+  useEffect(() => {
+    if (project) {
+        setScopeContent(project.scope);
+        setEditName(project.name);
+        setEditClientId(project.clientId);
+        setEditStartDate(new Date(project.startDate));
+        setEditEndDate(new Date(project.endDate));
+        setEditStatus(project.status);
+    }
+  }, [project]);
 
   if (!project) {
     notFound();
@@ -43,18 +65,34 @@ export default function ProjectDetailsPage({ params }: { params: { id: string } 
   const client = clients.find(c => c.id === project.clientId);
   const projectFindings = allFindings.filter(f => f.projectId === project.id);
   
-  const handleUpdateProject = (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-    const formData = new FormData(e.currentTarget);
-    const newName = formData.get('projectName') as string;
-    const newClientId = formData.get('client') as string;
-
-    if (project) {
-        setProject({ ...project, name: newName, clientId: newClientId });
-        // Here you would typically call an API to save the changes
-        console.log("Updated project:", { ...project, name: newName, clientId: newClientId });
-        toast({ title: t[language].projectUpdated });
+  const handleUpdateProject = () => {
+    if (!project || !editName || !editClientId || !editStartDate || !editEndDate) {
+        toast({
+            variant: "destructive",
+            title: t[language].incompleteFields,
+            description: t[language].fillAllFields
+        });
+        return;
     }
+
+    const updatedProject = {
+        ...project,
+        name: editName,
+        clientId: editClientId,
+        startDate: format(editStartDate, 'yyyy-MM-dd'),
+        endDate: format(editEndDate, 'yyyy-MM-dd'),
+        status: editStatus,
+    };
+    
+    setProject(updatedProject);
+    // In a real app, you would update the data source here.
+    const projectIndex = projects.findIndex(p => p.id === project.id);
+    if (projectIndex !== -1) {
+        projects[projectIndex] = updatedProject;
+    }
+
+    toast({ title: t[language].projectUpdated });
+    setIsEditDialogOpen(false);
   };
 
   const handleDeleteProject = () => {
@@ -134,6 +172,8 @@ export default function ProjectDetailsPage({ params }: { params: { id: string } 
       delete: "Delete",
       projectUpdated: "Project updated successfully.",
       projectDeleted: "Project deleted successfully.",
+      incompleteFields: "Incomplete Fields",
+      fillAllFields: "Please fill in all fields.",
     },
     es: {
       status: "Estado",
@@ -163,6 +203,8 @@ export default function ProjectDetailsPage({ params }: { params: { id: string } 
       delete: "Eliminar",
       projectUpdated: "Proyecto actualizado correctamente.",
       projectDeleted: "Proyecto eliminado correctamente.",
+      incompleteFields: "Campos Incompletos",
+      fillAllFields: "Por favor, rellena todos los campos.",
     }
   }
 
@@ -189,7 +231,7 @@ export default function ProjectDetailsPage({ params }: { params: { id: string } 
             <p className="text-sm text-muted-foreground">{client?.name}</p>
             <h1 className="font-headline text-3xl font-bold tracking-tight">{project.name}</h1>
             <div className="flex items-center gap-4 text-sm text-muted-foreground">
-            <span>{t[language].status}: <Badge variant={project.status === 'Completed' ? 'secondary' : 'default'}>{getStatus(project.status)}</Badge></span>
+            <span>{t[language].status}: <Badge variant={project.status === 'Completed' ? 'secondary' : project.status === 'On Hold' ? 'outline' : 'default'}>{getStatus(project.status)}</Badge></span>
             <span>{new Date(project.startDate).toLocaleDateString()} - {new Date(project.endDate).toLocaleDateString()}</span>
             </div>
         </div>
@@ -199,7 +241,7 @@ export default function ProjectDetailsPage({ params }: { params: { id: string } 
                     <FileText className="mr-2 h-4 w-4" />{t[language].exportReport}
                 </Link>
             </Button>
-            <Dialog>
+            <Dialog open={isEditDialogOpen} onOpenChange={setIsEditDialogOpen}>
                 <DialogTrigger asChild>
                     <Button variant="outline" size="icon"><Edit className="h-4 w-4" /></Button>
                 </DialogTrigger>
@@ -207,30 +249,77 @@ export default function ProjectDetailsPage({ params }: { params: { id: string } 
                     <DialogHeader>
                         <DialogTitle>{t[language].editProject}</DialogTitle>
                     </DialogHeader>
-                    <form onSubmit={handleUpdateProject}>
-                        <div className="grid gap-4 py-4">
+                    <div className="grid gap-4 py-4">
+                        <div className="space-y-2">
+                            <Label htmlFor="projectName">{t[language].projectName}</Label>
+                            <Input id="projectName" value={editName} onChange={(e) => setEditName(e.target.value)} />
+                        </div>
+                        <div className="space-y-2">
+                            <Label htmlFor="client">{t[language].client}</Label>
+                            <Select value={editClientId} onValueChange={setEditClientId}>
+                                <SelectTrigger id="client">
+                                    <SelectValue placeholder={t[language].client} />
+                                </SelectTrigger>
+                                <SelectContent>
+                                    {clients.map(c => (
+                                        <SelectItem key={c.id} value={c.id}>{c.name}</SelectItem>
+                                    ))}
+                                </SelectContent>
+                            </Select>
+                        </div>
+                         <div className="grid grid-cols-2 gap-4">
                             <div className="space-y-2">
-                                <Label htmlFor="projectName">{t[language].projectName}</Label>
-                                <Input id="projectName" name="projectName" defaultValue={project.name} />
+                                <Label>{t[language].startDate}</Label>
+                                <Popover>
+                                    <PopoverTrigger asChild>
+                                    <Button
+                                        variant={"outline"}
+                                        className={cn("w-full justify-start text-left font-normal", !editStartDate && "text-muted-foreground")}
+                                    >
+                                        <CalendarIcon className="mr-2 h-4 w-4" />
+                                        {editStartDate ? format(editStartDate, "PPP") : <span>Pick a date</span>}
+                                    </Button>
+                                    </PopoverTrigger>
+                                    <PopoverContent className="w-auto p-0">
+                                    <Calendar mode="single" selected={editStartDate} onSelect={setEditStartDate} initialFocus />
+                                    </PopoverContent>
+                                </Popover>
                             </div>
                             <div className="space-y-2">
-                                <Label htmlFor="client">{t[language].client}</Label>
-                                <Select name="client" defaultValue={project.clientId}>
-                                    <SelectTrigger id="client">
-                                        <SelectValue placeholder={t[language].client} />
-                                    </SelectTrigger>
-                                    <SelectContent>
-                                        {clients.map(c => (
-                                            <SelectItem key={c.id} value={c.id}>{c.name}</SelectItem>
-                                        ))}
-                                    </SelectContent>
-                                </Select>
+                                <Label>{t[language].endDate}</Label>
+                                <Popover>
+                                    <PopoverTrigger asChild>
+                                    <Button
+                                        variant={"outline"}
+                                        className={cn("w-full justify-start text-left font-normal", !editEndDate && "text-muted-foreground")}
+                                    >
+                                        <CalendarIcon className="mr-2 h-4 w-4" />
+                                        {editEndDate ? format(editEndDate, "PPP") : <span>Pick a date</span>}
+                                    </Button>
+                                    </PopoverTrigger>
+                                    <PopoverContent className="w-auto p-0">
+                                    <Calendar mode="single" selected={editEndDate} onSelect={setEditEndDate} initialFocus />
+                                    </PopoverContent>
+                                </Popover>
                             </div>
                         </div>
-                        <DialogFooter>
-                            <Button type="submit">{t[language].updateProject}</Button>
-                        </DialogFooter>
-                    </form>
+                         <div className="space-y-2">
+                            <Label htmlFor="status">{t[language].status}</Label>
+                            <Select value={editStatus} onValueChange={(value) => setEditStatus(value as Project['status'])}>
+                                <SelectTrigger id="status">
+                                    <SelectValue placeholder={t[language].status} />
+                                </SelectTrigger>
+                                <SelectContent>
+                                    <SelectItem value="In Progress">{t[language].inProgress}</SelectItem>
+                                    <SelectItem value="Completed">{t[language].completed}</SelectItem>
+                                    <SelectItem value="On Hold">{t[language].onHold}</SelectItem>
+                                </SelectContent>
+                            </Select>
+                        </div>
+                    </div>
+                    <DialogFooter>
+                        <Button onClick={handleUpdateProject}>{t[language].updateProject}</Button>
+                    </DialogFooter>
                 </DialogContent>
             </Dialog>
             <AlertDialog>

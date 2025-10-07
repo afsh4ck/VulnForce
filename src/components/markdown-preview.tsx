@@ -7,13 +7,13 @@ import { vscDarkPlus } from 'react-syntax-highlighter/dist/esm/styles/prism';
 
 const Todo = ({ children }: { children: React.ReactNode }) => {
     const text = React.Children.toArray(children).join('');
-    const parts = text.split(/(TODO)/g);
+    const parts = text.split(/(\[?TODO:?.*?\]?)/gi);
     return (
       <>
         {parts.map((part, i) =>
-          part === 'TODO' ? (
+          /\[?TODO:?.*?\]?/gi.test(part) ? (
             <span key={i} className="font-bold text-red-500">
-              TODO
+              {part}
             </span>
           ) : (
             <React.Fragment key={i}>{part}</React.Fragment>
