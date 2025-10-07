@@ -11,6 +11,7 @@ interface User {
 interface UserContextType {
   user: User;
   setUser: (user: User) => void;
+  logout: () => void;
 }
 
 const UserContext = createContext<UserContextType | undefined>(undefined);
@@ -29,6 +30,8 @@ export function UserProvider({ children }: { children: ReactNode }) {
       const savedUser = localStorage.getItem('vulnforce-user');
       if (savedUser) {
         setUserState(JSON.parse(savedUser));
+      } else {
+        setUserState(defaultUser);
       }
     } catch (error) {
       console.error("Failed to parse user from localStorage", error);
@@ -40,9 +43,14 @@ export function UserProvider({ children }: { children: ReactNode }) {
     localStorage.setItem('vulnforce-user', JSON.stringify(newUser));
     setUserState(newUser);
   };
+  
+  const logout = () => {
+    localStorage.removeItem('vulnforce-user');
+    setUserState(defaultUser);
+  };
 
   return (
-    <UserContext.Provider value={{ user, setUser }}>
+    <UserContext.Provider value={{ user, setUser, logout }}>
       {children}
     </UserContext.Provider>
   );

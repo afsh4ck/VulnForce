@@ -14,10 +14,17 @@ import {
 import { useLanguage } from "@/context/language-context";
 import Link from "next/link";
 import { useUser } from "@/context/user-context";
+import { useRouter } from "next/navigation";
 
 export function UserNav() {
     const { language } = useLanguage();
-    const { user } = useUser();
+    const { user, logout } = useUser();
+    const router = useRouter();
+
+    const handleLogout = () => {
+        logout();
+        router.push('/');
+    }
 
     const t = {
       en: {
@@ -61,7 +68,7 @@ export function UserNav() {
           </DropdownMenuItem>
         </DropdownMenuGroup>
         <DropdownMenuSeparator />
-        <DropdownMenuItem>
+        <DropdownMenuItem onClick={handleLogout}>
           {t[language].logout}
         </DropdownMenuItem>
       </DropdownMenuContent>
