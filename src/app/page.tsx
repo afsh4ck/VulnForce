@@ -140,7 +140,7 @@ export default function LoginPage() {
                 <Label htmlFor="confirm-password">{t.es.confirmPasswordLabel}</Label>
                 <Input id="confirm-password" type="password" value={confirmPassword} onChange={(e) => setConfirmPassword(e.target.value)} required />
               </div>
-              <Button type="submit" className="w-full">{t.es.setPasswordButton}</Button>
+              <Button type="submit" className="w-full !mt-6">{t.es.setPasswordButton}</Button>
             </form>
           </CardContent>
         </Card>
@@ -164,7 +164,7 @@ export default function LoginPage() {
               <Label htmlFor="password">{t.es.passwordLabel}</Label>
               <Input id="password" type="password" value={password} onChange={(e) => setPasswordState(e.target.value)} required />
             </div>
-            <Button type="submit" className="w-full">{t.es.loginButton}</Button>
+            <Button type="submit" className="w-full !mt-6">{t.es.loginButton}</Button>
           </form>
         </CardContent>
       </Card>
