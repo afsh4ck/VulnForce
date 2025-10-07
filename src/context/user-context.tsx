@@ -36,7 +36,7 @@ interface UserContextType {
 const UserContext = createContext<UserContextType | undefined>(undefined);
 
 const defaultUser: User = {
-  name: 'Auditor de Seguridad',
+  name: 'Pentester',
   email: 'auditor@vulnforce.local',
   avatar: 'https://picsum.photos/seed/avatar/128/128',
 };
@@ -77,6 +77,7 @@ export function UserProvider({ children }: { children: ReactNode }) {
   const logout = () => {
     sessionStorage.removeItem('vulnforce-authenticated');
     localStorage.removeItem('vulnforce-user');
+    setUserState(defaultUser);
     router.push('/');
   };
 
