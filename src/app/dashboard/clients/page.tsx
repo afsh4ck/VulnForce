@@ -4,7 +4,7 @@ import React, { useState, useMemo, useEffect, useRef } from 'react';
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
-import { PlusCircle, Search, ArrowUpDown, Upload } from "lucide-react";
+import { PlusCircle, Search, ArrowUpDown, Upload, Edit, Trash2, MoreHorizontal } from "lucide-react";
 import { clients as allClients } from "@/lib/data";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import Image from "next/image";
@@ -16,14 +16,15 @@ import {
   DialogFooter,
   DialogHeader,
   DialogTitle,
-  DialogTrigger,
 } from "@/components/ui/dialog"
 import { Label } from "@/components/ui/label";
 import { useLanguage } from "@/context/language-context";
 import type { Client } from '@/lib/types';
 import { useToast } from '@/hooks/use-toast';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { Logo } from '@/components/logo';
+import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from "@/components/ui/alert-dialog";
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '@/components/ui/dropdown-menu';
+
 
 type SortKey = keyof Client;
 
@@ -33,6 +34,7 @@ export default function ClientsPage() {
   const [clients, setClients] = useState<Client[]>(allClients);
   const [searchTerm, setSearchTerm] = useState('');
   const [sortConfig, setSortConfig] = useState<{ key: SortKey; direction: 'ascending' | 'descending' } | null>(null);
+  const [clientToDelete, setClientToDelete] = useState<Client | null>(null);
   
   // State for creating a client
   const [isCreateDialogOpen, setIsCreateDialogOpen] = useState(false);
@@ -61,6 +63,13 @@ export default function ClientsPage() {
     }
   }, [editingClient]);
   
+  const handleDeleteClient = () => {
+    if (!clientToDelete) return;
+    setClients(clients.filter(c => c.id !== clientToDelete.id));
+    toast({ title: t[language].clientDeleted });
+    setClientToDelete(null);
+  };
+
   const handleLogoChange = (e: React.ChangeEvent<HTMLInputElement>, setLogo: (logo: string | null) => void) => {
     if (e.target.files && e.target.files[0]) {
       const file = e.target.files[0];
@@ -199,12 +208,17 @@ export default function ClientsPage() {
       languageHeader: "Language",
       actionsHeader: "Actions",
       edit: "Edit",
+      delete: "Delete",
       logoLabel: "Logo",
       uploadLogo: "Upload Logo",
       languageLabel: "Language",
       selectLanguage: "Select Language",
       english: "English",
-      spanish: "Spanish"
+      spanish: "Spanish",
+      confirmDeleteTitle: "Are you sure?",
+      confirmDeleteDesc: "This action cannot be undone. This will permanently delete the client.",
+      cancel: "Cancel",
+      clientDeleted: "Client deleted successfully."
     },
     es: {
       title: "Clientes",
@@ -226,16 +240,22 @@ export default function ClientsPage() {
       languageHeader: "Idioma",
       actionsHeader: "Acciones",
       edit: "Editar",
+      delete: "Eliminar",
       logoLabel: "Logo",
       uploadLogo: "Subir Logo",
       languageLabel: "Idioma",
       selectLanguage: "Selecciona un Idioma",
       english: "Inglés",
-      spanish: "Español"
+      spanish: "Español",
+      confirmDeleteTitle: "¿Estás seguro?",
+      confirmDeleteDesc: "Esta acción no se puede deshacer. Esto eliminará permanentemente el cliente.",
+      cancel: "Cancelar",
+      clientDeleted: "Cliente eliminado correctamente."
     }
   }
 
   return (
+    <>
     <div className="space-y-6">
       <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
         <h1 className="font-headline text-3xl font-bold tracking-tight">{t[language].title}</h1>
@@ -287,7 +307,7 @@ export default function ClientsPage() {
                   <Label htmlFor="new-logo" className="text-right">{t[language].logoLabel}</Label>
                    <div className="col-span-3 flex items-center gap-4">
                      <Avatar className="h-10 w-10">
-                        {newClientLogo ? <AvatarImage src={newClientLogo} /> : <Logo className="h-full w-full p-1" />}
+                        {newClientLogo && <AvatarImage src={newClientLogo} />}
                         <AvatarFallback>{newClientName.charAt(0)}</AvatarFallback>
                       </Avatar>
                     <input
@@ -335,11 +355,10 @@ export default function ClientsPage() {
                 <TableRow key={client.id}>
                   <TableCell>
                     <Avatar className="h-10 w-10">
-                       {client.logoUrl ? 
+                       {client.logoUrl && 
                         <AvatarImage asChild src={client.logoUrl}>
                             <Image src={client.logoUrl} alt={client.name} width={40} height={40} data-ai-hint="abstract logo" />
                         </AvatarImage>
-                        : <Logo className="h-full w-full p-1"/>
                        }
                       <AvatarFallback>{client.name.charAt(0)}</AvatarFallback>
                     </Avatar>
@@ -348,7 +367,24 @@ export default function ClientsPage() {
                   <TableCell className="text-muted-foreground">{client.contact}</TableCell>
                   <TableCell className="text-muted-foreground uppercase">{client.language}</TableCell>
                   <TableCell className="text-right">
-                    <Button variant="ghost" size="sm" onClick={() => handleEditClick(client)}>{t[language].edit}</Button>
+                    <DropdownMenu>
+                      <DropdownMenuTrigger asChild>
+                        <Button variant="ghost" className="h-8 w-8 p-0">
+                          <span className="sr-only">Open menu</span>
+                          <MoreHorizontal className="h-4 w-4" />
+                        </Button>
+                      </DropdownMenuTrigger>
+                      <DropdownMenuContent align="end">
+                        <DropdownMenuItem onSelect={() => handleEditClick(client)}>
+                           <Edit className="mr-2 h-4 w-4" />
+                           <span>{t[language].edit}</span>
+                        </DropdownMenuItem>
+                        <DropdownMenuItem onSelect={() => setClientToDelete(client)} className="text-destructive">
+                           <Trash2 className="mr-2 h-4 w-4" />
+                           <span>{t[language].delete}</span>
+                        </DropdownMenuItem>
+                      </DropdownMenuContent>
+                    </DropdownMenu>
                   </TableCell>
                 </TableRow>
               ))}
@@ -391,7 +427,7 @@ export default function ClientsPage() {
               <Label htmlFor="edit-logo" className="text-right">{t[language].logoLabel}</Label>
               <div className="col-span-3 flex items-center gap-4">
                   <Avatar className="h-10 w-10">
-                    {editClientLogo ? <AvatarImage src={editClientLogo} /> : <Logo className="h-full w-full p-1" />}
+                    {editClientLogo && <AvatarImage src={editClientLogo} />}
                     <AvatarFallback>{editClientName.charAt(0)}</AvatarFallback>
                   </Avatar>
                   <input
@@ -413,8 +449,21 @@ export default function ClientsPage() {
           </DialogFooter>
         </DialogContent>
       </Dialog>
-
     </div>
+    
+    <AlertDialog open={!!clientToDelete} onOpenChange={() => setClientToDelete(null)}>
+        <AlertDialogContent>
+            <AlertDialogHeader>
+                <AlertDialogTitle>{t[language].confirmDeleteTitle}</AlertDialogTitle>
+                <AlertDialogDescription>{t[language].confirmDeleteDesc}</AlertDialogDescription>
+            </AlertDialogHeader>
+            <AlertDialogFooter>
+                <AlertDialogCancel>{t[language].cancel}</AlertDialogCancel>
+                <AlertDialogAction onClick={handleDeleteClient}>{t[language].delete}</AlertDialogAction>
+            </AlertDialogFooter>
+        </AlertDialogContent>
+    </AlertDialog>
+    </>
   )
 }
 
