@@ -1,10 +1,10 @@
 import type { Client, Project, Finding, Vulnerability } from './types';
 
 export const clients: Client[] = [
-  { id: 'cli-1', name: 'Innovatech Solutions', contact: 'contact@innovatech.com', logoUrl: 'client-logo-1', language: 'en' },
-  { id: 'cli-2', name: 'Quantum Dynamics', contact: 'security@quantum.com', logoUrl: 'client-logo-2', language: 'en' },
-  { id: 'cli-3', name: 'SecureBank Corp', contact: 'audit@securebank.com', logoUrl: 'client-logo-3', language: 'es' },
-  { id: 'cli-4', name: 'HealthFirst Providers', contact: 'compliance@healthfirst.com', logoUrl: 'client-logo-4', language: 'en' },
+  { id: 'cli-1', name: 'Innovatech Solutions', contact: 'contact@innovatech.com', logoUrl: '', language: 'en' },
+  { id: 'cli-2', name: 'Quantum Dynamics', contact: 'security@quantum.com', logoUrl: '', language: 'en' },
+  { id: 'cli-3', name: 'SecureBank Corp', contact: 'audit@securebank.com', logoUrl: '', language: 'es' },
+  { id: 'cli-4', name: 'HealthFirst Providers', contact: 'compliance@healthfirst.com', logoUrl: '', language: 'en' },
 ];
 
 export const projects: Project[] = [
@@ -2202,3 +2202,4 @@ export const vulnerabilities: Vulnerability[] = [
         tags: ['Race Condition', 'Business Logic'],
     }
 ];
+
