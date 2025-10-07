@@ -114,7 +114,7 @@ export default function LoginPage() {
 
   if (!hasPassword) {
     return (
-      <div className="flex min-h-screen flex-col bg-background">
+      <div className="flex min-h-screen flex-col items-center justify-center bg-background">
         <main className="flex flex-1 flex-col items-center justify-center p-4">
           <Card className="w-full max-w-md shadow-2xl">
             <CardHeader className="items-center text-center">
@@ -152,7 +152,7 @@ export default function LoginPage() {
   }
 
   return (
-    <div className="flex min-h-screen flex-col bg-background">
+    <div className="flex min-h-screen flex-col items-center justify-center bg-background">
       <main className="flex flex-1 flex-col items-center justify-center p-4">
         <Card className="w-full max-w-md shadow-2xl">
           <CardHeader className="items-center text-center">
@@ -175,9 +175,6 @@ export default function LoginPage() {
           </CardContent>
         </Card>
       </main>
-      <footer className="py-4 text-center text-sm text-muted-foreground">
-        <p>&copy; {new Date().getFullYear()} VulnForce. Todos los derechos reservados.</p>
-      </footer>
     </div>
   );
 }
