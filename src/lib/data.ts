@@ -1,3 +1,4 @@
+
 import type { Client, Project, Finding, Vulnerability } from './types';
 
 export const clients: Client[] = [
@@ -845,7 +846,7 @@ export const vulnerabilities: Vulnerability[] = [
       overview_en: 'Forgotten or undocumented assets such as development environments, old API versions, or unpatched systems are exposed to the internet. These assets often lack proper security controls and can be an easy entry point for attackers.',
       overview_es: 'Activos olvidados o no documentados como entornos de desarrollo, versiones antiguas de API o sistemas sin parches están expuestos a Internet. Estos activos a menudo carecen de controles de seguridad adecuados y pueden ser un punto de entrada fácil para los atacantes.',
       technicalDescription_en: 'During reconnaissance, an unprotected or outdated asset was discovered. Examples include a staging server (`staging.example.com`) with default credentials, an old version of an API (`api-v1.example.com`) with known vulnerabilities, or an exposed `.git` directory.',
-      technicalDescription_es: 'Durante el reconocimiento, se descubrió un activo desprotegido u obsoleto. Los ejemplos incluyen un servidor de "staging" (`staging.example.com`) con credenciales predeterminadas, una versión antigua de una API (`api-v1.example.com`) con vulnerabilidades conocidas o un directorio `.git` expuesto.',
+      technicalDescription_es: 'Durante el reconocimiento, se descubrió un activo desprotegido u obsoleto. Los ejemplos incluyen un servidor de "staging" (`staging.example.com`) con credenciales predeterminadas, una versión antigua de una API (`api-v1.example.com`) con vulnerabilidades conocidas o un directorio `.git` exposado.',
       affectedComponents_en: '[TODO: Specify the forgotten asset, e.g., An exposed admin panel at `dev-admin.example.com`.]',
       affectedComponents_es: '[TODO: Especificar el activo olvidado, p. ej., Un panel de administración expuesto en `dev-admin.example.com`.]',
       impact_en: 'Improper asset management can lead to the compromise of forgotten systems, providing an initial foothold for attackers to pivot into the main corporate network. It can also lead to sensitive information disclosure.',
@@ -1237,8 +1238,8 @@ export const vulnerabilities: Vulnerability[] = [
       affectedComponents_es: '[TODO: Especificar la página o acción que desencadena el error detallado, p. ej., Enviar una comilla simple en un formulario de búsqueda.]',
       impact_en: 'Improper error handling leads to information disclosure, which can help an attacker formulate more sophisticated attacks like SQL injection or path traversal.',
       impact_es: 'El manejo inadecuado de errores conduce a la divulgación de información, lo que puede ayudar a un atacante a formular ataques más sofisticados como la inyección de SQL o el recorrido de directorios.',
-      recommendations_en: 'Configure the application to display generic, non-descriptive error messages to the user in a production environment. Detailed errors should only be written to server-side logs for debugging purposes.',
-      recommendations_es: 'Configurar la aplicación para mostrar mensajes de error genéricos y no descriptivos al usuario en un entorno de producción. Los errores detallados solo deben escribirse en los registros del lado del servidor con fines de depuración.',
+      recommendations_en: 'Configure the application to use generic, non-descriptive error messages in production. Detailed errors should only be written to server-side logs for debugging purposes.',
+      recommendations_es: 'Configurar la aplicación para que use mensajes de error genéricos y no descriptivos al usuario en un entorno de producción. Los errores detallados solo deben escribirse en los registros del lado del servidor con fines de depuración.',
       details_en: '[TODO: Provide a screenshot of the detailed error message.]',
       details_es: '[TODO: Proporcionar una captura de pantalla del mensaje de error detallado.]',
       remediation_en: {
