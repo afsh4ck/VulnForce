@@ -1,7 +1,6 @@
 import type { Metadata } from 'next';
 import { Toaster } from '@/components/ui/toaster';
 import './globals.css';
-import { SidebarProvider } from '@/components/ui/sidebar';
 import { LanguageProvider } from '@/context/language-context';
 import { ThemeProvider } from '@/context/theme-context';
 import { UserProvider } from '@/context/user-context';
@@ -29,10 +28,8 @@ export default function RootLayout({
         <ThemeProvider>
           <LanguageProvider>
             <UserProvider>
-              <SidebarProvider>
-                {children}
-                <Toaster />
-              </SidebarProvider>
+              {children}
+              <Toaster />
             </UserProvider>
           </LanguageProvider>
         </ThemeProvider>

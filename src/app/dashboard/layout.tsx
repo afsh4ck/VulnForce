@@ -11,6 +11,7 @@ import {
   SidebarMenu,
   SidebarMenuItem,
   SidebarMenuButton,
+  SidebarProvider,
   SidebarTrigger,
   useSidebar,
 } from '@/components/ui/sidebar';
@@ -19,7 +20,7 @@ import { UserNav } from '@/components/user-nav';
 import { Logo } from '@/components/logo';
 import { useLanguage } from '@/context/language-context';
 
-export default function DashboardLayout({ children }: { children: React.ReactNode }) {
+function DashboardNav() {
   const pathname = usePathname();
   const { state, isMobile } = useSidebar();
   const { language } = useLanguage();
@@ -116,4 +117,13 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
       </SidebarInset>
     </>
   );
+}
+
+
+export default function DashboardLayout({ children }: { children: React.ReactNode }) {
+  return (
+    <SidebarProvider>
+        <DashboardNav>{children}</DashboardNav>
+    </SidebarProvider>
+  )
 }
