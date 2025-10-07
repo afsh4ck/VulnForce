@@ -16,6 +16,7 @@ import {
   DialogFooter,
   DialogHeader,
   DialogTitle,
+  DialogTrigger,
 } from "@/components/ui/dialog"
 import { Label } from "@/components/ui/label";
 import { useLanguage } from "@/context/language-context";
@@ -307,8 +308,7 @@ export default function ClientsPage() {
                   <Label htmlFor="new-logo" className="text-right">{t[language].logoLabel}</Label>
                    <div className="col-span-3 flex items-center gap-4">
                      <Avatar className="h-10 w-10">
-                        {newClientLogo && <AvatarImage src={newClientLogo} />}
-                        <AvatarFallback>{newClientName.charAt(0)}</AvatarFallback>
+                        {newClientLogo ? <AvatarImage src={newClientLogo} /> : <AvatarFallback>{newClientName.charAt(0)}</AvatarFallback>}
                       </Avatar>
                     <input
                         type="file"
@@ -355,12 +355,10 @@ export default function ClientsPage() {
                 <TableRow key={client.id}>
                   <TableCell>
                     <Avatar className="h-10 w-10">
-                       {client.logoUrl && 
-                        <AvatarImage asChild src={client.logoUrl}>
-                            <Image src={client.logoUrl} alt={client.name} width={40} height={40} data-ai-hint="abstract logo" />
-                        </AvatarImage>
+                       {client.logoUrl ? 
+                        <AvatarImage src={client.logoUrl} alt={client.name} />
+                       : <AvatarFallback>{client.name.charAt(0)}</AvatarFallback>
                        }
-                      <AvatarFallback>{client.name.charAt(0)}</AvatarFallback>
                     </Avatar>
                   </TableCell>
                   <TableCell className="font-medium">{client.name}</TableCell>
@@ -427,8 +425,7 @@ export default function ClientsPage() {
               <Label htmlFor="edit-logo" className="text-right">{t[language].logoLabel}</Label>
               <div className="col-span-3 flex items-center gap-4">
                   <Avatar className="h-10 w-10">
-                    {editClientLogo && <AvatarImage src={editClientLogo} />}
-                    <AvatarFallback>{editClientName.charAt(0)}</AvatarFallback>
+                    {editClientLogo ? <AvatarImage src={editClientLogo} /> : <AvatarFallback>{editClientName.charAt(0)}</AvatarFallback>}
                   </Avatar>
                   <input
                     type="file"
@@ -466,5 +463,3 @@ export default function ClientsPage() {
     </>
   )
 }
-
-    
