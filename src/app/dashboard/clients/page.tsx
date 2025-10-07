@@ -38,6 +38,8 @@ export default function ClientsPage() {
   const [isCreateDialogOpen, setIsCreateDialogOpen] = useState(false);
   const [newClientName, setNewClientName] = useState('');
   const [newClientContact, setNewClientContact] = useState('');
+  const [newClientLanguage, setNewClientLanguage] = useState<'en' | 'es'>('en');
+  const [newClientLogo, setNewClientLogo] = useState('');
 
   // State for editing a client
   const [isEditDialogOpen, setIsEditDialogOpen] = useState(false);
@@ -101,8 +103,8 @@ export default function ClientsPage() {
       id: `cli-${Date.now()}`,
       name: newClientName,
       contact: newClientContact,
-      logoUrl: `client-logo-${(clients.length % 4) + 1}`,
-      language: 'en', 
+      logoUrl: newClientLogo || `client-logo-${(clients.length % 4) + 1}`,
+      language: newClientLanguage, 
     };
 
     setClients(prevClients => [...prevClients, newClient]);
@@ -114,6 +116,8 @@ export default function ClientsPage() {
     // Reset form and close dialog
     setNewClientName('');
     setNewClientContact('');
+    setNewClientLanguage('en');
+    setNewClientLogo('');
     setIsCreateDialogOpen(false);
   };
 
@@ -250,6 +254,36 @@ export default function ClientsPage() {
                 <div className="grid grid-cols-4 items-center gap-4">
                   <Label htmlFor="contact" className="text-right">{t[language].contactLabel}</Label>
                   <Input id="contact" placeholder={t[language].contactPlaceholder} className="col-span-3" value={newClientContact} onChange={(e) => setNewClientContact(e.target.value)} />
+                </div>
+                 <div className="grid grid-cols-4 items-center gap-4">
+                  <Label htmlFor="new-language" className="text-right">{t[language].languageLabel}</Label>
+                  <Select value={newClientLanguage} onValueChange={(value) => setNewClientLanguage(value as 'en' | 'es')}>
+                    <SelectTrigger className="col-span-3">
+                      <SelectValue placeholder={t[language].selectLanguage} />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="en">{t[language].english}</SelectItem>
+                      <SelectItem value="es">{t[language].spanish}</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+                <div className="grid grid-cols-4 items-center gap-4">
+                  <Label htmlFor="new-logo" className="text-right">{t[language].logoLabel}</Label>
+                  <Select value={newClientLogo} onValueChange={setNewClientLogo}>
+                    <SelectTrigger className="col-span-3">
+                      <SelectValue placeholder={t[language].selectLogo} />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {PlaceHolderImages.map(img => (
+                        <SelectItem key={img.id} value={img.id}>
+                          <div className='flex items-center gap-2'>
+                            <Image src={img.imageUrl} alt={img.description} width={24} height={24} className='rounded-sm' />
+                            <span>{img.description}</span>
+                          </div>
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
                 </div>
               </div>
               <DialogFooter>
