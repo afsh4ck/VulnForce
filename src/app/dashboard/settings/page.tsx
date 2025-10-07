@@ -173,95 +173,97 @@ export default function SettingsPage() {
 
   return (
     <>
-    <div className="space-y-6">
-      <h1 className="font-headline text-3xl font-bold tracking-tight">{t[language].title}</h1>
-      
-       <Card>
-          <CardHeader>
-            <CardTitle>{t[language].themeTitle}</CardTitle>
-            <CardDescription>{t[language].themeDesc}</CardDescription>
-          </CardHeader>
-          <CardContent>
-            <div className="flex items-center space-x-2">
-                <Sun className="h-5 w-5" />
-                <Switch
-                    id="theme-switch"
-                    checked={theme === 'dark'}
-                    onCheckedChange={(checked) => setTheme(checked ? 'dark' : 'light')}
-                />
-                <Moon className="h-5 w-5" />
-            </div>
-          </CardContent>
-        </Card>
+      <div className="space-y-6">
+        <h1 className="font-headline text-3xl font-bold tracking-tight">{t[language].title}</h1>
+        
+        <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
+          <Card>
+              <CardHeader>
+                <CardTitle>{t[language].themeTitle}</CardTitle>
+                <CardDescription>{t[language].themeDesc}</CardDescription>
+              </CardHeader>
+              <CardContent>
+                <div className="flex items-center space-x-2">
+                    <Sun className="h-5 w-5" />
+                    <Switch
+                        id="theme-switch"
+                        checked={theme === 'dark'}
+                        onCheckedChange={(checked) => setTheme(checked ? 'dark' : 'light')}
+                    />
+                    <Moon className="h-5 w-5" />
+                </div>
+              </CardContent>
+            </Card>
 
-      <Card>
-          <CardHeader>
-            <CardTitle>{t[language].languageTitle}</CardTitle>
-            <CardDescription>{t[language].languageDesc}</CardDescription>
-          </CardHeader>
-          <CardContent>
-            <div className="w-full max-w-sm">
-              <Select value={language} onValueChange={(value) => setLanguage(value as 'en' | 'es')}>
-                <SelectTrigger>
-                  <SelectValue placeholder={t[language].selectLanguage} />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="en">{t[language].english}</SelectItem>
-                  <SelectItem value="es">{t[language].spanish}</SelectItem>
-                </SelectContent>
-              </Select>
-            </div>
-          </CardContent>
-        </Card>
+          <Card>
+              <CardHeader>
+                <CardTitle>{t[language].languageTitle}</CardTitle>
+                <CardDescription>{t[language].languageDesc}</CardDescription>
+              </CardHeader>
+              <CardContent>
+                <div className="w-full">
+                  <Select value={language} onValueChange={(value) => setLanguage(value as 'en' | 'es')}>
+                    <SelectTrigger>
+                      <SelectValue placeholder={t[language].selectLanguage} />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="en">{t[language].english}</SelectItem>
+                      <SelectItem value="es">{t[language].spanish}</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+              </CardContent>
+            </Card>
+        </div>
 
-      <Card>
-        <CardHeader>
-          <CardTitle>{t[language].backupImportTitle}</CardTitle>
-          <CardDescription>
-            {t[language].backupImportDesc}
-          </CardDescription>
-        </CardHeader>
-        <CardContent className="space-y-4">
-          <div className="flex flex-col gap-4 rounded-lg border p-4 md:flex-row md:items-center md:justify-between">
-            <div>
-              <h3 className="font-semibold">{t[language].createBackupTitle}</h3>
-              <p className="text-sm text-muted-foreground">{t[language].createBackupDesc}</p>
-            </div>
-            <Button onClick={handleCreateBackup}>
-              <FileDown className="mr-2 h-4 w-4" /> {t[language].createBackupBtn}
-            </Button>
-          </div>
-          <div className="flex flex-col gap-4 rounded-lg border p-4 md:flex-row md:items-center md:justify-between">
-             <div>
-              <h3 className="font-semibold">{t[language].importBackupTitle}</h3>
-              <p className="text-sm text-muted-foreground">{t[language].importBackupDesc}</p>
-            </div>
-            <div>
-              <Label htmlFor="backup-file" className="sr-only">{t[language].importBackupBtn}</Label>
-              <Input id="backup-file" type="file" accept=".json" onChange={handleFileChange} className="hidden" />
-              <Button onClick={() => document.getElementById('backup-file')?.click()}>
-                <FileUp className="mr-2 h-4 w-4" /> {t[language].importBackupBtn}
+        <Card>
+          <CardHeader>
+            <CardTitle>{t[language].backupImportTitle}</CardTitle>
+            <CardDescription>
+              {t[language].backupImportDesc}
+            </CardDescription>
+          </CardHeader>
+          <CardContent className="space-y-4">
+            <div className="flex flex-col gap-4 rounded-lg border p-4 md:flex-row md:items-center md:justify-between">
+              <div>
+                <h3 className="font-semibold">{t[language].createBackupTitle}</h3>
+                <p className="text-sm text-muted-foreground">{t[language].createBackupDesc}</p>
+              </div>
+              <Button onClick={handleCreateBackup}>
+                <FileDown className="mr-2 h-4 w-4" /> {t[language].createBackupBtn}
               </Button>
             </div>
-          </div>
-        </CardContent>
-      </Card>
-    </div>
+            <div className="flex flex-col gap-4 rounded-lg border p-4 md:flex-row md:items-center md:justify-between">
+               <div>
+                <h3 className="font-semibold">{t[language].importBackupTitle}</h3>
+                <p className="text-sm text-muted-foreground">{t[language].importBackupDesc}</p>
+              </div>
+              <div>
+                <Label htmlFor="backup-file" className="sr-only">{t[language].importBackupBtn}</Label>
+                <Input id="backup-file" type="file" accept=".json" onChange={handleFileChange} className="hidden" />
+                <Button onClick={() => document.getElementById('backup-file')?.click()}>
+                  <FileUp className="mr-2 h-4 w-4" /> {t[language].importBackupBtn}
+                </Button>
+              </div>
+            </div>
+          </CardContent>
+        </Card>
+      </div>
 
-    <AlertDialog open={showConfirmDialog} onOpenChange={setShowConfirmDialog}>
-        <AlertDialogContent>
-          <AlertDialogHeader>
-            <AlertDialogTitle>{t[language].confirmImportTitle}</AlertDialogTitle>
-            <AlertDialogDescription>
-              {t[language].confirmImportDesc}
-            </AlertDialogDescription>
-          </AlertDialogHeader>
-          <AlertDialogFooter>
-            <AlertDialogCancel onClick={() => setBackupFile(null)}>{t[language].cancel}</AlertDialogCancel>
-            <AlertDialogAction onClick={handleImport}>{t[language].continueImport}</AlertDialogAction>
-          </AlertDialogFooter>
-        </AlertDialogContent>
-      </AlertDialog>
-    </>
+      <AlertDialog open={showConfirmDialog} onOpenChange={setShowConfirmDialog}>
+          <AlertDialogContent>
+            <AlertDialogHeader>
+              <AlertDialogTitle>{t[language].confirmImportTitle}</AlertDialogTitle>
+              <AlertDialogDescription>
+                {t[language].confirmImportDesc}
+              </AlertDialogDescription>
+            </AlertDialogHeader>
+            <AlertDialogFooter>
+              <AlertDialogCancel onClick={() => setBackupFile(null)}>{t[language].cancel}</AlertDialogCancel>
+              <AlertDialogAction onClick={handleImport}>{t[language].continueImport}</AlertDialogAction>
+            </AlertDialogFooter>
+          </AlertDialogContent>
+        </AlertDialog>
+      </>
   );
 }
