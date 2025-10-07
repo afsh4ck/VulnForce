@@ -10,6 +10,7 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { useToast } from '@/hooks/use-toast';
 import { Progress } from '@/components/ui/progress';
+import { Eye, EyeOff } from 'lucide-react';
 
 export default function LoginPage() {
   const { user, login, setPassword, hasPassword } = useUser();
@@ -21,6 +22,11 @@ export default function LoginPage() {
   const [newPassword, setNewPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
   const [passwordStrength, setPasswordStrength] = useState({ score: 0, label: 'Muy Débil', color: 'bg-destructive' });
+
+  const [showPassword, setShowPassword] = useState(false);
+  const [showNewPassword, setShowNewPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+
 
   const t = {
     es: {
@@ -106,9 +112,6 @@ export default function LoginPage() {
     }
     setPassword(newPassword);
     toast({ title: t.es.passwordSetSuccess });
-    // Reset state to show login form
-    setNewPassword('');
-    setConfirmPassword('');
   };
 
   if (!hasPassword()) {
@@ -128,7 +131,16 @@ export default function LoginPage() {
                 </div>
                 <div className="space-y-2">
                     <Label htmlFor="new-password">{t.es.newPasswordLabel}</Label>
-                    <Input id="new-password" type="password" value={newPassword} onChange={handleNewPasswordChange} required />
+                    <div className="relative">
+                      <Input id="new-password" type={showNewPassword ? 'text' : 'password'} value={newPassword} onChange={handleNewPasswordChange} required />
+                       <div className="absolute inset-y-0 right-0 pr-3 flex items-center">
+                        {showNewPassword ? (
+                            <EyeOff className="h-5 w-5 text-gray-400 cursor-pointer" onClick={() => setShowNewPassword(false)} />
+                        ) : (
+                            <Eye className="h-5 w-5 text-gray-400 cursor-pointer" onClick={() => setShowNewPassword(true)} />
+                        )}
+                       </div>
+                    </div>
                 </div>
                 {newPassword.length > 0 && (
                     <div className="space-y-2">
@@ -138,7 +150,16 @@ export default function LoginPage() {
                 )}
                 <div className="space-y-2">
                     <Label htmlFor="confirm-password">{t.es.confirmPasswordLabel}</Label>
-                    <Input id="confirm-password" type="password" value={confirmPassword} onChange={(e) => setConfirmPassword(e.target.value)} required />
+                     <div className="relative">
+                        <Input id="confirm-password" type={showConfirmPassword ? 'text' : 'password'} value={confirmPassword} onChange={(e) => setConfirmPassword(e.target.value)} required />
+                        <div className="absolute inset-y-0 right-0 pr-3 flex items-center">
+                        {showConfirmPassword ? (
+                            <EyeOff className="h-5 w-5 text-gray-400 cursor-pointer" onClick={() => setShowConfirmPassword(false)} />
+                        ) : (
+                            <Eye className="h-5 w-5 text-gray-400 cursor-pointer" onClick={() => setShowConfirmPassword(true)} />
+                        )}
+                       </div>
+                    </div>
                 </div>
                 <Button type="submit" className="w-full !mt-6">{t.es.setPasswordButton}</Button>
                 </form>
@@ -164,7 +185,16 @@ export default function LoginPage() {
             </div>
             <div className="space-y-2">
               <Label htmlFor="password">{t.es.passwordLabel}</Label>
-              <Input id="password" type="password" value={password} onChange={(e) => setPasswordState(e.target.value)} required />
+               <div className="relative">
+                <Input id="password" type={showPassword ? 'text' : 'password'} value={password} onChange={(e) => setPasswordState(e.target.value)} required />
+                  <div className="absolute inset-y-0 right-0 pr-3 flex items-center">
+                    {showPassword ? (
+                        <EyeOff className="h-5 w-5 text-gray-400 cursor-pointer" onClick={() => setShowPassword(false)} />
+                    ) : (
+                        <Eye className="h-5 w-5 text-gray-400 cursor-pointer" onClick={() => setShowPassword(true)} />
+                    )}
+                  </div>
+              </div>
             </div>
             <Button type="submit" className="w-full !mt-8">{t.es.loginButton}</Button>
           </form>
