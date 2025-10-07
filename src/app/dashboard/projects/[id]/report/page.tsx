@@ -143,6 +143,9 @@ export default function ReportPreviewPage() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-3 flex justify-between items-center">
             <h1 className="font-headline text-2xl font-bold">{t[language].reportPreview}</h1>
              <div className="flex items-center gap-2">
+                <Button variant="outline" disabled>
+                    {t[language].downloadHTML}
+                </Button>
                 <Button onClick={handlePrint} disabled={todos.length > 0}>
                     <Printer className="mr-2 h-4 w-4" />
                     {t[language].downloadPDF}

@@ -247,7 +247,7 @@ export default function ProjectDetailsPage() {
         </div>
         <div className="flex gap-2">
             <Button variant="outline" asChild>
-                <Link href={`/dashboard/projects/${project.id}/report`} target="_blank">
+                <Link href={`/dashboard/projects/${project.id}/report`}>
                     <FileText className="mr-2 h-4 w-4" />{t[language].exportReport}
                 </Link>
             </Button>
