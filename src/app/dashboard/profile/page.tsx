@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState } from 'react';
+import React from 'react';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -9,14 +9,22 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { useToast } from '@/hooks/use-toast';
 import { useLanguage } from '@/context/language-context';
 import { Upload } from 'lucide-react';
+import { useUser } from '@/context/user-context';
 
 export default function ProfilePage() {
   const { toast } = useToast();
   const { language } = useLanguage();
-  const [name, setName] = useState('Auditor de Seguridad');
-  const [email, setEmail] = useState('auditor@vulnforce.local');
-  const [avatar, setAvatar] = useState('https://picsum.photos/seed/avatar/128/128');
+  const { user, setUser } = useUser();
+  const [name, setName] = React.useState(user.name);
+  const [email, setEmail] = React.useState(user.email);
+  const [avatar, setAvatar] = React.useState(user.avatar);
   const fileInputRef = React.useRef<HTMLInputElement>(null);
+  
+  React.useEffect(() => {
+    setName(user.name);
+    setEmail(user.email);
+    setAvatar(user.avatar);
+  }, [user]);
 
   const t = {
     en: {
@@ -53,7 +61,8 @@ export default function ProfilePage() {
        if (file.type.startsWith('image/')) {
         const reader = new FileReader();
         reader.onloadend = () => {
-          setAvatar(reader.result as string);
+          const newAvatar = reader.result as string;
+          setAvatar(newAvatar);
           toast({
             title: t[language].fileSelected,
           });
@@ -69,9 +78,7 @@ export default function ProfilePage() {
   };
 
   const handleSave = () => {
-    // Here you would typically save the data to a backend.
-    // For this demo, we'll just show a success message.
-    console.log('Saving profile:', { name, email, avatar });
+    setUser({ name, email, avatar });
     toast({
       title: t[language].success,
     });

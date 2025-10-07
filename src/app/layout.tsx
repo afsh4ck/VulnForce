@@ -4,6 +4,7 @@ import './globals.css';
 import { SidebarProvider } from '@/components/ui/sidebar';
 import { LanguageProvider } from '@/context/language-context';
 import { ThemeProvider } from '@/context/theme-context';
+import { UserProvider } from '@/context/user-context';
 
 export const metadata: Metadata = {
   title: 'VulnForce',
@@ -27,10 +28,12 @@ export default function RootLayout({
       <body className="font-body antialiased">
         <ThemeProvider>
           <LanguageProvider>
-            <SidebarProvider>
-              {children}
-              <Toaster />
-            </SidebarProvider>
+            <UserProvider>
+              <SidebarProvider>
+                {children}
+                <Toaster />
+              </SidebarProvider>
+            </UserProvider>
           </LanguageProvider>
         </ThemeProvider>
       </body>

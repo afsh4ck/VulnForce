@@ -11,13 +11,13 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { PlaceHolderImages } from "@/lib/placeholder-images";
 import { useLanguage } from "@/context/language-context";
 import Link from "next/link";
+import { useUser } from "@/context/user-context";
 
 export function UserNav() {
-    const userAvatar = PlaceHolderImages.find(img => img.imageHint.includes("person"));
     const { language } = useLanguage();
+    const { user } = useUser();
 
     const t = {
       en: {
@@ -37,17 +37,17 @@ export function UserNav() {
       <DropdownMenuTrigger asChild>
         <Button variant="ghost" className="relative h-8 w-8 rounded-full">
           <Avatar className="h-8 w-8">
-            <AvatarImage src="https://picsum.photos/seed/avatar/40/40" alt="@shadcn" data-ai-hint="person avatar" />
-            <AvatarFallback>VF</AvatarFallback>
+            <AvatarImage src={user.avatar} alt={user.name} data-ai-hint="person avatar" />
+            <AvatarFallback>{user.name.charAt(0)}</AvatarFallback>
           </Avatar>
         </Button>
       </DropdownMenuTrigger>
       <DropdownMenuContent className="w-56" align="end" forceMount>
         <DropdownMenuLabel className="font-normal">
           <div className="flex flex-col space-y-1">
-            <p className="text-sm font-medium leading-none">Auditor de Seguridad</p>
+            <p className="text-sm font-medium leading-none">{user.name}</p>
             <p className="text-xs leading-none text-muted-foreground">
-              auditor@vulnforce.local
+              {user.email}
             </p>
           </div>
         </DropdownMenuLabel>
