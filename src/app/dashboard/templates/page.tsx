@@ -40,16 +40,10 @@ export default function TemplatesPage() {
                 <CardTitle>{language === 'es' ? template.name_es : template.name_en}</CardTitle>
               </div>
             </CardHeader>
-            <CardContent className="flex-grow space-y-4">
+            <CardContent className="flex-grow">
               <p className="text-sm text-muted-foreground">
                 {language === 'es' ? template.description_es : template.description_en}
               </p>
-              <div>
-                <h4 className="mb-1 text-sm font-semibold">{language === 'es' ? 'Alcance de ejemplo:' : 'Example Scope:'}</h4>
-                <pre className="font-code text-xs rounded-md bg-muted p-2 whitespace-pre-wrap">
-                  {template.scope}
-                </pre>
-              </div>
             </CardContent>
             <CardFooter>
               <Button asChild className="w-full">

@@ -45,8 +45,8 @@ Specific Servers:
   },
   {
     id: 'cpts-template',
-    name_en: 'CPTS Certification Report by Hack The Box',
-    name_es: 'Informe de Certificación CPTS por Hack The Box',
+    name_en: 'Certification Report',
+    name_es: 'Informe de Certificación',
     description_en: 'A detailed template for the Certified Penetration Testing Specialist (CPTS) certification report. It includes all necessary sections to pass the exam.',
     description_es: 'Una plantilla detallada para el informe de la certificación Certified Penetration Testing Specialist (CPTS). Incluye todas las secciones necesarias para aprobar el examen.',
     scope: 
