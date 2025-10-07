@@ -23,6 +23,7 @@ import { Label } from "@/components/ui/label";
 import { useLanguage } from "@/context/language-context";
 import type { Client } from '@/lib/types';
 import { useToast } from '@/hooks/use-toast';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 
 type SortKey = keyof Client;
 
@@ -43,11 +44,15 @@ export default function ClientsPage() {
   const [editingClient, setEditingClient] = useState<Client | null>(null);
   const [editClientName, setEditClientName] = useState('');
   const [editClientContact, setEditClientContact] = useState('');
+  const [editClientLogo, setEditClientLogo] = useState('');
+  const [editClientLanguage, setEditClientLanguage] = useState<'en' | 'es'>('en');
 
   useEffect(() => {
     if (editingClient) {
       setEditClientName(editingClient.name);
       setEditClientContact(editingClient.contact);
+      setEditClientLogo(editingClient.logoUrl);
+      setEditClientLanguage(editingClient.language);
     }
   }, [editingClient]);
 
@@ -68,7 +73,7 @@ export default function ClientsPage() {
 
     setClients(clients.map(c => 
       c.id === editingClient.id 
-        ? { ...c, name: editClientName, contact: editClientContact } 
+        ? { ...c, name: editClientName, contact: editClientContact, logoUrl: editClientLogo, language: editClientLanguage } 
         : c
     ));
 
@@ -173,7 +178,13 @@ export default function ClientsPage() {
       contactHeader: "Contact",
       languageHeader: "Language",
       actionsHeader: "Actions",
-      edit: "Edit"
+      edit: "Edit",
+      logoLabel: "Logo",
+      selectLogo: "Select a logo",
+      languageLabel: "Language",
+      selectLanguage: "Select Language",
+      english: "English",
+      spanish: "Spanish"
     },
     es: {
       title: "Clientes",
@@ -194,7 +205,13 @@ export default function ClientsPage() {
       contactHeader: "Contacto",
       languageHeader: "Idioma",
       actionsHeader: "Acciones",
-      edit: "Editar"
+      edit: "Editar",
+      logoLabel: "Logo",
+      selectLogo: "Selecciona un logo",
+      languageLabel: "Idioma",
+      selectLanguage: "Selecciona un Idioma",
+      english: "Inglés",
+      spanish: "Español"
     }
   }
 
@@ -302,6 +319,36 @@ export default function ClientsPage() {
             <div className="grid grid-cols-4 items-center gap-4">
               <Label htmlFor="edit-contact" className="text-right">{t[language].contactLabel}</Label>
               <Input id="edit-contact" placeholder={t[language].contactPlaceholder} className="col-span-3" value={editClientContact} onChange={(e) => setEditClientContact(e.target.value)} />
+            </div>
+            <div className="grid grid-cols-4 items-center gap-4">
+              <Label htmlFor="edit-language" className="text-right">{t[language].languageLabel}</Label>
+              <Select value={editClientLanguage} onValueChange={(value) => setEditClientLanguage(value as 'en' | 'es')}>
+                <SelectTrigger className="col-span-3">
+                  <SelectValue placeholder={t[language].selectLanguage} />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="en">{t[language].english}</SelectItem>
+                  <SelectItem value="es">{t[language].spanish}</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+            <div className="grid grid-cols-4 items-center gap-4">
+              <Label htmlFor="edit-logo" className="text-right">{t[language].logoLabel}</Label>
+              <Select value={editClientLogo} onValueChange={setEditClientLogo}>
+                <SelectTrigger className="col-span-3">
+                  <SelectValue placeholder={t[language].selectLogo} />
+                </SelectTrigger>
+                <SelectContent>
+                  {PlaceHolderImages.map(img => (
+                    <SelectItem key={img.id} value={img.id}>
+                      <div className='flex items-center gap-2'>
+                        <Image src={img.imageUrl} alt={img.description} width={24} height={24} className='rounded-sm' />
+                        <span>{img.description}</span>
+                      </div>
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
             </div>
           </div>
           <DialogFooter>
