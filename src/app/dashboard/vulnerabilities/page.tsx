@@ -19,20 +19,27 @@ import {
 } from "@/components/ui/table";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent } from "@/components/ui/card";
-import { Search, Pencil, PlusCircle, ArrowUpDown } from "lucide-react";
+import { Search, Pencil, PlusCircle, ArrowUpDown, Edit, Trash2 } from "lucide-react";
 import { vulnerabilities as allVulnerabilities } from "@/lib/data";
 import { useLanguage } from "@/context/language-context";
 import Link from 'next/link';
 import { Button } from "@/components/ui/button";
 import type { Vulnerability, Severity } from '@/lib/types';
+import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from '@/components/ui/alert-dialog';
+import { useToast } from '@/hooks/use-toast';
+import { useRouter } from 'next/navigation';
 
 type SortKey = keyof Vulnerability | 'cvssScore';
 
 export default function VulnerabilitiesPage() {
   const { language } = useLanguage();
+  const { toast } = useToast();
+  const router = useRouter();
   const [searchTerm, setSearchTerm] = useState('');
   const [severityFilter, setSeverityFilter] = useState<Severity | 'all'>('all');
   const [sortConfig, setSortConfig] = useState<{ key: SortKey; direction: 'ascending' | 'descending' } | null>(null);
+  const [vulnerabilities, setVulnerabilities] = useState(allVulnerabilities);
+  const [vulnerabilityToDelete, setVulnerabilityToDelete] = useState<Vulnerability | null>(null);
 
   const getSeverityVariant = (severity: string) => {
     switch (severity) {
@@ -44,11 +51,23 @@ export default function VulnerabilitiesPage() {
     }
   }
 
+  const handleDeleteVulnerability = () => {
+    if (!vulnerabilityToDelete) return;
+    setVulnerabilities(vulnerabilities.filter(v => v.id !== vulnerabilityToDelete.id));
+    toast({ title: t[language].vulnerabilityDeleted });
+    setVulnerabilityToDelete(null);
+  };
+
+  const handleEditVulnerability = (vulnerabilityId: string) => {
+    router.push(`/dashboard/vulnerabilities/${vulnerabilityId}`);
+  };
+
   const sortedAndFilteredVulnerabilities = useMemo(() => {
-    let filtered = allVulnerabilities.filter(vuln => {
+    let filtered = vulnerabilities.filter(vuln => {
       const term = searchTerm.toLowerCase();
       const severityMatch = severityFilter === 'all' || vuln.severity === severityFilter;
       const searchMatch = vuln.title_en.toLowerCase().includes(term) ||
+                          (vuln.title_es && vuln.title_es.toLowerCase().includes(term)) ||
                           vuln.cwe.toLowerCase().includes(term) ||
                           vuln.tags.some(tag => tag.toLowerCase().includes(term));
       return severityMatch && searchMatch;
@@ -60,7 +79,11 @@ export default function VulnerabilitiesPage() {
         if (sortConfig.key === 'cvssScore') {
           aValue = a.cvss.score;
           bValue = b.cvss.score;
-        } else {
+        } else if (sortConfig.key === 'title_en') {
+            aValue = language === 'es' ? a.title_es : a.title_en;
+            bValue = language === 'es' ? b.title_es : b.title_en;
+        }
+        else {
           aValue = a[sortConfig.key as keyof Vulnerability];
           bValue = b[sortConfig.key as keyof Vulnerability];
         }
@@ -76,7 +99,7 @@ export default function VulnerabilitiesPage() {
     }
 
     return filtered;
-  }, [searchTerm, severityFilter, sortConfig, allVulnerabilities]);
+  }, [searchTerm, severityFilter, sortConfig, vulnerabilities, language]);
 
   const requestSort = (key: SortKey) => {
     let direction: 'ascending' | 'descending' = 'ascending';
@@ -110,7 +133,12 @@ export default function VulnerabilitiesPage() {
       tableReference: "CWE",
       tableActions: "Actions",
       edit: "Edit",
-      newVulnerability: "New Vulnerability"
+      delete: "Delete",
+      newVulnerability: "New Vulnerability",
+      confirmDeleteTitle: "Are you sure?",
+      confirmDeleteDesc: "This action cannot be undone. This will permanently delete the vulnerability template.",
+      cancel: "Cancel",
+      vulnerabilityDeleted: "Vulnerability deleted successfully."
     },
     es: {
       title: "Base de Datos de Vulnerabilidades",
@@ -128,11 +156,17 @@ export default function VulnerabilitiesPage() {
       tableReference: "CWE",
       tableActions: "Acciones",
       edit: "Editar",
-      newVulnerability: "Nueva Vulnerabilidad"
+      delete: "Eliminar",
+      newVulnerability: "Nueva Vulnerabilidad",
+      confirmDeleteTitle: "¿Estás seguro?",
+      confirmDeleteDesc: "Esta acción no se puede deshacer. Esto eliminará permanentemente la plantilla de vulnerabilidad.",
+      cancel: "Cancelar",
+      vulnerabilityDeleted: "Vulnerabilidad eliminada correctamente."
     }
   }
 
   return (
+    <>
     <div className="space-y-6">
        <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
          <h1 className="font-headline text-3xl font-bold tracking-tight">{t[language].title}</h1>
@@ -194,19 +228,27 @@ export default function VulnerabilitiesPage() {
             <TableBody>
               {sortedAndFilteredVulnerabilities.map((vuln) => (
                 <TableRow key={vuln.id}>
-                  <TableCell className="font-medium">{vuln.title_en}</TableCell>
+                  <TableCell className="font-medium">
+                     <Link href={`/dashboard/vulnerabilities/${vuln.id}`} className="hover:underline">
+                        {language === 'es' ? vuln.title_es : vuln.title_en}
+                     </Link>
+                  </TableCell>
                   <TableCell>
                     <Badge variant={getSeverityVariant(vuln.severity) as any}>{vuln.severity}</Badge>
                   </TableCell>
                   <TableCell>{vuln.cvss.score.toFixed(1)}</TableCell>
                   <TableCell className="font-code text-sm text-muted-foreground">{vuln.cwe}</TableCell>
                   <TableCell className="text-right">
-                    <Button variant="ghost" size="sm" asChild>
-                      <Link href={`/dashboard/vulnerabilities/${vuln.id}`}>
-                        <Pencil className="mr-2 h-4 w-4" />
-                        {t[language].edit}
-                      </Link>
-                    </Button>
+                    <div className="flex justify-end gap-2">
+                         <Button variant="ghost" size="icon" onClick={() => handleEditVulnerability(vuln.id)}>
+                           <Edit className="h-4 w-4" />
+                           <span className="sr-only">{t[language].edit}</span>
+                        </Button>
+                        <Button variant="ghost" size="icon" onClick={() => setVulnerabilityToDelete(vuln)} className="text-destructive hover:bg-destructive hover:text-destructive-foreground">
+                           <Trash2 className="h-4 w-4" />
+                           <span className="sr-only">{t[language].delete}</span>
+                        </Button>
+                    </div>
                   </TableCell>
                 </TableRow>
               ))}
@@ -215,5 +257,19 @@ export default function VulnerabilitiesPage() {
         </CardContent>
       </Card>
     </div>
+
+     <AlertDialog open={!!vulnerabilityToDelete} onOpenChange={() => setVulnerabilityToDelete(null)}>
+        <AlertDialogContent>
+            <AlertDialogHeader>
+                <AlertDialogTitle>{t[language].confirmDeleteTitle}</AlertDialogTitle>
+                <AlertDialogDescription>{t[language].confirmDeleteDesc}</AlertDialogDescription>
+            </AlertDialogHeader>
+            <AlertDialogFooter>
+                <AlertDialogCancel>{t[language].cancel}</AlertDialogCancel>
+                <AlertDialogAction onClick={handleDeleteVulnerability}>{t[language].delete}</AlertDialogAction>
+            </AlertDialogFooter>
+        </AlertDialogContent>
+    </AlertDialog>
+    </>
   );
 }
