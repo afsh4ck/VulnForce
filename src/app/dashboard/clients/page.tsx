@@ -1,13 +1,12 @@
 'use client';
 
-import React, { useState, useMemo, useEffect } from 'react';
+import React, { useState, useMemo, useEffect, useRef } from 'react';
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
-import { PlusCircle, Search, ArrowUpDown } from "lucide-react";
+import { PlusCircle, Search, ArrowUpDown, Upload } from "lucide-react";
 import { clients as allClients } from "@/lib/data";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { PlaceHolderImages } from "@/lib/placeholder-images";
 import Image from "next/image";
 import { Input } from "@/components/ui/input";
 import {
@@ -24,6 +23,7 @@ import { useLanguage } from "@/context/language-context";
 import type { Client } from '@/lib/types';
 import { useToast } from '@/hooks/use-toast';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { Logo } from '@/components/logo';
 
 type SortKey = keyof Client;
 
@@ -39,24 +39,46 @@ export default function ClientsPage() {
   const [newClientName, setNewClientName] = useState('');
   const [newClientContact, setNewClientContact] = useState('');
   const [newClientLanguage, setNewClientLanguage] = useState<'en' | 'es'>('en');
-  const [newClientLogo, setNewClientLogo] = useState('');
+  const [newClientLogo, setNewClientLogo] = useState<string | null>(null);
+  const createFileInputRef = useRef<HTMLInputElement>(null);
+
 
   // State for editing a client
   const [isEditDialogOpen, setIsEditDialogOpen] = useState(false);
   const [editingClient, setEditingClient] = useState<Client | null>(null);
   const [editClientName, setEditClientName] = useState('');
   const [editClientContact, setEditClientContact] = useState('');
-  const [editClientLogo, setEditClientLogo] = useState('');
+  const [editClientLogo, setEditClientLogo] = useState<string | null>(null);
   const [editClientLanguage, setEditClientLanguage] = useState<'en' | 'es'>('en');
+  const editFileInputRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
     if (editingClient) {
       setEditClientName(editingClient.name);
       setEditClientContact(editingClient.contact);
-      setEditClientLogo(editingClient.logoUrl);
+      setEditClientLogo(editingClient.logoUrl || null);
       setEditClientLanguage(editingClient.language);
     }
   }, [editingClient]);
+  
+  const handleLogoChange = (e: React.ChangeEvent<HTMLInputElement>, setLogo: (logo: string | null) => void) => {
+    if (e.target.files && e.target.files[0]) {
+      const file = e.target.files[0];
+      if (file.type.startsWith('image/')) {
+        const reader = new FileReader();
+        reader.onloadend = () => {
+          setLogo(reader.result as string);
+        };
+        reader.readAsDataURL(file);
+      } else {
+        toast({
+          variant: 'destructive',
+          title: 'Invalid file type',
+          description: 'Please select an image file.',
+        });
+      }
+    }
+  };
 
   const handleEditClick = (client: Client) => {
     setEditingClient(client);
@@ -75,7 +97,7 @@ export default function ClientsPage() {
 
     setClients(clients.map(c => 
       c.id === editingClient.id 
-        ? { ...c, name: editClientName, contact: editClientContact, logoUrl: editClientLogo, language: editClientLanguage } 
+        ? { ...c, name: editClientName, contact: editClientContact, logoUrl: editClientLogo || '', language: editClientLanguage } 
         : c
     ));
 
@@ -103,7 +125,7 @@ export default function ClientsPage() {
       id: `cli-${Date.now()}`,
       name: newClientName,
       contact: newClientContact,
-      logoUrl: newClientLogo || `client-logo-${(clients.length % 4) + 1}`,
+      logoUrl: newClientLogo || '',
       language: newClientLanguage, 
     };
 
@@ -117,15 +139,9 @@ export default function ClientsPage() {
     setNewClientName('');
     setNewClientContact('');
     setNewClientLanguage('en');
-    setNewClientLogo('');
+    setNewClientLogo(null);
     setIsCreateDialogOpen(false);
   };
-
-
-  const getLogo = (logoUrl: string) => {
-    const image = PlaceHolderImages.find(img => img.id === logoUrl);
-    return image ? image.imageUrl : `https://picsum.photos/seed/${logoUrl}/40/40`;
-  }
 
   const sortedAndFilteredClients = useMemo(() => {
     let filteredClients = clients.filter(client =>
@@ -184,7 +200,7 @@ export default function ClientsPage() {
       actionsHeader: "Actions",
       edit: "Edit",
       logoLabel: "Logo",
-      selectLogo: "Select a logo",
+      uploadLogo: "Upload Logo",
       languageLabel: "Language",
       selectLanguage: "Select Language",
       english: "English",
@@ -211,7 +227,7 @@ export default function ClientsPage() {
       actionsHeader: "Acciones",
       edit: "Editar",
       logoLabel: "Logo",
-      selectLogo: "Selecciona un logo",
+      uploadLogo: "Subir Logo",
       languageLabel: "Idioma",
       selectLanguage: "Selecciona un Idioma",
       english: "Inglés",
@@ -269,21 +285,23 @@ export default function ClientsPage() {
                 </div>
                 <div className="grid grid-cols-4 items-center gap-4">
                   <Label htmlFor="new-logo" className="text-right">{t[language].logoLabel}</Label>
-                  <Select value={newClientLogo} onValueChange={setNewClientLogo}>
-                    <SelectTrigger className="col-span-3">
-                      <SelectValue placeholder={t[language].selectLogo} />
-                    </SelectTrigger>
-                    <SelectContent>
-                      {PlaceHolderImages.map(img => (
-                        <SelectItem key={img.id} value={img.id}>
-                          <div className='flex items-center gap-2'>
-                            <Image src={img.imageUrl} alt={img.description} width={24} height={24} className='rounded-sm' />
-                            <span>{img.description}</span>
-                          </div>
-                        </SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
+                   <div className="col-span-3 flex items-center gap-4">
+                     <Avatar className="h-10 w-10">
+                        {newClientLogo ? <AvatarImage src={newClientLogo} /> : <Logo className="h-full w-full p-1" />}
+                        <AvatarFallback>{newClientName.charAt(0)}</AvatarFallback>
+                      </Avatar>
+                    <input
+                        type="file"
+                        ref={createFileInputRef}
+                        onChange={(e) => handleLogoChange(e, setNewClientLogo)}
+                        className="hidden"
+                        accept="image/*"
+                    />
+                    <Button variant="outline" onClick={() => createFileInputRef.current?.click()}>
+                        <Upload className="mr-2 h-4 w-4" />
+                        {t[language].uploadLogo}
+                    </Button>
+                  </div>
                 </div>
               </div>
               <DialogFooter>
@@ -317,9 +335,12 @@ export default function ClientsPage() {
                 <TableRow key={client.id}>
                   <TableCell>
                     <Avatar className="h-10 w-10">
-                      <AvatarImage asChild src={getLogo(client.logoUrl)}>
-                         <Image src={getLogo(client.logoUrl)} alt={client.name} width={40} height={40} data-ai-hint="abstract logo" />
-                      </AvatarImage>
+                       {client.logoUrl ? 
+                        <AvatarImage asChild src={client.logoUrl}>
+                            <Image src={client.logoUrl} alt={client.name} width={40} height={40} data-ai-hint="abstract logo" />
+                        </AvatarImage>
+                        : <Logo className="h-full w-full p-1"/>
+                       }
                       <AvatarFallback>{client.name.charAt(0)}</AvatarFallback>
                     </Avatar>
                   </TableCell>
@@ -368,21 +389,23 @@ export default function ClientsPage() {
             </div>
             <div className="grid grid-cols-4 items-center gap-4">
               <Label htmlFor="edit-logo" className="text-right">{t[language].logoLabel}</Label>
-              <Select value={editClientLogo} onValueChange={setEditClientLogo}>
-                <SelectTrigger className="col-span-3">
-                  <SelectValue placeholder={t[language].selectLogo} />
-                </SelectTrigger>
-                <SelectContent>
-                  {PlaceHolderImages.map(img => (
-                    <SelectItem key={img.id} value={img.id}>
-                      <div className='flex items-center gap-2'>
-                        <Image src={img.imageUrl} alt={img.description} width={24} height={24} className='rounded-sm' />
-                        <span>{img.description}</span>
-                      </div>
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
+              <div className="col-span-3 flex items-center gap-4">
+                  <Avatar className="h-10 w-10">
+                    {editClientLogo ? <AvatarImage src={editClientLogo} /> : <Logo className="h-full w-full p-1" />}
+                    <AvatarFallback>{editClientName.charAt(0)}</AvatarFallback>
+                  </Avatar>
+                  <input
+                    type="file"
+                    ref={editFileInputRef}
+                    onChange={(e) => handleLogoChange(e, setEditClientLogo)}
+                    className="hidden"
+                    accept="image/*"
+                  />
+                  <Button variant="outline" onClick={() => editFileInputRef.current?.click()}>
+                    <Upload className="mr-2 h-4 w-4" />
+                    {t[language].uploadLogo}
+                  </Button>
+              </div>
             </div>
           </div>
           <DialogFooter>
@@ -394,3 +417,5 @@ export default function ClientsPage() {
     </div>
   )
 }
+
+    

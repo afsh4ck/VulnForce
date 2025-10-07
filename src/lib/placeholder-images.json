@@ -1,28 +1,3 @@
 {
-  "placeholderImages": [
-    {
-      "id": "client-logo-1",
-      "description": "Abstract logo for a tech company",
-      "imageUrl": "https://images.unsplash.com/photo-1744390166851-82056c6552d0?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw4fHxhYnN0cmFjdCUyMGxvZ298ZW58MHx8fHwxNzU5Njc0NzgwfDA&ixlib=rb-4.1.0&q=80&w=1080",
-      "imageHint": "abstract logo"
-    },
-    {
-      "id": "client-logo-2",
-      "description": "Geometric logo for a finance firm",
-      "imageUrl": "https://images.unsplash.com/photo-1729830375022-b0248100c501?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw5fHxnZW9tZXRyaWMlMjBsb2dvfGVufDB8fHx8MTc1OTY5MDQ0MHww&ixlib=rb-4.1.0&q=80&w=1080",
-      "imageHint": "geometric logo"
-    },
-    {
-      "id": "client-logo-3",
-      "description": "Minimalist logo for a startup",
-      "imageUrl": "https://images.unsplash.com/photo-1630853141912-56e04572079f?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw3fHxtaW5pbWFsaXN0JTIwbG9nb3xlbnwwfHx8fDE3NTk3MDM1NjR8MA&ixlib=rb-4.1.0&q=80&w=1080",
-      "imageHint": "minimalist logo"
-    },
-    {
-      "id": "client-logo-4",
-      "description": "Elegant logo for a healthcare provider",
-      "imageUrl": "https://images.unsplash.com/photo-1697797390907-b6455bd2a347?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw5fHxlbGVnYW50JTIwbG9nb3xlbnwwfHx8fDE3NTk3MTc0MDR8MA&ixlib=rb-4.1.0&q=80&w=1080",
-      "imageHint": "elegant logo"
-    }
-  ]
+  "placeholderImages": []
 }
