@@ -1,12 +1,12 @@
 'use client';
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { FileDown, FileUp, Languages, Moon, Sun } from "lucide-react";
+import { FileDown, FileUp, Languages, Moon, Sun, KeyRound } from "lucide-react";
 import { clients, projects, findings, vulnerabilities } from '@/lib/data';
 import { useToast } from "@/hooks/use-toast";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import React from "react";
+import React, { useState } from "react";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -21,6 +21,7 @@ import { useLanguage } from "@/context/language-context";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { useTheme } from "@/context/theme-context";
 import { Switch } from "@/components/ui/switch";
+import { useUser } from "@/context/user-context";
 
 export default function SettingsPage() {
   const { toast } = useToast();
@@ -28,6 +29,11 @@ export default function SettingsPage() {
   const [backupFile, setBackupFile] = React.useState<File | null>(null);
   const { language, setLanguage } = useLanguage();
   const { theme, setTheme } = useTheme();
+  const { changePassword } = useUser();
+
+  const [currentPassword, setCurrentPassword] = useState('');
+  const [newPassword, setNewPassword] = useState('');
+  const [confirmNewPassword, setConfirmNewPassword] = useState('');
 
   const t = {
     en: {
@@ -60,7 +66,16 @@ export default function SettingsPage() {
       themeTitle: "Appearance",
       themeDesc: "Switch between light and dark mode.",
       light: "Light",
-      dark: "Dark"
+      dark: "Dark",
+      changePasswordTitle: "Change Password",
+      changePasswordDesc: "Update your account password.",
+      currentPasswordLabel: "Current Password",
+      newPasswordLabel: "New Password",
+      confirmNewPasswordLabel: "Confirm New Password",
+      updatePasswordBtn: "Update Password",
+      passwordUpdateSuccess: "Password updated successfully!",
+      passwordUpdateError: "Could not update password. Check your current password.",
+      passwordMismatch: "New passwords do not match.",
     },
     es: {
       title: "Ajustes",
@@ -92,7 +107,16 @@ export default function SettingsPage() {
       themeTitle: "Apariencia",
       themeDesc: "Cambia entre el modo claro y oscuro.",
       light: "Claro",
-      dark: "Oscuro"
+      dark: "Oscuro",
+      changePasswordTitle: "Cambiar Contraseña",
+      changePasswordDesc: "Actualiza la contraseña de tu cuenta.",
+      currentPasswordLabel: "Contraseña Actual",
+      newPasswordLabel: "Nueva Contraseña",
+      confirmNewPasswordLabel: "Confirmar Nueva Contraseña",
+      updatePasswordBtn: "Actualizar Contraseña",
+      passwordUpdateSuccess: "¡Contraseña actualizada correctamente!",
+      passwordUpdateError: "No se pudo actualizar la contraseña. Verifica tu contraseña actual.",
+      passwordMismatch: "Las nuevas contraseñas no coinciden.",
     }
   }
 
@@ -169,6 +193,21 @@ export default function SettingsPage() {
     };
     reader.readAsText(backupFile);
   };
+  
+  const handlePasswordChange = () => {
+    if (newPassword !== confirmNewPassword) {
+      toast({ variant: 'destructive', title: t[language].passwordMismatch });
+      return;
+    }
+    if (changePassword(currentPassword, newPassword)) {
+      toast({ title: t[language].passwordUpdateSuccess });
+      setCurrentPassword('');
+      setNewPassword('');
+      setConfirmNewPassword('');
+    } else {
+      toast({ variant: 'destructive', title: t[language].passwordUpdateError });
+    }
+  };
 
 
   return (
@@ -215,6 +254,32 @@ export default function SettingsPage() {
               </CardContent>
             </Card>
         </div>
+
+        <Card>
+            <CardHeader>
+                <CardTitle>{t[language].changePasswordTitle}</CardTitle>
+                <CardDescription>{t[language].changePasswordDesc}</CardDescription>
+            </CardHeader>
+            <CardContent className="space-y-4">
+                <div className="space-y-2">
+                    <Label htmlFor="current-password">{t[language].currentPasswordLabel}</Label>
+                    <Input id="current-password" type="password" value={currentPassword} onChange={(e) => setCurrentPassword(e.target.value)} />
+                </div>
+                <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
+                    <div className="space-y-2">
+                        <Label htmlFor="new-password">{t[language].newPasswordLabel}</Label>
+                        <Input id="new-password" type="password" value={newPassword} onChange={(e) => setNewPassword(e.target.value)} />
+                    </div>
+                    <div className="space-y-2">
+                        <Label htmlFor="confirm-new-password">{t[language].confirmNewPasswordLabel}</Label>
+                        <Input id="confirm-new-password" type="password" value={confirmNewPassword} onChange={(e) => setConfirmNewPassword(e.target.value)} />
+                    </div>
+                </div>
+                 <div className="flex justify-end">
+                    <Button onClick={handlePasswordChange}><KeyRound className="mr-2" />{t[language].updatePasswordBtn}</Button>
+                </div>
+            </CardContent>
+        </Card>
 
         <Card>
           <CardHeader>

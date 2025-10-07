@@ -17,7 +17,7 @@ export default function LoginPage() {
   const router = useRouter();
   const { toast } = useToast();
   
-  const [username, setUsername] = useState(user.name);
+  const [username, setUsername] = useState('Pentester');
   const [password, setPasswordState] = useState('');
   const [newPassword, setNewPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
@@ -89,6 +89,14 @@ export default function LoginPage() {
 
   const handleLogin = (e: React.FormEvent) => {
     e.preventDefault();
+    if (!hasPassword()) {
+        toast({
+            variant: 'destructive',
+            title: t.es.setupTitle,
+            description: t.es.setupDescription,
+        });
+        return;
+    }
     if (login(username, password)) {
       router.push('/dashboard');
     } else {
@@ -110,7 +118,7 @@ export default function LoginPage() {
       toast({ variant: 'destructive', title: t.es.passwordMismatch });
       return;
     }
-    setPassword(newPassword);
+    setPassword(username, newPassword);
     toast({ title: t.es.passwordSetSuccess });
   };
 

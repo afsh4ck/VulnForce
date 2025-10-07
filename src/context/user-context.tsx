@@ -29,8 +29,9 @@ interface UserContextType {
   setUser: (user: User) => void;
   logout: () => void;
   login: (name: string, pass: string) => boolean;
-  setPassword: (pass: string) => void;
+  setPassword: (name: string, pass: string) => void;
   hasPassword: () => boolean;
+  changePassword: (oldPass: string, newPass: string) => boolean;
 }
 
 const UserContext = createContext<UserContextType | undefined>(undefined);
@@ -76,26 +77,37 @@ export function UserProvider({ children }: { children: ReactNode }) {
   
   const logout = () => {
     sessionStorage.removeItem('vulnforce-authenticated');
-    localStorage.removeItem('vulnforce-user');
-    setUserState(defaultUser);
+    // We don't remove the user from localStorage so the username/password is persisted
     router.push('/');
   };
 
   const login = (name: string, pass: string): boolean => {
     const passHash = simpleHash(pass);
-    if (user.name === name && user.passwordHash === passHash) {
+    if (user.name.toLowerCase() === name.toLowerCase() && user.passwordHash === passHash) {
       sessionStorage.setItem('vulnforce-authenticated', 'true');
       return true;
     }
     return false;
   };
 
-  const setPassword = (pass: string) => {
+  const setPassword = (name: string, pass: string) => {
     const passHash = simpleHash(pass);
-    const updatedUser = { ...user, passwordHash: passHash };
+    const email = `${name.toLowerCase().replace(/\s/g, '.')}@vulnforce.local`;
+    const updatedUser = { ...user, name, email, passwordHash: passHash };
     localStorage.setItem('vulnforce-user', JSON.stringify(updatedUser));
     setUserState(updatedUser);
   };
+  
+  const changePassword = (oldPass: string, newPass: string): boolean => {
+    if (user.passwordHash !== simpleHash(oldPass)) {
+      return false;
+    }
+    const newHash = simpleHash(newPass);
+    const updatedUser = { ...user, passwordHash: newHash };
+    localStorage.setItem('vulnforce-user', JSON.stringify(updatedUser));
+    setUserState(updatedUser);
+    return true;
+  }
   
   const hasPassword = () => !!user.passwordHash;
   
@@ -104,7 +116,7 @@ export function UserProvider({ children }: { children: ReactNode }) {
   }
 
   return (
-    <UserContext.Provider value={{ user, setUser, logout, login, setPassword, hasPassword }}>
+    <UserContext.Provider value={{ user, setUser, logout, login, setPassword, hasPassword, changePassword }}>
       {children}
     </UserContext.Provider>
   );
