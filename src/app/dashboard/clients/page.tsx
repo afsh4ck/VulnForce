@@ -4,7 +4,7 @@ import React, { useState, useMemo, useEffect, useRef } from 'react';
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
-import { PlusCircle, Search, ArrowUpDown, Upload, Edit, Trash2, MoreHorizontal } from "lucide-react";
+import { PlusCircle, Search, ArrowUpDown, Upload, Edit, Trash2 } from "lucide-react";
 import { clients as allClients } from "@/lib/data";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import Image from "next/image";
@@ -24,7 +24,6 @@ import type { Client } from '@/lib/types';
 import { useToast } from '@/hooks/use-toast';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from "@/components/ui/alert-dialog";
-import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '@/components/ui/dropdown-menu';
 
 
 type SortKey = keyof Client;
@@ -308,7 +307,7 @@ export default function ClientsPage() {
                   <Label htmlFor="new-logo" className="text-right">{t[language].logoLabel}</Label>
                    <div className="col-span-3 flex items-center gap-4">
                      <Avatar className="h-10 w-10">
-                        {newClientLogo ? <AvatarImage src={newClientLogo} /> : <AvatarFallback>{newClientName.charAt(0)}</AvatarFallback>}
+                        {newClientLogo ? <AvatarImage src={newClientLogo} /> : <AvatarFallback>{newClientName ? newClientName.charAt(0) : '?'}</AvatarFallback>}
                       </Avatar>
                     <input
                         type="file"
@@ -365,24 +364,16 @@ export default function ClientsPage() {
                   <TableCell className="text-muted-foreground">{client.contact}</TableCell>
                   <TableCell className="text-muted-foreground uppercase">{client.language}</TableCell>
                   <TableCell className="text-right">
-                    <DropdownMenu>
-                      <DropdownMenuTrigger asChild>
-                        <Button variant="ghost" className="h-8 w-8 p-0">
-                          <span className="sr-only">Open menu</span>
-                          <MoreHorizontal className="h-4 w-4" />
+                    <div className="flex justify-end gap-2">
+                        <Button variant="ghost" size="icon" onClick={() => handleEditClick(client)}>
+                           <Edit className="h-4 w-4" />
+                           <span className="sr-only">{t[language].edit}</span>
                         </Button>
-                      </DropdownMenuTrigger>
-                      <DropdownMenuContent align="end">
-                        <DropdownMenuItem onSelect={() => handleEditClick(client)}>
-                           <Edit className="mr-2 h-4 w-4" />
-                           <span>{t[language].edit}</span>
-                        </DropdownMenuItem>
-                        <DropdownMenuItem onSelect={() => setClientToDelete(client)} className="text-destructive">
-                           <Trash2 className="mr-2 h-4 w-4" />
-                           <span>{t[language].delete}</span>
-                        </DropdownMenuItem>
-                      </DropdownMenuContent>
-                    </DropdownMenu>
+                        <Button variant="ghost" size="icon" onClick={() => setClientToDelete(client)} className="text-destructive hover:text-destructive">
+                           <Trash2 className="h-4 w-4" />
+                           <span className="sr-only">{t[language].delete}</span>
+                        </Button>
+                    </div>
                   </TableCell>
                 </TableRow>
               ))}
@@ -425,7 +416,7 @@ export default function ClientsPage() {
               <Label htmlFor="edit-logo" className="text-right">{t[language].logoLabel}</Label>
               <div className="col-span-3 flex items-center gap-4">
                   <Avatar className="h-10 w-10">
-                    {editClientLogo ? <AvatarImage src={editClientLogo} /> : <AvatarFallback>{editClientName.charAt(0)}</AvatarFallback>}
+                    {editClientLogo ? <AvatarImage src={editClientLogo} /> : <AvatarFallback>{editClientName ? editClientName.charAt(0) : '?'}</AvatarFallback>}
                   </Avatar>
                   <input
                     type="file"

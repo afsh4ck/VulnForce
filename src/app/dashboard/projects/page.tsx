@@ -4,22 +4,23 @@ import React, { useState, useMemo } from 'react';
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
-import { PlusCircle, Search, ArrowUpDown, MoreHorizontal, Trash2 } from "lucide-react";
+import { PlusCircle, Search, ArrowUpDown, Edit, Trash2 } from "lucide-react";
 import { projects as allProjects, clients } from "@/lib/data";
 import { Badge } from "@/components/ui/badge";
 import Link from 'next/link';
 import { Input } from "@/components/ui/input";
 import { useLanguage } from "@/context/language-context";
 import type { Project } from '@/lib/types';
-import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '@/components/ui/dropdown-menu';
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from '@/components/ui/alert-dialog';
 import { useToast } from '@/hooks/use-toast';
+import { useRouter } from 'next/navigation';
 
 type SortKey = keyof Project | 'clientName';
 
 export default function ProjectsPage() {
   const { language } = useLanguage();
   const { toast } = useToast();
+  const router = useRouter();
   const [searchTerm, setSearchTerm] = useState('');
   const [sortConfig, setSortConfig] = useState<{ key: SortKey; direction: 'ascending' | 'descending' } | null>(null);
   const [projects, setProjects] = useState(allProjects);
@@ -50,11 +51,15 @@ export default function ProjectsPage() {
     toast({ title: t[language].projectDeleted });
     setProjectToDelete(null);
   };
+
+  const handleEditProject = (projectId: string) => {
+    router.push(`/dashboard/projects/${projectId}`);
+  };
   
   const enrichedProjects = useMemo(() => projects.map(p => ({
     ...p,
     clientName: clients.find(c => c.id === p.clientId)?.name || ''
-  })), [projects, clients]);
+  })), [projects]);
 
   const sortedAndFilteredProjects = useMemo(() => {
     let filteredProjects = enrichedProjects.filter(project =>
@@ -64,10 +69,12 @@ export default function ProjectsPage() {
 
     if (sortConfig !== null) {
       filteredProjects.sort((a, b) => {
-        if (a[sortConfig.key] < b[sortConfig.key]) {
+        const aValue = a[sortConfig.key as keyof typeof a];
+        const bValue = b[sortConfig.key as keyof typeof b];
+        if (aValue < bValue) {
           return sortConfig.direction === 'ascending' ? -1 : 1;
         }
-        if (a[sortConfig.key] > b[sortConfig.key]) {
+        if (aValue > bValue) {
           return sortConfig.direction === 'ascending' ? 1 : -1;
         }
         return 0;
@@ -101,6 +108,7 @@ export default function ProjectsPage() {
       statusHeader: "Status",
       endDateHeader: "End Date",
       actionsHeader: "Actions",
+      edit: "Edit",
       delete: "Delete",
       confirmDeleteTitle: "Are you sure?",
       confirmDeleteDesc: "This action cannot be undone. This will permanently delete the project and all its findings.",
@@ -116,6 +124,7 @@ export default function ProjectsPage() {
       statusHeader: "Estado",
       endDateHeader: "Fecha de Fin",
       actionsHeader: "Acciones",
+      edit: "Editar",
       delete: "Eliminar",
       confirmDeleteTitle: "¿Estás seguro?",
       confirmDeleteDesc: "Esta acción no se puede deshacer. Esto eliminará permanentemente el proyecto y todos sus hallazgos.",
@@ -179,20 +188,16 @@ export default function ProjectsPage() {
                   </TableCell>
                   <TableCell>{new Date(project.endDate).toLocaleDateString()}</TableCell>
                   <TableCell className="text-right">
-                    <DropdownMenu>
-                      <DropdownMenuTrigger asChild>
-                        <Button variant="ghost" className="h-8 w-8 p-0">
-                          <span className="sr-only">Open menu</span>
-                          <MoreHorizontal className="h-4 w-4" />
+                    <div className="flex justify-end gap-2">
+                         <Button variant="ghost" size="icon" onClick={() => handleEditProject(project.id)}>
+                           <Edit className="h-4 w-4" />
+                           <span className="sr-only">{t[language].edit}</span>
                         </Button>
-                      </DropdownMenuTrigger>
-                      <DropdownMenuContent align="end">
-                        <DropdownMenuItem onSelect={() => setProjectToDelete(project)}>
-                          <Trash2 className="mr-2 h-4 w-4" />
-                          <span>{t[language].delete}</span>
-                        </DropdownMenuItem>
-                      </DropdownMenuContent>
-                    </DropdownMenu>
+                        <Button variant="ghost" size="icon" onClick={() => setProjectToDelete(project)} className="text-destructive hover:text-destructive">
+                           <Trash2 className="h-4 w-4" />
+                           <span className="sr-only">{t[language].delete}</span>
+                        </Button>
+                    </div>
                   </TableCell>
                 </TableRow>
               ))}
