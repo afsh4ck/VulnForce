@@ -3,13 +3,6 @@
 import React, { useState, useMemo } from 'react';
 import { Input } from "@/components/ui/input";
 import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
-import {
   Table,
   TableBody,
   TableCell,
@@ -19,7 +12,7 @@ import {
 } from "@/components/ui/table";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent } from "@/components/ui/card";
-import { Search, Pencil, PlusCircle, ArrowUpDown, Edit, Trash2 } from "lucide-react";
+import { Search, PlusCircle, ArrowUpDown, Edit, Trash2 } from "lucide-react";
 import { vulnerabilities as allVulnerabilities } from "@/lib/data";
 import { useLanguage } from "@/context/language-context";
 import Link from 'next/link';
@@ -36,7 +29,6 @@ export default function VulnerabilitiesPage() {
   const { toast } = useToast();
   const router = useRouter();
   const [searchTerm, setSearchTerm] = useState('');
-  const [severityFilter, setSeverityFilter] = useState<Severity | 'all'>('all');
   const [sortConfig, setSortConfig] = useState<{ key: SortKey; direction: 'ascending' | 'descending' } | null>(null);
   const [vulnerabilities, setVulnerabilities] = useState(allVulnerabilities);
   const [vulnerabilityToDelete, setVulnerabilityToDelete] = useState<Vulnerability | null>(null);
@@ -65,12 +57,11 @@ export default function VulnerabilitiesPage() {
   const sortedAndFilteredVulnerabilities = useMemo(() => {
     let filtered = vulnerabilities.filter(vuln => {
       const term = searchTerm.toLowerCase();
-      const severityMatch = severityFilter === 'all' || vuln.severity === severityFilter;
       const searchMatch = vuln.title_en.toLowerCase().includes(term) ||
                           (vuln.title_es && vuln.title_es.toLowerCase().includes(term)) ||
                           vuln.cwe.toLowerCase().includes(term) ||
                           vuln.tags.some(tag => tag.toLowerCase().includes(term));
-      return severityMatch && searchMatch;
+      return searchMatch;
     });
 
     if (sortConfig !== null) {
@@ -99,7 +90,7 @@ export default function VulnerabilitiesPage() {
     }
 
     return filtered;
-  }, [searchTerm, severityFilter, sortConfig, vulnerabilities, language]);
+  }, [searchTerm, sortConfig, vulnerabilities, language]);
 
   const requestSort = (key: SortKey) => {
     let direction: 'ascending' | 'descending' = 'ascending';
@@ -120,13 +111,6 @@ export default function VulnerabilitiesPage() {
     en: {
       title: "Vulnerability Database",
       search: "Search...",
-      filterSeverity: "Filter by severity",
-      allSeverities: "All Severities",
-      critical: "Critical",
-      high: "High",
-      medium: "Medium",
-      low: "Low",
-      informational: 'Informational',
       tableTitle: "Title",
       tableSeverity: "Severity",
       tableCvss: "CVSS",
@@ -143,13 +127,6 @@ export default function VulnerabilitiesPage() {
     es: {
       title: "Base de Datos de Vulnerabilidades",
       search: "Buscar...",
-      filterSeverity: "Filtrar por severidad",
-      allSeverities: "Todas las Severidades",
-      critical: "Crítica",
-      high: "Alta",
-      medium: "Media",
-      low: "Baja",
-      informational: 'Informativa',
       tableTitle: "Título",
       tableSeverity: "Severidad",
       tableCvss: "CVSS",
@@ -169,7 +146,10 @@ export default function VulnerabilitiesPage() {
     <>
     <div className="space-y-6">
        <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
-         <h1 className="font-headline text-3xl font-bold tracking-tight">{t[language].title}</h1>
+         <h1 className="font-headline text-3xl font-bold tracking-tight">
+            {t[language].title}
+            <span className="ml-2 text-xl font-medium text-muted-foreground">({sortedAndFilteredVulnerabilities.length})</span>
+         </h1>
       </div>
       
       <div className="flex items-center justify-between gap-2">
@@ -184,19 +164,6 @@ export default function VulnerabilitiesPage() {
                 onChange={e => setSearchTerm(e.target.value)}
                 />
             </div>
-            <Select value={severityFilter} onValueChange={(value) => setSeverityFilter(value as Severity | 'all')}>
-                <SelectTrigger className="w-[180px]">
-                <SelectValue placeholder={t[language].filterSeverity} />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="all">{t[language].allSeverities}</SelectItem>
-                  <SelectItem value="Critical">{t[language].critical}</SelectItem>
-                  <SelectItem value="High">{t[language].high}</SelectItem>
-                  <SelectItem value="Medium">{t[language].medium}</SelectItem>
-                  <SelectItem value="Low">{t[language].low}</SelectItem>
-                  <SelectItem value="Informational">{t[language].informational}</SelectItem>
-                </SelectContent>
-            </Select>
         </div>
         <Button asChild>
             <Link href="/dashboard/vulnerabilities/new">
