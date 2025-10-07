@@ -1,7 +1,6 @@
 'use client';
 
 import React, { useState, useMemo, useEffect } from 'react';
-import { projects, clients, findings as allFindings } from "@/lib/data";
 import { notFound, useRouter, useParams } from "next/navigation";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -26,6 +25,7 @@ import { Calendar } from '@/components/ui/calendar';
 import { cn } from '@/lib/utils';
 import { format } from 'date-fns';
 import { es } from 'date-fns/locale';
+import { useData } from '@/context/data-context';
 
 
 type SortKey = keyof Finding;
@@ -34,6 +34,7 @@ export default function ProjectDetailsPage() {
   const params = useParams();
   const router = useRouter();
   const { toast } = useToast();
+  const { projects, clients, findings, updateProject, deleteProject: removeProject } = useData();
 
   const [project, setProject] = useState(() => projects.find(p => p.id === params.id));
   const { language } = useLanguage();
@@ -50,6 +51,11 @@ export default function ProjectDetailsPage() {
   const [editStatus, setEditStatus] = useState<Project['status']>('In Progress');
 
   useEffect(() => {
+    const currentProject = projects.find(p => p.id === params.id);
+    setProject(currentProject);
+  }, [params.id, projects]);
+  
+  useEffect(() => {
     if (project) {
         setScopeContent(project.scope);
         setEditName(project.name);
@@ -65,7 +71,7 @@ export default function ProjectDetailsPage() {
   }
 
   const client = clients.find(c => c.id === project.clientId);
-  const projectFindings = allFindings.filter(f => f.projectId === project.id);
+  const projectFindings = findings.filter(f => f.projectId === project.id);
   
   const handleUpdateProject = () => {
     if (!project || !editName || !editClientId || !editStartDate || !editEndDate) {
@@ -77,7 +83,7 @@ export default function ProjectDetailsPage() {
         return;
     }
 
-    const updatedProject = {
+    const updatedProject: Project = {
         ...project,
         name: editName,
         clientId: editClientId,
@@ -86,20 +92,14 @@ export default function ProjectDetailsPage() {
         status: editStatus,
     };
     
-    setProject(updatedProject);
-    // In a real app, you would update the data source here.
-    const projectIndex = projects.findIndex(p => p.id === project.id);
-    if (projectIndex !== -1) {
-        projects[projectIndex] = updatedProject;
-    }
+    updateProject(updatedProject);
 
     toast({ title: t[language].projectUpdated });
     setIsEditDialogOpen(false);
   };
 
   const handleDeleteProject = () => {
-    console.log("Deleting project:", project.id);
-    // Here you would typically call an API to delete the project
+    removeProject(project.id);
     toast({ title: t[language].projectDeleted });
     router.push('/dashboard/projects');
   };
@@ -220,9 +220,9 @@ export default function ProjectDetailsPage() {
   }
   
   const handleSaveScope = () => {
-    // Here you would save the scopeContent to your data source
-    console.log("Saving scope:", scopeContent);
-    setProject({...project, scope: scopeContent});
+    if (project) {
+        updateProject({...project, scope: scopeContent});
+    }
     setIsEditingScope(false);
   }
 
@@ -431,7 +431,3 @@ export default function ProjectDetailsPage() {
     </div>
   );
 }
-
-    
-
-    

@@ -5,7 +5,6 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { PlusCircle, Search, ArrowUpDown, Edit, Trash2 } from "lucide-react";
-import { projects as allProjects, clients } from "@/lib/data";
 import { Badge } from "@/components/ui/badge";
 import Link from 'next/link';
 import { Input } from "@/components/ui/input";
@@ -14,6 +13,7 @@ import type { Project } from '@/lib/types';
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from '@/components/ui/alert-dialog';
 import { useToast } from '@/hooks/use-toast';
 import { useRouter } from 'next/navigation';
+import { useData } from '@/context/data-context';
 
 type SortKey = keyof Project | 'clientName';
 
@@ -21,9 +21,9 @@ export default function ProjectsPage() {
   const { language } = useLanguage();
   const { toast } = useToast();
   const router = useRouter();
+  const { projects, clients, deleteProject } = useData();
   const [searchTerm, setSearchTerm] = useState('');
   const [sortConfig, setSortConfig] = useState<{ key: SortKey; direction: 'ascending' | 'descending' } | null>(null);
-  const [projects, setProjects] = useState(allProjects);
   const [projectToDelete, setProjectToDelete] = useState<Project | null>(null);
   
   const getStatusVariant = (status: string) => {
@@ -46,8 +46,7 @@ export default function ProjectsPage() {
 
   const handleDeleteProject = () => {
     if (!projectToDelete) return;
-    setProjects(projects.filter(p => p.id !== projectToDelete.id));
-    console.log("Deleted project:", projectToDelete.id);
+    deleteProject(projectToDelete.id);
     toast({ title: t[language].projectDeleted });
     setProjectToDelete(null);
   };
@@ -59,7 +58,7 @@ export default function ProjectsPage() {
   const enrichedProjects = useMemo(() => projects.map(p => ({
     ...p,
     clientName: clients.find(c => c.id === p.clientId)?.name || ''
-  })), [projects]);
+  })), [projects, clients]);
 
   const sortedAndFilteredProjects = useMemo(() => {
     let filteredProjects = enrichedProjects.filter(project =>

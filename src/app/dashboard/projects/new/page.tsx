@@ -6,7 +6,6 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { useLanguage } from "@/context/language-context";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { clients, projects } from "@/lib/data";
 import { projectTemplates } from "@/lib/templates";
 import { Textarea } from "@/components/ui/textarea";
 import { Calendar } from "@/components/ui/calendar";
@@ -19,6 +18,7 @@ import React, { useEffect, useState } from "react";
 import Link from "next/link";
 import { useSearchParams, useRouter } from "next/navigation";
 import { useToast } from "@/hooks/use-toast";
+import { useData } from "@/context/data-context";
 
 
 export default function NewProjectPage() {
@@ -26,6 +26,7 @@ export default function NewProjectPage() {
   const searchParams = useSearchParams();
   const router = useRouter();
   const { toast } = useToast();
+  const { clients, addProject } = useData();
 
   const [name, setName] = useState('');
   const [clientId, setClientId] = useState<string>('');
@@ -65,7 +66,6 @@ export default function NewProjectPage() {
     }
 
     const newProject = {
-      id: `proj-${Date.now()}`,
       clientId,
       name,
       scope,
@@ -74,9 +74,7 @@ export default function NewProjectPage() {
       status: 'In Progress' as const,
     };
 
-    // In a real app, you would send this to an API
-    // For now, we just add it to the mock data. This won't persist.
-    projects.push(newProject); 
+    addProject(newProject);
     
     toast({
       title: language === 'es' ? 'Proyecto Creado' : 'Project Created',

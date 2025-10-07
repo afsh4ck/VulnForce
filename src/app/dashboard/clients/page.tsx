@@ -5,9 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { PlusCircle, Search, ArrowUpDown, Upload, Edit, Trash2 } from "lucide-react";
-import { clients as allClients } from "@/lib/data";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import Image from "next/image";
 import { Input } from "@/components/ui/input";
 import {
   Dialog,
@@ -24,6 +22,7 @@ import type { Client } from '@/lib/types';
 import { useToast } from '@/hooks/use-toast';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from "@/components/ui/alert-dialog";
+import { useData } from '@/context/data-context';
 
 
 type SortKey = keyof Client;
@@ -31,7 +30,7 @@ type SortKey = keyof Client;
 export default function ClientsPage() {
   const { language } = useLanguage();
   const { toast } = useToast();
-  const [clients, setClients] = useState<Client[]>(allClients);
+  const { clients, addClient, updateClient, deleteClient } = useData();
   const [searchTerm, setSearchTerm] = useState('');
   const [sortConfig, setSortConfig] = useState<{ key: SortKey; direction: 'ascending' | 'descending' } | null>(null);
   const [clientToDelete, setClientToDelete] = useState<Client | null>(null);
@@ -65,7 +64,7 @@ export default function ClientsPage() {
   
   const handleDeleteClient = () => {
     if (!clientToDelete) return;
-    setClients(clients.filter(c => c.id !== clientToDelete.id));
+    deleteClient(clientToDelete.id);
     toast({ title: t[language].clientDeleted });
     setClientToDelete(null);
   };
@@ -104,11 +103,13 @@ export default function ClientsPage() {
       return;
     }
 
-    setClients(clients.map(c => 
-      c.id === editingClient.id 
-        ? { ...c, name: editClientName, contact: editClientContact, logoUrl: editClientLogo || '', language: editClientLanguage } 
-        : c
-    ));
+    updateClient({ 
+      ...editingClient, 
+      name: editClientName, 
+      contact: editClientContact, 
+      logoUrl: editClientLogo || '', 
+      language: editClientLanguage 
+    });
 
     toast({
       title: language === 'es' ? 'Cliente Actualizado' : 'Client Updated',
@@ -130,15 +131,14 @@ export default function ClientsPage() {
       return;
     }
 
-    const newClient: Client = {
-      id: `cli-${Date.now()}`,
+    const newClient: Omit<Client, 'id'> = {
       name: newClientName,
       contact: newClientContact,
       logoUrl: newClientLogo || '',
       language: newClientLanguage, 
     };
 
-    setClients(prevClients => [...prevClients, newClient]);
+    addClient(newClient);
     toast({
         title: language === 'es' ? 'Cliente Creado' : 'Client Created',
         description: `${newClient.name} ${language === 'es' ? 'ha sido añadido.' : 'has been added.'}`,

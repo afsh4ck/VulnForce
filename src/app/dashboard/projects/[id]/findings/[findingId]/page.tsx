@@ -2,7 +2,6 @@
 
 import { useState, useEffect } from 'react';
 import { notFound, useParams, useRouter } from 'next/navigation';
-import { findings as allFindings, projects, vulnerabilities, clients } from '@/lib/data';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
@@ -15,6 +14,7 @@ import { useToast } from '@/hooks/use-toast';
 import { useLanguage } from '@/context/language-context';
 import type { Vulnerability, Finding } from '@/lib/types';
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@/components/ui/accordion';
+import { useData } from '@/context/data-context';
 
 // A simple representation of finding content, can be expanded later
 interface FindingContent {
@@ -32,6 +32,7 @@ export default function FindingEditorPage() {
   const { id: projectId, findingId } = params;
   const { toast } = useToast();
   const { language } = useLanguage();
+  const { projects, clients, findings, vulnerabilities, addFinding, updateFinding } = useData();
 
   const [title, setTitle] = useState('');
   const [severity, setSeverity] = useState<string>('');
@@ -46,7 +47,7 @@ export default function FindingEditorPage() {
 
   useEffect(() => {
     if (findingId !== 'new') {
-      const finding = allFindings.find(f => f.id === findingId && f.projectId === projectId);
+      const finding = findings.find(f => f.id === findingId && f.projectId === projectId);
       if (finding) {
         setTitle(finding.title);
         setSeverity(finding.severity);
@@ -63,7 +64,7 @@ export default function FindingEditorPage() {
     } else {
       setTitle(language === 'es' ? 'Nuevo Hallazgo' : 'New Finding');
     }
-  }, [findingId, projectId, language]);
+  }, [findingId, projectId, language, findings]);
 
 
   const handleSave = () => {
@@ -91,25 +92,14 @@ export default function FindingEditorPage() {
     };
 
     if (findingId === 'new') {
-      const newFinding: Finding = {
-        ...findingData,
-        id: `find-${Date.now()}`,
-        vulnerabilityId: `vuln-${Date.now()}`,
-        createdAt: new Date().toISOString(),
-        updatedAt: new Date().toISOString(),
-      };
-      allFindings.push(newFinding);
+      addFinding(findingData);
       toast({ title: t[language].saveSuccessTitle, description: `${title} ${t[language].saveSuccessNew}` });
     } else {
-      const findingIndex = allFindings.findIndex(f => f.id === findingId);
-      if (findingIndex !== -1) {
-        allFindings[findingIndex] = {
-          ...allFindings[findingIndex],
-          ...findingData,
-          updatedAt: new Date().toISOString(),
-        };
-        toast({ title: t[language].saveSuccessTitle, description: `${title} ${t[language].saveSuccessUpdate}` });
-      }
+      updateFinding({
+        id: Array.isArray(findingId) ? findingId[0] : findingId,
+        ...findingData,
+      });
+      toast({ title: t[language].saveSuccessTitle, description: `${title} ${t[language].saveSuccessUpdate}` });
     }
     
     router.push(`/dashboard/projects/${projectId}`);

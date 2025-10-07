@@ -19,6 +19,7 @@ import {
   AccordionItem,
   AccordionTrigger,
 } from "@/components/ui/accordion"
+import { useData } from '@/context/data-context';
 
 const emptyVulnerability: Omit<Vulnerability, 'id'> = {
   title_en: '',
@@ -59,6 +60,7 @@ export default function NewVulnerabilityPage() {
   const { toast } = useToast();
   const { language } = useLanguage();
   const router = useRouter();
+  const { addVulnerability } = useData();
   const [vuln, setVuln] = useState<Omit<Vulnerability, 'id'>>(emptyVulnerability);
 
   const handleInputChange = <T extends keyof Omit<Vulnerability, 'id'>>(field: T, value: Omit<Vulnerability, 'id'>[T]) => {
@@ -77,9 +79,7 @@ export default function NewVulnerabilityPage() {
   }
 
   const handleSave = () => {
-    const newId = `vuln-${Date.now()}`;
-    const newVulnerability: Vulnerability = { id: newId, ...vuln };
-    console.log("Saving new vulnerability:", newVulnerability);
+    addVulnerability(vuln);
     toast({
       title: t[language].saveSuccessTitle,
       description: t[language].saveSuccessDescription,

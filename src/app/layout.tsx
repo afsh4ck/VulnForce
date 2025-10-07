@@ -4,6 +4,7 @@ import './globals.css';
 import { LanguageProvider } from '@/context/language-context';
 import { ThemeProvider } from '@/context/theme-context';
 import { UserProvider } from '@/context/user-context';
+import { DataProvider } from '@/context/data-context';
 
 export const metadata: Metadata = {
   title: 'VulnForce',
@@ -28,8 +29,10 @@ export default function RootLayout({
         <ThemeProvider>
           <LanguageProvider>
             <UserProvider>
-              {children}
-              <Toaster />
+              <DataProvider>
+                {children}
+                <Toaster />
+              </DataProvider>
             </UserProvider>
           </LanguageProvider>
         </ThemeProvider>

@@ -4,11 +4,12 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import Link from 'next/link';
 import { PlusCircle, Users, FolderKanban, ShieldCheck } from "lucide-react";
-import { projects, clients, findings } from "@/lib/data";
 import { useLanguage } from "@/context/language-context";
+import { useData } from "@/context/data-context";
 
 export default function DashboardPage() {
   const { language } = useLanguage();
+  const { projects, clients, findings } = useData();
   const criticalFindings = findings.filter(f => f.severity === 'Critical').length;
 
   const t = {

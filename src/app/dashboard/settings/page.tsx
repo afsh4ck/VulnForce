@@ -2,7 +2,6 @@
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { FileDown, FileUp, Languages, Moon, Sun, KeyRound, Eye, EyeOff } from "lucide-react";
-import { clients, projects, findings, vulnerabilities } from '@/lib/data';
 import { useToast } from "@/hooks/use-toast";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -22,6 +21,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { useTheme } from "@/context/theme-context";
 import { Switch } from "@/components/ui/switch";
 import { useUser } from "@/context/user-context";
+import { useData } from "@/context/data-context";
 
 export default function SettingsPage() {
   const { toast } = useToast();
@@ -30,6 +30,7 @@ export default function SettingsPage() {
   const { language, setLanguage } = useLanguage();
   const { theme, setTheme } = useTheme();
   const { changePassword } = useUser();
+  const { exportData, importData, clients, projects, findings, vulnerabilities } = useData();
 
   const [currentPassword, setCurrentPassword] = useState('');
   const [newPassword, setNewPassword] = useState('');
@@ -126,27 +127,7 @@ export default function SettingsPage() {
   }
 
   const handleCreateBackup = () => {
-    const backupData = {
-      version: '1.0.0',
-      createdAt: new Date().toISOString(),
-      data: {
-        clients,
-        projects,
-        findings,
-        vulnerabilities,
-      },
-    };
-
-    const blob = new Blob([JSON.stringify(backupData, null, 2)], { type: 'application/json' });
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement('a');
-    a.href = url;
-    a.download = `vulnforce-backup-${new Date().toISOString().split('T')[0]}.json`;
-    document.body.appendChild(a);
-    a.click();
-    document.body.removeChild(a);
-    URL.revokeObjectURL(url);
-
+    exportData();
     toast({
       title: t[language].backupCreated,
       description: t[language].backupCreatedDesc,
@@ -177,9 +158,7 @@ export default function SettingsPage() {
       try {
         const text = e.target?.result;
         if (typeof text !== 'string') throw new Error("File could not be read");
-        const parsedData = JSON.parse(text);
-        
-        console.log("Imported data:", parsedData);
+        importData(text);
         
         toast({
           title: t[language].importSuccess,
