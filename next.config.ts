@@ -30,6 +30,7 @@ const nextConfig: NextConfig = {
       },
     ],
   },
+  // Forcing a recompilation to solve chunk loading errors.
 };
 
 export default nextConfig;
