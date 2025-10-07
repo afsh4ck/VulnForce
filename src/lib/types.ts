@@ -5,7 +5,6 @@ export interface Client {
   name: string;
   contact: string;
   logoUrl: string;
-  language: 'en' | 'es';
 }
 
 export interface Project {
@@ -16,6 +15,7 @@ export interface Project {
   startDate: string;
   endDate: string;
   status: 'In Progress' | 'Completed' | 'On Hold';
+  language: 'en' | 'es';
 }
 
 export interface Finding {

@@ -13,7 +13,7 @@ import Link from 'next/link';
 import { ChevronLeft, Save } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import { useLanguage } from '@/context/language-context';
-import type { Vulnerability, Finding } from '@/lib/types';
+import type { Vulnerability, Finding, Project } from '@/lib/types';
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@/components/ui/accordion';
 import { useData } from '@/context/data-context';
 
@@ -32,21 +32,29 @@ export default function FindingEditorPage() {
   const router = useRouter();
   const { id: projectId, findingId } = params;
   const { toast } = useToast();
-  const { language } = useLanguage();
+  const { language: uiLanguage } = useLanguage();
   const { projects, clients, findings, vulnerabilities, addFinding, updateFinding } = useData();
 
   const [title, setTitle] = useState('');
   const [severity, setSeverity] = useState<string>('');
   const [cvss, setCvss] = useState<string>('');
   
+  const [project, setProject] = useState<Project | undefined>();
+  const [projectLanguage, setProjectLanguage] = useState<Project['language']>('en');
+
   // State for bilingual content
   const [contentEn, setContentEn] = useState<FindingContent>({ overview: '', technicalDescription: '', affectedComponents: '', impact: '', recommendations: '', details: '' });
   const [contentEs, setContentEs] = useState<FindingContent>({ overview: '', technicalDescription: '', affectedComponents: '', impact: '', recommendations: '', details: '' });
 
-  const project = projects.find(p => p.id === projectId);
   const client = clients.find(c => c.id === project?.clientId);
 
   useEffect(() => {
+    const currentProject = projects.find(p => p.id === projectId);
+    setProject(currentProject);
+    if(currentProject){
+      setProjectLanguage(currentProject.language)
+    }
+    
     if (findingId !== 'new') {
       const finding = findings.find(f => f.id === findingId && f.projectId === projectId);
       if (finding) {
@@ -63,17 +71,17 @@ export default function FindingEditorPage() {
         router.push(`/dashboard/projects/${projectId}`);
       }
     } else {
-      setTitle(language === 'es' ? 'Nuevo Hallazgo' : 'New Finding');
+      setTitle(projectLanguage === 'es' ? 'Nuevo Hallazgo' : 'New Finding');
     }
-  }, [findingId, projectId, language, findings, router]);
+  }, [findingId, projectId, projectLanguage, findings, router, projects]);
 
 
   const handleSave = () => {
     if (!title || !severity || !cvss) {
       toast({
         variant: 'destructive',
-        title: language === 'es' ? 'Campos Incompletos' : 'Incomplete Fields',
-        description: language === 'es' ? 'Por favor, rellena todos los detalles del hallazgo.' : 'Please fill in all finding details.',
+        title: uiLanguage === 'es' ? 'Campos Incompletos' : 'Incomplete Fields',
+        description: uiLanguage === 'es' ? 'Por favor, rellena todos los detalles del hallazgo.' : 'Please fill in all finding details.',
       });
       return;
     }
@@ -82,7 +90,10 @@ export default function FindingEditorPage() {
       return `### ${langT.overview}\n${content.overview}\n\n### ${langT.technicalDescription}\n${content.technicalDescription}\n\n### ${langT.affectedComponents}\n${content.affectedComponents}\n\n### ${langT.impact}\n${content.impact}\n\n### ${langT.recommendations}\n${content.recommendations}\n\n### ${langT.details}\n${content.details}`;
     };
 
-    const combinedMarkdown = `## English Content\n\n${createMarkdown(contentEn, t.en)}\n\n---\n\n## Contenido en Español\n\n${createMarkdown(contentEs, t.es)}`;
+    const combinedMarkdown = projectLanguage === 'es'
+        ? `## Contenido en Español\n\n${createMarkdown(contentEs, t.es)}`
+        : `## English Content\n\n${createMarkdown(contentEn, t.en)}`;
+
 
     const findingData = {
       title,
@@ -94,13 +105,13 @@ export default function FindingEditorPage() {
 
     if (findingId === 'new') {
       addFinding(findingData);
-      toast({ title: t[language].saveSuccessTitle, description: `${title} ${t[language].saveSuccessNew}` });
+      toast({ title: t[uiLanguage].saveSuccessTitle, description: `${title} ${t[uiLanguage].saveSuccessNew}` });
     } else {
       updateFinding({
         id: Array.isArray(findingId) ? findingId[0] : findingId,
         ...findingData,
       });
-      toast({ title: t[language].saveSuccessTitle, description: `${title} ${t[language].saveSuccessUpdate}` });
+      toast({ title: t[uiLanguage].saveSuccessTitle, description: `${title} ${t[uiLanguage].saveSuccessUpdate}` });
     }
     
     router.push(`/dashboard/projects/${projectId}`);
@@ -175,7 +186,7 @@ export default function FindingEditorPage() {
   }
 
   const getVulnTitle = (vuln: Vulnerability) => {
-    return language === 'es' ? vuln.title_es : vuln.title_en;
+    return projectLanguage === 'es' ? vuln.title_es : vuln.title_en;
   }
 
   const handleImport = (vulnId: string) => {
@@ -184,22 +195,21 @@ export default function FindingEditorPage() {
       setTitle(getVulnTitle(vuln));
       setSeverity(vuln.severity);
       setCvss(vuln.cvss.score.toString());
-      setContentEn({
-        overview: vuln.overview_en,
-        technicalDescription: vuln.technicalDescription_en,
-        affectedComponents: vuln.affectedComponents_en,
-        impact: vuln.impact_en,
-        recommendations: vuln.recommendations_en,
-        details: vuln.details_en,
-      });
-      setContentEs({
-        overview: vuln.overview_es,
-        technicalDescription: vuln.technicalDescription_es,
-        affectedComponents: vuln.affectedComponents_es,
-        impact: vuln.impact_es,
-        recommendations: vuln.recommendations_es,
-        details: vuln.details_es,
-      });
+      
+      const contentToSet = {
+        overview: projectLanguage === 'es' ? vuln.overview_es : vuln.overview_en,
+        technicalDescription: projectLanguage === 'es' ? vuln.technicalDescription_es : vuln.technicalDescription_en,
+        affectedComponents: projectLanguage === 'es' ? vuln.affectedComponents_es : vuln.affectedComponents_en,
+        impact: projectLanguage === 'es' ? vuln.impact_es : vuln.impact_en,
+        recommendations: projectLanguage === 'es' ? vuln.recommendations_es : vuln.recommendations_en,
+        details: projectLanguage === 'es' ? vuln.details_es : vuln.details_en,
+      }
+
+      if (projectLanguage === 'es') {
+          setContentEs(contentToSet);
+      } else {
+          setContentEn(contentToSet);
+      }
     }
   }
 
@@ -244,36 +254,36 @@ export default function FindingEditorPage() {
           <Button variant="outline" size="sm" asChild>
             <Link href={`/dashboard/projects/${projectId}`}>
               <ChevronLeft className="mr-2 h-4 w-4" />
-              {t[language].backToProject}
+              {t[uiLanguage].backToProject}
             </Link>
           </Button>
           <div>
-            <h1 className="font-headline text-xl font-bold">{title || (language === 'es' ? 'Nuevo Hallazgo' : 'New Finding')}</h1>
+            <h1 className="font-headline text-xl font-bold">{title || (projectLanguage === 'es' ? 'Nuevo Hallazgo' : 'New Finding')}</h1>
             <p className="text-sm text-muted-foreground">{project?.name} / {client?.name}</p>
           </div>
         </div>
         <div className="flex items-center gap-2">
-          <Button onClick={handleSave}><Save className="mr-2 h-4 w-4" /> {t[language].saveFinding}</Button>
+          <Button onClick={handleSave}><Save className="mr-2 h-4 w-4" /> {t[uiLanguage].saveFinding}</Button>
         </div>
       </header>
 
       <div className="grid grid-cols-1 gap-6">
           <Card>
             <CardHeader>
-              <CardTitle>{t[language].findingDetails}</CardTitle>
-              <CardDescription>{t[language].importFromDB}</CardDescription>
+              <CardTitle>{t[uiLanguage].findingDetails}</CardTitle>
+              <CardDescription>{t[uiLanguage].importFromDB}</CardDescription>
             </CardHeader>
             <CardContent className="space-y-4">
               <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
                   <div className="space-y-2">
-                    <Label htmlFor="title">{t[language].titleLabel}</Label>
+                    <Label htmlFor="title">{t[uiLanguage].titleLabel}</Label>
                     <Input id="title" value={title} onChange={e => setTitle(e.target.value)} />
                   </div>
                   <div className="space-y-2">
-                    <Label>{t[language].importFromDB}</Label>
+                    <Label>{t[uiLanguage].importFromDB}</Label>
                      <Select onValueChange={handleImport}>
                         <SelectTrigger>
-                          <SelectValue placeholder={t[language].selectTemplate} />
+                          <SelectValue placeholder={t[uiLanguage].selectTemplate} />
                         </SelectTrigger>
                         <SelectContent>
                           {vulnerabilities.map(v => (
@@ -285,22 +295,22 @@ export default function FindingEditorPage() {
               </div>
               <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
                 <div className="space-y-2">
-                  <Label htmlFor="severity">{t[language].severityLabel}</Label>
+                  <Label htmlFor="severity">{t[uiLanguage].severityLabel}</Label>
                   <Select value={severity} onValueChange={setSeverity}>
                     <SelectTrigger id="severity">
-                      <SelectValue placeholder={t[language].selectSeverity} />
+                      <SelectValue placeholder={t[uiLanguage].selectSeverity} />
                     </SelectTrigger>
                     <SelectContent>
-                      <SelectItem value="Critical">{t[language].critical}</SelectItem>
-                      <SelectItem value="High">{t[language].high}</SelectItem>
-                      <SelectItem value="Medium">{t[language].medium}</SelectItem>
-                      <SelectItem value="Low">{t[language].low}</SelectItem>
-                      <SelectItem value="Informational">{t[language].informational}</SelectItem>
+                      <SelectItem value="Critical">{t[uiLanguage].critical}</SelectItem>
+                      <SelectItem value="High">{t[uiLanguage].high}</SelectItem>
+                      <SelectItem value="Medium">{t[uiLanguage].medium}</SelectItem>
+                      <SelectItem value="Low">{t[uiLanguage].low}</SelectItem>
+                      <SelectItem value="Informational">{t[uiLanguage].informational}</SelectItem>
                     </SelectContent>
                   </Select>
                 </div>
                 <div className="space-y-2">
-                  <Label htmlFor="cvss">{t[language].cvssScore}</Label>
+                  <Label htmlFor="cvss">{t[uiLanguage].cvssScore}</Label>
                   <Input id="cvss" type="number" step="0.1" value={cvss} onChange={e => setCvss(e.target.value)} />
                 </div>
               </div>
@@ -309,21 +319,21 @@ export default function FindingEditorPage() {
 
           <Card>
             <CardHeader>
-                <CardTitle>{t[language].content}</CardTitle>
+                <CardTitle>{t[uiLanguage].content}</CardTitle>
                 <CardDescription>
-                  {language === 'es' ? 'Rellena el contenido del hallazgo en ambos idiomas.' : 'Fill in the finding content in both languages.'}
+                  {projectLanguage === 'es' ? 'Rellena el contenido del hallazgo en español.' : 'Fill in the finding content in English.'}
                 </CardDescription>
             </CardHeader>
             <CardContent>
-              <Accordion type="multiple" defaultValue={['en-content', 'es-content']} className="w-full">
-                <AccordionItem value="en-content">
-                  <AccordionTrigger className="text-lg font-semibold">{t[language].englishContent}</AccordionTrigger>
+              <Accordion type="single" defaultValue={`${projectLanguage}-content`} collapsible className="w-full">
+                <AccordionItem value="en-content" style={{ display: projectLanguage === 'en' ? 'block' : 'none' }}>
+                  <AccordionTrigger className="text-lg font-semibold">{t[uiLanguage].englishContent}</AccordionTrigger>
                   <AccordionContent className="space-y-4 pt-4">
                     {renderContentFields('en')}
                   </AccordionContent>
                 </AccordionItem>
-                <AccordionItem value="es-content">
-                  <AccordionTrigger className="text-lg font-semibold">{t[language].spanishContent}</AccordionTrigger>
+                <AccordionItem value="es-content" style={{ display: projectLanguage === 'es' ? 'block' : 'none' }}>
+                  <AccordionTrigger className="text-lg font-semibold">{t[uiLanguage].spanishContent}</AccordionTrigger>
                   <AccordionContent className="space-y-4 pt-4">
                     {renderContentFields('es')}
                   </AccordionContent>

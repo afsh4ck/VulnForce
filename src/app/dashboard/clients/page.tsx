@@ -39,7 +39,6 @@ export default function ClientsPage() {
   const [isCreateDialogOpen, setIsCreateDialogOpen] = useState(false);
   const [newClientName, setNewClientName] = useState('');
   const [newClientContact, setNewClientContact] = useState('');
-  const [newClientLanguage, setNewClientLanguage] = useState<'en' | 'es'>('en');
   const [newClientLogo, setNewClientLogo] = useState<string | null>(null);
   const createFileInputRef = useRef<HTMLInputElement>(null);
 
@@ -50,7 +49,6 @@ export default function ClientsPage() {
   const [editClientName, setEditClientName] = useState('');
   const [editClientContact, setEditClientContact] = useState('');
   const [editClientLogo, setEditClientLogo] = useState<string | null>(null);
-  const [editClientLanguage, setEditClientLanguage] = useState<'en' | 'es'>('en');
   const editFileInputRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
@@ -58,7 +56,6 @@ export default function ClientsPage() {
       setEditClientName(editingClient.name);
       setEditClientContact(editingClient.contact);
       setEditClientLogo(editingClient.logoUrl || null);
-      setEditClientLanguage(editingClient.language);
     }
   }, [editingClient]);
   
@@ -108,7 +105,6 @@ export default function ClientsPage() {
       name: editClientName, 
       contact: editClientContact, 
       logoUrl: editClientLogo || '', 
-      language: editClientLanguage 
     });
 
     toast({
@@ -135,7 +131,6 @@ export default function ClientsPage() {
       name: newClientName,
       contact: newClientContact,
       logoUrl: newClientLogo || '',
-      language: newClientLanguage, 
     };
 
     addClient(newClient);
@@ -147,7 +142,6 @@ export default function ClientsPage() {
     // Reset form and close dialog
     setNewClientName('');
     setNewClientContact('');
-    setNewClientLanguage('en');
     setNewClientLogo(null);
     setIsCreateDialogOpen(false);
   };
@@ -205,16 +199,11 @@ export default function ClientsPage() {
       logoHeader: "Logo",
       nameHeader: "Name",
       contactHeader: "Contact",
-      languageHeader: "Language",
       actionsHeader: "Actions",
       edit: "Edit",
       delete: "Delete",
       logoLabel: "Logo",
       uploadLogo: "Upload Logo",
-      languageLabel: "Language",
-      selectLanguage: "Select Language",
-      english: "English",
-      spanish: "Spanish",
       confirmDeleteTitle: "Are you sure?",
       confirmDeleteDesc: "This action cannot be undone. This will permanently delete the client.",
       cancel: "Cancel",
@@ -237,16 +226,11 @@ export default function ClientsPage() {
       logoHeader: "Logo",
       nameHeader: "Nombre",
       contactHeader: "Contacto",
-      languageHeader: "Idioma",
       actionsHeader: "Acciones",
       edit: "Editar",
       delete: "Eliminar",
       logoLabel: "Logo",
       uploadLogo: "Subir Logo",
-      languageLabel: "Idioma",
-      selectLanguage: "Selecciona un Idioma",
-      english: "Inglés",
-      spanish: "Español",
       confirmDeleteTitle: "¿Estás seguro?",
       confirmDeleteDesc: "Esta acción no se puede deshacer. Esto eliminará permanentemente el cliente.",
       cancel: "Cancelar",
@@ -291,18 +275,6 @@ export default function ClientsPage() {
                   <Label htmlFor="contact" className="text-right">{t[language].contactLabel}</Label>
                   <Input id="contact" placeholder={t[language].contactPlaceholder} className="col-span-3" value={newClientContact} onChange={(e) => setNewClientContact(e.target.value)} />
                 </div>
-                 <div className="grid grid-cols-4 items-center gap-4">
-                  <Label htmlFor="new-language" className="text-right">{t[language].languageLabel}</Label>
-                  <Select value={newClientLanguage} onValueChange={(value) => setNewClientLanguage(value as 'en' | 'es')}>
-                    <SelectTrigger className="col-span-3">
-                      <SelectValue placeholder={t[language].selectLanguage} />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="en">{t[language].english}</SelectItem>
-                      <SelectItem value="es">{t[language].spanish}</SelectItem>
-                    </SelectContent>
-                  </Select>
-                </div>
                 <div className="grid grid-cols-4 items-center gap-4">
                   <Label htmlFor="new-logo" className="text-right">{t[language].logoLabel}</Label>
                    <div className="col-span-3 flex items-center gap-4">
@@ -343,9 +315,6 @@ export default function ClientsPage() {
                 <TableHead onClick={() => requestSort('contact')} className="cursor-pointer hover:bg-muted/50">
                    <div className="flex items-center">{t[language].contactHeader} {getSortIcon('contact')}</div>
                 </TableHead>
-                <TableHead onClick={() => requestSort('language')} className="cursor-pointer hover:bg-muted/50">
-                  <div className="flex items-center">{t[language].languageHeader} {getSortIcon('language')}</div>
-                </TableHead>
                 <TableHead className="text-right">{t[language].actionsHeader}</TableHead>
               </TableRow>
             </TableHeader>
@@ -362,7 +331,6 @@ export default function ClientsPage() {
                   </TableCell>
                   <TableCell className="font-medium">{client.name}</TableCell>
                   <TableCell className="text-muted-foreground">{client.contact}</TableCell>
-                  <TableCell className="text-muted-foreground uppercase">{client.language}</TableCell>
                   <TableCell className="text-right">
                     <div className="flex justify-end gap-2">
                         <Button variant="ghost" size="icon" onClick={() => handleEditClick(client)}>
@@ -399,18 +367,6 @@ export default function ClientsPage() {
             <div className="grid grid-cols-4 items-center gap-4">
               <Label htmlFor="edit-contact" className="text-right">{t[language].contactLabel}</Label>
               <Input id="edit-contact" placeholder={t[language].contactPlaceholder} className="col-span-3" value={editClientContact} onChange={(e) => setEditClientContact(e.target.value)} />
-            </div>
-            <div className="grid grid-cols-4 items-center gap-4">
-              <Label htmlFor="edit-language" className="text-right">{t[language].languageLabel}</Label>
-              <Select value={editClientLanguage} onValueChange={(value) => setEditClientLanguage(value as 'en' | 'es')}>
-                <SelectTrigger className="col-span-3">
-                  <SelectValue placeholder={t[language].selectLanguage} />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="en">{t[language].english}</SelectItem>
-                  <SelectItem value="es">{t[language].spanish}</SelectItem>
-                </SelectContent>
-              </Select>
             </div>
             <div className="grid grid-cols-4 items-center gap-4">
               <Label htmlFor="edit-logo" className="text-right">{t[language].logoLabel}</Label>

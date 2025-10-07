@@ -19,10 +19,11 @@ import Link from "next/link";
 import { useSearchParams, useRouter } from "next/navigation";
 import { useToast } from "@/hooks/use-toast";
 import { useData } from "@/context/data-context";
+import type { Project } from "@/lib/types";
 
 
 export default function NewProjectPage() {
-  const { language } = useLanguage();
+  const { language: uiLanguage } = useLanguage();
   const searchParams = useSearchParams();
   const router = useRouter();
   const { toast } = useToast();
@@ -34,22 +35,23 @@ export default function NewProjectPage() {
   const [startDate, setStartDate] = React.useState<Date>();
   const [endDate, setEndDate] = React.useState<Date>();
   const [templateId, setTemplateId] = useState<string | null>(searchParams.get('template'));
+  const [projectLanguage, setProjectLanguage] = useState<Project['language']>('es');
 
   useEffect(() => {
     if (templateId) {
       const template = projectTemplates.find(t => t.id === templateId);
       if (template) {
-        setName(language === 'es' ? template.name_es : template.name_en);
+        setName(projectLanguage === 'es' ? template.name_es : template.name_en);
         setScope(template.scope);
       }
     }
-  }, [templateId, language]);
+  }, [templateId, projectLanguage]);
 
   const handleTemplateChange = (newTemplateId: string) => {
     const template = projectTemplates.find(t => t.id === newTemplateId);
     if (template) {
         setTemplateId(newTemplateId);
-        setName(language === 'es' ? template.name_es : template.name_en);
+        setName(projectLanguage === 'es' ? template.name_es : template.name_en);
         setScope(template.scope);
     }
   }
@@ -59,26 +61,27 @@ export default function NewProjectPage() {
     if (!name || !clientId || !scope || !startDate || !endDate) {
       toast({
         variant: 'destructive',
-        title: language === 'es' ? 'Campos Incompletos' : 'Incomplete Fields',
-        description: language === 'es' ? 'Por favor, rellena todos los campos.' : 'Please fill in all fields.',
+        title: uiLanguage === 'es' ? 'Campos Incompletos' : 'Incomplete Fields',
+        description: uiLanguage === 'es' ? 'Por favor, rellena todos los campos.' : 'Please fill in all fields.',
       });
       return;
     }
 
-    const newProject = {
+    const newProject: Omit<Project, 'id'> = {
       clientId,
       name,
       scope,
       startDate: format(startDate, 'yyyy-MM-dd'),
       endDate: format(endDate, 'yyyy-MM-dd'),
       status: 'In Progress' as const,
+      language: projectLanguage,
     };
 
     addProject(newProject);
     
     toast({
-      title: language === 'es' ? 'Proyecto Creado' : 'Project Created',
-      description: `${name} ${language === 'es' ? 'ha sido creado.' : 'has been created.'}`
+      title: uiLanguage === 'es' ? 'Proyecto Creado' : 'Project Created',
+      description: `${name} ${uiLanguage === 'es' ? 'ha sido creado.' : 'has been created.'}`
     });
 
     router.push('/dashboard/projects');
@@ -100,6 +103,10 @@ export default function NewProjectPage() {
         cancel: "Cancel",
         importTemplate: "Import from Template",
         selectTemplate: "Select a template",
+        languageLabel: "Project Language",
+        selectLanguage: "Select Language",
+        english: "English",
+        spanish: "Spanish",
     },
     es: {
         title: "Crear Nuevo Proyecto",
@@ -116,42 +123,60 @@ export default function NewProjectPage() {
         cancel: "Cancelar",
         importTemplate: "Importar desde Plantilla",
         selectTemplate: "Selecciona una plantilla",
+        languageLabel: "Idioma del Proyecto",
+        selectLanguage: "Seleccionar Idioma",
+        english: "Inglés",
+        spanish: "Español",
     }
   }
 
   return (
     <div className="mx-auto max-w-2xl space-y-6">
       <div className="space-y-2 text-center">
-        <h1 className="font-headline text-3xl font-bold tracking-tight">{t[language].title}</h1>
-        <p className="text-muted-foreground">{t[language].description}</p>
+        <h1 className="font-headline text-3xl font-bold tracking-tight">{t[uiLanguage].title}</h1>
+        <p className="text-muted-foreground">{t[uiLanguage].description}</p>
       </div>
       <Card>
         <CardContent className="pt-6">
           <form onSubmit={handleSubmit} className="space-y-4">
-             <div className="space-y-2">
-                <Label>{t[language].importTemplate}</Label>
-                <Select onValueChange={handleTemplateChange} value={templateId || ''}>
-                    <SelectTrigger>
-                        <SelectValue placeholder={t[language].selectTemplate} />
-                    </SelectTrigger>
-                    <SelectContent>
-                        {projectTemplates.map(template => (
-                            <SelectItem key={template.id} value={template.id}>
-                                {language === 'es' ? template.name_es : template.name_en}
-                            </SelectItem>
-                        ))}
-                    </SelectContent>
-                </Select>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div className="space-y-2">
+                    <Label>{t[uiLanguage].importTemplate}</Label>
+                    <Select onValueChange={handleTemplateChange} value={templateId || ''}>
+                        <SelectTrigger>
+                            <SelectValue placeholder={t[uiLanguage].selectTemplate} />
+                        </SelectTrigger>
+                        <SelectContent>
+                            {projectTemplates.map(template => (
+                                <SelectItem key={template.id} value={template.id}>
+                                    {projectLanguage === 'es' ? template.name_es : template.name_en}
+                                </SelectItem>
+                            ))}
+                        </SelectContent>
+                    </Select>
+                </div>
+                <div className="space-y-2">
+                    <Label htmlFor="language">{t[uiLanguage].languageLabel}</Label>
+                    <Select onValueChange={(value) => setProjectLanguage(value as 'en' | 'es')} value={projectLanguage}>
+                        <SelectTrigger id="language">
+                            <SelectValue placeholder={t[uiLanguage].selectLanguage} />
+                        </SelectTrigger>
+                        <SelectContent>
+                            <SelectItem value="en">{t[uiLanguage].english}</SelectItem>
+                            <SelectItem value="es">{t[uiLanguage].spanish}</SelectItem>
+                        </SelectContent>
+                    </Select>
+                </div>
             </div>
             <div className="space-y-2">
-                <Label htmlFor="name">{t[language].projectNameLabel}</Label>
-                <Input id="name" placeholder={t[language].projectNamePlaceholder} value={name} onChange={e => setName(e.target.value)} required />
+                <Label htmlFor="name">{t[uiLanguage].projectNameLabel}</Label>
+                <Input id="name" placeholder={t[uiLanguage].projectNamePlaceholder} value={name} onChange={e => setName(e.target.value)} required />
             </div>
              <div className="space-y-2">
-                <Label htmlFor="client">{t[language].clientLabel}</Label>
+                <Label htmlFor="client">{t[uiLanguage].clientLabel}</Label>
                 <Select onValueChange={setClientId} value={clientId} required>
                     <SelectTrigger id="client">
-                        <SelectValue placeholder={t[language].selectClient} />
+                        <SelectValue placeholder={t[uiLanguage].selectClient} />
                     </SelectTrigger>
                     <SelectContent>
                         {clients.map(client => (
@@ -161,12 +186,12 @@ export default function NewProjectPage() {
                 </Select>
             </div>
             <div className="space-y-2">
-                <Label htmlFor="scope">{t[language].scopeLabel}</Label>
-                <Textarea id="scope" placeholder={t[language].scopePlaceholder} className="font-code min-h-[120px]" value={scope} onChange={e => setScope(e.target.value)} required />
+                <Label htmlFor="scope">{t[uiLanguage].scopeLabel}</Label>
+                <Textarea id="scope" placeholder={t[uiLanguage].scopePlaceholder} className="font-code min-h-[120px]" value={scope} onChange={e => setScope(e.target.value)} required />
             </div>
             <div className="grid grid-cols-2 gap-4">
                 <div className="space-y-2">
-                    <Label>{t[language].startDateLabel}</Label>
+                    <Label>{t[uiLanguage].startDateLabel}</Label>
                      <Popover>
                         <PopoverTrigger asChild>
                         <Button
@@ -177,7 +202,7 @@ export default function NewProjectPage() {
                             )}
                         >
                             <CalendarIcon className="mr-2 h-4 w-4" />
-                            {startDate ? format(startDate, "PPP", { locale: language === 'es' ? es : undefined }) : <span>Pick a date</span>}
+                            {startDate ? format(startDate, "PPP", { locale: uiLanguage === 'es' ? es : undefined }) : <span>Pick a date</span>}
                         </Button>
                         </PopoverTrigger>
                         <PopoverContent className="w-auto p-0">
@@ -186,13 +211,13 @@ export default function NewProjectPage() {
                             selected={startDate}
                             onSelect={setStartDate}
                             initialFocus
-                            locale={language === 'es' ? es : undefined}
+                            locale={uiLanguage === 'es' ? es : undefined}
                         />
                         </PopoverContent>
                     </Popover>
                 </div>
                  <div className="space-y-2">
-                    <Label>{t[language].endDateLabel}</Label>
+                    <Label>{t[uiLanguage].endDateLabel}</Label>
                      <Popover>
                         <PopoverTrigger asChild>
                         <Button
@@ -203,7 +228,7 @@ export default function NewProjectPage() {
                             )}
                         >
                             <CalendarIcon className="mr-2 h-4 w-4" />
-                            {endDate ? format(endDate, "PPP", { locale: language === 'es' ? es : undefined }) : <span>Pick a date</span>}
+                            {endDate ? format(endDate, "PPP", { locale: uiLanguage === 'es' ? es : undefined }) : <span>Pick a date</span>}
                         </Button>
                         </PopoverTrigger>
                         <PopoverContent className="w-auto p-0">
@@ -212,15 +237,15 @@ export default function NewProjectPage() {
                             selected={endDate}
                             onSelect={setEndDate}
                             initialFocus
-                            locale={language === 'es' ? es : undefined}
+                            locale={uiLanguage === 'es' ? es : undefined}
                         />
                         </PopoverContent>
                     </Popover>
                 </div>
             </div>
              <div className="flex justify-end gap-2 pt-4">
-                <Button variant="outline" asChild><Link href="/dashboard/projects">{t[language].cancel}</Link></Button>
-                <Button type="submit"><FilePlus2 className="mr-2 h-4 w-4" />{t[language].createProject}</Button>
+                <Button variant="outline" asChild><Link href="/dashboard/projects">{t[uiLanguage].cancel}</Link></Button>
+                <Button type="submit"><FilePlus2 className="mr-2 h-4 w-4" />{t[uiLanguage].createProject}</Button>
             </div>
           </form>
         </CardContent>

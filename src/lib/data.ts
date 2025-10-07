@@ -2,17 +2,17 @@
 import type { Client, Project, Finding, Vulnerability } from './types';
 
 export const clients: Client[] = [
-  { id: 'cli-1', name: 'Innovatech Solutions', contact: 'contact@innovatech.com', logoUrl: '', language: 'en' },
-  { id: 'cli-2', name: 'Quantum Dynamics', contact: 'security@quantum.com', logoUrl: '', language: 'en' },
-  { id: 'cli-3', name: 'SecureBank Corp', contact: 'audit@securebank.com', logoUrl: '', language: 'es' },
-  { id: 'cli-4', name: 'HealthFirst Providers', contact: 'compliance@healthfirst.com', logoUrl: '', language: 'en' },
+  { id: 'cli-1', name: 'Innovatech Solutions', contact: 'contact@innovatech.com', logoUrl: '' },
+  { id: 'cli-2', name: 'Quantum Dynamics', contact: 'security@quantum.com', logoUrl: '' },
+  { id: 'cli-3', name: 'SecureBank Corp', contact: 'audit@securebank.com', logoUrl: '' },
+  { id: 'cli-4', name: 'HealthFirst Providers', contact: 'compliance@healthfirst.com', logoUrl: '' },
 ];
 
 export const projects: Project[] = [
-  { id: 'proj-1', clientId: 'cli-1', name: 'Q3 Web App Pentest', scope: '*.innovatech.com', startDate: '2023-07-01', endDate: '2023-07-15', status: 'Completed' },
-  { id: 'proj-2', clientId: 'cli-2', name: 'API Security Audit', scope: 'api.quantum.com', startDate: '2023-08-10', endDate: '2023-08-25', status: 'Completed' },
-  { id: 'proj-3', clientId: 'cli-3', name: 'Auditoría Red Interna', scope: '10.0.0.0/8', startDate: '2023-09-01', endDate: '2023-09-30', status: 'In Progress' },
-  { id: 'proj-4', clientId: 'cli-1', name: 'Mobile App Assessment', scope: 'Innovatech iOS App', startDate: '2023-10-05', endDate: '2023-10-20', status: 'In Progress' },
+  { id: 'proj-1', clientId: 'cli-1', name: 'Q3 Web App Pentest', scope: '*.innovatech.com', startDate: '2023-07-01', endDate: '2023-07-15', status: 'Completed', language: 'en' },
+  { id: 'proj-2', clientId: 'cli-2', name: 'API Security Audit', scope: 'api.quantum.com', startDate: '2023-08-10', endDate: '2023-08-25', status: 'Completed', language: 'en' },
+  { id: 'proj-3', clientId: 'cli-3', name: 'Auditoría Red Interna', scope: '10.0.0.0/8', startDate: '2023-09-01', endDate: '2023-09-30', status: 'In Progress', language: 'es' },
+  { id: 'proj-4', clientId: 'cli-1', name: 'Mobile App Assessment', scope: 'Innovatech iOS App', startDate: '2023-10-05', endDate: '2023-10-20', status: 'In Progress', language: 'en' },
 ];
 
 export const findings: Finding[] = [
@@ -80,7 +80,7 @@ export const vulnerabilities: Vulnerability[] = [
     recommendations_en: 'It is recommended to use parameterized queries (prepared statements) to prevent SQL injection. Input validation should also be implemented as a secondary defense mechanism.',
     recommendations_es: 'Se recomienda utilizar consultas parametrizadas (prepared statements) para prevenir la inyección de SQL. La validación de entradas también debe implementarse como un mecanismo de defensa secundario.',
     details_en: '[TODO: Provide a detailed technical explanation, context, and proof-of-concept code. Example: `Payload: \' OR 1=1; --`]',
-    details_es: '[TODO: Proporcionar una explicación técnica detallada, contexto y código de prueba de concepto. Ejemplo: `Payload: \' OR 1=1; --`]',
+    details_es: '[TODO: Proporcionar una explicación técnica detallada, contexto y prueba de concepto. Ejemplo: `Payload: \' OR 1=1; --`]',
     remediation_en: {
       shortTerm: 'Implement input sanitization to filter out special characters like single quotes and semicolons.',
       mediumTerm: 'Refactor all database queries to use parameterized statements provided by the language/framework.',
@@ -2203,4 +2203,5 @@ export const vulnerabilities: Vulnerability[] = [
         tags: ['Race Condition', 'Business Logic'],
     }
 ];
+
 

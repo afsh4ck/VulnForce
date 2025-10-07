@@ -49,6 +49,7 @@ export default function ProjectDetailsPage() {
   const [editStartDate, setEditStartDate] = useState<Date | undefined>();
   const [editEndDate, setEditEndDate] = useState<Date | undefined>();
   const [editStatus, setEditStatus] = useState<Project['status']>('In Progress');
+  const [editLanguage, setEditLanguage] = useState<Project['language']>('en');
 
   useEffect(() => {
     const currentProject = projects.find(p => p.id === params.id);
@@ -63,6 +64,7 @@ export default function ProjectDetailsPage() {
         setEditStartDate(new Date(project.startDate));
         setEditEndDate(new Date(project.endDate));
         setEditStatus(project.status);
+        setEditLanguage(project.language);
     }
   }, [project]);
 
@@ -90,6 +92,7 @@ export default function ProjectDetailsPage() {
         startDate: format(editStartDate, 'yyyy-MM-dd'),
         endDate: format(editEndDate, 'yyyy-MM-dd'),
         status: editStatus,
+        language: editLanguage,
     };
     
     updateProject(updatedProject);
@@ -176,6 +179,10 @@ export default function ProjectDetailsPage() {
       projectDeleted: "Project deleted successfully.",
       incompleteFields: "Incomplete Fields",
       fillAllFields: "Please fill in all fields.",
+      language: 'Language',
+      selectLanguage: 'Select Language',
+      english: 'English',
+      spanish: 'Spanish',
     },
     es: {
       status: "Estado",
@@ -207,6 +214,10 @@ export default function ProjectDetailsPage() {
       projectDeleted: "Proyecto eliminado correctamente.",
       incompleteFields: "Campos Incompletos",
       fillAllFields: "Por favor, rellena todos los campos.",
+      language: 'Idioma',
+      selectLanguage: 'Seleccionar Idioma',
+      english: 'Inglés',
+      spanish: 'Español',
     }
   }
 
@@ -266,6 +277,18 @@ export default function ProjectDetailsPage() {
                                     {clients.map(c => (
                                         <SelectItem key={c.id} value={c.id}>{c.name}</SelectItem>
                                     ))}
+                                </SelectContent>
+                            </Select>
+                        </div>
+                        <div className="space-y-2">
+                            <Label htmlFor="language">{t[language].language}</Label>
+                            <Select value={editLanguage} onValueChange={(value) => setEditLanguage(value as 'en' | 'es')}>
+                                <SelectTrigger id="language">
+                                    <SelectValue placeholder={t[language].selectLanguage} />
+                                </SelectTrigger>
+                                <SelectContent>
+                                    <SelectItem value="en">{t[language].english}</SelectItem>
+                                    <SelectItem value="es">{t[language].spanish}</SelectItem>
                                 </SelectContent>
                             </Select>
                         </div>
