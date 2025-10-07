@@ -9,13 +9,13 @@ export const projectTemplates: ProjectTemplate[] = [
     description_es: 'Una auditoría de seguridad completa que cubre pruebas externas, internas y de aplicaciones web.',
     scope:
 `Web Applications:
-- [TODO: Specify web application domains, e.g., *.example.com]
+- [TODO: Specify web application domains]
 
 External Infrastructure:
-- [TODO: Specify external IP ranges, e.g., 192.0.2.0/24]
+- [TODO: Specify external IP ranges]
 
 Internal Network:
-- [TODO: Specify internal IP ranges, e.g., 10.0.0.0/8]`,
+- [TODO: Specify internal IP ranges]`,
   },
   {
     id: 'template-2',
@@ -25,10 +25,10 @@ Internal Network:
     description_es: 'Se enfoca en los activos públicamente accesibles de la organización para identificar vulnerabilidades.',
     scope:
 `Web Applications:
-- [TODO: Specify web application domains, e.g., www.example.com, api.example.com]
+- [TODO: Specify web application domains]
 
 External Infrastructure:
-- [TODO: Specify external IP ranges, e.g., 198.51.100.0/28, 203.0.113.10]`,
+- [TODO: Specify external IP ranges]`,
   },
   {
     id: 'template-3',
@@ -38,23 +38,23 @@ External Infrastructure:
     description_es: 'Una evaluación de la red interna para encontrar debilidades de seguridad desde dentro del perímetro.',
     scope:
 `Internal Corporate Network:
-- [TODO: Specify internal IP ranges, e.g., 192.168.1.0/24, 172.16.0.0/16]
+- [TODO: Specify internal IP ranges]
 
 Specific Servers:
-- [TODO: Specify specific servers, e.g., FILESERV01 (192.168.1.10), AD-DC01 (192.168.1.5)]`,
+- [TODO: Specify specific servers]`,
   },
   {
     id: 'cpts-template',
     name_en: 'Certification Report',
     name_es: 'Informe de Certificación',
-    description_en: 'A detailed template for the Certified Penetration Testing Specialist (CPTS) certification report. It includes all necessary sections to pass the exam.',
-    description_es: 'Una plantilla detallada para el informe de la certificación Certified Penetration Testing Specialist (CPTS). Incluye todas las secciones necesarias para aprobar el examen.',
+    description_en: 'A generic and professional template for offensive security certification reports (e.g., OSCP, CPTS). It includes all the necessary sections for a comprehensive report.',
+    description_es: 'Una plantilla genérica y profesional para informes de certificaciones de seguridad ofensiva (p. ej., OSCP, CPTS). Incluye todas las secciones necesarias para un informe completo.',
     scope: 
 `## Introduction
-A penetration test was performed against the Hack The Box enterprise network. The objective of this assessment was to identify and report on security vulnerabilities that could be exploited by an external attacker to compromise the internal network and gain access to sensitive data or systems, simulating a real-world attack scenario. This report details the findings of the assessment and provides recommendations for remediation.
+A penetration test was performed against the [Name of the Organization, e.g., Hack The Box] enterprise network for the [Certification Name, e.g., CPTS] certification exam. The objective of this assessment was to identify and report on security vulnerabilities that could be exploited by an external attacker to compromise the internal network and gain access to sensitive data or systems, simulating a real-world attack scenario. This report details the findings of the assessment and provides recommendations for remediation.
 
 ## Scope
-The scope of this penetration test was limited to the hosts and networks provided within the CPTS exam environment. The assessment was conducted from an external attacker's perspective, with no prior knowledge of the internal network architecture.
+The scope of this penetration test was limited to the hosts and networks provided within the [Exam Environment Name] environment. The assessment was conducted from an external attacker's perspective, with no prior knowledge of the internal network architecture.
 
 **Included in scope:**
 - External IP addresses provided in the exam.
@@ -63,7 +63,7 @@ The scope of this penetration test was limited to the hosts and networks provide
 **Excluded from scope:**
 - Any hosts or networks outside of the designated exam infrastructure.
 - Denial of Service (DoS) attacks.
-- Social engineering attacks against Hack The Box staff.
+- Social engineering attacks.
 - Any actions that could disrupt the stability of the exam environment for other users.
 
 ## Timeline
@@ -92,7 +92,7 @@ The penetration test followed a structured methodology aligned with industry bes
 2.  **Gaining a Foothold:** ...
 3.  **Internal Enumeration:** ...
 4.  **Lateral Movement & Privilege Escalation:** ...
-5.  **Domain Compromise:** ...
+5.  **Domain/Network Compromise:** ...
 
 ---
 
@@ -116,15 +116,15 @@ The penetration test followed a structured methodology aligned with industry bes
 - FILESRV (192.168.Z.Z) - Sensitive Data Exposure
 
 ### C. Flags Captured
-[TODO: List all the flags obtained during the assessment.]
+[TODO: List all the flags or proof of compromise obtained during the assessment.]
 - **user.txt (Host1):** \`[flag_value]\`
 - **root.txt (Host1):** \`[flag_value]\`
 - **user.txt (Host2):** \`[flag_value]\`
 - **root.txt (Host2):** \`[flag_value]\`
-- **dcorp.local flag:** \`[flag_value]\`
+- **Domain flag:** \`[flag_value]\`
 
 ### D. Tools Used
-List the primary tools used during the assessment.
+[TODO: List the primary tools used during the assessment.]
 - Nmap
 - Metasploit Framework
 - Mimikatz
