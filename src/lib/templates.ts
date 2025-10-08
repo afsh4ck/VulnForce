@@ -9,22 +9,30 @@ export const projectTemplates: ProjectTemplate[] = [
     description_en: 'A comprehensive security audit covering external, internal, and web application testing.',
     description_es: 'Una auditoría de seguridad completa que cubre pruebas externas, internas y de aplicaciones web.',
     scope_en:
-`Web Applications:
+`## Web Applications:
 - [TODO: Specify web application domains]
 
-External Infrastructure:
+---
+
+## External Infrastructure:
 - [TODO: Specify external IP ranges]
 
-Internal Network:
+---
+
+## Internal Network:
 - [TODO: Specify internal IP ranges]`,
     scope_es:
-`Aplicaciones Web:
+`## Aplicaciones Web:
 - [TODO: Especificar dominios de aplicaciones web]
 
-Infraestructura Externa:
+---
+
+## Infraestructura Externa:
 - [TODO: Especificar rangos de IP externos]
 
-Red Interna:
+---
+
+## Red Interna:
 - [TODO: Especificar rangos de IP internos]`,
   },
   {
@@ -34,16 +42,20 @@ Red Interna:
     description_en: 'Focuses on the publicly accessible assets of the organization to identify vulnerabilities.',
     description_es: 'Se enfoca en los activos públicamente accesibles de la organización para identificar vulnerabilidades.',
     scope_en:
-`Web Applications:
+`## Web Applications:
 - [TODO: Specify web application domains]
 
-External Infrastructure:
+---
+
+## External Infrastructure:
 - [TODO: Specify external IP ranges]`,
     scope_es:
-`Aplicaciones Web:
+`## Aplicaciones Web:
 - [TODO: Especificar dominios de aplicaciones web]
 
-Infraestructura Externa:
+---
+
+## Infraestructura Externa:
 - [TODO: Especificar rangos de IP externos]`,
   },
   {
@@ -53,16 +65,20 @@ Infraestructura Externa:
     description_en: 'An assessment of the internal network to find security weaknesses from within the perimeter.',
     description_es: 'Una evaluación de la red interna para encontrar debilidades de seguridad desde dentro del perímetro.',
     scope_en:
-`Internal Corporate Network:
+`## Internal Corporate Network:
 - [TODO: Specify internal IP ranges]
 
-Specific Servers:
+---
+
+## Specific Servers:
 - [TODO: Specify specific servers]`,
     scope_es:
-`Red Corporativa Interna:
+`## Red Corporativa Interna:
 - [TODO: Especificar rangos de IP internos]
 
-Servidores Específicos:
+---
+
+## Servidores Específicos:
 - [TODO: Especificar servidores específicos]`,
   },
   {
@@ -74,6 +90,8 @@ Servidores Específicos:
     scope_en: 
 `## Introduction
 A penetration test was performed against the [Name of the Organization, e.g., Hack The Box] enterprise network for the [Certification Name, e.g., CPTS] certification exam. The objective of this assessment was to identify and report on security vulnerabilities that could be exploited by an external attacker to compromise the internal network and gain access to sensitive data or systems, simulating a real-world attack scenario. This report details the findings of the assessment and provides recommendations for remediation.
+
+---
 
 ## Scope
 The scope of this penetration test was limited to the hosts and networks provided within the [Exam Environment Name] environment. The assessment was conducted from an external attacker's perspective, with no prior knowledge of the internal network architecture.
@@ -88,9 +106,13 @@ The scope of this penetration test was limited to the hosts and networks provide
 - Social engineering attacks.
 - Any actions that could disrupt the stability of the exam environment for other users.
 
+---
+
 ## Timeline
 - **Start Date:** [TODO: DD/MM/YYYY]
 - **End Date:** [TODO: DD/MM/YYYY]
+
+---
 
 ## Summary of Findings
 [TODO: Provide a high-level executive summary of the key findings and the overall security posture of the network. Mention the most critical vulnerabilities discovered and the potential impact.]
@@ -158,6 +180,8 @@ The penetration test followed a structured methodology aligned with industry bes
 `## Introducción
 Se realizó una prueba de penetración contra la red empresarial de [Nombre de la Organización, p. ej., Hack The Box] para el examen de certificación [Nombre de la Certificación, p. ej., CPTS]. El objetivo de esta evaluación fue identificar e informar sobre las vulnerabilidades de seguridad que podrían ser explotadas por un atacante externo para comprometer la red interna y obtener acceso a datos o sistemas sensibles, simulando un escenario de ataque del mundo real. Este informe detalla los hallazgos de la evaluación y proporciona recomendaciones para su remediación.
 
+---
+
 ## Alcance
 El alcance de esta prueba de penetración se limitó a los hosts y redes proporcionados dentro del entorno [Nombre del Entorno del Examen]. La evaluación se realizó desde la perspectiva de un atacante externo, sin conocimiento previo de la arquitectura de la red interna.
 
@@ -171,9 +195,13 @@ El alcance de esta prueba de penetración se limitó a los hosts y redes proporc
 - Ataques de ingeniería social.
 - Cualquier acción que pudiera perturbar la estabilidad del entorno del examen para otros usuarios.
 
+---
+
 ## Cronología
 - **Fecha de Inicio:** [TODO: DD/MM/YYYY]
 - **Fecha de Fin:** [TODO: DD/MM/YYYY]
+
+---
 
 ## Resumen de Hallazgos
 [TODO: Proporcione un resumen ejecutivo de alto nivel de los hallazgos clave y la postura general de seguridad de la red. Mencione las vulnerabilidades más críticas descubiertas y el impacto potencial.]
