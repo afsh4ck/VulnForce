@@ -28,8 +28,9 @@ import { es } from 'date-fns/locale';
 import { useData } from '@/context/data-context';
 import { DateRange } from 'react-day-picker';
 import { projectTemplates } from '@/lib/templates';
-import { DragDropContext, Droppable, Draggable, DropResult } from 'react-beautiful-dnd';
-import dynamic from 'next/dynamic';
+import { DndContext, closestCenter, KeyboardSensor, PointerSensor, useSensor, useSensors } from '@dnd-kit/core';
+import { arrayMove, SortableContext, sortableKeyboardCoordinates, useSortable, verticalListSortingStrategy } from '@dnd-kit/sortable';
+import { CSS } from '@dnd-kit/utilities';
 
 
 type SortKey = keyof Finding;
@@ -40,7 +41,23 @@ interface ScopeSection {
   content: string;
 }
 
-const ScopeSectionEditor = ({ section, onContentChange, onDelete, view, onViewChange, onTitleChange, isOrganizing, getImage, provided, isDragging }: {
+const SortableScopeSection = ({ section, ...props }: { section: ScopeSection, [key: string]: any }) => {
+  const { attributes, listeners, setNodeRef, transform, transition } = useSortable({ id: section.id });
+
+  const style = {
+    transform: CSS.Transform.toString(transform),
+    transition,
+  };
+
+  return (
+    <div ref={setNodeRef} style={style} {...attributes}>
+      <ScopeSectionEditor section={section} {...props} dragListeners={listeners} />
+    </div>
+  );
+};
+
+
+const ScopeSectionEditor = ({ section, onContentChange, onDelete, view, onViewChange, onTitleChange, isOrganizing, getImage, dragListeners }: {
   section: ScopeSection;
   onContentChange: (content: string) => void;
   onDelete: () => void;
@@ -49,8 +66,7 @@ const ScopeSectionEditor = ({ section, onContentChange, onDelete, view, onViewCh
   onTitleChange: (newTitle: string) => void;
   isOrganizing: boolean;
   getImage: (id: string) => ImageAsset | undefined;
-  provided: any;
-  isDragging: boolean;
+  dragListeners: any;
 }) => {
   const { language } = useLanguage();
   const { addImage } = useData();
@@ -119,15 +135,15 @@ const ScopeSectionEditor = ({ section, onContentChange, onDelete, view, onViewCh
 
 
   return (
-    <div ref={provided.innerRef} {...provided.draggableProps}>
     <Card>
       <CardHeader className="flex flex-row items-center justify-between bg-muted/50 py-3 px-4">
-         <div className="flex items-center gap-2 w-full" {...provided.dragHandleProps}>
-            <GripVertical className="h-5 w-5 text-muted-foreground cursor-grab" />
+         <div className="flex items-center gap-2 w-full" {...(isOrganizing ? dragListeners : {})}>
+            <GripVertical className={cn("h-5 w-5 text-muted-foreground", isOrganizing ? "cursor-grab" : "cursor-default")} />
             <Input 
               value={sectionTitle}
               onChange={handleTitleChange}
               className="font-semibold text-base border-none focus-visible:ring-0 focus-visible:ring-offset-0 bg-transparent h-auto p-0"
+              readOnly={isOrganizing}
             />
         </div>
         <div className="flex items-center gap-2">
@@ -146,7 +162,7 @@ const ScopeSectionEditor = ({ section, onContentChange, onDelete, view, onViewCh
             </Button>
         </div>
       </CardHeader>
-      {(!isOrganizing || isDragging) && (
+      {!isOrganizing && (
           <CardContent className="p-4">
             <div className={cn("grid gap-4", view === 'split' ? "grid-cols-2" : "grid-cols-1")}>
                 <div className={cn(view === 'preview' && 'hidden')}>
@@ -180,66 +196,6 @@ const ScopeSectionEditor = ({ section, onContentChange, onDelete, view, onViewCh
   )
 }
 
-const ScopeEditorWrapper = ({ scopeSections, setScopeSections, sectionViews, setSectionViews, isOrganizing, getImage, handleSectionContentChange, handleSectionTitleChange, handleDeleteSection }: {
-    scopeSections: ScopeSection[];
-    setScopeSections: React.Dispatch<React.SetStateAction<ScopeSection[]>>;
-    sectionViews: Record<string, ScopeView>;
-    setSectionViews: React.Dispatch<React.SetStateAction<Record<string, ScopeView>>>;
-    isOrganizing: boolean;
-    getImage: (id: string) => ImageAsset | undefined;
-    handleSectionContentChange: (id: string, content: string) => void;
-    handleSectionTitleChange: (id: string, title: string) => void;
-    handleDeleteSection: (id: string) => void;
-}) => {
-
-  const onDragEnd = (result: DropResult) => {
-    const { destination, source } = result;
-    if (!destination) return;
-    if (destination.droppableId === source.droppableId && destination.index === source.index) return;
-    
-    const items = Array.from(scopeSections);
-    const [reorderedItem] = items.splice(source.index, 1);
-    items.splice(destination.index, 0, reorderedItem);
-
-    setScopeSections(items);
-  };
-
-  return (
-    <DragDropContext onDragEnd={onDragEnd}>
-      <Droppable droppableId="sections">
-        {(provided) => (
-          <div {...provided.droppableProps} ref={provided.innerRef} className="space-y-4">
-            {scopeSections.map((section, index) => (
-              <Draggable key={section.id} draggableId={section.id} index={index}>
-                {(provided, snapshot) => (
-                  <ScopeSectionEditor
-                    key={section.id}
-                    section={section}
-                    onContentChange={(newContent) => handleSectionContentChange(section.id, newContent)}
-                    onTitleChange={(newTitle) => handleSectionTitleChange(section.id, newTitle)}
-                    onDelete={() => handleDeleteSection(section.id)}
-                    view={sectionViews[section.id] || 'split'}
-                    onViewChange={(newView) => setSectionViews(prev => ({ ...prev, [section.id]: newView }))}
-                    isOrganizing={isOrganizing}
-                    getImage={getImage}
-                    provided={provided}
-                    isDragging={snapshot.isDragging}
-                  />
-                )}
-              </Draggable>
-            ))}
-            {provided.placeholder}
-          </div>
-        )}
-      </Droppable>
-    </DragDropContext>
-  );
-};
-
-const DynamicScopeEditor = dynamic(() => Promise.resolve(ScopeEditorWrapper), {
-  ssr: false,
-});
-
 
 export default function ProjectDetailsPage() {
   const params = useParams();
@@ -267,6 +223,13 @@ export default function ProjectDetailsPage() {
   const [editStatus, setEditStatus] = useState<Project['status']>('In Progress');
   const [editLanguage, setEditLanguage] = useState<Project['language']>('en');
   const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
+
+  const sensors = useSensors(
+    useSensor(PointerSensor),
+    useSensor(KeyboardSensor, {
+      coordinateGetter: sortableKeyboardCoordinates,
+    })
+  );
 
   const projectFindings = useMemo(() => findings.filter(f => f.projectId === params.id), [findings, params.id]);
   const client = useMemo(() => clients.find(c => c.id === project?.clientId), [clients, project]);
@@ -437,6 +400,18 @@ export default function ProjectDetailsPage() {
         updateProject({ ...project, language: editLanguage });
     }
   }, [editLanguage, project, isEditDialogOpen, updateProject]);
+
+  function handleDragEnd(event: any) {
+    const { active, over } = event;
+
+    if (active.id !== over.id) {
+      setScopeSections((items) => {
+        const oldIndex = items.findIndex((item) => item.id === active.id);
+        const newIndex = items.findIndex((item) => item.id === over.id);
+        return arrayMove(items, oldIndex, newIndex);
+      });
+    }
+  }
 
   const t = {
     en: {
@@ -681,17 +656,25 @@ export default function ProjectDetailsPage() {
                     </Button>
                 </div>
                 
-                <DynamicScopeEditor
-                    scopeSections={scopeSections}
-                    setScopeSections={setScopeSections}
-                    sectionViews={sectionViews}
-                    setSectionViews={setSectionViews}
-                    isOrganizing={isOrganizing}
-                    getImage={getImage}
-                    handleSectionContentChange={handleSectionContentChange}
-                    handleSectionTitleChange={handleSectionTitleChange}
-                    handleDeleteSection={handleDeleteSection}
-                />
+                <DndContext sensors={sensors} collisionDetection={closestCenter} onDragEnd={handleDragEnd}>
+                  <SortableContext items={scopeSections} strategy={verticalListSortingStrategy}>
+                    <div className="space-y-4">
+                      {scopeSections.map(section => (
+                        <SortableScopeSection
+                          key={section.id}
+                          section={section}
+                          onContentChange={(newContent: string) => handleSectionContentChange(section.id, newContent)}
+                          onTitleChange={(newTitle: string) => handleSectionTitleChange(section.id, newTitle)}
+                          onDelete={() => handleDeleteSection(section.id)}
+                          view={sectionViews[section.id] || 'split'}
+                          onViewChange={(newView: ScopeView) => setSectionViews(prev => ({ ...prev, [section.id]: newView }))}
+                          isOrganizing={isOrganizing}
+                          getImage={getImage}
+                        />
+                      ))}
+                    </div>
+                  </SortableContext>
+                </DndContext>
 
                 <div className="flex justify-center">
                     <Button variant="outline" onClick={handleAddSection}>
@@ -752,5 +735,3 @@ export default function ProjectDetailsPage() {
     </div>
   );
 }
-
-    
