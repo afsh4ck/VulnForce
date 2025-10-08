@@ -237,7 +237,7 @@ export default function VulnerabilitiesPage() {
               {sortedAndFilteredVulnerabilities.map((vuln) => (
                 <TableRow key={vuln.id}>
                   <TableCell className="font-medium">
-                     <Link href={`/dashboard/vulnerabilities/${vuln.id}`} className="hover:underline">
+                     <Link href={`/dashboard/vulnerabilities/${vuln.id}`} className="hover:text-primary">
                         {language === 'es' ? vuln.title_es : vuln.title_en}
                      </Link>
                   </TableCell>
@@ -281,5 +281,4 @@ export default function VulnerabilitiesPage() {
     </>
   );
 }
-
     

@@ -179,7 +179,7 @@ export default function ProjectsPage() {
               {sortedAndFilteredProjects.map(project => (
                 <TableRow key={project.id}>
                   <TableCell className="font-medium">
-                    <Link href={`/dashboard/projects/${project.id}`} className="hover:underline">{project.name}</Link>
+                    <Link href={`/dashboard/projects/${project.id}`} className="hover:text-primary">{project.name}</Link>
                   </TableCell>
                   <TableCell>{project.clientName}</TableCell>
                   <TableCell>
