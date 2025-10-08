@@ -68,6 +68,8 @@ export default function ReportPreviewPage() {
       vulnerability: 'Vulnerability',
       severity: 'Severity',
       cvss: 'CVSS',
+      executiveSummaryContent: (projectName: string, clientName: string, startDate: string, endDate: string, totalFindings: number, criticalFindings: number, highFindings: number) => 
+        `This report details the findings of the penetration test conducted on **${projectName}** for **${clientName}** between ${new Date(startDate).toLocaleDateString()} and ${new Date(endDate).toLocaleDateString()}. The assessment identified **${totalFindings}** total vulnerabilities, including **${criticalFindings}** critical and **${highFindings}** high-risk findings. Urgent remediation is recommended for critical vulnerabilities to mitigate potential impact.`,
     },
     es: {
       executiveSummary: 'Resumen Ejecutivo',
@@ -87,6 +89,8 @@ export default function ReportPreviewPage() {
       vulnerability: 'Vulnerabilidad',
       severity: 'Severidad',
       cvss: 'CVSS',
+      executiveSummaryContent: (projectName: string, clientName: string, startDate: string, endDate: string, totalFindings: number, criticalFindings: number, highFindings: number) =>
+        `Este informe detalla los hallazgos de la prueba de penetración realizada en **${projectName}** para **${clientName}** entre el ${new Date(startDate).toLocaleDateString()} y el ${new Date(endDate).toLocaleDateString()}. La evaluación identificó un total de **${totalFindings}** vulnerabilidades, incluyendo **${criticalFindings}** hallazgos críticos y **${highFindings}** de alto riesgo. Se recomienda la remediación urgente de las vulnerabilidades críticas para mitigar el impacto potencial.`,
     },
   };
 
@@ -157,7 +161,16 @@ export default function ReportPreviewPage() {
   const reportLang = project.language;
   const langT = t[reportLang];
 
-  const executiveSummaryContent = `This report details the findings of the penetration test conducted on **${project.name}** for **${client?.name}** between ${new Date(project.startDate).toLocaleDateString()} and ${new Date(project.endDate).toLocaleDateString()}. The assessment identified **${projectFindings.length}** total vulnerabilities, including **${projectFindings.filter(f => f.severity === 'Critical').length}** critical and **${projectFindings.filter(f => f.severity === 'High').length}** high-risk findings. Urgent remediation is recommended for critical vulnerabilities to mitigate potential impact.`;
+  const executiveSummaryContent = langT.executiveSummaryContent(
+    project.name,
+    client.name,
+    project.startDate,
+    project.endDate,
+    projectFindings.length,
+    projectFindings.filter(f => f.severity === 'Critical').length,
+    projectFindings.filter(f => f.severity === 'High').length
+  );
+
 
   return (
     <div className="bg-background text-foreground min-h-screen">

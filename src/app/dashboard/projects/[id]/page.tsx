@@ -8,7 +8,7 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import Link from 'next/link';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
-import { PlusCircle, FileText, ArrowUpDown, Edit, Save, Trash2, CalendarIcon, Split, Eye, Plus, GripVertical, Rows } from "lucide-react";
+import { PlusCircle, FileText, ArrowUpDown, Edit, Save, Trash2, CalendarIcon, Split, Eye, Plus, GripVertical, Rows, Languages } from "lucide-react";
 import { Separator } from "@/components/ui/separator";
 import { useLanguage } from "@/context/language-context";
 import type { Finding, Project, ImageAsset } from '@/lib/types';
@@ -32,6 +32,7 @@ import { projectTemplates } from '@/lib/templates';
 import { DndContext, closestCenter, KeyboardSensor, PointerSensor, useSensor, useSensors, DragEndEvent } from '@dnd-kit/core';
 import { arrayMove, SortableContext, sortableKeyboardCoordinates, useSortable, verticalListSortingStrategy } from '@dnd-kit/sortable';
 import { CSS } from '@dnd-kit/utilities';
+import { translateText } from '@/ai/flows/translate-text-flow';
 
 
 type SortKey = keyof Finding;
@@ -217,6 +218,7 @@ export default function ProjectDetailsPage() {
   const [scopeSections, setScopeSections] = useState<ScopeSection[]>([]);
   const [sectionViews, setSectionViews] = useState<Record<string, ScopeView>>({});
   const [isOrganizing, setIsOrganizing] = useState(false);
+  const [isTranslating, setIsTranslating] = useState(false);
 
   // Edit Dialog State
   const [isEditDialogOpen, setIsEditDialogOpen] = useState(false);
@@ -286,6 +288,7 @@ export default function ProjectDetailsPage() {
     };
     
     updateProject(updatedProjectData);
+    setProject(updatedProjectData); // Update local state as well
 
     toast({ title: t[language].projectUpdated });
     setIsEditDialogOpen(false);
@@ -386,23 +389,49 @@ export default function ProjectDetailsPage() {
           return newViews;
       });
   };
+  
+  const handleLanguageChange = async (newLang: 'en' | 'es') => {
+    setEditLanguage(newLang);
+    if (!project || newLang === project.language) return;
 
-  useEffect(() => {
-    if (!project || !isEditDialogOpen) return;
-  
-    const matchingTemplate = projectTemplates.find(
-      t => t.scope_en.trim() === project.scope.trim() || t.scope_es.trim() === project.scope.trim()
-    );
-  
-    if (matchingTemplate) {
-      const newScope = editLanguage === 'es' ? matchingTemplate.scope_es : matchingTemplate.scope_en;
-      if (project.scope !== newScope) {
-        updateProject({ ...project, scope: newScope, language: editLanguage });
-      }
-    } else {
-        updateProject({ ...project, language: editLanguage });
+    setIsTranslating(true);
+    toast({ title: t[language].translatingTitle, description: t[language].translatingDesc });
+
+    try {
+        const { translatedText } = await translateText({
+            text: project.scope,
+            targetLanguage: newLang,
+        });
+
+        const matchingTemplate = projectTemplates.find(
+          t => t.scope_en.trim() === project.scope.trim() || t.scope_es.trim() === project.scope.trim()
+        );
+        
+        const newScope = matchingTemplate 
+            ? (newLang === 'es' ? matchingTemplate.scope_es : matchingTemplate.scope_en) 
+            : translatedText;
+
+        const updatedProject = { ...project, scope: newScope, language: newLang };
+        updateProject(updatedProject);
+        setProject(updatedProject); // Update local state immediately
+
+        // Also update the sections in the editor
+        const sections = newScope.split(/\n---\n/).map((content, index) => ({
+            id: `section-${index}-${Date.now()}`,
+            content: content.trim()
+        }));
+        setScopeSections(sections);
+        
+        toast({ title: t[language].translationSuccess });
+
+    } catch (error) {
+        console.error("Translation failed", error);
+        toast({ variant: "destructive", title: t[language].translationError });
+    } finally {
+        setIsTranslating(false);
     }
-  }, [editLanguage, project, isEditDialogOpen, updateProject]);
+  };
+
 
   function handleDragEnd(event: DragEndEvent) {
     const { active, over } = event;
@@ -453,6 +482,10 @@ export default function ProjectDetailsPage() {
       newSection: 'New Section',
       organizeSections: 'Organize Sections',
       finishOrganizing: 'Finish Organizing',
+      translatingTitle: 'Translating...',
+      translatingDesc: 'AI is translating the report content. Please wait.',
+      translationSuccess: 'Report translated successfully!',
+      translationError: 'Could not translate the report.'
     },
     es: {
       status: "Estado",
@@ -490,6 +523,10 @@ export default function ProjectDetailsPage() {
       newSection: 'Nueva Sección',
       organizeSections: 'Organizar Secciones',
       finishOrganizing: 'Finalizar Organización',
+      translatingTitle: 'Traduciendo...',
+      translatingDesc: 'La IA está traduciendo el contenido del informe. Por favor, espera.',
+      translationSuccess: '¡Informe traducido correctamente!',
+      translationError: 'No se pudo traducir el informe.'
     }
   }
 
@@ -552,8 +589,8 @@ export default function ProjectDetailsPage() {
                         </div>
                         <div className="space-y-2">
                             <Label htmlFor="language">{t[language].language}</Label>
-                            <Select value={editLanguage} onValueChange={(value) => setEditLanguage(value as 'en' | 'es')}>
-                                <SelectTrigger id="language">
+                            <Select value={editLanguage} onValueChange={(value) => handleLanguageChange(value as 'en' | 'es')}>
+                                <SelectTrigger id="language" disabled={isTranslating}>
                                     <SelectValue placeholder={t[language].selectLanguage} />
                                 </SelectTrigger>
                                 <SelectContent>
@@ -561,6 +598,7 @@ export default function ProjectDetailsPage() {
                                     <SelectItem value="es">{t[language].spanish}</SelectItem>
                                 </SelectContent>
                             </Select>
+                            {isTranslating && <p className="text-sm text-muted-foreground">{t[language].translatingDesc}</p>}
                         </div>
                          <div className="space-y-2">
                             <Label>{t[language].dates}</Label>
@@ -617,7 +655,7 @@ export default function ProjectDetailsPage() {
                         </div>
                     </div>
                     <DialogFooter>
-                        <Button onClick={handleUpdateProject}>{t[language].updateProject}</Button>
+                        <Button onClick={handleUpdateProject} disabled={isTranslating}>{t[language].updateProject}</Button>
                     </DialogFooter>
                 </DialogContent>
             </Dialog>
@@ -632,7 +670,7 @@ export default function ProjectDetailsPage() {
                     </AlertDialogHeader>
                     <AlertDialogFooter>
                         <AlertDialogCancel>{t[language].cancel}</AlertDialogCancel>
-                        <AlertDialogAction onClick={handleDeleteProject} className="bg-destructive hover:bg-destructive/90">{t[language].delete}</AlertDialogAction>
+                        <AlertDialogAction onClick={handleDeleteProject} className="bg-destructive text-destructive-foreground hover:bg-destructive/90">{t[language].delete}</AlertDialogAction>
                     </AlertDialogFooter>
                 </AlertDialogContent>
             </AlertDialog>
@@ -650,7 +688,8 @@ export default function ProjectDetailsPage() {
           {activeTab === 'scope' && (
             <div className="flex items-center gap-2">
               <Button variant="outline" size="sm" onClick={() => setIsOrganizing(!isOrganizing)}>
-                {isOrganizing ? <><Save className="mr-2 h-4 w-4" /> {t[language].finishOrganizing}</> : <><Rows className="mr-2 h-4 w-4" /> {t[language].organizeSections}</>}
+                {isOrganizing ? <Rows className="mr-2 h-4 w-4" /> : <Rows className="mr-2 h-4 w-4" />}
+                {isOrganizing ? t[language].finishOrganizing : t[language].organizeSections}
               </Button>
               <Button size="sm" onClick={handleSaveScope}>
                 <Save className="mr-2 h-4 w-4" />
@@ -741,5 +780,3 @@ export default function ProjectDetailsPage() {
     </div>
   );
 }
-
-    
