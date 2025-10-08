@@ -95,9 +95,9 @@ export default function ReportPreviewPage() {
     if (scopeMatches) {
       scopeMatches.forEach(match => {
         foundTodos.push({
-          location: t[language].scope,
+          location: t[project.language].scope,
           context: match,
-          link: `/dashboard/projects/${projectId}`,
+          link: `/dashboard/projects/${projectId}?tab=scope`,
         });
       });
     }
@@ -108,7 +108,7 @@ export default function ReportPreviewPage() {
       if (findingMatches) {
         findingMatches.forEach(match => {
           foundTodos.push({
-            location: `${t[language].finding}: ${finding.title}`,
+            location: `${t[project.language].finding}: ${finding.title}`,
             context: match,
             link: `/dashboard/projects/${projectId}/findings/${finding.id}`,
           });
@@ -117,7 +117,7 @@ export default function ReportPreviewPage() {
     });
   
     return foundTodos;
-  }, [project, projectFindings, language, projectId, t]);
+  }, [project, projectFindings, projectId, t]);
 
   const handlePrint = () => {
     window.print();
@@ -172,21 +172,21 @@ export default function ReportPreviewPage() {
           </header>
 
           <section>
-            <h2 className="font-headline text-2xl font-bold border-b-2 border-primary pb-2 mb-4">{t[language].executiveSummary}</h2>
+            <h2 className="font-headline text-2xl font-bold border-b-2 border-primary pb-2 mb-4">{t[project.language].executiveSummary}</h2>
             <div className="prose prose-lg dark:prose-invert max-w-none">
               <MarkdownPreview content={`This report details the findings of the penetration test conducted on **${project.name}** for **${client?.name}** between ${new Date(project.startDate).toLocaleDateString()} and ${new Date(project.endDate).toLocaleDateString()}. The assessment identified **${projectFindings.length}** total vulnerabilities, including **${projectFindings.filter(f => f.severity === 'Critical').length}** critical and **${projectFindings.filter(f => f.severity === 'High').length}** high-risk findings. Urgent remediation is recommended for critical vulnerabilities to mitigate potential impact.`} />
             </div>
           </section>
 
           <section>
-            <h2 className="font-headline text-2xl font-bold border-b-2 border-primary pb-2 mb-4">{t[language].scopeAndMethodology}</h2>
+            <h2 className="font-headline text-2xl font-bold border-b-2 border-primary pb-2 mb-4">{t[project.language].scopeAndMethodology}</h2>
             <div className="prose prose-lg dark:prose-invert max-w-none">
               <MarkdownPreview content={project.scope} />
             </div>
           </section>
 
           <section>
-            <h2 className="font-headline text-2xl font-bold border-b-2 border-primary pb-2 mb-8">{t[language].detailedFindings}</h2>
+            <h2 className="font-headline text-2xl font-bold border-b-2 border-primary pb-2 mb-8">{t[project.language].detailedFindings}</h2>
             <div className="space-y-12">
               {projectFindings.map((finding, index) => (
                 <div key={finding.id} className="break-after-page">

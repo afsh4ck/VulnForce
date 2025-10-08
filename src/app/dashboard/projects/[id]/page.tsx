@@ -2,7 +2,7 @@
 'use client';
 
 import React, { useState, useMemo, useEffect } from 'react';
-import { useRouter, useParams } from "next/navigation";
+import { useRouter, useParams, useSearchParams } from "next/navigation";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -36,6 +36,7 @@ type SortKey = keyof Finding;
 export default function ProjectDetailsPage() {
   const params = useParams();
   const router = useRouter();
+  const searchParams = useSearchParams();
   const { toast } = useToast();
   const { projects, clients, findings, updateProject, deleteProject: removeProject } = useData();
   const { language } = useLanguage();
@@ -44,6 +45,7 @@ export default function ProjectDetailsPage() {
   const [sortConfig, setSortConfig] = useState<{ key: SortKey; direction: 'ascending' | 'descending' } | null>(null);
   const [isEditingScope, setIsEditingScope] = useState(false);
   const [scopeContent, setScopeContent] = useState('');
+  const [activeTab, setActiveTab] = useState(searchParams.get('tab') || 'scope');
   
   // Edit Dialog State
   const [isEditDialogOpen, setIsEditDialogOpen] = useState(false);
@@ -394,7 +396,7 @@ export default function ProjectDetailsPage() {
       
       <Separator />
       
-      <Tabs defaultValue="scope">
+      <Tabs value={activeTab} onValueChange={setActiveTab}>
         <TabsList className="grid w-full grid-cols-2 md:w-auto md:inline-flex">
           <TabsTrigger value="scope">{t[language].scopeAndDetails}</TabsTrigger>
           <TabsTrigger value="findings">{t[language].findings} ({projectFindings.length})</TabsTrigger>
