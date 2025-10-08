@@ -151,7 +151,6 @@ The penetration test followed a structured methodology aligned with industry bes
 | Username | Domain | Password |
 |---|---|---|
 | [TODO: user1] | [TODO: domain.local] | [TODO: Password123] |
-| [TODO: admin_user] | [TODO: WORKGROUP] | |
 
 ---
 
@@ -159,7 +158,6 @@ The penetration test followed a structured methodology aligned with industry bes
 | Hostname | IP Address | Operating System |
 |---|---|---|
 | [TODO: WEB01] | [TODO: 192.168.X.X] | [TODO: Windows Server 2019] |
-| [TODO: DC01] | [TODO: 192.168.Y.Y] | [TODO: Windows Server 2019] |
 
 ---
 
@@ -167,12 +165,24 @@ The penetration test followed a structured methodology aligned with industry bes
 | Host | Flag Type | Flag Value |
 |---|---|---|
 | [TODO: WEB01] | user.txt | [TODO: flag_value] |
-| [TODO: WEB01] | root.txt | [TODO: flag_value] |
-| [TODO: DC01] | Domain Flag | [TODO: flag_value] |
 
 ---
 
-### D. Tools Used
+### D. Host & Service Discovery
+| IP Address | Port | Service | Notes |
+|---|---|---|---|
+| [TODO: FILL IN AS APPROPRIATE] | | | |
+
+---
+
+### E. Subdomain Discovery
+| URL | Description | Discovery Method |
+|---|---|---|
+| [TODO: FILL IN DISCOVERED VHOSTS/SUBDOMAINS] | | |
+
+---
+
+### F. Tools Used
 [TODO: List the primary tools used during the assessment.]
 - Nmap
 - Metasploit Framework
@@ -245,7 +255,6 @@ La prueba de penetración siguió una metodología estructurada alineada con las
 | Usuario | Dominio | Contraseña |
 |---|---|---|
 | [TODO: user1] | [TODO: domain.local] | [TODO: Password123] |
-| [TODO: admin_user] | [TODO: WORKGROUP] | |
 
 ---
 
@@ -253,7 +262,6 @@ La prueba de penetración siguió una metodología estructurada alineada con las
 | Hostname | Dirección IP | Sistema Operativo |
 |---|---|---|
 | [TODO: WEB01] | [TODO: 192.168.X.X] | [TODO: Windows Server 2019] |
-| [TODO: DC01] | [TODO: 192.168.Y.Y] | [TODO: Windows Server 2019] |
 
 ---
 
@@ -261,12 +269,24 @@ La prueba de penetración siguió una metodología estructurada alineada con las
 | Host | Tipo de Bandera | Valor de la Bandera |
 |---|---|---|
 | [TODO: WEB01] | user.txt | [TODO: flag_value] |
-| [TODO: WEB01] | root.txt | [TODO: flag_value] |
-| [TODO: DC01] | Bandera de Dominio | [TODO: flag_value] |
 
 ---
 
-### D. Herramientas Utilizadas
+### D. Descubrimiento de Hosts y Servicios
+| Dirección IP | Puerto | Servicio | Notas |
+|---|---|---|---|
+| [TODO: RELLENAR SEGÚN CORRESPONDA] | | | |
+
+---
+
+### E. Descubrimiento de Subdominios
+| URL | Descripción | Método de Descubrimiento |
+|---|---|---|
+| [TODO: RELLENAR VHOSTS/SUBDOMINIOS DESCUBIERTOS] | | |
+
+---
+
+### F. Herramientas Utilizadas
 [TODO: Enumere las principales herramientas utilizadas durante la evaluación.]
 - Nmap
 - Metasploit Framework
