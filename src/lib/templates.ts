@@ -107,7 +107,7 @@ The penetration test followed a structured methodology aligned with industry bes
 
 ---
 
-## Attack Narrative
+## Attack Path
 [TODO: Provide a step-by-step narrative of the attack path, from initial reconnaissance to the final flag capture. This should be detailed and easy to follow.]
 
 1.  **Initial Reconnaissance:** ...
@@ -190,7 +190,7 @@ La prueba de penetración siguió una metodología estructurada alineada con las
 
 ---
 
-## Narrativa del Ataque
+## Ruta de Ataque
 [TODO: Proporcione una narrativa paso a paso de la ruta de ataque, desde el reconocimiento inicial hasta la captura de la bandera final. Debe ser detallada y fácil de seguir.]
 
 1.  **Reconocimiento Inicial:** ...

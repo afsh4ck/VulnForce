@@ -90,16 +90,24 @@ export default function ReportPreviewPage() {
     const foundTodos: TodoItem[] = [];
     const todoRegex = /\[?TODO:?.*?\]?/gi;
   
-    // Check project scope
-    const scopeMatches = project.scope.match(todoRegex);
-    if (scopeMatches) {
-      scopeMatches.forEach(match => {
-        foundTodos.push({
-          location: t[project.language].scope,
-          context: match,
-          link: `/dashboard/projects/${projectId}?tab=scope`,
+    // Check project scope for sections and TODOs
+    if (project.scope) {
+        const sections = project.scope.split(/^(?=## |### )/m);
+        sections.forEach(section => {
+            const headingMatch = section.match(/^(##|###) (.*)/);
+            const sectionTitle = headingMatch ? headingMatch[2].trim() : t[project.language].scope;
+            
+            const scopeMatches = section.match(todoRegex);
+            if (scopeMatches) {
+                scopeMatches.forEach(match => {
+                    foundTodos.push({
+                        location: sectionTitle,
+                        context: match,
+                        link: `/dashboard/projects/${projectId}?tab=scope`,
+                    });
+                });
+            }
         });
-      });
     }
   
     // Check findings
@@ -123,9 +131,11 @@ export default function ReportPreviewPage() {
     window.print();
   };
   
-  if (!project) {
+  if (!project || !client) {
     return null; // or a loading spinner
   }
+
+  const reportLang = project.language;
 
   return (
     <div className="bg-background text-foreground min-h-screen">
@@ -172,21 +182,21 @@ export default function ReportPreviewPage() {
           </header>
 
           <section>
-            <h2 className="font-headline text-2xl font-bold border-b-2 border-primary pb-2 mb-4">{t[project.language].executiveSummary}</h2>
+            <h2 className="font-headline text-2xl font-bold border-b-2 border-primary pb-2 mb-4">{t[reportLang].executiveSummary}</h2>
             <div className="prose prose-lg dark:prose-invert max-w-none">
               <MarkdownPreview content={`This report details the findings of the penetration test conducted on **${project.name}** for **${client?.name}** between ${new Date(project.startDate).toLocaleDateString()} and ${new Date(project.endDate).toLocaleDateString()}. The assessment identified **${projectFindings.length}** total vulnerabilities, including **${projectFindings.filter(f => f.severity === 'Critical').length}** critical and **${projectFindings.filter(f => f.severity === 'High').length}** high-risk findings. Urgent remediation is recommended for critical vulnerabilities to mitigate potential impact.`} />
             </div>
           </section>
 
           <section>
-            <h2 className="font-headline text-2xl font-bold border-b-2 border-primary pb-2 mb-4">{t[project.language].scopeAndMethodology}</h2>
+            <h2 className="font-headline text-2xl font-bold border-b-2 border-primary pb-2 mb-4">{t[reportLang].scopeAndMethodology}</h2>
             <div className="prose prose-lg dark:prose-invert max-w-none">
               <MarkdownPreview content={project.scope} />
             </div>
           </section>
 
           <section>
-            <h2 className="font-headline text-2xl font-bold border-b-2 border-primary pb-2 mb-8">{t[project.language].detailedFindings}</h2>
+            <h2 className="font-headline text-2xl font-bold border-b-2 border-primary pb-2 mb-8">{t[reportLang].detailedFindings}</h2>
             <div className="space-y-12">
               {projectFindings.map((finding, index) => (
                 <div key={finding.id} className="break-after-page">
