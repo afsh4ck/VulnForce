@@ -93,7 +93,6 @@ export const MarkdownPreview = ({ content }: { content: string }) => {
                 if (imageAsset) {
                     return <img src={imageAsset.dataUrl} alt={props.alt} className="max-w-full h-auto rounded-md border" />;
                 }
-                 // If image is not found, render a broken image placeholder
                 return <img {...props} src="" alt={`Broken Image Ref: ${imageId}`} className="max-w-full h-auto rounded-md border" />;
             }
             return <img {...props} className="max-w-full h-auto rounded-md border" />;
