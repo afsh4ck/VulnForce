@@ -174,6 +174,15 @@ export default function ReportPreviewPage() {
     window.print();
   };
   
+  const [scopeContent, appendixContent] = useMemo(() => {
+    if (!project?.reportBody) return ['', ''];
+    const parts = project.reportBody.split('### A. ');
+    if (parts.length > 1) {
+        return [parts[0], '### A. ' + parts.slice(1).join('### A. ')];
+    }
+    return [project.reportBody, ''];
+  }, [project?.reportBody]);
+
   if (!project || !client) {
     return null; // or a loading spinner
   }
@@ -204,15 +213,6 @@ export default function ReportPreviewPage() {
     criticalCount,
     highCount
   );
-  
-  const [scopeContent, appendixContent] = useMemo(() => {
-    if (!project?.reportBody) return ['', ''];
-    const parts = project.reportBody.split('### A. ');
-    if (parts.length > 1) {
-        return [parts[0], '### A. ' + parts.slice(1).join('### A. ')];
-    }
-    return [project.reportBody, ''];
-  }, [project?.reportBody]);
 
   return (
     <div className="bg-background text-foreground min-h-screen">
