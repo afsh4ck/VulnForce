@@ -6,49 +6,67 @@ import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter';
 import { vscDarkPlus } from 'react-syntax-highlighter/dist/esm/styles/prism';
 
 
-const highlightTodos = (text: string) => {
+const highlightTodoInText = (text: string) => {
     if (typeof text !== 'string') return text;
-    
-    const todoRegex = /\[TODO:?.*?\]/gi;
+    const todoRegex = /(\[TODO:?.*?\])/gi;
     const parts = text.split(todoRegex);
-    let lastIndex = 0;
 
-    const highlightedParts = text.match(todoRegex);
-
-    return parts.flatMap((part, index) => {
-        const result = [part];
-        if (highlightedParts && index < highlightedParts.length) {
-            const todoMatch = highlightedParts[index];
-            const todoContent = todoMatch.substring(1, todoMatch.length - 1); // remove brackets
+    return parts.map((part, index) => {
+        if (part.match(todoRegex)) {
+            const todoContent = part.substring(1, part.length - 1);
             const todoParts = todoContent.split(/^(TODO:?)/i);
-            
-            result.push(
+            return (
                 <span key={`todo-${index}`} className="bg-red-500/20 px-1 py-0.5 rounded-sm">
                     <strong className="font-bold text-red-500">{todoParts[1]}</strong>
                     <span className="text-red-400">{todoParts[2]}</span>
                 </span>
             );
         }
-        return result;
+        return part;
     });
 };
+
+const highlightOnlyTodoWord = (text: string) => {
+    if (typeof text !== 'string') return text;
+    const todoRegex = /\[(TODO):(.*?)\]/gi;
+    
+    let lastIndex = 0;
+    const result: (string | JSX.Element)[] = [];
+    
+    text.replace(todoRegex, (match, p1, p2, offset) => {
+        // Add the text before the match
+        if (offset > lastIndex) {
+            result.push(text.substring(lastIndex, offset));
+        }
+        // Add the styled "TODO" and the rest of the match
+        result.push(
+            <React.Fragment key={offset}>
+                [<strong className="text-red-500">{p1}</strong>:{p2}]
+            </React.Fragment>
+        );
+        lastIndex = offset + match.length;
+        return match; // necessary for replace
+    });
+
+    // Add any remaining text
+    if (lastIndex < text.length) {
+        result.push(text.substring(lastIndex));
+    }
+
+    return result;
+}
 
 
 const renderWithTodos = (Component: React.ElementType) => {
     return ({ node, children, ...props }: any) => {
         const newChildren = React.Children.map(children, child => {
             if (typeof child === 'string') {
-                const todoRegex = /\[TODO:?.*?\]/gi;
-                if (todoRegex.test(child)) {
-                    return highlightTodos(child);
-                }
+                return highlightOnlyTodoWord(child);
             }
              if (React.isValidElement(child) && child.props.children && typeof child.props.children === 'string') {
-                 if (/\[TODO:?.*?\]/gi.test(child.props.children)) {
-                    return React.cloneElement(child, {
-                        children: highlightTodos(child.props.children)
-                    });
-                }
+                return React.cloneElement(child, {
+                    children: highlightOnlyTodoWord(child.props.children)
+                });
             }
             return child;
         });
@@ -59,11 +77,11 @@ const renderWithTodos = (Component: React.ElementType) => {
 const CustomTableCell = ({ children, ...props }: any) => {
     const newChildren = React.Children.map(children, child => {
         if (typeof child === 'string') {
-            return highlightTodos(child);
+            return highlightOnlyTodoWord(child);
         }
         if (React.isValidElement(child) && child.props.children && typeof child.props.children === 'string') {
             return React.cloneElement(child, {
-                children: highlightTodos(child.props.children)
+                children: highlightOnlyTodoWord(child.props.children)
             });
         }
         return child;
@@ -91,7 +109,7 @@ export const MarkdownPreview = ({ content }: { content: string }) => {
         code({ node, className, children, ...props }) {
           const match = /language-(\w+)/.exec(className || '');
           const codeContent = String(children).replace(/\n$/, '');
-          const highlightedCode = highlightTodos(codeContent);
+          const highlightedCode = highlightOnlyTodoWord(codeContent);
 
           return match ? (
             <SyntaxHighlighter

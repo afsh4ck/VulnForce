@@ -40,16 +40,16 @@ interface ScopeSection {
   content: string;
 }
 
-const ScopeSectionEditor = ({ section, onContentChange, onDelete, view, onViewChange, onTitleChange }: {
+const ScopeSectionEditor = ({ section, onContentChange, onDelete, view, onViewChange, onTitleChange, isDragging }: {
   section: ScopeSection;
   onContentChange: (content: string) => void;
   onDelete: () => void;
   view: ScopeView;
   onViewChange: (view: ScopeView) => void;
   onTitleChange: (newTitle: string) => void;
+  isDragging?: boolean;
 }) => {
   const { language } = useLanguage();
-  
   const t = {
     en: {
       viewEdit: 'Write',
@@ -66,7 +66,7 @@ const ScopeSectionEditor = ({ section, onContentChange, onDelete, view, onViewCh
       newSection: 'Nueva Sección',
     }
   };
-
+  
   const headingMatch = section.content.match(/^(##) (.*)/);
   const sectionTitle = headingMatch ? headingMatch[2].trim() : t[language].newSection;
 
@@ -74,10 +74,36 @@ const ScopeSectionEditor = ({ section, onContentChange, onDelete, view, onViewCh
     onTitleChange(e.target.value);
   }
 
+  const handlePaste = (e: React.ClipboardEvent<HTMLTextAreaElement>) => {
+    const items = e.clipboardData.items;
+    for (let i = 0; i < items.length; i++) {
+        if (items[i].type.indexOf('image') !== -1) {
+            const blob = items[i].getAsFile();
+            if (blob) {
+                const reader = new FileReader();
+                reader.onload = (event) => {
+                    const dataUrl = event.target?.result as string;
+                    const markdownImage = `![pasted-image](${dataUrl})`;
+                    const textarea = e.target as HTMLTextAreaElement;
+                    const start = textarea.selectionStart;
+                    const end = textarea.selectionEnd;
+                    const newContent = 
+                        section.content.substring(0, start) + 
+                        markdownImage + 
+                        section.content.substring(end);
+                    onContentChange(newContent);
+                };
+                reader.readAsDataURL(blob);
+            }
+            e.preventDefault();
+        }
+    }
+  };
+
   return (
     <Card>
       <CardHeader className="flex flex-row items-center justify-between bg-muted/50 py-3 px-4">
-         <div className="flex items-center gap-2">
+         <div className="flex items-center gap-2 w-full">
             <GripVertical className="h-5 w-5 text-muted-foreground cursor-grab" />
             <Input 
               value={sectionTitle}
@@ -99,20 +125,23 @@ const ScopeSectionEditor = ({ section, onContentChange, onDelete, view, onViewCh
             </Button>
         </div>
       </CardHeader>
-      <CardContent className="p-4">
-        <div className={cn("grid gap-4", view === 'split' ? "grid-cols-2" : "grid-cols-1")}>
-            <div className={cn(view === 'preview' && 'hidden')}>
-                <Textarea
-                    value={section.content}
-                    onChange={(e) => onContentChange(e.target.value)}
-                    className="font-code min-h-[300px] text-base"
-                />
+      {!isDragging && (
+          <CardContent className="p-4">
+            <div className={cn("grid gap-4", view === 'split' ? "grid-cols-2" : "grid-cols-1")}>
+                <div className={cn(view === 'preview' && 'hidden')}>
+                    <Textarea
+                        value={section.content}
+                        onChange={(e) => onContentChange(e.target.value)}
+                        onPaste={handlePaste}
+                        className="font-code min-h-[300px] text-base"
+                    />
+                </div>
+                <div className={cn("prose prose-sm dark:prose-invert max-w-none rounded-md border p-4 min-h-[300px]", view === 'edit' && 'hidden')}>
+                    <MarkdownPreview content={section.content} />
+                </div>
             </div>
-            <div className={cn("prose prose-sm dark:prose-invert max-w-none rounded-md border p-4 min-h-[300px]", view === 'edit' && 'hidden')}>
-                <MarkdownPreview content={section.content} />
-            </div>
-        </div>
-      </CardContent>
+          </CardContent>
+      )}
     </Card>
   )
 }
@@ -133,6 +162,7 @@ export default function ProjectDetailsPage() {
   // State for scope sections
   const [scopeSections, setScopeSections] = useState<ScopeSection[]>([]);
   const [sectionViews, setSectionViews] = useState<Record<string, ScopeView>>({});
+  const [isDragging, setIsDragging] = useState(false);
 
   // Edit Dialog State
   const [isEditDialogOpen, setIsEditDialogOpen] = useState(false);
@@ -265,8 +295,10 @@ export default function ProjectDetailsPage() {
     setScopeSections(prevSections =>
       prevSections.map(sec => {
         if (sec.id === sectionId) {
-          const newContent = sec.content.replace(/^(## .*)(\n|$)/, `## ${newTitle}$2`);
-          return { ...sec, content: newContent };
+            const oldContent = sec.content;
+            const contentWithoutTitle = oldContent.replace(/^(## .*)(\r\n|\n|\r)?/, '');
+            const newContent = `## ${newTitle}\n${contentWithoutTitle}`;
+            return { ...sec, content: newContent };
         }
         return sec;
       })
@@ -308,7 +340,12 @@ export default function ProjectDetailsPage() {
     }
   }, [editLanguage, project, isEditDialogOpen, updateProject]);
 
+  const onDragStart = () => {
+    setIsDragging(true);
+  };
+
   const onDragEnd = (result: DropResult) => {
+    setIsDragging(false);
     const { destination, source } = result;
 
     if (!destination) {
@@ -564,13 +601,13 @@ export default function ProjectDetailsPage() {
                         {t[language].saveScope}
                     </Button>
                 </div>
-                 <DragDropContext onDragEnd={onDragEnd}>
+                 <DragDropContext onDragStart={onDragStart} onDragEnd={onDragEnd}>
                     <Droppable droppableId="sections">
                       {(provided) => (
                         <div {...provided.droppableProps} ref={provided.innerRef} className="space-y-4">
                           {scopeSections.map((section, index) => (
                             <Draggable key={section.id} draggableId={section.id} index={index}>
-                              {(provided) => (
+                              {(provided, snapshot) => (
                                 <div ref={provided.innerRef} {...provided.draggableProps} {...provided.dragHandleProps}>
                                   <ScopeSectionEditor
                                     section={section}
@@ -579,6 +616,7 @@ export default function ProjectDetailsPage() {
                                     onDelete={() => handleDeleteSection(section.id)}
                                     view={sectionViews[section.id] || 'split'}
                                     onViewChange={(newView) => setSectionViews(prev => ({ ...prev, [section.id]: newView }))}
+                                    isDragging={snapshot.isDragging || (isDragging && !snapshot.isDragging)}
                                   />
                                 </div>
                               )}
