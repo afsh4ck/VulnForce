@@ -200,16 +200,16 @@ export default function VulnerabilitiesPage() {
             <TableHeader>
               <TableRow>
                 <TableHead onClick={() => requestSort('title_en')} className="cursor-pointer hover:bg-muted/50">
-                  <div className="flex items-center">{t[language].tableTitle} {getSortIcon('title_en')}</div>
+                  <div className="flex flex-row items-center">{t[language].tableTitle} {getSortIcon('title_en')}</div>
                 </TableHead>
                 <TableHead onClick={() => requestSort('severity')} className="cursor-pointer hover:bg-muted/50">
-                  <div className="flex items-center">{t[language].tableSeverity} {getSortIcon('severity')}</div>
+                  <div className="flex flex-row items-center">{t[language].tableSeverity} {getSortIcon('severity')}</div>
                 </TableHead>
                 <TableHead onClick={() => requestSort('cvssScore')} className="cursor-pointer hover:bg-muted/50">
-                  <div className="flex items-center">{t[language].tableCvss} {getSortIcon('cvssScore')}</div>
+                  <div className="flex flex-row items-center">{t[language].tableCvss} {getSortIcon('cvssScore')}</div>
                 </TableHead>
                 <TableHead onClick={() => requestSort('cwe')} className="cursor-pointer hover:bg-muted/50">
-                  <div className="flex items-center">{t[language].tableReference} {getSortIcon('cwe')}</div>
+                  <div className="flex flex-row items-center">{t[language].tableReference} {getSortIcon('cwe')}</div>
                 </TableHead>
                 <TableHead className="text-right">{t[language].tableActions}</TableHead>
               </TableRow>

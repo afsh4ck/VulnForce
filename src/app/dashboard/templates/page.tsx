@@ -148,8 +148,8 @@ export default function TemplatesPage() {
               <TableHeader>
                 <TableRow>
                   <TableHead className="w-12">Icon</TableHead>
-                  <TableHead onClick={() => requestSort('name_en')} className="cursor-pointer">{t[language].nameHeader} {getSortIcon('name_en')}</TableHead>
-                  <TableHead onClick={() => requestSort('description_en')} className="cursor-pointer">{t[language].descriptionHeader} {getSortIcon('description_en')}</TableHead>
+                  <TableHead onClick={() => requestSort('name_en')} className="cursor-pointer"><div className="flex flex-row items-center">{t[language].nameHeader} {getSortIcon('name_en')}</div></TableHead>
+                  <TableHead onClick={() => requestSort('description_en')} className="cursor-pointer"><div className="flex flex-row items-center">{t[language].descriptionHeader} {getSortIcon('description_en')}</div></TableHead>
                   <TableHead className="text-right">{t[language].actionsHeader}</TableHead>
                 </TableRow>
               </TableHeader>

@@ -310,10 +310,10 @@ export default function ClientsPage() {
               <TableRow>
                 <TableHead className="w-[80px]">{t[language].logoHeader}</TableHead>
                 <TableHead onClick={() => requestSort('name')} className="cursor-pointer hover:bg-muted/50">
-                  <div className="flex items-center">{t[language].nameHeader} {getSortIcon('name')}</div>
+                  <div className="flex flex-row items-center">{t[language].nameHeader} {getSortIcon('name')}</div>
                 </TableHead>
                 <TableHead onClick={() => requestSort('contact')} className="cursor-pointer hover:bg-muted/50">
-                   <div className="flex items-center">{t[language].contactHeader} {getSortIcon('contact')}</div>
+                   <div className="flex flex-row items-center">{t[language].contactHeader} {getSortIcon('contact')}</div>
                 </TableHead>
                 <TableHead className="text-right">{t[language].actionsHeader}</TableHead>
               </TableRow>

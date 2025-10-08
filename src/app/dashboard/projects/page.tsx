@@ -161,16 +161,16 @@ export default function ProjectsPage() {
             <TableHeader>
               <TableRow>
                 <TableHead onClick={() => requestSort('name')} className="cursor-pointer hover:bg-muted/50">
-                  <div className="flex items-center">{t[language].projectNameHeader} {getSortIcon('name')}</div>
+                  <div className="flex flex-row items-center">{t[language].projectNameHeader} {getSortIcon('name')}</div>
                 </TableHead>
                 <TableHead onClick={() => requestSort('clientName')} className="cursor-pointer hover:bg-muted/50">
-                  <div className="flex items-center">{t[language].clientHeader} {getSortIcon('clientName')}</div>
+                  <div className="flex flex-row items-center">{t[language].clientHeader} {getSortIcon('clientName')}</div>
                 </TableHead>
                 <TableHead onClick={() => requestSort('status')} className="cursor-pointer hover:bg-muted/50">
-                  <div className="flex items-center">{t[language].statusHeader} {getSortIcon('status')}</div>
+                  <div className="flex flex-row items-center">{t[language].statusHeader} {getSortIcon('status')}</div>
                 </TableHead>
                 <TableHead onClick={() => requestSort('endDate')} className="cursor-pointer hover:bg-muted/50">
-                  <div className="flex items-center">{t[language].endDateHeader} {getSortIcon('endDate')}</div>
+                  <div className="flex flex-row items-center">{t[language].endDateHeader} {getSortIcon('endDate')}</div>
                 </TableHead>
                 <TableHead className="text-right">{t[language].actionsHeader}</TableHead>
               </TableRow>

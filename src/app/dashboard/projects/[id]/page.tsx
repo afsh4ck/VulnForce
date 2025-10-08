@@ -28,7 +28,7 @@ import { format } from 'date-fns';
 import { es } from 'date-fns/locale';
 import { useData } from '@/context/data-context';
 import { DateRange } from 'react-day-picker';
-import { projectTemplates } from '@/lib/templates';
+import { projectTemplates } from '@/lib/data';
 import { DndContext, closestCenter, KeyboardSensor, PointerSensor, useSensor, useSensors, DragEndEvent } from '@dnd-kit/core';
 import { arrayMove, SortableContext, sortableKeyboardCoordinates, useSortable, verticalListSortingStrategy } from '@dnd-kit/sortable';
 import { CSS } from '@dnd-kit/utilities';
@@ -905,13 +905,13 @@ export default function ProjectDetailsPage() {
                 <TableHeader>
                     <TableRow>
                     <TableHead onClick={() => requestSort('title')} className="cursor-pointer hover:bg-muted/50">
-                        <div className="flex items-center">{t[language].title} {getSortIcon('title')}</div>
+                        <div className="flex flex-row items-center">{t[language].title} {getSortIcon('title')}</div>
                     </TableHead>
                     <TableHead onClick={() => requestSort('severity')} className="cursor-pointer hover:bg-muted/50">
-                        <div className="flex items-center">{t[language].severity} {getSortIcon('severity')}</div>
+                        <div className="flex flex-row items-center">{t[language].severity} {getSortIcon('severity')}</div>
                     </TableHead>
                     <TableHead onClick={() => requestSort('cvss')} className="cursor-pointer hover:bg-muted/50">
-                        <div className="flex items-center">{t[language].cvss} {getSortIcon('cvss')}</div>
+                        <div className="flex flex-row items-center">{t[language].cvss} {getSortIcon('cvss')}</div>
                     </TableHead>
                     </TableRow>
                 </TableHeader>
