@@ -1,3 +1,4 @@
+
 'use client';
 
 import React, { createContext, useContext, useState, useEffect, ReactNode } from 'react';
@@ -85,6 +86,14 @@ export function DataProvider({ children }: { children: ReactNode }) {
         setClients(prev => prev.filter(c => c.id !== clientId));
     };
 
+    const touchProject = (projectId: string) => {
+      setProjects(prevProjects => 
+        prevProjects.map(p => 
+          p.id === projectId ? { ...p, updatedAt: new Date().toISOString() } : p
+        )
+      );
+    }
+
     // Project functions
     const addProject = (project: Omit<Project, 'id' | 'createdAt' | 'updatedAt'>) => {
         const now = new Date().toISOString();
@@ -116,30 +125,19 @@ export function DataProvider({ children }: { children: ReactNode }) {
             updatedAt: now,
         }
         setFindings(prev => [...prev, newFinding]);
-        // Also update the project's updatedAt timestamp
-        const project = projects.find(p => p.id === finding.projectId);
-        if (project) {
-            updateProject(project);
-        }
+        touchProject(finding.projectId);
     };
     const updateFinding = (finding: Omit<Finding, 'createdAt' | 'updatedAt'>) => {
         const now = new Date().toISOString();
         setFindings(prev => prev.map(f => f.id === finding.id ? { ...f, ...finding, updatedAt: now } : f));
-        // Also update the project's updatedAt timestamp
-        const project = projects.find(p => p.id === finding.projectId);
-        if (project) {
-            updateProject(project);
-        }
+        touchProject(finding.projectId);
     };
     const deleteFinding = (findingId: string) => {
         const finding = findings.find(f => f.id === findingId);
-        setFindings(prev => prev.filter(f => f.id !== findingId));
         if(finding){
-            const project = projects.find(p => p.id === finding.projectId);
-            if (project) {
-                updateProject(project);
-            }
+          touchProject(finding.projectId);
         }
+        setFindings(prev => prev.filter(f => f.id !== findingId));
     };
 
     // Vulnerability functions
