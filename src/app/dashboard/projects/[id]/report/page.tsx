@@ -54,7 +54,7 @@ export default function ReportPreviewPage() {
       executiveSummary: 'Executive Summary',
       findingsSummary: 'Findings Summary',
       scopeAndMethodology: 'Scope & Methodology',
-      detailedFindings: 'Detailed Findings',
+      findings: 'Findings',
       reportPreview: 'Report Preview',
       pending: 'Pending',
       allChecksPassed: 'All checks passed!',
@@ -75,7 +75,7 @@ export default function ReportPreviewPage() {
       executiveSummary: 'Resumen Ejecutivo',
       findingsSummary: 'Resumen de Hallazgos',
       scopeAndMethodology: 'Alcance y Metodología',
-      detailedFindings: 'Hallazgos Detallados',
+      findings: 'Hallazgos',
       reportPreview: 'Previsualización del Informe',
       pending: 'Pendiente',
       allChecksPassed: '¡Todas las comprobaciones superadas!',
@@ -228,28 +228,32 @@ export default function ReportPreviewPage() {
             <h2 className="font-headline text-2xl font-bold border-b-2 border-primary pb-2 mb-4 mt-12">{langT.executiveSummary}</h2>
             <div className="prose prose-lg dark:prose-invert max-w-none">
               <MarkdownPreview content={executiveSummaryContent} getImage={getImage} />
-              
-              <h3 className="text-xl font-semibold mt-8 mb-4">{langT.findingsSummary}</h3>
-              <Table>
-                <TableHeader>
-                  <TableRow>
-                    <TableHead>{langT.vulnerability}</TableHead>
-                    <TableHead>{langT.severity}</TableHead>
-                    <TableHead className="text-right">{langT.cvss}</TableHead>
-                  </TableRow>
-                </TableHeader>
-                <TableBody>
-                  {projectFindings.map(finding => (
-                    <TableRow key={finding.id}>
-                      <TableCell className="font-medium">{finding.title}</TableCell>
-                      <TableCell>
-                        <Badge variant={getSeverityVariant(finding.severity)}>{finding.severity}</Badge>
-                      </TableCell>
-                      <TableCell className="text-right font-code">{finding.cvss.toFixed(1)}</TableCell>
+            </div>
+          </section>
+
+          <section>
+            <h2 className="font-headline text-2xl font-bold border-b-2 border-primary pb-2 mb-4 mt-12">{langT.findingsSummary}</h2>
+             <div className="prose prose-lg dark:prose-invert max-w-none">
+                <Table>
+                    <TableHeader>
+                    <TableRow>
+                        <TableHead>{langT.vulnerability}</TableHead>
+                        <TableHead>{langT.severity}</TableHead>
+                        <TableHead className="text-right">{langT.cvss}</TableHead>
                     </TableRow>
-                  ))}
-                </TableBody>
-              </Table>
+                    </TableHeader>
+                    <TableBody>
+                    {projectFindings.map(finding => (
+                        <TableRow key={finding.id}>
+                        <TableCell className="font-medium">{finding.title}</TableCell>
+                        <TableCell>
+                            <Badge variant={getSeverityVariant(finding.severity)}>{finding.severity}</Badge>
+                        </TableCell>
+                        <TableCell className="text-right font-code">{finding.cvss.toFixed(1)}</TableCell>
+                        </TableRow>
+                    ))}
+                    </TableBody>
+                </Table>
             </div>
           </section>
 
@@ -261,7 +265,7 @@ export default function ReportPreviewPage() {
           </section>
 
           <section>
-            <h2 className="font-headline text-2xl font-bold border-b-2 border-primary pb-2 mb-8 mt-12">{langT.detailedFindings}</h2>
+            <h2 className="font-headline text-2xl font-bold border-b-2 border-primary pb-2 mb-8 mt-12">{langT.findings}</h2>
             <div className="space-y-12">
               {projectFindings.map((finding, index) => (
                 <div key={finding.id} className="break-after-page">
