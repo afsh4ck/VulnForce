@@ -3,17 +3,195 @@
 import type { Client, Project, Finding, Vulnerability, ProjectTemplate } from './types';
 
 export const clients: Client[] = [
-  { id: 'cli-1', name: 'Innovatech Solutions', contact: 'contact@innovatech.com', logoUrl: '' },
-  { id: 'cli-2', name: 'Quantum Dynamics', contact: 'security@quantum.com', logoUrl: '' },
-  { id: 'cli-3', name: 'SecureBank Corp', contact: 'audit@securebank.com', logoUrl: '' },
-  { id: 'cli-4', name: 'HealthFirst Providers', contact: 'compliance@healthfirst.com', logoUrl: '' },
+  { id: 'cli-1', name: 'Innovatech Solutions', contact: 'contact@innovatech.com', logoUrl: 'https://picsum.photos/seed/innovatech/128/128' },
+  { id: 'cli-2', name: 'Quantum Dynamics', contact: 'security@quantum.com', logoUrl: 'https://picsum.photos/seed/quantum/128/128' },
+  { id: 'cli-3', name: 'SecureBank Corp', contact: 'audit@securebank.com', logoUrl: 'https://picsum.photos/seed/securebank/128/128' },
+  { id: 'cli-4', name: 'HealthFirst Providers', contact: 'compliance@healthfirst.com', logoUrl: 'https://picsum.photos/seed/healthfirst/128/128' },
 ];
 
 export const projects: Project[] = [
-  { id: 'proj-1', clientId: 'cli-1', name: 'Q3 Web App Pentest', scope: '*.innovatech.com', startDate: '2023-07-01', endDate: '2023-07-15', status: 'Completed', language: 'en', createdAt: '2023-07-01T10:00:00Z', updatedAt: '2023-07-15T18:00:00Z', icon: 'Scan' },
-  { id: 'proj-2', clientId: 'cli-2', name: 'API Security Audit', scope: 'api.quantum.com', startDate: '2023-08-10', endDate: '2023-08-25', status: 'Completed', language: 'en', createdAt: '2023-08-10T10:00:00Z', updatedAt: '2023-08-25T18:00:00Z', icon: 'Globe' },
-  { id: 'proj-3', clientId: 'cli-3', name: 'Auditoría Red Interna', scope: '10.0.0.0/8', startDate: '2023-09-01', endDate: '2023-09-30', status: 'In Progress', language: 'es', createdAt: '2023-09-01T10:00:00Z', updatedAt: '2023-09-15T12:00:00Z', icon: 'Network' },
-  { id: 'proj-4', clientId: 'cli-1', name: 'Mobile App Assessment', scope: 'Innovatech iOS App', startDate: '2023-10-05', endDate: '2023-10-20', status: 'In Progress', language: 'en', createdAt: '2023-10-05T10:00:00Z', updatedAt: '2023-10-10T11:00:00Z', icon: 'Smartphone' },
+  { 
+    id: 'proj-1', 
+    clientId: 'cli-1', 
+    name: 'Q3 Web App Pentest', 
+    scope: `## Executive Summary
+This report outlines the results of an external penetration test conducted on the internet-facing assets of **Innovatech Solutions**. The assessment aimed to identify vulnerabilities that could be exploited by a remote attacker to compromise the security of the organization's perimeter.
+
+---
+
+## Scope & Methodology
+The assessment was conducted between **July 1, 2023** and **July 15, 2023** from the perspective of an external, unauthenticated attacker (black-box).
+
+### Scope
+- **Web Applications:** *.innovatech.com, api.innovatech.com
+- **External Network:** 198.51.100.0/24
+
+### Methodology
+1. **Reconnaissance:** Discovering subdomains, open ports, and services.
+2. **Vulnerability Scanning:** Using automated tools to identify common vulnerabilities.
+3. **Manual Verification & Exploitation:** Manually validating findings and attempting to exploit identified weaknesses.
+4. **Reporting:** Documenting vulnerabilities and providing remediation guidance.
+
+---
+
+## Attack Narrative
+The engagement began with reconnaissance against the *.innovatech.com domain, which revealed the existence of an outdated blog at 'blog.innovatech.com' and a development server at 'dev.innovatech.com' with directory listing enabled. An SQL Injection vulnerability was discovered and exploited on the main web application's login form, allowing for authentication bypass. This access was leveraged to uncover a Stored XSS vulnerability in the user profile section, which could be used to target other users, including administrators.
+
+---
+
+## Findings Classification
+| Severity | CVSS v3.1 Score | Description |
+|---|---|---|
+| Critical | 9.0 - 10.0 | Vulnerabilities that could lead to immediate system compromise or a breach of the network perimeter. |
+| High | 7.0 - 8.9 | Vulnerabilities that could allow an attacker to gain unauthorized access to systems or data. |
+| Medium | 4.0 - 6.9 | Weaknesses that could reveal sensitive information or be chained with other vulnerabilities. |
+| Low | 0.1 - 3.9 | Minor issues that reduce the overall security posture but are not directly exploitable. |
+| Informational | 0.0 | Observations about the external footprint of the organization. |`, 
+    startDate: '2023-07-01', 
+    endDate: '2023-07-15', 
+    status: 'Completed', 
+    language: 'en', 
+    createdAt: '2023-07-01T10:00:00Z', 
+    updatedAt: '2023-07-15T18:00:00Z', 
+    icon: 'Scan' 
+  },
+  { 
+    id: 'proj-2', 
+    clientId: 'cli-2', 
+    name: 'API Security Audit', 
+    scope: `## Executive Summary
+This report outlines the results of an external penetration test conducted on the internet-facing assets of **Quantum Dynamics**. The assessment aimed to identify vulnerabilities that could be exploited by a remote attacker to compromise the security of the organization's perimeter, with a focus on the company's main API.
+
+---
+
+## Scope & Methodology
+The assessment was conducted between **August 10, 2023** and **August 25, 2023** from the perspective of an external, unauthenticated attacker (black-box).
+
+### Scope
+- **Web Applications:** api.quantum.com
+- **External Network:** 203.0.113.0/24
+
+### Methodology
+1. **Reconnaissance:** Discovering API endpoints and functionality through documentation and bruteforcing.
+2. **Vulnerability Scanning:** Using automated tools to identify common API vulnerabilities (e.g., injection, broken authentication).
+3. **Manual Verification & Exploitation:** Manually testing for flaws like IDOR, mass assignment, and business logic issues.
+4. **Reporting:** Documenting vulnerabilities and providing remediation guidance.
+
+---
+
+## Attack Narrative
+The assessment identified a critical Insecure Direct Object Reference (IDOR) vulnerability in the \`/api/v1/users/[userId]\` endpoint. By iterating the \`userId\` parameter, it was possible to retrieve sensitive personal information for any user on the platform. Furthermore, the API was missing rate limiting, allowing for automated enumeration of user IDs.
+
+---
+
+## Findings Classification
+| Severity | CVSS v3.1 Score | Description |
+|---|---|---|
+| Critical | 9.0 - 10.0 | Vulnerabilities that could lead to immediate system compromise or a breach of the network perimeter. |
+| High | 7.0 - 8.9 | Vulnerabilities that could allow an attacker to gain unauthorized access to systems or data. |
+| Medium | 4.0 - 6.9 | Weaknesses that could reveal sensitive information or be chained with other vulnerabilities. |
+| Low | 0.1 - 3.9 | Minor issues that reduce the overall security posture but are not directly exploitable. |
+| Informational | 0.0 | Observations about the external footprint of the organization. |`, 
+    startDate: '2023-08-10', 
+    endDate: '2023-08-25', 
+    status: 'Completed', 
+    language: 'en', 
+    createdAt: '2023-08-10T10:00:00Z', 
+    updatedAt: '2023-08-25T18:00:00Z', 
+    icon: 'Globe' 
+  },
+  { 
+    id: 'proj-3', 
+    clientId: 'cli-3', 
+    name: 'Auditoría Red Interna', 
+    scope: `## Resumen Ejecutivo
+Este informe presenta los hallazgos de una prueba de penetración de la red interna para **SecureBank Corp**. La evaluación simuló a un atacante que ya ha obtenido acceso inicial a la red corporativa interna (p. ej., un empleado malintencionado o una estación de trabajo comprometida). El objetivo fue identificar vulnerabilidades que pudieran conducir a la escalada de privilegios, movimiento lateral y compromiso de sistemas internos críticos como los Controladores de Dominio.
+
+---
+
+## Alcance y Metodología
+La evaluación se llevó a cabo entre el **1 de Septiembre de 2023** y el **30 de Septiembre de 2023** desde la perspectiva de un usuario autenticado y sin privilegios en la red interna (caja gris).
+
+### Alcance
+- **Segmentos de Red Interna:** 10.0.0.0/8
+- **Sistemas Clave:** DC01, DC02, FS01
+
+### Metodología
+1. **Reconocimiento Interno:** Enumeración de hosts, servicios, usuarios y recursos compartidos.
+2. **Análisis de Vulnerabilidades:** Identificación de configuraciones incorrectas, parches faltantes y protocolos débiles.
+3. **Movimiento Lateral y Escalada de Privilegios:** Explotación de vulnerabilidades para moverse a través de la red y escalar privilegios.
+4. **Dominio del Dominio:** Intento de comprometer el dominio de Active Directory.
+5. **Reporte:** Documentación de las rutas de ataque y provisión de guías de remediación.
+
+---
+
+## Narrativa del Ataque
+El ataque comenzó con la enumeración de recursos compartidos SMB en la red, lo que reveló un recurso compartido con permisos de escritura para todos los usuarios. Se subió un ejecutable malicioso a este recurso. Luego, se utilizó una vulnerabilidad de Kerberoasting para obtener el hash de la contraseña de una cuenta de servicio con privilegios. El hash fue crackeado offline, otorgando acceso a un servidor de aplicaciones. Desde este servidor, se explotó la vulnerabilidad Zerologon (CVE-2020-1472) contra un controlador de dominio no parcheado (DC02), lo que resultó en un compromiso total del dominio.
+
+---
+
+## Clasificación de Hallazgos
+| Severidad | Puntuación CVSS v3.1 | Descripción |
+|---|---|---|
+| Crítica | 9.0 - 10.0 | Vulnerabilidades que conducen al compromiso del Administrador del Dominio o al control de servidores críticos. |
+| Alta | 7.0 - 8.9 | Vulnerabilidades que permiten una escalada de privilegios significativa o movimiento lateral. |
+| Media | 4.0 - 6.9 | Configuraciones incorrectas o debilidades que podrían ayudar a un atacante en el reconocimiento o ataques posteriores. |
+| Baja | 0.1 - 3.9 | Problemas menores que representan una desviación de las mejores prácticas. |
+| Informativa | 0.0 | Observaciones sobre el entorno de la red interna. |`, 
+    startDate: '2023-09-01', 
+    endDate: '2023-09-30', 
+    status: 'In Progress', 
+    language: 'es', 
+    createdAt: '2023-09-01T10:00:00Z', 
+    updatedAt: '2023-09-15T12:00:00Z', 
+    icon: 'Network' 
+  },
+  { 
+    id: 'proj-4', 
+    clientId: 'cli-1', 
+    name: 'Mobile App Assessment', 
+    scope: `## Executive Summary
+This report documents the findings of a security assessment of the **Innovatech GO** mobile application (version 1.5.2) for **Innovatech Solutions**. The test focused on identifying vulnerabilities within the mobile application itself and its backend API interactions, covering areas such as insecure data storage, insecure communication, and client-side logic flaws.
+
+---
+
+## Scope & Methodology
+The assessment was conducted between **October 5, 2023** and **October 20, 2023**.
+
+### Scope
+- **Android Application:** Package Name \`com.innovatech.go\`, provided as an APK file.
+- **iOS Application:** Bundle ID \`com.innovatech.go\`, provided via TestFlight.
+- **Backend APIs:** The assessment included analysis of the API endpoints consumed by the mobile application, located at \`api.innovatech.com\`
+
+### Methodology
+1. **Static Analysis (SAST):** Analyzing the application's source code or decompiled code to find vulnerabilities without executing it.
+2. **Dynamic Analysis (DAST):** Testing the application in a running state, both on a physical device and an emulator, to identify runtime vulnerabilities. This included intercepting network traffic with a proxy.
+3. **API Testing:** Directly testing the backend API endpoints for common web vulnerabilities.
+4. **Reporting:** Consolidating all findings and providing detailed remediation steps.
+
+---
+
+## Attack Narrative
+Dynamic analysis revealed that the application stores the user's session token insecurely in SharedPreferences on Android and a plist file on iOS. An attacker with physical access to a user's device, or a malicious application on the device, could steal this token and hijack the user's session. The API key for a third-party mapping service was also found hardcoded in the application's resources, which could lead to abuse and financial costs if extracted.
+
+---
+
+## Findings Classification
+| Severity | CVSS v3.1 Score | Description |
+|---|---|---|
+| Critical | 9.0 - 10.0 | Vulnerabilities that allow for full compromise of user accounts or sensitive backend systems. |
+| High | 7.0 - 8.9 | Vulnerabilities that expose sensitive user data or allow for significant unauthorized actions. |
+| Medium | 4.0 - 6.9 | Weaknesses in the application that could be chained for a more significant attack or expose non-critical data. |
+| Low | 0.1 - 3.9 | Issues that deviate from security best practices but have a low direct impact. |
+| Informational | 0.0 | Observations about the application's security posture. |`, 
+    startDate: '2023-10-05', 
+    endDate: '2023-10-20', 
+    status: 'In Progress', 
+    language: 'en', 
+    createdAt: '2023-10-05T10:00:00Z', 
+    updatedAt: '2023-10-10T11:00:00Z', 
+    icon: 'Smartphone' 
+  },
 ];
 
 export const findings: Finding[] = [
@@ -417,7 +595,7 @@ export const vulnerabilities: Vulnerability[] = [
       overview_en: 'An attacker can execute arbitrary commands on the host operating system. This vulnerability is possible when an application passes unsafe user-supplied data (e.g., form input, cookies) to a system shell.',
       overview_es: 'Un atacante puede ejecutar comandos arbitrarios en el sistema operativo anfitrión. Esta vulnerabilidad es posible cuando una aplicación pasa datos no seguros suministrados por el usuario (por ejemplo, entradas de formulario, cookies) a una shell del sistema.',
       technicalDescription_en: 'The application uses user input to build a command that is executed on the server. By providing malicious input containing shell metacharacters (e.g., `;`, `|`, `&&`), an attacker can append new commands.',
-      technicalDescription_es: 'La aplicación utiliza la entrada del usuario para construir un comando que se ejecuta en el servidor. Al proporcionar una entrada maliciosa que contiene metacaracteres de shell (p. ej., `;`, `|`, `&&`), un atacante puede añadir nuevos comandos.',
+      technicalDescription_es: 'La aplicación utiliza la entrada del usuario para construir un comando que se ejecuta en el servidor. Al proporcionar una entrada maliciosa que contenga metacaracteres de shell (p. ej., `;`, `|`, `&&`), un atacante puede añadir nuevos comandos.',
       affectedComponents_en: '[TODO Specify the vulnerable component, e.g., The file download functionality at `/download.php?file=...`]',
       affectedComponents_es: '[TODO Especificar el componente vulnerable, p. ej., La funcionalidad de descarga de archivos en `/download.php?file=...`]',
       impact_en: 'Command Injection can lead to a full compromise of the underlying server, allowing an attacker to read/write files, install malware, pivot to other network systems, and exfiltrate data.',
@@ -2937,8 +3115,7 @@ La prueba de penetración siguió una metodología estructurada:
 | Baja | 0.1 - 3.9 | Problemas menores que representan una desviación de las mejores prácticas. |
 | Informativa | 0.0 | Observaciones sobre el entorno de la red. |
 `,
-    appendix_en:
-`
+    appendix_en: `
 ### A. Compromised Users
 | Username | Domain | Password |
 |---|---|---|
@@ -2973,8 +3150,7 @@ La prueba de penetración siguió una metodología estructurada:
 - Impacket Suite
 - Burp Suite
 `,
-    appendix_es:
-`
+    appendix_es: `
 ### A. Usuarios Comprometidos
 | Usuario | Dominio | Contraseña |
 |---|---|---|
@@ -3011,6 +3187,8 @@ La prueba de penetración siguió una metodología estructurada:
 `
   }
 ];
+
+
 
 
 
