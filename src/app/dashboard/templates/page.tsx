@@ -156,6 +156,7 @@ export default function TemplatesPage() {
               <TableBody>
                 {sortedAndFilteredTemplates.map((template) => {
                   const Icon = iconComponents[template.icon] || FileText;
+                  const isDeletable = template.id.startsWith('ptpl-');
                   return (
                     <TableRow key={template.id}>
                       <TableCell><Icon className="h-6 w-6 text-primary" /></TableCell>
@@ -178,23 +179,25 @@ export default function TemplatesPage() {
                                     <Edit className="h-4 w-4" />
                                 </Link>
                             </Button>
-                            <AlertDialog>
-                                <AlertDialogTrigger asChild>
-                                    <Button variant="ghost" size="icon" className="text-destructive hover:bg-destructive hover:text-destructive-foreground" onClick={() => setTemplateToDelete(template)}>
-                                        <Trash2 className="h-4 w-4" />
-                                    </Button>
-                                </AlertDialogTrigger>
-                                <AlertDialogContent>
-                                    <AlertDialogHeader>
-                                        <AlertDialogTitle>{t[language].confirmDeleteTitle}</AlertDialogTitle>
-                                        <AlertDialogDescription>{t[language].confirmDeleteDesc}</AlertDialogDescription>
-                                    </AlertDialogHeader>
-                                    <AlertDialogFooter>
-                                        <AlertDialogCancel onClick={() => setTemplateToDelete(null)}>{t[language].cancel}</AlertDialogCancel>
-                                        <AlertDialogAction onClick={handleDelete} className="bg-destructive hover:bg-destructive/90">{t[language].delete}</AlertDialogAction>
-                                    </AlertDialogFooter>
-                                </AlertDialogContent>
-                            </AlertDialog>
+                            {isDeletable && (
+                              <AlertDialog>
+                                  <AlertDialogTrigger asChild>
+                                      <Button variant="ghost" size="icon" className="text-destructive hover:bg-destructive hover:text-destructive-foreground" onClick={() => setTemplateToDelete(template)}>
+                                          <Trash2 className="h-4 w-4" />
+                                      </Button>
+                                  </AlertDialogTrigger>
+                                  <AlertDialogContent>
+                                      <AlertDialogHeader>
+                                          <AlertDialogTitle>{t[language].confirmDeleteTitle}</AlertDialogTitle>
+                                          <AlertDialogDescription>{t[language].confirmDeleteDesc}</AlertDialogDescription>
+                                      </AlertDialogHeader>
+                                      <AlertDialogFooter>
+                                          <AlertDialogCancel onClick={() => setTemplateToDelete(null)}>{t[language].cancel}</AlertDialogCancel>
+                                          <AlertDialogAction onClick={handleDelete} className="bg-destructive hover:bg-destructive/90">{t[language].delete}</AlertDialogAction>
+                                      </AlertDialogFooter>
+                                  </AlertDialogContent>
+                              </AlertDialog>
+                            )}
                         </div>
                       </TableCell>
                     </TableRow>
