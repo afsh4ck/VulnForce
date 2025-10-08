@@ -7,35 +7,13 @@ import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter';
 import { vscDarkPlus } from 'react-syntax-highlighter/dist/esm/styles/prism';
 import type { ImageAsset } from '@/lib/types';
 
-
-const highlightTodos = (text: string): (string | JSX.Element)[] => {
-    if (typeof text !== 'string') return [text];
+const highlightTodos = (text: string) => {
+    if (typeof text !== 'string') return text;
 
     const todoRegex = /(\[TODO:?.*?\]|\bTODO\b)/g;
-    const parts = text.split(todoRegex);
 
-    return parts.map((part, index) => {
-        if (part.match(todoRegex)) {
-            const isBracketed = part.startsWith('[');
-            const todoHighlight = (
-                <span key={`todo-${index}`} className="bg-red-500 text-white font-bold px-1 rounded-sm">
-                    TODO
-                </span>
-            );
-
-            if (isBracketed) {
-                // Reconstruct the bracketed part, replacing 'TODO'
-                const content = part.substring(1, part.length - 1).replace('TODO', '');
-                return (
-                    <span key={index}>
-                        [{todoHighlight}{content}]
-                    </span>
-                );
-            }
-            // Standalone TODO
-            return todoHighlight;
-        }
-        return part;
+    return text.replace(todoRegex, (match) => {
+        return match.replace(/TODO/g, '<span class="bg-red-500 text-white font-bold px-1 rounded-sm">TODO</span>');
     });
 };
 
@@ -44,11 +22,11 @@ const renderWithTodos = (Component: React.ElementType) => {
     return ({ node, children, ...props }: any) => {
         const newChildren = React.Children.map(children, child => {
             if (typeof child === 'string') {
-                return highlightTodos(child);
+                 return <span dangerouslySetInnerHTML={{ __html: highlightTodos(child) }} />;
             }
              if (React.isValidElement(child) && child.props.children && typeof child.props.children === 'string') {
                 return React.cloneElement(child, {
-                    children: highlightTodos(child.props.children)
+                    children: <span dangerouslySetInnerHTML={{ __html: highlightTodos(child.props.children) }} />
                 });
             }
             return child;
@@ -60,11 +38,11 @@ const renderWithTodos = (Component: React.ElementType) => {
 const CustomTableCell = ({ children, ...props }: any) => {
     const newChildren = React.Children.map(children, child => {
         if (typeof child === 'string') {
-            return highlightTodos(child);
+            return <span dangerouslySetInnerHTML={{ __html: highlightTodos(child) }} />;
         }
         if (React.isValidElement(child) && child.props.children && typeof child.props.children === 'string') {
             return React.cloneElement(child, {
-                children: highlightTodos(child.props.children)
+                 children: <span dangerouslySetInnerHTML={{ __html: highlightTodos(child.props.children) }} />
             });
         }
         return child;
@@ -84,7 +62,7 @@ export const MarkdownPreview = ({ content, getImage }: { content: string, getIma
           h2: ({ node, ...props }) => <h2 className="text-2xl font-semibold mb-3 border-b pb-2 mt-12" {...props} />,
           h3: ({ node, ...props }) => <h3 className="text-xl font-semibold mb-3 mt-8" {...props} />,
           p: renderWithTodos('p'),
-          li: ({ node, ...props }) => <li className="prose-li:text-primary" {...props} />,
+          li: renderWithTodos('li'),
           table: ({ node, ...props }) => <table className="table-auto w-full my-4 border-collapse border border-border" {...props} />,
           thead: ({ node, ...props }) => <thead className="bg-muted" {...props} />,
           tbody: ({ node, ...props }) => <tbody {...props} />,
@@ -110,7 +88,7 @@ export const MarkdownPreview = ({ content, getImage }: { content: string, getIma
           code({ node, className, children, ...props }) {
             const match = /language-(\w+)/.exec(className || '');
             const codeContent = String(children).replace(/\n$/, '');
-            const highlightedCode = highlightTodos(codeContent);
+            const highlightedCode = <span dangerouslySetInnerHTML={{ __html: highlightTodos(codeContent) }} />;
 
             return match ? (
               <SyntaxHighlighter
