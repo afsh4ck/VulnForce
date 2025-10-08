@@ -84,7 +84,7 @@ export default function ReportPreviewPage() {
       finding: 'Hallazgo',
       backToProject: 'Volver al Proyecto',
       vulnerability: 'Vulnerabilidad',
-      severity: 'Severidad',
+      severidad: 'Severidad',
       cvss: 'CVSS',
     },
   };
@@ -109,7 +109,7 @@ export default function ReportPreviewPage() {
         const sections = project.scope.split(/^(?=## |### )/m);
         sections.forEach(section => {
             const headingMatch = section.match(/^(##|###) (.*)/);
-            const sectionTitle = headingMatch ? headingMatch[2].trim() : t[project.language].scope;
+            const sectionTitle = headingMatch ? headingMatch[2].trim() : langT.scope;
             
             const scopeMatches = section.match(todoRegex);
             if (scopeMatches) {
@@ -130,7 +130,7 @@ export default function ReportPreviewPage() {
       if (findingMatches) {
         findingMatches.forEach(match => {
           foundTodos.push({
-            location: `${t[project.language].finding}: ${finding.title}`,
+            location: `${langT.finding}: ${finding.title}`,
             context: match,
             link: `/dashboard/projects/${projectId}/findings/${finding.id}`,
           });
