@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useMemo, useEffect } from 'react';
+import React, { useState, useMemo, useEffect, useCallback } from 'react';
 import { useRouter, useParams, useSearchParams } from "next/navigation";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -29,6 +29,7 @@ import { useData } from '@/context/data-context';
 import { DateRange } from 'react-day-picker';
 import { projectTemplates } from '@/lib/templates';
 import { DragDropContext, Droppable, Draggable, DropResult } from 'react-beautiful-dnd';
+import dynamic from 'next/dynamic';
 
 
 type SortKey = keyof Finding;
@@ -39,7 +40,7 @@ interface ScopeSection {
   content: string;
 }
 
-const ScopeSectionEditor = ({ section, onContentChange, onDelete, view, onViewChange, onTitleChange, isOrganizing, getImage }: {
+const ScopeSectionEditor = ({ section, onContentChange, onDelete, view, onViewChange, onTitleChange, isOrganizing, getImage, provided, isDragging }: {
   section: ScopeSection;
   onContentChange: (content: string) => void;
   onDelete: () => void;
@@ -48,6 +49,8 @@ const ScopeSectionEditor = ({ section, onContentChange, onDelete, view, onViewCh
   onTitleChange: (newTitle: string) => void;
   isOrganizing: boolean;
   getImage: (id: string) => ImageAsset | undefined;
+  provided: any;
+  isDragging: boolean;
 }) => {
   const { language } = useLanguage();
   const { addImage } = useData();
@@ -116,10 +119,10 @@ const ScopeSectionEditor = ({ section, onContentChange, onDelete, view, onViewCh
 
 
   return (
-    <>
+    <div ref={provided.innerRef} {...provided.draggableProps}>
     <Card>
       <CardHeader className="flex flex-row items-center justify-between bg-muted/50 py-3 px-4">
-         <div className="flex items-center gap-2 w-full">
+         <div className="flex items-center gap-2 w-full" {...provided.dragHandleProps}>
             <GripVertical className="h-5 w-5 text-muted-foreground cursor-grab" />
             <Input 
               value={sectionTitle}
@@ -143,7 +146,7 @@ const ScopeSectionEditor = ({ section, onContentChange, onDelete, view, onViewCh
             </Button>
         </div>
       </CardHeader>
-      {!isOrganizing && (
+      {(!isOrganizing || isDragging) && (
           <CardContent className="p-4">
             <div className={cn("grid gap-4", view === 'split' ? "grid-cols-2" : "grid-cols-1")}>
                 <div className={cn(view === 'preview' && 'hidden')}>
@@ -173,9 +176,70 @@ const ScopeSectionEditor = ({ section, onContentChange, onDelete, view, onViewCh
             </AlertDialogFooter>
         </AlertDialogContent>
     </AlertDialog>
-    </>
+    </div>
   )
 }
+
+const ScopeEditorWrapper = ({ scopeSections, setScopeSections, sectionViews, setSectionViews, isOrganizing, getImage, handleSectionContentChange, handleSectionTitleChange, handleDeleteSection }: {
+    scopeSections: ScopeSection[];
+    setScopeSections: React.Dispatch<React.SetStateAction<ScopeSection[]>>;
+    sectionViews: Record<string, ScopeView>;
+    setSectionViews: React.Dispatch<React.SetStateAction<Record<string, ScopeView>>>;
+    isOrganizing: boolean;
+    getImage: (id: string) => ImageAsset | undefined;
+    handleSectionContentChange: (id: string, content: string) => void;
+    handleSectionTitleChange: (id: string, title: string) => void;
+    handleDeleteSection: (id: string) => void;
+}) => {
+
+  const onDragEnd = (result: DropResult) => {
+    const { destination, source } = result;
+    if (!destination) return;
+    if (destination.droppableId === source.droppableId && destination.index === source.index) return;
+    
+    const items = Array.from(scopeSections);
+    const [reorderedItem] = items.splice(source.index, 1);
+    items.splice(destination.index, 0, reorderedItem);
+
+    setScopeSections(items);
+  };
+
+  return (
+    <DragDropContext onDragEnd={onDragEnd}>
+      <Droppable droppableId="sections">
+        {(provided) => (
+          <div {...provided.droppableProps} ref={provided.innerRef} className="space-y-4">
+            {scopeSections.map((section, index) => (
+              <Draggable key={section.id} draggableId={section.id} index={index}>
+                {(provided, snapshot) => (
+                  <ScopeSectionEditor
+                    key={section.id}
+                    section={section}
+                    onContentChange={(newContent) => handleSectionContentChange(section.id, newContent)}
+                    onTitleChange={(newTitle) => handleSectionTitleChange(section.id, newTitle)}
+                    onDelete={() => handleDeleteSection(section.id)}
+                    view={sectionViews[section.id] || 'split'}
+                    onViewChange={(newView) => setSectionViews(prev => ({ ...prev, [section.id]: newView }))}
+                    isOrganizing={isOrganizing}
+                    getImage={getImage}
+                    provided={provided}
+                    isDragging={snapshot.isDragging}
+                  />
+                )}
+              </Draggable>
+            ))}
+            {provided.placeholder}
+          </div>
+        )}
+      </Droppable>
+    </DragDropContext>
+  );
+};
+
+const DynamicScopeEditor = dynamic(() => Promise.resolve(ScopeEditorWrapper), {
+  ssr: false,
+});
+
 
 export default function ProjectDetailsPage() {
   const params = useParams();
@@ -373,28 +437,6 @@ export default function ProjectDetailsPage() {
         updateProject({ ...project, language: editLanguage });
     }
   }, [editLanguage, project, isEditDialogOpen, updateProject]);
-
-  const onDragEnd = (result: DropResult) => {
-    const { destination, source } = result;
-
-    if (!destination) {
-      return;
-    }
-
-    if (
-      destination.droppableId === source.droppableId &&
-      destination.index === source.index
-    ) {
-      return;
-    }
-
-    const items = Array.from(scopeSections);
-    const [reorderedItem] = items.splice(source.index, 1);
-    items.splice(destination.index, 0, reorderedItem);
-
-    setScopeSections(items);
-  };
-
 
   const t = {
     en: {
@@ -612,7 +654,7 @@ export default function ProjectDetailsPage() {
                     </AlertDialogHeader>
                     <AlertDialogFooter>
                         <AlertDialogCancel>{t[language].cancel}</AlertDialogCancel>
-                        <AlertDialogAction onClick={handleDeleteProject} className="bg-destructive hover:bg-destructive/90">{t[language].delete}</AlertDialogAction>
+                        <AlertDialogAction onClick={handleDeleteProject} className="bg-destructive text-destructive-foreground hover:bg-destructive/90">{t[language].delete}</AlertDialogAction>
                     </AlertDialogFooter>
                 </AlertDialogContent>
             </AlertDialog>
@@ -638,33 +680,19 @@ export default function ProjectDetailsPage() {
                         {t[language].saveScope}
                     </Button>
                 </div>
-                 <DragDropContext onDragEnd={onDragEnd}>
-                    <Droppable droppableId="sections">
-                      {(provided) => (
-                        <div {...provided.droppableProps} ref={provided.innerRef} className="space-y-4">
-                          {scopeSections.map((section, index) => (
-                            <Draggable key={section.id} draggableId={section.id} index={index}>
-                              {(provided) => (
-                                <div ref={provided.innerRef} {...provided.draggableProps} {...provided.dragHandleProps}>
-                                  <ScopeSectionEditor
-                                    section={section}
-                                    onContentChange={(newContent) => handleSectionContentChange(section.id, newContent)}
-                                    onTitleChange={(newTitle) => handleSectionTitleChange(section.id, newTitle)}
-                                    onDelete={() => handleDeleteSection(section.id)}
-                                    view={sectionViews[section.id] || 'split'}
-                                    onViewChange={(newView) => setSectionViews(prev => ({ ...prev, [section.id]: newView }))}
-                                    isOrganizing={isOrganizing}
-                                    getImage={getImage}
-                                  />
-                                </div>
-                              )}
-                            </Draggable>
-                          ))}
-                          {provided.placeholder}
-                        </div>
-                      )}
-                    </Droppable>
-                  </DragDropContext>
+                
+                <DynamicScopeEditor
+                    scopeSections={scopeSections}
+                    setScopeSections={setScopeSections}
+                    sectionViews={sectionViews}
+                    setSectionViews={setSectionViews}
+                    isOrganizing={isOrganizing}
+                    getImage={getImage}
+                    handleSectionContentChange={handleSectionContentChange}
+                    handleSectionTitleChange={handleSectionTitleChange}
+                    handleDeleteSection={handleDeleteSection}
+                />
+
                 <div className="flex justify-center">
                     <Button variant="outline" onClick={handleAddSection}>
                         <Plus className="mr-2 h-4 w-4" />
