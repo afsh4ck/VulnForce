@@ -6,6 +6,7 @@ export const projectTemplates: ProjectTemplate[] = [
     id: 'template-1',
     name_en: 'Full Audit',
     name_es: 'Auditoría Completa',
+    icon: 'Scan',
     description_en: 'A comprehensive security audit covering external, internal, and web application testing.',
     description_es: 'Una auditoría de seguridad completa que cubre pruebas externas, internas y de aplicaciones web.',
     scope_en:
@@ -39,6 +40,7 @@ export const projectTemplates: ProjectTemplate[] = [
     id: 'template-2',
     name_en: 'External Audit',
     name_es: 'Auditoría Externa',
+    icon: 'Globe',
     description_en: 'Focuses on the publicly accessible assets of the organization to identify vulnerabilities.',
     description_es: 'Se enfoca en los activos públicamente accesibles de la organización para identificar vulnerabilidades.',
     scope_en:
@@ -62,6 +64,7 @@ export const projectTemplates: ProjectTemplate[] = [
     id: 'template-3',
     name_en: 'Internal Audit',
     name_es: 'Auditoría Interna',
+    icon: 'Network',
     description_en: 'An assessment of the internal network to find security weaknesses from within the perimeter.',
     description_es: 'Una evaluación de la red interna para encontrar debilidades de seguridad desde dentro del perímetro.',
     scope_en:
@@ -82,9 +85,70 @@ export const projectTemplates: ProjectTemplate[] = [
 - [TODO: Especificar servidores específicos]`,
   },
   {
+    id: 'template-wifi',
+    name_en: 'WiFi Audit',
+    name_es: 'Auditoría WiFi',
+    icon: 'Wifi',
+    description_en: 'Assesses the security of wireless networks, including password cracking and client isolation tests.',
+    description_es: 'Evalúa la seguridad de las redes inalámbricas, incluyendo pruebas de cracking de contraseñas y aislamiento de clientes.',
+    scope_en:
+`## Corporate WiFi Network:
+- SSID: [TODO: Specify SSID]
+- Authentication: [TODO: WPA2/WPA3, etc.]
+
+---
+
+## Guest WiFi Network:
+- SSID: [TODO: Specify Guest SSID]
+- Authentication: [TODO: Captive Portal, etc.]
+`,
+    scope_es:
+`## Red WiFi Corporativa:
+- SSID: [TODO: Especificar SSID]
+- Autenticación: [TODO: WPA2/WPA3, etc.]
+
+---
+
+## Red WiFi de Invitados:
+- SSID: [TODO: Especificar SSID de invitados]
+- Autenticación: [TODO: Portal Cautivo, etc.]
+`,
+  },
+   {
+    id: 'template-mobile',
+    name_en: 'Mobile App Audit',
+    name_es: 'Auditoría de App Móvil',
+    icon: 'Smartphone',
+    description_en: 'A security assessment of Android and/or iOS mobile applications, including static and dynamic analysis.',
+    description_es: 'Una evaluación de seguridad de aplicaciones móviles Android y/o iOS, incluyendo análisis estático y dinámico.',
+    scope_en:
+`## Android Application:
+- Package Name: [TODO: com.example.app]
+- [TODO: Link to APK or Play Store]
+
+---
+
+## iOS Application:
+- Bundle ID: [TODO: com.example.app]
+- [TODO: Link to IPA or App Store]
+`,
+    scope_es:
+`## Aplicación Android:
+- Nombre del Paquete: [TODO: com.ejemplo.app]
+- [TODO: Enlace al APK o Play Store]
+
+---
+
+## Aplicación iOS:
+- Bundle ID: [TODO: com.ejemplo.app]
+- [TODO: Enlace al IPA o App Store]
+`,
+  },
+  {
     id: 'cpts-template',
     name_en: 'Certification Report',
     name_es: 'Informe de Certificación',
+    icon: 'Award',
     description_en: 'A generic and professional template for offensive security certification reports (e.g., OSCP, CPTS). It includes all the necessary sections for a comprehensive report.',
     description_es: 'Una plantilla genérica y profesional para informes de certificaciones de seguridad ofensiva (p. ej., OSCP, CPTS). Incluye todas las secciones necesarias para un informe completo.',
     scope_en: 

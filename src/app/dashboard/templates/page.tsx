@@ -5,8 +5,18 @@ import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle }
 import { Button } from '@/components/ui/button';
 import { useLanguage } from '@/context/language-context';
 import { projectTemplates } from '@/lib/templates';
-import { FileText, Import } from 'lucide-react';
+import { FileText, Import, Scan, Globe, Network, Smartphone, Wifi, Award } from 'lucide-react';
 import Link from 'next/link';
+
+const iconComponents: { [key: string]: React.ElementType } = {
+  FileText,
+  Scan,
+  Globe,
+  Network,
+  Smartphone,
+  Wifi,
+  Award,
+};
 
 export default function TemplatesPage() {
   const { language } = useLanguage();
@@ -32,29 +42,32 @@ export default function TemplatesPage() {
       </div>
 
       <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-        {projectTemplates.map((template) => (
-          <Card key={template.id} className="flex flex-col">
-            <CardHeader>
-              <div className="flex items-center gap-4">
-                <FileText className="h-8 w-8 text-primary" />
-                <CardTitle>{language === 'es' ? template.name_es : template.name_en}</CardTitle>
-              </div>
-            </CardHeader>
-            <CardContent className="flex-grow">
-              <p className="text-sm text-muted-foreground">
-                {language === 'es' ? template.description_es : template.description_en}
-              </p>
-            </CardContent>
-            <CardFooter>
-              <Button asChild className="w-full">
-                <Link href={`/dashboard/projects/new?template=${template.id}`}>
-                  <Import className="mr-2 h-4 w-4" />
-                  {t[language].useTemplate}
-                </Link>
-              </Button>
-            </CardFooter>
-          </Card>
-        ))}
+        {projectTemplates.map((template) => {
+          const Icon = iconComponents[template.icon] || FileText;
+          return (
+            <Card key={template.id} className="flex flex-col">
+              <CardHeader>
+                <div className="flex items-center gap-4">
+                  <Icon className="h-8 w-8 text-primary" />
+                  <CardTitle>{language === 'es' ? template.name_es : template.name_en}</CardTitle>
+                </div>
+              </CardHeader>
+              <CardContent className="flex-grow">
+                <p className="text-sm text-muted-foreground">
+                  {language === 'es' ? template.description_es : template.description_en}
+                </p>
+              </CardContent>
+              <CardFooter>
+                <Button asChild className="w-full">
+                  <Link href={`/dashboard/projects/new?template=${template.id}`}>
+                    <Import className="mr-2 h-4 w-4" />
+                    {t[language].useTemplate}
+                  </Link>
+                </Button>
+              </CardFooter>
+            </Card>
+          );
+        })}
       </div>
     </div>
   );
