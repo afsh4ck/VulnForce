@@ -67,7 +67,7 @@ export default function NewProjectPage() {
       return;
     }
 
-    const newProject: Omit<Project, 'id'> = {
+    const newProject = {
       clientId,
       name,
       scope,

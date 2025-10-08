@@ -18,6 +18,8 @@ export interface Project {
   endDate: string;
   status: 'In Progress' | 'Completed' | 'On Hold';
   language: 'en' | 'es';
+  createdAt: string;
+  updatedAt: string;
 }
 
 export interface Finding {

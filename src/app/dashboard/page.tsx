@@ -6,11 +6,37 @@ import Link from 'next/link';
 import { PlusCircle, Users, FolderKanban, ShieldCheck } from "lucide-react";
 import { useLanguage } from "@/context/language-context";
 import { useData } from "@/context/data-context";
+import { useMemo } from "react";
+import { Badge } from "@/components/ui/badge";
 
 export default function DashboardPage() {
   const { language } = useLanguage();
   const { projects, clients, findings } = useData();
   const criticalFindings = findings.filter(f => f.severity === 'Critical').length;
+
+  const recentProjects = useMemo(() => {
+    return [...projects]
+      .sort((a, b) => new Date(b.updatedAt).getTime() - new Date(a.updatedAt).getTime())
+      .slice(0, 10);
+  }, [projects]);
+  
+  const getStatusVariant = (status: string) => {
+    switch (status) {
+      case 'In Progress': return 'default';
+      case 'Completed': return 'secondary';
+      case 'On Hold': return 'outline';
+      default: return 'secondary';
+    }
+  }
+
+  const getStatus = (status: string) => {
+    if (language === 'es') {
+      if (status === 'In Progress') return 'En Progreso';
+      if (status === 'Completed') return 'Completado';
+      if (status === 'On Hold') return 'En Espera';
+    }
+    return status;
+  }
 
   const t = {
     en: {
@@ -112,13 +138,13 @@ export default function DashboardPage() {
           </CardHeader>
           <CardContent>
             <ul className="space-y-2">
-              {projects.slice(0, 3).map(p => (
+              {recentProjects.map(p => (
                 <li key={p.id} className="flex items-center justify-between rounded-md p-2 hover:bg-muted">
                     <div>
-                        <Link href={`/dashboard/projects/${p.id}`} className="font-medium hover:underline">{p.name}</Link>
+                        <Link href={`/dashboard/projects/${p.id}`} className="font-medium hover:text-primary hover:underline">{p.name}</Link>
                         <p className="text-sm text-muted-foreground">{clients.find(c => c.id === p.clientId)?.name}</p>
                     </div>
-                    <span className="text-sm text-muted-foreground">{p.status}</span>
+                    <Badge variant={getStatusVariant(p.status)}>{getStatus(p.status)}</Badge>
                 </li>
               ))}
             </ul>

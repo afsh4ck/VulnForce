@@ -20,7 +20,7 @@ interface DataContextType {
   addClient: (client: Omit<Client, 'id'>) => void;
   updateClient: (client: Client) => void;
   deleteClient: (clientId: string) => void;
-  addProject: (project: Omit<Project, 'id'>) => void;
+  addProject: (project: Omit<Project, 'id' | 'createdAt' | 'updatedAt'>) => void;
   updateProject: (project: Project) => void;
   deleteProject: (projectId: string) => void;
   addFinding: (finding: Omit<Finding, 'id' | 'createdAt' | 'updatedAt'>) => void;
@@ -86,11 +86,19 @@ export function DataProvider({ children }: { children: ReactNode }) {
     };
 
     // Project functions
-    const addProject = (project: Omit<Project, 'id'>) => {
-        setProjects(prev => [...prev, { ...project, id: `proj-${Date.now()}` }]);
+    const addProject = (project: Omit<Project, 'id' | 'createdAt' | 'updatedAt'>) => {
+        const now = new Date().toISOString();
+        const newProject = {
+            ...project,
+            id: `proj-${Date.now()}`,
+            createdAt: now,
+            updatedAt: now,
+        };
+        setProjects(prev => [...prev, newProject]);
     };
     const updateProject = (project: Project) => {
-        setProjects(prev => prev.map(p => p.id === project.id ? project : p));
+        const now = new Date().toISOString();
+        setProjects(prev => prev.map(p => p.id === project.id ? { ...project, updatedAt: now } : p));
     };
     const deleteProject = (projectId: string) => {
         setProjects(prev => prev.filter(p => p.id !== projectId));
@@ -100,19 +108,38 @@ export function DataProvider({ children }: { children: ReactNode }) {
 
     // Finding functions
     const addFinding = (finding: Omit<Finding, 'id' | 'createdAt' | 'updatedAt'>) => {
+        const now = new Date().toISOString();
         const newFinding = {
             ...finding,
             id: `find-${Date.now()}`,
-            createdAt: new Date().toISOString(),
-            updatedAt: new Date().toISOString(),
+            createdAt: now,
+            updatedAt: now,
         }
         setFindings(prev => [...prev, newFinding]);
+        // Also update the project's updatedAt timestamp
+        const project = projects.find(p => p.id === finding.projectId);
+        if (project) {
+            updateProject(project);
+        }
     };
     const updateFinding = (finding: Omit<Finding, 'createdAt' | 'updatedAt'>) => {
-        setFindings(prev => prev.map(f => f.id === finding.id ? { ...f, ...finding, updatedAt: new Date().toISOString() } : f));
+        const now = new Date().toISOString();
+        setFindings(prev => prev.map(f => f.id === finding.id ? { ...f, ...finding, updatedAt: now } : f));
+        // Also update the project's updatedAt timestamp
+        const project = projects.find(p => p.id === finding.projectId);
+        if (project) {
+            updateProject(project);
+        }
     };
     const deleteFinding = (findingId: string) => {
+        const finding = findings.find(f => f.id === findingId);
         setFindings(prev => prev.filter(f => f.id !== findingId));
+        if(finding){
+            const project = projects.find(p => p.id === finding.projectId);
+            if (project) {
+                updateProject(project);
+            }
+        }
     };
 
     // Vulnerability functions
