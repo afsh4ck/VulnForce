@@ -19,7 +19,7 @@ import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, D
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from "@/components/ui/alert-dialog";
+import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from "@/components/ui/alert-dialog";
 import { useToast } from '@/hooks/use-toast';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
 import { Calendar } from '@/components/ui/calendar';
@@ -42,23 +42,23 @@ interface ScopeSection {
   content: string;
 }
 
-const SortableScopeSection = ({ section, ...props }: { section: ScopeSection, [key: string]: any }) => {
-  const { attributes, listeners, setNodeRef, transform, transition } = useSortable({ id: section.id });
+const SortableScopeSection = ({ section, isOrganizing, ...props }: { section: ScopeSection, isOrganizing: boolean, [key: string]: any }) => {
+  const { attributes, listeners, setNodeRef, transform, transition, isDragging } = useSortable({ id: section.id });
 
   const style = {
     transform: CSS.Transform.toString(transform),
     transition,
+    opacity: isDragging ? 0.5 : 1,
   };
-
+  
   return (
-    <div ref={setNodeRef} style={style} {...attributes}>
-      <ScopeSectionEditor section={section} {...props} dragListeners={listeners} />
+    <div ref={setNodeRef} style={style}>
+      <ScopeSectionEditor section={section} isOrganizing={isOrganizing} dragHandleProps={attributes} dragListeners={listeners} {...props} />
     </div>
   );
 };
 
-
-const ScopeSectionEditor = ({ section, onContentChange, onDelete, view, onViewChange, onTitleChange, isOrganizing, getImage, dragListeners }: {
+const ScopeSectionEditor = ({ section, onContentChange, onDelete, view, onViewChange, onTitleChange, isOrganizing, getImage, dragHandleProps, dragListeners }: {
   section: ScopeSection;
   onContentChange: (content: string) => void;
   onDelete: () => void;
@@ -67,6 +67,7 @@ const ScopeSectionEditor = ({ section, onContentChange, onDelete, view, onViewCh
   onTitleChange: (newTitle: string) => void;
   isOrganizing: boolean;
   getImage: (id: string) => ImageAsset | undefined;
+  dragHandleProps: any;
   dragListeners: any;
 }) => {
   const { language } = useLanguage();
@@ -134,66 +135,64 @@ const ScopeSectionEditor = ({ section, onContentChange, onDelete, view, onViewCh
     }
   };
 
-
   return (
     <>
-    <Card>
-      <CardHeader className="flex flex-row items-center justify-between bg-muted/50 py-3 px-4">
-          <div className="flex items-center gap-2 w-full" {...(isOrganizing ? dragListeners : {})}>
-            {isOrganizing && <GripVertical className="h-5 w-5 text-muted-foreground cursor-grab" />}
-            <Input 
-              value={sectionTitle}
-              onChange={handleTitleChange}
-              className="font-semibold text-base border-none focus-visible:ring-0 focus-visible:ring-offset-0 bg-transparent h-auto p-0"
-              readOnly={isOrganizing}
-            />
-        </div>
-        <div className="flex items-center gap-2">
-            {!isOrganizing && (
-                <Tabs value={view} onValueChange={(value) => onViewChange(value as ScopeView)}>
-                    <TabsList className="h-8">
-                        <TabsTrigger value="edit" className="h-6 text-xs px-2">{t[language].viewEdit}</TabsTrigger>
-                        <TabsTrigger value="split" className="h-6 text-xs px-2">{t[language].viewSplit}</TabsTrigger>
-                        <TabsTrigger value="preview" className="h-6 text-xs px-2">{t[language].viewPreview}</TabsTrigger>
-                    </TabsList>
-                </Tabs>
-            )}
-            <Button variant="ghost" size="icon" className="h-8 w-8 text-destructive hover:bg-destructive hover:text-destructive-foreground" onClick={() => setShowDeleteConfirm(true)}>
-                <Trash2 className="h-4 w-4" />
-                <span className="sr-only">{t[language].deleteSection}</span>
-            </Button>
-        </div>
-      </CardHeader>
-      {!isOrganizing && (
-          <CardContent className="p-4">
-            <div className={cn("grid gap-4", view === 'split' ? "grid-cols-2" : "grid-cols-1")}>
-                <div className={cn(view === 'preview' && 'hidden')}>
-                    <Textarea
-                        value={section.content}
-                        onChange={(e) => onContentChange(e.target.value)}
-                        onPaste={handlePaste}
-                        className="font-code min-h-[300px] text-base"
-                    />
-                </div>
-                <div className={cn("prose prose-sm dark:prose-invert max-w-none rounded-md border p-4 min-h-[300px]", view === 'edit' && 'hidden')}>
-                    <MarkdownPreview content={section.content} getImage={getImage} />
-                </div>
-            </div>
-          </CardContent>
-      )}
-    </Card>
-    <AlertDialog open={showDeleteConfirm} onOpenChange={setShowDeleteConfirm}>
-        <AlertDialogContent>
-            <AlertDialogHeader>
-                <AlertDialogTitle>{t[language].confirmDeleteTitle}</AlertDialogTitle>
-                <AlertDialogDescription>{t[language].confirmDeleteDesc}</AlertDialogDescription>
-            </AlertDialogHeader>
-            <AlertDialogFooter>
-                <AlertDialogCancel>{t[language].cancel}</AlertDialogCancel>
-                <AlertDialogAction onClick={onDelete} className="bg-destructive text-destructive-foreground hover:bg-destructive/90">{t[language].delete}</AlertDialogAction>
-            </AlertDialogFooter>
-        </AlertDialogContent>
-    </AlertDialog>
+      <Card>
+        <CardHeader className="flex flex-row items-center justify-between bg-muted/50 py-3 px-4">
+            <div className="flex items-center gap-2 w-full">
+              {isOrganizing && <div {...dragHandleProps} {...dragListeners} className="cursor-grab"><GripVertical className="h-5 w-5 text-muted-foreground" /></div>}
+              <Input 
+                value={sectionTitle}
+                onChange={handleTitleChange}
+                className="font-semibold text-base border-none focus-visible:ring-0 focus-visible:ring-offset-0 bg-transparent h-auto p-0"
+              />
+          </div>
+          <div className="flex items-center gap-2">
+              {!isOrganizing && (
+                  <Tabs value={view} onValueChange={(value) => onViewChange(value as ScopeView)}>
+                      <TabsList className="h-8">
+                          <TabsTrigger value="edit" className="h-6 text-xs px-2">{t[language].viewEdit}</TabsTrigger>
+                          <TabsTrigger value="split" className="h-6 text-xs px-2">{t[language].viewSplit}</TabsTrigger>
+                          <TabsTrigger value="preview" className="h-6 text-xs px-2">{t[language].viewPreview}</TabsTrigger>
+                      </TabsList>
+                  </Tabs>
+              )}
+              <Button variant="ghost" size="icon" className="h-8 w-8 text-destructive hover:bg-destructive hover:text-destructive-foreground" onClick={() => setShowDeleteConfirm(true)}>
+                  <Trash2 className="h-4 w-4" />
+                  <span className="sr-only">{t[language].deleteSection}</span>
+              </Button>
+          </div>
+        </CardHeader>
+        {!isOrganizing && (
+            <CardContent className="p-4">
+              <div className={cn("grid gap-4", view === 'split' ? "grid-cols-2" : "grid-cols-1")}>
+                  <div className={cn(view === 'preview' && 'hidden')}>
+                      <Textarea
+                          value={section.content}
+                          onChange={(e) => onContentChange(e.target.value)}
+                          onPaste={handlePaste}
+                          className="font-code min-h-[300px] text-base"
+                      />
+                  </div>
+                  <div className={cn(view === 'edit' && 'hidden', "rounded-md border p-4 min-h-[300px]")}>
+                      <MarkdownPreview content={section.content} getImage={getImage} />
+                  </div>
+              </div>
+            </CardContent>
+        )}
+      </Card>
+      <AlertDialog open={showDeleteConfirm} onOpenChange={setShowDeleteConfirm}>
+          <AlertDialogContent>
+              <AlertDialogHeader>
+                  <AlertDialogTitle>{t[language].confirmDeleteTitle}</AlertDialogTitle>
+                  <AlertDialogDescription>{t[language].confirmDeleteDesc}</AlertDialogDescription>
+              </AlertDialogHeader>
+              <AlertDialogFooter>
+                  <AlertDialogCancel>{t[language].cancel}</AlertDialogCancel>
+                  <AlertDialogAction onClick={onDelete} className="bg-destructive hover:bg-destructive/90 text-destructive-foreground">{t[language].delete}</AlertDialogAction>
+              </AlertDialogFooter>
+          </AlertDialogContent>
+      </AlertDialog>
     </>
   )
 }
@@ -631,7 +630,7 @@ export default function ProjectDetailsPage() {
                     </AlertDialogHeader>
                     <AlertDialogFooter>
                         <AlertDialogCancel>{t[language].cancel}</AlertDialogCancel>
-                        <AlertDialogAction onClick={handleDeleteProject} className="bg-destructive text-destructive-foreground hover:bg-destructive/90">{t[language].delete}</AlertDialogAction>
+                        <AlertDialogAction onClick={handleDeleteProject} className="bg-destructive hover:bg-destructive/90">{t[language].delete}</AlertDialogAction>
                     </AlertDialogFooter>
                 </AlertDialogContent>
             </AlertDialog>
@@ -649,8 +648,7 @@ export default function ProjectDetailsPage() {
           {activeTab === 'scope' && (
             <div className="flex items-center gap-2">
               <Button variant="outline" size="sm" onClick={() => setIsOrganizing(!isOrganizing)}>
-                <Rows className="mr-2 h-4 w-4" />
-                {isOrganizing ? t[language].finishOrganizing : t[language].organizeSections}
+                {isOrganizing ? <><Save className="mr-2 h-4 w-4" /> {t[language].finishOrganizing}</> : <><Rows className="mr-2 h-4 w-4" /> {t[language].organizeSections}</>}
               </Button>
               <Button size="sm" onClick={handleSaveScope}>
                 <Save className="mr-2 h-4 w-4" />
@@ -676,12 +674,12 @@ export default function ProjectDetailsPage() {
                           key={section.id}
                           id={section.id}
                           section={section}
+                          isOrganizing={isOrganizing}
                           onContentChange={(newContent: string) => handleSectionContentChange(section.id, newContent)}
                           onTitleChange={(newTitle: string) => handleSectionTitleChange(section.id, newTitle)}
                           onDelete={() => handleDeleteSection(section.id)}
                           view={sectionViews[section.id] || 'split'}
                           onViewChange={(newView: ScopeView) => setSectionViews(prev => ({ ...prev, [section.id]: newView }))}
-                          isOrganizing={isOrganizing}
                           getImage={getImage}
                         />
                       ))}
@@ -741,7 +739,3 @@ export default function ProjectDetailsPage() {
     </div>
   );
 }
-
-    
-
-    
