@@ -15,7 +15,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Textarea } from '@/components/ui/textarea';
 import { MarkdownPreview } from '@/components/markdown-preview';
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
-import { Input } from '@/components/ui/input';
+import { Input } from "@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from "@/components/ui/alert-dialog";
@@ -28,7 +28,7 @@ import { es } from 'date-fns/locale';
 import { useData } from '@/context/data-context';
 import { DateRange } from 'react-day-picker';
 import { projectTemplates } from '@/lib/templates';
-import { DndContext, closestCenter, KeyboardSensor, PointerSensor, useSensor, useSensors } from '@dnd-kit/core';
+import { DndContext, closestCenter, KeyboardSensor, PointerSensor, useSensor, useSensors, DragEndEvent } from '@dnd-kit/core';
 import { arrayMove, SortableContext, sortableKeyboardCoordinates, useSortable, verticalListSortingStrategy } from '@dnd-kit/sortable';
 import { CSS } from '@dnd-kit/utilities';
 
@@ -139,7 +139,7 @@ const ScopeSectionEditor = ({ section, onContentChange, onDelete, view, onViewCh
       <Card>
         <CardHeader className="flex flex-row items-center justify-between bg-muted/50 py-3 px-4">
            <div className="flex items-center gap-2 w-full" {...(isOrganizing ? dragListeners : {})}>
-              <GripVertical className={cn("h-5 w-5 text-muted-foreground", isOrganizing ? "cursor-grab" : "cursor-default")} />
+              {isOrganizing && <GripVertical className="h-5 w-5 text-muted-foreground cursor-grab" />}
               <Input 
                 value={sectionTitle}
                 onChange={handleTitleChange}
@@ -402,10 +402,10 @@ export default function ProjectDetailsPage() {
     }
   }, [editLanguage, project, isEditDialogOpen, updateProject]);
 
-  function handleDragEnd(event: any) {
+  function handleDragEnd(event: DragEndEvent) {
     const { active, over } = event;
 
-    if (active.id !== over.id) {
+    if (over && active.id !== over.id) {
       setScopeSections((items) => {
         const oldIndex = items.findIndex((item) => item.id === active.id);
         const newIndex = items.findIndex((item) => item.id === over.id);
@@ -639,30 +639,41 @@ export default function ProjectDetailsPage() {
       
       <Separator />
       
-      <Tabs value={activeTab} onValueChange={setActiveTab}>
-        <TabsList className="grid w-full grid-cols-2 md:w-auto md:inline-flex">
-          <TabsTrigger value="scope">{t[language].scopeAndDetails}</TabsTrigger>
-          <TabsTrigger value="findings">{t[language].findings} ({projectFindings.length})</TabsTrigger>
-        </TabsList>
-        <TabsContent value="scope" className="mt-4">
+      <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-4">
+        <div className="flex items-center justify-between">
+          <TabsList>
+            <TabsTrigger value="scope">{t[language].scopeAndDetails}</TabsTrigger>
+            <TabsTrigger value="findings">{t[language].findings} ({projectFindings.length})</TabsTrigger>
+          </TabsList>
+          {activeTab === 'scope' && (
+            <div className="flex items-center gap-2">
+              <Button variant="outline" size="sm" onClick={() => setIsOrganizing(!isOrganizing)}>
+                <Rows className="mr-2 h-4 w-4" />
+                {isOrganizing ? t[language].finishOrganizing : t[language].organizeSections}
+              </Button>
+              <Button size="sm" onClick={handleSaveScope}>
+                <Save className="mr-2 h-4 w-4" />
+                {t[language].saveScope}
+              </Button>
+            </div>
+          )}
+          {activeTab === 'findings' && (
+             <Button size="sm" asChild>
+                <Link href={`/dashboard/projects/${project.id}/findings/new`}>
+                <PlusCircle className="mr-2 h-4 w-4" /> {t[language].addFinding}
+                </Link>
+            </Button>
+          )}
+        </div>
+        <TabsContent value="scope">
              <div className="space-y-4">
-                <div className="flex justify-end gap-2">
-                     <Button variant="outline" size="sm" onClick={() => setIsOrganizing(!isOrganizing)}>
-                        <Rows className="mr-2 h-4 w-4" />
-                        {isOrganizing ? t[language].finishOrganizing : t[language].organizeSections}
-                     </Button>
-                     <Button size="sm" onClick={handleSaveScope}>
-                        <Save className="mr-2 h-4 w-4" />
-                        {t[language].saveScope}
-                    </Button>
-                </div>
-                
                 <DndContext sensors={sensors} collisionDetection={closestCenter} onDragEnd={handleDragEnd}>
                   <SortableContext items={scopeSections} strategy={verticalListSortingStrategy}>
                     <div className="space-y-4">
                       {scopeSections.map(section => (
                         <SortableScopeSection
                           key={section.id}
+                          id={section.id}
                           section={section}
                           onContentChange={(newContent: string) => handleSectionContentChange(section.id, newContent)}
                           onTitleChange={(newTitle: string) => handleSectionTitleChange(section.id, newTitle)}
@@ -685,19 +696,12 @@ export default function ProjectDetailsPage() {
                 </div>
             </div>
         </TabsContent>
-        <TabsContent value="findings" className="mt-4">
+        <TabsContent value="findings">
            <Card>
-            <CardHeader className="flex flex-row items-center justify-between">
+            <CardHeader>
                 <div>
                     <CardTitle>{t[language].findings}</CardTitle>
                     <CardDescription>{projectFindings.length} {t[language].findings.toLowerCase()} {language === 'es' ? 'encontrados' : 'found'}</CardDescription>
-                </div>
-                <div className="flex gap-2">
-                <Button size="sm" asChild>
-                    <Link href={`/dashboard/projects/${project.id}/findings/new`}>
-                    <PlusCircle className="mr-2 h-4 w-4" /> {t[language].addFinding}
-                    </Link>
-                </Button>
                 </div>
             </CardHeader>
             <CardContent>
