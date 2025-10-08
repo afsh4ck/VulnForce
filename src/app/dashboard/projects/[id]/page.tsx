@@ -29,6 +29,7 @@ import { es } from 'date-fns/locale';
 import { useData } from '@/context/data-context';
 import { DateRange } from 'react-day-picker';
 import { projectTemplates } from '@/lib/templates';
+import { DragDropContext, Droppable, Draggable, DropResult } from 'react-beautiful-dnd';
 
 
 type SortKey = keyof Finding;
@@ -39,12 +40,13 @@ interface ScopeSection {
   content: string;
 }
 
-const ScopeSectionEditor = ({ section, onContentChange, onDelete, view, onViewChange }: {
+const ScopeSectionEditor = ({ section, onContentChange, onDelete, view, onViewChange, onTitleChange }: {
   section: ScopeSection;
   onContentChange: (content: string) => void;
   onDelete: () => void;
   view: ScopeView;
   onViewChange: (view: ScopeView) => void;
+  onTitleChange: (newTitle: string) => void;
 }) => {
   const { language } = useLanguage();
   
@@ -63,17 +65,25 @@ const ScopeSectionEditor = ({ section, onContentChange, onDelete, view, onViewCh
       deleteSection: 'Eliminar Sección',
       newSection: 'Nueva Sección',
     }
-  }
+  };
 
   const headingMatch = section.content.match(/^(##) (.*)/);
   const sectionTitle = headingMatch ? headingMatch[2].trim() : t[language].newSection;
+
+  const handleTitleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    onTitleChange(e.target.value);
+  }
 
   return (
     <Card>
       <CardHeader className="flex flex-row items-center justify-between bg-muted/50 py-3 px-4">
          <div className="flex items-center gap-2">
             <GripVertical className="h-5 w-5 text-muted-foreground cursor-grab" />
-            <h3 className="font-semibold">{sectionTitle}</h3>
+            <Input 
+              value={sectionTitle}
+              onChange={handleTitleChange}
+              className="font-semibold text-base border-none focus-visible:ring-0 focus-visible:ring-offset-0 bg-transparent h-auto p-0"
+            />
         </div>
         <div className="flex items-center gap-2">
             <Tabs value={view} onValueChange={(value) => onViewChange(value as ScopeView)}>
@@ -250,6 +260,18 @@ export default function ProjectDetailsPage() {
       prevSections.map(sec => sec.id === sectionId ? { ...sec, content: newContent } : sec)
     );
   };
+  
+  const handleSectionTitleChange = (sectionId: string, newTitle: string) => {
+    setScopeSections(prevSections =>
+      prevSections.map(sec => {
+        if (sec.id === sectionId) {
+          const newContent = sec.content.replace(/^(## .*)(\n|$)/, `## ${newTitle}$2`);
+          return { ...sec, content: newContent };
+        }
+        return sec;
+      })
+    );
+  }
 
   const handleAddSection = () => {
       const newSection: ScopeSection = {
@@ -285,6 +307,27 @@ export default function ProjectDetailsPage() {
         updateProject({ ...project, language: editLanguage });
     }
   }, [editLanguage, project, isEditDialogOpen, updateProject]);
+
+  const onDragEnd = (result: DropResult) => {
+    const { destination, source } = result;
+
+    if (!destination) {
+      return;
+    }
+
+    if (
+      destination.droppableId === source.droppableId &&
+      destination.index === source.index
+    ) {
+      return;
+    }
+
+    const items = Array.from(scopeSections);
+    const [reorderedItem] = items.splice(source.index, 1);
+    items.splice(destination.index, 0, reorderedItem);
+
+    setScopeSections(items);
+  };
 
 
   const t = {
@@ -521,18 +564,31 @@ export default function ProjectDetailsPage() {
                         {t[language].saveScope}
                     </Button>
                 </div>
-                <div className="space-y-4">
-                  {scopeSections.map((section, index) => (
-                    <ScopeSectionEditor
-                      key={section.id}
-                      section={section}
-                      onContentChange={(newContent) => handleSectionContentChange(section.id, newContent)}
-                      onDelete={() => handleDeleteSection(section.id)}
-                      view={sectionViews[section.id] || 'split'}
-                      onViewChange={(newView) => setSectionViews(prev => ({ ...prev, [section.id]: newView }))}
-                    />
-                  ))}
-                </div>
+                 <DragDropContext onDragEnd={onDragEnd}>
+                    <Droppable droppableId="sections">
+                      {(provided) => (
+                        <div {...provided.droppableProps} ref={provided.innerRef} className="space-y-4">
+                          {scopeSections.map((section, index) => (
+                            <Draggable key={section.id} draggableId={section.id} index={index}>
+                              {(provided) => (
+                                <div ref={provided.innerRef} {...provided.draggableProps} {...provided.dragHandleProps}>
+                                  <ScopeSectionEditor
+                                    section={section}
+                                    onContentChange={(newContent) => handleSectionContentChange(section.id, newContent)}
+                                    onTitleChange={(newTitle) => handleSectionTitleChange(section.id, newTitle)}
+                                    onDelete={() => handleDeleteSection(section.id)}
+                                    view={sectionViews[section.id] || 'split'}
+                                    onViewChange={(newView) => setSectionViews(prev => ({ ...prev, [section.id]: newView }))}
+                                  />
+                                </div>
+                              )}
+                            </Draggable>
+                          ))}
+                          {provided.placeholder}
+                        </div>
+                      )}
+                    </Droppable>
+                  </DragDropContext>
                 <div className="flex justify-center">
                     <Button variant="outline" onClick={handleAddSection}>
                         <Plus className="mr-2 h-4 w-4" />
