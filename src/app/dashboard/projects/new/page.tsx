@@ -10,7 +10,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Textarea } from "@/components/ui/textarea";
 import { Calendar } from "@/components/ui/calendar";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
-import { CalendarIcon, FilePlus2 } from "lucide-react";
+import { CalendarIcon, FilePlus2, FileText, Scan, Globe, Network, Smartphone, Wifi, Award } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { format } from "date-fns";
 import { es } from "date-fns/locale";
@@ -22,6 +22,15 @@ import { useData } from "@/context/data-context";
 import type { Project } from "@/lib/types";
 import { DateRange } from "react-day-picker";
 
+const iconOptions = [
+    { value: 'FileText', label: 'FileText' },
+    { value: 'Scan', label: 'Scan' },
+    { value: 'Globe', label: 'Globe' },
+    { value: 'Network', label: 'Network' },
+    { value: 'Smartphone', label: 'Smartphone' },
+    { value: 'Wifi', label: 'Wifi' },
+    { value: 'Award', label: 'Award' },
+];
 
 export default function NewProjectPage() {
   const { language: uiLanguage } = useLanguage();
@@ -36,6 +45,7 @@ export default function NewProjectPage() {
   const [date, setDate] = React.useState<DateRange | undefined>();
   const [templateId, setTemplateId] = useState<string | null>(searchParams.get('template'));
   const [projectLanguage, setProjectLanguage] = useState<Project['language']>('es');
+  const [icon, setIcon] = useState('FileText');
 
   useEffect(() => {
     if (templateId) {
@@ -43,6 +53,7 @@ export default function NewProjectPage() {
       if (template) {
         setName(projectLanguage === 'es' ? template.name_es : template.name_en);
         setScope(projectLanguage === 'es' ? template.scope_es : template.scope_en);
+        setIcon(template.icon);
       }
     }
   }, [templateId, projectLanguage, projectTemplates]);
@@ -53,6 +64,7 @@ export default function NewProjectPage() {
         setTemplateId(newTemplateId);
         setName(projectLanguage === 'es' ? template.name_es : template.name_en);
         setScope(projectLanguage === 'es' ? template.scope_es : template.scope_en);
+        setIcon(template.icon);
     }
   }
 
@@ -67,10 +79,11 @@ export default function NewProjectPage() {
       return;
     }
 
-    const newProject = {
+    const newProject: Omit<Project, 'id' | 'createdAt' | 'updatedAt'> = {
       clientId,
       name,
       scope,
+      icon,
       startDate: format(date.from, 'yyyy-MM-dd'),
       endDate: format(date.to, 'yyyy-MM-dd'),
       status: 'In Progress' as const,
@@ -106,6 +119,8 @@ export default function NewProjectPage() {
         selectLanguage: "Select Language",
         english: "English",
         spanish: "Spanish",
+        iconLabel: "Icon",
+        selectIcon: "Select an icon",
     },
     es: {
         title: "Crear Nuevo Proyecto",
@@ -125,6 +140,8 @@ export default function NewProjectPage() {
         selectLanguage: "Seleccionar Idioma",
         english: "Inglés",
         spanish: "Español",
+        iconLabel: "Icono",
+        selectIcon: "Selecciona un icono",
     }
   }
 
@@ -166,9 +183,24 @@ export default function NewProjectPage() {
                     </Select>
                 </div>
             </div>
-            <div className="space-y-2">
-                <Label htmlFor="name">{t[uiLanguage].projectNameLabel}</Label>
-                <Input id="name" placeholder={t[uiLanguage].projectNamePlaceholder} value={name} onChange={e => setName(e.target.value)} required />
+             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div className="space-y-2">
+                    <Label htmlFor="name">{t[uiLanguage].projectNameLabel}</Label>
+                    <Input id="name" placeholder={t[uiLanguage].projectNamePlaceholder} value={name} onChange={e => setName(e.target.value)} required />
+                </div>
+                 <div className="space-y-2">
+                    <Label htmlFor="icon">{t[uiLanguage].iconLabel}</Label>
+                    <Select onValueChange={setIcon} value={icon}>
+                        <SelectTrigger id="icon">
+                            <SelectValue placeholder={t[uiLanguage].selectIcon} />
+                        </SelectTrigger>
+                        <SelectContent>
+                            {iconOptions.map(option => (
+                                <SelectItem key={option.value} value={option.value}>{option.label}</SelectItem>
+                            ))}
+                        </SelectContent>
+                    </Select>
+                </div>
             </div>
              <div className="space-y-2">
                 <Label htmlFor="client">{t[uiLanguage].clientLabel}</Label>

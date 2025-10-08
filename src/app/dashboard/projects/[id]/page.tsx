@@ -9,7 +9,7 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import Link from 'next/link';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
-import { PlusCircle, FileText, ArrowUpDown, Edit, Save, Trash2, CalendarIcon, Split, Eye, Plus, GripVertical, Rows, Languages, Bold, Italic, Code, List, ListOrdered, FileCode } from "lucide-react";
+import { PlusCircle, FileText, ArrowUpDown, Edit, Save, Trash2, CalendarIcon, Split, Eye, Plus, GripVertical, Rows, Languages, Bold, Italic, Code, List, ListOrdered, FileCode, Scan, Globe, Network, Smartphone, Wifi, Award } from "lucide-react";
 import { Separator } from "@/components/ui/separator";
 import { useLanguage } from "@/context/language-context";
 import type { Finding, Project, ImageAsset } from '@/lib/types';
@@ -45,6 +45,16 @@ interface ScopeSection {
   id: string;
   content: string;
 }
+
+const iconOptions = [
+    { value: 'FileText', label: 'FileText' },
+    { value: 'Scan', label: 'Scan' },
+    { value: 'Globe', label: 'Globe' },
+    { value: 'Network', label: 'Network' },
+    { value: 'Smartphone', label: 'Smartphone' },
+    { value: 'Wifi', label: 'Wifi' },
+    { value: 'Award', label: 'Award' },
+];
 
 const CodeBlockDialog = ({ onInsert, children }: { onInsert: (lang: string, code: string) => void, children: React.ReactNode }) => {
   const [open, setOpen] = useState(false);
@@ -375,6 +385,7 @@ export default function ProjectDetailsPage() {
   const [editDate, setEditDate] = useState<DateRange | undefined>();
   const [editStatus, setEditStatus] = useState<Project['status']>('In Progress');
   const [editLanguage, setEditLanguage] = useState<Project['language']>('en');
+  const [editIcon, setEditIcon] = useState('FileText');
   const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
 
   const sensors = useSensors(
@@ -413,6 +424,7 @@ export default function ProjectDetailsPage() {
     setEditDate({ from: new Date(currentProject.startDate), to: new Date(currentProject.endDate) });
     setEditStatus(currentProject.status);
     setEditLanguage(currentProject.language);
+    setEditIcon(currentProject.icon || 'FileText');
   }, [params.id, projects, router]);
   
   const handleUpdateProject = () => {
@@ -429,6 +441,7 @@ export default function ProjectDetailsPage() {
         ...project,
         name: editName,
         clientId: editClientId,
+        icon: editIcon,
         startDate: format(editDate.from, 'yyyy-MM-dd'),
         endDate: format(editDate.to, 'yyyy-MM-dd'),
         status: editStatus,
@@ -641,7 +654,9 @@ export default function ProjectDetailsPage() {
       translatingTitle: 'Translating...',
       translatingDesc: 'AI is translating the report content. Please wait.',
       translationSuccess: 'Report translated successfully!',
-      translationError: 'Could not translate the report.'
+      translationError: 'Could not translate the report.',
+      iconLabel: "Icon",
+      selectIcon: "Select an icon",
     },
     es: {
       status: "Estado",
@@ -682,7 +697,9 @@ export default function ProjectDetailsPage() {
       translatingTitle: 'Traduciendo...',
       translatingDesc: 'La IA está traduciendo el contenido del informe. Por favor, espera.',
       translationSuccess: '¡Informe traducido correctamente!',
-      translationError: 'No se pudo traducir el informe.'
+      translationError: 'No se pudo traducir el informe.',
+      iconLabel: "Icono",
+      selectIcon: "Selecciona un icono",
     }
   }
 
@@ -743,18 +760,33 @@ export default function ProjectDetailsPage() {
                                 </SelectContent>
                             </Select>
                         </div>
-                        <div className="space-y-2">
-                            <Label htmlFor="language">{t[language].language}</Label>
-                            <Select value={editLanguage} onValueChange={(value) => handleLanguageChange(value as 'en' | 'es')}>
-                                <SelectTrigger id="language" disabled={isTranslating}>
-                                    <SelectValue placeholder={t[language].selectLanguage} />
-                                </SelectTrigger>
-                                <SelectContent>
-                                    <SelectItem value="en">{t[language].english}</SelectItem>
-                                    <SelectItem value="es">{t[language].spanish}</SelectItem>
-                                </SelectContent>
-                            </Select>
-                            {isTranslating && <p className="text-sm text-muted-foreground">{t[language].translatingDesc}</p>}
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                          <div className="space-y-2">
+                              <Label htmlFor="language">{t[language].language}</Label>
+                              <Select value={editLanguage} onValueChange={(value) => handleLanguageChange(value as 'en' | 'es')}>
+                                  <SelectTrigger id="language" disabled={isTranslating}>
+                                      <SelectValue placeholder={t[language].selectLanguage} />
+                                  </SelectTrigger>
+                                  <SelectContent>
+                                      <SelectItem value="en">{t[language].english}</SelectItem>
+                                      <SelectItem value="es">{t[language].spanish}</SelectItem>
+                                  </SelectContent>
+                              </Select>
+                              {isTranslating && <p className="text-sm text-muted-foreground">{t[language].translatingDesc}</p>}
+                          </div>
+                           <div className="space-y-2">
+                              <Label htmlFor="icon">{t[language].iconLabel}</Label>
+                              <Select onValueChange={setEditIcon} value={editIcon}>
+                                  <SelectTrigger id="icon">
+                                      <SelectValue placeholder={t[language].selectIcon} />
+                                  </SelectTrigger>
+                                  <SelectContent>
+                                      {iconOptions.map(option => (
+                                          <SelectItem key={option.value} value={option.value}>{option.label}</SelectItem>
+                                      ))}
+                                  </SelectContent>
+                              </Select>
+                          </div>
                         </div>
                          <div className="space-y-2">
                             <Label>{t[language].dates}</Label>

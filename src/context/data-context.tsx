@@ -100,6 +100,7 @@ export function DataProvider({ children }: { children: ReactNode }) {
         const newProject = {
             ...project,
             id: `proj-${Date.now()}`,
+            icon: project.icon || 'FileText',
             createdAt: now,
             updatedAt: now,
         };

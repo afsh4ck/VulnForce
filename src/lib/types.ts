@@ -13,6 +13,7 @@ export interface Project {
   id: string;
   clientId: string;
   name: string;
+  icon: string;
   scope: string;
   startDate: string;
   endDate: string;

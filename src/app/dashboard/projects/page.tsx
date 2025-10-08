@@ -4,7 +4,7 @@ import React, { useState, useMemo } from 'react';
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
-import { PlusCircle, Search, ArrowUpDown, Edit, Trash2 } from "lucide-react";
+import { PlusCircle, Search, ArrowUpDown, Edit, Trash2, FileText, Scan, Globe, Network, Smartphone, Wifi, Award } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import Link from 'next/link';
 import { Input } from "@/components/ui/input";
@@ -16,6 +16,16 @@ import { useRouter } from 'next/navigation';
 import { useData } from '@/context/data-context';
 
 type SortKey = keyof Project | 'clientName';
+
+const iconComponents: { [key: string]: React.ElementType } = {
+  FileText,
+  Scan,
+  Globe,
+  Network,
+  Smartphone,
+  Wifi,
+  Award,
+};
 
 export default function ProjectsPage() {
   const { language } = useLanguage();
@@ -176,30 +186,36 @@ export default function ProjectsPage() {
               </TableRow>
             </TableHeader>
             <TableBody>
-              {sortedAndFilteredProjects.map(project => (
-                <TableRow key={project.id}>
-                  <TableCell className="font-medium">
-                    <Link href={`/dashboard/projects/${project.id}`} className="hover:text-primary">{project.name}</Link>
-                  </TableCell>
-                  <TableCell>{project.clientName}</TableCell>
-                  <TableCell>
-                    <Badge variant={getStatusVariant(project.status) as any}>{getStatus(project.status)}</Badge>
-                  </TableCell>
-                  <TableCell>{new Date(project.endDate).toLocaleDateString()}</TableCell>
-                  <TableCell className="text-right">
-                    <div className="flex justify-end gap-2">
-                         <Button variant="ghost" size="icon" onClick={() => handleEditProject(project.id)}>
-                           <Edit className="h-4 w-4" />
-                           <span className="sr-only">{t[language].edit}</span>
-                        </Button>
-                        <Button variant="ghost" size="icon" onClick={() => setProjectToDelete(project)} className="text-destructive hover:bg-destructive hover:text-destructive-foreground">
-                           <Trash2 className="h-4 w-4" />
-                           <span className="sr-only">{t[language].delete}</span>
-                        </Button>
-                    </div>
-                  </TableCell>
-                </TableRow>
-              ))}
+              {sortedAndFilteredProjects.map(project => {
+                const Icon = iconComponents[project.icon] || FileText;
+                return (
+                  <TableRow key={project.id}>
+                    <TableCell className="font-medium">
+                      <Link href={`/dashboard/projects/${project.id}`} className="hover:text-primary flex items-center gap-2">
+                        <Icon className="h-5 w-5" />
+                        {project.name}
+                      </Link>
+                    </TableCell>
+                    <TableCell>{project.clientName}</TableCell>
+                    <TableCell>
+                      <Badge variant={getStatusVariant(project.status) as any}>{getStatus(project.status)}</Badge>
+                    </TableCell>
+                    <TableCell>{new Date(project.endDate).toLocaleDateString()}</TableCell>
+                    <TableCell className="text-right">
+                      <div className="flex justify-end gap-2">
+                          <Button variant="ghost" size="icon" onClick={() => handleEditProject(project.id)}>
+                            <Edit className="h-4 w-4" />
+                            <span className="sr-only">{t[language].edit}</span>
+                          </Button>
+                          <Button variant="ghost" size="icon" onClick={() => setProjectToDelete(project)} className="text-destructive hover:bg-destructive hover:text-destructive-foreground">
+                            <Trash2 className="h-4 w-4" />
+                            <span className="sr-only">{t[language].delete}</span>
+                          </Button>
+                      </div>
+                    </TableCell>
+                  </TableRow>
+                )
+              })}
             </TableBody>
           </Table>
         </CardContent>
