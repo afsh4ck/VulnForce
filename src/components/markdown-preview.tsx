@@ -4,7 +4,8 @@ import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
 import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter';
 import { vscDarkPlus } from 'react-syntax-highlighter/dist/esm/styles/prism';
-import { useData } from '@/context/data-context';
+import type { ImageAsset } from '@/lib/types';
+
 
 const highlightOnlyTodoWord = (text: string) => {
     if (typeof text !== 'string') return text;
@@ -67,8 +68,7 @@ const CustomTableCell = ({ children, ...props }: any) => {
 };
 
 
-export const MarkdownPreview = ({ content }: { content: string }) => {
-  const { getImage } = useData();
+export const MarkdownPreview = ({ content, getImage }: { content: string, getImage: (id: string) => ImageAsset | undefined }) => {
 
   return (
     <ReactMarkdown

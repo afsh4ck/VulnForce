@@ -51,7 +51,7 @@ const ScopeSectionEditor = ({ section, onContentChange, onDelete, view, onViewCh
   isDragging?: boolean;
 }) => {
   const { language } = useLanguage();
-  const { addImage } = useData();
+  const { addImage, getImage } = useData();
 
   const t = {
     en: {
@@ -144,7 +144,7 @@ const ScopeSectionEditor = ({ section, onContentChange, onDelete, view, onViewCh
                     />
                 </div>
                 <div className={cn("prose prose-sm dark:prose-invert max-w-none rounded-md border p-4 min-h-[300px]", view === 'edit' && 'hidden')}>
-                    <MarkdownPreview content={section.content} />
+                    <MarkdownPreview content={section.content} getImage={getImage} />
                 </div>
             </div>
           </CardContent>
@@ -158,7 +158,7 @@ export default function ProjectDetailsPage() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const { toast } = useToast();
-  const { projects, clients, findings, updateProject, deleteProject: removeProject } = useData();
+  const { projects, clients, findings, updateProject, deleteProject: removeProject, getImage } = useData();
   const { language } = useLanguage();
   
   const [project, setProject] = useState<Project | undefined>();

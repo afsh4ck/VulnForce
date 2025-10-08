@@ -1,4 +1,5 @@
 
+
 'use client';
 
 import { useParams, useRouter } from 'next/navigation';
@@ -27,7 +28,7 @@ export default function ReportPreviewPage() {
   const router = useRouter();
   const { language: uiLanguage } = useLanguage();
   const { id: projectId } = params;
-  const { projects, clients, findings } = useData();
+  const { projects, clients, findings, getImage } = useData();
 
   const [project, setProject] = useState<Project | undefined>();
   const [client, setClient] = useState<Client | undefined>();
@@ -177,7 +178,7 @@ export default function ReportPreviewPage() {
       `}</style>
       
       <header className="sticky top-0 z-10 w-full bg-background/80 backdrop-blur-sm border-b no-print">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-3 flex justify-between items-center">
+        <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-3 flex justify-between items-center h-14">
             <div className="flex items-center gap-4">
               <Button variant="outline" size="icon" asChild>
                   <Link href={`/dashboard/projects/${projectId}`}>
@@ -213,7 +214,7 @@ export default function ReportPreviewPage() {
           <section>
             <h2 className="font-headline text-2xl font-bold border-b-2 border-primary pb-2 mb-4 mt-12">{langT.executiveSummary}</h2>
             <div className="prose prose-lg dark:prose-invert max-w-none">
-              <MarkdownPreview content={executiveSummaryContent} />
+              <MarkdownPreview content={executiveSummaryContent} getImage={getImage} />
               
               <h3 className="text-xl font-semibold mt-8 mb-4">{langT.findingsSummary}</h3>
               <Table>
@@ -242,7 +243,7 @@ export default function ReportPreviewPage() {
           <section>
             <h2 className="font-headline text-2xl font-bold border-b-2 border-primary pb-2 mb-4 mt-12">{langT.scopeAndMethodology}</h2>
             <div className="prose prose-lg dark:prose-invert max-w-none">
-              <MarkdownPreview content={project.scope} />
+              <MarkdownPreview content={project.scope} getImage={getImage} />
             </div>
           </section>
 
@@ -258,7 +259,7 @@ export default function ReportPreviewPage() {
                   <p className="font-code text-sm text-muted-foreground mb-6">CVSS: {finding.cvss.toFixed(1)}</p>
                   <Separator className="my-6" />
                   <div className="prose prose-lg dark:prose-invert max-w-none">
-                    <MarkdownPreview content={finding.markdown} />
+                    <MarkdownPreview content={finding.markdown} getImage={getImage} />
                   </div>
                 </div>
               ))}
