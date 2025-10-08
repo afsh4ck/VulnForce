@@ -80,7 +80,7 @@ The assessment was conducted between **August 10, 2023** and **August 25, 2023**
 ---
 
 ## Attack Narrative
-The assessment identified a critical Insecure Direct Object Reference (IDOR) vulnerability in the \`/api/v1/users/[userId]\` endpoint. By iterating the \`userId\` parameter, it was possible to retrieve sensitive personal information for any user on the platform. Furthermore, the API was missing rate limiting, allowing for automated enumeration of user IDs.
+The assessment identified a critical Insecure Direct Object Reference (IDOR) vulnerability in the /api/v1/users/[userId] endpoint. By iterating the userId parameter, it was possible to retrieve sensitive personal information for any user on the platform. Furthermore, the API was missing rate limiting, allowing for automated enumeration of user IDs.
 
 ---
 
@@ -3187,6 +3187,7 @@ La prueba de penetración siguió una metodología estructurada:
 `
   }
 ];
+
 
 
 
