@@ -98,4 +98,6 @@ export interface ProjectTemplate {
   description_es: string;
   scope_en: string;
   scope_es: string;
+  appendix_en?: string;
+  appendix_es?: string;
 }

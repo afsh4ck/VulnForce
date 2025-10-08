@@ -132,44 +132,6 @@ The penetration test followed a structured methodology aligned with industry bes
 3.  **Internal Enumeration:** ...
 4.  **Lateral Movement & Privilege Escalation:** ...
 5.  **Domain/Network Compromise:** ...
-
----
-
-# Appendix
-
-### A. Compromised Users
-| Username | Domain | Password |
-|---|---|---|
-| [TODO: user1] | [TODO: domain.local] | [TODO: Password123] |
-
-### B. Exploited Hosts
-| Hostname | IP Address | Operating System |
-|---|---|---|
-| [TODO: WEB01] | [TODO: 192.168.X.X] | [TODO: Windows Server 2019] |
-
-### C. Flags Captured
-| Host | Flag Type | Flag Value |
-|---|---|---|
-| [TODO: WEB01] | user.txt | [TODO: flag_value] |
-
-### D. Host & Service Discovery
-| IP Address | Port | Service | Notes |
-|---|---|---|---|
-| [TODO: FILL IN AS APPROPRIATE] | | | |
-
-### E. Subdomain Discovery
-| URL | Description | Discovery Method |
-|---|---|---|
-| [TODO: FILL IN DISCOVERED VHOSTS/SUBDOMAINS] | | |
-
-### F. Tools Used
-[TODO: List the primary tools used during the assessment.]
-- Nmap
-- Metasploit Framework
-- Mimikatz
-- BloodHound
-- Impacket Suite
-- Burp Suite
 `,
     scope_es:
 `## Introducción
@@ -216,11 +178,45 @@ La prueba de penetración siguió una metodología estructurada alineada con las
 3.  **Enumeración Interna:** ...
 4.  **Movimiento Lateral y Escalada de Privilegios:** ...
 5.  **Compromiso del Dominio/Red:** ...
+`,
+    appendix_en:
+`
+### A. Compromised Users
+| Username | Domain | Password |
+|---|---|---|
+| [TODO: user1] | [TODO: domain.local] | [TODO: Password123] |
 
----
+### B. Exploited Hosts
+| Hostname | IP Address | Operating System |
+|---|---|---|
+| [TODO: WEB01] | [TODO: 192.168.X.X] | [TODO: Windows Server 2019] |
 
-# Apéndice
+### C. Flags Captured
+| Host | Flag Type | Flag Value |
+|---|---|---|
+| [TODO: WEB01] | user.txt | [TODO: flag_value] |
 
+### D. Host & Service Discovery
+| IP Address | Port | Service | Notes |
+|---|---|---|---|
+| [TODO: FILL IN AS APPROPRIATE] | | | |
+
+### E. Subdomain Discovery
+| URL | Description | Discovery Method |
+|---|---|---|
+| [TODO: FILL IN DISCOVERED VHOSTS/SUBDOMAINS] | | |
+
+### F. Tools Used
+[TODO: List the primary tools used during the assessment.]
+- Nmap
+- Metasploit Framework
+- Mimikatz
+- BloodHound
+- Impacket Suite
+- Burp Suite
+`,
+    appendix_es:
+`
 ### A. Usuarios Comprometidos
 | Usuario | Dominio | Contraseña |
 |---|---|---|

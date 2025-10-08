@@ -407,9 +407,17 @@ export default function ProjectDetailsPage() {
           t => t.scope_en.trim() === project.scope.trim() || t.scope_es.trim() === project.scope.trim()
         );
         
-        const newScope = matchingTemplate 
-            ? (newLang === 'es' ? matchingTemplate.scope_es : matchingTemplate.scope_en) 
-            : translatedText;
+        let newScope = translatedText;
+        if (matchingTemplate) {
+          const templateScope = newLang === 'es' ? matchingTemplate.scope_es : matchingTemplate.scope_en;
+          const templateAppendix = newLang === 'es' ? matchingTemplate.appendix_es : matchingTemplate.appendix_en;
+          newScope = templateScope;
+          if (templateAppendix) {
+            // This is a simplistic way to handle the appendix, might need adjustment
+            newScope += '\n\n---\n\n' + templateAppendix;
+          }
+        }
+
 
         const updatedProject = { ...project, scope: newScope, language: newLang };
         updateProject(updatedProject);
@@ -688,7 +696,7 @@ export default function ProjectDetailsPage() {
           {activeTab === 'scope' && (
             <div className="flex items-center gap-2">
               <Button variant="outline" size="sm" onClick={() => setIsOrganizing(!isOrganizing)}>
-                {isOrganizing ? <Rows className="mr-2 h-4 w-4" /> : <Rows className="mr-2 h-4 w-4" />}
+                <Rows className="mr-2 h-4 w-4" />
                 {isOrganizing ? t[language].finishOrganizing : t[language].organizeSections}
               </Button>
               <Button size="sm" onClick={handleSaveScope}>

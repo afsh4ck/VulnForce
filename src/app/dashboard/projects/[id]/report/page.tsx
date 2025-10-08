@@ -14,8 +14,9 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import Link from 'next/link';
 import { useLanguage } from '@/context/language-context';
 import { useData } from '@/context/data-context';
-import type { Finding, Project, Client } from '@/lib/types';
+import type { Finding, Project, Client, ProjectTemplate } from '@/lib/types';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
+import { projectTemplates } from '@/lib/templates';
 
 interface TodoItem {
   location: string;
@@ -33,6 +34,7 @@ export default function ReportPreviewPage() {
   const [project, setProject] = useState<Project | undefined>();
   const [client, setClient] = useState<Client | undefined>();
   const [projectFindings, setProjectFindings] = useState<Finding[]>([]);
+  const [template, setTemplate] = useState<ProjectTemplate | undefined>();
 
   useEffect(() => {
     const currentProject = projects.find(p => p.id === projectId);
@@ -43,6 +45,10 @@ export default function ReportPreviewPage() {
         .filter(f => f.projectId === currentProject.id)
         .sort((a, b) => b.cvss - a.cvss);
       setProjectFindings(filteredFindings);
+
+      const foundTemplate = projectTemplates.find(t => t.scope_en === currentProject.scope || t.scope_es === currentProject.scope);
+      setTemplate(foundTemplate);
+
     } else {
       router.push('/dashboard/projects'); // Redirect if project not found
     }
@@ -68,6 +74,7 @@ export default function ReportPreviewPage() {
       vulnerability: 'Vulnerability',
       severity: 'Severity',
       cvss: 'CVSS',
+      appendix: 'Appendix',
       executiveSummaryContent: (projectName: string, clientName: string, startDate: string, endDate: string, totalFindings: number, criticalFindings: number, highFindings: number) => 
         `This report details the findings of the penetration test conducted on **${projectName}** for **${clientName}** between ${new Date(startDate).toLocaleDateString()} and ${new Date(endDate).toLocaleDateString()}. The assessment identified **${totalFindings}** total vulnerabilities, including **${criticalFindings}** critical and **${highFindings}** high-risk findings. Urgent remediation is recommended for critical vulnerabilities to mitigate potential impact.`,
     },
@@ -89,6 +96,7 @@ export default function ReportPreviewPage() {
       vulnerability: 'Vulnerabilidad',
       severity: 'Severidad',
       cvss: 'CVSS',
+      appendix: 'Apéndice',
       executiveSummaryContent: (projectName: string, clientName: string, startDate: string, endDate: string, totalFindings: number, criticalFindings: number, highFindings: number) =>
         `Este informe detalla los hallazgos de la prueba de penetración realizada en **${projectName}** para **${clientName}** entre el ${new Date(startDate).toLocaleDateString()} y el ${new Date(endDate).toLocaleDateString()}. La evaluación identificó un total de **${totalFindings}** vulnerabilidades, incluyendo **${criticalFindings}** hallazgos críticos y **${highFindings}** de alto riesgo. Se recomienda la remediación urgente de las vulnerabilidades críticas para mitigar el impacto potencial.`,
     },
@@ -117,7 +125,7 @@ export default function ReportPreviewPage() {
     if (project.scope) {
         const sections = project.scope.split(/\n---\n/);
         sections.forEach(section => {
-            const headingMatch = section.match(/^(##|###) (.*)/);
+            const headingMatch = section.match(/^(#+) (.*)/);
             const sectionTitle = headingMatch ? headingMatch[2].trim() : langT.scope;
             
             const scopeMatches = section.match(todoRegex);
@@ -131,6 +139,22 @@ export default function ReportPreviewPage() {
                 });
             }
         });
+    }
+
+    if(template && (template.appendix_en || template.appendix_es)) {
+        const appendixContent = project.language === 'es' ? template.appendix_es : template.appendix_en;
+        if(appendixContent) {
+            const appendixMatches = appendixContent.match(todoRegex);
+            if (appendixMatches) {
+                appendixMatches.forEach(match => {
+                    foundTodos.push({
+                        location: langT.appendix,
+                        context: match,
+                        link: `/dashboard/projects/${projectId}?tab=scope`,
+                    });
+                });
+            }
+        }
     }
   
     // Check findings
@@ -148,7 +172,7 @@ export default function ReportPreviewPage() {
     });
   
     return foundTodos;
-  }, [project, projectFindings, projectId, t]);
+  }, [project, projectFindings, projectId, t, template]);
 
   const handlePrint = () => {
     window.print();
@@ -170,7 +194,8 @@ export default function ReportPreviewPage() {
     projectFindings.filter(f => f.severity === 'Critical').length,
     projectFindings.filter(f => f.severity === 'High').length
   );
-
+  
+  const appendixContent = template && (reportLang === 'es' ? template.appendix_es : template.appendix_en);
 
   return (
     <div className="bg-background text-foreground min-h-screen">
@@ -282,6 +307,16 @@ export default function ReportPreviewPage() {
               ))}
             </div>
           </section>
+
+          {appendixContent && (
+             <section>
+              <h2 className="font-headline text-2xl font-bold border-b-2 border-primary pb-2 mb-4 mt-12">{langT.appendix}</h2>
+              <div className="prose prose-lg dark:prose-invert max-w-none">
+                <MarkdownPreview content={appendixContent} getImage={getImage} />
+              </div>
+            </section>
+          )}
+
         </div>
 
         {/* Sidebar for TODOs */}
