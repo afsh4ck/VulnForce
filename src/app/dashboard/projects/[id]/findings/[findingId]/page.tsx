@@ -14,7 +14,6 @@ import { ChevronLeft, Save } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import { useLanguage } from '@/context/language-context';
 import type { Vulnerability, Finding, Project } from '@/lib/types';
-import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@/components/ui/accordion';
 import { useData } from '@/context/data-context';
 
 // A simple representation of finding content, can be expanded later
@@ -91,8 +90,8 @@ export default function FindingEditorPage() {
     };
 
     const combinedMarkdown = projectLanguage === 'es'
-        ? `## Contenido en Español\n\n${createMarkdown(contentEs, t.es)}`
-        : `## English Content\n\n${createMarkdown(contentEn, t.en)}`;
+        ? createMarkdown(contentEs, t.es)
+        : createMarkdown(contentEn, t.en);
 
 
     const findingData = {
@@ -142,8 +141,6 @@ export default function FindingEditorPage() {
       low: 'Low',
       informational: 'Informational',
       cvssScore: 'CVSS Score',
-      englishContent: 'English Content',
-      spanishContent: 'Spanish Content',
       overview: 'Overview',
       technicalDescription: 'Technical Description',
       affectedComponents: 'Affected Components',
@@ -170,8 +167,6 @@ export default function FindingEditorPage() {
       low: 'Baja',
       informational: 'Informativa',
       cvssScore: 'Puntuación CVSS',
-      englishContent: 'Contenido en Inglés',
-      spanishContent: 'Contenido en Español',
       overview: 'Resumen',
       technicalDescription: 'Descripción Técnica',
       affectedComponents: 'Componentes Afectados',
@@ -325,20 +320,7 @@ export default function FindingEditorPage() {
                 </CardDescription>
             </CardHeader>
             <CardContent>
-              <Accordion type="single" defaultValue={`${projectLanguage}-content`} collapsible className="w-full">
-                <AccordionItem value="en-content" style={{ display: projectLanguage === 'en' ? 'block' : 'none' }}>
-                  <AccordionTrigger className="text-lg font-semibold">{t[uiLanguage].englishContent}</AccordionTrigger>
-                  <AccordionContent className="space-y-4 pt-4">
-                    {renderContentFields('en')}
-                  </AccordionContent>
-                </AccordionItem>
-                <AccordionItem value="es-content" style={{ display: projectLanguage === 'es' ? 'block' : 'none' }}>
-                  <AccordionTrigger className="text-lg font-semibold">{t[uiLanguage].spanishContent}</AccordionTrigger>
-                  <AccordionContent className="space-y-4 pt-4">
-                    {renderContentFields('es')}
-                  </AccordionContent>
-                </AccordionItem>
-              </Accordion>
+                {projectLanguage === 'es' ? renderContentFields('es') : renderContentFields('en')}
             </CardContent>
           </Card>
 

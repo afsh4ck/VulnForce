@@ -14,6 +14,7 @@ import Link from 'next/link';
 import { useLanguage } from '@/context/language-context';
 import { useData } from '@/context/data-context';
 import type { Finding, Project, Client } from '@/lib/types';
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 
 interface TodoItem {
   location: string;
@@ -24,7 +25,7 @@ interface TodoItem {
 export default function ReportPreviewPage() {
   const params = useParams();
   const router = useRouter();
-  const { language } = useLanguage();
+  const { language: uiLanguage } = useLanguage();
   const { id: projectId } = params;
   const { projects, clients, findings } = useData();
 
@@ -37,7 +38,10 @@ export default function ReportPreviewPage() {
     if (currentProject) {
       setProject(currentProject);
       setClient(clients.find(c => c.id === currentProject.clientId));
-      setProjectFindings(findings.filter(f => f.projectId === currentProject.id));
+      const filteredFindings = findings
+        .filter(f => f.projectId === currentProject.id)
+        .sort((a, b) => b.cvss - a.cvss);
+      setProjectFindings(filteredFindings);
     } else {
       router.push('/dashboard/projects'); // Redirect if project not found
     }
@@ -47,6 +51,7 @@ export default function ReportPreviewPage() {
   const t = {
     en: {
       executiveSummary: 'Executive Summary',
+      findingsSummary: 'Findings Summary',
       scopeAndMethodology: 'Scope & Methodology',
       detailedFindings: 'Detailed Findings',
       reportPreview: 'Report Preview',
@@ -59,9 +64,13 @@ export default function ReportPreviewPage() {
       scope: 'Project Scope',
       finding: 'Finding',
       backToProject: 'Back to Project',
+      vulnerability: 'Vulnerability',
+      severity: 'Severity',
+      cvss: 'CVSS',
     },
     es: {
       executiveSummary: 'Resumen Ejecutivo',
+      findingsSummary: 'Resumen de Hallazgos',
       scopeAndMethodology: 'Alcance y Metodología',
       detailedFindings: 'Hallazgos Detallados',
       reportPreview: 'Previsualización del Informe',
@@ -74,6 +83,9 @@ export default function ReportPreviewPage() {
       scope: 'Alcance del Proyecto',
       finding: 'Hallazgo',
       backToProject: 'Volver al Proyecto',
+      vulnerability: 'Vulnerabilidad',
+      severity: 'Severidad',
+      cvss: 'CVSS',
     },
   };
 
@@ -138,6 +150,9 @@ export default function ReportPreviewPage() {
   }
 
   const reportLang = project.language;
+  const langT = t[reportLang];
+
+  const executiveSummaryContent = `This report details the findings of the penetration test conducted on **${project.name}** for **${client?.name}** between ${new Date(project.startDate).toLocaleDateString()} and ${new Date(project.endDate).toLocaleDateString()}. The assessment identified **${projectFindings.length}** total vulnerabilities, including **${projectFindings.filter(f => f.severity === 'Critical').length}** critical and **${projectFindings.filter(f => f.severity === 'High').length}** high-risk findings. Urgent remediation is recommended for critical vulnerabilities to mitigate potential impact.`;
 
   return (
     <div className="bg-background text-foreground min-h-screen">
@@ -163,18 +178,18 @@ export default function ReportPreviewPage() {
               <Button variant="outline" size="icon" asChild>
                   <Link href={`/dashboard/projects/${projectId}`}>
                       <ChevronLeft className="h-4 w-4" />
-                      <span className="sr-only">{t[language].backToProject}</span>
+                      <span className="sr-only">{t[uiLanguage].backToProject}</span>
                   </Link>
               </Button>
-              <h1 className="font-headline text-2xl font-bold">{t[language].reportPreview}</h1>
+              <h1 className="font-headline text-2xl font-bold">{t[uiLanguage].reportPreview}</h1>
             </div>
              <div className="flex items-center gap-2">
                 <Button variant="outline" disabled>
-                    {t[language].downloadHTML}
+                    {t[uiLanguage].downloadHTML}
                 </Button>
                 <Button onClick={handlePrint} disabled={todos.length > 0}>
                     <Printer className="mr-2 h-4 w-4" />
-                    {t[language].downloadPDF}
+                    {t[uiLanguage].downloadPDF}
                 </Button>
             </div>
         </div>
@@ -192,21 +207,43 @@ export default function ReportPreviewPage() {
           </header>
 
           <section>
-            <h2 className="font-headline text-2xl font-bold border-b-2 border-primary pb-2 mb-4 mt-12">{t[reportLang].executiveSummary}</h2>
+            <h2 className="font-headline text-2xl font-bold border-b-2 border-primary pb-2 mb-4 mt-12">{langT.executiveSummary}</h2>
             <div className="prose prose-lg dark:prose-invert max-w-none">
-              <MarkdownPreview content={`This report details the findings of the penetration test conducted on **${project.name}** for **${client?.name}** between ${new Date(project.startDate).toLocaleDateString()} and ${new Date(project.endDate).toLocaleDateString()}. The assessment identified **${projectFindings.length}** total vulnerabilities, including **${projectFindings.filter(f => f.severity === 'Critical').length}** critical and **${projectFindings.filter(f => f.severity === 'High').length}** high-risk findings. Urgent remediation is recommended for critical vulnerabilities to mitigate potential impact.`} />
+              <MarkdownPreview content={executiveSummaryContent} />
+              
+              <h3 className="text-xl font-semibold mt-8 mb-4">{langT.findingsSummary}</h3>
+              <Table>
+                <TableHeader>
+                  <TableRow>
+                    <TableHead>{langT.vulnerability}</TableHead>
+                    <TableHead>{langT.severity}</TableHead>
+                    <TableHead className="text-right">{langT.cvss}</TableHead>
+                  </TableRow>
+                </TableHeader>
+                <TableBody>
+                  {projectFindings.map(finding => (
+                    <TableRow key={finding.id}>
+                      <TableCell className="font-medium">{finding.title}</TableCell>
+                      <TableCell>
+                        <Badge variant={getSeverityVariant(finding.severity)}>{finding.severity}</Badge>
+                      </TableCell>
+                      <TableCell className="text-right font-code">{finding.cvss.toFixed(1)}</TableCell>
+                    </TableRow>
+                  ))}
+                </TableBody>
+              </Table>
             </div>
           </section>
 
           <section>
-            <h2 className="font-headline text-2xl font-bold border-b-2 border-primary pb-2 mb-4 mt-12">{t[reportLang].scopeAndMethodology}</h2>
+            <h2 className="font-headline text-2xl font-bold border-b-2 border-primary pb-2 mb-4 mt-12">{langT.scopeAndMethodology}</h2>
             <div className="prose prose-lg dark:prose-invert max-w-none">
               <MarkdownPreview content={project.scope} />
             </div>
           </section>
 
           <section>
-            <h2 className="font-headline text-2xl font-bold border-b-2 border-primary pb-2 mb-8 mt-12">{t[reportLang].detailedFindings}</h2>
+            <h2 className="font-headline text-2xl font-bold border-b-2 border-primary pb-2 mb-8 mt-12">{langT.detailedFindings}</h2>
             <div className="space-y-12">
               {projectFindings.map((finding, index) => (
                 <div key={finding.id} className="break-after-page">
@@ -236,7 +273,7 @@ export default function ReportPreviewPage() {
                   ) : (
                     <AlertCircle className="h-6 w-6 text-destructive" />
                   )}
-                  <CardTitle>{todos.length > 0 ? t[language].pending : t[language].allChecksPassed}</CardTitle>
+                  <CardTitle>{todos.length > 0 ? t[uiLanguage].pending : t[uiLanguage].allChecksPassed}</CardTitle>
                 </div>
               </CardHeader>
               <CardContent>
@@ -248,14 +285,14 @@ export default function ReportPreviewPage() {
                         <p className="text-xs text-muted-foreground font-code truncate my-1">"{todo.context.replace(/\[|\]/g, '')}"</p>
                         <Button variant="link" size="sm" asChild className="p-0 h-auto">
                             <Link href={todo.link}>
-                                {t[language].goToItem} <ArrowRight className="ml-1 h-3 w-3" />
+                                {t[uiLanguage].goToItem} <ArrowRight className="ml-1 h-3 w-3" />
                             </Link>
                         </Button>
                       </li>
                     ))}
                   </ul>
                 ) : (
-                  <p className="text-sm text-muted-foreground">{t[language].readyToExport}</p>
+                  <p className="text-sm text-muted-foreground">{t[uiLanguage].readyToExport}</p>
                 )}
               </CardContent>
             </Card>
