@@ -8,7 +8,7 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import Link from 'next/link';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
-import { PlusCircle, FileText, ArrowUpDown, Edit, Save, Trash2, CalendarIcon, Split, Eye } from "lucide-react";
+import { PlusCircle, FileText, ArrowUpDown, Edit, Save, Trash2, CalendarIcon, Split, Eye, Plus, GripVertical } from "lucide-react";
 import { Separator } from "@/components/ui/separator";
 import { useLanguage } from "@/context/language-context";
 import type { Finding, Project } from '@/lib/types';
@@ -32,6 +32,79 @@ import { projectTemplates } from '@/lib/templates';
 
 
 type SortKey = keyof Finding;
+type ScopeView = 'edit' | 'split' | 'preview';
+
+interface ScopeSection {
+  id: string;
+  content: string;
+}
+
+const ScopeSectionEditor = ({ section, onContentChange, onDelete, view, onViewChange }: {
+  section: ScopeSection;
+  onContentChange: (content: string) => void;
+  onDelete: () => void;
+  view: ScopeView;
+  onViewChange: (view: ScopeView) => void;
+}) => {
+  const { language } = useLanguage();
+  const headingMatch = section.content.match(/^(##) (.*)/);
+  const sectionTitle = headingMatch ? headingMatch[2].trim() : t[language].newSection;
+
+  const t = {
+    en: {
+      viewEdit: 'Write',
+      viewSplit: 'Split',
+      viewPreview: 'Preview',
+      deleteSection: 'Delete Section',
+      newSection: 'New Section',
+    },
+    es: {
+      viewEdit: 'Edición',
+      viewSplit: 'Dividida',
+      viewPreview: 'Previsualización',
+      deleteSection: 'Eliminar Sección',
+      newSection: 'Nueva Sección',
+    }
+  }
+
+  return (
+    <Card>
+      <CardHeader className="flex flex-row items-center justify-between bg-muted/50 py-3 px-4">
+         <div className="flex items-center gap-2">
+            <GripVertical className="h-5 w-5 text-muted-foreground cursor-grab" />
+            <h3 className="font-semibold">{sectionTitle}</h3>
+        </div>
+        <div className="flex items-center gap-2">
+            <Tabs value={view} onValueChange={(value) => onViewChange(value as ScopeView)}>
+                <TabsList className="h-8">
+                    <TabsTrigger value="edit" className="h-6 text-xs px-2">{t[language].viewEdit}</TabsTrigger>
+                    <TabsTrigger value="split" className="h-6 text-xs px-2">{t[language].viewSplit}</TabsTrigger>
+                    <TabsTrigger value="preview" className="h-6 text-xs px-2">{t[language].viewPreview}</TabsTrigger>
+                </TabsList>
+            </Tabs>
+            <Button variant="ghost" size="icon" className="h-8 w-8" onClick={onDelete}>
+                <Trash2 className="h-4 w-4 text-destructive" />
+                <span className="sr-only">{t[language].deleteSection}</span>
+            </Button>
+        </div>
+      </CardHeader>
+      <CardContent className="p-4">
+        <div className={cn("grid gap-4", view === 'split' ? "grid-cols-2" : "grid-cols-1")}>
+            <div className={cn(view === 'preview' && 'hidden')}>
+                <Textarea
+                    value={section.content}
+                    onChange={(e) => onContentChange(e.target.value)}
+                    className="font-code min-h-[300px] text-base"
+                />
+            </div>
+            <div className={cn("prose prose-sm dark:prose-invert max-w-none rounded-md border p-4 min-h-[300px]", view === 'edit' && 'hidden')}>
+                <MarkdownPreview content={section.content} />
+            </div>
+        </div>
+      </CardContent>
+    </Card>
+  )
+}
 
 export default function ProjectDetailsPage() {
   const params = useParams();
@@ -44,10 +117,12 @@ export default function ProjectDetailsPage() {
   const [project, setProject] = useState<Project | undefined>();
   const [sortConfig, setSortConfig] = useState<{ key: SortKey; direction: 'ascending' | 'descending' } | null>(null);
   
-  const [scopeContent, setScopeContent] = useState('');
   const [activeTab, setActiveTab] = useState(searchParams.get('tab') || 'scope');
-  const [scopeView, setScopeView] = useState('split');
   
+  // State for scope sections
+  const [scopeSections, setScopeSections] = useState<ScopeSection[]>([]);
+  const [sectionViews, setSectionViews] = useState<Record<string, ScopeView>>({});
+
   // Edit Dialog State
   const [isEditDialogOpen, setIsEditDialogOpen] = useState(false);
   const [editName, setEditName] = useState('');
@@ -66,7 +141,20 @@ export default function ProjectDetailsPage() {
         return;
     }
     setProject(currentProject);
-    setScopeContent(currentProject.scope);
+    
+    // Parse scope into sections
+    const sections = currentProject.scope.split(/\n---\n/).map((content, index) => ({
+      id: `section-${index}-${Date.now()}`,
+      content: content.trim()
+    }));
+    setScopeSections(sections);
+    const initialViews = sections.reduce((acc, section) => {
+        acc[section.id] = 'split';
+        return acc;
+    }, {} as Record<string, ScopeView>);
+    setSectionViews(initialViews);
+
+    // Set edit dialog fields
     setEditName(currentProject.name);
     setEditClientId(currentProject.clientId);
     setEditDate({ from: new Date(currentProject.startDate), to: new Date(currentProject.endDate) });
@@ -148,99 +236,38 @@ export default function ProjectDetailsPage() {
     return sortConfig.direction === 'ascending' ? ' ▲' : ' ▼';
   };
 
-  const t = {
-    en: {
-      status: "Status",
-      scopeAndDetails: "Scope & Details",
-      findings: "Findings",
-      exportReport: "Export Report",
-      addFinding: "Add Finding",
-      title: "Title",
-      severity: "Severity",
-      cvss: "CVSS",
-      projectDetails: "Project Details",
-      client: "Client",
-      projectName: "Project Name",
-      dates: "Dates",
-      inProgress: "In Progress",
-      completed: "Completed",
-      onHold: "On Hold",
-      editScope: "Edit",
-      saveScope: "Save Scope",
-      editProject: "Edit Project",
-      deleteProject: "Delete Project",
-      updateProject: "Update Project",
-      confirmDeleteTitle: "Are you sure?",
-      confirmDeleteDesc: "This action cannot be undone. This will permanently delete the project and all its findings.",
-      cancel: "Cancel",
-      delete: "Delete",
-      projectUpdated: "Project updated successfully.",
-      projectDeleted: "Project deleted successfully.",
-      incompleteFields: "Incomplete Fields",
-      fillAllFields: "Please fill in all fields.",
-      language: 'Language',
-      selectLanguage: 'Select Language',
-      english: 'English',
-      spanish: 'Spanish',
-      viewEdit: 'Edit',
-      viewSplit: 'Split',
-      viewPreview: 'Preview',
-    },
-    es: {
-      status: "Estado",
-      scopeAndDetails: "Alcance y Detalles",
-      findings: "Hallazgos",
-      exportReport: "Exportar Informe",
-      addFinding: "Añadir Hallazgo",
-      title: "Título",
-      severity: "Severidad",
-      cvss: "CVSS",
-      projectDetails: "Detalles del Proyecto",
-      client: "Cliente",
-      projectName: "Nombre del Proyecto",
-      dates: "Fechas",
-      inProgress: "En Progreso",
-      completed: "Completado",
-      onHold: "En Espera",
-      editScope: "Editar",
-      saveScope: "Guardar Alcance",
-      editProject: "Editar Proyecto",
-      deleteProject: "Eliminar Proyecto",
-      updateProject: "Actualizar Proyecto",
-      confirmDeleteTitle: "¿Estás seguro?",
-      confirmDeleteDesc: "Esta acción no se puede deshacer. Esto eliminará permanentemente el proyecto y todos sus hallazgos.",
-      cancel: "Cancelar",
-      delete: "Eliminar",
-      projectUpdated: "Proyecto actualizado correctamente.",
-      projectDeleted: "Proyecto eliminado correctamente.",
-      incompleteFields: "Campos Incompletos",
-      fillAllFields: "Por favor, rellena todos los campos.",
-      language: 'Idioma',
-      selectLanguage: 'Seleccionar Idioma',
-      english: 'Inglés',
-      spanish: 'Español',
-      viewEdit: 'Edición',
-      viewSplit: 'Dividida',
-      viewPreview: 'Previsualización',
-    }
-  }
-
-  const getStatus = (status: string) => {
-    if (language === 'es') {
-      if (status === 'In Progress') return 'En Progreso';
-      if (status === 'Completed') return 'Completado';
-      if (status === 'On Hold') return 'En Espera';
-    }
-    return status;
-  }
-  
   const handleSaveScope = () => {
     if (project) {
-        updateProject({...project, scope: scopeContent});
+        const newScope = scopeSections.map(s => s.content).join('\n\n---\n\n');
+        updateProject({...project, scope: newScope});
         toast({ title: language === 'es' ? 'Alcance guardado' : 'Scope saved' });
     }
   }
-  
+
+  const handleSectionContentChange = (sectionId: string, newContent: string) => {
+    setScopeSections(prevSections =>
+      prevSections.map(sec => sec.id === sectionId ? { ...sec, content: newContent } : sec)
+    );
+  };
+
+  const handleAddSection = () => {
+      const newSection: ScopeSection = {
+          id: `section-new-${Date.now()}`,
+          content: '## ' + t[language].newSection
+      };
+      setScopeSections(prev => [...prev, newSection]);
+      setSectionViews(prev => ({ ...prev, [newSection.id]: 'edit' }));
+  };
+
+  const handleDeleteSection = (sectionId: string) => {
+      setScopeSections(prev => prev.filter(sec => sec.id !== sectionId));
+      setSectionViews(prev => {
+          const newViews = { ...prev };
+          delete newViews[sectionId];
+          return newViews;
+      });
+  };
+
   useEffect(() => {
     if (!project || !isEditDialogOpen) return;
   
@@ -258,6 +285,88 @@ export default function ProjectDetailsPage() {
     }
   }, [editLanguage, project, isEditDialogOpen, updateProject]);
 
+
+  const t = {
+    en: {
+      status: "Status",
+      scopeAndDetails: "Scope & Details",
+      findings: "Findings",
+      exportReport: "Export Report",
+      addFinding: "Add Finding",
+      title: "Title",
+      severity: "Severity",
+      cvss: "CVSS",
+      projectDetails: "Project Details",
+      client: "Client",
+      projectName: "Project Name",
+      dates: "Dates",
+      inProgress: "In Progress",
+      completed: "Completed",
+      onHold: "On Hold",
+      saveScope: "Save Scope",
+      editProject: "Edit Project",
+      deleteProject: "Delete Project",
+      updateProject: "Update Project",
+      confirmDeleteTitle: "Are you sure?",
+      confirmDeleteDesc: "This action cannot be undone. This will permanently delete the project and all its findings.",
+      cancel: "Cancel",
+      delete: "Delete",
+      projectUpdated: "Project updated successfully.",
+      projectDeleted: "Project deleted successfully.",
+      incompleteFields: "Incomplete Fields",
+      fillAllFields: "Please fill in all fields.",
+      language: 'Language',
+      selectLanguage: 'Select Language',
+      english: 'English',
+      spanish: 'Spanish',
+      addNewSection: 'Add New Section',
+      newSection: 'New Section',
+    },
+    es: {
+      status: "Estado",
+      scopeAndDetails: "Alcance y Detalles",
+      findings: "Hallazgos",
+      exportReport: "Exportar Informe",
+      addFinding: "Añadir Hallazgo",
+      title: "Título",
+      severity: "Severidad",
+      cvss: "CVSS",
+      projectDetails: "Detalles del Proyecto",
+      client: "Cliente",
+      projectName: "Nombre del Proyecto",
+      dates: "Fechas",
+      inProgress: "En Progreso",
+      completed: "Completado",
+      onHold: "En Espera",
+      saveScope: "Guardar Alcance",
+      editProject: "Editar Proyecto",
+      deleteProject: "Eliminar Proyecto",
+      updateProject: "Actualizar Proyecto",
+      confirmDeleteTitle: "¿Estás seguro?",
+      confirmDeleteDesc: "Esta acción no se puede deshacer. Esto eliminará permanentemente el proyecto y todos sus hallazgos.",
+      cancel: "Cancelar",
+      delete: "Eliminar",
+      projectUpdated: "Proyecto actualizado correctamente.",
+      projectDeleted: "Proyecto eliminado correctamente.",
+      incompleteFields: "Campos Incompletos",
+      fillAllFields: "Por favor, rellena todos los campos.",
+      language: 'Idioma',
+      selectLanguage: 'Seleccionar Idioma',
+      english: 'Inglés',
+      spanish: 'Español',
+      addNewSection: 'Añadir Nueva Sección',
+      newSection: 'Nueva Sección',
+    }
+  }
+
+  const getStatus = (status: string) => {
+    if (language === 'es') {
+      if (status === 'In Progress') return 'En Progreso';
+      if (status === 'Completed') return 'Completado';
+      if (status === 'On Hold') return 'En Espera';
+    }
+    return status;
+  }
 
   if (!project) {
     return null;
@@ -404,41 +513,32 @@ export default function ProjectDetailsPage() {
           <TabsTrigger value="findings">{t[language].findings} ({projectFindings.length})</TabsTrigger>
         </TabsList>
         <TabsContent value="scope" className="mt-4">
-            <Card>
-                <CardHeader className="flex flex-row items-center justify-between">
-                    <CardTitle>{t[language].scopeAndDetails}</CardTitle>
-                    <div className="flex items-center gap-2">
-                         <Tabs value={scopeView} onValueChange={setScopeView}>
-                            <TabsList>
-                                <TabsTrigger value="edit"><Edit className="h-4 w-4 mr-2"/>{t[language].viewEdit}</TabsTrigger>
-                                <TabsTrigger value="split"><Split className="h-4 w-4 mr-2"/>{t[language].viewSplit}</TabsTrigger>
-                                <TabsTrigger value="preview"><Eye className="h-4 w-4 mr-2"/>{t[language].viewPreview}</TabsTrigger>
-                            </TabsList>
-                        </Tabs>
-                        <Button size="sm" onClick={handleSaveScope}>
-                            <Save className="mr-2 h-4 w-4" />
-                            {t[language].saveScope}
-                        </Button>
-                    </div>
-                </CardHeader>
-                <CardContent>
-                    <div className={cn(
-                        "grid gap-4",
-                        scopeView === 'split' ? "grid-cols-2" : "grid-cols-1"
-                    )}>
-                        <div className={cn(scopeView === 'preview' && 'hidden')}>
-                            <Textarea 
-                                value={scopeContent}
-                                onChange={(e) => setScopeContent(e.target.value)}
-                                className="font-code min-h-[600px] text-base"
-                            />
-                        </div>
-                        <div className={cn("prose prose-sm dark:prose-invert max-w-none rounded-md border p-4 min-h-[600px]", scopeView === 'edit' && 'hidden')}>
-                           <MarkdownPreview content={scopeContent} />
-                        </div>
-                    </div>
-                </CardContent>
-            </Card>
+             <div className="space-y-4">
+                <div className="flex justify-end">
+                     <Button size="sm" onClick={handleSaveScope}>
+                        <Save className="mr-2 h-4 w-4" />
+                        {t[language].saveScope}
+                    </Button>
+                </div>
+                <div className="space-y-4">
+                  {scopeSections.map((section, index) => (
+                    <ScopeSectionEditor
+                      key={section.id}
+                      section={section}
+                      onContentChange={(newContent) => handleSectionContentChange(section.id, newContent)}
+                      onDelete={() => handleDeleteSection(section.id)}
+                      view={sectionViews[section.id] || 'split'}
+                      onViewChange={(newView) => setSectionViews(prev => ({ ...prev, [section.id]: newView }))}
+                    />
+                  ))}
+                </div>
+                <div className="flex justify-center">
+                    <Button variant="outline" onClick={handleAddSection}>
+                        <Plus className="mr-2 h-4 w-4" />
+                        {t[language].addNewSection}
+                    </Button>
+                </div>
+            </div>
         </TabsContent>
         <TabsContent value="findings" className="mt-4">
            <Card>
@@ -491,3 +591,4 @@ export default function ProjectDetailsPage() {
     </div>
   );
 }
+
