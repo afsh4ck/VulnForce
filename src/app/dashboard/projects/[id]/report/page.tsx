@@ -115,7 +115,7 @@ export default function ReportPreviewPage() {
   
     // Check project scope for sections and TODOs
     if (project.scope) {
-        const sections = project.scope.split(/^(?=## |### )/m);
+        const sections = project.scope.split(/\n---\n/);
         sections.forEach(section => {
             const headingMatch = section.match(/^(##|###) (.*)/);
             const sectionTitle = headingMatch ? headingMatch[2].trim() : langT.scope;
@@ -232,6 +232,13 @@ export default function ReportPreviewPage() {
           </section>
 
           <section>
+            <h2 className="font-headline text-2xl font-bold border-b-2 border-primary pb-2 mb-4 mt-12">{langT.scopeAndMethodology}</h2>
+            <div className="prose prose-lg dark:prose-invert max-w-none">
+              <MarkdownPreview content={project.scope} getImage={getImage} />
+            </div>
+          </section>
+
+          <section>
             <h2 className="font-headline text-2xl font-bold border-b-2 border-primary pb-2 mb-4 mt-12">{langT.findingsSummary}</h2>
              <div className="prose prose-lg dark:prose-invert max-w-none">
                 <Table>
@@ -254,13 +261,6 @@ export default function ReportPreviewPage() {
                     ))}
                     </TableBody>
                 </Table>
-            </div>
-          </section>
-
-          <section>
-            <h2 className="font-headline text-2xl font-bold border-b-2 border-primary pb-2 mb-4 mt-12">{langT.scopeAndMethodology}</h2>
-            <div className="prose prose-lg dark:prose-invert max-w-none">
-              <MarkdownPreview content={project.scope} getImage={getImage} />
             </div>
           </section>
 

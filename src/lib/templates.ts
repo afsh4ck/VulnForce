@@ -114,11 +114,6 @@ The scope of this penetration test was limited to the hosts and networks provide
 
 ---
 
-## Summary of Findings
-[TODO: Provide a high-level executive summary of the key findings and the overall security posture of the network. Mention the most critical vulnerabilities discovered and the potential impact.]
-
----
-
 ## Methodology
 The penetration test followed a structured methodology aligned with industry best practices:
 1.  **Information Gathering:** Passive and active reconnaissance to map the external attack surface.
@@ -140,49 +135,44 @@ The penetration test followed a structured methodology aligned with industry bes
 
 ---
 
-## Findings
-[TODO: List all the individual findings here. Each finding should be a separate section. Use the findings editor to detail each one.]
-
----
-
 ## Appendix
 
-### A. Compromised Users
+### Compromised Users
 | Username | Domain | Password |
 |---|---|---|
 | [TODO: user1] | [TODO: domain.local] | [TODO: Password123] |
 
 ---
 
-### B. Exploited Hosts
+### Exploited Hosts
 | Hostname | IP Address | Operating System |
 |---|---|---|
 | [TODO: WEB01] | [TODO: 192.168.X.X] | [TODO: Windows Server 2019] |
 
 ---
 
-### C. Flags Captured
+### Flags Captured
 | Host | Flag Type | Flag Value |
 |---|---|---|
 | [TODO: WEB01] | user.txt | [TODO: flag_value] |
 
 ---
 
-### D. Host & Service Discovery
+### Host & Service Discovery
 | IP Address | Port | Service | Notes |
 |---|---|---|---|
 | [TODO: FILL IN AS APPROPRIATE] | | | |
 
 ---
 
-### E. Subdomain Discovery
+### Subdomain Discovery
 | URL | Description | Discovery Method |
 |---|---|---|
 | [TODO: FILL IN DISCOVERED VHOSTS/SUBDOMAINS] | | |
 
 ---
 
-### F. Tools Used
+### Tools Used
 [TODO: List the primary tools used during the assessment.]
 - Nmap
 - Metasploit Framework
@@ -218,11 +208,6 @@ El alcance de esta prueba de penetración se limitó a los hosts y redes proporc
 
 ---
 
-## Resumen de Hallazgos
-[TODO: Proporcione un resumen ejecutivo de alto nivel de los hallazgos clave y la postura general de seguridad de la red. Mencione las vulnerabilidades más críticas descubiertas y el impacto potencial.]
-
----
-
 ## Metodología
 La prueba de penetración siguió una metodología estructurada alineada con las mejores prácticas de la industria:
 1.  **Recopilación de Información:** Reconocimiento pasivo y activo para mapear la superficie de ataque externa.
@@ -244,49 +229,44 @@ La prueba de penetración siguió una metodología estructurada alineada con las
 
 ---
 
-## Hallazgos
-[TODO: Enumere todos los hallazgos individuales aquí. Cada hallazgo debe ser una sección separada. Use el editor de hallazgos para detallar cada uno.]
-
----
-
 ## Apéndice
 
-### A. Usuarios Comprometidos
+### Usuarios Comprometidos
 | Usuario | Dominio | Contraseña |
 |---|---|---|
 | [TODO: user1] | [TODO: domain.local] | [TODO: Password123] |
 
 ---
 
-### B. Hosts Explotados
+### Hosts Explotados
 | Hostname | Dirección IP | Sistema Operativo |
 |---|---|---|
 | [TODO: WEB01] | [TODO: 192.168.X.X] | [TODO: Windows Server 2019] |
 
 ---
 
-### C. Banderas Capturadas
+### Banderas Capturadas
 | Host | Tipo de Bandera | Valor de la Bandera |
 |---|---|---|
 | [TODO: WEB01] | user.txt | [TODO: flag_value] |
 
 ---
 
-### D. Descubrimiento de Hosts y Servicios
+### Descubrimiento de Hosts y Servicios
 | Dirección IP | Puerto | Servicio | Notas |
 |---|---|---|---|
 | [TODO: RELLENAR SEGÚN CORRESPONDA] | | | |
 
 ---
 
-### E. Descubrimiento de Subdominios
+### Descubrimiento de Subdominios
 | URL | Descripción | Método de Descubrimiento |
 |---|---|---|
 | [TODO: RELLENAR VHOSTS/SUBDOMINIOS DESCUBIERTOS] | | |
 
 ---
 
-### F. Herramientas Utilizadas
+### Herramientas Utilizadas
 [TODO: Enumere las principales herramientas utilizadas durante la evaluación.]
 - Nmap
 - Metasploit Framework
