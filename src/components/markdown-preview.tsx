@@ -93,7 +93,7 @@ export const MarkdownPreview = ({ content, getImage }: { content: string, getIma
                 if (imageAsset) {
                     return <img src={imageAsset.dataUrl} alt={props.alt} className="max-w-full h-auto rounded-md border" />;
                 }
-                return <img {...props} src="" alt={`Broken Image Ref: ${imageId}`} className="max-w-full h-auto rounded-md border" />;
+                return <img {...props} src="" alt={`Broken Image Ref: ${imageId}`} className="max-w-full h-auto rounded-md border bg-destructive/10" />;
             }
             return <img {...props} className="max-w-full h-auto rounded-md border" />;
         },
@@ -123,3 +123,5 @@ export const MarkdownPreview = ({ content, getImage }: { content: string, getIma
     </ReactMarkdown>
   );
 };
+
+    

@@ -7,7 +7,7 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import Link from 'next/link';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
-import { PlusCircle, FileText, ArrowUpDown, Edit, Save, Trash2, CalendarIcon, Split, Eye, Plus, GripVertical } from "lucide-react";
+import { PlusCircle, FileText, ArrowUpDown, Edit, Save, Trash2, CalendarIcon, Split, Eye, Plus, GripVertical, Rows } from "lucide-react";
 import { Separator } from "@/components/ui/separator";
 import { useLanguage } from "@/context/language-context";
 import type { Finding, Project, ImageAsset } from '@/lib/types';
@@ -39,14 +39,14 @@ interface ScopeSection {
   content: string;
 }
 
-const ScopeSectionEditor = ({ section, onContentChange, onDelete, view, onViewChange, onTitleChange, isDragging, getImage }: {
+const ScopeSectionEditor = ({ section, onContentChange, onDelete, view, onViewChange, onTitleChange, isOrganizing, getImage }: {
   section: ScopeSection;
   onContentChange: (content: string) => void;
   onDelete: () => void;
   view: ScopeView;
   onViewChange: (view: ScopeView) => void;
   onTitleChange: (newTitle: string) => void;
-  isDragging?: boolean;
+  isOrganizing: boolean;
   getImage: (id: string) => ImageAsset | undefined;
 }) => {
   const { language } = useLanguage();
@@ -128,20 +128,22 @@ const ScopeSectionEditor = ({ section, onContentChange, onDelete, view, onViewCh
             />
         </div>
         <div className="flex items-center gap-2">
-            <Tabs value={view} onValueChange={(value) => onViewChange(value as ScopeView)}>
-                <TabsList className="h-8">
-                    <TabsTrigger value="edit" className="h-6 text-xs px-2">{t[language].viewEdit}</TabsTrigger>
-                    <TabsTrigger value="split" className="h-6 text-xs px-2">{t[language].viewSplit}</TabsTrigger>
-                    <TabsTrigger value="preview" className="h-6 text-xs px-2">{t[language].viewPreview}</TabsTrigger>
-                </TabsList>
-            </Tabs>
+            {!isOrganizing && (
+                <Tabs value={view} onValueChange={(value) => onViewChange(value as ScopeView)}>
+                    <TabsList className="h-8">
+                        <TabsTrigger value="edit" className="h-6 text-xs px-2">{t[language].viewEdit}</TabsTrigger>
+                        <TabsTrigger value="split" className="h-6 text-xs px-2">{t[language].viewSplit}</TabsTrigger>
+                        <TabsTrigger value="preview" className="h-6 text-xs px-2">{t[language].viewPreview}</TabsTrigger>
+                    </TabsList>
+                </Tabs>
+            )}
             <Button variant="ghost" size="icon" className="h-8 w-8 text-destructive hover:bg-destructive hover:text-destructive-foreground" onClick={() => setShowDeleteConfirm(true)}>
                 <Trash2 className="h-4 w-4" />
                 <span className="sr-only">{t[language].deleteSection}</span>
             </Button>
         </div>
       </CardHeader>
-      {!isDragging && (
+      {!isOrganizing && (
           <CardContent className="p-4">
             <div className={cn("grid gap-4", view === 'split' ? "grid-cols-2" : "grid-cols-1")}>
                 <div className={cn(view === 'preview' && 'hidden')}>
@@ -167,7 +169,7 @@ const ScopeSectionEditor = ({ section, onContentChange, onDelete, view, onViewCh
             </AlertDialogHeader>
             <AlertDialogFooter>
                 <AlertDialogCancel>{t[language].cancel}</AlertDialogCancel>
-                <AlertDialogAction onClick={onDelete} className="bg-destructive hover:bg-destructive/90">{t[language].delete}</AlertDialogAction>
+                <AlertDialogAction onClick={onDelete} className="bg-destructive text-destructive-foreground hover:bg-destructive/90">{t[language].delete}</AlertDialogAction>
             </AlertDialogFooter>
         </AlertDialogContent>
     </AlertDialog>
@@ -191,7 +193,7 @@ export default function ProjectDetailsPage() {
   // State for scope sections
   const [scopeSections, setScopeSections] = useState<ScopeSection[]>([]);
   const [sectionViews, setSectionViews] = useState<Record<string, ScopeView>>({});
-  const [isDragging, setIsDragging] = useState(false);
+  const [isOrganizing, setIsOrganizing] = useState(false);
 
   // Edit Dialog State
   const [isEditDialogOpen, setIsEditDialogOpen] = useState(false);
@@ -313,6 +315,7 @@ export default function ProjectDetailsPage() {
         const newScope = scopeSections.map(s => s.content).join('\n\n---\n\n');
         updateProject({...project, scope: newScope});
         toast({ title: language === 'es' ? 'Alcance guardado' : 'Scope saved' });
+        setIsOrganizing(false);
     }
   }
 
@@ -371,12 +374,7 @@ export default function ProjectDetailsPage() {
     }
   }, [editLanguage, project, isEditDialogOpen, updateProject]);
 
-  const onDragStart = () => {
-    setIsDragging(true);
-  };
-
   const onDragEnd = (result: DropResult) => {
-    setIsDragging(false);
     const { destination, source } = result;
 
     if (!destination) {
@@ -433,6 +431,8 @@ export default function ProjectDetailsPage() {
       spanish: 'Spanish',
       addNewSection: 'Add New Section',
       newSection: 'New Section',
+      organizeSections: 'Organize Sections',
+      finishOrganizing: 'Finish Organizing',
     },
     es: {
       status: "Estado",
@@ -468,6 +468,8 @@ export default function ProjectDetailsPage() {
       spanish: 'Español',
       addNewSection: 'Añadir Nueva Sección',
       newSection: 'Nueva Sección',
+      organizeSections: 'Organizar Secciones',
+      finishOrganizing: 'Finalizar Organización',
     }
   }
 
@@ -626,19 +628,23 @@ export default function ProjectDetailsPage() {
         </TabsList>
         <TabsContent value="scope" className="mt-4">
              <div className="space-y-4">
-                <div className="flex justify-end">
+                <div className="flex justify-end gap-2">
+                     <Button variant="outline" size="sm" onClick={() => setIsOrganizing(!isOrganizing)}>
+                        <Rows className="mr-2 h-4 w-4" />
+                        {isOrganizing ? t[language].finishOrganizing : t[language].organizeSections}
+                     </Button>
                      <Button size="sm" onClick={handleSaveScope}>
                         <Save className="mr-2 h-4 w-4" />
                         {t[language].saveScope}
                     </Button>
                 </div>
-                 <DragDropContext onDragStart={onDragStart} onDragEnd={onDragEnd}>
+                 <DragDropContext onDragEnd={onDragEnd}>
                     <Droppable droppableId="sections">
                       {(provided) => (
                         <div {...provided.droppableProps} ref={provided.innerRef} className="space-y-4">
                           {scopeSections.map((section, index) => (
                             <Draggable key={section.id} draggableId={section.id} index={index}>
-                              {(provided, snapshot) => (
+                              {(provided) => (
                                 <div ref={provided.innerRef} {...provided.draggableProps} {...provided.dragHandleProps}>
                                   <ScopeSectionEditor
                                     section={section}
@@ -647,7 +653,7 @@ export default function ProjectDetailsPage() {
                                     onDelete={() => handleDeleteSection(section.id)}
                                     view={sectionViews[section.id] || 'split'}
                                     onViewChange={(newView) => setSectionViews(prev => ({ ...prev, [section.id]: newView }))}
-                                    isDragging={isDragging && !snapshot.isDragging}
+                                    isOrganizing={isOrganizing}
                                     getImage={getImage}
                                   />
                                 </div>
@@ -718,3 +724,5 @@ export default function ProjectDetailsPage() {
     </div>
   );
 }
+
+    
