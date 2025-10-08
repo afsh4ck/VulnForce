@@ -419,11 +419,14 @@ export default function ProjectDetailsPage() {
                 </CardHeader>
                 <CardContent>
                     {isEditingScope ? (
-                        <Textarea 
-                            className="font-code min-h-[500px] w-full"
-                            value={scopeContent}
-                            onChange={(e) => setScopeContent(e.target.value)}
-                        />
+                        <div 
+                            className="prose prose-sm dark:prose-invert max-w-none font-code min-h-[500px] w-full rounded-md border border-input bg-background px-3 py-2"
+                            contentEditable={true}
+                            suppressContentEditableWarning={true}
+                            onBlur={(e) => setScopeContent(e.currentTarget.innerText)}
+                        >
+                            <MarkdownPreview content={scopeContent} />
+                        </div>
                     ) : (
                         <div className="prose prose-sm dark:prose-invert max-w-none">
                             <MarkdownPreview content={project.scope} />
