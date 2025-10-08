@@ -5,56 +5,60 @@ import remarkGfm from 'remark-gfm';
 import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter';
 import { vscDarkPlus } from 'react-syntax-highlighter/dist/esm/styles/prism';
 
-const highlightTodos = (text: React.ReactNode) => {
-    if (typeof text !== 'string') {
-        return text;
+const CustomParagraph = ({ children }: { children?: React.ReactNode }) => {
+    if (React.Children.count(children) === 1) {
+        const child = React.Children.toArray(children)[0];
+        if (typeof child === 'string' && /\[TODO:?.*?\]/gi.test(child)) {
+             const todoContent = child.replace(/\[|\]/g, '').replace('TODO', '').replace(':', '').trim();
+            return (
+                <p>
+                    <span className="bg-red-500 text-white font-bold px-1 rounded-sm">
+                        <strong className="text-red-200">TODO</strong>: {todoContent}
+                    </span>
+                </p>
+            );
+        }
     }
-    const parts = text.split(/(\[TODO:?.*?\])/gi);
-    return (
-      <>
-        {parts.map((part, i) =>
-          /\[TODO:?.*?\]/gi.test(part) ? (
-            <span key={i} className="bg-red-500 text-white font-bold px-1 rounded-sm">
-              {part}
-            </span>
-          ) : (
-            <React.Fragment key={i}>{part}</React.Fragment>
-          )
-        )}
-      </>
-    );
+    return <p className="mb-4">{children}</p>;
 };
 
-const renderWithTodos = (Component: React.ElementType) => {
-  return ({ node, children, ...props }: any) => {
-    const childrenWithTodos = React.Children.map(children, child => {
-        if (typeof child === 'string') {
-            return highlightTodos(child);
+const CustomListItem = ({ children }: { children?: React.ReactNode }) => {
+     if (React.Children.count(children) === 1) {
+        const child = React.Children.toArray(children)[0];
+        if (typeof child === 'string' && /\[TODO:?.*?\]/gi.test(child)) {
+             const todoContent = child.replace(/\[|\]/g, '').replace('TODO', '').replace(':', '').trim();
+            return (
+                <li>
+                    <span className="bg-red-500 text-white font-bold px-1 rounded-sm">
+                        <strong className="text-red-200">TODO</strong>: {todoContent}
+                    </span>
+                </li>
+            );
         }
-        if (React.isValidElement(child) && child.props.children) {
-            // Recursively render children
-            const grandChildren = React.Children.map(child.props.children, gc => typeof gc === 'string' ? highlightTodos(gc) : gc);
-            return React.cloneElement(child, {...child.props}, grandChildren);
-        }
-        return child;
-    });
-    return <Component {...props}>{childrenWithTodos}</Component>;
-  };
-}
+    }
+    return <li>{children}</li>;
+};
+
 
 export const MarkdownPreview = ({ content }: { content: string }) => {
   return (
     <ReactMarkdown
       remarkPlugins={[remarkGfm]}
       components={{
-        p: renderWithTodos('p'),
-        li: renderWithTodos('li'),
+        p: CustomParagraph,
+        li: CustomListItem,
         h1: ({ node, ...props }) => <h1 className="text-3xl font-bold mb-4 border-b pb-2 mt-12" {...props} />,
         h2: ({ node, ...props }) => <h2 className="text-2xl font-semibold mb-3 border-b pb-2 mt-8" {...props} />,
         h3: ({ node, ...props }) => <h3 className="text-xl font-semibold mb-3 mt-6" {...props} />,
         ul: ({ node, ...props }) => <ul className="list-disc pl-8 mb-4" {...props} />,
         ol: ({ node, ...props }) => <ol className="list-decimal pl-8 mb-4" {...props} />,
         blockquote: ({ node, ...props }) => <blockquote className="border-l-4 pl-4 italic text-muted-foreground my-4" {...props} />,
+        table: ({ node, ...props }) => <table className="table-auto w-full my-4 border-collapse border border-border" {...props} />,
+        thead: ({ node, ...props }) => <thead className="bg-muted" {...props} />,
+        tbody: ({ node, ...props }) => <tbody {...props} />,
+        tr: ({ node, ...props }) => <tr className="border-b border-border" {...props} />,
+        th: ({ node, ...props }) => <th className="border border-border px-4 py-2 text-left font-semibold" {...props} />,
+        td: ({ node, ...props }) => <td className="border border-border px-4 py-2" {...props} />,
         code({ node, className, children, ...props }) {
           const match = /language-(\w+)/.exec(className || '');
           return match ? (
