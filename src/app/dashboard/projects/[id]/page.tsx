@@ -47,9 +47,7 @@ const ScopeSectionEditor = ({ section, onContentChange, onDelete, view, onViewCh
   onViewChange: (view: ScopeView) => void;
 }) => {
   const { language } = useLanguage();
-  const headingMatch = section.content.match(/^(##) (.*)/);
-  const sectionTitle = headingMatch ? headingMatch[2].trim() : t[language].newSection;
-
+  
   const t = {
     en: {
       viewEdit: 'Write',
@@ -66,6 +64,9 @@ const ScopeSectionEditor = ({ section, onContentChange, onDelete, view, onViewCh
       newSection: 'Nueva Sección',
     }
   }
+
+  const headingMatch = section.content.match(/^(##) (.*)/);
+  const sectionTitle = headingMatch ? headingMatch[2].trim() : t[language].newSection;
 
   return (
     <Card>
@@ -592,3 +593,4 @@ export default function ProjectDetailsPage() {
   );
 }
 
+    
