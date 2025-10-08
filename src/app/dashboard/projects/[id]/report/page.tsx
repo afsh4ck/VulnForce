@@ -75,6 +75,14 @@ export default function ReportPreviewPage() {
       severity: 'Severity',
       cvss: 'CVSS',
       appendix: 'Appendix',
+      severityTableTitle: 'Findings by Severity',
+      count: 'Count',
+      cvssRange: 'CVSS Range',
+      critical: 'Critical',
+      high: 'High',
+      medium: 'Medium',
+      low: 'Low',
+      informational: 'Informational',
       executiveSummaryContent: (projectName: string, clientName: string, startDate: string, endDate: string, totalFindings: number, criticalFindings: number, highFindings: number) => 
         `This report details the findings of the penetration test conducted on **${projectName}** for **${clientName}** between ${new Date(startDate).toLocaleDateString()} and ${new Date(endDate).toLocaleDateString()}. The assessment identified **${totalFindings}** total vulnerabilities, including **${criticalFindings}** critical and **${highFindings}** high-risk findings. Urgent remediation is recommended for critical vulnerabilities to mitigate potential impact.`,
     },
@@ -97,6 +105,14 @@ export default function ReportPreviewPage() {
       severity: 'Severidad',
       cvss: 'CVSS',
       appendix: 'Apéndice',
+      severityTableTitle: 'Hallazgos por Severidad',
+      count: 'Cantidad',
+      cvssRange: 'Rango CVSS',
+      critical: 'Crítico',
+      high: 'Alto',
+      medium: 'Medio',
+      low: 'Bajo',
+      informational: 'Informativo',
       executiveSummaryContent: (projectName: string, clientName: string, startDate: string, endDate: string, totalFindings: number, criticalFindings: number, highFindings: number) =>
         `Este informe detalla los hallazgos de la prueba de penetración realizada en **${projectName}** para **${clientName}** entre el ${new Date(startDate).toLocaleDateString()} y el ${new Date(endDate).toLocaleDateString()}. La evaluación identificó un total de **${totalFindings}** vulnerabilidades, incluyendo **${criticalFindings}** hallazgos críticos y **${highFindings}** de alto riesgo. Se recomienda la remediación urgente de las vulnerabilidades críticas para mitigar el impacto potencial.`,
     },
@@ -121,7 +137,6 @@ export default function ReportPreviewPage() {
     const foundTodos: TodoItem[] = [];
     const todoRegex = /\[TODO:?.*?\]?/gi;
   
-    // Check project scope for sections and TODOs
     if (project.scope) {
         const sections = project.scope.split(/\n---\n/);
         sections.forEach(section => {
@@ -157,7 +172,6 @@ export default function ReportPreviewPage() {
         }
     }
   
-    // Check findings
     projectFindings.forEach(finding => {
       const findingMatches = finding.markdown.match(todoRegex);
       if (findingMatches) {
@@ -185,14 +199,28 @@ export default function ReportPreviewPage() {
   const reportLang = project.language;
   const langT = t[reportLang];
 
+  const criticalCount = projectFindings.filter(f => f.severity === 'Critical').length;
+  const highCount = projectFindings.filter(f => f.severity === 'High').length;
+  const mediumCount = projectFindings.filter(f => f.severity === 'Medium').length;
+  const lowCount = projectFindings.filter(f => f.severity === 'Low').length;
+  const informationalCount = projectFindings.filter(f => f.severity === 'Informational').length;
+  
+  const severitySummaryData = [
+    { severity: langT.critical, variant: 'destructive', count: criticalCount, range: '9.0 - 10.0' },
+    { severity: langT.high, variant: 'high', count: highCount, range: '7.0 - 8.9' },
+    { severity: langT.medium, variant: 'medium', count: mediumCount, range: '4.0 - 6.9' },
+    { severity: langT.low, variant: 'low', count: lowCount, range: '0.1 - 3.9' },
+    { severity: langT.informational, variant: 'secondary', count: informationalCount, range: '0.0' },
+  ];
+
   const executiveSummaryContent = langT.executiveSummaryContent(
     project.name,
     client.name,
     project.startDate,
     project.endDate,
     projectFindings.length,
-    projectFindings.filter(f => f.severity === 'Critical').length,
-    projectFindings.filter(f => f.severity === 'High').length
+    criticalCount,
+    highCount
   );
   
   const appendixContent = template && (reportLang === 'es' ? template.appendix_es : template.appendix_en);
@@ -253,6 +281,38 @@ export default function ReportPreviewPage() {
             <h2 className="font-headline text-2xl font-bold border-b-2 border-primary pb-2 mb-4 mt-12">{langT.executiveSummary}</h2>
             <div className="prose prose-lg dark:prose-invert max-w-none">
               <MarkdownPreview content={executiveSummaryContent} getImage={getImage} />
+            </div>
+            <div className="prose prose-lg dark:prose-invert max-w-none mt-8">
+                <h3 className="font-headline text-xl font-bold">{langT.severityTableTitle}</h3>
+                <Table>
+                    <TableHeader>
+                        <TableRow>
+                            <TableHead>{langT.severity}</TableHead>
+                            <TableHead className="text-center">{langT.count}</TableHead>
+                            <TableHead className="text-right">{langT.cvssRange}</TableHead>
+                        </TableRow>
+                    </TableHeader>
+                    <TableBody>
+                        {severitySummaryData.map(item => (
+                            <TableRow key={item.severity}>
+                                <TableCell>
+                                    <div className="flex items-center gap-2">
+                                        <div className={cn("h-3 w-3 rounded-full", {
+                                            'bg-destructive': item.variant === 'destructive',
+                                            'bg-orange-500': item.variant === 'high',
+                                            'bg-yellow-500': item.variant === 'medium',
+                                            'bg-blue-500': item.variant === 'low',
+                                            'bg-gray-500': item.variant === 'secondary',
+                                        })}></div>
+                                        <span className="font-medium">{item.severity}</span>
+                                    </div>
+                                </TableCell>
+                                <TableCell className="text-center font-code">{item.count}</TableCell>
+                                <TableCell className="text-right font-code">{item.range}</TableCell>
+                            </TableRow>
+                        ))}
+                    </TableBody>
+                </Table>
             </div>
           </section>
 
