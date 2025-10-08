@@ -172,7 +172,7 @@ export default function ReportPreviewPage() {
         }
       `}</style>
       
-      <header className="sticky top-0 z-10 bg-background/80 backdrop-blur-sm border-b no-print">
+      <header className="sticky top-0 z-10 w-full bg-background/80 backdrop-blur-sm border-b no-print">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-3 flex justify-between items-center">
             <div className="flex items-center gap-4">
               <Button variant="outline" size="icon" asChild>
