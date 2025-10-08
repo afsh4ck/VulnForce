@@ -135,44 +135,34 @@ The penetration test followed a structured methodology aligned with industry bes
 
 ---
 
-## Appendix
+# Appendix
 
-### Compromised Users
+### A. Compromised Users
 | Username | Domain | Password |
 |---|---|---|
 | [TODO: user1] | [TODO: domain.local] | [TODO: Password123] |
 
----
-
-### Exploited Hosts
+### B. Exploited Hosts
 | Hostname | IP Address | Operating System |
 |---|---|---|
 | [TODO: WEB01] | [TODO: 192.168.X.X] | [TODO: Windows Server 2019] |
 
----
-
-### Flags Captured
+### C. Flags Captured
 | Host | Flag Type | Flag Value |
 |---|---|---|
 | [TODO: WEB01] | user.txt | [TODO: flag_value] |
 
----
-
-### Host & Service Discovery
+### D. Host & Service Discovery
 | IP Address | Port | Service | Notes |
 |---|---|---|---|
 | [TODO: FILL IN AS APPROPRIATE] | | | |
 
----
-
-### Subdomain Discovery
+### E. Subdomain Discovery
 | URL | Description | Discovery Method |
 |---|---|---|
 | [TODO: FILL IN DISCOVERED VHOSTS/SUBDOMAINS] | | |
 
----
-
-### Tools Used
+### F. Tools Used
 [TODO: List the primary tools used during the assessment.]
 - Nmap
 - Metasploit Framework
@@ -229,44 +219,34 @@ La prueba de penetración siguió una metodología estructurada alineada con las
 
 ---
 
-## Apéndice
+# Apéndice
 
-### Usuarios Comprometidos
+### A. Usuarios Comprometidos
 | Usuario | Dominio | Contraseña |
 |---|---|---|
 | [TODO: user1] | [TODO: domain.local] | [TODO: Password123] |
 
----
-
-### Hosts Explotados
+### B. Hosts Explotados
 | Hostname | Dirección IP | Sistema Operativo |
 |---|---|---|
 | [TODO: WEB01] | [TODO: 192.168.X.X] | [TODO: Windows Server 2019] |
 
----
-
-### Banderas Capturadas
+### C. Banderas Capturadas
 | Host | Tipo de Bandera | Valor de la Bandera |
 |---|---|---|
 | [TODO: WEB01] | user.txt | [TODO: flag_value] |
 
----
-
-### Descubrimiento de Hosts y Servicios
+### D. Descubrimiento de Hosts y Servicios
 | Dirección IP | Puerto | Servicio | Notas |
 |---|---|---|---|
 | [TODO: RELLENAR SEGÚN CORRESPONDA] | | | |
 
----
-
-### Descubrimiento de Subdominios
+### E. Descubrimiento de Subdominios
 | URL | Descripción | Método de Descubrimiento |
 |---|---|---|
 | [TODO: RELLENAR VHOSTS/SUBDOMINIOS DESCUBIERTOS] | | |
 
----
-
-### Herramientas Utilizadas
+### F. Herramientas Utilizadas
 [TODO: Enumere las principales herramientas utilizadas durante la evaluación.]
 - Nmap
 - Metasploit Framework
