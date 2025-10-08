@@ -1,5 +1,5 @@
 
-import type { Client, Project, Finding, Vulnerability } from './types';
+import type { Client, Project, Finding, Vulnerability, ProjectTemplate } from './types';
 
 export const clients: Client[] = [
   { id: 'cli-1', name: 'Innovatech Solutions', contact: 'contact@innovatech.com', logoUrl: '' },
@@ -1644,90 +1644,90 @@ export const vulnerabilities: Vulnerability[] = [
     tags: ['XSS', 'DOM XSS'],
   },
   {
-    id: 'vuln-034',
-    title_en: 'Business Logic Flaw',
-    title_es: 'Fallo en la Lógica de Negocio',
-    cwe: 'CWE-840',
-    severity: 'High',
-    cvss: {
-      score: 8.1,
-      vectorString: 'CVSS:3.1/AV:N/AC:L/PR:L/UI:N/S:U/C:H/I:H/A:N',
-      attackVector: 'Network',
-      attackComplexity: 'Low',
-      privilegesRequired: 'Low',
-      userInteraction: 'None',
-      scope: 'Unchanged',
-      confidentiality: 'High',
-      integrity: 'High',
-      availability: 'None',
-    },
-    overview_en: 'An attacker can abuse the intended functionality of the application to achieve a malicious goal. This type of vulnerability stems from a flaw in the application\'s design and logic, rather than a standard coding error.',
-    overview_es: 'Un atacante puede abusar de la funcionalidad prevista de la aplicación para lograr un objetivo malicioso. Este tipo de vulnerabilidad se origina en un fallo en el diseño y la lógica de la aplicación, en lugar de un error de codificación estándar.',
-    technicalDescription_en: '[TODO: Describe the specific business logic flaw. Example: A user can add a high-priced item to their cart, apply a coupon valid only for low-priced items, and then complete the checkout process, receiving the discount on the high-priced item.]',
-    technicalDescription_es: '[TODO: Describir el fallo específico de la lógica de negocio. Ejemplo: Un usuario puede agregar un artículo de alto precio a su carrito, aplicar un cupón válido solo para artículos de bajo precio y luego completar el proceso de compra, recibiendo el descuento en el artículo de alto precio.]',
-    affectedComponents_en: '[TODO: Specify the business process that is affected, e.g., The online shopping checkout process.]',
-    affectedComponents_es: '[TODO: Especificar el proceso de negocio que se ve afectado, p. ej., El proceso de compra en línea.]',
-    impact_en: 'Business logic flaws can lead to direct financial loss, unauthorized access to features or content, and reputational damage. The impact is highly dependent on the specific flaw.',
-    impact_es: 'Los fallos en la lógica de negocio pueden provocar pérdidas financieras directas, acceso no autorizado a funciones o contenido y daños a la reputación. El impacto depende en gran medida del fallo específico.',
-    recommendations_en: 'Thoroughly review and test the application\'s business logic to identify and fix flaws. The logic should be designed to be resilient to manipulation and should explicitly validate all steps in a business process.',
-    recommendations_es: 'Revisar y probar exhaustivamente la lógica de negocio de la aplicación para identificar y corregir fallos. La lógica debe diseñarse para ser resistente a la manipulación y debe validar explícitamente todos los pasos de un proceso de negocio.',
-    details_en: '[TODO: Provide a step-by-step PoC of how to exploit the flaw.]',
-    details_es: '[TODO: Proporcionar un PoC paso a paso de cómo explotar el fallo.]',
-    remediation_en: {
-      shortTerm: 'Implement a server-side check to validate the specific flawed logic (e.g., verify that a coupon is valid for all items in the cart).',
-      mediumTerm: 'Conduct a threat modeling exercise focused on the application\'s business processes to identify other potential logic flaws.',
-      longTerm: 'Integrate business logic test cases into the quality assurance process.',
-    },
-    remediation_es: {
-      shortTerm: 'Implementar una verificación en el lado del servidor para validar la lógica defectuosa específica (p. ej., verificar que un cupón es válido para todos los artículos en el carrito).',
-      mediumTerm: 'Realizar un ejercicio de modelado de amenazas centrado en los procesos de negocio de la aplicación para identificar otros posibles fallos lógicos.',
-      longTerm: 'Integrar casos de prueba de lógica de negocio en el proceso de garantía de calidad.',
-    },
-    references: ['https://owasp.org/www-project-web-security-testing-guide/latest/4-Web_Application_Security_Testing/10-Business_Logic_Testing/'],
-    tags: ['Business Logic'],
+      id: 'vuln-034',
+      title_en: 'Business Logic Flaw',
+      title_es: 'Fallo en la Lógica de Negocio',
+      cwe: 'CWE-840',
+      severity: 'High',
+      cvss: {
+          score: 8.1,
+          vectorString: 'CVSS:3.1/AV:N/AC:L/PR:L/UI:N/S:U/C:H/I:H/A:N',
+          attackVector: 'Network',
+          attackComplexity: 'Low',
+          privilegesRequired: 'Low',
+          userInteraction: 'None',
+          scope: 'Unchanged',
+          confidentiality: 'High',
+          integrity: 'High',
+          availability: 'None',
+      },
+      overview_en: 'An attacker can abuse the intended functionality of the application to achieve a malicious goal. This type of vulnerability stems from a flaw in the application\'s design and logic, rather than a standard coding error.',
+      overview_es: 'Un atacante puede abusar de la funcionalidad prevista de la aplicación para lograr un objetivo malicioso. Este tipo de vulnerabilidad se origina en un fallo en el diseño y la lógica de la aplicación, en lugar de un error de codificación estándar.',
+      technicalDescription_en: '[TODO: Describe the specific business logic flaw. Example: A user can add a high-priced item to their cart, apply a coupon valid only for low-priced items, and then complete the checkout process, receiving the discount on the high-priced item.]',
+      technicalDescription_es: '[TODO: Describir el fallo específico de la lógica de negocio. Ejemplo: Un usuario puede agregar un artículo de alto precio a su carrito, aplicar un cupón válido solo para artículos de bajo precio y luego completar el proceso de compra, recibiendo el descuento en el artículo de alto precio.]',
+      affectedComponents_en: '[TODO: Specify the business process that is affected, e.g., The online shopping checkout process.]',
+      affectedComponents_es: '[TODO: Especificar el proceso de negocio que se ve afectado, p. ej., El proceso de compra en línea.]',
+      impact_en: 'Business logic flaws can lead to direct financial loss, unauthorized access to features or content, and reputational damage. The impact is highly dependent on the specific flaw.',
+      impact_es: 'Los fallos en la lógica de negocio pueden provocar pérdidas financieras directas, acceso no autorizado a funciones o contenido y daños a la reputación. El impacto depende en gran medida del fallo específico.',
+      recommendations_en: 'Thoroughly review and test the application\'s business logic to identify and fix flaws. The logic should be designed to be resilient to manipulation and should explicitly validate all steps in a business process.',
+      recommendations_es: 'Revisar y probar exhaustivamente la lógica de negocio de la aplicación para identificar y corregir fallos. La lógica debe diseñarse para ser resistente a la manipulación y debe validar explícitamente todos los pasos de un proceso de negocio.',
+      details_en: '[TODO: Provide a step-by-step PoC of how to exploit the flaw.]',
+      details_es: '[TODO: Proporcionar un PoC paso a paso de cómo explotar el fallo.]',
+      remediation_en: {
+          shortTerm: 'Implement a server-side check to validate the specific flawed logic (e.g., verify that a coupon is valid for all items in the cart).',
+          mediumTerm: 'Conduct a threat modeling exercise focused on the application\'s business processes to identify other potential logic flaws.',
+          longTerm: 'Integrate business logic test cases into the quality assurance process.',
+      },
+      remediation_es: {
+          shortTerm: 'Implementar una verificación en el lado del servidor para validar la lógica defectuosa específica (p. ej., verificar que un cupón es válido para todos los artículos en el carrito).',
+          mediumTerm: 'Realizar un ejercicio de modelado de amenazas centrado en los procesos de negocio de la aplicación para identificar otros posibles fallos lógicos.',
+          longTerm: 'Integrar casos de prueba de lógica de negocio en el proceso de garantía de calidad.',
+      },
+      references: ['https://owasp.org/www-project-web-security-testing-guide/latest/4-Web_Application_Security_Testing/10-Business_Logic_Testing/'],
+      tags: ['Business Logic'],
   },
   {
-    id: 'vuln-035',
-    title_en: 'Lack of Memory Safety',
-    title_es: 'Falta de Seguridad de Memoria',
-    cwe: 'CWE-119',
-    severity: 'Critical',
-    cvss: {
-      score: 9.8,
-      vectorString: 'CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:H/I:H/A:H',
-      attackVector: 'Network',
-      attackComplexity: 'Low',
-      privilegesRequired: 'None',
-      userInteraction: 'None',
-      scope: 'Unchanged',
-      confidentiality: 'High',
-      integrity: 'High',
-      availability: 'High',
-    },
-    overview_en: 'The application is written in a language that is not memory-safe (like C or C++) and contains vulnerabilities like buffer overflows or use-after-free, which can lead to arbitrary code execution.',
-    overview_es: 'La aplicación está escrita en un lenguaje que no es seguro para la memoria (como C o C++) y contiene vulnerabilidades como desbordamientos de búfer o uso después de liberar, que pueden conducir a la ejecución de código arbitrario.',
-    technicalDescription_en: 'The application has a memory corruption vulnerability. [TODO: Be specific. Example: A `strcpy` function is used with a user-controlled input and a fixed-size buffer on the stack, leading to a classic stack-based buffer overflow.] An attacker can exploit this to overwrite the return address on the stack and redirect execution to shellcode.',
-    technicalDescription_es: 'La aplicación tiene una vulnerabilidad de corrupción de memoria. [TODO: Ser específico. Ejemplo: Se utiliza una función `strcpy` con una entrada controlada por el usuario y un búfer de tamaño fijo en la pila, lo que lleva a un desbordamiento de búfer clásico basado en la pila.] Un atacante puede explotar esto para sobrescribir la dirección de retorno en la pila y redirigir la ejecución al shellcode.',
-    affectedComponents_en: '[TODO: Specify the vulnerable function or code block.]',
-    affectedComponents_es: '[TODO: Especificar la función o bloque de código vulnerable.]',
-    impact_en: 'Lack of memory safety can lead to remote code execution, giving an attacker full control over the process and potentially the entire system.',
-    impact_es: 'La falta de seguridad de memoria puede conducir a la ejecución remota de código, otorgando a un atacante control total sobre el proceso y potencialmente todo el sistema.',
-    recommendations_en: 'Rewrite the application in a memory-safe language (like Rust, Go, or Java). If that is not feasible, use safe library functions (e.g., `strncpy` instead of `strcpy`), and enable all compiler-level protections like Stack Canaries, ASLR, and DEP.',
-    recommendations_es: 'Reescribir la aplicación en un lenguaje seguro para la memoria (como Rust, Go o Java). Si eso no es factible, use funciones de librería seguras (p. ej., `strncpy` en lugar de `strcpy`) y habilite todas las protecciones a nivel de compilador como Stack Canaries, ASLR y DEP.',
-    details_en: '[TODO: Provide a PoC exploit, often as a script written in Python using a library like `pwntools`.]',
-    details_es: '[TODO: Proporcionar un exploit de PoC, a menudo como un script escrito en Python usando una librería como `pwntools`.]',
-    remediation_en: {
-      shortTerm: 'Replace the unsafe function call with its safer alternative (e.g., `strcpy` -> `strncpy`). Recompile with all security flags enabled.',
-      mediumTerm: 'Conduct a full source code review with a focus on memory management. Use static and dynamic analysis tools to find memory corruption bugs.',
-      longTerm: 'Consider migrating critical components of the application to a memory-safe language.',
-    },
-    remediation_es: {
-      shortTerm: 'Reemplazar la llamada a la función insegura con su alternativa más segura (p. ej., `strcpy` -> `strncpy`). Recompilar con todas las banderas de seguridad habilitadas.',
-      mediumTerm: 'Realizar una revisión completa del código fuente con un enfoque en la gestión de la memoria. Usar herramientas de análisis estático y dinámico para encontrar errores de corrupción de memoria.',
-      longTerm: 'Considerar la migración de componentes críticos de la aplicación a un lenguaje seguro para la memoria.',
-    },
-    references: ['https://cwe.mitre.org/data/definitions/119.html'],
-    tags: ['Memory Corruption', 'Buffer Overflow'],
+      id: 'vuln-035',
+      title_en: 'Lack of Memory Safety',
+      title_es: 'Falta de Seguridad de Memoria',
+      cwe: 'CWE-119',
+      severity: 'Critical',
+      cvss: {
+          score: 9.8,
+          vectorString: 'CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:H/I:H/A:H',
+          attackVector: 'Network',
+          attackComplexity: 'Low',
+          privilegesRequired: 'None',
+          userInteraction: 'None',
+          scope: 'Unchanged',
+          confidentiality: 'High',
+          integrity: 'High',
+          availability: 'High',
+      },
+      overview_en: 'The application is written in a language that is not memory-safe (like C or C++) and contains vulnerabilities like buffer overflows or use-after-free, which can lead to arbitrary code execution.',
+      overview_es: 'La aplicación está escrita en un lenguaje que no es seguro para la memoria (como C o C++) y contiene vulnerabilidades como desbordamientos de búfer o uso después de liberar, que pueden conducir a la ejecución de código arbitrario.',
+      technicalDescription_en: 'The application has a memory corruption vulnerability. [TODO: Be specific. Example: A `strcpy` function is used with a user-controlled input and a fixed-size buffer on the stack, leading to a classic stack-based buffer overflow.] An attacker can exploit this to overwrite the return address on the stack and redirect execution to shellcode.',
+      technicalDescription_es: 'La aplicación tiene una vulnerabilidad de corrupción de memoria. [TODO: Ser específico. Ejemplo: Se utiliza una función `strcpy` con una entrada controlada por el usuario y un búfer de tamaño fijo en la pila, lo que lleva a un desbordamiento de búfer clásico basado en la pila.] Un atacante puede explotar esto para sobrescribir la dirección de retorno en la pila y redirigir la ejecución al shellcode.',
+      affectedComponents_en: '[TODO: Specify the vulnerable function or code block.]',
+      affectedComponents_es: '[TODO: Especificar la función o bloque de código vulnerable.]',
+      impact_en: 'Lack of memory safety can lead to remote code execution, giving an attacker full control over the process and potentially the entire system.',
+      impact_es: 'La falta de seguridad de memoria puede conducir a la ejecución remota de código, otorgando a un atacante control total sobre el proceso y potencialmente todo el sistema.',
+      recommendations_en: 'Rewrite the application in a memory-safe language (like Rust, Go, or Java). If that is not feasible, use safe library functions (e.g., `strncpy` instead of `strcpy`), and enable all compiler-level protections like Stack Canaries, ASLR, and DEP.',
+      recommendations_es: 'Reescribir la aplicación en un lenguaje seguro para la memoria (como Rust, Go o Java). Si eso no es factible, use funciones de librería seguras (p. ej., `strncpy` en lugar de `strcpy`) y habilite todas las protecciones a nivel de compilador como Stack Canaries, ASLR y DEP.',
+      details_en: '[TODO: Provide a PoC exploit, often as a script written in Python using a library like `pwntools`.]',
+      details_es: '[TODO: Proporcionar un exploit de PoC, a menudo como un script escrito en Python usando una librería como `pwntools`.]',
+      remediation_en: {
+          shortTerm: 'Replace the unsafe function call with its safer alternative (e.g., `strcpy` -> `strncpy`). Recompile with all security flags enabled.',
+          mediumTerm: 'Conduct a full source code review with a focus on memory management. Use static and dynamic analysis tools to find memory corruption bugs.',
+          longTerm: 'Consider migrating critical components of the application to a memory-safe language.',
+      },
+      remediation_es: {
+          shortTerm: 'Reemplazar la llamada a la función insegura con su alternativa más segura (p. ej., `strcpy` -> `strncpy`). Recompilar con todas las banderas de seguridad habilitadas.',
+          mediumTerm: 'Realizar una revisión completa del código fuente con un enfoque en la gestión de la memoria. Usar herramientas de análisis estático y dinámico para encontrar errores de corrupción de memoria.',
+          longTerm: 'Considerar la migración de componentes críticos de la aplicación a un lenguaje seguro para la memoria.',
+      },
+      references: ['https://cwe.mitre.org/data/definitions/119.html'],
+      tags: ['Memory Corruption', 'Buffer Overflow'],
   },
   {
       id: 'vuln-036',
@@ -2376,5 +2376,319 @@ export const vulnerabilities: Vulnerability[] = [
     }
 ];
 
+export const projectTemplates: ProjectTemplate[] = [
+  {
+    id: 'template-1',
+    name_en: 'Full Audit',
+    name_es: 'Auditoría Completa',
+    icon: 'Scan',
+    description_en: 'A comprehensive security audit covering external, internal, and web application testing.',
+    description_es: 'Una auditoría de seguridad completa que cubre pruebas externas, internas y de aplicaciones web.',
+    scope_en:
+`## Web Applications:
+- [TODO: Specify web application domains]
 
+---
 
+## External Infrastructure:
+- [TODO: Specify external IP ranges]
+
+---
+
+## Internal Network:
+- [TODO: Specify internal IP ranges]`,
+    scope_es:
+`## Aplicaciones Web:
+- [TODO: Especificar dominios de aplicaciones web]
+
+---
+
+## Infraestructura Externa:
+- [TODO: Especificar rangos de IP externos]
+
+---
+
+## Red Interna:
+- [TODO: Especificar rangos de IP internos]`,
+  },
+  {
+    id: 'template-2',
+    name_en: 'External Audit',
+    name_es: 'Auditoría Externa',
+    icon: 'Globe',
+    description_en: 'Focuses on the publicly accessible assets of the organization to identify vulnerabilities.',
+    description_es: 'Se enfoca en los activos públicamente accesibles de la organización para identificar vulnerabilidades.',
+    scope_en:
+`## Web Applications:
+- [TODO: Specify web application domains]
+
+---
+
+## External Infrastructure:
+- [TODO: Specify external IP ranges]`,
+    scope_es:
+`## Aplicaciones Web:
+- [TODO: Especificar dominios de aplicaciones web]
+
+---
+
+## Infraestructura Externa:
+- [TODO: Especificar rangos de IP externos]`,
+  },
+  {
+    id: 'template-3',
+    name_en: 'Internal Audit',
+    name_es: 'Auditoría Interna',
+    icon: 'Network',
+    description_en: 'An assessment of the internal network to find security weaknesses from within the perimeter.',
+    description_es: 'Una evaluación de la red interna para encontrar debilidades de seguridad desde dentro del perímetro.',
+    scope_en:
+`## Internal Corporate Network:
+- [TODO: Specify internal IP ranges]
+
+---
+
+## Specific Servers:
+- [TODO: Specify specific servers]`,
+    scope_es:
+`## Red Corporativa Interna:
+- [TODO: Especificar rangos de IP internos]
+
+---
+
+## Servidores Específicos:
+- [TODO: Especificar servidores específicos]`,
+  },
+  {
+    id: 'template-wifi',
+    name_en: 'WiFi Audit',
+    name_es: 'Auditoría WiFi',
+    icon: 'Wifi',
+    description_en: 'Assesses the security of wireless networks, including password cracking and client isolation tests.',
+    description_es: 'Evalúa la seguridad de las redes inalámbricas, incluyendo pruebas de cracking de contraseñas y aislamiento de clientes.',
+    scope_en:
+`## Corporate WiFi Network:
+- SSID: [TODO: Specify SSID]
+- Authentication: [TODO: WPA2/WPA3, etc.]
+
+---
+
+## Guest WiFi Network:
+- SSID: [TODO: Specify Guest SSID]
+- Authentication: [TODO: Captive Portal, etc.]
+`,
+    scope_es:
+`## Red WiFi Corporativa:
+- SSID: [TODO: Especificar SSID]
+- Autenticación: [TODO: WPA2/WPA3, etc.]
+
+---
+
+## Red WiFi de Invitados:
+- SSID: [TODO: Especificar SSID de invitados]
+- Autenticación: [TODO: Portal Cautivo, etc.]
+`,
+  },
+   {
+    id: 'template-mobile',
+    name_en: 'Mobile App Audit',
+    name_es: 'Auditoría de App Móvil',
+    icon: 'Smartphone',
+    description_en: 'A security assessment of Android and/or iOS mobile applications, including static and dynamic analysis.',
+    description_es: 'Una evaluación de seguridad de aplicaciones móviles Android y/o iOS, incluyendo análisis estático y dinámico.',
+    scope_en:
+`## Android Application:
+- Package Name: [TODO: com.example.app]
+- [TODO: Link to APK or Play Store]
+
+---
+
+## iOS Application:
+- Bundle ID: [TODO: com.example.app]
+- [TODO: Link to IPA or App Store]
+`,
+    scope_es:
+`## Aplicación Android:
+- Nombre del Paquete: [TODO: com.ejemplo.app]
+- [TODO: Enlace al APK o Play Store]
+
+---
+
+## Aplicación iOS:
+- Bundle ID: [TODO: com.ejemplo.app]
+- [TODO: Enlace al IPA o App Store]
+`,
+  },
+  {
+    id: 'cpts-template',
+    name_en: 'Certification Report',
+    name_es: 'Informe de Certificación',
+    icon: 'Award',
+    description_en: 'A generic and professional template for offensive security certification reports (e.g., OSCP, CPTS). It includes all the necessary sections for a comprehensive report.',
+    description_es: 'Una plantilla genérica y profesional para informes de certificaciones de seguridad ofensiva (p. ej., OSCP, CPTS). Incluye todas las secciones necesarias para un informe completo.',
+    scope_en: 
+`## Introduction
+A penetration test was performed against the [Name of the Organization, e.g., Hack The Box] enterprise network for the [Certification Name, e.g., CPTS] certification exam. The objective of this assessment was to identify and report on security vulnerabilities that could be exploited by an external attacker to compromise the internal network and gain access to sensitive data or systems, simulating a real-world attack scenario. This report details the findings of the assessment and provides recommendations for remediation.
+
+---
+
+## Scope
+The scope of this penetration test was limited to the hosts and networks provided within the [Exam Environment Name] environment. The assessment was conducted from an external attacker's perspective, with no prior knowledge of the internal network architecture.
+
+**Included in scope:**
+- External IP addresses provided in the exam.
+- Any hosts discovered and accessible from the initial foothold within the specified subnets.
+
+**Excluded from scope:**
+- Any hosts or networks outside of the designated exam infrastructure.
+- Denial of Service (DoS) attacks.
+- Social engineering attacks.
+- Any actions that could disrupt the stability of the exam environment for other users.
+
+---
+
+## Timeline
+- **Start Date:** [TODO: DD/MM/YYYY]
+- **End Date:** [TODO: DD/MM/YYYY]
+
+---
+
+## Methodology
+The penetration test followed a structured methodology aligned with industry best practices:
+1.  **Information Gathering:** Passive and active reconnaissance to map the external attack surface.
+2.  **Threat Modeling & Vulnerability Identification:** Identifying potential weaknesses and entry points.
+3.  **Exploitation:** Gaining an initial foothold and escalating privileges.
+4.  **Post-Exploitation:** Pivoting through the internal network, identifying high-value targets, and exfiltrating data (flags).
+5.  **Reporting:** Documenting all findings, exploitation paths, and recommendations.
+
+---
+
+## Attack Path
+[TODO: Provide a step-by-step narrative of the attack path, from initial reconnaissance to the final flag capture. This should be detailed and easy to follow.]
+
+1.  **Initial Reconnaissance:** ...
+2.  **Gaining a Foothold:** ...
+3.  **Internal Enumeration:** ...
+4.  **Lateral Movement & Privilege Escalation:** ...
+5.  **Domain/Network Compromise:** ...
+`,
+    scope_es:
+`## Introducción
+Se realizó una prueba de penetración contra la red empresarial de [Nombre de la Organización, p. ej., Hack The Box] para el examen de certificación [Nombre de la Certificación, p. ej., CPTS]. El objetivo de esta evaluación fue identificar e informar sobre las vulnerabilidades de seguridad que podrían ser explotadas por un atacante externo para comprometer la red interna y obtener acceso a datos o sistemas sensibles, simulando un escenario de ataque del mundo real. Este informe detalla los hallazgos de la evaluación y proporciona recomendaciones para su remediación.
+
+---
+
+## Alcance
+El alcance de esta prueba de penetración se limitó a los hosts y redes proporcionados dentro del entorno [Nombre del Entorno del Examen]. La evaluación se realizó desde la perspectiva de un atacante externo, sin conocimiento previo de la arquitectura de la red interna.
+
+**Incluido en el alcance:**
+- Direcciones IP externas proporcionadas en el examen.
+- Cualquier host descubierto y accesible desde el punto de apoyo inicial dentro de las subredes especificadas.
+
+**Excluido del alcance:**
+- Cualquier host o red fuera de la infraestructura designada para el examen.
+- Ataques de Denegación de Servicio (DoS).
+- Ataques de ingeniería social.
+- Cualquier acción que pudiera perturbar la estabilidad del entorno del examen para otros usuarios.
+
+---
+
+## Cronología
+- **Fecha de Inicio:** [TODO: DD/MM/YYYY]
+- **Fecha de Fin:** [TODO: DD/MM/YYYY]
+
+---
+
+## Metodología
+La prueba de penetración siguió una metodología estructurada alineada con las mejores prácticas de la industria:
+1.  **Recopilación de Información:** Reconocimiento pasivo y activo para mapear la superficie de ataque externa.
+2.  **Modelado de Amenazas e Identificación de Vulnerabilidades:** Identificación de posibles debilidades y puntos de entrada.
+3.  **Explotación:** Obtención de un punto de apoyo inicial y escalada de privilegios.
+4.  **Post-Explotación:** Pivotar a través de la red interna, identificando objetivos de alto valor y exfiltrando datos (banderas).
+5.  **Elaboración de Informes:** Documentación de todos los hallazgos, rutas de explotación y recomendaciones.
+
+---
+
+## Ruta de Ataque
+[TODO: Proporcione una narrativa paso a paso de la ruta de ataque, desde el reconocimiento inicial hasta la captura de la bandera final. Debe ser detallada y fácil de seguir.]
+
+1.  **Reconocimiento Inicial:** ...
+2.  **Obtención de un Punto de Apoyo:** ...
+3.  **Enumeración Interna:** ...
+4.  **Movimiento Lateral y Escalada de Privilegios:** ...
+5.  **Compromiso del Dominio/Red:** ...
+`,
+    appendix_en:
+`
+### A. Compromised Users
+| Username | Domain | Password |
+|---|---|---|
+| [TODO: user1] | [TODO: domain.local] | [TODO: Password123] |
+
+### B. Exploited Hosts
+| Hostname | IP Address | Operating System |
+|---|---|---|
+| [TODO: WEB01] | [TODO: 192.168.X.X] | [TODO: Windows Server 2019] |
+
+### C. Flags Captured
+| Host | Flag Type | Flag Value |
+|---|---|---|
+| [TODO: WEB01] | user.txt | [TODO: flag_value] |
+
+### D. Host & Service Discovery
+| IP Address | Port | Service | Notes |
+|---|---|---|---|
+| [TODO: FILL IN AS APPROPRIATE] | | | |
+
+### E. Subdomain Discovery
+| URL | Description | Discovery Method |
+|---|---|---|
+| [TODO: FILL IN DISCOVERED VHOSTS/SUBDOMAINS] | | |
+
+### F. Tools Used
+[TODO: List the primary tools used during the assessment.]
+- Nmap
+- Metasploit Framework
+- Mimikatz
+- BloodHound
+- Impacket Suite
+- Burp Suite
+`,
+    appendix_es:
+`
+### A. Usuarios Comprometidos
+| Usuario | Dominio | Contraseña |
+|---|---|---|
+| [TODO: user1] | [TODO: domain.local] | [TODO: Password123] |
+
+### B. Hosts Explotados
+| Hostname | Dirección IP | Sistema Operativo |
+|---|---|---|
+| [TODO: WEB01] | [TODO: 192.168.X.X] | [TODO: Windows Server 2019] |
+
+### C. Banderas Capturadas
+| Host | Tipo de Bandera | Valor de la Bandera |
+|---|---|---|
+| [TODO: WEB01] | user.txt | [TODO: flag_value] |
+
+### D. Descubrimiento de Hosts y Servicios
+| Dirección IP | Puerto | Servicio | Notas |
+|---|---|---|---|
+| [TODO: RELLENAR SEGÚN CORRESPONDA] | | | |
+
+### E. Descubrimiento de Subdominios
+| URL | Descripción | Método de Descubrimiento |
+|---|---|---|
+| [TODO: RELLENAR VHOSTS/SUBDOMINIOS DESCUBIERTOS] | | |
+
+### F. Herramientas Utilizadas
+[TODO: Enumere las principales herramientas utilizadas durante la evaluación.]
+- Nmap
+- Metasploit Framework
+- Mimikatz
+- BloodHound
+- Impacket Suite
+- Burp Suite
+`
+  }
+];

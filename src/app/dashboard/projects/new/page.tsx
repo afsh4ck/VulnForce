@@ -7,7 +7,6 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { useLanguage } from "@/context/language-context";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { projectTemplates } from "@/lib/templates";
 import { Textarea } from "@/components/ui/textarea";
 import { Calendar } from "@/components/ui/calendar";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
@@ -29,7 +28,7 @@ export default function NewProjectPage() {
   const searchParams = useSearchParams();
   const router = useRouter();
   const { toast } = useToast();
-  const { clients, addProject } = useData();
+  const { clients, addProject, projectTemplates } = useData();
 
   const [name, setName] = useState('');
   const [clientId, setClientId] = useState<string>('');
@@ -46,7 +45,7 @@ export default function NewProjectPage() {
         setScope(projectLanguage === 'es' ? template.scope_es : template.scope_en);
       }
     }
-  }, [templateId, projectLanguage]);
+  }, [templateId, projectLanguage, projectTemplates]);
 
   const handleTemplateChange = (newTemplateId: string) => {
     const template = projectTemplates.find(t => t.id === newTemplateId);

@@ -1,12 +1,13 @@
 'use client';
 
 import React, { createContext, useContext, useState, useEffect, ReactNode } from 'react';
-import type { Client, Project, Finding, Vulnerability, ImageAsset } from '@/lib/types';
+import type { Client, Project, Finding, Vulnerability, ImageAsset, ProjectTemplate } from '@/lib/types';
 import { 
     clients as initialClients, 
     projects as initialProjects, 
     findings as initialFindings, 
-    vulnerabilities as initialVulnerabilities 
+    vulnerabilities as initialVulnerabilities,
+    projectTemplates as initialProjectTemplates,
 } from '@/lib/data';
 
 interface DataContextType {
@@ -15,6 +16,7 @@ interface DataContextType {
   findings: Finding[];
   vulnerabilities: Vulnerability[];
   images: ImageAsset[];
+  projectTemplates: ProjectTemplate[];
   addClient: (client: Omit<Client, 'id'>) => void;
   updateClient: (client: Client) => void;
   deleteClient: (clientId: string) => void;
@@ -29,6 +31,9 @@ interface DataContextType {
   deleteVulnerability: (vulnerabilityId: string) => void;
   addImage: (dataUrl: string) => ImageAsset;
   getImage: (id: string) => ImageAsset | undefined;
+  addProjectTemplate: (template: Omit<ProjectTemplate, 'id'>) => void;
+  updateProjectTemplate: (template: ProjectTemplate) => void;
+  deleteProjectTemplate: (templateId: string) => void;
   exportData: () => void;
   importData: (jsonData: string) => void;
 }
@@ -67,6 +72,7 @@ export function DataProvider({ children }: { children: ReactNode }) {
     const [findings, setFindings] = useLocalStorage<Finding[]>('vulnforce-findings', initialFindings);
     const [vulnerabilities, setVulnerabilities] = useLocalStorage<Vulnerability[]>('vulnforce-vulnerabilities', initialVulnerabilities);
     const [images, setImages] = useLocalStorage<ImageAsset[]>('vulnforce-images', []);
+    const [projectTemplates, setProjectTemplates] = useLocalStorage<ProjectTemplate[]>('vulnforce-project-templates', initialProjectTemplates);
 
     // Client functions
     const addClient = (client: Omit<Client, 'id'>) => {
@@ -134,12 +140,25 @@ export function DataProvider({ children }: { children: ReactNode }) {
       return images.find(img => img.id === id);
     };
 
+    // Project Template functions
+    const addProjectTemplate = (template: Omit<ProjectTemplate, 'id'>) => {
+        const newTemplate = { ...template, id: `ptpl-${Date.now()}` };
+        setProjectTemplates(prev => [...prev, newTemplate]);
+        return newTemplate;
+    };
+    const updateProjectTemplate = (template: ProjectTemplate) => {
+        setProjectTemplates(prev => prev.map(t => t.id === template.id ? template : t));
+    };
+    const deleteProjectTemplate = (templateId: string) => {
+        setProjectTemplates(prev => prev.filter(t => t.id !== templateId));
+    };
+
     // Backup & Import
     const exportData = () => {
         const backupData = {
           version: '1.0.0',
           createdAt: new Date().toISOString(),
-          data: { clients, projects, findings, vulnerabilities, images },
+          data: { clients, projects, findings, vulnerabilities, images, projectTemplates },
         };
         const blob = new Blob([JSON.stringify(backupData, null, 2)], { type: 'application/json' });
         const url = URL.createObjectURL(blob);
@@ -160,6 +179,7 @@ export function DataProvider({ children }: { children: ReactNode }) {
             setFindings(parsedData.data.findings || []);
             setVulnerabilities(parsedData.data.vulnerabilities || []);
             setImages(parsedData.data.images || []);
+            setProjectTemplates(parsedData.data.projectTemplates || []);
         } else {
             throw new Error("Invalid backup file format");
         }
@@ -167,12 +187,13 @@ export function DataProvider({ children }: { children: ReactNode }) {
 
     return (
         <DataContext.Provider value={{
-            clients, projects, findings, vulnerabilities, images,
+            clients, projects, findings, vulnerabilities, images, projectTemplates,
             addClient, updateClient, deleteClient,
             addProject, updateProject, deleteProject,
             addFinding, updateFinding, deleteFinding,
             addVulnerability, updateVulnerability, deleteVulnerability,
             addImage, getImage,
+            addProjectTemplate, updateProjectTemplate, deleteProjectTemplate,
             exportData, importData
         }}>
             {children}
