@@ -16,10 +16,10 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Textarea } from '@/components/ui/textarea';
 import { MarkdownPreview } from '@/components/markdown-preview';
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
-import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from "@/components/ui/alert-dialog";
+import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from "@/components/ui/alert-dialog";
 import { useToast } from '@/hooks/use-toast';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
 import { Calendar } from '@/components/ui/calendar';
@@ -157,10 +157,24 @@ const ScopeSectionEditor = ({ section, onContentChange, onDelete, view, onViewCh
                       </TabsList>
                   </Tabs>
               )}
-              <Button variant="ghost" size="icon" className="h-8 w-8 text-destructive hover:bg-destructive hover:text-destructive-foreground" onClick={() => setShowDeleteConfirm(true)}>
-                  <Trash2 className="h-4 w-4" />
-                  <span className="sr-only">{t[language].deleteSection}</span>
-              </Button>
+               <AlertDialog open={showDeleteConfirm} onOpenChange={setShowDeleteConfirm}>
+                <AlertDialogTrigger asChild>
+                    <Button variant="ghost" size="icon" className="h-8 w-8 text-destructive hover:bg-destructive hover:text-destructive-foreground">
+                        <Trash2 className="h-4 w-4" />
+                        <span className="sr-only">{t[language].deleteSection}</span>
+                    </Button>
+                </AlertDialogTrigger>
+                <AlertDialogContent>
+                    <AlertDialogHeader>
+                        <AlertDialogTitle>{t[language].confirmDeleteTitle}</AlertDialogTitle>
+                        <AlertDialogDescription>{t[language].confirmDeleteDesc}</AlertDialogDescription>
+                    </AlertDialogHeader>
+                    <AlertDialogFooter>
+                        <AlertDialogCancel>{t[language].cancel}</AlertDialogCancel>
+                        <AlertDialogAction onClick={onDelete} className="bg-destructive text-destructive-foreground hover:bg-destructive/90">{t[language].delete}</AlertDialogAction>
+                    </AlertDialogFooter>
+                </AlertDialogContent>
+              </AlertDialog>
           </div>
         </CardHeader>
         {!isOrganizing && (
@@ -181,18 +195,6 @@ const ScopeSectionEditor = ({ section, onContentChange, onDelete, view, onViewCh
             </CardContent>
         )}
       </Card>
-      <AlertDialog open={showDeleteConfirm} onOpenChange={setShowDeleteConfirm}>
-          <AlertDialogContent>
-              <AlertDialogHeader>
-                  <AlertDialogTitle>{t[language].confirmDeleteTitle}</AlertDialogTitle>
-                  <AlertDialogDescription>{t[language].confirmDeleteDesc}</AlertDialogDescription>
-              </AlertDialogHeader>
-              <AlertDialogFooter>
-                  <AlertDialogCancel>{t[language].cancel}</AlertDialogCancel>
-                  <AlertDialogAction onClick={onDelete} className="bg-destructive hover:bg-destructive/90 text-destructive-foreground">{t[language].delete}</AlertDialogAction>
-              </AlertDialogFooter>
-          </AlertDialogContent>
-      </AlertDialog>
     </>
   )
 }
@@ -470,7 +472,7 @@ export default function ProjectDetailsPage() {
       onHold: "En Espera",
       saveScope: "Guardar Alcance",
       editProject: "Editar Proyecto",
-      deleteProject: "Eliminar Proyecto",
+      eliminarProyecto: "Eliminar Proyecto",
       updateProject: "Actualizar Proyecto",
       confirmDeleteTitle: "¿Estás seguro?",
       confirmDeleteDesc: "Esta acción no se puede deshacer. Esto eliminará permanentemente el proyecto y todos sus hallazgos.",
@@ -739,3 +741,5 @@ export default function ProjectDetailsPage() {
     </div>
   );
 }
+
+    
