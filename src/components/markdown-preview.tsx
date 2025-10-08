@@ -50,7 +50,7 @@ const highlightOnlyTodoWord = (text: string) => {
                 if (offset > lastStandaloneIndex) {
                     subParts.push(part.substring(lastStandaloneIndex, offset));
                 }
-                subParts.push(<span key={`standalone-${index}-${offset}`} className="bg-red-500 text-white font-bold px-1 rounded-sm">{match}</span>);
+                subParts.push(<span key={`standalone-${index}-${offset}`} className="bg-red-500 text-white font-bold px-0.5 rounded-sm">{match}</span>);
                 lastStandaloneIndex = offset + match.length;
                 return match;
             });
@@ -112,7 +112,7 @@ export const MarkdownPreview = ({ content, getImage }: { content: string, getIma
           h2: ({ node, ...props }) => <h2 className="text-2xl font-semibold mb-3 border-b pb-2 mt-12" {...props} />,
           h3: ({ node, ...props }) => <h3 className="text-xl font-semibold mb-3 mt-8" {...props} />,
           p: renderWithTodos('p'),
-          li: renderWithTodos('li'),
+          li: ({ node, ...props }) => <li className="prose-li:text-primary" {...props} />,
           table: ({ node, ...props }) => <table className="table-auto w-full my-4 border-collapse border border-border" {...props} />,
           thead: ({ node, ...props }) => <thead className="bg-muted" {...props} />,
           tbody: ({ node, ...props }) => <tbody {...props} />,

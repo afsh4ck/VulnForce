@@ -9,7 +9,7 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import Link from 'next/link';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
-import { PlusCircle, FileText, ArrowUpDown, Edit, Save, Trash2, CalendarIcon, Split, Eye, Plus, GripVertical, Rows, Languages, Bold, Italic, Code, List, ListOrdered } from "lucide-react";
+import { PlusCircle, FileText, ArrowUpDown, Edit, Save, Trash2, CalendarIcon, Split, Eye, Plus, GripVertical, Rows, Languages, Bold, Italic, Code, List, ListOrdered, FileCode } from "lucide-react";
 import { Separator } from "@/components/ui/separator";
 import { useLanguage } from "@/context/language-context";
 import type { Finding, Project, ImageAsset } from '@/lib/types';
@@ -31,9 +31,10 @@ import { DateRange } from 'react-day-picker';
 import { projectTemplates } from '@/lib/templates';
 import { DndContext, closestCenter, KeyboardSensor, PointerSensor, useSensor, useSensors, DragEndEvent } from '@dnd-kit/core';
 import { arrayMove, SortableContext, sortableKeyboardCoordinates, useSortable, verticalListSortingStrategy } from '@dnd-kit/sortable';
-import { CSS } from '@dnd-kit/utilities';
 import { translateText } from '@/ai/flows/translate-text-flow';
 import { HighlightingTextarea } from '@/components/ui/highlighting-textarea';
+import { ResizableHandle, ResizablePanel, ResizablePanelGroup } from '@/components/ui/resizable';
+import { Textarea } from '@/components/ui/textarea';
 
 
 type SortKey = keyof Finding;
@@ -43,6 +44,49 @@ interface ScopeSection {
   id: string;
   content: string;
 }
+
+const CodeBlockDialog = ({ onInsert, children }: { onInsert: (lang: string, code: string) => void, children: React.ReactNode }) => {
+  const [open, setOpen] = useState(false);
+  const [lang, setLang] = useState('javascript');
+  const [code, setCode] = useState('');
+  const { language } = useLanguage();
+
+  const t = {
+    en: { title: 'Insert Code Block', langLabel: 'Language', codeLabel: 'Code', insertBtn: 'Insert' },
+    es: { title: 'Insertar Bloque de Código', langLabel: 'Lenguaje', codeLabel: 'Código', insertBtn: 'Insertar' },
+  }
+
+  const handleInsert = () => {
+    onInsert(lang, code);
+    setOpen(false);
+    setCode('');
+  };
+
+  return (
+    <Dialog open={open} onOpenChange={setOpen}>
+      <DialogTrigger asChild>{children}</DialogTrigger>
+      <DialogContent>
+        <DialogHeader>
+          <DialogTitle>{t[language].title}</DialogTitle>
+        </DialogHeader>
+        <div className="grid gap-4 py-4">
+          <div className="space-y-2">
+            <Label htmlFor="lang-select">{t[language].langLabel}</Label>
+            <Input id="lang-select" value={lang} onChange={e => setLang(e.target.value)} placeholder="js, python, html..." />
+          </div>
+          <div className="space-y-2">
+            <Label htmlFor="code-input">{t[language].codeLabel}</Label>
+            <Textarea id="code-input" value={code} onChange={e => setCode(e.target.value)} className="min-h-[200px] font-code" />
+          </div>
+        </div>
+        <DialogFooter>
+          <Button onClick={handleInsert}>{t[language].insertBtn}</Button>
+        </DialogFooter>
+      </DialogContent>
+    </Dialog>
+  );
+};
+
 
 const SortableScopeSection = ({ section, isOrganizing, ...props }: { section: ScopeSection, isOrganizing: boolean, [key: string]: any }) => {
   const { attributes, listeners, setNodeRef, transform, transition, isDragging } = useSortable({ id: section.id });
@@ -103,7 +147,7 @@ const ScopeSectionEditor = ({ section, onContentChange, onDelete, view, onViewCh
     }
   };
   
-  const headingMatch = section.content.match(/^(##) (.*)/);
+  const headingMatch = section.content.match(/^(#{2,4}) (.*)/);
   const sectionTitle = headingMatch ? headingMatch[2].trim() : t[language].newSection;
 
   const handleTitleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -138,49 +182,68 @@ const ScopeSectionEditor = ({ section, onContentChange, onDelete, view, onViewCh
         }
     }
   };
-
-  const applyMarkdown = (syntax: 'bold' | 'italic' | 'code' | 'bullet' | 'number') => {
+  
+  const applyMarkdownSyntax = (startSyntax: string, endSyntax = startSyntax) => {
     const textarea = textareaRef.current;
     if (!textarea) return;
 
     const start = textarea.selectionStart;
     const end = textarea.selectionEnd;
     const selectedText = section.content.substring(start, end);
-    let newContent;
-
-    switch (syntax) {
-      case 'bold':
-        newContent = `${section.content.substring(0, start)}**${selectedText}**${section.content.substring(end)}`;
-        break;
-      case 'italic':
-        newContent = `${section.content.substring(0, start)}*${selectedText}*${section.content.substring(end)}`;
-        break;
-      case 'code':
-        newContent = `${section.content.substring(0, start)}\`${selectedText}\`${section.content.substring(end)}`;
-        break;
-      case 'bullet':
-        const bulletLines = selectedText.split('\n').map(line => `- ${line}`).join('\n');
-        newContent = `${section.content.substring(0, start)}${bulletLines}${section.content.substring(end)}`;
-        break;
-      case 'number':
-        const numberLines = selectedText.split('\n').map((line, index) => `${index + 1}. ${line}`).join('\n');
-        newContent = `${section.content.substring(0, start)}${numberLines}${section.content.substring(end)}`;
-        break;
-      default:
-        newContent = section.content;
-    }
-
+    const newContent =
+      section.content.substring(0, start) +
+      startSyntax +
+      selectedText +
+      endSyntax +
+      section.content.substring(end);
     onContentChange(newContent);
 
-    // Focus and adjust selection after update
     setTimeout(() => {
         textarea.focus();
-        if (syntax === 'bullet' || syntax === 'number') {
-            textarea.setSelectionRange(start, end + selectedText.split('\n').length * 2);
-        } else {
-            const offset = syntax === 'bold' ? 2 : 1;
-            textarea.setSelectionRange(start + offset, end + offset);
-        }
+        textarea.setSelectionRange(start + startSyntax.length, end + startSyntax.length);
+    }, 0);
+  };
+
+  const applyListSyntax = (type: 'bullet' | 'number') => {
+      const textarea = textareaRef.current;
+      if (!textarea) return;
+
+      const start = textarea.selectionStart;
+      const end = textarea.selectionEnd;
+      const selectedText = section.content.substring(start, end);
+      const lines = selectedText.split('\n');
+
+      const newList = lines.map((line, index) => {
+          if (type === 'bullet') return `- ${line}`;
+          return `${index + 1}. ${line}`;
+      }).join('\n');
+
+      const newContent =
+          section.content.substring(0, start) +
+          newList +
+          section.content.substring(end);
+      onContentChange(newContent);
+      setTimeout(() => {
+          textarea.focus();
+          textarea.setSelectionRange(start, start + newList.length);
+      }, 0);
+  };
+  
+  const handleInsertCode = (lang: string, code: string) => {
+    const codeBlock = `\`\`\`${lang}\n${code}\n\`\`\``;
+    const textarea = textareaRef.current;
+    if (!textarea) return;
+
+    const start = textarea.selectionStart;
+    const end = textarea.selectionEnd;
+    const newContent =
+      section.content.substring(0, start) +
+      codeBlock +
+      section.content.substring(end);
+    onContentChange(newContent);
+    setTimeout(() => {
+      textarea.focus();
+      textarea.setSelectionRange(start + codeBlock.length, start + codeBlock.length);
     }, 0);
   };
 
@@ -231,15 +294,38 @@ const ScopeSectionEditor = ({ section, onContentChange, onDelete, view, onViewCh
              <div className="border-t">
                 {view !== 'preview' && (
                   <div className="p-1 border-b flex gap-1">
-                    <Button variant="ghost" size="icon" className="h-auto w-auto p-1" onClick={() => applyMarkdown('bold')}><Bold className="h-3 w-3" /></Button>
-                    <Button variant="ghost" size="icon" className="h-auto w-auto p-1" onClick={() => applyMarkdown('italic')}><Italic className="h-3 w-3" /></Button>
-                    <Button variant="ghost" size="icon" className="h-auto w-auto p-1" onClick={() => applyMarkdown('code')}><Code className="h-3 w-3" /></Button>
-                    <Button variant="ghost" size="icon" className="h-auto w-auto p-1" onClick={() => applyMarkdown('bullet')}><List className="h-3 w-3" /></Button>
-                    <Button variant="ghost" size="icon" className="h-auto w-auto p-1" onClick={() => applyMarkdown('number')}><ListOrdered className="h-3 w-3" /></Button>
+                    <Button variant="ghost" size="icon" className="h-auto w-auto p-1" onClick={() => applyMarkdownSyntax('**')}><Bold className="h-3 w-3" /></Button>
+                    <Button variant="ghost" size="icon" className="h-auto w-auto p-1" onClick={() => applyMarkdownSyntax('*')}><Italic className="h-3 w-3" /></Button>
+                    <Button variant="ghost" size="icon" className="h-auto w-auto p-1" onClick={() => applyMarkdownSyntax('`')}><Code className="h-3 w-3" /></Button>
+                    <Button variant="ghost" size="icon" className="h-auto w-auto p-1" onClick={() => applyListSyntax('bullet')}><List className="h-3 w-3" /></Button>
+                    <Button variant="ghost" size="icon" className="h-auto w-auto p-1" onClick={() => applyListSyntax('number')}><ListOrdered className="h-3 w-3" /></Button>
+                    <CodeBlockDialog onInsert={handleInsertCode}>
+                      <Button variant="ghost" size="icon" className="h-auto w-auto p-1"><FileCode className="h-3 w-3" /></Button>
+                    </CodeBlockDialog>
                   </div>
                 )}
-                <CardContent className="p-0">
-                  <div className={cn("grid gap-4 min-h-[300px]", view === 'split' ? "grid-cols-2" : "grid-cols-1")}>
+                 <CardContent className="p-0">
+                  {view === 'split' ? (
+                    <ResizablePanelGroup direction="horizontal" className="min-h-[300px] rounded-lg">
+                      <ResizablePanel defaultSize={50}>
+                        <div className="h-full">
+                           <HighlightingTextarea
+                              ref={textareaRef}
+                              value={section.content}
+                              onValueChange={(newContent) => onContentChange(newContent)}
+                              onPaste={handlePaste}
+                            />
+                        </div>
+                      </ResizablePanel>
+                      <ResizableHandle withHandle />
+                      <ResizablePanel defaultSize={50}>
+                         <div className="h-full overflow-auto rounded-md border-l p-4">
+                           <MarkdownPreview content={section.content} getImage={getImage} />
+                         </div>
+                      </ResizablePanel>
+                    </ResizablePanelGroup>
+                  ) : (
+                    <div className="grid grid-cols-1 min-h-[300px]">
                       <div className={cn(view === 'preview' && 'hidden', 'h-full')}>
                           <HighlightingTextarea
                               ref={textareaRef}
@@ -248,10 +334,11 @@ const ScopeSectionEditor = ({ section, onContentChange, onDelete, view, onViewCh
                               onPaste={handlePaste}
                           />
                       </div>
-                      <div className={cn(view === 'edit' && 'hidden', "rounded-md border-l p-4 h-full")}>
+                      <div className={cn(view === 'edit' && 'hidden', "rounded-md p-4 h-full overflow-auto")}>
                           <MarkdownPreview content={section.content} getImage={getImage} />
                       </div>
-                  </div>
+                    </div>
+                  )}
                 </CardContent>
             </div>
         )}
@@ -423,7 +510,7 @@ export default function ProjectDetailsPage() {
       prevSections.map(sec => {
         if (sec.id === sectionId) {
             const oldContent = sec.content;
-            const contentWithoutTitle = oldContent.replace(/^## .*\n?/, '');
+            const contentWithoutTitle = oldContent.replace(/^(#{2,4}) .*\n?/, '');
             const newContent = `## ${newTitle}\n${contentWithoutTitle}`;
             return { ...sec, content: newContent };
         }

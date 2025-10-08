@@ -9,6 +9,14 @@ export default {
   ],
   theme: {
     extend: {
+      typography: ({ theme }) => ({
+        DEFAULT: {
+          css: {
+            '--tw-prose-bullets': theme('colors.primary.DEFAULT'),
+            '--tw-prose-counters': theme('colors.primary.DEFAULT'),
+          }
+        }
+      }),
       fontFamily: {
         body: ['Inter', 'sans-serif'],
         headline: ['Space Grotesk', 'sans-serif'],
