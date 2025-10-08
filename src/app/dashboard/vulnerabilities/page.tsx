@@ -234,7 +234,7 @@ export default function VulnerabilitiesPage() {
             </AlertDialogHeader>
             <AlertDialogFooter>
                 <AlertDialogCancel>{t[language].cancel}</AlertDialogCancel>
-                <AlertDialogAction onClick={handleDeleteVulnerability}>{t[language].delete}</AlertDialogAction>
+                <AlertDialogAction onClick={handleDeleteVulnerability} className="bg-destructive hover:bg-destructive/90">{t[language].delete}</AlertDialogAction>
             </AlertDialogFooter>
         </AlertDialogContent>
     </AlertDialog>

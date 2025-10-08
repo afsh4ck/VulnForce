@@ -51,6 +51,7 @@ const ScopeSectionEditor = ({ section, onContentChange, onDelete, view, onViewCh
 }) => {
   const { language } = useLanguage();
   const { addImage } = useData();
+  const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
 
   const t = {
     en: {
@@ -59,6 +60,10 @@ const ScopeSectionEditor = ({ section, onContentChange, onDelete, view, onViewCh
       viewPreview: 'Preview',
       deleteSection: 'Delete Section',
       newSection: 'New Section',
+      confirmDeleteTitle: "Are you sure?",
+      confirmDeleteDesc: "This will permanently delete this report section.",
+      cancel: "Cancel",
+      delete: "Delete",
     },
     es: {
       viewEdit: 'Edición',
@@ -66,6 +71,10 @@ const ScopeSectionEditor = ({ section, onContentChange, onDelete, view, onViewCh
       viewPreview: 'Previsualización',
       deleteSection: 'Eliminar Sección',
       newSection: 'Nueva Sección',
+      confirmDeleteTitle: "¿Estás seguro?",
+      confirmDeleteDesc: "Esta acción eliminará permanentemente esta sección del informe.",
+      cancel: "Cancelar",
+      delete: "Eliminar",
     }
   };
   
@@ -107,6 +116,7 @@ const ScopeSectionEditor = ({ section, onContentChange, onDelete, view, onViewCh
 
 
   return (
+    <>
     <Card>
       <CardHeader className="flex flex-row items-center justify-between bg-muted/50 py-3 px-4">
          <div className="flex items-center gap-2 w-full">
@@ -125,8 +135,8 @@ const ScopeSectionEditor = ({ section, onContentChange, onDelete, view, onViewCh
                     <TabsTrigger value="preview" className="h-6 text-xs px-2">{t[language].viewPreview}</TabsTrigger>
                 </TabsList>
             </Tabs>
-            <Button variant="ghost" size="icon" className="h-8 w-8" onClick={onDelete}>
-                <Trash2 className="h-4 w-4 text-destructive" />
+            <Button variant="ghost" size="icon" className="h-8 w-8 text-destructive hover:bg-destructive hover:text-destructive-foreground" onClick={() => setShowDeleteConfirm(true)}>
+                <Trash2 className="h-4 w-4" />
                 <span className="sr-only">{t[language].deleteSection}</span>
             </Button>
         </div>
@@ -149,6 +159,19 @@ const ScopeSectionEditor = ({ section, onContentChange, onDelete, view, onViewCh
           </CardContent>
       )}
     </Card>
+     <AlertDialog open={showDeleteConfirm} onOpenChange={setShowDeleteConfirm}>
+        <AlertDialogContent>
+            <AlertDialogHeader>
+                <AlertDialogTitle>{t[language].confirmDeleteTitle}</AlertDialogTitle>
+                <AlertDialogDescription>{t[language].confirmDeleteDesc}</AlertDialogDescription>
+            </AlertDialogHeader>
+            <AlertDialogFooter>
+                <AlertDialogCancel>{t[language].cancel}</AlertDialogCancel>
+                <AlertDialogAction onClick={onDelete} className="bg-destructive hover:bg-destructive/90">{t[language].delete}</AlertDialogAction>
+            </AlertDialogFooter>
+        </AlertDialogContent>
+    </AlertDialog>
+    </>
   )
 }
 
@@ -157,7 +180,7 @@ export default function ProjectDetailsPage() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const { toast } = useToast();
-  const { projects, clients, findings, updateProject, deleteProject: removeProject, getImage } = useData();
+  const { projects, clients, findings, updateProject, deleteProject: removeProject, getImage, addImage } = useData();
   const { language } = useLanguage();
   
   const [project, setProject] = useState<Project | undefined>();
@@ -177,6 +200,7 @@ export default function ProjectDetailsPage() {
   const [editDate, setEditDate] = useState<DateRange | undefined>();
   const [editStatus, setEditStatus] = useState<Project['status']>('In Progress');
   const [editLanguage, setEditLanguage] = useState<Project['language']>('en');
+  const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
 
   const projectFindings = useMemo(() => findings.filter(f => f.projectId === params.id), [findings, params.id]);
   const client = useMemo(() => clients.find(c => c.id === project?.clientId), [clients, project]);
@@ -239,6 +263,7 @@ export default function ProjectDetailsPage() {
     if (!project) return;
     removeProject(project.id);
     toast({ title: t[language].projectDeleted });
+    setIsDeleteDialogOpen(false);
     router.push('/dashboard/projects');
   };
 
@@ -574,7 +599,7 @@ export default function ProjectDetailsPage() {
                     </DialogFooter>
                 </DialogContent>
             </Dialog>
-            <AlertDialog>
+            <AlertDialog open={isDeleteDialogOpen} onOpenChange={setIsDeleteDialogOpen}>
                 <AlertDialogTrigger asChild>
                     <Button variant="destructive" size="icon"><Trash2 className="h-4 w-4" /></Button>
                 </AlertDialogTrigger>
@@ -585,7 +610,7 @@ export default function ProjectDetailsPage() {
                     </AlertDialogHeader>
                     <AlertDialogFooter>
                         <AlertDialogCancel>{t[language].cancel}</AlertDialogCancel>
-                        <AlertDialogAction onClick={handleDeleteProject}>{t[language].delete}</AlertDialogAction>
+                        <AlertDialogAction onClick={handleDeleteProject} className="bg-destructive hover:bg-destructive/90">{t[language].delete}</AlertDialogAction>
                     </AlertDialogFooter>
                 </AlertDialogContent>
             </AlertDialog>
