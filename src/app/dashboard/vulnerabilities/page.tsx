@@ -22,6 +22,7 @@ import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, 
 import { useToast } from '@/hooks/use-toast';
 import { useRouter } from 'next/navigation';
 import { useData } from '@/context/data-context';
+import { cn } from '@/lib/utils';
 
 type SortKey = keyof Vulnerability | 'cvssScore';
 
@@ -33,6 +34,12 @@ export default function VulnerabilitiesPage() {
   const [searchTerm, setSearchTerm] = useState('');
   const [sortConfig, setSortConfig] = useState<{ key: SortKey; direction: 'ascending' | 'descending' } | null>(null);
   const [vulnerabilityToDelete, setVulnerabilityToDelete] = useState<Vulnerability | null>(null);
+  const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
+
+  const categories = useMemo(() => {
+    const allTags = vulnerabilities.flatMap(v => v.tags);
+    return ['All', ...Array.from(new Set(allTags))];
+  }, [vulnerabilities]);
 
   const getSeverityVariant = (severity: string): 'destructive' | 'high' | 'medium' | 'low' | 'secondary' => {
     switch (severity) {
@@ -58,11 +65,12 @@ export default function VulnerabilitiesPage() {
   const sortedAndFilteredVulnerabilities = useMemo(() => {
     let filtered = vulnerabilities.filter(vuln => {
       const term = searchTerm.toLowerCase();
+      const categoryMatch = selectedCategory ? vuln.tags.includes(selectedCategory) : true;
       const searchMatch = vuln.title_en.toLowerCase().includes(term) ||
                           (vuln.title_es && vuln.title_es.toLowerCase().includes(term)) ||
                           vuln.cwe.toLowerCase().includes(term) ||
                           vuln.tags.some(tag => tag.toLowerCase().includes(term));
-      return searchMatch;
+      return categoryMatch && searchMatch;
     });
 
     if (sortConfig !== null) {
@@ -91,7 +99,7 @@ export default function VulnerabilitiesPage() {
     }
 
     return filtered;
-  }, [searchTerm, sortConfig, vulnerabilities, language]);
+  }, [searchTerm, sortConfig, vulnerabilities, language, selectedCategory]);
 
   const requestSort = (key: SortKey) => {
     let direction: 'ascending' | 'descending' = 'ascending';
@@ -151,6 +159,19 @@ export default function VulnerabilitiesPage() {
             {t[language].title}
             <span className="ml-2 text-xl font-medium text-muted-foreground">({sortedAndFilteredVulnerabilities.length})</span>
          </h1>
+      </div>
+
+       <div className="flex flex-wrap items-center gap-2">
+        {categories.map((category) => (
+          <Badge
+            key={category}
+            variant={selectedCategory === category || (category === 'All' && !selectedCategory) ? 'default' : 'secondary'}
+            onClick={() => setSelectedCategory(category === 'All' ? null : category)}
+            className="cursor-pointer text-sm"
+          >
+            {category}
+          </Badge>
+        ))}
       </div>
       
       <div className="flex items-center justify-between gap-2">
@@ -241,3 +262,5 @@ export default function VulnerabilitiesPage() {
     </>
   );
 }
+
+    

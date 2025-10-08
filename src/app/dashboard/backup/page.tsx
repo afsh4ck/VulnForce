@@ -1,6 +1,7 @@
+
 'use client';
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { FileDown, FileUp } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { Input } from "@/components/ui/input";
@@ -95,6 +96,8 @@ export default function BackupPage() {
         });
       }
     }
+    // Reset file input to allow selecting the same file again
+    event.target.value = '';
   };
 
   const handleImport = () => {
@@ -128,31 +131,40 @@ export default function BackupPage() {
   return (
     <>
       <div className="space-y-6">
-        <h1 className="font-headline text-3xl font-bold tracking-tight">{t[language].title}</h1>
+        <div className="space-y-2">
+            <h1 className="font-headline text-3xl font-bold tracking-tight">{t[language].title}</h1>
+            <p className="text-muted-foreground">{t[language].description}</p>
+        </div>
 
-        <div className="space-y-4">
-            <div className="flex flex-col gap-4 rounded-lg border bg-card text-card-foreground shadow-sm p-4 md:flex-row md:items-center md:justify-between">
-              <div>
-                <h3 className="font-semibold">{t[language].createBackupTitle}</h3>
-                <p className="text-sm text-muted-foreground">{t[language].createBackupDesc}</p>
-              </div>
-              <Button onClick={handleCreateBackup}>
-                <FileDown className="mr-2 h-4 w-4" /> {t[language].createBackupBtn}
-              </Button>
-            </div>
-            <div className="flex flex-col gap-4 rounded-lg border bg-card text-card-foreground shadow-sm p-4 md:flex-row md:items-center md:justify-between">
-               <div>
-                <h3 className="font-semibold">{t[language].importBackupTitle}</h3>
-                <p className="text-sm text-muted-foreground">{t[language].importBackupDesc}</p>
-              </div>
-              <div>
-                <Label htmlFor="backup-file" className="sr-only">{t[language].importBackupBtn}</Label>
-                <Input id="backup-file" type="file" accept=".json" onChange={handleFileChange} className="hidden" />
-                <Button onClick={() => document.getElementById('backup-file')?.click()}>
-                  <FileUp className="mr-2 h-4 w-4" /> {t[language].importBackupBtn}
-                </Button>
-              </div>
-            </div>
+        <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-2">
+            <Card className="flex flex-col">
+                <CardHeader>
+                    <CardTitle className="text-xl">{t[language].createBackupTitle}</CardTitle>
+                </CardHeader>
+                <CardContent className="flex-grow">
+                    <p className="text-sm text-muted-foreground">{t[language].createBackupDesc}</p>
+                </CardContent>
+                <CardFooter>
+                    <Button onClick={handleCreateBackup} className="w-full">
+                        <FileDown className="mr-2 h-4 w-4" /> {t[language].createBackupBtn}
+                    </Button>
+                </CardFooter>
+            </Card>
+
+            <Card className="flex flex-col">
+                <CardHeader>
+                    <CardTitle className="text-xl">{t[language].importBackupTitle}</CardTitle>
+                </CardHeader>
+                <CardContent className="flex-grow">
+                    <p className="text-sm text-muted-foreground">{t[language].importBackupDesc}</p>
+                </CardContent>
+                <CardFooter>
+                    <Input id="backup-file" type="file" accept=".json" onChange={handleFileChange} className="hidden" />
+                    <Button onClick={() => document.getElementById('backup-file')?.click()} className="w-full">
+                        <FileUp className="mr-2 h-4 w-4" /> {t[language].importBackupBtn}
+                    </Button>
+                </CardFooter>
+            </Card>
         </div>
       </div>
 
@@ -173,3 +185,5 @@ export default function BackupPage() {
       </>
   );
 }
+
+    
