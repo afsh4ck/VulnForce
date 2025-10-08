@@ -106,7 +106,7 @@ function DashboardNav({ children }: { children: React.ReactNode }) {
         </SidebarHeader>
       </Sidebar>
       <SidebarInset>
-        <header className="sticky top-0 z-10 flex h-14 items-center gap-4 border-b bg-background px-4 sm:px-6">
+        <header className="sticky top-0 z-10 flex items-center gap-4 border-b bg-background px-4 sm:px-6 py-3">
            <SidebarTrigger className="md:hidden" />
           <div className="flex-1">
             <SidebarTrigger className="hidden md:flex" />
