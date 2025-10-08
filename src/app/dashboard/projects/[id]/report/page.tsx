@@ -50,7 +50,7 @@ export default function ReportPreviewPage() {
       scopeAndMethodology: 'Scope & Methodology',
       detailedFindings: 'Detailed Findings',
       reportPreview: 'Report Preview',
-      pendingItems: 'Pending Items',
+      pending: 'Pending',
       allChecksPassed: 'All checks passed!',
       readyToExport: 'This report is complete and ready to export.',
       goToItem: 'Go to Item',
@@ -64,7 +64,7 @@ export default function ReportPreviewPage() {
       scopeAndMethodology: 'Alcance y Metodología',
       detailedFindings: 'Hallazgos Detallados',
       reportPreview: 'Previsualización del Informe',
-      pendingItems: 'Elementos Pendientes',
+      pending: 'Pendiente',
       allChecksPassed: '¡Todas las comprobaciones superadas!',
       readyToExport: 'Este informe está completo y listo para exportar.',
       goToItem: 'Ir al Elemento',
@@ -88,28 +88,34 @@ export default function ReportPreviewPage() {
   const todos = useMemo(() => {
     if (!project) return [];
     const foundTodos: TodoItem[] = [];
-    const todoRegex = /TODO/g;
-
+    const todoRegex = /\[?TODO:?.*?\]?/gi;
+  
     // Check project scope
-    if (project.scope.match(todoRegex)) {
-      foundTodos.push({
-        location: t[language].scope,
-        context: project.scope.substring(0, 100) + '...',
-        link: `/dashboard/projects/${projectId}`,
+    const scopeMatches = project.scope.match(todoRegex);
+    if (scopeMatches) {
+      scopeMatches.forEach(match => {
+        foundTodos.push({
+          location: t[language].scope,
+          context: match,
+          link: `/dashboard/projects/${projectId}`,
+        });
       });
     }
-
+  
     // Check findings
     projectFindings.forEach(finding => {
-      if (finding.markdown.match(todoRegex)) {
-        foundTodos.push({
-          location: `${t[language].finding}: ${finding.title}`,
-          context: finding.markdown.substring(0, 100) + '...',
-          link: `/dashboard/projects/${projectId}/findings/${finding.id}`,
+      const findingMatches = finding.markdown.match(todoRegex);
+      if (findingMatches) {
+        findingMatches.forEach(match => {
+          foundTodos.push({
+            location: `${t[language].finding}: ${finding.title}`,
+            context: match,
+            link: `/dashboard/projects/${projectId}/findings/${finding.id}`,
+          });
         });
       }
     });
-
+  
     return foundTodos;
   }, [project, projectFindings, language, projectId, t]);
 
@@ -168,7 +174,7 @@ export default function ReportPreviewPage() {
           <section>
             <h2 className="font-headline text-2xl font-bold border-b-2 border-primary pb-2 mb-4">{t[language].executiveSummary}</h2>
             <div className="prose prose-lg dark:prose-invert max-w-none">
-              <p>This report details the findings of the penetration test conducted on <strong>{project.name}</strong> for <strong>{client?.name}</strong> between {new Date(project.startDate).toLocaleDateString()} and {new Date(project.endDate).toLocaleDateString()}. The assessment identified <strong>{projectFindings.length}</strong> total vulnerabilities, including <strong>{projectFindings.filter(f => f.severity === 'Critical').length}</strong> critical and <strong>{projectFindings.filter(f => f.severity === 'High').length}</strong> high-risk findings. Urgent remediation is recommended for critical vulnerabilities to mitigate potential impact.</p>
+              <MarkdownPreview content={`This report details the findings of the penetration test conducted on **${project.name}** for **${client?.name}** between ${new Date(project.startDate).toLocaleDateString()} and ${new Date(project.endDate).toLocaleDateString()}. The assessment identified **${projectFindings.length}** total vulnerabilities, including **${projectFindings.filter(f => f.severity === 'Critical').length}** critical and **${projectFindings.filter(f => f.severity === 'High').length}** high-risk findings. Urgent remediation is recommended for critical vulnerabilities to mitigate potential impact.`} />
             </div>
           </section>
 
@@ -210,7 +216,7 @@ export default function ReportPreviewPage() {
                   ) : (
                     <AlertCircle className="h-6 w-6 text-destructive" />
                   )}
-                  <CardTitle>{todos.length > 0 ? t[language].pendingItems : t[language].allChecksPassed}</CardTitle>
+                  <CardTitle>{todos.length > 0 ? t[language].pending : t[language].allChecksPassed}</CardTitle>
                 </div>
               </CardHeader>
               <CardContent>
@@ -219,7 +225,7 @@ export default function ReportPreviewPage() {
                     {todos.map((todo, index) => (
                       <li key={index} className="border-l-4 border-destructive pl-4">
                         <p className="font-semibold text-sm">{todo.location}</p>
-                        <p className="text-xs text-muted-foreground font-code truncate my-1">"{todo.context.replace(/TODO/g, '')}"</p>
+                        <p className="text-xs text-muted-foreground font-code truncate my-1">"{todo.context.replace(/\[|\]/g, '')}"</p>
                         <Button variant="link" size="sm" asChild className="p-0 h-auto">
                             <Link href={todo.link}>
                                 {t[language].goToItem} <ArrowRight className="ml-1 h-3 w-3" />

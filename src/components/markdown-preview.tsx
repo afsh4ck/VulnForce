@@ -12,7 +12,7 @@ const Todo = ({ children }: { children: React.ReactNode }) => {
       <>
         {parts.map((part, i) =>
           /\[?TODO:?.*?\]?/gi.test(part) ? (
-            <span key={i} className="font-bold text-red-500">
+            <span key={i} className="bg-red-500 text-white font-bold px-1 rounded-sm">
               {part}
             </span>
           ) : (
