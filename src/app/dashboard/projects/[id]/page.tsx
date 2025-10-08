@@ -9,7 +9,7 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import Link from 'next/link';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
-import { PlusCircle, FileText, ArrowUpDown, Edit, Save, Trash2, CalendarIcon, Split, Eye, Plus, GripVertical, Rows, Languages } from "lucide-react";
+import { PlusCircle, FileText, ArrowUpDown, Edit, Save, Trash2, CalendarIcon, Split, Eye, Plus, GripVertical, Rows, Languages, Bold, Italic, Code, List, ListOrdered } from "lucide-react";
 import { Separator } from "@/components/ui/separator";
 import { useLanguage } from "@/context/language-context";
 import type { Finding, Project, ImageAsset } from '@/lib/types';
@@ -75,6 +75,8 @@ const ScopeSectionEditor = ({ section, onContentChange, onDelete, view, onViewCh
   const { language } = useLanguage();
   const { addImage } = useData();
   const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
+  const textareaRef = React.useRef<HTMLTextAreaElement>(null);
+
 
   const t = {
     en: {
@@ -137,6 +139,52 @@ const ScopeSectionEditor = ({ section, onContentChange, onDelete, view, onViewCh
     }
   };
 
+  const applyMarkdown = (syntax: 'bold' | 'italic' | 'code' | 'bullet' | 'number') => {
+    const textarea = textareaRef.current;
+    if (!textarea) return;
+
+    const start = textarea.selectionStart;
+    const end = textarea.selectionEnd;
+    const selectedText = section.content.substring(start, end);
+    let newContent;
+
+    switch (syntax) {
+      case 'bold':
+        newContent = `${section.content.substring(0, start)}**${selectedText}**${section.content.substring(end)}`;
+        break;
+      case 'italic':
+        newContent = `${section.content.substring(0, start)}*${selectedText}*${section.content.substring(end)}`;
+        break;
+      case 'code':
+        newContent = `${section.content.substring(0, start)}\`${selectedText}\`${section.content.substring(end)}`;
+        break;
+      case 'bullet':
+        const bulletLines = selectedText.split('\n').map(line => `- ${line}`).join('\n');
+        newContent = `${section.content.substring(0, start)}${bulletLines}${section.content.substring(end)}`;
+        break;
+      case 'number':
+        const numberLines = selectedText.split('\n').map((line, index) => `${index + 1}. ${line}`).join('\n');
+        newContent = `${section.content.substring(0, start)}${numberLines}${section.content.substring(end)}`;
+        break;
+      default:
+        newContent = section.content;
+    }
+
+    onContentChange(newContent);
+
+    // Focus and adjust selection after update
+    setTimeout(() => {
+        textarea.focus();
+        if (syntax === 'bullet' || syntax === 'number') {
+            textarea.setSelectionRange(start, end + selectedText.split('\n').length * 2);
+        } else {
+            const offset = syntax === 'bold' ? 2 : 1;
+            textarea.setSelectionRange(start + offset, end + offset);
+        }
+    }, 0);
+  };
+
+
   return (
     <>
       <Card>
@@ -180,21 +228,33 @@ const ScopeSectionEditor = ({ section, onContentChange, onDelete, view, onViewCh
           </div>
         </CardHeader>
         {!isOrganizing && (
-            <CardContent className="p-4">
-              <div className={cn("grid gap-4 min-h-[300px]", view === 'split' ? "grid-cols-2" : "grid-cols-1")}>
-                  <div className={cn(view === 'preview' && 'hidden', 'h-full')}>
-                      <HighlightingTextarea
-                          value={section.content}
-                          onValueChange={(newContent) => onContentChange(newContent)}
-                          onPaste={handlePaste}
-                          className="h-full"
-                      />
+             <div className="border-t">
+                {view !== 'preview' && (
+                  <div className="p-2 border-b flex gap-1">
+                    <Button variant="ghost" size="icon" onClick={() => applyMarkdown('bold')}><Bold className="h-4 w-4" /></Button>
+                    <Button variant="ghost" size="icon" onClick={() => applyMarkdown('italic')}><Italic className="h-4 w-4" /></Button>
+                    <Button variant="ghost" size="icon" onClick={() => applyMarkdown('code')}><Code className="h-4 w-4" /></Button>
+                    <Button variant="ghost" size="icon" onClick={() => applyMarkdown('bullet')}><List className="h-4 w-4" /></Button>
+                    <Button variant="ghost" size="icon" onClick={() => applyMarkdown('number')}><ListOrdered className="h-4 w-4" /></Button>
                   </div>
-                  <div className={cn(view === 'edit' && 'hidden', "rounded-md border p-4 h-full")}>
-                      <MarkdownPreview content={section.content} getImage={getImage} />
+                )}
+                <CardContent className="p-0">
+                  <div className={cn("grid gap-4 min-h-[300px]", view === 'split' ? "grid-cols-2" : "grid-cols-1")}>
+                      <div className={cn(view === 'preview' && 'hidden', 'h-full')}>
+                          <HighlightingTextarea
+                              ref={textareaRef}
+                              value={section.content}
+                              onValueChange={(newContent) => onContentChange(newContent)}
+                              onPaste={handlePaste}
+                              className="h-full"
+                          />
+                      </div>
+                      <div className={cn(view === 'edit' && 'hidden', "rounded-md border-l p-4 h-full")}>
+                          <MarkdownPreview content={section.content} getImage={getImage} />
+                      </div>
                   </div>
-              </div>
-            </CardContent>
+                </CardContent>
+            </div>
         )}
       </Card>
     </>
