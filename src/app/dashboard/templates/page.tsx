@@ -4,7 +4,7 @@ import React, { useState, useMemo } from 'react';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { useLanguage } from '@/context/language-context';
-import { FileText, Scan, Globe, Network, Smartphone, Wifi, Award, PlusCircle, Edit, Trash2, ArrowUpDown } from 'lucide-react';
+import { FileText, Scan, Globe, Network, Smartphone, Wifi, Award, PlusCircle, Edit, Trash2, ArrowUpDown, FilePlus2 } from 'lucide-react';
 import Link from 'next/link';
 import { useData } from '@/context/data-context';
 import { Input } from '@/components/ui/input';
@@ -47,6 +47,7 @@ export default function TemplatesPage() {
       actionsHeader: 'Actions',
       edit: 'Edit',
       delete: 'Delete',
+      createProject: 'Create Project',
       confirmDeleteTitle: 'Are you sure?',
       confirmDeleteDesc: 'This action cannot be undone. This will permanently delete the project template.',
       cancel: 'Cancel',
@@ -62,6 +63,7 @@ export default function TemplatesPage() {
       actionsHeader: 'Acciones',
       edit: 'Editar',
       delete: 'Eliminar',
+      createProject: 'Crear Proyecto',
       confirmDeleteTitle: '¿Estás seguro?',
       confirmDeleteDesc: 'Esta acción no se puede deshacer. Esto eliminará permanentemente la plantilla de proyecto.',
       cancel: 'Cancelar',
@@ -165,6 +167,12 @@ export default function TemplatesPage() {
                       <TableCell className="text-muted-foreground">{language === 'es' ? template.description_es : template.description_en}</TableCell>
                       <TableCell className="text-right">
                         <div className="flex justify-end gap-2">
+                            <Button variant="outline" size="sm" asChild>
+                                <Link href={`/dashboard/projects/new?template=${template.id}`}>
+                                    <FilePlus2 className="mr-2 h-4 w-4" />
+                                    {t[language].createProject}
+                                </Link>
+                            </Button>
                             <Button variant="ghost" size="icon" asChild>
                                 <Link href={`/dashboard/templates/edit/${template.id}`}>
                                     <Edit className="h-4 w-4" />
