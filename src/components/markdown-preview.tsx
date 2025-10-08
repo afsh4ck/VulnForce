@@ -9,7 +9,7 @@ const highlightTodos = (text: React.ReactNode) => {
     if (typeof text !== 'string') {
         return text;
     }
-    const parts = text.split(/(\[?TODO:?.*?\]?)/gi);
+    const parts = text.split(/(\[TODO:?.*?\]?)/gi);
     return (
       <>
         {parts.map((part, i) =>
@@ -50,7 +50,7 @@ export const MarkdownPreview = ({ content }: { content: string }) => {
         p: renderWithTodos('p'),
         li: renderWithTodos('li'),
         h1: ({ node, ...props }) => <h1 className="text-3xl font-bold mb-4 border-b pb-2" {...props} />,
-        h2: ({ node, ...props }) => <h2 className="text-2xl font-semibold mb-3 border-b pb-2" {...props} />,
+        h2: ({ node, ...props }) => <h2 className="text-2xl font-semibold mb-3 border-b pb-2 mt-8" {...props} />,
         h3: ({ node, ...props }) => <h3 className="text-xl font-semibold mb-3 mt-6" {...props} />,
         ul: ({ node, ...props }) => <ul className="list-disc pl-8 mb-4" {...props} />,
         ol: ({ node, ...props }) => <ol className="list-decimal pl-8 mb-4" {...props} />,
