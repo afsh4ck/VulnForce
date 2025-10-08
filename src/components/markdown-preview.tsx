@@ -10,7 +10,8 @@ import type { ImageAsset } from '@/lib/types';
 
 const highlightOnlyTodoWord = (text: string) => {
     if (typeof text !== 'string') return text;
-    const todoRegex = /(\[TODO:?.*?\]|TODO)/gi;
+    // Matches [TODO: anything] or the whole word TODO, case-sensitive for TODO
+    const todoRegex = /(\[TODO:?.*?\]|\bTODO\b)/g;
 
     let lastIndex = 0;
     const result: (string | JSX.Element)[] = [];

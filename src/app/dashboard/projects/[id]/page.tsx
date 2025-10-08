@@ -30,7 +30,6 @@ import { DateRange } from 'react-day-picker';
 import { projectTemplates } from '@/lib/templates';
 import { DndContext, closestCenter, KeyboardSensor, PointerSensor, useSensor, useSensors, DragEndEvent } from '@dnd-kit/core';
 import { arrayMove, SortableContext, sortableKeyboardCoordinates, useSortable, verticalListSortingStrategy } from '@dnd-kit/sortable';
-import { CSS } from '@dnd-kit/utilities';
 import { translateText } from '@/ai/flows/translate-text-flow';
 import { HighlightingTextarea } from '@/components/ui/highlighting-textarea';
 
@@ -181,7 +180,7 @@ const ScopeSectionEditor = ({ section, onContentChange, onDelete, view, onViewCh
         {!isOrganizing && (
             <CardContent className="p-4">
               <div className={cn("grid gap-4", view === 'split' ? "grid-cols-2" : "grid-cols-1")}>
-                  <div className={cn(view === 'preview' && 'hidden')}>
+                  <div className={cn(view === 'preview' && 'hidden', 'min-h-[300px]')}>
                       <HighlightingTextarea
                           value={section.content}
                           onValueChange={(newContent) => onContentChange(newContent)}

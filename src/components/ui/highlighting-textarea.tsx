@@ -4,7 +4,8 @@ import React, { useState, useRef, useEffect, useCallback } from 'react';
 import { cn } from '@/lib/utils';
 
 const getHighlightedText = (text: string) => {
-    const todoRegex = /(\[TODO:?.*?\]|TODO)/gi;
+    // Matches [TODO: anything] or the whole word TODO
+    const todoRegex = /(\[TODO:?.*?\]|\bTODO\b)/g;
     return text
         .replace(/&/g, '&amp;')
         .replace(/</g, '&lt;')
