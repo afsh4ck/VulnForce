@@ -36,9 +36,9 @@ export default function ProjectDetailsPage() {
   const router = useRouter();
   const { toast } = useToast();
   const { projects, clients, findings, updateProject, deleteProject: removeProject } = useData();
-
-  const [project, setProject] = useState<Project | undefined>();
   const { language } = useLanguage();
+  
+  const [project, setProject] = useState<Project | undefined>();
   const [sortConfig, setSortConfig] = useState<{ key: SortKey; direction: 'ascending' | 'descending' } | null>(null);
   const [isEditingScope, setIsEditingScope] = useState(false);
   const [scopeContent, setScopeContent] = useState('');
@@ -51,9 +51,14 @@ export default function ProjectDetailsPage() {
   const [editStatus, setEditStatus] = useState<Project['status']>('In Progress');
   const [editLanguage, setEditLanguage] = useState<Project['language']>('en');
 
+  const projectFindings = useMemo(() => findings.filter(f => f.projectId === params.id), [findings, params.id]);
+  const client = useMemo(() => clients.find(c => c.id === project?.clientId), [clients, project]);
+  
   useEffect(() => {
     const currentProject = projects.find(p => p.id === params.id);
     if (!currentProject) {
+        // Redirect if project not found, but do it in an effect
+        // to avoid issues during render.
         router.push('/dashboard/projects');
         return;
     }
@@ -65,14 +70,6 @@ export default function ProjectDetailsPage() {
     setEditStatus(currentProject.status);
     setEditLanguage(currentProject.language);
   }, [params.id, projects, router]);
-  
-
-  if (!project) {
-    return null; // Or a loading spinner while redirecting
-  }
-
-  const client = clients.find(c => c.id === project.clientId);
-  const projectFindings = findings.filter(f => f.projectId === project.id);
   
   const handleUpdateProject = () => {
     if (!project || !editName || !editClientId || !editDate?.from || !editDate?.to) {
@@ -101,6 +98,7 @@ export default function ProjectDetailsPage() {
   };
 
   const handleDeleteProject = () => {
+    if (!project) return;
     removeProject(project.id);
     toast({ title: t[language].projectDeleted });
     router.push('/dashboard/projects');
@@ -233,6 +231,11 @@ export default function ProjectDetailsPage() {
     }
     setIsEditingScope(false);
   }
+
+  if (!project) {
+    return null; // Or a loading spinner while effect runs
+  }
+
 
   return (
     <div className="space-y-6">
