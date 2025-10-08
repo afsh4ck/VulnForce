@@ -148,24 +148,29 @@ The penetration test followed a structured methodology aligned with industry bes
 ## Appendix
 
 ### A. Compromised Users
-[TODO: List all user accounts that were compromised during the assessment.]
-- \`user1@domain.local\`
-- \`admin_user\`
-- \`local_admin\`
+| Username | Domain | Password |
+|---|---|---|
+| [TODO: user1] | [TODO: domain.local] | [TODO: Password123] |
+| [TODO: admin_user] | [TODO: WORKGROUP] | |
+
+---
 
 ### B. Exploited Hosts
-[TODO: List all hosts that were successfully exploited.]
-- WEB01 (192.168.X.X) - Initial Foothold
-- DC01 (192.168.Y.Y) - Domain Controller Compromise
-- FILESRV (192.168.Z.Z) - Sensitive Data Exposure
+| Hostname | IP Address | Operating System |
+|---|---|---|
+| [TODO: WEB01] | [TODO: 192.168.X.X] | [TODO: Windows Server 2019] |
+| [TODO: DC01] | [TODO: 192.168.Y.Y] | [TODO: Windows Server 2019] |
+
+---
 
 ### C. Flags Captured
-[TODO: List all the flags or proof of compromise obtained during the assessment.]
-- **user.txt (Host1):** \`[flag_value]\`
-- **root.txt (Host1):** \`[flag_value]\`
-- **user.txt (Host2):** \`[flag_value]\`
-- **root.txt (Host2):** \`[flag_value]\`
-- **Domain flag:** \`[flag_value]\`
+| Host | Flag Type | Flag Value |
+|---|---|---|
+| [TODO: WEB01] | user.txt | [TODO: flag_value] |
+| [TODO: WEB01] | root.txt | [TODO: flag_value] |
+| [TODO: DC01] | Domain Flag | [TODO: flag_value] |
+
+---
 
 ### D. Tools Used
 [TODO: List the primary tools used during the assessment.]
@@ -237,24 +242,29 @@ La prueba de penetración siguió una metodología estructurada alineada con las
 ## Apéndice
 
 ### A. Usuarios Comprometidos
-[TODO: Enumere todas las cuentas de usuario que fueron comprometidas durante la evaluación.]
-- \`user1@domain.local\`
-- \`admin_user\`
-- \`local_admin\`
+| Usuario | Dominio | Contraseña |
+|---|---|---|
+| [TODO: user1] | [TODO: domain.local] | [TODO: Password123] |
+| [TODO: admin_user] | [TODO: WORKGROUP] | |
+
+---
 
 ### B. Hosts Explotados
-[TODO: Enumere todos los hosts que fueron explotados con éxito.]
-- WEB01 (192.168.X.X) - Punto de Apoyo Inicial
-- DC01 (192.168.Y.Y) - Compromiso del Controlador de Dominio
-- FILESRV (192.168.Z.Z) - Exposición de Datos Sensibles
+| Hostname | Dirección IP | Sistema Operativo |
+|---|---|---|
+| [TODO: WEB01] | [TODO: 192.168.X.X] | [TODO: Windows Server 2019] |
+| [TODO: DC01] | [TODO: 192.168.Y.Y] | [TODO: Windows Server 2019] |
+
+---
 
 ### C. Banderas Capturadas
-[TODO: Enumere todas las banderas o pruebas de compromiso obtenidas durante la evaluación.]
-- **user.txt (Host1):** \`[flag_value]\`
-- **root.txt (Host1):** \`[flag_value]\`
-- **user.txt (Host2):** \`[flag_value]\`
-- **root.txt (Host2):** \`[flag_value]\`
-- **Bandera de Dominio:** \`[flag_value]\`
+| Host | Tipo de Bandera | Valor de la Bandera |
+|---|---|---|
+| [TODO: WEB01] | user.txt | [TODO: flag_value] |
+| [TODO: WEB01] | root.txt | [TODO: flag_value] |
+| [TODO: DC01] | Bandera de Dominio | [TODO: flag_value] |
+
+---
 
 ### D. Herramientas Utilizadas
 [TODO: Enumere las principales herramientas utilizadas durante la evaluación.]
