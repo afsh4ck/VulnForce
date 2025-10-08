@@ -1,3 +1,4 @@
+
 'use client';
 
 import React, { useState, useMemo, useEffect } from 'react';
@@ -17,7 +18,7 @@ import { MarkdownPreview } from '@/components/markdown-preview';
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from "@/components/ui/alert-dialog";
 import { useToast } from '@/hooks/use-toast';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
@@ -27,6 +28,7 @@ import { format } from 'date-fns';
 import { es } from 'date-fns/locale';
 import { useData } from '@/context/data-context';
 import { DateRange } from 'react-day-picker';
+import { projectTemplates } from '@/lib/templates';
 
 
 type SortKey = keyof Finding;
@@ -231,6 +233,27 @@ export default function ProjectDetailsPage() {
     }
     setIsEditingScope(false);
   }
+  
+  useEffect(() => {
+    if (!project) return;
+  
+    // Find the template that matches the current scope, if any
+    const matchingTemplate = projectTemplates.find(
+      t => t.scope_en.trim() === project.scope.trim() || t.scope_es.trim() === project.scope.trim()
+    );
+  
+    if (matchingTemplate) {
+      const newScope = editLanguage === 'es' ? matchingTemplate.scope_es : matchingTemplate.scope_en;
+      if (project.scope !== newScope) {
+        updateProject({ ...project, scope: newScope, language: editLanguage });
+      }
+    } else {
+        updateProject({ ...project, language: editLanguage });
+    }
+  // We only want this to run when the language is changed in the dialog
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [editLanguage]);
+
 
   if (!project) {
     return null; // Or a loading spinner while effect runs
@@ -401,7 +424,7 @@ export default function ProjectDetailsPage() {
                         />
                     ) : (
                         <div className="prose prose-sm dark:prose-invert max-w-none">
-                            <MarkdownPreview content={scopeContent} />
+                            <MarkdownPreview content={project.scope} />
                         </div>
                     )}
                 </CardContent>

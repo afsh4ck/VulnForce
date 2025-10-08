@@ -1,3 +1,4 @@
+
 export type Severity = 'Critical' | 'High' | 'Medium' | 'Low' | 'Informational';
 
 export interface Client {
@@ -89,5 +90,6 @@ export interface ProjectTemplate {
   name_es: string;
   description_en: string;
   description_es: string;
-  scope: string;
+  scope_en: string;
+  scope_es: string;
 }

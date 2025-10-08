@@ -1,3 +1,4 @@
+
 'use client';
 
 import { Button } from "@/components/ui/button";
@@ -42,7 +43,7 @@ export default function NewProjectPage() {
       const template = projectTemplates.find(t => t.id === templateId);
       if (template) {
         setName(projectLanguage === 'es' ? template.name_es : template.name_en);
-        setScope(template.scope);
+        setScope(projectLanguage === 'es' ? template.scope_es : template.scope_en);
       }
     }
   }, [templateId, projectLanguage]);
@@ -52,7 +53,7 @@ export default function NewProjectPage() {
     if (template) {
         setTemplateId(newTemplateId);
         setName(projectLanguage === 'es' ? template.name_es : template.name_en);
-        setScope(template.scope);
+        setScope(projectLanguage === 'es' ? template.scope_es : template.scope_en);
     }
   }
 
