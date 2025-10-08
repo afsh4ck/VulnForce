@@ -8,75 +8,47 @@ import { vscDarkPlus } from 'react-syntax-highlighter/dist/esm/styles/prism';
 import type { ImageAsset } from '@/lib/types';
 
 
-const highlightOnlyTodoWord = (text: string) => {
-    if (typeof text !== 'string') return text;
-    // Matches [TODO...] and the word TODO itself, case-sensitive
-    const todoRegex = /(\[TODO:?.*?\])/g;
+const highlightTodos = (text: string): (string | JSX.Element)[] => {
+    if (typeof text !== 'string') return [text];
 
-    let lastIndex = 0;
-    const result: (string | JSX.Element)[] = [];
+    const todoRegex = /(\[TODO:?.*?\]|\bTODO\b)/g;
+    const parts = text.split(todoRegex);
 
-    text.replace(todoRegex, (match, p1, offset) => {
-        // Push the text before the match
-        if (offset > lastIndex) {
-            result.push(text.substring(lastIndex, offset));
-        }
+    return parts.map((part, index) => {
+        if (part.match(todoRegex)) {
+            const isBracketed = part.startsWith('[');
+            const todoHighlight = (
+                <span key={`todo-${index}`} className="bg-red-500 text-white font-bold px-1 rounded-sm">
+                    TODO
+                </span>
+            );
 
-        // Highlight only the 'TODO' part
-        const todoHighlight = <span key={`todo-${offset}`} className="bg-red-500 text-white font-bold px-1 rounded-sm">TODO</span>;
-
-        // Reconstruct the bracketed part
-        const bracketedContent = match.replace('TODO', '');
-        
-        result.push(<span key={offset}>[{todoHighlight}{bracketedContent.substring(4, bracketedContent.length - 1)}]</span>);
-        
-        lastIndex = offset + match.length;
-        return match;
-    });
-
-    // Add the remaining text after the last match
-    if (lastIndex < text.length) {
-        result.push(text.substring(lastIndex));
-    }
-    
-    // Handle standalone TODOs
-    const standaloneTodoRegex = /(\bTODO\b)/g;
-    const finalResult: (string | JSX.Element)[] = [];
-    result.forEach((part, index) => {
-        if (typeof part === 'string') {
-            let lastStandaloneIndex = 0;
-            const subParts: (string | JSX.Element)[] = [];
-            part.replace(standaloneTodoRegex, (match, p1, offset) => {
-                if (offset > lastStandaloneIndex) {
-                    subParts.push(part.substring(lastStandaloneIndex, offset));
-                }
-                subParts.push(<span key={`standalone-${index}-${offset}`} className="bg-red-500 text-white font-bold px-0.5 rounded-sm">{match}</span>);
-                lastStandaloneIndex = offset + match.length;
-                return match;
-            });
-            if (lastStandaloneIndex < part.length) {
-                subParts.push(part.substring(lastStandaloneIndex));
+            if (isBracketed) {
+                // Reconstruct the bracketed part, replacing 'TODO'
+                const content = part.substring(1, part.length - 1).replace('TODO', '');
+                return (
+                    <span key={index}>
+                        [{todoHighlight}{content}]
+                    </span>
+                );
             }
-            finalResult.push(...subParts);
-        } else {
-            finalResult.push(part);
+            // Standalone TODO
+            return todoHighlight;
         }
+        return part;
     });
-
-
-    return finalResult.length > 0 ? finalResult : [text];
-}
+};
 
 
 const renderWithTodos = (Component: React.ElementType) => {
     return ({ node, children, ...props }: any) => {
         const newChildren = React.Children.map(children, child => {
             if (typeof child === 'string') {
-                return highlightOnlyTodoWord(child);
+                return highlightTodos(child);
             }
              if (React.isValidElement(child) && child.props.children && typeof child.props.children === 'string') {
                 return React.cloneElement(child, {
-                    children: highlightOnlyTodoWord(child.props.children)
+                    children: highlightTodos(child.props.children)
                 });
             }
             return child;
@@ -88,11 +60,11 @@ const renderWithTodos = (Component: React.ElementType) => {
 const CustomTableCell = ({ children, ...props }: any) => {
     const newChildren = React.Children.map(children, child => {
         if (typeof child === 'string') {
-            return highlightOnlyTodoWord(child);
+            return highlightTodos(child);
         }
         if (React.isValidElement(child) && child.props.children && typeof child.props.children === 'string') {
             return React.cloneElement(child, {
-                children: highlightOnlyTodoWord(child.props.children)
+                children: highlightTodos(child.props.children)
             });
         }
         return child;
@@ -138,7 +110,7 @@ export const MarkdownPreview = ({ content, getImage }: { content: string, getIma
           code({ node, className, children, ...props }) {
             const match = /language-(\w+)/.exec(className || '');
             const codeContent = String(children).replace(/\n$/, '');
-            const highlightedCode = highlightOnlyTodoWord(codeContent);
+            const highlightedCode = highlightTodos(codeContent);
 
             return match ? (
               <SyntaxHighlighter
