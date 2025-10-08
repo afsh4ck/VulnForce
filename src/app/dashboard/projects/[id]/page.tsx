@@ -1,5 +1,3 @@
-
-
 'use client';
 
 import React, { useState, useMemo, useEffect } from 'react';
@@ -12,7 +10,7 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@
 import { PlusCircle, FileText, ArrowUpDown, Edit, Save, Trash2, CalendarIcon, Split, Eye, Plus, GripVertical } from "lucide-react";
 import { Separator } from "@/components/ui/separator";
 import { useLanguage } from "@/context/language-context";
-import type { Finding, Project } from '@/lib/types';
+import type { Finding, Project, ImageAsset } from '@/lib/types';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Textarea } from '@/components/ui/textarea';
 import { MarkdownPreview } from '@/components/markdown-preview';
@@ -41,7 +39,7 @@ interface ScopeSection {
   content: string;
 }
 
-const ScopeSectionEditor = ({ section, onContentChange, onDelete, view, onViewChange, onTitleChange, isDragging }: {
+const ScopeSectionEditor = ({ section, onContentChange, onDelete, view, onViewChange, onTitleChange, isDragging, getImage }: {
   section: ScopeSection;
   onContentChange: (content: string) => void;
   onDelete: () => void;
@@ -49,9 +47,10 @@ const ScopeSectionEditor = ({ section, onContentChange, onDelete, view, onViewCh
   onViewChange: (view: ScopeView) => void;
   onTitleChange: (newTitle: string) => void;
   isDragging?: boolean;
+  getImage: (id: string) => ImageAsset | undefined;
 }) => {
   const { language } = useLanguage();
-  const { addImage, getImage } = useData();
+  const { addImage } = useData();
 
   const t = {
     en: {
@@ -623,7 +622,8 @@ export default function ProjectDetailsPage() {
                                     onDelete={() => handleDeleteSection(section.id)}
                                     view={sectionViews[section.id] || 'split'}
                                     onViewChange={(newView) => setSectionViews(prev => ({ ...prev, [section.id]: newView }))}
-                                    isDragging={snapshot.isDragging || (isDragging && !snapshot.isDragging)}
+                                    isDragging={isDragging && !snapshot.isDragging}
+                                    getImage={getImage}
                                   />
                                 </div>
                               )}
@@ -693,5 +693,3 @@ export default function ProjectDetailsPage() {
     </div>
   );
 }
-
-    
