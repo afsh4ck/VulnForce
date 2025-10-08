@@ -20,7 +20,7 @@ const highlightOnlyTodoWord = (text: string) => {
         }
         result.push(
             <React.Fragment key={offset}>
-                [<strong className="text-red-500">{p1}</strong>:{p2}]
+                [<span className="bg-red-500 text-white font-bold px-1 rounded-sm">{p1}</span>:{p2}]
             </React.Fragment>
         );
         lastIndex = offset + match.length;
