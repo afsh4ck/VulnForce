@@ -13,11 +13,10 @@ const getHighlightedText = (text: string) => {
         .replace(/</g, '&lt;')
         .replace(/>/g, '&gt;')
         .replace(todoRegex, (match) => {
-            if (match === 'TODO') {
+             if (match === 'TODO') {
                 return `<span class="bg-red-500 text-white font-bold px-1 rounded-sm">TODO</span>`;
             }
-            // For [TODO...]
-            const highlighted = match.replace('TODO', `<span class="bg-red-500 text-white font-bold px-1 rounded-sm">TODO</span>`);
+             const highlighted = match.replace('TODO', `<span class="bg-red-500 text-white font-bold px-1 rounded-sm">TODO</span>`);
             return highlighted;
         });
 };
@@ -32,7 +31,6 @@ export const HighlightingTextarea = React.forwardRef<HTMLTextAreaElement, Highli
         const backdropRef = useRef<HTMLDivElement>(null);
         const localTextareaRef = useRef<HTMLTextAreaElement>(null);
 
-        // Combine refs to allow parent to have a ref to the textarea
         React.useImperativeHandle(ref, () => localTextareaRef.current as HTMLTextAreaElement);
 
         const handleScroll = useCallback(() => {
@@ -46,7 +44,6 @@ export const HighlightingTextarea = React.forwardRef<HTMLTextAreaElement, Highli
             onValueChange(e.target.value);
         };
         
-        // This effect ensures the backdrop is scrolled in sync when the value changes and might cause a scrollbar to appear/disappear.
         useEffect(() => {
             handleScroll();
         }, [value, handleScroll]);
@@ -54,16 +51,15 @@ export const HighlightingTextarea = React.forwardRef<HTMLTextAreaElement, Highli
         const highlightedText = getHighlightedText(value);
 
         return (
-            <div className="relative w-full h-full">
+            <div className={cn("relative w-full h-full rounded-md border border-input", className)}>
                 <div
                     ref={backdropRef}
                     className={cn(
-                        "absolute inset-0 z-0 overflow-auto whitespace-pre-wrap break-words p-3 text-sm pointer-events-none",
-                        "font-code min-h-[300px]",
-                         "border border-transparent",
-                         className
+                        "absolute inset-0 z-0 overflow-auto whitespace-pre-wrap break-words pointer-events-none",
+                        "font-code text-sm min-h-[300px]",
+                        "px-3 py-2" // Match textarea padding
                     )}
-                    dangerouslySetInnerHTML={{ __html: highlightedText + '\n' }} // Adding a newline to prevent jitter on the last line
+                    dangerouslySetInnerHTML={{ __html: highlightedText + '\n' }}
                 />
                 <textarea
                     ref={localTextareaRef}
@@ -71,10 +67,10 @@ export const HighlightingTextarea = React.forwardRef<HTMLTextAreaElement, Highli
                     onChange={handleChange}
                     onScroll={handleScroll}
                     className={cn(
-                        'absolute inset-0 z-10 block h-full w-full resize-none overflow-auto whitespace-pre-wrap break-words bg-transparent p-3 text-transparent caret-foreground',
-                        'font-code min-h-[300px] text-sm',
-                        "flex w-full rounded-md border border-input bg-transparent px-3 py-2 ring-offset-background placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50",
-                        className
+                        'absolute inset-0 z-10 block h-full w-full resize-none overflow-auto whitespace-pre-wrap break-words bg-transparent text-transparent caret-foreground',
+                        'font-code text-sm min-h-[300px]',
+                        "p-2 ring-offset-background placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50",
+                         "px-3 py-2" // Match backdrop padding
                     )}
                     spellCheck="false"
                     {...props}

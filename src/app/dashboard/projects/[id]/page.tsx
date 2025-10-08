@@ -15,7 +15,7 @@ import { useLanguage } from "@/context/language-context";
 import type { Finding, Project, ImageAsset } from '@/lib/types';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { MarkdownPreview } from '@/components/markdown-preview';
-import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
+import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
@@ -246,7 +246,7 @@ const ScopeSectionEditor = ({ section, onContentChange, onDelete, view, onViewCh
                               value={section.content}
                               onValueChange={(newContent) => onContentChange(newContent)}
                               onPaste={handlePaste}
-                              className="h-full"
+                              className="w-full h-full"
                           />
                       </div>
                       <div className={cn(view === 'edit' && 'hidden', "rounded-md border-l p-4 h-full")}>
