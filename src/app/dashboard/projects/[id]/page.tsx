@@ -13,7 +13,6 @@ import { Separator } from "@/components/ui/separator";
 import { useLanguage } from "@/context/language-context";
 import type { Finding, Project, ImageAsset } from '@/lib/types';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Textarea } from '@/components/ui/textarea';
 import { MarkdownPreview } from '@/components/markdown-preview';
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
@@ -33,6 +32,7 @@ import { DndContext, closestCenter, KeyboardSensor, PointerSensor, useSensor, us
 import { arrayMove, SortableContext, sortableKeyboardCoordinates, useSortable, verticalListSortingStrategy } from '@dnd-kit/sortable';
 import { CSS } from '@dnd-kit/utilities';
 import { translateText } from '@/ai/flows/translate-text-flow';
+import { HighlightingTextarea } from '@/components/ui/highlighting-textarea';
 
 
 type SortKey = keyof Finding;
@@ -182,11 +182,10 @@ const ScopeSectionEditor = ({ section, onContentChange, onDelete, view, onViewCh
             <CardContent className="p-4">
               <div className={cn("grid gap-4", view === 'split' ? "grid-cols-2" : "grid-cols-1")}>
                   <div className={cn(view === 'preview' && 'hidden')}>
-                      <Textarea
+                      <HighlightingTextarea
                           value={section.content}
-                          onChange={(e) => onContentChange(e.target.value)}
+                          onValueChange={(newContent) => onContentChange(newContent)}
                           onPaste={handlePaste}
-                          className="font-code min-h-[300px] text-base"
                       />
                   </div>
                   <div className={cn(view === 'edit' && 'hidden', "rounded-md border p-4 min-h-[300px]")}>

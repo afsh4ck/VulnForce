@@ -1,3 +1,4 @@
+
 'use client';
 import React from 'react';
 import ReactMarkdown from 'react-markdown';
@@ -9,19 +10,17 @@ import type { ImageAsset } from '@/lib/types';
 
 const highlightOnlyTodoWord = (text: string) => {
     if (typeof text !== 'string') return text;
-    const todoRegex = /\[(TODO):(.*?)\]/gi;
+    const todoRegex = /(\[TODO:?.*?\]|TODO)/gi;
 
     let lastIndex = 0;
     const result: (string | JSX.Element)[] = [];
 
-    text.replace(todoRegex, (match, p1, p2, offset) => {
+    text.replace(todoRegex, (match, p1, offset) => {
         if (offset > lastIndex) {
             result.push(text.substring(lastIndex, offset));
         }
         result.push(
-            <React.Fragment key={offset}>
-                [<span className="bg-red-500 text-white font-bold px-1 rounded-sm">{p1}</span>:{p2}]
-            </React.Fragment>
+            <span key={offset} className="bg-red-500 text-white font-bold px-1 rounded-sm">{match}</span>
         );
         lastIndex = offset + match.length;
         return match; 
