@@ -8,7 +8,7 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import Link from 'next/link';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
-import { PlusCircle, FileText, ArrowUpDown, Edit, Save, Trash2, CalendarIcon } from "lucide-react";
+import { PlusCircle, FileText, ArrowUpDown, Edit, Save, Trash2, CalendarIcon, Split, Eye } from "lucide-react";
 import { Separator } from "@/components/ui/separator";
 import { useLanguage } from "@/context/language-context";
 import type { Finding, Project } from '@/lib/types';
@@ -43,9 +43,10 @@ export default function ProjectDetailsPage() {
   
   const [project, setProject] = useState<Project | undefined>();
   const [sortConfig, setSortConfig] = useState<{ key: SortKey; direction: 'ascending' | 'descending' } | null>(null);
-  const [isEditingScope, setIsEditingScope] = useState(false);
+  
   const [scopeContent, setScopeContent] = useState('');
   const [activeTab, setActiveTab] = useState(searchParams.get('tab') || 'scope');
+  const [scopeView, setScopeView] = useState('split');
   
   // Edit Dialog State
   const [isEditDialogOpen, setIsEditDialogOpen] = useState(false);
@@ -61,8 +62,6 @@ export default function ProjectDetailsPage() {
   useEffect(() => {
     const currentProject = projects.find(p => p.id === params.id);
     if (!currentProject) {
-        // Redirect if project not found, but do it in an effect
-        // to avoid issues during render.
         router.push('/dashboard/projects');
         return;
     }
@@ -85,7 +84,7 @@ export default function ProjectDetailsPage() {
         return;
     }
 
-    const updatedProject: Project = {
+    const updatedProjectData = {
         ...project,
         name: editName,
         clientId: editClientId,
@@ -95,7 +94,7 @@ export default function ProjectDetailsPage() {
         language: editLanguage,
     };
     
-    updateProject(updatedProject);
+    updateProject(updatedProjectData);
 
     toast({ title: t[language].projectUpdated });
     setIsEditDialogOpen(false);
@@ -166,7 +165,7 @@ export default function ProjectDetailsPage() {
       inProgress: "In Progress",
       completed: "Completed",
       onHold: "On Hold",
-      editScope: "Edit Scope",
+      editScope: "Edit",
       saveScope: "Save Scope",
       editProject: "Edit Project",
       deleteProject: "Delete Project",
@@ -183,6 +182,9 @@ export default function ProjectDetailsPage() {
       selectLanguage: 'Select Language',
       english: 'English',
       spanish: 'Spanish',
+      viewEdit: 'Edit',
+      viewSplit: 'Split',
+      viewPreview: 'Preview',
     },
     es: {
       status: "Estado",
@@ -200,7 +202,7 @@ export default function ProjectDetailsPage() {
       inProgress: "En Progreso",
       completed: "Completado",
       onHold: "En Espera",
-      editScope: "Editar Alcance",
+      editScope: "Editar",
       saveScope: "Guardar Alcance",
       editProject: "Editar Proyecto",
       deleteProject: "Eliminar Proyecto",
@@ -217,6 +219,9 @@ export default function ProjectDetailsPage() {
       selectLanguage: 'Seleccionar Idioma',
       english: 'Inglés',
       spanish: 'Español',
+      viewEdit: 'Edición',
+      viewSplit: 'Dividida',
+      viewPreview: 'Previsualización',
     }
   }
 
@@ -232,14 +237,13 @@ export default function ProjectDetailsPage() {
   const handleSaveScope = () => {
     if (project) {
         updateProject({...project, scope: scopeContent});
+        toast({ title: language === 'es' ? 'Alcance guardado' : 'Scope saved' });
     }
-    setIsEditingScope(false);
   }
   
   useEffect(() => {
-    if (!project) return;
+    if (!project || !isEditDialogOpen) return;
   
-    // Find the template that matches the current scope, if any
     const matchingTemplate = projectTemplates.find(
       t => t.scope_en.trim() === project.scope.trim() || t.scope_es.trim() === project.scope.trim()
     );
@@ -252,13 +256,11 @@ export default function ProjectDetailsPage() {
     } else {
         updateProject({ ...project, language: editLanguage });
     }
-  // We only want this to run when the language is changed in the dialog
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [editLanguage]);
+  }, [editLanguage, project, isEditDialogOpen, updateProject]);
 
 
   if (!project) {
-    return null; // Or a loading spinner while effect runs
+    return null;
   }
 
 
@@ -405,33 +407,36 @@ export default function ProjectDetailsPage() {
             <Card>
                 <CardHeader className="flex flex-row items-center justify-between">
                     <CardTitle>{t[language].scopeAndDetails}</CardTitle>
-                    {isEditingScope ? (
+                    <div className="flex items-center gap-2">
+                         <Tabs value={scopeView} onValueChange={setScopeView}>
+                            <TabsList>
+                                <TabsTrigger value="edit"><Edit className="h-4 w-4 mr-2"/>{t[language].viewEdit}</TabsTrigger>
+                                <TabsTrigger value="split"><Split className="h-4 w-4 mr-2"/>{t[language].viewSplit}</TabsTrigger>
+                                <TabsTrigger value="preview"><Eye className="h-4 w-4 mr-2"/>{t[language].viewPreview}</TabsTrigger>
+                            </TabsList>
+                        </Tabs>
                         <Button size="sm" onClick={handleSaveScope}>
                             <Save className="mr-2 h-4 w-4" />
                             {t[language].saveScope}
                         </Button>
-                    ) : (
-                        <Button size="sm" variant="outline" onClick={() => setIsEditingScope(true)}>
-                            <Edit className="mr-2 h-4 w-4" />
-                            {t[language].editScope}
-                        </Button>
-                    )}
+                    </div>
                 </CardHeader>
                 <CardContent>
-                    {isEditingScope ? (
-                        <div 
-                            className="prose prose-sm dark:prose-invert max-w-none font-code min-h-[500px] w-full rounded-md border border-input bg-background px-3 py-2"
-                            contentEditable={true}
-                            suppressContentEditableWarning={true}
-                            onBlur={(e) => setScopeContent(e.currentTarget.innerText)}
-                        >
-                            <MarkdownPreview content={scopeContent} />
+                    <div className={cn(
+                        "grid gap-4",
+                        scopeView === 'split' ? "grid-cols-2" : "grid-cols-1"
+                    )}>
+                        <div className={cn(scopeView === 'preview' && 'hidden')}>
+                            <Textarea 
+                                value={scopeContent}
+                                onChange={(e) => setScopeContent(e.target.value)}
+                                className="font-code min-h-[600px] text-base"
+                            />
                         </div>
-                    ) : (
-                        <div className="prose prose-sm dark:prose-invert max-w-none">
-                            <MarkdownPreview content={project.scope} />
+                        <div className={cn("prose prose-sm dark:prose-invert max-w-none rounded-md border p-4 min-h-[600px]", scopeView === 'edit' && 'hidden')}>
+                           <MarkdownPreview content={scopeContent} />
                         </div>
-                    )}
+                    </div>
                 </CardContent>
             </Card>
         </TabsContent>
