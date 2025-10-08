@@ -49,7 +49,7 @@ export default function TemplatesPage() {
               <CardHeader>
                 <div className="flex items-center gap-4">
                   <Icon className="h-8 w-8 text-primary" />
-                  <CardTitle>{language === 'es' ? template.name_es : template.name_en}</CardTitle>
+                  <CardTitle className="text-xl">{language === 'es' ? template.name_es : template.name_en}</CardTitle>
                 </div>
               </CardHeader>
               <CardContent className="flex-grow">
