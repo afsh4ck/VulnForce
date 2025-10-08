@@ -84,7 +84,7 @@ export default function ReportPreviewPage() {
       finding: 'Hallazgo',
       backToProject: 'Volver al Proyecto',
       vulnerability: 'Vulnerabilidad',
-      severidad: 'Severidad',
+      severity: 'Severidad',
       cvss: 'CVSS',
     },
   };
@@ -101,6 +101,10 @@ export default function ReportPreviewPage() {
 
   const todos = useMemo(() => {
     if (!project) return [];
+    
+    const reportLang = project.language;
+    const langT = t[reportLang];
+
     const foundTodos: TodoItem[] = [];
     const todoRegex = /\[TODO:?.*?\]?/gi;
   
