@@ -138,8 +138,8 @@ export default function ReportPreviewPage() {
     if (project.reportBody) {
         const sections = project.reportBody.split(/\n---\n/);
         sections.forEach(section => {
-            const headingMatch = section.match(/^(#+) (.*)/);
-            const sectionTitle = headingMatch ? headingMatch[2].trim() : langT.scope;
+            const headingMatch = section.match(/^(?:#+)\s(.*)/m);
+            const sectionTitle = headingMatch ? headingMatch[1].trim() : langT.scope;
             
             const scopeMatches = section.match(todoRegex);
             if (scopeMatches) {
