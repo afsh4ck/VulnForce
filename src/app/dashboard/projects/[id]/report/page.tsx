@@ -8,7 +8,7 @@ import { Separator } from '@/components/ui/separator';
 import { Logo } from '@/components/logo';
 import React, { useEffect, useMemo, useState } from 'react';
 import { Button } from '@/components/ui/button';
-import { AlertCircle, ArrowRight, CheckCircle, Printer } from 'lucide-react';
+import { AlertCircle, ArrowRight, CheckCircle, ChevronLeft, Printer } from 'lucide-react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import Link from 'next/link';
 import { useLanguage } from '@/context/language-context';
@@ -54,10 +54,11 @@ export default function ReportPreviewPage() {
       allChecksPassed: 'All checks passed!',
       readyToExport: 'This report is complete and ready to export.',
       goToItem: 'Go to Item',
-      downloadPDF: 'Download as PDF',
-      downloadHTML: 'Download as HTML',
+      downloadPDF: 'Download PDF',
+      downloadHTML: 'Download HTML',
       scope: 'Project Scope',
       finding: 'Finding',
+      backToProject: 'Back to Project',
     },
     es: {
       executiveSummary: 'Resumen Ejecutivo',
@@ -68,10 +69,11 @@ export default function ReportPreviewPage() {
       allChecksPassed: '¡Todas las comprobaciones superadas!',
       readyToExport: 'Este informe está completo y listo para exportar.',
       goToItem: 'Ir al Elemento',
-      downloadPDF: 'Descargar como PDF',
-      downloadHTML: 'Descargar como HTML',
+      downloadPDF: 'Descargar PDF',
+      downloadHTML: 'Descargar HTML',
       scope: 'Alcance del Proyecto',
       finding: 'Hallazgo',
+      backToProject: 'Volver al Proyecto',
     },
   };
 
@@ -88,7 +90,7 @@ export default function ReportPreviewPage() {
   const todos = useMemo(() => {
     if (!project) return [];
     const foundTodos: TodoItem[] = [];
-    const todoRegex = /\[?TODO:?.*?\]?/gi;
+    const todoRegex = /\[TODO:?.*?\]?/gi;
   
     // Check project scope for sections and TODOs
     if (project.scope) {
@@ -157,7 +159,15 @@ export default function ReportPreviewPage() {
       
       <header className="sticky top-0 z-10 bg-background/80 backdrop-blur-sm border-b no-print">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-3 flex justify-between items-center">
-            <h1 className="font-headline text-2xl font-bold">{t[language].reportPreview}</h1>
+            <div className="flex items-center gap-4">
+              <Button variant="outline" size="icon" asChild>
+                  <Link href={`/dashboard/projects/${projectId}`}>
+                      <ChevronLeft className="h-4 w-4" />
+                      <span className="sr-only">{t[language].backToProject}</span>
+                  </Link>
+              </Button>
+              <h1 className="font-headline text-2xl font-bold">{t[language].reportPreview}</h1>
+            </div>
              <div className="flex items-center gap-2">
                 <Button variant="outline" disabled>
                     {t[language].downloadHTML}
@@ -182,26 +192,26 @@ export default function ReportPreviewPage() {
           </header>
 
           <section>
-            <h2 className="font-headline text-2xl font-bold border-b-2 border-primary pb-2 mb-4">{t[reportLang].executiveSummary}</h2>
+            <h2 className="font-headline text-2xl font-bold border-b-2 border-primary pb-2 mb-4 mt-12">{t[reportLang].executiveSummary}</h2>
             <div className="prose prose-lg dark:prose-invert max-w-none">
               <MarkdownPreview content={`This report details the findings of the penetration test conducted on **${project.name}** for **${client?.name}** between ${new Date(project.startDate).toLocaleDateString()} and ${new Date(project.endDate).toLocaleDateString()}. The assessment identified **${projectFindings.length}** total vulnerabilities, including **${projectFindings.filter(f => f.severity === 'Critical').length}** critical and **${projectFindings.filter(f => f.severity === 'High').length}** high-risk findings. Urgent remediation is recommended for critical vulnerabilities to mitigate potential impact.`} />
             </div>
           </section>
 
           <section>
-            <h2 className="font-headline text-2xl font-bold border-b-2 border-primary pb-2 mb-4">{t[reportLang].scopeAndMethodology}</h2>
+            <h2 className="font-headline text-2xl font-bold border-b-2 border-primary pb-2 mb-4 mt-12">{t[reportLang].scopeAndMethodology}</h2>
             <div className="prose prose-lg dark:prose-invert max-w-none">
               <MarkdownPreview content={project.scope} />
             </div>
           </section>
 
           <section>
-            <h2 className="font-headline text-2xl font-bold border-b-2 border-primary pb-2 mb-8">{t[reportLang].detailedFindings}</h2>
+            <h2 className="font-headline text-2xl font-bold border-b-2 border-primary pb-2 mb-8 mt-12">{t[reportLang].detailedFindings}</h2>
             <div className="space-y-12">
               {projectFindings.map((finding, index) => (
                 <div key={finding.id} className="break-after-page">
                   <div className="flex justify-between items-center mb-2">
-                    <h3 className="font-headline text-xl font-bold">{index + 1}. {finding.title}</h3>
+                    <h3 className="font-headline text-xl font-bold mt-8">{index + 1}. {finding.title}</h3>
                     <Badge variant={getSeverityVariant(finding.severity)} className="text-base px-3 py-1">{finding.severity}</Badge>
                   </div>
                   <p className="font-code text-sm text-muted-foreground mb-6">CVSS: {finding.cvss.toFixed(1)}</p>
