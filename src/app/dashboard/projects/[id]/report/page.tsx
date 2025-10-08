@@ -17,6 +17,7 @@ import { useData } from '@/context/data-context';
 import type { Finding, Project, Client, ProjectTemplate } from '@/lib/types';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { projectTemplates } from '@/lib/templates';
+import { cn } from '@/lib/utils';
 
 interface TodoItem {
   location: string;
