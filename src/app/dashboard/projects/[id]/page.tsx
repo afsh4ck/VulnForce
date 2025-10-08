@@ -230,12 +230,12 @@ const ScopeSectionEditor = ({ section, onContentChange, onDelete, view, onViewCh
         {!isOrganizing && (
              <div className="border-t">
                 {view !== 'preview' && (
-                  <div className="p-2 border-b flex gap-1">
-                    <Button variant="ghost" size="icon" onClick={() => applyMarkdown('bold')}><Bold className="h-4 w-4" /></Button>
-                    <Button variant="ghost" size="icon" onClick={() => applyMarkdown('italic')}><Italic className="h-4 w-4" /></Button>
-                    <Button variant="ghost" size="icon" onClick={() => applyMarkdown('code')}><Code className="h-4 w-4" /></Button>
-                    <Button variant="ghost" size="icon" onClick={() => applyMarkdown('bullet')}><List className="h-4 w-4" /></Button>
-                    <Button variant="ghost" size="icon" onClick={() => applyMarkdown('number')}><ListOrdered className="h-4 w-4" /></Button>
+                  <div className="p-1 border-b flex gap-1">
+                    <Button variant="ghost" size="icon" onClick={() => applyMarkdown('bold')}><Bold className="h-3 w-3" /></Button>
+                    <Button variant="ghost" size="icon" onClick={() => applyMarkdown('italic')}><Italic className="h-3 w-3" /></Button>
+                    <Button variant="ghost" size="icon" onClick={() => applyMarkdown('code')}><Code className="h-3 w-3" /></Button>
+                    <Button variant="ghost" size="icon" onClick={() => applyMarkdown('bullet')}><List className="h-3 w-3" /></Button>
+                    <Button variant="ghost" size="icon" onClick={() => applyMarkdown('number')}><ListOrdered className="h-3 w-3" /></Button>
                   </div>
                 )}
                 <CardContent className="p-0">

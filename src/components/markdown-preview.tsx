@@ -10,28 +10,61 @@ import type { ImageAsset } from '@/lib/types';
 
 const highlightOnlyTodoWord = (text: string) => {
     if (typeof text !== 'string') return text;
-    // Matches [TODO: anything] or the whole word TODO, case-sensitive for TODO
-    const todoRegex = /(\[TODO:?.*?\]|\bTODO\b)/g;
+    // Matches [TODO...] and the word TODO itself, case-sensitive
+    const todoRegex = /(\[TODO:?.*?\])/g;
 
     let lastIndex = 0;
     const result: (string | JSX.Element)[] = [];
 
     text.replace(todoRegex, (match, p1, offset) => {
+        // Push the text before the match
         if (offset > lastIndex) {
             result.push(text.substring(lastIndex, offset));
         }
-        result.push(
-            <span key={offset} className="bg-red-500 text-white font-bold px-1 rounded-sm">{match}</span>
-        );
+
+        // Highlight only the 'TODO' part
+        const todoHighlight = <span key={`todo-${offset}`} className="bg-red-500 text-white font-bold px-1 rounded-sm">TODO</span>;
+
+        // Reconstruct the bracketed part
+        const bracketedContent = match.replace('TODO', '');
+        
+        result.push(<span key={offset}>[{todoHighlight}{bracketedContent.substring(4, bracketedContent.length - 1)}]</span>);
+        
         lastIndex = offset + match.length;
-        return match; 
+        return match;
     });
 
+    // Add the remaining text after the last match
     if (lastIndex < text.length) {
         result.push(text.substring(lastIndex));
     }
+    
+    // Handle standalone TODOs
+    const standaloneTodoRegex = /(\bTODO\b)/g;
+    const finalResult: (string | JSX.Element)[] = [];
+    result.forEach((part, index) => {
+        if (typeof part === 'string') {
+            let lastStandaloneIndex = 0;
+            const subParts: (string | JSX.Element)[] = [];
+            part.replace(standaloneTodoRegex, (match, p1, offset) => {
+                if (offset > lastStandaloneIndex) {
+                    subParts.push(part.substring(lastStandaloneIndex, offset));
+                }
+                subParts.push(<span key={`standalone-${index}-${offset}`} className="bg-red-500 text-white font-bold px-1 rounded-sm">{match}</span>);
+                lastStandaloneIndex = offset + match.length;
+                return match;
+            });
+            if (lastStandaloneIndex < part.length) {
+                subParts.push(part.substring(lastStandaloneIndex));
+            }
+            finalResult.push(...subParts);
+        } else {
+            finalResult.push(part);
+        }
+    });
 
-    return result.length > 0 ? result : [text];
+
+    return finalResult.length > 0 ? finalResult : [text];
 }
 
 
