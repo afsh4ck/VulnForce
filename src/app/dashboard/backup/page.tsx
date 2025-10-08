@@ -130,15 +130,8 @@ export default function BackupPage() {
       <div className="space-y-6">
         <h1 className="font-headline text-3xl font-bold tracking-tight">{t[language].title}</h1>
 
-        <Card>
-          <CardHeader>
-            <CardTitle>{t[language].title}</CardTitle>
-            <CardDescription>
-              {t[language].description}
-            </CardDescription>
-          </CardHeader>
-          <CardContent className="space-y-4">
-            <div className="flex flex-col gap-4 rounded-lg border p-4 md:flex-row md:items-center md:justify-between">
+        <div className="space-y-4">
+            <div className="flex flex-col gap-4 rounded-lg border bg-card text-card-foreground shadow-sm p-4 md:flex-row md:items-center md:justify-between">
               <div>
                 <h3 className="font-semibold">{t[language].createBackupTitle}</h3>
                 <p className="text-sm text-muted-foreground">{t[language].createBackupDesc}</p>
@@ -147,7 +140,7 @@ export default function BackupPage() {
                 <FileDown className="mr-2 h-4 w-4" /> {t[language].createBackupBtn}
               </Button>
             </div>
-            <div className="flex flex-col gap-4 rounded-lg border p-4 md:flex-row md:items-center md:justify-between">
+            <div className="flex flex-col gap-4 rounded-lg border bg-card text-card-foreground shadow-sm p-4 md:flex-row md:items-center md:justify-between">
                <div>
                 <h3 className="font-semibold">{t[language].importBackupTitle}</h3>
                 <p className="text-sm text-muted-foreground">{t[language].importBackupDesc}</p>
@@ -160,8 +153,7 @@ export default function BackupPage() {
                 </Button>
               </div>
             </div>
-          </CardContent>
-        </Card>
+        </div>
       </div>
 
       <AlertDialog open={showConfirmDialog} onOpenChange={setShowConfirmDialog}>
