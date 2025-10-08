@@ -1,7 +1,7 @@
 'use client';
 
 import React, { createContext, useContext, useState, useEffect, ReactNode } from 'react';
-import type { Client, Project, Finding, Vulnerability } from '@/lib/types';
+import type { Client, Project, Finding, Vulnerability, ImageAsset } from '@/lib/types';
 import { 
     clients as initialClients, 
     projects as initialProjects, 
@@ -14,6 +14,7 @@ interface DataContextType {
   projects: Project[];
   findings: Finding[];
   vulnerabilities: Vulnerability[];
+  images: ImageAsset[];
   addClient: (client: Omit<Client, 'id'>) => void;
   updateClient: (client: Client) => void;
   deleteClient: (clientId: string) => void;
@@ -26,6 +27,8 @@ interface DataContextType {
   addVulnerability: (vulnerability: Omit<Vulnerability, 'id'>) => void;
   updateVulnerability: (vulnerability: Vulnerability) => void;
   deleteVulnerability: (vulnerabilityId: string) => void;
+  addImage: (dataUrl: string) => ImageAsset;
+  getImage: (id: string) => ImageAsset | undefined;
   exportData: () => void;
   importData: (jsonData: string) => void;
 }
@@ -63,6 +66,7 @@ export function DataProvider({ children }: { children: ReactNode }) {
     const [projects, setProjects] = useLocalStorage<Project[]>('vulnforce-projects', initialProjects);
     const [findings, setFindings] = useLocalStorage<Finding[]>('vulnforce-findings', initialFindings);
     const [vulnerabilities, setVulnerabilities] = useLocalStorage<Vulnerability[]>('vulnforce-vulnerabilities', initialVulnerabilities);
+    const [images, setImages] = useLocalStorage<ImageAsset[]>('vulnforce-images', []);
 
     // Client functions
     const addClient = (client: Omit<Client, 'id'>) => {
@@ -115,13 +119,27 @@ export function DataProvider({ children }: { children: ReactNode }) {
     const deleteVulnerability = (vulnerabilityId: string) => {
         setVulnerabilities(prev => prev.filter(v => v.id !== vulnerabilityId));
     };
+    
+    // Image Asset functions
+    const addImage = (dataUrl: string): ImageAsset => {
+      const newImage: ImageAsset = {
+        id: `img-${Date.now()}`,
+        dataUrl,
+      };
+      setImages(prev => [...prev, newImage]);
+      return newImage;
+    };
+  
+    const getImage = (id: string): ImageAsset | undefined => {
+      return images.find(img => img.id === id);
+    };
 
     // Backup & Import
     const exportData = () => {
         const backupData = {
           version: '1.0.0',
           createdAt: new Date().toISOString(),
-          data: { clients, projects, findings, vulnerabilities },
+          data: { clients, projects, findings, vulnerabilities, images },
         };
         const blob = new Blob([JSON.stringify(backupData, null, 2)], { type: 'application/json' });
         const url = URL.createObjectURL(blob);
@@ -141,6 +159,7 @@ export function DataProvider({ children }: { children: ReactNode }) {
             setProjects(parsedData.data.projects || []);
             setFindings(parsedData.data.findings || []);
             setVulnerabilities(parsedData.data.vulnerabilities || []);
+            setImages(parsedData.data.images || []);
         } else {
             throw new Error("Invalid backup file format");
         }
@@ -148,11 +167,12 @@ export function DataProvider({ children }: { children: ReactNode }) {
 
     return (
         <DataContext.Provider value={{
-            clients, projects, findings, vulnerabilities,
+            clients, projects, findings, vulnerabilities, images,
             addClient, updateClient, deleteClient,
             addProject, updateProject, deleteProject,
             addFinding, updateFinding, deleteFinding,
             addVulnerability, updateVulnerability, deleteVulnerability,
+            addImage, getImage,
             exportData, importData
         }}>
             {children}

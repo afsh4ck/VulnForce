@@ -4,56 +4,33 @@ import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
 import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter';
 import { vscDarkPlus } from 'react-syntax-highlighter/dist/esm/styles/prism';
-
-
-const highlightTodoInText = (text: string) => {
-    if (typeof text !== 'string') return text;
-    const todoRegex = /(\[TODO:?.*?\])/gi;
-    const parts = text.split(todoRegex);
-
-    return parts.map((part, index) => {
-        if (part.match(todoRegex)) {
-            const todoContent = part.substring(1, part.length - 1);
-            const todoParts = todoContent.split(/^(TODO:?)/i);
-            return (
-                <span key={`todo-${index}`} className="bg-red-500/20 px-1 py-0.5 rounded-sm">
-                    <strong className="font-bold text-red-500">{todoParts[1]}</strong>
-                    <span className="text-red-400">{todoParts[2]}</span>
-                </span>
-            );
-        }
-        return part;
-    });
-};
+import { useData } from '@/context/data-context';
 
 const highlightOnlyTodoWord = (text: string) => {
     if (typeof text !== 'string') return text;
     const todoRegex = /\[(TODO):(.*?)\]/gi;
-    
+
     let lastIndex = 0;
     const result: (string | JSX.Element)[] = [];
-    
+
     text.replace(todoRegex, (match, p1, p2, offset) => {
-        // Add the text before the match
         if (offset > lastIndex) {
             result.push(text.substring(lastIndex, offset));
         }
-        // Add the styled "TODO" and the rest of the match
         result.push(
             <React.Fragment key={offset}>
                 [<strong className="text-red-500">{p1}</strong>:{p2}]
             </React.Fragment>
         );
         lastIndex = offset + match.length;
-        return match; // necessary for replace
+        return match; 
     });
 
-    // Add any remaining text
     if (lastIndex < text.length) {
         result.push(text.substring(lastIndex));
     }
 
-    return result;
+    return result.length > 0 ? result : [text];
 }
 
 
@@ -91,6 +68,8 @@ const CustomTableCell = ({ children, ...props }: any) => {
 
 
 export const MarkdownPreview = ({ content }: { content: string }) => {
+  const { getImage } = useData();
+
   return (
     <ReactMarkdown
       remarkPlugins={[remarkGfm]}
@@ -106,6 +85,18 @@ export const MarkdownPreview = ({ content }: { content: string }) => {
         tr: ({ node, ...props }) => <tr className="border-b border-border" {...props} />,
         th: ({ node, ...props }) => <th className="border border-border px-4 py-2 text-left font-semibold" {...props} />,
         td: CustomTableCell,
+        img: ({ node, ...props }) => {
+            const url = props.src || '';
+            if (url.startsWith('image://')) {
+                const imageId = url.substring('image://'.length);
+                const imageAsset = getImage(imageId);
+                if (imageAsset) {
+                    return <img src={imageAsset.dataUrl} alt={props.alt} className="max-w-full h-auto rounded-md border" />;
+                }
+                return <img {...props} alt={`Broken Image Ref: ${imageId}`} className="max-w-full h-auto rounded-md border" />;
+            }
+            return <img {...props} className="max-w-full h-auto rounded-md border" />;
+        },
         code({ node, className, children, ...props }) {
           const match = /language-(\w+)/.exec(className || '');
           const codeContent = String(children).replace(/\n$/, '');

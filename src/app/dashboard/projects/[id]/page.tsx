@@ -1,4 +1,5 @@
 
+
 'use client';
 
 import React, { useState, useMemo, useEffect } from 'react';
@@ -50,6 +51,8 @@ const ScopeSectionEditor = ({ section, onContentChange, onDelete, view, onViewCh
   isDragging?: boolean;
 }) => {
   const { language } = useLanguage();
+  const { addImage } = useData();
+
   const t = {
     en: {
       viewEdit: 'Write',
@@ -83,15 +86,18 @@ const ScopeSectionEditor = ({ section, onContentChange, onDelete, view, onViewCh
                 const reader = new FileReader();
                 reader.onload = (event) => {
                     const dataUrl = event.target?.result as string;
-                    const markdownImage = `![pasted-image](${dataUrl})`;
-                    const textarea = e.target as HTMLTextAreaElement;
-                    const start = textarea.selectionStart;
-                    const end = textarea.selectionEnd;
-                    const newContent = 
-                        section.content.substring(0, start) + 
-                        markdownImage + 
-                        section.content.substring(end);
-                    onContentChange(newContent);
+                    if (dataUrl) {
+                        const newImage = addImage(dataUrl);
+                        const markdownImage = `![Pasted Image](image://${newImage.id})`;
+                        const textarea = e.target as HTMLTextAreaElement;
+                        const start = textarea.selectionStart;
+                        const end = textarea.selectionEnd;
+                        const newContent =
+                            section.content.substring(0, start) +
+                            markdownImage +
+                            section.content.substring(end);
+                        onContentChange(newContent);
+                    }
                 };
                 reader.readAsDataURL(blob);
             }
@@ -99,6 +105,7 @@ const ScopeSectionEditor = ({ section, onContentChange, onDelete, view, onViewCh
         }
     }
   };
+
 
   return (
     <Card>
@@ -296,7 +303,7 @@ export default function ProjectDetailsPage() {
       prevSections.map(sec => {
         if (sec.id === sectionId) {
             const oldContent = sec.content;
-            const contentWithoutTitle = oldContent.replace(/^(## .*)(\r\n|\n|\r)?/, '');
+            const contentWithoutTitle = oldContent.replace(/^## .*\n?/, '');
             const newContent = `## ${newTitle}\n${contentWithoutTitle}`;
             return { ...sec, content: newContent };
         }

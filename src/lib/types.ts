@@ -1,4 +1,5 @@
 
+
 export type Severity = 'Critical' | 'High' | 'Medium' | 'Low' | 'Informational';
 
 export interface Client {
@@ -29,6 +30,11 @@ export interface Finding {
   markdown: string;
   createdAt: string;
   updatedAt: string;
+}
+
+export interface ImageAsset {
+  id: string;
+  dataUrl: string;
 }
 
 export interface CVSS {
