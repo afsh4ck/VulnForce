@@ -95,14 +95,14 @@ export default function NewProjectPage() {
       language: projectLanguage,
     };
 
-    addProject(newProjectData);
+    const newProject = addProject(newProjectData);
     
     toast({
       title: uiLanguage === 'es' ? 'Proyecto Creado' : 'Project Created',
       description: `${name} ${uiLanguage === 'es' ? 'ha sido creado.' : 'has been created.'}`
     });
 
-    router.push('/dashboard/projects');
+    router.push(`/dashboard/projects/${newProject.id}`);
   };
 
   const t = {

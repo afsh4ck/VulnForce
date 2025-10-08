@@ -9,7 +9,7 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import Link from 'next/link';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
-import { PlusCircle, FileText, ArrowUpDown, Edit, Save, Trash2, CalendarIcon, Split, Eye, Plus, GripVertical, Rows, Languages, Bold, Italic, Code, List, ListOrdered, FileCode, Scan, Globe, Network, Smartphone, Wifi, Award } from "lucide-react";
+import { PlusCircle, FileText, ArrowUpDown, Edit, Save, Trash2, CalendarIcon, Split, Eye, Plus, GripVertical, Rows, Languages, Bold, Italic, Code, List, ListOrdered, FileCode, Scan, Globe, Network, Smartphone, Wifi, Award, ChevronLeft } from "lucide-react";
 import { Separator } from "@/components/ui/separator";
 import { useLanguage } from "@/context/language-context";
 import type { Finding, Project, ImageAsset } from '@/lib/types';
@@ -643,6 +643,7 @@ export default function ProjectDetailsPage() {
       translationError: 'Could not translate the report.',
       iconLabel: "Icon",
       selectIcon: "Select an icon",
+      backToProjects: "Back to Projects",
     },
     es: {
       status: "Estado",
@@ -686,6 +687,7 @@ export default function ProjectDetailsPage() {
       translationError: 'No se pudo traducir el informe.',
       iconLabel: "Icono",
       selectIcon: "Selecciona un icono",
+      backToProjects: "Volver a Proyectos",
     }
   }
 
@@ -706,14 +708,22 @@ export default function ProjectDetailsPage() {
   return (
     <div className="space-y-6">
        <div className="flex justify-between items-start">
-        <div className="space-y-2">
-            <p className="text-sm text-muted-foreground">{client?.name}</p>
-            <h1 className="font-headline text-3xl font-bold tracking-tight">{project.name}</h1>
-            <div className="flex items-center gap-4 text-sm text-muted-foreground">
-            <span>{t[language].status}: <Badge variant={project.status === 'Completed' ? 'secondary' : project.status === 'On Hold' ? 'outline' : 'default'}>{getStatus(project.status)}</Badge></span>
-            <span>{new Date(project.startDate).toLocaleDateString()} - {new Date(project.endDate).toLocaleDateString()}</span>
+          <div className="flex items-center gap-4">
+            <Button variant="outline" size="icon" className="h-10 w-10" asChild>
+                <Link href="/dashboard/projects">
+                    <ChevronLeft className="h-5 w-5" />
+                    <span className="sr-only">{t[language].backToProjects}</span>
+                </Link>
+            </Button>
+            <div className="space-y-2">
+                <p className="text-sm text-muted-foreground">{client?.name}</p>
+                <h1 className="font-headline text-3xl font-bold tracking-tight">{project.name}</h1>
+                <div className="flex items-center gap-4 text-sm text-muted-foreground">
+                <span>{t[language].status}: <Badge variant={project.status === 'Completed' ? 'secondary' : project.status === 'On Hold' ? 'outline' : 'default'}>{getStatus(project.status)}</Badge></span>
+                <span>{new Date(project.startDate).toLocaleDateString()} - {new Date(project.endDate).toLocaleDateString()}</span>
+                </div>
             </div>
-        </div>
+          </div>
         <div className="flex gap-2">
             <Button variant="outline" asChild>
                 <Link href={`/dashboard/projects/${project.id}/report`}>

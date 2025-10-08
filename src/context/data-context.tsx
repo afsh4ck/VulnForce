@@ -22,7 +22,7 @@ interface DataContextType {
   addClient: (client: Omit<Client, 'id'>) => void;
   updateClient: (client: Client) => void;
   deleteClient: (clientId: string) => void;
-  addProject: (project: Omit<Project, 'id' | 'createdAt' | 'updatedAt' | 'reportBody'> & { scope: string; appendix?: string }) => void;
+  addProject: (project: Omit<Project, 'id' | 'createdAt' | 'updatedAt' | 'reportBody'> & { scope: string; appendix?: string }) => Project;
   updateProject: (project: Project) => void;
   deleteProject: (projectId: string) => void;
   addFinding: (finding: Omit<Finding, 'id' | 'createdAt' | 'updatedAt'>) => void;
@@ -96,7 +96,7 @@ export function DataProvider({ children }: { children: ReactNode }) {
     }
 
     // Project functions
-    const addProject = (project: Omit<Project, 'id' | 'createdAt' | 'updatedAt' | 'reportBody'> & { scope: string; appendix?: string }) => {
+    const addProject = (project: Omit<Project, 'id' | 'createdAt' | 'updatedAt' | 'reportBody'> & { scope: string; appendix?: string }): Project => {
         const now = new Date().toISOString();
         const reportBody = project.appendix ? `${project.scope}\n\n---\n\n${project.appendix}` : project.scope;
         const newProject: Project = {
@@ -108,6 +108,7 @@ export function DataProvider({ children }: { children: ReactNode }) {
             updatedAt: now,
         };
         setProjects(prev => [...prev, newProject]);
+        return newProject;
     };
     const updateProject = (project: Project) => {
         const now = new Date().toISOString();
