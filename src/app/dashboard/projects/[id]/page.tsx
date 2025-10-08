@@ -1,4 +1,5 @@
 
+
 'use client';
 
 import React, { useState, useMemo, useEffect, useCallback } from 'react';
@@ -30,6 +31,7 @@ import { DateRange } from 'react-day-picker';
 import { projectTemplates } from '@/lib/templates';
 import { DndContext, closestCenter, KeyboardSensor, PointerSensor, useSensor, useSensors, DragEndEvent } from '@dnd-kit/core';
 import { arrayMove, SortableContext, sortableKeyboardCoordinates, useSortable, verticalListSortingStrategy } from '@dnd-kit/sortable';
+import { CSS } from '@dnd-kit/utilities';
 import { translateText } from '@/ai/flows/translate-text-flow';
 import { HighlightingTextarea } from '@/components/ui/highlighting-textarea';
 
@@ -179,15 +181,16 @@ const ScopeSectionEditor = ({ section, onContentChange, onDelete, view, onViewCh
         </CardHeader>
         {!isOrganizing && (
             <CardContent className="p-4">
-              <div className={cn("grid gap-4", view === 'split' ? "grid-cols-2" : "grid-cols-1")}>
-                  <div className={cn(view === 'preview' && 'hidden', 'min-h-[300px]')}>
+              <div className={cn("grid gap-4 min-h-[300px]", view === 'split' ? "grid-cols-2" : "grid-cols-1")}>
+                  <div className={cn(view === 'preview' && 'hidden', 'h-full')}>
                       <HighlightingTextarea
                           value={section.content}
                           onValueChange={(newContent) => onContentChange(newContent)}
                           onPaste={handlePaste}
+                          className="h-full"
                       />
                   </div>
-                  <div className={cn(view === 'edit' && 'hidden', "rounded-md border p-4 min-h-[300px]")}>
+                  <div className={cn(view === 'edit' && 'hidden', "rounded-md border p-4 h-full")}>
                       <MarkdownPreview content={section.content} getImage={getImage} />
                   </div>
               </div>
@@ -786,3 +789,6 @@ export default function ProjectDetailsPage() {
     </div>
   );
 }
+
+
+    
