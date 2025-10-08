@@ -14,7 +14,7 @@ export const projects: Project[] = [
     id: 'proj-1', 
     clientId: 'cli-1', 
     name: 'Q3 Web App Pentest', 
-    scope: `## Executive Summary
+    reportBody: `## Executive Summary
 This report outlines the results of an external penetration test conducted on the internet-facing assets of **Innovatech Solutions**. The assessment aimed to identify vulnerabilities that could be exploited by a remote attacker to compromise the security of the organization's perimeter.
 
 ---
@@ -59,7 +59,7 @@ The engagement began with reconnaissance against the *.innovatech.com domain, wh
     id: 'proj-2', 
     clientId: 'cli-2', 
     name: 'API Security Audit', 
-    scope: `## Executive Summary
+    reportBody: `## Executive Summary
 This report outlines the results of an external penetration test conducted on the internet-facing assets of **Quantum Dynamics**. The assessment aimed to identify vulnerabilities that could be exploited by a remote attacker to compromise the security of the organization's perimeter, with a focus on the company's main API.
 
 ---
@@ -80,7 +80,7 @@ The assessment was conducted between **August 10, 2023** and **August 25, 2023**
 ---
 
 ## Attack Narrative
-The assessment identified a critical Insecure Direct Object Reference (IDOR) vulnerability in the /api/v1/users/[userId] endpoint. By iterating the userId parameter, it was possible to retrieve sensitive personal information for any user on the platform. Furthermore, the API was missing rate limiting, allowing for automated enumeration of user IDs.
+The assessment identified a critical Insecure Direct Object Reference (IDOR) vulnerability in the /api/v1/users/[userId] endpoint. By iterating the \`userId\` parameter, it was possible to retrieve sensitive personal information for any user on the platform. Furthermore, the API was missing rate limiting, allowing for automated enumeration of user IDs.
 
 ---
 
@@ -104,7 +104,7 @@ The assessment identified a critical Insecure Direct Object Reference (IDOR) vul
     id: 'proj-3', 
     clientId: 'cli-3', 
     name: 'Auditoría Red Interna', 
-    scope: `## Resumen Ejecutivo
+    reportBody: `## Resumen Ejecutivo
 Este informe presenta los hallazgos de una prueba de penetración de la red interna para **SecureBank Corp**. La evaluación simuló a un atacante que ya ha obtenido acceso inicial a la red corporativa interna (p. ej., un empleado malintencionado o una estación de trabajo comprometida). El objetivo fue identificar vulnerabilidades que pudieran conducir a la escalada de privilegios, movimiento lateral y compromiso de sistemas internos críticos como los Controladores de Dominio.
 
 ---
@@ -150,7 +150,7 @@ El ataque comenzó con la enumeración de recursos compartidos SMB en la red, lo
     id: 'proj-4', 
     clientId: 'cli-1', 
     name: 'Mobile App Assessment', 
-    scope: `## Executive Summary
+    reportBody: `## Executive Summary
 This report documents the findings of a security assessment of the **Innovatech GO** mobile application (version 1.5.2) for **Innovatech Solutions**. The test focused on identifying vulnerabilities within the mobile application itself and its backend API interactions, covering areas such as insecure data storage, insecure communication, and client-side logic flaws.
 
 ---
@@ -3187,6 +3187,7 @@ La prueba de penetración siguió una metodología estructurada:
 `
   }
 ];
+
 
 
 

@@ -406,8 +406,8 @@ export default function ProjectDetailsPage() {
     }
     setProject(currentProject);
     
-    // Parse scope into sections
-    const sections = currentProject.scope.split(/\n---\n/).map((content, index) => ({
+    // Parse reportBody into sections
+    const sections = (currentProject.reportBody || '').split(/\n---\n/).map((content, index) => ({
       id: `section-${index}-${Date.now()}`,
       content: content.trim()
     }));
@@ -506,9 +506,9 @@ export default function ProjectDetailsPage() {
 
   const handleSaveScope = () => {
     if (project) {
-        const newScope = scopeSections.map(s => s.content).join('\n\n---\n\n');
-        updateProject({...project, scope: newScope});
-        toast({ title: language === 'es' ? 'Alcance guardado' : 'Scope saved' });
+        const newReportBody = scopeSections.map(s => s.content).join('\n\n---\n\n');
+        updateProject({...project, reportBody: newReportBody});
+        toast({ title: language === 'es' ? 'Informe guardado' : 'Report saved' });
         setIsOrganizing(false);
     }
   }
@@ -560,32 +560,18 @@ export default function ProjectDetailsPage() {
 
     try {
         const { translatedText } = await translateText({
-            text: project.scope,
+            text: project.reportBody,
             targetLanguage: newLang,
         });
-
-        const matchingTemplate = projectTemplates.find(
-          t => t.scope_en.trim() === project.scope.trim() || t.scope_es.trim() === project.scope.trim()
-        );
         
-        let newScope = translatedText;
-        if (matchingTemplate) {
-          const templateScope = newLang === 'es' ? matchingTemplate.scope_es : matchingTemplate.scope_en;
-          const templateAppendix = newLang === 'es' ? matchingTemplate.appendix_es : matchingTemplate.appendix_en;
-          newScope = templateScope;
-          if (templateAppendix) {
-            // This is a simplistic way to handle the appendix, might need adjustment
-            newScope += '\n\n---\n\n' + templateAppendix;
-          }
-        }
-
-
-        const updatedProject = { ...project, scope: newScope, language: newLang };
+        let newReportBody = translatedText;
+        
+        const updatedProject = { ...project, reportBody: newReportBody, language: newLang };
         updateProject(updatedProject);
         setProject(updatedProject); // Update local state immediately
 
         // Also update the sections in the editor
-        const sections = newScope.split(/\n---\n/).map((content, index) => ({
+        const sections = newReportBody.split(/\n---\n/).map((content, index) => ({
             id: `section-${index}-${Date.now()}`,
             content: content.trim()
         }));
@@ -631,7 +617,7 @@ export default function ProjectDetailsPage() {
       inProgress: "In Progress",
       completed: "Completed",
       onHold: "On Hold",
-      saveScope: "Save Scope",
+      saveScope: "Save Report",
       editProject: "Edit Project",
       deleteProject: "Delete Project",
       updateProject: "Update Project",
@@ -674,7 +660,7 @@ export default function ProjectDetailsPage() {
       inProgress: "En Progreso",
       completed: "Completado",
       onHold: "En Espera",
-      saveScope: "Guardar Alcance",
+      saveScope: "Guardar Informe",
       editProject: "Editar Proyecto",
       eliminarProyecto: "Eliminar Proyecto",
       updateProject: "Actualizar Proyecto",

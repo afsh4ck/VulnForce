@@ -1,4 +1,5 @@
 
+
 'use client';
 
 import { Button } from "@/components/ui/button";
@@ -42,6 +43,7 @@ export default function NewProjectPage() {
   const [name, setName] = useState('');
   const [clientId, setClientId] = useState<string>('');
   const [scope, setScope] = useState('');
+  const [appendix, setAppendix] = useState<string | undefined>('');
   const [date, setDate] = React.useState<DateRange | undefined>();
   const [templateId, setTemplateId] = useState<string | null>(searchParams.get('template'));
   const [projectLanguage, setProjectLanguage] = useState<Project['language']>('es');
@@ -53,6 +55,7 @@ export default function NewProjectPage() {
       if (template) {
         setName(projectLanguage === 'es' ? template.name_es : template.name_en);
         setScope(projectLanguage === 'es' ? template.scope_es : template.scope_en);
+        setAppendix(projectLanguage === 'es' ? template.appendix_es : template.appendix_en);
         setIcon(template.icon);
       }
     }
@@ -64,6 +67,7 @@ export default function NewProjectPage() {
         setTemplateId(newTemplateId);
         setName(projectLanguage === 'es' ? template.name_es : template.name_en);
         setScope(projectLanguage === 'es' ? template.scope_es : template.scope_en);
+        setAppendix(projectLanguage === 'es' ? template.appendix_es : template.appendix_en);
         setIcon(template.icon);
     }
   }
@@ -79,10 +83,11 @@ export default function NewProjectPage() {
       return;
     }
 
-    const newProject: Omit<Project, 'id' | 'createdAt' | 'updatedAt'> = {
+    const newProjectData = {
       clientId,
       name,
       scope,
+      appendix,
       icon,
       startDate: format(date.from, 'yyyy-MM-dd'),
       endDate: format(date.to, 'yyyy-MM-dd'),
@@ -90,7 +95,7 @@ export default function NewProjectPage() {
       language: projectLanguage,
     };
 
-    addProject(newProject);
+    addProject(newProjectData);
     
     toast({
       title: uiLanguage === 'es' ? 'Proyecto Creado' : 'Project Created',
@@ -218,6 +223,10 @@ export default function NewProjectPage() {
             <div className="space-y-2">
                 <Label htmlFor="scope">{t[uiLanguage].scopeLabel}</Label>
                 <Textarea id="scope" placeholder={t[uiLanguage].scopePlaceholder} className="font-code min-h-[120px]" value={scope} onChange={e => setScope(e.target.value)} required />
+            </div>
+            <div className="space-y-2">
+                <Label htmlFor="appendix">Appendix</Label>
+                <Textarea id="appendix" placeholder="Appendix content..." className="font-code min-h-[120px]" value={appendix} onChange={e => setAppendix(e.target.value)} />
             </div>
             <div className="space-y-2">
                 <Label>{t[uiLanguage].datesLabel}</Label>

@@ -16,7 +16,7 @@ import { useLanguage } from '@/context/language-context';
 import { useData } from '@/context/data-context';
 import type { Finding, Project, Client, ProjectTemplate } from '@/lib/types';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
-import { projectTemplates } from '@/lib/templates';
+import { projectTemplates } from '@/lib/data';
 import { cn } from '@/lib/utils';
 
 interface TodoItem {
@@ -46,9 +46,6 @@ export default function ReportPreviewPage() {
         .filter(f => f.projectId === currentProject.id)
         .sort((a, b) => b.cvss - a.cvss);
       setProjectFindings(filteredFindings);
-
-      const foundTemplate = projectTemplates.find(t => t.scope_en === currentProject.scope || t.scope_es === currentProject.scope);
-      setTemplate(foundTemplate);
 
     } else {
       router.push('/dashboard/projects'); // Redirect if project not found
@@ -138,8 +135,8 @@ export default function ReportPreviewPage() {
     const foundTodos: TodoItem[] = [];
     const todoRegex = /\[TODO:?.*?\]?/gi;
   
-    if (project.scope) {
-        const sections = project.scope.split(/\n---\n/);
+    if (project.reportBody) {
+        const sections = project.reportBody.split(/\n---\n/);
         sections.forEach(section => {
             const headingMatch = section.match(/^(#+) (.*)/);
             const sectionTitle = headingMatch ? headingMatch[2].trim() : langT.scope;
@@ -157,22 +154,6 @@ export default function ReportPreviewPage() {
         });
     }
 
-    if(template && (template.appendix_en || template.appendix_es)) {
-        const appendixContent = project.language === 'es' ? template.appendix_es : template.appendix_en;
-        if(appendixContent) {
-            const appendixMatches = appendixContent.match(todoRegex);
-            if (appendixMatches) {
-                appendixMatches.forEach(match => {
-                    foundTodos.push({
-                        location: langT.appendix,
-                        context: match,
-                        link: `/dashboard/projects/${projectId}?tab=scope`,
-                    });
-                });
-            }
-        }
-    }
-  
     projectFindings.forEach(finding => {
       const findingMatches = finding.markdown.match(todoRegex);
       if (findingMatches) {
@@ -187,7 +168,7 @@ export default function ReportPreviewPage() {
     });
   
     return foundTodos;
-  }, [project, projectFindings, projectId, t, template]);
+  }, [project, projectFindings, projectId, t]);
 
   const handlePrint = () => {
     window.print();
@@ -224,7 +205,14 @@ export default function ReportPreviewPage() {
     highCount
   );
   
-  const appendixContent = template && (reportLang === 'es' ? template.appendix_es : template.appendix_en);
+  const [scopeContent, appendixContent] = useMemo(() => {
+    if (!project?.reportBody) return ['', ''];
+    const parts = project.reportBody.split('### A. ');
+    if (parts.length > 1) {
+        return [parts[0], '### A. ' + parts.slice(1).join('### A. ')];
+    }
+    return [project.reportBody, ''];
+  }, [project?.reportBody]);
 
   return (
     <div className="bg-background text-foreground min-h-screen">
@@ -320,7 +308,7 @@ export default function ReportPreviewPage() {
           <section>
             <h2 className="font-headline text-2xl font-bold border-b-2 border-primary pb-2 mb-4 mt-12">{langT.scopeAndMethodology}</h2>
             <div className="prose prose-lg dark:prose-invert max-w-none">
-              <MarkdownPreview content={project.scope} getImage={getImage} />
+              <MarkdownPreview content={scopeContent} getImage={getImage} />
             </div>
           </section>
 

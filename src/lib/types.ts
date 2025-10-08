@@ -14,13 +14,14 @@ export interface Project {
   clientId: string;
   name: string;
   icon: string;
-  scope: string;
+  reportBody: string;
   startDate: string;
   endDate: string;
   status: 'In Progress' | 'Completed' | 'On Hold';
   language: 'en' | 'es';
   createdAt: string;
   updatedAt: string;
+  appendix?: string; // Kept for backwards compatibility during transition
 }
 
 export interface Finding {

@@ -1,4 +1,5 @@
 
+
 'use client';
 
 import React, { createContext, useContext, useState, useEffect, ReactNode } from 'react';
@@ -21,7 +22,7 @@ interface DataContextType {
   addClient: (client: Omit<Client, 'id'>) => void;
   updateClient: (client: Client) => void;
   deleteClient: (clientId: string) => void;
-  addProject: (project: Omit<Project, 'id' | 'createdAt' | 'updatedAt'>) => void;
+  addProject: (project: Omit<Project, 'id' | 'createdAt' | 'updatedAt' | 'reportBody'> & { scope: string; appendix?: string }) => void;
   updateProject: (project: Project) => void;
   deleteProject: (projectId: string) => void;
   addFinding: (finding: Omit<Finding, 'id' | 'createdAt' | 'updatedAt'>) => void;
@@ -95,12 +96,14 @@ export function DataProvider({ children }: { children: ReactNode }) {
     }
 
     // Project functions
-    const addProject = (project: Omit<Project, 'id' | 'createdAt' | 'updatedAt'>) => {
+    const addProject = (project: Omit<Project, 'id' | 'createdAt' | 'updatedAt' | 'reportBody'> & { scope: string; appendix?: string }) => {
         const now = new Date().toISOString();
-        const newProject = {
+        const reportBody = project.appendix ? `${project.scope}\n\n---\n\n${project.appendix}` : project.scope;
+        const newProject: Project = {
             ...project,
             id: `proj-${Date.now()}`,
             icon: project.icon || 'FileText',
+            reportBody,
             createdAt: now,
             updatedAt: now,
         };
