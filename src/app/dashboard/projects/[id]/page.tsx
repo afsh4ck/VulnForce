@@ -31,6 +31,7 @@ import { DateRange } from 'react-day-picker';
 import { projectTemplates } from '@/lib/templates';
 import { DndContext, closestCenter, KeyboardSensor, PointerSensor, useSensor, useSensors, DragEndEvent } from '@dnd-kit/core';
 import { arrayMove, SortableContext, sortableKeyboardCoordinates, useSortable, verticalListSortingStrategy } from '@dnd-kit/sortable';
+import { CSS } from '@dnd-kit/utilities';
 import { translateText } from '@/ai/flows/translate-text-flow';
 import { HighlightingTextarea } from '@/components/ui/highlighting-textarea';
 import { ResizableHandle, ResizablePanel, ResizablePanelGroup } from '@/components/ui/resizable';
