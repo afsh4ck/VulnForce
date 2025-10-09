@@ -782,21 +782,22 @@ export default function VulnerabilityEditorPage() {
             </Card>
 
             <Accordion type="single" collapsible className="w-full space-y-6" value={activeAccordion} onValueChange={setActiveAccordion}>
-              <AccordionItem value="en-content" className="border-0">
-                <Card className="bg-card">
-                    <AccordionTrigger className="hover:no-underline p-4 rounded-t-lg data-[state=open]:border-b">
-                      <div className="flex w-full items-center justify-between">
-                        <div className="flex items-center gap-2">
-                            <span className="font-semibold text-base">{t[language].englishContent}</span>
-                            <ChevronDown className="h-4 w-4 shrink-0 transition-transform duration-200" />
-                        </div>
-                        <Button variant="outline" size="sm" onClick={(e) => { e.stopPropagation(); handleOrganizeClick('en'); }}>
-                            <Rows className="mr-2 h-4 w-4" />
-                            {isEnOrganizing ? t[language].finishOrganizing : t[language].organizeSections}
-                        </Button>
-                      </div>
-                    </AccordionTrigger>
-                  <AccordionContent className="p-4 pt-0">
+              <AccordionItem value="en-content" className="border-0 bg-card rounded-lg">
+                <AccordionTrigger className={cn("p-4 hover:no-underline rounded-t-lg", activeAccordion === 'en-content' && "border-b")}>
+                  <div className="flex w-full items-center justify-between">
+                    <div className="flex items-center gap-2">
+                        <span className="font-semibold text-base">{t[language].englishContent}</span>
+                        <ChevronDown className="h-4 w-4 shrink-0 transition-transform duration-200" />
+                    </div>
+                    <Button variant="outline" size="sm" onClick={(e) => { e.stopPropagation(); handleOrganizeClick('en'); }}>
+                        <Rows className="mr-2 h-4 w-4" />
+                        {isEnOrganizing ? t[language].finishOrganizing : t[language].organizeSections}
+                        <span />
+                    </Button>
+                  </div>
+                </AccordionTrigger>
+                <AccordionContent className="p-4 pt-0">
+                  <div className="space-y-4 pt-4">
                     <DndContext sensors={sensors} collisionDetection={closestCenter} onDragEnd={(e) => handleDragEnd(e, 'en')}>
                       <SortableContext items={enSections.map(s => s.id)} strategy={verticalListSortingStrategy}>
                         <div className="space-y-4">
@@ -824,25 +825,26 @@ export default function VulnerabilityEditorPage() {
                         </Button>
                       </div>
                     )}
-                  </AccordionContent>
-                </Card>
+                  </div>
+                </AccordionContent>
               </AccordionItem>
               
-              <AccordionItem value="es-content" className="border-0">
-                 <Card className="bg-card">
-                    <AccordionTrigger className="hover:no-underline p-4 rounded-t-lg data-[state=open]:border-b">
-                      <div className="flex w-full items-center justify-between">
-                        <div className="flex items-center gap-2">
-                          <span className="font-semibold text-base">{t[language].spanishContent}</span>
-                          <ChevronDown className="h-4 w-4 shrink-0 transition-transform duration-200" />
-                        </div>
-                        <Button variant="outline" size="sm" onClick={(e) => { e.stopPropagation(); handleOrganizeClick('es'); }}>
-                            <Rows className="mr-2 h-4 w-4" />
-                            {isEsOrganizing ? t[language].finishOrganizing : t[language].organizeSections}
-                        </Button>
+              <AccordionItem value="es-content" className="border-0 bg-card rounded-lg">
+                  <AccordionTrigger className={cn("p-4 hover:no-underline rounded-t-lg", activeAccordion === 'es-content' && "border-b")}>
+                    <div className="flex w-full items-center justify-between">
+                      <div className="flex items-center gap-2">
+                        <span className="font-semibold text-base">{t[language].spanishContent}</span>
+                        <ChevronDown className="h-4 w-4 shrink-0 transition-transform duration-200" />
                       </div>
-                    </AccordionTrigger>
-                    <AccordionContent className="p-4 pt-0">
+                      <Button variant="outline" size="sm" onClick={(e) => { e.stopPropagation(); handleOrganizeClick('es'); }}>
+                          <Rows className="mr-2 h-4 w-4" />
+                          {isEsOrganizing ? t[language].finishOrganizing : t[language].organizeSections}
+                          <span />
+                      </Button>
+                    </div>
+                  </AccordionTrigger>
+                  <AccordionContent className="p-4 pt-0">
+                    <div className="space-y-4 pt-4">
                       <DndContext sensors={sensors} collisionDetection={closestCenter} onDragEnd={(e) => handleDragEnd(e, 'es')}>
                         <SortableContext items={esSections.map(s => s.id)} strategy={verticalListSortingStrategy}>
                           <div className="space-y-4">
@@ -870,11 +872,12 @@ export default function VulnerabilityEditorPage() {
                           </Button>
                         </div>
                       )}
+                    </div>
                   </AccordionContent>
-                </Card>
               </AccordionItem>
             </Accordion>
         </div>
     </div>
   );
 }
+
