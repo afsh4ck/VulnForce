@@ -144,7 +144,7 @@ export default function VulnerabilityEditorPage() {
       informational: 'Informational',
     },
     es: {
-      back: 'Volver a Vulnerabilidades',
+      back: 'Back to Vulnerabilities',
       save: 'Guardar Cambios',
       detailsTitle: 'Descripción',
       titleEnLabel: 'Título (Inglés)',
@@ -269,130 +269,133 @@ export default function VulnerabilityEditorPage() {
         <Button onClick={handleSave}><Save className="mr-2 h-4 w-4" /> {t[language].save}</Button>
       </header>
       
-      <div className="grid grid-cols-1 gap-6 lg:grid-cols-3">
-        <div className="space-y-6 lg:col-span-2">
-            <Card>
-                <CardHeader>
-                    <CardTitle>{t[language].detailsTitle}</CardTitle>
-                </CardHeader>
-                <CardContent className="space-y-4">
-                     <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
+      <div className="space-y-6">
+          <Card>
+              <CardHeader>
+                  <CardTitle>{t[language].detailsTitle}</CardTitle>
+              </CardHeader>
+              <CardContent className="space-y-4">
+                    <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
+                      <div className="space-y-2">
+                          <Label htmlFor="title_en">{t[language].titleEnLabel}</Label>
+                          <Input id="title_en" value={vuln.title_en} onChange={e => handleInputChange('title_en', e.target.value)} />
+                      </div>
+                      <div className="space-y-2">
+                          <Label htmlFor="title_es">{t[language].titleEsLabel}</Label>
+                          <Input id="title_es" value={vuln.title_es} onChange={e => handleInputChange('title_es', e.target.value)} />
+                      </div>
+                  </div>
+                  <div className="grid grid-cols-1 gap-4 md:grid-cols-3">
+                      <div className="space-y-2">
+                          <Label htmlFor="cwe">{t[language].cweLabel}</Label>
+                          <Input id="cwe" value={vuln.cwe} onChange={e => handleInputChange('cwe', e.target.value)} />
+                      </div>
+                      <div className="space-y-2">
+                          <Label htmlFor="severity">{t[language].severity}</Label>
+                          <Select value={vuln.severity} onValueChange={value => handleInputChange('severity', value as Vulnerability['severity'])}>
+                              <SelectTrigger id="severity">
+                                  <SelectValue placeholder={t[language].selectSeverity} />
+                              </SelectTrigger>
+                              <SelectContent>
+                                  <SelectItem value="Critical">{t[language].critical}</SelectItem>
+                                  <SelectItem value="High">{t[language].high}</SelectItem>
+                                  <SelectItem value="Medium">{t[language].medium}</SelectItem>
+                                  <SelectItem value="Low">{t[language].low}</SelectItem>
+                                  <SelectItem value="Informational">{t[language].informational}</SelectItem>
+                              </SelectContent>
+                          </Select>
+                      </div>
                         <div className="space-y-2">
-                            <Label htmlFor="title_en">{t[language].titleEnLabel}</Label>
-                            <Input id="title_en" value={vuln.title_en} onChange={e => handleInputChange('title_en', e.target.value)} />
-                        </div>
-                        <div className="space-y-2">
-                            <Label htmlFor="title_es">{t[language].titleEsLabel}</Label>
-                            <Input id="title_es" value={vuln.title_es} onChange={e => handleInputChange('title_es', e.target.value)} />
-                        </div>
-                    </div>
-                    <div className="grid grid-cols-1 gap-4 md:grid-cols-3">
-                        <div className="space-y-2">
-                            <Label htmlFor="cwe">{t[language].cweLabel}</Label>
-                            <Input id="cwe" value={vuln.cwe} onChange={e => handleInputChange('cwe', e.target.value)} />
-                        </div>
-                        <div className="space-y-2">
-                            <Label htmlFor="severity">{t[language].severity}</Label>
-                            <Select value={vuln.severity} onValueChange={value => handleInputChange('severity', value as Vulnerability['severity'])}>
-                                <SelectTrigger id="severity">
-                                    <SelectValue placeholder={t[language].selectSeverity} />
-                                </SelectTrigger>
-                                <SelectContent>
-                                    <SelectItem value="Critical">{t[language].critical}</SelectItem>
-                                    <SelectItem value="High">{t[language].high}</SelectItem>
-                                    <SelectItem value="Medium">{t[language].medium}</SelectItem>
-                                    <SelectItem value="Low">{t[language].low}</SelectItem>
-                                    <SelectItem value="Informational">{t[language].informational}</SelectItem>
-                                </SelectContent>
-                            </Select>
-                        </div>
-                         <div className="space-y-2">
-                            <Label htmlFor="category">{t[language].categoryLabel}</Label>
-                             <Select value={vuln.tags[0] || ''} onValueChange={handleCategoryChange}>
-                                <SelectTrigger id="category">
-                                    <SelectValue placeholder={t[language].selectCategory} />
-                                </SelectTrigger>
-                                <SelectContent>
-                                    {vulnerabilityCategories.map(cat => (
-                                        <SelectItem key={cat.value} value={cat.value}>
-                                            {language === 'es' ? cat.label_es : cat.label_en}
-                                        </SelectItem>
-                                    ))}
-                                </SelectContent>
-                            </Select>
-                        </div>
-                    </div>
-                     <div className="space-y-2">
-                        <Label htmlFor="references">{t[language].referencesLabel}</Label>
-                        <Input id="references" value={vuln.references.join(', ')} onChange={e => handleInputChange('references', e.target.value.split(',').map(r => r.trim()))} />
-                    </div>
-                </CardContent>
-            </Card>
-
-            <Accordion type="multiple" className="w-full">
-              <AccordionItem value="en-content">
-                <AccordionTrigger className="text-lg font-semibold">{t[language].englishContent}</AccordionTrigger>
-                <AccordionContent className="space-y-4 pt-4">
-                    {renderContentFields('en')}
-                </AccordionContent>
-              </AccordionItem>
-              <AccordionItem value="es-content">
-                <AccordionTrigger className="text-lg font-semibold">{t[language].spanishContent}</AccordionTrigger>
-                <AccordionContent className="space-y-4 pt-4">
-                    {renderContentFields('es')}
-                </AccordionContent>
-              </AccordionItem>
-            </Accordion>
-        </div>
-        <div className="space-y-6 lg:col-span-1">
-            <Card>
-                <CardHeader>
-                    <CardTitle>{t[language].cvssTitle}</CardTitle>
-                </CardHeader>
-                <CardContent className="space-y-4">
+                          <Label htmlFor="category">{t[language].categoryLabel}</Label>
+                            <Select value={vuln.tags[0] || ''} onValueChange={handleCategoryChange}>
+                              <SelectTrigger id="category">
+                                  <SelectValue placeholder={t[language].selectCategory} />
+                              </SelectTrigger>
+                              <SelectContent>
+                                  {vulnerabilityCategories.map(cat => (
+                                      <SelectItem key={cat.value} value={cat.value}>
+                                          {language === 'es' ? cat.label_es : cat.label_en}
+                                      </SelectItem>
+                                  ))}
+                              </SelectContent>
+                          </Select>
+                      </div>
+                  </div>
+                    <div className="space-y-2">
+                      <Label htmlFor="references">{t[language].referencesLabel}</Label>
+                      <Input id="references" value={vuln.references.join(', ')} onChange={e => handleInputChange('references', e.target.value.split(',').map(r => r.trim()))} />
+                  </div>
+              </CardContent>
+          </Card>
+          
+          <Card>
+              <CardHeader>
+                  <CardTitle>{t[language].cvssTitle}</CardTitle>
+              </CardHeader>
+              <CardContent className="space-y-4">
+                  <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
                     <div className="space-y-2">
                         <Label htmlFor="cvss_score">{t[language].score}</Label>
                         <Input id="cvss_score" type="number" step="0.1" value={vuln.cvss.score} onChange={e => handleCvssChange('score', parseFloat(e.target.value))} />
                     </div>
-                     <div className="space-y-2">
+                      <div className="space-y-2">
                         <Label htmlFor="cvss_vector">{t[language].vectorString}</Label>
                         <Input id="cvss_vector" value={vuln.cvss.vectorString} onChange={e => handleCvssChange('vectorString', e.target.value)} />
                     </div>
-                     <div className="space-y-2">
+                  </div>
+                   <div className="grid grid-cols-1 gap-4 md:grid-cols-4">
+                      <div className="space-y-2">
                         <Label htmlFor="cvss_av">{t[language].attackVector}</Label>
                         <Input id="cvss_av" value={vuln.cvss.attackVector} onChange={e => handleCvssChange('attackVector', e.target.value)} />
                     </div>
-                     <div className="space-y-2">
+                      <div className="space-y-2">
                         <Label htmlFor="cvss_ac">{t[language].attackComplexity}</Label>
                         <Input id="cvss_ac" value={vuln.cvss.attackComplexity} onChange={e => handleCvssChange('attackComplexity', e.target.value)} />
                     </div>
-                     <div className="space-y-2">
+                      <div className="space-y-2">
                         <Label htmlFor="cvss_pr">{t[language].privilegesRequired}</Label>
                         <Input id="cvss_pr" value={vuln.cvss.privilegesRequired} onChange={e => handleCvssChange('privilegesRequired', e.target.value)} />
                     </div>
-                     <div className="space-y-2">
+                      <div className="space-y-2">
                         <Label htmlFor="cvss_ui">{t[language].userInteraction}</Label>
                         <Input id="cvss_ui" value={vuln.cvss.userInteraction} onChange={e => handleCvssChange('userInteraction', e.target.value)} />
                     </div>
-                     <div className="space-y-2">
+                  </div>
+                  <div className="grid grid-cols-1 gap-4 md:grid-cols-4">
+                      <div className="space-y-2">
                         <Label htmlFor="cvss_s">{t[language].scope}</Label>
                         <Input id="cvss_s" value={vuln.cvss.scope} onChange={e => handleCvssChange('scope', e.target.value)} />
                     </div>
-                     <div className="space-y-2">
+                      <div className="space-y-2">
                         <Label htmlFor="cvss_c">{t[language].confidentiality}</Label>
                         <Input id="cvss_c" value={vuln.cvss.confidentiality} onChange={e => handleCvssChange('confidentiality', e.target.value)} />
                     </div>
-                     <div className="space-y-2">
+                      <div className="space-y-2">
                         <Label htmlFor="cvss_i">{t[language].integrity}</Label>
                         <Input id="cvss_i" value={vuln.cvss.integrity} onChange={e => handleCvssChange('integrity', e.target.value)} />
                     </div>
-                     <div className="space-y-2">
+                      <div className="space-y-2">
                         <Label htmlFor="cvss_a">{t[language].availability}</Label>
                         <Input id="cvss_a" value={vuln.cvss.availability} onChange={e => handleCvssChange('availability', e.target.value)} />
                     </div>
-                </CardContent>
-            </Card>
-        </div>
+                  </div>
+              </CardContent>
+          </Card>
+
+          <Accordion type="multiple" className="w-full" defaultValue={['en-content']}>
+            <AccordionItem value="en-content">
+              <AccordionTrigger className="text-lg font-semibold">{t[language].englishContent}</AccordionTrigger>
+              <AccordionContent className="space-y-4 pt-4">
+                  {renderContentFields('en')}
+              </AccordionContent>
+            </AccordionItem>
+            <AccordionItem value="es-content">
+              <AccordionTrigger className="text-lg font-semibold">{t[language].spanishContent}</AccordionTrigger>
+              <AccordionContent className="space-y-4 pt-4">
+                  {renderContentFields('es')}
+              </AccordionContent>
+            </AccordionItem>
+          </Accordion>
       </div>
     </div>
   );
