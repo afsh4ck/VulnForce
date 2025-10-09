@@ -10,7 +10,7 @@ import { Textarea } from '@/components/ui/textarea';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import Link from 'next/link';
-import { ChevronDown, ChevronLeft, Save, GripVertical, Plus, Trash2, Rows, Bold, Italic, Code, List, ListOrdered, FileCode } from 'lucide-react';
+import { ChevronDown, ChevronLeft, Save, GripVertical, Plus, Trash2, Rows, Bold, Italic, Code, List, ListOrdered, FileCode, ChevronUp } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import { useLanguage } from '@/context/language-context';
 import type { Vulnerability, CVSS, Remediation, ImageAsset, Severity } from '@/lib/types';
@@ -454,7 +454,7 @@ export default function NewVulnerabilityPage() {
   const [esSectionViews, setEsSectionViews] = useState<Record<string, ScopeView>>({});
   const [isEnOrganizing, setIsEnOrganizing] = useState(false);
   const [isEsOrganizing, setIsEsOrganizing] = useState(false);
-  const [activeAccordion, setActiveAccordion] = useState<string | undefined>();
+  const [activeAccordion, setActiveAccordion] = useState<string[]>([]);
   const [errors, setErrors] = useState<Record<string, boolean>>({});
 
   const t = {
@@ -682,8 +682,8 @@ export default function NewVulnerabilityPage() {
 
   const handleOrganizeClick = (lang: 'en' | 'es') => {
     const accordionValue = lang === 'en' ? 'en-content' : 'es-content';
-    if(activeAccordion !== accordionValue) {
-        setActiveAccordion(accordionValue);
+    if (!activeAccordion.includes(accordionValue)) {
+      setActiveAccordion(prev => [...prev, accordionValue]);
     }
 
     if (lang === 'en') {
@@ -857,19 +857,19 @@ export default function NewVulnerabilityPage() {
                 </CardContent>
             </Card>
 
-            <Accordion type="single" collapsible className="w-full space-y-6" value={activeAccordion} onValueChange={setActiveAccordion}>
-              <AccordionItem value="en-content" className="border bg-card rounded-lg">
-                <div className="flex w-full items-center justify-between p-4">
-                    <AccordionTrigger>
+            <Accordion type="multiple" className="w-full space-y-6" value={activeAccordion} onValueChange={setActiveAccordion}>
+              <AccordionItem value="en-content" className="border bg-card rounded-lg data-[state=closed]:border data-[state=open]:border">
+                <AccordionTrigger className="p-4 hover:no-underline data-[state=open]:border-b">
+                  <div className="flex w-full items-center justify-between">
                       <div className="flex items-center gap-2">
                         <span className="font-semibold text-base">{t[language].englishContent}</span>
                       </div>
-                    </AccordionTrigger>
-                    <Button variant="outline" size="sm" onClick={(e) => { e.stopPropagation(); handleOrganizeClick('en'); }}>
-                        <Rows className="mr-2 h-4 w-4" />
-                        {isEnOrganizing ? t[language].finishOrganizing : t[language].organizeSections}
-                    </Button>
+                      <Button variant="outline" size="sm" onClick={(e) => { e.stopPropagation(); handleOrganizeClick('en'); }}>
+                          <Rows className="mr-2 h-4 w-4" />
+                          {isEnOrganizing ? t[language].finishOrganizing : t[language].organizeSections}
+                      </Button>
                   </div>
+                </AccordionTrigger>
                 <AccordionContent className="p-4 pt-0">
                   <div className="space-y-4 pt-4 border-t">
                     <DndContext sensors={sensors} collisionDetection={closestCenter} onDragEnd={(e) => handleDragEnd(e, 'en')}>
@@ -903,18 +903,18 @@ export default function NewVulnerabilityPage() {
                 </AccordionContent>
               </AccordionItem>
               
-              <AccordionItem value="es-content" className="border bg-card rounded-lg">
-                  <div className="flex w-full items-center justify-between p-4">
-                    <AccordionTrigger>
-                      <div className="flex items-center gap-2">
-                        <span className="font-semibold text-base">{t[language].spanishContent}</span>
-                      </div>
-                    </AccordionTrigger>
-                    <Button variant="outline" size="sm" onClick={(e) => { e.stopPropagation(); handleOrganizeClick('es'); }}>
-                        <Rows className="mr-2 h-4 w-4" />
-                        {isEsOrganizing ? t[language].finishOrganizing : t[language].organizeSections}
-                    </Button>
-                  </div>
+              <AccordionItem value="es-content" className="border bg-card rounded-lg data-[state=closed]:border data-[state=open]:border">
+                  <AccordionTrigger className="p-4 hover:no-underline data-[state=open]:border-b">
+                    <div className="flex w-full items-center justify-between">
+                        <div className="flex items-center gap-2">
+                          <span className="font-semibold text-base">{t[language].spanishContent}</span>
+                        </div>
+                        <Button variant="outline" size="sm" onClick={(e) => { e.stopPropagation(); handleOrganizeClick('es'); }}>
+                            <Rows className="mr-2 h-4 w-4" />
+                            {isEsOrganizing ? t[language].finishOrganizing : t[language].organizeSections}
+                        </Button>
+                    </div>
+                  </AccordionTrigger>
                   <AccordionContent className="p-4 pt-0">
                     <div className="space-y-4 pt-4 border-t">
                       <DndContext sensors={sensors} collisionDetection={closestCenter} onDragEnd={(e) => handleDragEnd(e, 'es')}>
