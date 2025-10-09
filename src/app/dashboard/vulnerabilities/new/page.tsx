@@ -681,15 +681,14 @@ export default function NewVulnerabilityPage() {
   };
 
   const handleOrganizeClick = (lang: 'en' | 'es') => {
+    const accordionValue = lang === 'en' ? 'en-content' : 'es-content';
+    if(activeAccordion !== accordionValue) {
+        setActiveAccordion(accordionValue);
+    }
+
     if (lang === 'en') {
-      if (!isEnOrganizing && activeAccordion !== 'en-content') {
-        setActiveAccordion('en-content');
-      }
       setIsEnOrganizing(!isEnOrganizing);
     } else {
-      if (!isEsOrganizing && activeAccordion !== 'es-content') {
-        setActiveAccordion('es-content');
-      }
       setIsEsOrganizing(!isEsOrganizing);
     }
   };
@@ -858,10 +857,10 @@ export default function NewVulnerabilityPage() {
                 </CardContent>
             </Card>
 
-            <Accordion type="single" collapsible className="w-full space-y-6">
+            <Accordion type="single" collapsible className="w-full space-y-6" value={activeAccordion} onValueChange={setActiveAccordion}>
               <AccordionItem value="en-content" className="border bg-card rounded-lg">
                 <div className="flex w-full items-center justify-between p-4">
-                    <AccordionTrigger className="p-0 hover:no-underline">
+                    <AccordionTrigger>
                       <div className="flex items-center gap-2">
                         <span className="font-semibold text-base">{t[language].englishContent}</span>
                       </div>
@@ -906,7 +905,7 @@ export default function NewVulnerabilityPage() {
               
               <AccordionItem value="es-content" className="border bg-card rounded-lg">
                   <div className="flex w-full items-center justify-between p-4">
-                    <AccordionTrigger className="p-0 hover:no-underline">
+                    <AccordionTrigger>
                       <div className="flex items-center gap-2">
                         <span className="font-semibold text-base">{t[language].spanishContent}</span>
                       </div>
