@@ -35,15 +35,17 @@ const vulnerabilityCategories = [
     { value: 'Infrastructure', label_en: 'Infrastructure', label_es: 'Infraestructura' },
     { value: 'Authentication', label_en: 'Authentication', label_es: 'Autenticación' },
     { value: 'Cryptography', label_en: 'Cryptography', label_es: 'Criptografía' },
+    { value: 'Additional', label_en: 'Additional', label_es: 'Adicionales' },
 ];
 
 const categoryMapping: { [key: string]: string[] } = {
-    Web: ['OWASP Top 10', 'A03:2021-Injection', 'Injection', 'XSS', 'CSRF', 'SSRF', 'File Upload', 'RCE', 'A05:2021-Security_Misconfiguration', 'A01:2021-Broken_Access_Control', 'A10:2021-Server-Side_Request_Forgery', 'A02:2021-Cryptographic_Failures', 'A08:2021-Software_and_Data_Integrity_Failures', 'A07:2021-Identification_and_Authentication_Failures', 'A09:2021-Security_Logging_and_Monitoring_Failures', 'Deserialization', 'Path Traversal', 'Directory Traversal', 'Open Redirect', 'Clickjacking', 'UI Redressing', 'Template Injection', 'SSTI', 'DOM XSS', 'Mass Assignment', 'Request Smuggling', 'Cache Poisoning', 'ORM'],
-    Mobile: ['Mobile', 'Android', 'iOS', 'Insecure Storage', 'MitM'],
-    Network: ['Network', 'WiFi', 'WPA2', 'Cracking', 'Evil Twin', 'DNS'],
-    Infrastructure: ['Infrastructure', 'Misconfiguration', 'Asset Management', 'Subdomain Takeover'],
-    Authentication: ['Authentication', 'Passwords', 'Brute Force', 'Credential_stuffing', 'Enumeration', 'Session Management', 'Session Fixation'],
-    Cryptography: ['Cryptography', 'A02:2021-Cryptographic_Failures', 'TLS/SSL'],
+    Web: ['Web'],
+    Mobile: ['Mobile'],
+    Network: ['Network'],
+    Infrastructure: ['Infrastructure'],
+    Authentication: ['Authentication'],
+    Cryptography: ['Cryptography'],
+    Additional: ['Additional'],
 };
 
 
@@ -195,7 +197,7 @@ export default function VulnerabilitiesPage() {
                 />
             </div>
             <Select value={selectedCategory} onValueChange={setSelectedCategory}>
-                <SelectTrigger className="w-auto">
+                <SelectTrigger className="w-auto ml-2">
                     <SelectValue placeholder={language === 'es' ? 'Todo' : 'All'} />
                 </SelectTrigger>
                 <SelectContent>
