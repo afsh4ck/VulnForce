@@ -171,7 +171,7 @@ const SectionEditor = ({ section, onContentChange, onDelete, view, onViewChange,
                     const dataUrl = event.target?.result as string;
                     if (dataUrl) {
                         const newImage = addImage(dataUrl);
-                        const markdownImage = `![Pasted Image](image://${newImage.id})`;
+                        const markdownImage = `![Pasted Image](image://${'\'\'\''}{newImage.id})`
                         const textarea = e.target as HTMLTextAreaElement;
                         const start = textarea.selectionStart;
                         const end = textarea.selectionEnd;
@@ -859,15 +859,15 @@ export default function NewVulnerabilityPage() {
             <Accordion type="multiple" className="w-full space-y-6" value={activeAccordion} onValueChange={setActiveAccordion}>
               <AccordionItem value="en-content" className="border bg-card rounded-lg data-[state=closed]:border data-[state=open]:border-b-0">
                 <AccordionTrigger className="p-4 hover:no-underline flex-1" onClick={(e) => { e.stopPropagation(); setActiveAccordion(prev => prev.includes('en-content') ? prev.filter(item => item !== 'en-content') : [...prev, 'en-content'])}}>
-                  <div className="flex w-full items-center justify-between">
-                    <div className="flex items-center gap-2">
-                      <span className="font-semibold text-base">{t[language].englishContent}</span>
-                      <Button variant="outline" size="sm" onClick={(e) => { e.stopPropagation(); handleOrganizeClick('en'); }} className="mr-2">
-                        <Rows className="mr-2 h-4 w-4" />
-                        {isEnOrganizing ? t[language].finishOrganizing : t[language].organizeSections}
-                      </Button>
+                    <div className="flex w-full items-center justify-between">
+                      <span className="font-semibold text-base flex-1 text-left">{t[language].englishContent}</span>
+                      <div className="flex items-center gap-2">
+                        <Button variant="outline" size="sm" onClick={(e) => { e.stopPropagation(); handleOrganizeClick('en'); }} className="mr-2">
+                          <Rows className="mr-2 h-4 w-4" />
+                          {isEnOrganizing ? t[language].finishOrganizing : t[language].organizeSections}
+                        </Button>
+                      </div>
                     </div>
-                  </div>
                 </AccordionTrigger>
                 <AccordionContent className="p-4 pt-0">
                   <div className="space-y-4 pt-4 border-t">
@@ -905,13 +905,13 @@ export default function NewVulnerabilityPage() {
               <AccordionItem value="es-content" className="border bg-card rounded-lg data-[state=closed]:border data-[state=open]:border-b-0">
                   <AccordionTrigger className="p-4 hover:no-underline flex-1" onClick={(e) => { e.stopPropagation(); setActiveAccordion(prev => prev.includes('es-content') ? prev.filter(item => item !== 'es-content') : [...prev, 'es-content'])}}>
                     <div className="flex w-full items-center justify-between">
-                      <div className="flex items-center gap-2">
-                        <span className="font-semibold text-base">{t[language].spanishContent}</span>
-                        <Button variant="outline" size="sm" onClick={(e) => { e.stopPropagation(); handleOrganizeClick('es'); }} className="mr-2">
-                            <Rows className="mr-2 h-4 w-4" />
-                            {isEsOrganizing ? t[language].finishOrganizing : t[language].organizeSections}
-                        </Button>
-                      </div>
+                       <span className="font-semibold text-base flex-1 text-left">{t[language].spanishContent}</span>
+                        <div className="flex items-center gap-2">
+                           <Button variant="outline" size="sm" onClick={(e) => { e.stopPropagation(); handleOrganizeClick('es'); }} className="mr-2">
+                                <Rows className="mr-2 h-4 w-4" />
+                                {isEsOrganizing ? t[language].finishOrganizing : t[language].organizeSections}
+                            </Button>
+                        </div>
                     </div>
                   </AccordionTrigger>
                   <AccordionContent className="p-4 pt-0">
