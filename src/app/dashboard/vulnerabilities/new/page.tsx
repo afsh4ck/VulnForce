@@ -1,7 +1,7 @@
 
 'use client';
 
-import { useState, useMemo, useCallback, useRef } from 'react';
+import { useState, useMemo, useCallback, useRef, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
@@ -12,7 +12,7 @@ import Link from 'next/link';
 import { ChevronLeft, Save, GripVertical, Plus, Trash2, Rows, Bold, Italic, Code, List, ListOrdered, FileCode } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import { useLanguage } from '@/context/language-context';
-import type { Vulnerability, CVSS, Remediation, ImageAsset } from '@/lib/types';
+import type { Vulnerability, CVSS, Remediation, ImageAsset, Severity } from '@/lib/types';
 import { useRouter } from 'next/navigation';
 import {
   Accordion,
@@ -31,6 +31,7 @@ import { MarkdownPreview } from '@/components/markdown-preview';
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from '@/components/ui/alert-dialog';
 import { Dialog, DialogContent, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
 import { Combobox } from '@/components/ui/combobox';
+import { getCVSS, getScore, getSeverity } from '@/lib/cvss';
 
 
 const languageOptions = [
@@ -371,15 +372,15 @@ const emptyVulnerability: Omit<Vulnerability, 'id' | 'remediation_en' | 'remedia
   cwe: '',
   cvss: {
     score: 0,
-    vectorString: '',
-    attackVector: '',
-    attackComplexity: '',
-    privilegesRequired: '',
-    userInteraction: '',
-    scope: '',
-    confidentiality: '',
-    integrity: '',
-    availability: '',
+    vectorString: 'CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:N/I:N/A:N',
+    attackVector: 'N',
+    attackComplexity: 'L',
+    privilegesRequired: 'N',
+    userInteraction: 'N',
+    scope: 'U',
+    confidentiality: 'N',
+    integrity: 'N',
+    availability: 'N',
   },
   severity: 'Informational',
   references: [],
@@ -396,6 +397,17 @@ const vulnerabilityCategories = [
     { value: 'Additional', label_en: 'Additional', label_es: 'Adicionales' },
 ];
 
+const cvssOptions = {
+    attackVector: [ { value: 'N', label: 'Network' }, { value: 'A', label: 'Adjacent' }, { value: 'L', label: 'Local' }, { value: 'P', label: 'Physical' } ],
+    attackComplexity: [ { value: 'L', label: 'Low' }, { value: 'H', label: 'High' } ],
+    privilegesRequired: [ { value: 'N', label: 'None' }, { value: 'L', label: 'Low' }, { value: 'H', label: 'High' } ],
+    userInteraction: [ { value: 'N', label: 'None' }, { value: 'R', label: 'Required' } ],
+    scope: [ { value: 'U', label: 'Unchanged' }, { value: 'C', label: 'Changed' } ],
+    confidentiality: [ { value: 'N', label: 'None' }, { value: 'L', label: 'Low' }, { value: 'H', label: 'High' } ],
+    integrity: [ { value: 'N', label: 'None' }, { value: 'L', label: 'Low' }, { value: 'H', label: 'High' } ],
+    availability: [ { value: 'N', label: 'None' }, { value: 'L', label: 'Low' }, { value: 'H', label: 'High' } ],
+}
+
 export default function NewVulnerabilityPage() {
   const { toast } = useToast();
   const { language } = useLanguage();
@@ -411,119 +423,7 @@ export default function NewVulnerabilityPage() {
   const [isEnOrganizing, setIsEnOrganizing] = useState(false);
   const [isEsOrganizing, setIsEsOrganizing] = useState(false);
 
-  const parseMarkdownToSections = useCallback((markdown: string): FindingSection[] => {
-    if (!markdown) return [];
-    const parts = markdown.split(/\n\s*---\s*\n/);
-    return parts.map((part, index) => ({
-        id: `section-${index}-${Date.now()}-${Math.random()}`,
-        content: part.trim()
-    })).filter(p => p.content.trim() !== '');
-  }, []);
-
-  useEffect(() => {
-    const initialEnSections = parseMarkdownToSections(vuln.overview_en);
-    const initialEsSections = parseMarkdownToSections(vuln.overview_es);
-    setEnSections(initialEnSections);
-    setEsSections(initialEsSections);
-    setEnSectionViews(initialEnSections.reduce((acc, sec) => ({ ...acc, [sec.id]: 'split' }), {}));
-    setEsSectionViews(initialEsSections.reduce((acc, sec) => ({ ...acc, [sec.id]: 'split' }), {}));
-  }, [vuln.overview_en, vuln.overview_es, parseMarkdownToSections]);
-
-
-  const handleInputChange = <T extends keyof Omit<Vulnerability, 'id' | 'remediation_en' | 'remediation_es'>>(field: T, value: Omit<Vulnerability, 'id' | 'remediation_en' | 'remediation_es'>[T]) => {
-    setVuln({ ...vuln, [field]: value });
-  };
-  
-  const handleCategoryChange = (value: string) => {
-    setVuln({ ...vuln, tags: [value] });
-  };
-
-  const handleCvssChange = (field: keyof CVSS, value: string | number) => {
-    const newCvss = { ...vuln.cvss, [field]: value };
-    setVuln({ ...vuln, cvss: newCvss });
-  };
-  
-  const handleSave = () => {
-    const fullEnContent = enSections.map(s => s.content).join('\n\n---\n\n');
-    const fullEsContent = esSections.map(s => s.content).join('\n\n---\n\n');
-    
-    const newVuln = {
-        ...vuln,
-        overview_en: fullEnContent,
-        overview_es: fullEsContent,
-        remediation_en: { shortTerm: '', mediumTerm: '', longTerm: '' },
-        remediation_es: { shortTerm: '', mediumTerm: '', longTerm: '' },
-    };
-
-    addVulnerability(newVuln);
-    toast({
-      title: t[language].saveSuccessTitle,
-      description: t[language].saveSuccessDescription,
-    });
-    router.push('/dashboard/vulnerabilities');
-  };
-  
-  const handleSectionChange = (lang: 'en' | 'es', sectionId: string, newContent: string) => {
-    const updater = lang === 'en' ? setEnSections : setEsSections;
-    updater(prev => prev.map(s => s.id === sectionId ? { ...s, content: newContent } : s));
-  };
-
-  const handleTitleChange = (lang: 'en' | 'es', sectionId: string, newTitle: string) => {
-    const updater = lang === 'en' ? setEnSections : setEsSections;
-    updater(prev => prev.map(sec => {
-        if (sec.id === sectionId) {
-            const oldContent = sec.content;
-            const contentWithoutTitle = oldContent.replace(/^(#{1,4}) .*\n?/, '');
-            const newContent = `### ${newTitle}\n${contentWithoutTitle}`;
-            return { ...sec, content: newContent };
-        }
-        return sec;
-    }));
-  }
-
-  const handleAddSection = (lang: 'en' | 'es') => {
-    const newSection: FindingSection = { id: `new-${lang}-${Date.now()}`, content: `### ${t[language].newSection}` };
-    if (lang === 'en') {
-        setEnSections(prev => [...prev, newSection]);
-        setEnSectionViews(prev => ({ ...prev, [newSection.id]: 'edit' }));
-    } else {
-        setEsSections(prev => [...prev, newSection]);
-        setEsSectionViews(prev => ({ ...prev, [newSection.id]: 'edit' }));
-    }
-  };
-
-  const handleDeleteSection = (lang: 'en' | 'es', sectionId: string) => {
-    if (lang === 'en') {
-        setEnSections(prev => prev.filter(s => s.id !== sectionId));
-    } else {
-        setEsSections(prev => prev.filter(s => s.id !== sectionId));
-    }
-  };
-  
-  const handleDragEnd = (event: DragEndEvent, lang: 'en' | 'es') => {
-    const { active, over } = event;
-    if (over && active.id !== over.id) {
-        const updater = lang === 'en' ? setEnSections : setEsSections;
-        updater((items) => {
-            const oldIndex = items.findIndex((item) => item.id === active.id);
-            const newIndex = items.findIndex((item) => item.id === over.id);
-            return arrayMove(items, oldIndex, newIndex);
-        });
-    }
-  };
-
-
-  const getSeverityVariant = (severity?: string): 'destructive' | 'high' | 'medium' | 'low' | 'secondary' => {
-    switch (severity) {
-      case 'Critical': return 'destructive';
-      case 'High': return 'high';
-      case 'Medium': return 'medium';
-      case 'Low': return 'low';
-      default: return 'secondary';
-    }
-  };
-
-   const t = {
+  const t = {
     en: {
       back: 'Back to Vulnerabilities',
       save: 'Create Vulnerability',
@@ -604,12 +504,134 @@ export default function NewVulnerabilityPage() {
     }
   };
 
+  const parseMarkdownToSections = useCallback((markdown: string): FindingSection[] => {
+    if (!markdown) return [];
+    const parts = markdown.split(/\n\s*---\s*\n/);
+    return parts.map((part, index) => ({
+        id: `section-${index}-${Date.now()}-${Math.random()}`,
+        content: part.trim()
+    })).filter(p => p.content.trim() !== '');
+  }, []);
+
+  const handleInputChange = <T extends keyof Omit<Vulnerability, 'id' | 'remediation_en' | 'remediation_es'>>(field: T, value: Omit<Vulnerability, 'id' | 'remediation_en' | 'remediation_es'>[T]) => {
+    setVuln(prev => ({ ...prev, [field]: value }));
+  };
+  
+  const handleCategoryChange = useCallback((value: string) => {
+    setVuln(prev => ({ ...prev, tags: [value] }));
+  }, []);
+
+  const handleCvssChange = useCallback((field: keyof CVSS, value: string | number) => {
+    setVuln(prevVuln => {
+        const newCvss = { ...prevVuln.cvss, [field]: value };
+        const vectorString = getCVSS(newCvss);
+        const score = getScore(vectorString);
+        const severity = getSeverity(score) as Severity;
+        return {
+            ...prevVuln,
+            cvss: { ...newCvss, vectorString, score },
+            severity,
+        };
+    });
+  }, []);
+  
+  const handleSave = () => {
+    const fullEnContent = enSections.map(s => s.content).join('\n\n---\n\n');
+    const fullEsContent = esSections.map(s => s.content).join('\n\n---\n\n');
+    
+    const newVuln = {
+        ...vuln,
+        overview_en: fullEnContent,
+        overview_es: fullEsContent,
+        remediation_en: { shortTerm: '[TODO]', mediumTerm: '[TODO]', longTerm: '[TODO]' },
+        remediation_es: { shortTerm: '[TODO]', mediumTerm: '[TODO]', longTerm: '[TODO]' },
+    };
+
+    addVulnerability(newVuln);
+    toast({
+      title: t[language].saveSuccessTitle,
+      description: t[language].saveSuccessDescription,
+    });
+    router.push('/dashboard/vulnerabilities');
+  };
+  
+  const handleSectionChange = (lang: 'en' | 'es', sectionId: string, newContent: string) => {
+    const updater = lang === 'en' ? setEnSections : setEsSections;
+    updater(prev => prev.map(s => s.id === sectionId ? { ...s, content: newContent } : s));
+  };
+
+  const handleTitleChange = (lang: 'en' | 'es', sectionId: string, newTitle: string) => {
+    const updater = lang === 'en' ? setEnSections : setEsSections;
+    updater(prev => prev.map(sec => {
+        if (sec.id === sectionId) {
+            const oldContent = sec.content;
+            const contentWithoutTitle = oldContent.replace(/^(#{1,4}) .*\n?/, '');
+            const newContent = `### ${newTitle}\n${contentWithoutTitle}`;
+            return { ...sec, content: newContent };
+        }
+        return sec;
+    }));
+  }
+
+  const handleAddSection = (lang: 'en' | 'es') => {
+    const newSection: FindingSection = { id: `new-${lang}-${Date.now()}`, content: `### ${t[language].newSection}` };
+    if (lang === 'en') {
+        setEnSections(prev => [...prev, newSection]);
+        setEnSectionViews(prev => ({ ...prev, [newSection.id]: 'edit' }));
+    } else {
+        setEsSections(prev => [...prev, newSection]);
+        setEsSectionViews(prev => ({ ...prev, [newSection.id]: 'edit' }));
+    }
+  };
+
+  const handleDeleteSection = (lang: 'en' | 'es', sectionId: string) => {
+    if (lang === 'en') {
+        setEnSections(prev => prev.filter(s => s.id !== sectionId));
+    } else {
+        setEsSections(prev => prev.filter(s => s.id !== sectionId));
+    }
+  };
+  
+  const handleDragEnd = (event: DragEndEvent, lang: 'en' | 'es') => {
+    const { active, over } = event;
+    if (over && active.id !== over.id) {
+        const updater = lang === 'en' ? setEnSections : setEsSections;
+        updater((items) => {
+            const oldIndex = items.findIndex((item) => item.id === active.id);
+            const newIndex = items.findIndex((item) => item.id === over.id);
+            return arrayMove(items, oldIndex, newIndex);
+        });
+    }
+  };
+
+
+  const getSeverityVariant = (severity?: string): 'destructive' | 'high' | 'medium' | 'low' | 'secondary' => {
+    switch (severity) {
+      case 'Critical': return 'destructive';
+      case 'High': return 'high';
+      case 'Medium': return 'medium';
+      case 'Low': return 'low';
+      default: return 'secondary';
+    }
+  };
+
+  useEffect(() => {
+    const initialEnSections = parseMarkdownToSections(vuln.overview_en);
+    const initialEsSections = parseMarkdownToSections(vuln.overview_es);
+    setEnSections(initialEnSections);
+    setEsSections(initialEsSections);
+    setEnSectionViews(initialEnSections.reduce((acc, sec) => ({ ...acc, [sec.id]: 'split' }), {}));
+    setEsSectionViews(initialEsSections.reduce((acc, sec) => ({ ...acc, [sec.id]: 'split' }), {}));
+  }, [vuln.overview_en, vuln.overview_es, parseMarkdownToSections]);
+
   const renderSectionEditors = (lang: 'en' | 'es', sections: FindingSection[], isOrganizing: boolean, setIsOrganizing: (val: boolean) => void) => (
-    <AccordionItem value={`${lang}-content`}>
-        <AccordionTrigger className="text-lg font-semibold">
-            <div className="flex w-full items-center justify-between pr-4">
-                <span>{lang === 'en' ? t[language].englishContent : t[language].spanishContent}</span>
-                <Button variant="outline" size="sm" onClick={(e) => { e.stopPropagation(); setIsOrganizing(!isOrganizing); }}>
+    <AccordionItem value={`${lang}-content`} className="border-b-0">
+        <AccordionTrigger className="hover:no-underline p-0">
+             <div className="flex w-full items-center justify-between p-4 bg-muted/50 border-y">
+                <span className="font-semibold text-base">
+                    {lang === 'en' ? t[language].englishContent : t[language].spanishContent}
+                </span>
+                 <Button variant="outline" size="sm" onClick={(e) => { e.stopPropagation(); setIsOrganizing(!isOrganizing); }}>
                     <Rows className="mr-2 h-4 w-4" />
                     {isOrganizing ? t[language].finishOrganizing : t[language].organizeSections}
                 </Button>
@@ -684,25 +706,10 @@ export default function NewVulnerabilityPage() {
                             <Input id="title_es" value={vuln.title_es} onChange={e => handleInputChange('title_es', e.target.value)} />
                         </div>
                     </div>
-                    <div className="grid grid-cols-1 gap-4 md:grid-cols-3">
+                    <div className="grid grid-cols-1 gap-4">
                         <div className="space-y-2">
                             <Label htmlFor="cwe">{t[language].cweLabel}</Label>
                             <Input id="cwe" value={vuln.cwe} onChange={e => handleInputChange('cwe', e.target.value)} />
-                        </div>
-                        <div className="space-y-2">
-                            <Label htmlFor="severity">{t[language].severity}</Label>
-                            <Select value={vuln.severity} onValueChange={value => handleInputChange('severity', value as Vulnerability['severity'])}>
-                                <SelectTrigger id="severity">
-                                    <SelectValue placeholder={t[language].selectSeverity} />
-                                </SelectTrigger>
-                                <SelectContent>
-                                    <SelectItem value="Critical">{t[language].critical}</SelectItem>
-                                    <SelectItem value="High">{t[language].high}</SelectItem>
-                                    <SelectItem value="Medium">{t[language].medium}</SelectItem>
-                                    <SelectItem value="Low">{t[language].low}</SelectItem>
-                                    <SelectItem value="Informational">{t[language].informational}</SelectItem>
-                                </SelectContent>
-                            </Select>
                         </div>
                         <div className="space-y-2">
                             <Label htmlFor="category">{t[language].categoryLabel}</Label>
@@ -735,53 +742,47 @@ export default function NewVulnerabilityPage() {
                     <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
                       <div className="space-y-2">
                           <Label htmlFor="cvss_score">{t[language].score}</Label>
-                          <Input id="cvss_score" type="number" step="0.1" value={vuln.cvss.score} onChange={e => handleCvssChange('score', parseFloat(e.target.value) || 0)} />
+                          <Input id="cvss_score" type="number" step="0.1" value={vuln.cvss.score} readOnly className="font-bold text-lg" />
                       </div>
                       <div className="space-y-2">
                           <Label htmlFor="cvss_vector">{t[language].vectorString}</Label>
-                          <Input id="cvss_vector" value={vuln.cvss.vectorString} onChange={e => handleCvssChange('vectorString', e.target.value)} />
+                          <Input id="cvss_vector" value={vuln.cvss.vectorString} readOnly />
                       </div>
                     </div>
                     <div className="grid grid-cols-1 gap-4 md:grid-cols-4">
-                      <div className="space-y-2">
-                          <Label htmlFor="cvss_av">{t[language].attackVector}</Label>
-                          <Input id="cvss_av" value={vuln.cvss.attackVector} onChange={e => handleCvssChange('attackVector', e.target.value)} />
-                      </div>
-                      <div className="space-y-2">
-                          <Label htmlFor="cvss_ac">{t[language].attackComplexity}</Label>
-                          <Input id="cvss_ac" value={vuln.cvss.attackComplexity} onChange={e => handleCvssChange('attackComplexity', e.target.value)} />
-                      </div>
-                      <div className="space-y-2">
-                          <Label htmlFor="cvss_pr">{t[language].privilegesRequired}</Label>
-                          <Input id="cvss_pr" value={vuln.cvss.privilegesRequired} onChange={e => handleCvssChange('privilegesRequired', e.target.value)} />
-                      </div>
-                      <div className="space-y-2">
-                          <Label htmlFor="cvss_ui">{t[language].userInteraction}</Label>
-                          <Input id="cvss_ui" value={vuln.cvss.userInteraction} onChange={e => handleCvssChange('userInteraction', e.target.value)} />
-                      </div>
+                        {(Object.keys(cvssOptions) as Array<keyof typeof cvssOptions>).slice(0,4).map(key => (
+                             <div className="space-y-2" key={key}>
+                                <Label htmlFor={`cvss-${key}`}>{t[language][key]}</Label>
+                                <Select onValueChange={(value) => handleCvssChange(key, value)} value={vuln.cvss[key]}>
+                                    <SelectTrigger id={`cvss-${key}`}>
+                                        <SelectValue />
+                                    </SelectTrigger>
+                                    <SelectContent>
+                                        {cvssOptions[key].map(opt => <SelectItem key={opt.value} value={opt.value}>{opt.label}</SelectItem>)}
+                                    </SelectContent>
+                                </Select>
+                            </div>
+                        ))}
                     </div>
-                    <div className="grid grid-cols-1 gap-4 md:grid-cols-4">
-                      <div className="space-y-2">
-                          <Label htmlFor="cvss_s">{t[language].scope}</Label>
-                          <Input id="cvss_s" value={vuln.cvss.scope} onChange={e => handleCvssChange('scope', e.target.value)} />
-                      </div>
-                      <div className="space-y-2">
-                          <Label htmlFor="cvss_c">{t[language].confidentiality}</Label>
-                          <Input id="cvss_c" value={vuln.cvss.confidentiality} onChange={e => handleCvssChange('confidentiality', e.target.value)} />
-                      </div>
-                      <div className="space-y-2">
-                          <Label htmlFor="cvss_i">{t[language].integrity}</Label>
-                          <Input id="cvss_i" value={vuln.cvss.integrity} onChange={e => handleCvssChange('integrity', e.target.value)} />
-                      </div>
-                      <div className="space-y-2">
-                          <Label htmlFor="cvss_a">{t[language].availability}</Label>
-                          <Input id="cvss_a" value={vuln.cvss.availability} onChange={e => handleCvssChange('availability', e.target.value)} />
-                      </div>
+                     <div className="grid grid-cols-1 gap-4 md:grid-cols-4">
+                        {(Object.keys(cvssOptions) as Array<keyof typeof cvssOptions>).slice(4).map(key => (
+                             <div className="space-y-2" key={key}>
+                                <Label htmlFor={`cvss-${key}`}>{t[language][key]}</Label>
+                                <Select onValueChange={(value) => handleCvssChange(key, value)} value={vuln.cvss[key]}>
+                                    <SelectTrigger id={`cvss-${key}`}>
+                                        <SelectValue />
+                                    </SelectTrigger>
+                                    <SelectContent>
+                                        {cvssOptions[key].map(opt => <SelectItem key={opt.value} value={opt.value}>{opt.label}</SelectItem>)}
+                                    </SelectContent>
+                                </Select>
+                            </div>
+                        ))}
                     </div>
                 </CardContent>
             </Card>
 
-            <Accordion type="multiple" className="w-full">
+            <Accordion type="multiple" defaultValue={['en-content', 'es-content']} className="w-full space-y-4">
                 {renderSectionEditors('en', enSections, isEnOrganizing, setIsEnOrganizing)}
                 {renderSectionEditors('es', esSections, isEsOrganizing, setIsEsOrganizing)}
             </Accordion>
@@ -789,3 +790,5 @@ export default function NewVulnerabilityPage() {
     </div>
   );
 }
+
+    
