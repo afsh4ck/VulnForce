@@ -359,40 +359,44 @@ const ScopeSectionEditor = ({ section, onContentChange, onDelete, view, onViewCh
                   </div>
                 )}
                  <CardContent className="p-0">
-                        {view === 'split' ? (
-                          <ResizablePanelGroup direction="horizontal" className="min-h-[300px] rounded-lg">
-                              <ResizablePanel defaultSize={50}>
-                                <div className="h-full">
-                                  <HighlightingTextarea
-                                      ref={textareaRef}
-                                      value={section.content}
-                                      onValueChange={(newContent) => onContentChange(newContent)}
-                                      onPaste={handlePaste}
-                                  />
+                    {view === 'split' && (
+                        <div className="relative min-h-[300px]">
+                            <ResizablePanelGroup direction="horizontal" className="min-h-[300px] rounded-lg">
+                                <ResizablePanel defaultSize={50}>
+                                    <div className="h-full">
+                                    <HighlightingTextarea
+                                        ref={textareaRef}
+                                        value={section.content}
+                                        onValueChange={(newContent) => onContentChange(newContent)}
+                                        onPaste={handlePaste}
+                                        className="h-full"
+                                    />
+                                    </div>
+                                </ResizablePanel>
+                                <ResizableHandle />
+                                <ResizablePanel defaultSize={50}>
+                                <div className="h-full overflow-auto rounded-md p-4 border-l">
+                                    <MarkdownPreview content={section.content} getImage={getImage} />
                                 </div>
-                              </ResizablePanel>
-                              <ResizableHandle />
-                              <ResizablePanel defaultSize={50}>
-                              <div className="h-full overflow-auto rounded-md p-4">
-                                  <MarkdownPreview content={section.content} getImage={getImage} />
-                              </div>
-                              </ResizablePanel>
-                          </ResizablePanelGroup>
-                        ) : (
-                        <div className="grid grid-cols-1">
-                            <div className={cn(view === 'preview' && 'hidden')}>
-                                <HighlightingTextarea
-                                    ref={textareaRef}
-                                    value={section.content}
-                                    onValueChange={(newContent) => onContentChange(newContent)}
-                                    onPaste={handlePaste}
-                                />
-                            </div>
-                            <div className={cn(view === 'edit' && 'hidden', "rounded-md p-4 min-h-[300px] overflow-auto")}>
-                                <MarkdownPreview content={section.content} getImage={getImage} />
-                            </div>
+                                </ResizablePanel>
+                            </ResizablePanelGroup>
                         </div>
-                        )}
+                    )}
+                    {view === 'edit' && (
+                        <div>
+                            <HighlightingTextarea
+                                ref={textareaRef}
+                                value={section.content}
+                                onValueChange={(newContent) => onContentChange(newContent)}
+                                onPaste={handlePaste}
+                            />
+                        </div>
+                    )}
+                    {view === 'preview' && (
+                        <div className="rounded-md p-4 min-h-[300px] overflow-auto">
+                            <MarkdownPreview content={section.content} getImage={getImage} />
+                        </div>
+                    )}
                  </CardContent>
             </div>
         )}
@@ -1012,5 +1016,6 @@ export default function ProjectDetailsPage() {
     
 
     
+
 
 
