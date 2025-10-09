@@ -1,6 +1,7 @@
 
 
 import type { Client, Project, Finding, Vulnerability, ProjectTemplate } from './types';
+import { format } from 'date-fns';
 
 export let clients: Client[] = [
   { id: 'cli-1', name: 'Innovatech Solutions', contact: 'contact@innovatech.com', logoUrl: 'https://picsum.photos/seed/innovatech/128/128' },
@@ -223,7 +224,7 @@ export let vulnerabilities: Vulnerability[] = [
     { id: "vuln-crypto-068", title_en: "Certificate Validation Bypass", title_es: "Omisión de validación de certificados", cwe: "CWE-295", severity: "High", cvss: { score: 8.0, vectorString: "CVSS:3.1/AV:N/AC:H/PR:N/UI:N/S:U/C:H/I:H/A:N", attackVector: "Network", attackComplexity: "High", privilegesRequired: "None", userInteraction: "None", scope: "Unchanged", confidentiality: "High", integrity: "High", availability: "None" }, ...emptyVulnBoilerplate, tags: ["Cryptography", "Network", "MitM"] },
     { id: "vuln-crypto-069", title_en: "Insecure SSL/TLS Configuration", title_es: "Configuración insegura de SSL/TLS", cwe: "CWE-326", severity: "High", cvss: { score: 8.0, vectorString: "CVSS:3.1/AV:N/AC:H/PR:N/UI:N/S:U/C:H/I:H/A:N", attackVector: "Network", attackComplexity: "High", privilegesRequired: "None", userInteraction: "None", scope: "Unchanged", confidentiality: "High", integrity: "High", availability: "None" }, ...emptyVulnBoilerplate, tags: ["Cryptography", "Network", "Misconfiguration"] },
 
-    // Additional Vulnerabilities
+    // Additional
     { id: "vuln-add-070", title_en: "Buffer Overflow", title_es: "Desbordamiento de búfer", cwe: "CWE-120", severity: "High", cvss: { score: 8.8, vectorString: "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:H/I:H/A:H", attackVector: "Network", attackComplexity: "Low", privilegesRequired: "None", userInteraction: "None", scope: "Unchanged", confidentiality: "High", integrity: "High", availability: "High" }, ...emptyVulnBoilerplate, tags: ["Additional", "Memory", "RCE"] },
     { id: "vuln-add-071", title_en: "Format String Vulnerabilities", title_es: "Vulnerabilidades de cadena de formato", cwe: "CWE-134", severity: "High", cvss: { score: 7.8, vectorString: "CVSS:3.1/AV:N/AC:L/PR:L/UI:N/S:U/C:H/I:H/A:N", attackVector: "Network", attackComplexity: "Low", privilegesRequired: "Low", userInteraction: "None", scope: "Unchanged", confidentiality: "High", integrity: "High", availability: "None" }, ...emptyVulnBoilerplate, tags: ["Additional", "Memory", "RCE"] },
     { id: "vuln-add-072", title_en: "Race Conditions", title_es: "Condiciones de carrera", cwe: "CWE-362", severity: "High", cvss: { score: 7.5, vectorString: "CVSS:3.1/AV:N/AC:H/PR:L/UI:N/S:U/C:N/I:H/A:H", attackVector: "Network", attackComplexity: "High", privilegesRequired: "Low", userInteraction: "None", scope: "Unchanged", confidentiality: "None", integrity: "High", availability: "High" }, ...emptyVulnBoilerplate, tags: ["Additional", "Business Logic", "Race Condition"] },

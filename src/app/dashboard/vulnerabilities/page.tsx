@@ -197,7 +197,7 @@ export default function VulnerabilitiesPage() {
                 />
             </div>
             <Select value={selectedCategory} onValueChange={setSelectedCategory}>
-                <SelectTrigger className="w-auto ml-2">
+                <SelectTrigger className="w-auto">
                     <SelectValue placeholder={language === 'es' ? 'Todo' : 'All'} />
                 </SelectTrigger>
                 <SelectContent>
