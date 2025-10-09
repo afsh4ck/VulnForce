@@ -412,7 +412,7 @@ export default function NewVulnerabilityPage() {
   const { toast } = useToast();
   const { language } = useLanguage();
   const router = useRouter();
-  const { addVulnerability, getImage, addImage } = useData();
+  const { addVulnerability, getImage } = useData();
   const [vuln, setVuln] = useState<Omit<Vulnerability, 'id' | 'remediation_en' | 'remediation_es'>>(emptyVulnerability);
   const sensors = useSensors( useSensor(PointerSensor), useSensor(KeyboardSensor, { coordinateGetter: sortableKeyboardCoordinates }) );
   
@@ -626,17 +626,15 @@ export default function NewVulnerabilityPage() {
 
   const renderSectionEditors = (lang: 'en' | 'es', sections: FindingSection[], isOrganizing: boolean, setIsOrganizing: (val: boolean) => void) => (
     <AccordionItem value={`${lang}-content`} className="border-b-0">
-        <AccordionTrigger className="hover:no-underline p-0">
-             <div className="flex w-full items-center justify-between p-4 bg-muted/50 border-y">
-                <span className="font-semibold text-base">
-                    {lang === 'en' ? t[language].englishContent : t[language].spanishContent}
-                </span>
-                 <Button variant="outline" size="sm" onClick={(e) => { e.stopPropagation(); setIsOrganizing(!isOrganizing); }}>
-                    <Rows className="mr-2 h-4 w-4" />
-                    {isOrganizing ? t[language].finishOrganizing : t[language].organizeSections}
-                </Button>
-            </div>
+      <div className="flex w-full items-center justify-between p-4 bg-muted/50 border-y">
+        <AccordionTrigger className="flex-1 text-left font-semibold p-0 hover:no-underline text-lg">
+            {lang === 'en' ? t[language].englishContent : t[language].spanishContent}
         </AccordionTrigger>
+        <Button variant="outline" size="sm" onClick={(e) => { e.stopPropagation(); setIsOrganizing(!isOrganizing); }}>
+            <Rows className="mr-2 h-4 w-4" />
+            {isOrganizing ? t[language].finishOrganizing : t[language].organizeSections}
+        </Button>
+      </div>
         <AccordionContent className="space-y-4 pt-4">
             <DndContext sensors={sensors} collisionDetection={closestCenter} onDragEnd={(e) => handleDragEnd(e, lang)}>
                 <SortableContext items={sections.map(s => s.id)} strategy={verticalListSortingStrategy}>
@@ -790,5 +788,3 @@ export default function NewVulnerabilityPage() {
     </div>
   );
 }
-
-    

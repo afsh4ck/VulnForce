@@ -13,7 +13,7 @@ import Link from 'next/link';
 import { ChevronLeft, Save, GripVertical, Plus, Trash2, Rows, Bold, Italic, Code, List, ListOrdered, FileCode } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import { useLanguage } from '@/context/language-context';
-import type { Vulnerability, CVSS, Remediation, ImageAsset } from '@/lib/types';
+import type { Vulnerability, CVSS, Remediation, ImageAsset, Severity } from '@/lib/types';
 import {
   Accordion,
   AccordionContent,
@@ -31,6 +31,7 @@ import { MarkdownPreview } from '@/components/markdown-preview';
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from '@/components/ui/alert-dialog';
 import { Dialog, DialogContent, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
 import { Combobox } from '@/components/ui/combobox';
+import { getCVSS, getScore, getSeverity } from '@/lib/cvss';
 
 const languageOptions = [
     { value: 'bash', label: 'Bash' }, { value: 'c', label: 'C' }, { value: 'cpp', label: 'C++' }, { value: 'csharp', label: 'C#' }, { value: 'css', label: 'CSS' }, { value: 'diff', label: 'Diff' }, { value: 'go', label: 'Go' }, { value: 'graphql', label: 'GraphQL' }, { value: 'ini', label: 'INI' }, { value: 'java', label: 'Java' }, { value: 'javascript', label: 'JavaScript' }, { value: 'json', label: 'JSON' }, { value: 'kotlin', label: 'Kotlin' }, { value: 'less', label: 'Less' }, { value: 'lua', label: 'Lua' }, { value: 'makefile', label: 'Makefile' }, { value: 'markdown', label: 'Markdown' }, { value: 'objectivec', label: 'Objective-C' }, { value: 'perl', label: 'Perl' }, { value: 'php', label: 'PHP' }, { value: 'python', label: 'Python' }, { value: 'r', label: 'R' }, { value: 'ruby', label: 'Ruby' }, { value: 'rust', label: 'Rust' }, { value: 'scss', label: 'SCSS' }, { value: 'shell', label: 'Shell' }, { value: 'sql', label: 'SQL' }, { value: 'swift', label: 'Swift' }, { value: 'typescript', label: 'TypeScript' }, { value: 'vbnet', label: 'VB.Net' }, { value: 'wasm', label: 'WebAssembly' }, { value: 'xml', label: 'XML' }, { value: 'yaml', label: 'YAML' },
@@ -362,13 +363,24 @@ const vulnerabilityCategories = [
     { value: 'Additional', label_en: 'Additional', label_es: 'Adicionales' },
 ];
 
+const cvssOptions = {
+    attackVector: [ { value: 'N', label: 'Network' }, { value: 'A', label: 'Adjacent' }, { value: 'L', label: 'Local' }, { value: 'P', label: 'Physical' } ],
+    attackComplexity: [ { value: 'L', label: 'Low' }, { value: 'H', label: 'High' } ],
+    privilegesRequired: [ { value: 'N', label: 'None' }, { value: 'L', label: 'Low' }, { value: 'H', label: 'High' } ],
+    userInteraction: [ { value: 'N', label: 'None' }, { value: 'R', label: 'Required' } ],
+    scope: [ { value: 'U', label: 'Unchanged' }, { value: 'C', label: 'Changed' } ],
+    confidentiality: [ { value: 'N', label: 'None' }, { value: 'L', label: 'Low' }, { value: 'H', label: 'High' } ],
+    integrity: [ { value: 'N', label: 'None' }, { value: 'L', label: 'Low' }, { value: 'H', label: 'High' } ],
+    availability: [ { value: 'N', label: 'None' }, { value: 'L', label: 'Low' }, { value: 'H', label: 'High' } ],
+}
+
 export default function VulnerabilityEditorPage() {
   const params = useParams();
   const router = useRouter();
   const { id } = params;
   const { toast } = useToast();
   const { language } = useLanguage();
-  const { vulnerabilities, updateVulnerability, getImage, addImage } = useData();
+  const { vulnerabilities, updateVulnerability, getImage } = useData();
   const sensors = useSensors( useSensor(PointerSensor), useSensor(KeyboardSensor, { coordinateGetter: sortableKeyboardCoordinates }) );
 
   const [vuln, setVuln] = useState<Vulnerability | null>(null);
@@ -379,6 +391,83 @@ export default function VulnerabilityEditorPage() {
   const [esSectionViews, setEsSectionViews] = useState<Record<string, ScopeView>>({});
   const [isEnOrganizing, setIsEnOrganizing] = useState(false);
   const [isEsOrganizing, setIsEsOrganizing] = useState(false);
+
+  const t = {
+    en: {
+      back: 'Back to Vulnerabilities',
+      save: 'Save Changes',
+      detailsTitle: 'Description',
+      titleEnLabel: 'Title (English)',
+      titleEsLabel: 'Title (Spanish)',
+      cweLabel: 'CWE',
+      categoryLabel: 'Category',
+      selectCategory: 'Select a category',
+      referencesLabel: 'References (comma-separated URLs)',
+      saveSuccessTitle: 'Vulnerability Saved',
+      saveSuccessDescription: 'The template has been updated successfully.',
+      englishContent: 'English Content',
+      spanishContent: 'Spanish Content',
+      cvssTitle: 'CVSS Details',
+      score: 'Score',
+      vectorString: 'Vector String',
+      attackVector: 'Attack Vector',
+      attackComplexity: 'Attack Complexity',
+      privilegesRequired: 'Privileges Required',
+      userInteraction: 'User Interaction',
+      scope: 'Scope',
+      confidentiality: 'Confidentiality',
+      integrity: 'Integrity',
+      availability: 'Availability',
+      severity: 'Severity',
+      selectSeverity: 'Select severity',
+      critical: 'Critical',
+      high: 'High',
+      medium: 'Medium',
+      low: 'Low',
+      informational: 'Informational',
+      newSection: 'New Section',
+      addNewSection: 'Add New Section',
+      organizeSections: 'Organize Sections',
+      finishOrganizing: 'Finish Organizing',
+    },
+    es: {
+      back: 'Back to Vulnerabilities',
+      save: 'Guardar Cambios',
+      detailsTitle: 'Descripción',
+      titleEnLabel: 'Título (Inglés)',
+      titleEsLabel: 'Título (Español)',
+      cweLabel: 'CWE',
+      categoryLabel: 'Categoría',
+      selectCategory: 'Selecciona una categoría',
+      referencesLabel: 'Referencias (URLs separadas por comas)',
+      saveSuccessTitle: 'Vulnerabilidad Guardada',
+      saveSuccessDescription: 'La plantilla se ha actualizado correctamente.',
+      englishContent: 'Contenido en Inglés',
+      spanishContent: 'Contenido en Español',
+      cvssTitle: 'Detalles CVSS',
+      score: 'Puntuación',
+      vectorString: 'Cadena del Vector',
+      attackVector: 'Vector de Ataque',
+      attackComplexity: 'Complejidad del Ataque',
+      privilegesRequired: 'Privilegios Requeridos',
+      userInteraction: 'Interacción del Usuario',
+      scope: 'Scope',
+      confidentiality: 'Confidencialidad',
+      integrity: 'Integridad',
+      availability: 'Disponibilidad',
+      severity: 'Severidad',
+      selectSeverity: 'Seleccionar severidad',
+      critical: 'Crítica',
+      high: 'Alta',
+      medium: 'Media',
+      low: 'Baja',
+      informational: 'Informativa',
+      newSection: 'Nueva Sección',
+      addNewSection: 'Añadir Nueva Sección',
+      organizeSections: 'Organizar Secciones',
+      finishOrganizing: 'Finalizar Organización',
+    }
+  };
 
   const parseMarkdownToSections = useCallback((markdown: string): FindingSection[] => {
     if (!markdown) return [];
@@ -410,18 +499,24 @@ export default function VulnerabilityEditorPage() {
     }
   };
 
-  const handleCategoryChange = (value: string) => {
-    if (vuln) {
-      setVuln({ ...vuln, tags: [value] });
-    }
-  };
+  const handleCategoryChange = useCallback((value: string) => {
+    setVuln(prev => prev ? ({ ...prev, tags: [value] }) : null);
+  }, []);
 
-  const handleCvssChange = (field: keyof CVSS, value: string | number) => {
-    if (vuln) {
-      const newCvss = { ...vuln.cvss, [field]: value };
-      setVuln({ ...vuln, cvss: newCvss });
-    }
-  };
+  const handleCvssChange = useCallback((field: keyof CVSS, value: string | number) => {
+    setVuln(prevVuln => {
+        if (!prevVuln) return null;
+        const newCvss = { ...prevVuln.cvss, [field]: value };
+        const vectorString = getCVSS(newCvss);
+        const score = getScore(vectorString);
+        const severity = getSeverity(score) as Severity;
+        return {
+            ...prevVuln,
+            cvss: { ...newCvss, vectorString, score },
+            severity,
+        };
+    });
+  }, []);
   
   const handleSave = () => {
     if (vuln) {
@@ -501,126 +596,49 @@ export default function VulnerabilityEditorPage() {
     }
   };
 
-  const t = {
-    en: {
-      back: 'Back to Vulnerabilities',
-      save: 'Save Changes',
-      detailsTitle: 'Description',
-      titleEnLabel: 'Title (English)',
-      titleEsLabel: 'Title (Spanish)',
-      cweLabel: 'CWE',
-      categoryLabel: 'Category',
-      selectCategory: 'Select a category',
-      referencesLabel: 'References (comma-separated URLs)',
-      saveSuccessTitle: 'Vulnerability Saved',
-      saveSuccessDescription: 'The template has been updated successfully.',
-      englishContent: 'English Content',
-      spanishContent: 'Spanish Content',
-      cvssTitle: 'CVSS Details',
-      score: 'Score',
-      vectorString: 'Vector String',
-      attackVector: 'Attack Vector',
-      attackComplexity: 'Attack Complexity',
-      privilegesRequired: 'Privileges Required',
-      userInteraction: 'User Interaction',
-      scope: 'Scope',
-      confidentiality: 'Confidentiality',
-      integrity: 'Integrity',
-      availability: 'Availability',
-      severity: 'Severity',
-      selectSeverity: 'Select severity',
-      critical: 'Critical',
-      high: 'High',
-      medium: 'Medium',
-      low: 'Low',
-      informational: 'Informational',
-      newSection: 'New Section',
-      addNewSection: 'Add New Section',
-      organizeSections: 'Organize Sections',
-      finishOrganizing: 'Finish Organizing',
-    },
-    es: {
-      back: 'Back to Vulnerabilities',
-      save: 'Guardar Cambios',
-      detailsTitle: 'Descripción',
-      titleEnLabel: 'Título (Inglés)',
-      titleEsLabel: 'Título (Español)',
-      cweLabel: 'CWE',
-      categoryLabel: 'Categoría',
-      selectCategory: 'Selecciona una categoría',
-      referencesLabel: 'Referencias (URLs separadas por comas)',
-      saveSuccessTitle: 'Vulnerabilidad Guardada',
-      saveSuccessDescription: 'La plantilla se ha actualizado correctamente.',
-      englishContent: 'Contenido en Inglés',
-      spanishContent: 'Contenido en Español',
-      cvssTitle: 'Detalles CVSS',
-      score: 'Puntuación',
-      vectorString: 'Cadena del Vector',
-      attackVector: 'Vector de Ataque',
-      attackComplexity: 'Complejidad del Ataque',
-      privilegesRequired: 'Privilegios Requeridos',
-      userInteraction: 'Interacción del Usuario',
-      scope: 'Scope',
-      confidentiality: 'Confidencialidad',
-      integrity: 'Integridad',
-      availability: 'Disponibilidad',
-      severity: 'Severidad',
-      selectSeverity: 'Seleccionar severidad',
-      critical: 'Crítica',
-      high: 'Alta',
-      medium: 'Media',
-      low: 'Baja',
-      informational: 'Informativa',
-      newSection: 'Nueva Sección',
-      addNewSection: 'Añadir Nueva Sección',
-      organizeSections: 'Organizar Secciones',
-      finishOrganizing: 'Finalizar Organización',
-    }
-  };
-
   const renderSectionEditors = (lang: 'en' | 'es', sections: FindingSection[], isOrganizing: boolean, setIsOrganizing: (val: boolean) => void) => (
     <AccordionItem value={`${lang}-content`}>
-        <AccordionTrigger className="text-lg font-semibold">
-            <div className="flex w-full items-center justify-between pr-4">
-                <span>{lang === 'en' ? t[language].englishContent : t[language].spanishContent}</span>
-                <Button variant="outline" size="sm" onClick={(e) => { e.stopPropagation(); setIsOrganizing(!isOrganizing); }}>
-                    <Rows className="mr-2 h-4 w-4" />
-                    {isOrganizing ? t[language].finishOrganizing : t[language].organizeSections}
-                </Button>
-            </div>
+      <div className="flex w-full items-center justify-between p-4 bg-muted/50 border-y">
+        <AccordionTrigger className="flex-1 text-left font-semibold p-0 hover:no-underline text-lg">
+          {lang === 'en' ? t[language].englishContent : t[language].spanishContent}
         </AccordionTrigger>
-        <AccordionContent className="space-y-4 pt-4">
-            <DndContext sensors={sensors} collisionDetection={closestCenter} onDragEnd={(e) => handleDragEnd(e, lang)}>
-                <SortableContext items={sections.map(s => s.id)} strategy={verticalListSortingStrategy}>
-                    <div className="space-y-4">
-                        {sections.map(section => (
-                            <SortableSection
-                                key={section.id}
-                                section={section}
-                                isOrganizing={isOrganizing}
-                                onContentChange={(newContent: string) => handleSectionChange(lang, section.id, newContent)}
-                                onTitleChange={(newTitle: string) => handleTitleChange(lang, section.id, newTitle)}
-                                onDelete={() => handleDeleteSection(lang, section.id)}
-                                view={(lang === 'en' ? enSectionViews : esSectionViews)[section.id] || 'split'}
-                                onViewChange={(newView: ScopeView) => {
-                                    const updater = lang === 'en' ? setEnSectionViews : setEsSectionViews;
-                                    updater(prev => ({ ...prev, [section.id]: newView }));
-                                }}
-                                getImage={getImage}
-                            />
-                        ))}
-                    </div>
-                </SortableContext>
-            </DndContext>
-            {!isOrganizing && (
-                <div className="flex justify-center pt-4">
-                    <Button variant="outline" onClick={() => handleAddSection(lang)}>
-                        <Plus className="mr-2 h-4 w-4" />
-                        {t[language].addNewSection}
-                    </Button>
-                </div>
-            )}
-        </AccordionContent>
+        <Button variant="outline" size="sm" onClick={(e) => { e.stopPropagation(); setIsOrganizing(!isOrganizing); }}>
+          <Rows className="mr-2 h-4 w-4" />
+          {isOrganizing ? t[language].finishOrganizing : t[language].organizeSections}
+        </Button>
+      </div>
+      <AccordionContent className="space-y-4 pt-4">
+        <DndContext sensors={sensors} collisionDetection={closestCenter} onDragEnd={(e) => handleDragEnd(e, lang)}>
+          <SortableContext items={sections.map(s => s.id)} strategy={verticalListSortingStrategy}>
+            <div className="space-y-4">
+              {sections.map(section => (
+                <SortableSection
+                  key={section.id}
+                  section={section}
+                  isOrganizing={isOrganizing}
+                  onContentChange={(newContent: string) => handleSectionChange(lang, section.id, newContent)}
+                  onTitleChange={(newTitle: string) => handleTitleChange(lang, section.id, newTitle)}
+                  onDelete={() => handleDeleteSection(lang, section.id)}
+                  view={(lang === 'en' ? enSectionViews : esSectionViews)[section.id] || 'split'}
+                  onViewChange={(newView: ScopeView) => {
+                    const updater = lang === 'en' ? setEnSectionViews : setEsSectionViews;
+                    updater(prev => ({ ...prev, [section.id]: newView }));
+                  }}
+                  getImage={getImage}
+                />
+              ))}
+            </div>
+          </SortableContext>
+        </DndContext>
+        {!isOrganizing && (
+          <div className="flex justify-center pt-4">
+            <Button variant="outline" onClick={() => handleAddSection(lang)}>
+              <Plus className="mr-2 h-4 w-4" />
+              {t[language].addNewSection}
+            </Button>
+          </div>
+        )}
+      </AccordionContent>
     </AccordionItem>
   );
 
@@ -662,27 +680,12 @@ export default function VulnerabilityEditorPage() {
                           <Input id="title_es" value={vuln.title_es} onChange={e => handleInputChange('title_es', e.target.value)} />
                       </div>
                   </div>
-                  <div className="grid grid-cols-1 gap-4 md:grid-cols-3">
+                  <div className="grid grid-cols-1 gap-4">
                       <div className="space-y-2">
                           <Label htmlFor="cwe">{t[language].cweLabel}</Label>
                           <Input id="cwe" value={vuln.cwe} onChange={e => handleInputChange('cwe', e.target.value)} />
                       </div>
                       <div className="space-y-2">
-                          <Label htmlFor="severity">{t[language].severity}</Label>
-                          <Select value={vuln.severity} onValueChange={value => handleInputChange('severity', value as Vulnerability['severity'])}>
-                              <SelectTrigger id="severity">
-                                  <SelectValue placeholder={t[language].selectSeverity} />
-                              </SelectTrigger>
-                              <SelectContent>
-                                  <SelectItem value="Critical">{t[language].critical}</SelectItem>
-                                  <SelectItem value="High">{t[language].high}</SelectItem>
-                                  <SelectItem value="Medium">{t[language].medium}</SelectItem>
-                                  <SelectItem value="Low">{t[language].low}</SelectItem>
-                                  <SelectItem value="Informational">{t[language].informational}</SelectItem>
-                              </SelectContent>
-                          </Select>
-                      </div>
-                        <div className="space-y-2">
                           <Label htmlFor="category">{t[language].categoryLabel}</Label>
                             <Select value={vuln.tags[0] || ''} onValueChange={handleCategoryChange}>
                               <SelectTrigger id="category">
@@ -713,53 +716,47 @@ export default function VulnerabilityEditorPage() {
                   <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
                     <div className="space-y-2">
                         <Label htmlFor="cvss_score">{t[language].score}</Label>
-                        <Input id="cvss_score" type="number" step="0.1" value={vuln.cvss.score} onChange={e => handleCvssChange('score', parseFloat(e.target.value))} />
+                        <Input id="cvss_score" type="number" step="0.1" value={vuln.cvss.score} readOnly className="font-bold text-lg" />
                     </div>
                       <div className="space-y-2">
                         <Label htmlFor="cvss_vector">{t[language].vectorString}</Label>
-                        <Input id="cvss_vector" value={vuln.cvss.vectorString} onChange={e => handleCvssChange('vectorString', e.target.value)} />
+                        <Input id="cvss_vector" value={vuln.cvss.vectorString} readOnly />
                     </div>
                   </div>
                    <div className="grid grid-cols-1 gap-4 md:grid-cols-4">
-                      <div className="space-y-2">
-                        <Label htmlFor="cvss_av">{t[language].attackVector}</Label>
-                        <Input id="cvss_av" value={vuln.cvss.attackVector} onChange={e => handleCvssChange('attackVector', e.target.value)} />
+                        {(Object.keys(cvssOptions) as Array<keyof typeof cvssOptions>).slice(0,4).map(key => (
+                             <div className="space-y-2" key={key}>
+                                <Label htmlFor={`cvss-${key}`}>{t[language][key as keyof typeof t['en']]}</Label>
+                                <Select onValueChange={(value) => handleCvssChange(key, value)} value={vuln.cvss[key]}>
+                                    <SelectTrigger id={`cvss-${key}`}>
+                                        <SelectValue />
+                                    </SelectTrigger>
+                                    <SelectContent>
+                                        {cvssOptions[key].map(opt => <SelectItem key={opt.value} value={opt.value}>{opt.label}</SelectItem>)}
+                                    </SelectContent>
+                                </Select>
+                            </div>
+                        ))}
                     </div>
-                      <div className="space-y-2">
-                        <Label htmlFor="cvss_ac">{t[language].attackComplexity}</Label>
-                        <Input id="cvss_ac" value={vuln.cvss.attackComplexity} onChange={e => handleCvssChange('attackComplexity', e.target.value)} />
+                     <div className="grid grid-cols-1 gap-4 md:grid-cols-4">
+                        {(Object.keys(cvssOptions) as Array<keyof typeof cvssOptions>).slice(4).map(key => (
+                             <div className="space-y-2" key={key}>
+                                <Label htmlFor={`cvss-${key}`}>{t[language][key as keyof typeof t['en']]}</Label>
+                                <Select onValueChange={(value) => handleCvssChange(key, value)} value={vuln.cvss[key]}>
+                                    <SelectTrigger id={`cvss-${key}`}>
+                                        <SelectValue />
+                                    </SelectTrigger>
+                                    <SelectContent>
+                                        {cvssOptions[key].map(opt => <SelectItem key={opt.value} value={opt.value}>{opt.label}</SelectItem>)}
+                                    </SelectContent>
+                                </Select>
+                            </div>
+                        ))}
                     </div>
-                      <div className="space-y-2">
-                        <Label htmlFor="cvss_pr">{t[language].privilegesRequired}</Label>
-                        <Input id="cvss_pr" value={vuln.cvss.privilegesRequired} onChange={e => handleCvssChange('privilegesRequired', e.target.value)} />
-                    </div>
-                      <div className="space-y-2">
-                        <Label htmlFor="cvss_ui">{t[language].userInteraction}</Label>
-                        <Input id="cvss_ui" value={vuln.cvss.userInteraction} onChange={e => handleCvssChange('userInteraction', e.target.value)} />
-                    </div>
-                  </div>
-                  <div className="grid grid-cols-1 gap-4 md:grid-cols-4">
-                      <div className="space-y-2">
-                        <Label htmlFor="cvss_s">{t[language].scope}</Label>
-                        <Input id="cvss_s" value={vuln.cvss.scope} onChange={e => handleCvssChange('scope', e.target.value)} />
-                    </div>
-                      <div className="space-y-2">
-                        <Label htmlFor="cvss_c">{t[language].confidentiality}</Label>
-                        <Input id="cvss_c" value={vuln.cvss.confidentiality} onChange={e => handleCvssChange('confidentiality', e.target.value)} />
-                    </div>
-                      <div className="space-y-2">
-                        <Label htmlFor="cvss_i">{t[language].integrity}</Label>
-                        <Input id="cvss_i" value={vuln.cvss.integrity} onChange={e => handleCvssChange('integrity', e.target.value)} />
-                    </div>
-                      <div className="space-y-2">
-                        <Label htmlFor="cvss_a">{t[language].availability}</Label>
-                        <Input id="cvss_a" value={vuln.cvss.availability} onChange={e => handleCvssChange('availability', e.target.value)} />
-                    </div>
-                  </div>
               </CardContent>
           </Card>
 
-          <Accordion type="multiple" className="w-full">
+          <Accordion type="multiple" defaultValue={['en-content', 'es-content']} className="w-full space-y-4">
             {renderSectionEditors('en', enSections, isEnOrganizing, setIsEnOrganizing)}
             {renderSectionEditors('es', esSections, isEsOrganizing, setIsEsOrganizing)}
           </Accordion>
