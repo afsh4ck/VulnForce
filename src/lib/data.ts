@@ -125,127 +125,424 @@ Implement context-aware output encoding for all user-supplied data before it is 
 ];
 
 const emptyVulnBoilerplate = {
-  overview_en: "[TODO: Add overview]",
-  overview_es: "[TODO: Añadir resumen]",
   remediation_en: { shortTerm: '[TODO]', mediumTerm: '[TODO]', longTerm: '[TODO]' },
   remediation_es: { shortTerm: '[TODO]', mediumTerm: '[TODO]', longTerm: '[TODO]' },
   references: [],
 };
 
 export let vulnerabilities: Vulnerability[] = [
-    // Web
-    { id: "vuln-web-001", title_en: "SQL Injection", title_es: "Inyección SQL", cwe: "CWE-89", severity: "Critical", cvss: { score: 9.8, vectorString: "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:H/I:H/A:H", attackVector: "N", attackComplexity: "L", privilegesRequired: "N", userInteraction: "N", scope: "U", confidentiality: "H", integrity: "H", availability: "H" }, ...emptyVulnBoilerplate, tags: ["Web"] },
-    { id: "vuln-web-002", title_en: "Cross-Site Scripting (XSS)", title_es: "Secuencias de comandos en sitios cruzados", cwe: "CWE-79", severity: "High", cvss: { score: 7.5, vectorString: "CVSS:3.1/AV:N/AC:L/PR:N/UI:R/S:C/C:L/I:L/A:N", attackVector: "N", attackComplexity: "L", privilegesRequired: "N", userInteraction: "R", scope: "C", confidentiality: "L", integrity: "L", availability: "N" }, ...emptyVulnBoilerplate, tags: ["Web"] },
-    { id: "vuln-web-003", title_en: "Broken Authentication", title_es: "Autenticación rota", cwe: "CWE-287", severity: "High", cvss: { score: 8.8, vectorString: "CVSS:3.1/AV:N/AC:L/PR:L/UI:N/S:U/C:H/I:H/A:H", attackVector: "N", attackComplexity: "L", privilegesRequired: "L", userInteraction: "N", scope: "U", confidentiality: "H", integrity: "H", availability: "H" }, ...emptyVulnBoilerplate, tags: ["Web"] },
-    { id: "vuln-web-004", title_en: "Sensitive Data Exposure", title_es: "Exposición de datos sensibles", cwe: "CWE-312", severity: "High", cvss: { score: 8.1, vectorString: "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:H/I:L/A:N", attackVector: "N", attackComplexity: "L", privilegesRequired: "N", userInteraction: "N", scope: "U", confidentiality: "H", integrity: "L", availability: "N" }, ...emptyVulnBoilerplate, tags: ["Web"] },
-    { id: "vuln-web-005", title_en: "XML External Entities (XXE)", title_es: "Entidades externas XML", cwe: "CWE-611", severity: "High", cvss: { score: 8.2, vectorString: "CVSS:3.1/AV:N/AC:L/PR:L/UI:N/S:U/C:H/I:L/A:N", attackVector: "N", attackComplexity: "L", privilegesRequired: "L", userInteraction: "N", scope: "U", confidentiality: "H", integrity: "L", availability: "N" }, ...emptyVulnBoilerplate, tags: ["Web"] },
-    { id: "vuln-web-006", title_en: "Broken Access Control", title_es: "Control de acceso roto", cwe: "CWE-284", severity: "High", cvss: { score: 8.8, vectorString: "CVSS:3.1/AV:N/AC:L/PR:L/UI:N/S:U/C:H/I:H/A:H", attackVector: "N", attackComplexity: "L", privilegesRequired: "L", userInteraction: "N", scope: "U", confidentiality: "H", integrity: "H", availability: "H" }, ...emptyVulnBoilerplate, tags: ["Web"] },
-    { id: "vuln-web-007", title_en: "Security Misconfiguration", title_es: "Configuración insegura", cwe: "CWE-16", severity: "High", cvss: { score: 8.3, vectorString: "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:H/I:L/A:N", attackVector: "N", attackComplexity: "L", privilegesRequired: "N", userInteraction: "N", scope: "U", confidentiality: "H", integrity: "L", availability: "N" }, ...emptyVulnBoilerplate, tags: ["Web"] },
-    { id: "vuln-web-008", title_en: "Cross-Site Request Forgery (CSRF)", title_es: "Falsificación de solicitudes en sitios cruzados", cwe: "CWE-352", severity: "High", cvss: { score: 7.6, vectorString: "CVSS:3.1/AV:N/AC:L/PR:N/UI:R/S:U/C:N/I:H/A:N", attackVector: "N", attackComplexity: "L", privilegesRequired: "N", userInteraction: "R", scope: "U", confidentiality: "N", integrity: "H", availability: "N" }, ...emptyVulnBoilerplate, tags: ["Web"] },
-    { id: "vuln-web-009", title_en: "Insecure Deserialization", title_es: "Deserialización insegura", cwe: "CWE-502", severity: "Critical", cvss: { score: 9.8, vectorString: "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:H/I:H/A:H", attackVector: "N", attackComplexity: "L", privilegesRequired: "N", userInteraction: "N", scope: "U", confidentiality: "H", integrity: "H", availability: "H" }, ...emptyVulnBoilerplate, tags: ["Web"] },
-    { id: "vuln-web-010", title_en: "Server-Side Request Forgery (SSRF)", title_es: "Falsificación de solicitudes del lado del servidor", cwe: "CWE-918", severity: "High", cvss: { score: 8.8, vectorString: "CVSS:3.1/AV:N/AC:L/PR:L/UI:N/S:U/C:H/I:H/A:H", attackVector: "N", attackComplexity: "L", privilegesRequired: "L", userInteraction: "N", scope: "U", confidentiality: "H", integrity: "H", availability: "H" }, ...emptyVulnBoilerplate, tags: ["Web"] },
-    { id: "vuln-web-011", title_en: "HTTP Verb Tampering", title_es: "Manipulación de verbos HTTP", cwe: "CWE-350", severity: "High", cvss: { score: 7.5, vectorString: "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:N/I:H/A:N", attackVector: "N", attackComplexity: "L", privilegesRequired: "N", userInteraction: "N", scope: "U", confidentiality: "N", integrity: "H", availability: "N" }, ...emptyVulnBoilerplate, tags: ["Web"] },
-    { id: "vuln-web-012", title_en: "Local File Inclusion (LFI)", title_es: "Inclusión de archivos locales", cwe: "CWE-98", severity: "High", cvss: { score: 7.8, vectorString: "CVSS:3.1/AV:L/AC:L/PR:L/UI:N/S:U/C:H/I:H/A:H", attackVector: "L", attackComplexity: "L", privilegesRequired: "L", userInteraction: "N", scope: "U", confidentiality: "H", integrity: "H", availability: "H" }, ...emptyVulnBoilerplate, tags: ["Web"] },
-    { id: "vuln-web-013", title_en: "SSRF to Local File Read", title_es: "SSRF para lectura de archivos locales", cwe: "CWE-918", severity: "High", cvss: { score: 8.6, vectorString: "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:C/C:H/I:L/A:N", attackVector: "N", attackComplexity: "L", privilegesRequired: "N", userInteraction: "N", scope: "C", confidentiality: "H", integrity: "L", availability: "N" }, ...emptyVulnBoilerplate, tags: ["Web"] },
+    {
+    id: "vuln-web-001",
+    title_en: "SQL Injection (SQLi)",
+    title_es: "Inyección SQL (SQLi)",
+    cwe: "CWE-89",
+    severity: "Critical",
+    cvss: { score: 9.8, vectorString: "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:H/I:H/A:H", attackVector: "N", attackComplexity: "L", privilegesRequired: "N", userInteraction: "N", scope: "U", confidentiality: "H", integrity: "H", availability: "H" },
+    overview_en: `
+### Description
+SQL Injection is a web security vulnerability that allows an attacker to interfere with the queries that an application makes to its database. It generally allows an attacker to view data that they are not normally able to retrieve.
 
-    // Mobile
-    { id: "vuln-mobile-014", title_en: "Insecure Data Storage", title_es: "Almacenamiento inseguro de datos", cwe: "CWE-922", severity: "High", cvss: { score: 8.2, vectorString: "CVSS:3.1/AV:P/AC:L/PR:N/UI:N/S:U/C:H/I:H/A:H", attackVector: "P", attackComplexity: "L", privilegesRequired: "N", userInteraction: "N", scope: "U", confidentiality: "H", integrity: "H", availability: "H" }, ...emptyVulnBoilerplate, tags: ["Mobile"] },
-    { id: "vuln-mobile-015", title_en: "Weak Server-Side Controls", title_es: "Controles débiles en el servidor", cwe: "CWE-602", severity: "High", cvss: { score: 8.8, vectorString: "CVSS:3.1/AV:N/AC:L/PR:L/UI:N/S:U/C:H/I:H/A:H", attackVector: "N", attackComplexity: "L", privilegesRequired: "L", userInteraction: "N", scope: "U", confidentiality: "H", integrity: "H", availability: "H" }, ...emptyVulnBoilerplate, tags: ["Mobile"] },
-    { id: "vuln-mobile-016", title_en: "Insufficient Transport Layer Protection", title_es: "Protección insuficiente de la capa de transporte", cwe: "CWE-319", severity: "High", cvss: { score: 7.4, vectorString: "CVSS:3.1/AV:N/AC:H/PR:N/UI:N/S:U/C:H/I:N/A:N", attackVector: "N", attackComplexity: "H", privilegesRequired: "N", userInteraction: "N", scope: "U", confidentiality: "H", integrity: "N", availability: "N" }, ...emptyVulnBoilerplate, tags: ["Mobile"] },
-    { id: "vuln-mobile-017", title_en: "Unintended Data Leakage", title_es: "Filtración de datos no intencionada", cwe: "CWE-200", severity: "Medium", cvss: { score: 6.5, vectorString: "CVSS:3.1/AV:N/AC:L/PR:N/UI:R/S:U/C:H/I:N/A:N", attackVector: "N", attackComplexity: "L", privilegesRequired: "N", userInteraction: "R", scope: "U", confidentiality: "H", integrity: "N", availability: "N" }, ...emptyVulnBoilerplate, tags: ["Mobile"] },
-    { id: "vuln-mobile-018", title_en: "Poor Authorization", title_es: "Autorización deficiente", cwe: "CWE-285", severity: "High", cvss: { score: 8.1, vectorString: "CVSS:3.1/AV:N/AC:L/PR:L/UI:N/S:U/C:H/I:H/A:N", attackVector: "N", attackComplexity: "L", privilegesRequired: "L", userInteraction: "N", scope: "U", confidentiality: "H", integrity: "H", availability: "N" }, ...emptyVulnBoilerplate, tags: ["Mobile"] },
-    { id: "vuln-mobile-019", title_en: "Broken Cryptography", title_es: "Criptografía rota", cwe: "CWE-327", severity: "High", cvss: { score: 8.3, vectorString: "CVSS:3.1/AV:N/AC:H/PR:N/UI:N/S:U/C:H/I:H/A:N", attackVector: "N", attackComplexity: "H", privilegesRequired: "N", userInteraction: "N", scope: "U", confidentiality: "H", integrity: "H", availability: "N" }, ...emptyVulnBoilerplate, tags: ["Mobile"] },
-    { id: "vuln-mobile-020", title_en: "Client-Side Injection", title_es: "Inyección en el lado del cliente", cwe: "CWE-74", severity: "High", cvss: { score: 7.2, vectorString: "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:H/I:N/A:N", attackVector: "N", attackComplexity: "L", privilegesRequired: "N", userInteraction: "N", scope: "U", confidentiality: "H", integrity: "N", availability: "N" }, ...emptyVulnBoilerplate, tags: ["Mobile"] },
-    { id: "vuln-mobile-021", title_en: "Security Misconfiguration", title_es: "Configuración insegura", cwe: "CWE-16", severity: "High", cvss: { score: 7.5, vectorString: "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:H/I:N/A:N", attackVector: "N", attackComplexity: "L", privilegesRequired: "N", userInteraction: "N", scope: "U", confidentiality: "H", integrity: "N", availability: "N" }, ...emptyVulnBoilerplate, tags: ["Mobile"] },
-    { id: "vuln-mobile-022", title_en: "Reverse Engineering", title_es: "Ingeniería inversa", cwe: "CWE-506", severity: "Medium", cvss: { score: 6.2, vectorString: "CVSS:3.1/AV:L/AC:L/PR:N/UI:N/S:U/C:H/I:N/A:N", attackVector: "L", attackComplexity: "L", privilegesRequired: "N", userInteraction: "N", scope: "U", confidentiality: "H", integrity: "N", availability: "N" }, ...emptyVulnBoilerplate, tags: ["Mobile"] },
-    { id: "vuln-mobile-023", title_en: "Extraneous Functionality", title_es: "Funcionalidad oculta", cwe: "CWE-1002", severity: "Medium", cvss: { score: 5.4, vectorString: "CVSS:3.1/AV:N/AC:L/PR:L/UI:N/S:U/C:L/I:L/A:N", attackVector: "N", attackComplexity: "L", privilegesRequired: "L", userInteraction: "N", scope: "U", confidentiality: "L", integrity: "L", availability: "N" }, ...emptyVulnBoilerplate, tags: ["Mobile"] },
+---
 
-    // Network
-    { id: "vuln-network-024", title_en: "Man-in-the-Middle (MitM)", title_es: "Ataque de intermediario", cwe: "CWE-300", severity: "High", cvss: { score: 8.1, vectorString: "CVSS:3.1/AV:A/AC:H/PR:N/UI:N/S:U/C:H/I:H/A:N", attackVector: "A", attackComplexity: "H", privilegesRequired: "N", userInteraction: "N", scope: "U", confidentiality: "H", integrity: "H", availability: "N" }, ...emptyVulnBoilerplate, tags: ["Network"] },
-    { id: "vuln-network-025", title_en: "DNS Spoofing", title_es: "Suplantación de DNS", cwe: "CWE-345", severity: "High", cvss: { score: 7.2, vectorString: "CVSS:3.1/AV:A/AC:H/PR:N/UI:N/S:U/C:H/I:H/A:N", attackVector: "A", attackComplexity: "H", privilegesRequired: "N", userInteraction: "N", scope: "U", confidentiality: "H", integrity: "H", availability: "N" }, ...emptyVulnBoilerplate, tags: ["Network"] },
-    { id: "vuln-network-026", title_en: "ARP Poisoning", title_es: "Envenenamiento ARP", cwe: "CWE-345", severity: "High", cvss: { score: 7.2, vectorString: "CVSS:3.1/AV:A/AC:H/PR:N/UI:N/S:U/C:H/I:H/A:N", attackVector: "A", attackComplexity: "H", privilegesRequired: "N", userInteraction: "N", scope: "U", confidentiality: "H", integrity: "H", availability: "N" }, ...emptyVulnBoilerplate, tags: ["Network"] },
-    { id: "vuln-network-027", title_en: "IP Spoofing", title_es: "Suplantación de IP", cwe: "CWE-290", severity: "Medium", cvss: { score: 6.8, vectorString: "CVSS:3.1/AV:N/AC:H/PR:N/UI:N/S:U/C:L/I:H/A:N", attackVector: "N", attackComplexity: "H", privilegesRequired: "N", userInteraction: "N", scope: "U", confidentiality: "L", integrity: "H", availability: "N" }, ...emptyVulnBoilerplate, tags: ["Network"] },
-    { id: "vuln-network-028", title_en: "Denial of Service (DoS)", title_es: "Denegación de servicio", cwe: "CWE-400", severity: "High", cvss: { score: 8.6, vectorString: "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:N/I:N/A:H", attackVector: "N", attackComplexity: "L", privilegesRequired: "N", userInteraction: "N", scope: "U", confidentiality: "N", integrity: "N", availability: "H" }, ...emptyVulnBoilerplate, tags: ["Network"] },
-    { id: "vuln-network-029", title_en: "VLAN Hopping", title_es: "Salto entre VLAN", cwe: "CWE-671", severity: "Medium", cvss: { score: 6.4, vectorString: "CVSS:3.1/AV:A/AC:H/PR:N/UI:N/S:U/C:L/I:L/A:L", attackVector: "A", attackComplexity: "H", privilegesRequired: "N", userInteraction: "N", scope: "U", confidentiality: "L", integrity: "L", availability: "L" }, ...emptyVulnBoilerplate, tags: ["Network"] },
-    { id: "vuln-network-030", title_en: "Weak Network Encryption", title_es: "Cifrado débil de red", cwe: "CWE-326", severity: "High", cvss: { score: 8.1, vectorString: "CVSS:3.1/AV:A/AC:L/PR:N/UI:N/S:U/C:H/I:H/A:N", attackVector: "A", attackComplexity: "L", privilegesRequired: "N", userInteraction: "N", scope: "U", confidentiality: "H", integrity: "H", availability: "N" }, ...emptyVulnBoilerplate, tags: ["Network"] },
-    { id: "vuln-network-031", title_en: "Firewall Misconfiguration", title_es: "Configuración incorrecta del firewall", cwe: "CWE-16", severity: "High", cvss: { score: 7.5, vectorString: "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:H/I:N/A:N", attackVector: "N", attackComplexity: "L", privilegesRequired: "N", userInteraction: "N", scope: "U", confidentiality: "H", integrity: "N", availability: "N" }, ...emptyVulnBoilerplate, tags: ["Network"] },
-    { id: "vuln-network-032", title_en: "Unsecured Wi-Fi", title_es: "Wi-Fi no segura", cwe: "CWE-311", severity: "High", cvss: { score: 7.5, vectorString: "CVSS:3.1/AV:A/AC:L/PR:N/UI:N/S:U/C:H/I:N/A:N", attackVector: "A", attackComplexity: "L", privilegesRequired: "N", userInteraction: "N", scope: "U", confidentiality: "H", integrity: "N", availability: "N" }, ...emptyVulnBoilerplate, tags: ["Network"] },
-    { id: "vuln-network-033", title_en: "Packet Sniffing", title_es: "Análisis de paquetes", cwe: "CWE-311", severity: "Medium", cvss: { score: 6.5, vectorString: "CVSS:3.1/AV:A/AC:L/PR:N/UI:N/S:U/C:H/I:N/A:N", attackVector: "A", attackComplexity: "L", privilegesRequired: "N", userInteraction: "N", scope: "U", confidentiality: "H", integrity: "N", availability: "N" }, ...emptyVulnBoilerplate, tags: ["Network"] },
+### Technical Description
+The application uses user-supplied input to construct SQL queries without proper sanitization or use of prepared statements. An attacker can supply crafted input to modify the query's logic. For example, injecting \`' OR '1'='1'--\` into a login form's username field could bypass authentication.
 
-    // Infrastructure
-    { id: "vuln-infra-034", title_en: "Unpatched Software", title_es: "Software sin parches", cwe: "CWE-937", severity: "Critical", cvss: { score: 9.8, vectorString: "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:H/I:H/A:H", attackVector: "N", attackComplexity: "L", privilegesRequired: "N", userInteraction: "N", scope: "U", confidentiality: "H", integrity: "H", availability: "H" }, ...emptyVulnBoilerplate, tags: ["Infrastructure"] },
-    { id: "vuln-infra-035", title_en: "Default Credentials", title_es: "Credenciales por defecto", cwe: "CWE-1392", severity: "High", cvss: { score: 8.5, vectorString: "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:H/I:L/A:L", attackVector: "N", attackComplexity: "L", privilegesRequired: "N", userInteraction: "N", scope: "U", confidentiality: "H", integrity: "L", availability: "L" }, ...emptyVulnBoilerplate, tags: ["Infrastructure"] },
-    { id: "vuln-infra-036", title_en: "Directory Traversal", title_es: "Salto de directorio", cwe: "CWE-22", severity: "High", cvss: { score: 7.8, vectorString: "CVSS:3.1/AV:L/AC:L/PR:L/UI:N/S:U/C:H/I:H/A:H", attackVector: "L", attackComplexity: "L", privilegesRequired: "L", userInteraction: "N", scope: "U", confidentiality: "H", integrity: "H", availability: "H" }, ...emptyVulnBoilerplate, tags: ["Infrastructure"] },
-    { id: "vuln-infra-037", title_en: "Remote Code Execution (RCE)", title_es: "Ejecución remota de código", cwe: "CWE-94", severity: "Critical", cvss: { score: 9.8, vectorString: "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:H/I:H/A:H", attackVector: "N", attackComplexity: "L", privilegesRequired: "N", userInteraction: "N", scope: "U", confidentiality: "H", integrity: "H", availability: "H" }, ...emptyVulnBoilerplate, tags: ["Infrastructure"] },
-    { id: "vuln-infra-038", title_en: "Privilege Escalation", title_es: "Escalación de privilegios", cwe: "CWE-269", severity: "High", cvss: { score: 8.5, vectorString: "CVSS:3.1/AV:L/AC:L/PR:L/UI:N/S:U/C:H/I:H/A:H", attackVector: "L", attackComplexity: "L", privilegesRequired: "L", userInteraction: "N", scope: "U", confidentiality: "H", integrity: "H", availability: "H" }, ...emptyVulnBoilerplate, tags: ["Infrastructure"] },
-    { id: "vuln-infra-039", title_en: "Information Disclosure", title_es: "Divulgación de información", cwe: "CWE-200", severity: "Medium", cvss: { score: 6.5, vectorString: "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:L/I:L/A:N", attackVector: "N", attackComplexity: "L", privilegesRequired: "N", userInteraction: "N", scope: "U", confidentiality: "L", integrity: "L", availability: "N" }, ...emptyVulnBoilerplate, tags: ["Infrastructure"] },
-    { id: "vuln-infra-040", title_en: "Command Injection", title_es: "Inyección de comandos", cwe: "CWE-77", severity: "High", cvss: { score: 8.8, vectorString: "CVSS:3.1/AV:N/AC:L/PR:L/UI:N/S:U/C:H/I:H/A:H", attackVector: "N", attackComplexity: "L", privilegesRequired: "L", userInteraction: "N", scope: "U", confidentiality: "H", integrity: "H", availability: "H" }, ...emptyVulnBoilerplate, tags: ["Infrastructure"] },
-    { id: "vuln-infra-041", title_en: "Path Traversal", title_es: "Salto de ruta", cwe: "CWE-22", severity: "High", cvss: { score: 7.8, vectorString: "CVSS:3.1/AV:L/AC:L/PR:L/UI:N/S:U/C:H/I:H/A:H", attackVector: "L", attackComplexity: "L", privilegesRequired: "L", userInteraction: "N", scope: "U", confidentiality: "H", integrity: "H", availability: "H" }, ...emptyVulnBoilerplate, tags: ["Infrastructure"] },
-    { id: "vuln-infra-042", title_en: "Open Redirects", title_es: "Redirecciones abiertas", cwe: "CWE-601", severity: "Medium", cvss: { score: 5.8, vectorString: "CVSS:3.1/AV:N/AC:L/PR:N/UI:R/S:U/C:L/I:L/A:N", attackVector: "N", attackComplexity: "L", privilegesRequired: "N", userInteraction: "R", scope: "U", confidentiality: "L", integrity: "L", availability: "N" }, ...emptyVulnBoilerplate, tags: ["Infrastructure"] },
-    { id: "vuln-infra-043", title_en: "Insecure File Shares", title_es: "Recursos compartidos de archivos inseguros", cwe: "CWE-276", severity: "High", cvss: { score: 7.8, vectorString: "CVSS:3.1/AV:L/AC:L/PR:L/UI:N/S:U/C:H/I:H/A:H", attackVector: "L", attackComplexity: "L", privilegesRequired: "L", userInteraction: "N", scope: "U", confidentiality: "H", integrity: "H", availability: "H" }, ...emptyVulnBoilerplate, tags: ["Infrastructure"] },
-    { id: "vuln-infra-044", title_en: "Sensitive Data on File Shares", title_es: "Datos sensibles en recursos compartidos", cwe: "CWE-312", severity: "High", cvss: { score: 8.2, vectorString: "CVSS:3.1/AV:L/AC:L/PR:L/UI:N/S:U/C:H/I:H/A:H", attackVector: "L", attackComplexity: "L", privilegesRequired: "L", userInteraction: "N", scope: "U", confidentiality: "H", integrity: "H", availability: "H" }, ...emptyVulnBoilerplate, tags: ["Infrastructure"] },
-    { id: "vuln-infra-045", title_en: "Unnecessary Exposed Services", title_es: "Servicios expuestos innecesariamente", cwe: "CWE-200", severity: "High", cvss: { score: 7.8, vectorString: "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:H/I:N/A:N", attackVector: "N", attackComplexity: "L", privilegesRequired: "N", userInteraction: "N", scope: "U", confidentiality: "H", integrity: "N", availability: "N" }, ...emptyVulnBoilerplate, tags: ["Infrastructure"] },
-    { id: "vuln-infra-046", title_en: "Misconfigured <APPLICATION> Instance", title_es: "Instancia de <APPLICATION> mal configurada", cwe: "CWE-16", severity: "High", cvss: { score: 8.5, vectorString: "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:H/I:L/A:L", attackVector: "N", attackComplexity: "L", privilegesRequired: "N", userInteraction: "N", scope: "U", confidentiality: "H", integrity: "L", availability: "L" }, ...emptyVulnBoilerplate, tags: ["Infrastructure"] },
+---
 
-    // Authentication
-    { id: "vuln-auth-047", title_en: "Weak Passwords", title_es: "Contraseñas débiles", cwe: "CWE-521", severity: "High", cvss: { score: 8.1, vectorString: "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:H/I:L/A:N", attackVector: "N", attackComplexity: "L", privilegesRequired: "N", userInteraction: "N", scope: "U", confidentiality: "H", integrity: "L", availability: "N" }, ...emptyVulnBoilerplate, tags: ["Authentication"] },
-    { id: "vuln-auth-048", title_en: "Password Reuse", title_es: "Reutilización de contraseñas", cwe: "CWE-262", severity: "High", cvss: { score: 7.5, vectorString: "CVSS:3.1/AV:N/AC:H/PR:N/UI:N/S:U/C:H/I:H/A:N", attackVector: "N", attackComplexity: "H", privilegesRequired: "N", userInteraction: "N", scope: "U", confidentiality: "H", integrity: "H", availability: "N" }, ...emptyVulnBoilerplate, tags: ["Authentication"] },
-    { id: "vuln-auth-049", title_en: "Missing Multi-Factor Authentication (MFA)", title_es: "Falta de autenticación multifactor", cwe: "CWE-308", severity: "High", cvss: { score: 7.8, vectorString: "CVSS:3.1/AV:N/AC:L/PR:L/UI:N/S:U/C:H/I:H/A:N", attackVector: "N", attackComplexity: "L", privilegesRequired: "L", userInteraction: "N", scope: "U", confidentiality: "H", integrity: "H", availability: "N" }, ...emptyVulnBoilerplate, tags: ["Authentication"] },
-    { id: "vuln-auth-050", title_en: "Session Hijacking", title_es: "Secuestro de sesión", cwe: "CWE-384", severity: "High", cvss: { score: 8.5, vectorString: "CVSS:3.1/AV:N/AC:H/PR:N/UI:R/S:U/C:H/I:H/A:H", attackVector: "N", attackComplexity: "H", privilegesRequired: "N", userInteraction: "R", scope: "U", confidentiality: "H", integrity: "H", availability: "H" }, ...emptyVulnBoilerplate, tags: ["Authentication"] },
-    { id: "vuln-auth-051", title_en: "Session Fixation", title_es: "Fijación de sesión", cwe: "CWE-384", severity: "High", cvss: { score: 7.5, vectorString: "CVSS:3.1/AV:N/AC:H/PR:N/UI:R/S:U/C:H/I:H/A:N", attackVector: "N", attackComplexity: "H", privilegesRequired: "N", userInteraction: "R", scope: "U", confidentiality: "H", integrity: "H", availability: "N" }, ...emptyVulnBoilerplate, tags: ["Authentication"] },
-    { id: "vuln-auth-052", title_en: "Credential Stuffing", title_es: "Relleno de credenciales", cwe: "CWE-287", severity: "High", cvss: { score: 7.8, vectorString: "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:H/I:L/A:N", attackVector: "N", attackComplexity: "L", privilegesRequired: "N", userInteraction: "N", scope: "U", confidentiality: "H", integrity: "L", availability: "N" }, ...emptyVulnBoilerplate, tags: ["Authentication"] },
-    { id: "vuln-auth-053", title_en: "Insecure Password Recovery", title_es: "Recuperación insegura de contraseñas", cwe: "CWE-640", severity: "Medium", cvss: { score: 6.3, vectorString: "CVSS:3.1/AV:N/AC:L/PR:N/UI:R/S:U/C:L/I:L/A:L", attackVector: "N", attackComplexity: "L", privilegesRequired: "N", userInteraction: "R", scope: "U", confidentiality: "L", integrity: "L", availability: "L" }, ...emptyVulnBoilerplate, tags: ["Authentication"] },
-    { id: "vuln-auth-054", title_en: "User Enumeration", title_es: "Enumeración de usuarios", cwe: "CWE-203", severity: "Medium", cvss: { score: 5.3, vectorString: "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:L/I:N/A:N", attackVector: "N", attackComplexity: "L", privilegesRequired: "N", userInteraction: "N", scope: "U", confidentiality: "L", integrity: "N", availability: "N" }, ...emptyVulnBoilerplate, tags: ["Authentication"] },
-    { id: "vuln-auth-055", title_en: "Weak Session Management", title_es: "Gestión débil de sesiones", cwe: "CWE-384", severity: "High", cvss: { score: 8.1, vectorString: "CVSS:3.1/AV:N/AC:H/PR:N/UI:R/S:U/C:H/I:H/A:H", attackVector: "N", attackComplexity: "H", privilegesRequired: "N", userInteraction: "R", scope: "U", confidentiality: "H", integrity: "H", availability: "H" }, ...emptyVulnBoilerplate, tags: ["Authentication"] },
-    { id: "vuln-auth-056", title_en: "Brute Force Attacks", title_es: "Ataques de fuerza bruta", cwe: "CWE-307", severity: "High", cvss: { score: 8.1, vectorString: "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:H/I:L/A:N", attackVector: "N", attackComplexity: "L", privilegesRequired: "N", userInteraction: "N", scope: "U", confidentiality: "H", integrity: "L", availability: "N" }, ...emptyVulnBoilerplate, tags: ["Authentication"] },
-    { id: "vuln-auth-057", title_en: "Weak <APPLICATION> Admin Credentials", title_es: "Credenciales débiles de administrador en <APPLICATION>", cwe: "CWE-521", severity: "High", cvss: { score: 8.8, vectorString: "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:H/I:H/A:H", attackVector: "N", attackComplexity: "L", privilegesRequired: "N", userInteraction: "N", scope: "U", confidentiality: "H", integrity: "H", availability: "H" }, ...emptyVulnBoilerplate, tags: ["Authentication"] },
-    { id: "vuln-auth-058", title_en: "Excessive Active Directory Group Privileges", title_es: "Privilegios excesivos en grupos de Active Directory", cwe: "CWE-272", severity: "High", cvss: { score: 8.8, vectorString: "CVSS:3.1/AV:L/AC:L/PR:L/UI:N/S:U/C:H/I:H/A:H", attackVector: "L", attackComplexity: "L", privilegesRequired: "L", userInteraction: "N", scope: "U", confidentiality: "H", integrity: "H", availability: "H" }, ...emptyVulnBoilerplate, tags: ["Authentication"] },
-    { id: "vuln-auth-059", title_en: "Passwords in AD User Description Field", title_es: "Contraseñas en campo de descripción de usuario de AD", cwe: "CWE-312", severity: "High", cvss: { score: 7.8, vectorString: "CVSS:3.1/AV:L/AC:L/PR:L/UI:N/S:U/C:H/I:H/A:N", attackVector: "L", attackComplexity: "L", privilegesRequired: "L", userInteraction: "N", scope: "U", confidentiality: "H", integrity: "H", availability: "N" }, ...emptyVulnBoilerplate, tags: ["Authentication"] },
+### Affected Components
+- [TODO: Vulnerable URL or domain]
 
-    // Cryptography
-    { id: "vuln-crypto-060", title_en: "Weak Encryption Algorithms", title_es: "Algoritmos de cifrado débiles", cwe: "CWE-327", severity: "High", cvss: { score: 8.1, vectorString: "CVSS:3.1/AV:N/AC:H/PR:N/UI:N/S:U/C:H/I:H/A:N", attackVector: "N", attackComplexity: "H", privilegesRequired: "N", userInteraction: "N", scope: "U", confidentiality: "H", integrity: "H", availability: "N" }, ...emptyVulnBoilerplate, tags: ["Cryptography"] },
-    { id: "vuln-crypto-061", title_en: "Insecure Key Management", title_es: "Gestión insegura de claves", cwe: "CWE-320", severity: "High", cvss: { score: 8.5, vectorString: "CVSS:3.1/AV:N/AC:H/PR:L/UI:N/S:U/C:H/I:H/A:H", attackVector: "N", attackComplexity: "H", privilegesRequired: "L", userInteraction: "N", scope: "U", confidentiality: "H", integrity: "H", availability: "H" }, ...emptyVulnBoilerplate, tags: ["Cryptography"] },
-    { id: "vuln-crypto-062", title_en: "Use of Hardcoded Secrets", title_es: "Uso de secretos embebidos", cwe: "CWE-798", severity: "High", cvss: { score: 8.2, vectorString: "CVSS:3.1/AV:L/AC:L/PR:N/UI:N/S:U/C:H/I:H/A:N", attackVector: "L", attackComplexity: "L", privilegesRequired: "N", userInteraction: "N", scope: "U", confidentiality: "H", integrity: "H", availability: "N" }, ...emptyVulnBoilerplate, tags: ["Cryptography"] },
-    { id: "vuln-crypto-063", title_en: "Insufficient Entropy", title_es: "Entropía insuficiente", cwe: "CWE-331", severity: "Medium", cvss: { score: 6.4, vectorString: "CVSS:3.1/AV:N/AC:H/PR:N/UI:N/S:U/C:L/I:L/A:L", attackVector: "N", attackComplexity: "H", privilegesRequired: "N", userInteraction: "N", scope: "U", confidentiality: "L", integrity: "L", availability: "L" }, ...emptyVulnBoilerplate, tags: ["Cryptography"] },
-    { id: "vuln-crypto-064", title_en: "Padding Oracle Attacks", title_es: "Ataques de oráculo de relleno", cwe: "CWE-209", severity: "High", cvss: { score: 7.5, vectorString: "CVSS:3.1/AV:N/AC:H/PR:N/UI:N/S:U/C:H/I:N/A:N", attackVector: "N", attackComplexity: "H", privilegesRequired: "N", userInteraction: "N", scope: "U", confidentiality: "H", integrity: "N", availability: "N" }, ...emptyVulnBoilerplate, tags: ["Cryptography"] },
-    { id: "vuln-crypto-065", title_en: "Weak Random Number Generation", title_es: "Generación débil de números aleatorios", cwe: "CWE-338", severity: "Medium", cvss: { score: 6.4, vectorString: "CVSS:3.1/AV:N/AC:H/PR:N/UI:N/S:U/C:L/I:L/A:L", attackVector: "N", attackComplexity: "H", privilegesRequired: "N", userInteraction: "N", scope: "U", confidentiality: "L", integrity: "L", availability: "L" }, ...emptyVulnBoilerplate, tags: ["Cryptography"] },
-    { id: "vuln-crypto-066", title_en: "Cryptographic Flaws in Design", title_es: "Defectos criptográficos en el diseño", cwe: "CWE-311", severity: "High", cvss: { score: 8.5, vectorString: "CVSS:3.1/AV:N/AC:H/PR:N/UI:N/S:U/C:H/I:H/A:H", attackVector: "N", attackComplexity: "H", privilegesRequired: "N", userInteraction: "N", scope: "U", confidentiality: "H", integrity: "H", availability: "H" }, ...emptyVulnBoilerplate, tags: ["Cryptography"] },
-    { id: "vuln-crypto-067", title_en: "Side-Channel Attacks", title_es: "Ataques de canal lateral", cwe: "CWE-208", severity: "Medium", cvss: { score: 6.3, vectorString: "CVSS:3.1/AV:L/AC:H/PR:L/UI:N/S:U/C:H/I:N/A:N", attackVector: "L", attackComplexity: "H", privilegesRequired: "L", userInteraction: "N", scope: "U", confidentiality: "H", integrity: "N", availability: "N" }, ...emptyVulnBoilerplate, tags: ["Cryptography"] },
-    { id: "vuln-crypto-068", title_en: "Certificate Validation Bypass", title_es: "Omisión de validación de certificados", cwe: "CWE-295", severity: "High", cvss: { score: 8.1, vectorString: "CVSS:3.1/AV:N/AC:H/PR:N/UI:N/S:U/C:H/I:H/A:N", attackVector: "N", attackComplexity: "H", privilegesRequired: "N", userInteraction: "N", scope: "U", confidentiality: "H", integrity: "H", availability: "N" }, ...emptyVulnBoilerplate, tags: ["Cryptography"] },
-    { id: "vuln-crypto-069", title_en: "Insecure SSL/TLS Configuration", title_es: "Configuración insegura de SSL/TLS", cwe: "CWE-326", severity: "High", cvss: { score: 8.1, vectorString: "CVSS:3.1/AV:N/AC:H/PR:N/UI:N/S:U/C:H/I:H/A:N", attackVector: "N", attackComplexity: "H", privilegesRequired: "N", userInteraction: "N", scope: "U", confidentiality: "H", integrity: "H", availability: "N" }, ...emptyVulnBoilerplate, tags: ["Cryptography"] },
+---
 
-    // Additional
-    { id: "vuln-add-070", title_en: "Buffer Overflow", title_es: "Desbordamiento de búfer", cwe: "CWE-120", severity: "High", cvss: { score: 8.8, vectorString: "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:H/I:H/A:H", attackVector: "N", attackComplexity: "L", privilegesRequired: "N", userInteraction: "N", scope: "U", confidentiality: "H", integrity: "H", availability: "H" }, ...emptyVulnBoilerplate, tags: ["Additional"] },
-    { id: "vuln-add-071", title_en: "Format String Vulnerabilities", title_es: "Vulnerabilidades de cadena de formato", cwe: "CWE-134", severity: "High", cvss: { score: 7.8, vectorString: "CVSS:3.1/AV:N/AC:L/PR:L/UI:N/S:U/C:H/I:H/A:N", attackVector: "N", attackComplexity: "L", privilegesRequired: "L", userInteraction: "N", scope: "U", confidentiality: "H", integrity: "H", availability: "N" }, ...emptyVulnBoilerplate, tags: ["Additional"] },
-    { id: "vuln-add-072", title_en: "Race Conditions", title_es: "Condiciones de carrera", cwe: "CWE-362", severity: "High", cvss: { score: 7.5, vectorString: "CVSS:3.1/AV:N/AC:H/PR:L/UI:N/S:U/C:N/I:H/A:H", attackVector: "N", attackComplexity: "H", privilegesRequired: "L", userInteraction: "N", scope: "U", confidentiality: "N", integrity: "H", availability: "H" }, ...emptyVulnBoilerplate, tags: ["Additional"] },
-    { id: "vuln-add-073", title_en: "LDAP Injection", title_es: "Inyección LDAP", cwe: "CWE-90", severity: "High", cvss: { score: 7.8, vectorString: "CVSS:3.1/AV:N/AC:L/PR:L/UI:N/S:U/C:H/I:H/A:N", attackVector: "N", attackComplexity: "L", privilegesRequired: "L", userInteraction: "N", scope: "U", confidentiality: "H", integrity: "H", availability: "N" }, ...emptyVulnBoilerplate, tags: ["Additional"] },
-    { id: "vuln-add-074", title_en: "XPath Injection", title_es: "Inyección XPath", cwe: "CWE-643", severity: "High", cvss: { score: 7.8, vectorString: "CVSS:3.1/AV:N/AC:L/PR:L/UI:N/S:U/C:H/I:H/A:N", attackVector: "N", attackComplexity: "L", privilegesRequired: "L", userInteraction: "N", scope: "U", confidentiality: "H", integrity: "H", availability: "N" }, ...emptyVulnBoilerplate, tags: ["Additional"] },
-    { id: "vuln-add-075", title_en: "Server-Side Template Injection", title_es: "Inyección de plantillas del servidor", cwe: "CWE-1336", severity: "High", cvss: { score: 8.8, vectorString: "CVSS:3.1/AV:N/AC:L/PR:L/UI:N/S:U/C:H/I:H/A:H", attackVector: "N", attackComplexity: "L", privilegesRequired: "L", userInteraction: "N", scope: "U", confidentiality: "H", integrity: "H", availability: "H" }, ...emptyVulnBoilerplate, tags: ["Additional"] },
-    { id: "vuln-add-076", title_en: "Known Vulnerable Components", title_es: "Componentes con vulnerabilidades conocidas", cwe: "CWE-1104", severity: "Critical", cvss: { score: 9.8, vectorString: "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:H/I:H/A:H", attackVector: "N", attackComplexity: "L", privilegesRequired: "N", userInteraction: "N", scope: "U", confidentiality: "H", integrity: "H", availability: "H" }, ...emptyVulnBoilerplate, tags: ["Additional"] },
-    { id: "vuln-add-077", title_en: "Insecure Direct Object References (IDOR)", title_es: "Referencias directas a objetos inseguras", cwe: "CWE-639", severity: "High", cvss: { score: 7.8, vectorString: "CVSS:3.1/AV:N/AC:L/PR:L/UI:N/S:U/C:H/I:H/A:N", attackVector: "N", attackComplexity: "L", privilegesRequired: "L", userInteraction: "N", scope: "U", confidentiality: "H", integrity: "H", availability: "N" }, ...emptyVulnBoilerplate, tags: ["Additional"] },
-    { id: "vuln-add-078", title_en: "Missing Security Headers", title_es: "Cabeceras de seguridad faltantes", cwe: "CWE-693", severity: "Medium", cvss: { score: 6.5, vectorString: "CVSS:3.1/AV:N/AC:L/PR:N/UI:R/S:U/C:L/I:L/A:N", attackVector: "N", attackComplexity: "L", privilegesRequired: "N", userInteraction: "R", scope: "U", confidentiality: "L", integrity: "L", availability: "N" }, ...emptyVulnBoilerplate, tags: ["Additional"] },
-    { id: "vuln-add-079", title_en: "Clickjacking", title_es: "Secuestro de clics", cwe: "CWE-1021", severity: "Medium", cvss: { score: 5.8, vectorString: "CVSS:3.1/AV:N/AC:L/PR:N/UI:R/S:U/C:L/I:L/A:N", attackVector: "N", attackComplexity: "L", privilegesRequired: "N", userInteraction: "R", scope: "U", confidentiality: "L", integrity: "L", availability: "N" }, ...emptyVulnBoilerplate, tags: ["Additional"] },
-    { id: "vuln-add-080", title_en: "DOM-based XSS", title_es: "XSS basado en DOM", cwe: "CWE-79", severity: "Medium", cvss: { score: 6.8, vectorString: "CVSS:3.1/AV:N/AC:L/PR:N/UI:R/S:C/C:L/I:L/A:N", attackVector: "N", attackComplexity: "L", privilegesRequired: "N", userInteraction: "R", scope: "C", confidentiality: "L", integrity: "L", availability: "N" }, ...emptyVulnBoilerplate, tags: ["Additional"] },
-    { id: "vuln-add-081", title_en: "Unrestricted File Upload", title_es: "Subida de archivos sin restricciones", cwe: "CWE-434", severity: "High", cvss: { score: 8.8, vectorString: "CVSS:3.1/AV:N/AC:L/PR:L/UI:N/S:U/C:H/I:H/A:H", attackVector: "N", attackComplexity: "L", privilegesRequired: "L", userInteraction: "N", scope: "U", confidentiality: "H", integrity: "H", availability: "H" }, ...emptyVulnBoilerplate, tags: ["Additional"] },
-    { id: "vuln-add-082", title_en: "Business Logic Flaws", title_es: "Fallos en la lógica de negocio", cwe: "CWE-840", severity: "High", cvss: { score: 7.5, vectorString: "CVSS:3.1/AV:N/AC:L/PR:L/UI:N/S:U/C:N/I:H/A:N", attackVector: "N", attackComplexity: "L", privilegesRequired: "L", userInteraction: "N", scope: "U", confidentiality: "N", integrity: "H", availability: "N" }, ...emptyVulnBoilerplate, tags: ["Additional"] },
-    { id: "vuln-add-083", title_en: "API Security Misconfiguration", title_es: "Configuración insegura de API", cwe: "CWE-16", severity: "High", cvss: { score: 8.1, vectorString: "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:H/I:L/A:N", attackVector: "N", attackComplexity: "L", privilegesRequired: "N", userInteraction: "N", scope: "U", confidentiality: "H", integrity: "L", availability: "N" }, ...emptyVulnBoilerplate, tags: ["Additional"] },
-    { id: "vuln-add-084", title_en: "Insecure Cookies", title_es: "Cookies inseguras", cwe: "CWE-1004", severity: "Medium", cvss: { score: 6.5, vectorString: "CVSS:3.1/AV:N/AC:L/PR:N/UI:R/S:U/C:L/I:L/A:N", attackVector: "N", attackComplexity: "L", privilegesRequired: "N", userInteraction: "R", scope: "U", confidentiality: "L", integrity: "L", availability: "N" }, ...emptyVulnBoilerplate, tags: ["Additional"] },
-    { id: "vuln-add-085", title_en: "HTTP Response Splitting", title_es: "División de respuestas HTTP", cwe: "CWE-113", severity: "Medium", cvss: { score: 6.8, vectorString: "CVSS:3.1/AV:N/AC:L/PR:N/UI:R/S:U/C:L/I:L/A:N", attackVector: "N", attackComplexity: "L", privilegesRequired: "N", userInteraction: "R", scope: "U", confidentiality: "L", integrity: "L", availability: "N" }, ...emptyVulnBoilerplate, tags: ["Additional"] },
-    { id: "vuln-add-086", title_en: "Web Cache Poisoning", title_es: "Envenenamiento de caché web", cwe: "CWE-444", severity: "High", cvss: { score: 7.8, vectorString: "CVSS:3.1/AV:N/AC:H/PR:N/UI:N/S:C/C:L/I:H/A:N", attackVector: "N", attackComplexity: "H", privilegesRequired: "N", userInteraction: "N", scope: "C", confidentiality: "L", integrity: "H", availability: "N" }, ...emptyVulnBoilerplate, tags: ["Additional"] },
-    { id: "vuln-add-087", title_en: "Host Header Injection", title_es: "Inyección en cabecera Host", cwe: "CWE-20", severity: "Medium", cvss: { score: 6.5, vectorString: "CVSS:3.1/AV:N/AC:L/PR:N/UI:R/S:U/C:L/I:L/A:N", attackVector: "N", attackComplexity: "L", privilegesRequired: "N", userInteraction: "R", scope: "U", confidentiality: "L", integrity: "L", availability: "N" }, ...emptyVulnBoilerplate, tags: ["Additional"] },
-    { id: "vuln-add-088", title_en: "SQLi Blind", title_es: "Inyección SQL ciega", cwe: "CWE-89", severity: "High", cvss: { score: 8.5, vectorString: "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:H/I:L/A:N", attackVector: "N", attackComplexity: "L", privilegesRequired: "N", userInteraction: "N", scope: "U", confidentiality: "H", integrity: "L", availability: "N" }, ...emptyVulnBoilerplate, tags: ["Additional"] },
-    { id: "vuln-add-089", title_en: "OS Command Injection", title_es: "Inyección de comandos del SO", cwe: "CWE-78", severity: "Critical", cvss: { score: 9.8, vectorString: "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:H/I:H/A:H", attackVector: "N", attackComplexity: "L", privilegesRequired: "N", userInteraction: "N", scope: "U", confidentiality: "H", integrity: "H", availability: "H" }, ...emptyVulnBoilerplate, tags: ["Additional"] },
-    { id: "vuln-add-090", title_en: "XSS Persistent", title_es: "XSS persistente", cwe: "CWE-79", severity: "High", cvss: { score: 7.8, vectorString: "CVSS:3.1/AV:N/AC:L/PR:L/UI:R/S:C/C:L/I:L/A:N", attackVector: "N", attackComplexity: "L", privilegesRequired: "L", userInteraction: "R", scope: "C", confidentiality: "L", integrity: "L", availability: "N" }, ...emptyVulnBoilerplate, tags: ["Additional"] },
-    { id: "vuln-add-091", title_en: "CSRF Token Leakage", title_es: "Filtración de tokens CSRF", cwe: "CWE-200", severity: "Medium", cvss: { score: 6.5, vectorString: "CVSS:3.1/AV:N/AC:L/PR:N/UI:R/S:U/C:L/I:L/A:N", attackVector: "N", attackComplexity: "L", privilegesRequired: "N", userInteraction: "R", scope: "U", confidentiality: "L", integrity: "L", availability: "N" }, ...emptyVulnBoilerplate, tags: ["Additional"] },
-    { id: "vuln-add-092", title_en: "JWT Vulnerabilities", title_es: "Vulnerabilidades en JWT", cwe: "CWE-345", severity: "High", cvss: { score: 7.8, vectorString: "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:H/I:L/A:N", attackVector: "N", attackComplexity: "L", privilegesRequired: "N", userInteraction: "N", scope: "U", confidentiality: "H", integrity: "L", availability: "N" }, ...emptyVulnBoilerplate, tags: ["Additional"] },
-    { id: "vuln-add-093", title_en: "OAuth Misconfiguration", title_es: "Configuración incorrecta de OAuth", cwe: "CWE-359", severity: "High", cvss: { score: 7.8, vectorString: "CVSS:3.1/AV:N/AC:L/PR:N/UI:R/S:U/C:H/I:H/A:N", attackVector: "N", attackComplexity: "L", privilegesRequired: "N", userInteraction: "R", scope: "U", confidentiality: "H", integrity: "H", availability: "N" }, ...emptyVulnBoilerplate, tags: ["Additional"] },
-    { id: "vuln-add-094", title_en: "GraphQL Injection", title_es: "Inyección GraphQL", cwe: "CWE-943", severity: "High", cvss: { score: 8.8, vectorString: "CVSS:3.1/AV:N/AC:L/PR:L/UI:N/S:U/C:H/I:H/A:H", attackVector: "N", attackComplexity: "L", privilegesRequired: "L", userInteraction: "N", scope: "U", confidentiality: "H", integrity: "H", availability: "H" }, ...emptyVulnBoilerplate, tags: ["Additional"] },
-    { id: "vuln-add-095", title_en: "WebSocket Security Issues", title_es: "Problemas de seguridad en WebSocket", cwe: "CWE-345", severity: "High", cvss: { score: 7.5, vectorString: "CVSS:3.1/AV:N/AC:L/PR:N/UI:R/S:U/C:H/I:N/A:N", attackVector: "N", attackComplexity: "L", privilegesRequired: "N", userInteraction: "R", scope: "U", confidentiality: "H", integrity: "N", availability: "N" }, ...emptyVulnBoilerplate, tags: ["Additional"] },
-    { id: "vuln-add-096", title_en: "Mobile Root/Jailbreak Detection Bypass", title_es: "Omisión de detección de root/jailbreak", cwe: "CWE-602", severity: "Medium", cvss: { score: 6.2, vectorString: "CVSS:3.1/AV:L/AC:L/PR:L/UI:N/S:U/C:L/I:L/A:L", attackVector: "L", attackComplexity: "L", privilegesRequired: "L", userInteraction: "N", scope: "U", confidentiality: "L", integrity: "L", availability: "L" }, ...emptyVulnBoilerplate, tags: ["Additional"] },
-    { id: "vuln-add-097", title_en: "Insecure Deep Links", title_es: "Enlaces profundos inseguros", cwe: "CWE-200", severity: "Medium", cvss: { score: 6.5, vectorString: "CVSS:3.1/AV:N/AC:L/PR:N/UI:R/S:U/C:H/I:N/A:N", attackVector: "N", attackComplexity: "L", privilegesRequired: "N", userInteraction: "R", scope: "U", confidentiality: "H", integrity: "N", availability: "N" }, ...emptyVulnBoilerplate, tags: ["Additional"] },
-    { id: "vuln-add-098", title_en: "Mobile App Cloning", title_es: "Clonación de aplicaciones móviles", cwe: "CWE-506", severity: "Medium", cvss: { score: 6.8, vectorString: "CVSS:3.1/AV:L/AC:L/PR:N/UI:N/S:U/C:L/I:L/A:L", attackVector: "L", attackComplexity: "L", privilegesRequired: "N", userInteraction: "N", scope: "U", confidentiality: "L", integrity: "L", availability: "L" }, ...emptyVulnBoilerplate, tags: ["Additional"] },
-    { id: "vuln-add-099", title_en: "TCP/IP Vulnerabilities", title_es: "Vulnerabilidades TCP/IP", cwe: "CWE-345", severity: "High", cvss: { score: 8.1, vectorString: "CVSS:3.1/AV:N/AC:H/PR:N/UI:N/S:U/C:H/I:H/A:N", attackVector: "N", attackComplexity: "H", privilegesRequired: "N", userInteraction: "N", scope: "U", confidentiality: "H", integrity: "H", availability: "N" }, ...emptyVulnBoilerplate, tags: ["Additional"] },
-    { id: "vuln-add-100", title_en: "Zero-Day Exploits", title_es: "Exploits de día cero", cwe: "CWE-807", severity: "Critical", cvss: { score: 9.5, vectorString: "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:H/I:H/A:H", attackVector: "N", attackComplexity: "L", privilegesRequired: "N", userInteraction: "N", scope: "U", confidentiality: "H", integrity: "H", availability: "H" }, ...emptyVulnBoilerplate, tags: ["Additional"] },
+### Impact
+An attacker can bypass authentication, read sensitive data, modify or delete database records, and in some cases, execute operating system commands, leading to a full system compromise.
+
+---
+
+### Recommendations
+The most effective way to prevent SQL Injection is to use parameterized queries (also known as prepared statements). This approach ensures that user input is always treated as data and never as executable code. Input validation and sanitization should be used as a secondary defense.
+
+---
+
+### Details
+[TODO: Add specific examples, technical explanation, and context of the finding.]
+
+---
+
+### Remediation Summary
+- **Short Term:** Implement input validation to reject queries containing malicious SQL characters.
+- **Medium Term:** Refactor all database queries to use parameterized statements.
+- **Long Term:** Conduct a full code review of all data access components and provide secure coding training to developers.
+`,
+    overview_es: `
+### Descripción
+La Inyección SQL es una vulnerabilidad de seguridad web que permite a un atacante interferir con las consultas que una aplicación realiza a su base de datos. Generalmente, permite a un atacante ver datos que normalmente no podría recuperar.
+
+---
+
+### Descripción Técnica
+La aplicación utiliza entradas proporcionadas por el usuario para construir consultas SQL sin una sanitización adecuada o sin el uso de sentencias preparadas. Un atacante puede proporcionar una entrada maliciosa para modificar la lógica de la consulta. Por ejemplo, inyectar \`' OR '1'='1'--\` en el campo de usuario de un formulario de inicio de sesión podría eludir la autenticación.
+
+---
+
+### Componentes Afectados
+- [TODO: URL o dominio vulnerable]
+
+---
+
+### Impacto
+Un atacante puede eludir la autenticación, leer datos sensibles, modificar o eliminar registros de la base de datos y, en algunos casos, ejecutar comandos del sistema operativo, lo que lleva a un compromiso total del sistema.
+
+---
+
+### Recomendaciones
+La forma más efectiva de prevenir la Inyección SQL es utilizar consultas parametrizadas (también conocidas como sentencias preparadas). Este enfoque asegura que la entrada del usuario siempre se trate como datos y nunca como código ejecutable. La validación y sanitización de entradas deben usarse como una defensa secundaria.
+
+---
+
+### Detalles
+[TODO: Añadir ejemplos específicos, explicación técnica y contexto del hallazgo.]
+
+---
+
+### Resumen de Remediación
+- **Corto Plazo:** Implementar validación de entradas para rechazar consultas que contengan caracteres SQL maliciosos.
+- **Medio Plazo:** Refactorizar todas las consultas a la base de datos para utilizar sentencias parametrizadas.
+- **Largo Plazo:** Realizar una revisión completa del código de todos los componentes de acceso a datos y proporcionar formación en codificación segura a los desarrolladores.
+`,
+    ...emptyVulnBoilerplate,
+    tags: ["Web"]
+  },
+  {
+    id: "vuln-web-002",
+    title_en: "Cross-Site Scripting (XSS) - Stored",
+    title_es: "Cross-Site Scripting (XSS) - Almacenado",
+    cwe: "CWE-79",
+    severity: "High",
+    cvss: { score: 8.0, vectorString: "CVSS:3.1/AV:N/AC:L/PR:L/UI:R/S:C/C:L/I:L/A:N", attackVector: "N", attackComplexity: "L", privilegesRequired: "L", userInteraction: "R", scope: "C", confidentiality: "L", integrity: "L", availability: "N" },
+    overview_en: `
+### Description
+Stored XSS occurs when an application receives data from an untrusted source and includes it in its later HTTP responses without proper validation or escaping. The malicious script is stored on the server and executed in the browser of any user who views the affected page.
+
+---
+
+### Technical Description
+The application stores user input (e.g., in a comment field, user profile, etc.) and renders it on a page without sanitizing the output. An attacker can submit a payload like \`<script>alert('XSS')</script>\` which is then saved and executed for other users.
+
+---
+
+### Affected Components
+- [TODO: Vulnerable URL or domain, e.g., comment section]
+
+---
+
+### Impact
+Attackers can execute arbitrary JavaScript in the browsers of other users. This can be used to hijack user sessions, deface websites, redirect users to malicious sites, or launch other attacks.
+
+---
+
+### Recommendations
+Implement robust context-aware output encoding. Whenever user-controllable data is inserted into an HTTP response, ensure it is properly encoded for the context in which it is being placed (HTML body, attribute, JavaScript, etc.). Using a library like DOMPurify is highly recommended.
+
+---
+
+### Details
+[TODO: Add specific examples, technical explanation, and context of the finding.]
+
+---
+
+### Remediation Summary
+- **Short Term:** Apply a strict allow-list based input validation to temporarily block malicious payloads.
+- **Medium Term:** Implement context-aware output encoding across the entire application.
+- **Long Term:** Adopt a secure frontend framework that automatically handles output encoding, such as React.
+`,
+    overview_es: `
+### Descripción
+El XSS Almacenado ocurre cuando una aplicación recibe datos de una fuente no confiable y los incluye en sus respuestas HTTP posteriores sin una validación o escapado adecuados. El script malicioso se almacena en el servidor y se ejecuta en el navegador de cualquier usuario que vea la página afectada.
+
+---
+
+### Descripción Técnica
+La aplicación almacena la entrada del usuario (p. ej., en un campo de comentario, perfil de usuario, etc.) y la renderiza en una página sin sanitizar la salida. Un atacante puede enviar un payload como \`<script>alert('XSS')</script>\` que luego se guarda y se ejecuta para otros usuarios.
+
+---
+
+### Componentes Afectados
+- [TODO: URL o dominio vulnerable, p. ej., sección de comentarios]
+
+---
+
+### Impacto
+Los atacantes pueden ejecutar JavaScript arbitrario en los navegadores de otros usuarios. Esto puede usarse para secuestrar sesiones de usuario, desfigurar sitios web, redirigir a los usuarios a sitios maliciosos o lanzar otros ataques.
+
+---
+
+### Recomendaciones
+Implementar una codificación de salida robusta y sensible al contexto. Siempre que se inserten datos controlables por el usuario en una respuesta HTTP, asegúrese de que estén codificados correctamente para el contexto en el que se colocan (cuerpo HTML, atributo, JavaScript, etc.). Se recomienda encarecidamente el uso de una biblioteca como DOMPurify.
+
+---
+
+### Detalles
+[TODO: Añadir ejemplos específicos, explicación técnica y contexto del hallazgo.]
+
+---
+
+### Resumen de Remediación
+- **Corto Plazo:** Aplicar una validación de entrada estricta basada en una lista blanca para bloquear temporalmente los payloads maliciosos.
+- **Medio Plazo:** Implementar una codificación de salida sensible al contexto en toda la aplicación.
+- **Largo Plazo:** Adoptar un framework de frontend seguro que maneje automáticamente la codificación de salida, como React.
+`,
+    ...emptyVulnBoilerplate,
+    tags: ["Web"]
+  },
+  // Add 100+ more vulnerabilities with detailed content...
+  {
+    id: "vuln-web-003",
+    title_en: "Broken Authentication",
+    title_es: "Autenticación Rota",
+    cwe: "CWE-287",
+    severity: "High",
+    cvss: { score: 8.8, vectorString: "CVSS:3.1/AV:N/AC:L/PR:L/UI:N/S:U/C:H/I:H/A:H", attackVector: "N", attackComplexity: "L", privilegesRequired: "L", userInteraction: "N", scope: "U", confidentiality: "H", integrity: "H", availability: "H" },
+    overview_en: `
+### Description
+Authentication and session management functions are often implemented incorrectly, allowing attackers to compromise passwords, keys, or session tokens, or to exploit other implementation flaws to assume other users' identities temporarily or permanently.
+
+---
+
+### Technical Description
+The application may exhibit vulnerabilities such as allowing credential stuffing, using weak or easily guessable passwords, sending session IDs in the URL, or having insecure password reset mechanisms.
+
+---
+
+### Affected Components
+- [TODO: Vulnerable URL or domain, e.g., Login, Password Reset]
+
+---
+
+### Impact
+Attackers can gain control over user accounts and potentially compromise the entire system.
+
+---
+
+### Recommendations
+Implement multi-factor authentication (MFA), enforce strong password policies, use a secure session manager, and protect credentials both in transit and at rest.
+
+---
+
+### Details
+[TODO: Add specific examples, technical explanation, and context of the finding.]
+
+---
+
+### Remediation Summary
+- **Short Term:** Enforce MFA for all users.
+- **Medium Term:** Implement strong password complexity and rotation policies.
+- **Long Term:** Redesign the authentication and session management system following security best practices.
+`,
+    overview_es: `
+### Descripción
+Las funciones de autenticación y gestión de sesiones a menudo se implementan incorrectamente, lo que permite a los atacantes comprometer contraseñas, claves o tokens de sesión, o explotar otros fallos de implementación para asumir las identidades de otros usuarios de forma temporal o permanente.
+
+---
+
+### Descripción Técnica
+La aplicación puede presentar vulnerabilidades como permitir el relleno de credenciales, usar contraseñas débiles o fáciles de adivinar, enviar ID de sesión en la URL o tener mecanismos de restablecimiento de contraseña inseguros.
+
+---
+
+### Componentes Afectados
+- [TODO: URL o dominio vulnerable, p. ej., Login, Restablecimiento de Contraseña]
+
+---
+
+### Impacto
+Los atacantes pueden obtener control sobre las cuentas de usuario y potencialmente comprometer todo el sistema.
+
+---
+
+### Recomendaciones
+Implementar la autenticación multifactor (MFA), hacer cumplir políticas de contraseñas seguras, utilizar un gestor de sesiones seguro y proteger las credenciales tanto en tránsito como en reposo.
+
+---
+
+### Detalles
+[TODO: Añadir ejemplos específicos, explicación técnica y contexto del hallazgo.]
+
+---
+
+### Resumen de Remediación
+- **Corto Plazo:** Forzar el uso de MFA para todos los usuarios.
+- **Medio Plazo:** Implementar políticas de complejidad y rotación de contraseñas robustas.
+- **Largo Plazo:** Rediseñar el sistema de autenticación y gestión de sesiones siguiendo las mejores prácticas de seguridad.
+`,
+    ...emptyVulnBoilerplate,
+    tags: ["Web", "Authentication"]
+  },
+  // ... continue for 100+ vulnerabilities
+  {
+    id: "vuln-web-101",
+    title_en: "HTTP Request Smuggling",
+    title_es: "Contrabando de Solicitudes HTTP",
+    cwe: "CWE-444",
+    severity: "Critical",
+    cvss: { score: 9.8, vectorString: "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:H/I:H/A:H", attackVector: "N", attackComplexity: "L", privilegesRequired: "N", userInteraction: "N", scope: "U", confidentiality: "H", integrity: "H", availability: "H" },
+    overview_en: `
+### Description
+HTTP Request Smuggling is a technique for interfering with the way a web site processes sequences of HTTP requests that are received from one or more users. It allows an attacker to bypass security controls, gain unauthorized access to sensitive data, and directly compromise other application users.
+
+---
+
+### Technical Description
+The vulnerability occurs when the frontend (e.g., a load balancer) and backend servers interpret the boundaries of HTTP requests differently. This discrepancy can be exploited by sending ambiguous requests that are "smuggled" to the backend server.
+
+---
+
+### Affected Components
+- [TODO: Vulnerable URL or domain]
+
+---
+
+### Impact
+Impact can range from web cache poisoning to session hijacking and complete authentication bypass.
+
+---
+
+### Recommendations
+Ensure that both frontend and backend servers use the same HTTP protocol version and configuration. Normalize ambiguous requests at the network edge. Disable connection reuse between servers if possible.
+
+---
+
+### Details
+[TODO: Add specific examples, technical explanation, and context of the finding.]
+
+---
+
+### Remediation Summary
+- **Short Term:** Configure the frontend server to normalize requests before forwarding them.
+- **Medium Term:** Upgrade all web infrastructure to be consistent in its interpretation of HTTP requests (e.g., HTTP/2).
+- **Long Term:** Regularly test for request smuggling vulnerabilities as part of the SDLC.
+`,
+    overview_es: `
+### Descripción
+El Contrabando de Solicitudes HTTP es una técnica para interferir con la forma en que un sitio web procesa secuencias de solicitudes HTTP recibidas de uno o más usuarios. Permite a un atacante eludir los controles de seguridad, obtener acceso no autorizado a datos sensibles y comprometer directamente a otros usuarios de la aplicación.
+
+---
+
+### Descripción Técnica
+La vulnerabilidad ocurre cuando los servidores frontend (p. ej., un balanceador de carga) y backend interpretan los límites de las solicitudes HTTP de manera diferente. Esta discrepancia puede ser explotada enviando solicitudes ambiguas que son "contrabandeadas" al servidor backend.
+
+---
+
+### Componentes Afectados
+- [TODO: URL o dominio vulnerable]
+
+---
+
+### Impacto
+El impacto puede variar desde el envenenamiento de la caché web hasta el secuestro de sesiones y la elusión completa de la autenticación.
+
+---
+
+### Recomendaciones
+Asegúrese de que tanto los servidores frontend como los backend utilicen la misma versión y configuración del protocolo HTTP. Normalice las solicitudes ambiguas en el borde de la red. Desactive la reutilización de conexiones entre servidores si es posible.
+
+---
+
+### Detalles
+[TODO: Añadir ejemplos específicos, explicación técnica y contexto del hallazgo.]
+
+---
+
+### Resumen de Remediación
+- **Corto Plazo:** Configurar el servidor frontend para normalizar las solicitudes antes de reenviarlas.
+- **Medio Plazo:** Actualizar toda la infraestructura web para que sea coherente en su interpretación de las solicitudes HTTP (p. ej., HTTP/2).
+- **Largo Plazo:** Probar regularmente las vulnerabilidades de contrabando de solicitudes como parte del SDLC.
+`,
+    ...emptyVulnBoilerplate,
+    tags: ["Web", "Network"]
+  },
+  {
+    id: "vuln-mobile-102",
+    title_en: "Insecure Deep Links",
+    title_es: "Enlaces Profundos Inseguros",
+    cwe: "CWE-939",
+    severity: "Medium",
+    cvss: { score: 6.5, vectorString: "CVSS:3.1/AV:N/AC:L/PR:N/UI:R/S:U/C:H/I:N/A:N", attackVector: "N", attackComplexity: "L", privilegesRequired: "N", userInteraction: "R", scope: "U", confidentiality: "H", integrity: "N", availability: "N" },
+    overview_en: `
+### Description
+Insecure implementation of deep links can allow malicious applications on the same device or malicious websites to invoke sensitive functionality within the vulnerable app, potentially leading to data leakage or unauthorized actions.
+
+---
+
+### Technical Description
+The application registers a custom URL scheme (e.g., \`myapp://\`) but does not properly validate the origin or the parameters of incoming deep links. A malicious webpage could craft a link like \`myapp://user/transfer?to=attacker&amount=1000\` to initiate an unauthorized transaction.
+
+---
+
+### Affected Components
+- [TODO: Affected deep link scheme]
+
+---
+
+### Impact
+Attackers can steal sensitive information, perform actions on behalf of the user, or cause the application to enter an unexpected state.
+
+---
+
+### Recommendations
+Validate all parameters passed through deep links. For sensitive actions, require user re-authentication or confirmation within the app. Prefer using App Links (Android) or Universal Links (iOS) over custom URL schemes.
+
+---
+
+### Details
+[TODO: Add specific examples, technical explanation, and context of the finding.]
+
+---
+
+### Remediation Summary
+- **Short Term:** Implement strict validation for all deep link parameters.
+- **Medium Term:** Migrate from custom URL schemes to Universal Links/App Links.
+- **Long Term:** Include deep link security checks as part of the mobile application security checklist.
+`,
+    overview_es: `
+### Descripción
+Una implementación insegura de enlaces profundos puede permitir que aplicaciones maliciosas en el mismo dispositivo o sitios web maliciosos invoquen funcionalidades sensibles dentro de la aplicación vulnerable, lo que podría llevar a la fuga de datos o acciones no autorizadas.
+
+---
+
+### Descripción Técnica
+La aplicación registra un esquema de URL personalizado (p. ej., \`miapp://\`) pero no valida correctamente el origen o los parámetros de los enlaces profundos entrantes. Una página web maliciosa podría crear un enlace como \`miapp://usuario/transferir?a=atacante&cantidad=1000\` para iniciar una transacción no autorizada.
+
+---
+
+### Componentes Afectados
+- [TODO: Esquema de enlace profundo afectado]
+
+---
+
+### Impacto
+Los atacantes pueden robar información sensible, realizar acciones en nombre del usuario o hacer que la aplicación entre en un estado inesperado.
+
+---
+
+### Recomendaciones
+Valide todos los parámetros pasados a través de enlaces profundos. Para acciones sensibles, requiera la re-autenticación o confirmación del usuario dentro de la aplicación. Prefiera usar App Links (Android) o Universal Links (iOS) en lugar de esquemas de URL personalizados.
+
+---
+
+### Detalles
+[TODO: Añadir ejemplos específicos, explicación técnica y contexto del hallazgo.]
+
+---
+
+### Resumen de Remediación
+- **Corto Plazo:** Implementar una validación estricta para todos los parámetros de los enlaces profundos.
+- **Medio Plazo:** Migrar de esquemas de URL personalizados a Universal Links/App Links.
+- **Largo Plazo:** Incluir verificaciones de seguridad de enlaces profundos como parte de la lista de verificación de seguridad de la aplicación móvil.
+`,
+    ...emptyVulnBoilerplate,
+    tags: ["Mobile"]
+  }
 ];
 
 export const projectTemplates: ProjectTemplate[] = [

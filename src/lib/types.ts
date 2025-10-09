@@ -55,9 +55,9 @@ export interface CVSS {
 }
 
 export interface Remediation {
-  shortTerm?: string;
-  mediumTerm?: string;
-  longTerm?: string;
+  shortTerm: string;
+  mediumTerm: string;
+  longTerm: string;
 }
 
 export interface Vulnerability {
@@ -71,19 +71,8 @@ export interface Vulnerability {
   severity: Severity;
   references: string[];
   tags: string[];
-  // Deprecated fields, kept for data migration. Will be removed.
-  technicalDescription_en?: string;
-  technicalDescription_es?: string;
-  affectedComponents_en?: string;
-  affectedComponents_es?: string;
-  impact_en?: string;
-  impact_es?: string;
-  recommendations_en?: string;
-  recommendations_es?: string;
-  details_en?: string;
-  details_es?: string;
-  remediation_en?: Remediation;
-  remediation_es?: Remediation;
+  remediation_en: Remediation;
+  remediation_es: Remediation;
 }
 
 export interface Report {
