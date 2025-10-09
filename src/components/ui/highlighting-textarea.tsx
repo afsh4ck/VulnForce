@@ -60,15 +60,16 @@ export const HighlightingTextarea = React.forwardRef<HTMLTextAreaElement, Highli
                         "font-code text-sm min-h-[300px]",
                         "p-4" // Match textarea padding
                     )}
-                    dangerouslySetInnerHTML={{ __html: highlightedText + '\n' }}
-                />
+                >
+                    <span dangerouslySetInnerHTML={{ __html: highlightedText + '\n' }}/>
+                </div>
                 <textarea
                     ref={localTextareaRef}
                     value={value}
                     onChange={handleChange}
                     onScroll={handleScroll}
                     className={cn(
-                        'relative z-10 block w-full resize-none overflow-auto whitespace-pre-wrap break-words border-0 bg-transparent text-transparent caret-foreground',
+                        'relative z-10 block w-full h-full resize-none overflow-auto whitespace-pre-wrap break-words border-0 bg-transparent text-transparent caret-foreground',
                         'font-code text-sm min-h-[300px]',
                         "p-4 ring-offset-background placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
                     )}

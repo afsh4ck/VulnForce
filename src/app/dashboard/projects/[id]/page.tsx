@@ -412,6 +412,7 @@ function LeaveConfirmationDialog({ open, onOpenChange, onConfirm, onCancel }: {
     onCancel: () => void;
 }) {
     const { language } = useLanguage();
+    const router = useRouter();
     const t = {
         en: {
             title: 'Unsaved Changes',
@@ -1110,6 +1111,7 @@ export default function ProjectDetailsPage() {
     
 
     
+
 
 
 
