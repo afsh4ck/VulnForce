@@ -255,100 +255,100 @@ const SectionEditor = ({ section, onContentChange, onDelete, view, onViewChange,
 
   return (
     <Card>
-        <CardHeader className="flex flex-row items-center justify-between bg-muted/50 px-4 py-3">
-            <div className="flex items-center gap-2 w-full">
-              {isOrganizing && <div {...dragHandleProps} {...dragListeners} className="cursor-grab"><GripVertical className="h-5 w-5 text-muted-foreground" /></div>}
-              <Input 
-                value={sectionTitle}
-                onChange={handleTitleChange}
-                className="font-semibold text-base border-none focus-visible:ring-0 focus-visible:ring-offset-0 bg-transparent h-auto p-0"
-              />
-          </div>
-          <div className="flex items-center gap-2">
-              {!isOrganizing && (
-                  <Tabs value={view} onValueChange={(value) => onViewChange(value as ScopeView)}>
-                      <TabsList className="h-8">
-                          <TabsTrigger value="edit" className="h-6 text-xs px-2">{t[language].viewEdit}</TabsTrigger>
-                          <TabsTrigger value="split" className="h-6 text-xs px-2">{t[language].viewSplit}</TabsTrigger>
-                          <TabsTrigger value="preview" className="h-6 text-xs px-2">{t[language].viewPreview}</TabsTrigger>
-                      </TabsList>
-                  </Tabs>
+      <CardHeader className="flex flex-row items-center justify-between bg-muted/50 px-4 py-3">
+          <div className="flex items-center gap-2 w-full">
+            {isOrganizing && <div {...dragHandleProps} {...dragListeners} className="cursor-grab"><GripVertical className="h-5 w-5 text-muted-foreground" /></div>}
+            <Input 
+              value={sectionTitle}
+              onChange={handleTitleChange}
+              className="font-semibold text-base border-none focus-visible:ring-0 focus-visible:ring-offset-0 bg-transparent h-auto p-0"
+            />
+        </div>
+        <div className="flex items-center gap-2">
+            {!isOrganizing && (
+                <Tabs value={view} onValueChange={(value) => onViewChange(value as ScopeView)}>
+                    <TabsList className="h-8">
+                        <TabsTrigger value="edit" className="h-6 text-xs px-2">{t[language].viewEdit}</TabsTrigger>
+                        <TabsTrigger value="split" className="h-6 text-xs px-2">{t[language].viewSplit}</TabsTrigger>
+                        <TabsTrigger value="preview" className="h-6 text-xs px-2">{t[language].viewPreview}</TabsTrigger>
+                    </TabsList>
+                </Tabs>
+            )}
+             <AlertDialog open={showDeleteConfirm} onOpenChange={setShowDeleteConfirm}>
+              <AlertDialogTrigger asChild>
+                  <Button variant="ghost" size="icon" className="h-8 w-8 text-destructive hover:bg-destructive hover:text-destructive-foreground">
+                      <Trash2 className="h-4 w-4" />
+                      <span className="sr-only">{t[language].deleteSection}</span>
+                  </Button>
+              </AlertDialogTrigger>
+              <AlertDialogContent>
+                  <AlertDialogHeader>
+                      <AlertDialogTitle>{t[language].confirmDeleteTitle}</AlertDialogTitle>
+                      <AlertDialogDescription>{t[language].confirmDeleteDesc}</AlertDialogDescription>
+                  </AlertDialogHeader>
+                  <AlertDialogFooter>
+                      <AlertDialogCancel>{t[language].cancel}</AlertDialogCancel>
+                      <AlertDialogAction onClick={onDelete} className="bg-destructive text-destructive-foreground hover:bg-destructive/90">{t[language].delete}</AlertDialogAction>
+                  </AlertDialogFooter>
+              </AlertDialogContent>
+            </AlertDialog>
+        </div>
+      </CardHeader>
+      {!isOrganizing && (
+           <div className="border-t">
+              {view !== 'preview' && (
+                <div className="p-1 border-b flex gap-1">
+                  <Button variant="ghost" size="icon" className="h-auto w-auto p-1" onClick={() => applyMarkdownSyntax('**')}><Bold className="h-3 w-3" /></Button>
+                  <Button variant="ghost" size="icon" className="h-auto w-auto p-1" onClick={() => applyMarkdownSyntax('*')}><Italic className="h-3 w-3" /></Button>
+                  <Button variant="ghost" size="icon" className="h-auto w-auto p-1" onClick={() => applyMarkdownSyntax('`')}><Code className="h-3 w-3" /></Button>
+                  <Button variant="ghost" size="icon" className="h-auto w-auto p-1" onClick={() => applyListSyntax('bullet')}><List className="h-3 w-3" /></Button>
+                  <Button variant="ghost" size="icon" className="h-auto w-auto p-1" onClick={() => applyListSyntax('number')}><ListOrdered className="h-3 w-3" /></Button>
+                  <CodeBlockDialog onInsert={handleInsertCode}>
+                    <Button variant="ghost" size="icon" className="h-auto w-auto p-1"><FileCode className="h-3 w-3" /></Button>
+                  </CodeBlockDialog>
+                </div>
               )}
-               <AlertDialog open={showDeleteConfirm} onOpenChange={setShowDeleteConfirm}>
-                <AlertDialogTrigger asChild>
-                    <Button variant="ghost" size="icon" className="h-8 w-8 text-destructive hover:bg-destructive hover:text-destructive-foreground">
-                        <Trash2 className="h-4 w-4" />
-                        <span className="sr-only">{t[language].deleteSection}</span>
-                    </Button>
-                </AlertDialogTrigger>
-                <AlertDialogContent>
-                    <AlertDialogHeader>
-                        <AlertDialogTitle>{t[language].confirmDeleteTitle}</AlertDialogTitle>
-                        <AlertDialogDescription>{t[language].confirmDeleteDesc}</AlertDialogDescription>
-                    </AlertDialogHeader>
-                    <AlertDialogFooter>
-                        <AlertDialogCancel>{t[language].cancel}</AlertDialogCancel>
-                        <AlertDialogAction onClick={onDelete} className="bg-destructive text-destructive-foreground hover:bg-destructive/90">{t[language].delete}</AlertDialogAction>
-                    </AlertDialogFooter>
-                </AlertDialogContent>
-              </AlertDialog>
+               <div className="p-0">
+                  {view === 'split' && (
+                      <div className="relative">
+                          <ResizablePanelGroup direction="horizontal" className="min-h-[300px] rounded-lg">
+                              <ResizablePanel defaultSize={50}>
+                                  <div className="h-full">
+                                  <HighlightingTextarea
+                                      ref={textareaRef}
+                                      value={section.content}
+                                      onValueChange={(newContent) => onContentChange(newContent)}
+                                      onPaste={handlePaste}
+                                  />
+                                  </div>
+                              </ResizablePanel>
+                              <ResizableHandle withHandle />
+                              <ResizablePanel defaultSize={50}>
+                              <div className="h-full overflow-auto rounded-md p-4">
+                                  <MarkdownPreview content={section.content} getImage={getImage} />
+                              </div>
+                              </ResizablePanel>
+                          </ResizablePanelGroup>
+                      </div>
+                  )}
+                  {view === 'edit' && (
+                      <div>
+                          <HighlightingTextarea
+                              ref={textareaRef}
+                              value={section.content}
+                              onValueChange={(newContent) => onContentChange(newContent)}
+                              onPaste={handlePaste}
+                          />
+                      </div>
+                  )}
+                  {view === 'preview' && (
+                      <div className="rounded-md p-4 min-h-[300px] overflow-auto">
+                          <MarkdownPreview content={section.content} getImage={getImage} />
+                      </div>
+                  )}
+               </div>
           </div>
-        </CardHeader>
-        {!isOrganizing && (
-             <div className="border-t">
-                {view !== 'preview' && (
-                  <div className="p-1 border-b flex gap-1">
-                    <Button variant="ghost" size="icon" className="h-auto w-auto p-1" onClick={() => applyMarkdownSyntax('**')}><Bold className="h-3 w-3" /></Button>
-                    <Button variant="ghost" size="icon" className="h-auto w-auto p-1" onClick={() => applyMarkdownSyntax('*')}><Italic className="h-3 w-3" /></Button>
-                    <Button variant="ghost" size="icon" className="h-auto w-auto p-1" onClick={() => applyMarkdownSyntax('`')}><Code className="h-3 w-3" /></Button>
-                    <Button variant="ghost" size="icon" className="h-auto w-auto p-1" onClick={() => applyListSyntax('bullet')}><List className="h-3 w-3" /></Button>
-                    <Button variant="ghost" size="icon" className="h-auto w-auto p-1" onClick={() => applyListSyntax('number')}><ListOrdered className="h-3 w-3" /></Button>
-                    <CodeBlockDialog onInsert={handleInsertCode}>
-                      <Button variant="ghost" size="icon" className="h-auto w-auto p-1"><FileCode className="h-3 w-3" /></Button>
-                    </CodeBlockDialog>
-                  </div>
-                )}
-                 <div className="p-0">
-                    {view === 'split' && (
-                        <div className="relative">
-                            <ResizablePanelGroup direction="horizontal" className="min-h-[300px] rounded-lg">
-                                <ResizablePanel defaultSize={50}>
-                                    <div className="h-full">
-                                    <HighlightingTextarea
-                                        ref={textareaRef}
-                                        value={section.content}
-                                        onValueChange={(newContent) => onContentChange(newContent)}
-                                        onPaste={handlePaste}
-                                    />
-                                    </div>
-                                </ResizablePanel>
-                                <ResizableHandle withHandle />
-                                <ResizablePanel defaultSize={50}>
-                                <div className="h-full overflow-auto rounded-md p-4">
-                                    <MarkdownPreview content={section.content} getImage={getImage} />
-                                </div>
-                                </ResizablePanel>
-                            </ResizablePanelGroup>
-                        </div>
-                    )}
-                    {view === 'edit' && (
-                        <div>
-                            <HighlightingTextarea
-                                ref={textareaRef}
-                                value={section.content}
-                                onValueChange={(newContent) => onContentChange(newContent)}
-                                onPaste={handlePaste}
-                            />
-                        </div>
-                    )}
-                    {view === 'preview' && (
-                        <div className="rounded-md p-4 min-h-[300px] overflow-auto">
-                            <MarkdownPreview content={section.content} getImage={getImage} />
-                        </div>
-                    )}
-                 </div>
-            </div>
-        )}
+      )}
     </Card>
   )
 }
@@ -385,6 +385,7 @@ export default function VulnerabilityEditorPage() {
 
   const [vuln, setVuln] = useState<Vulnerability | null>(null);
   const [references, setReferences] = useState<string[]>([]);
+  const [activeAccordion, setActiveAccordion] = useState<string | undefined>();
 
   const [enSections, setEnSections] = useState<FindingSection[]>([]);
   const [esSections, setEsSections] = useState<FindingSection[]>([]);
@@ -409,7 +410,8 @@ export default function VulnerabilityEditorPage() {
       saveSuccessDescription: 'The template has been updated successfully.',
       englishContent: 'English Content',
       spanishContent: 'Spanish Content',
-      cvssTitle: 'CVSS Details',
+      cvssTitle: 'CVSS Calculator',
+      cvssDescription: 'The score and severity are automatically updated based on the selected vectors.',
       score: 'Score',
       vectorString: 'Vector String',
       attackVector: 'Attack Vector',
@@ -447,7 +449,8 @@ export default function VulnerabilityEditorPage() {
       saveSuccessDescription: 'La plantilla se ha actualizado correctamente.',
       englishContent: 'Contenido en Inglés',
       spanishContent: 'Contenido en Español',
-      cvssTitle: 'Detalles CVSS',
+      cvssTitle: 'Calculadora de CVSS',
+      cvssDescription: 'La puntuación y la severidad se actualizan automáticamente según los vectores seleccionados.',
       score: 'Puntuación',
       vectorString: 'Cadena del Vector',
       attackVector: 'Vector de Ataque',
@@ -498,11 +501,9 @@ export default function VulnerabilityEditorPage() {
     }
   }, [id, vulnerabilities, router, parseMarkdownToSections]);
 
-  const handleInputChange = <T extends keyof Vulnerability>(field: T, value: Vulnerability[T]) => {
-    if (vuln) {
-      setVuln({ ...vuln, [field]: value });
-    }
-  };
+  const handleInputChange = useCallback(<T extends keyof Vulnerability>(field: T, value: Vulnerability[T]) => {
+    setVuln(prev => prev ? { ...prev, [field]: value } : null);
+  }, []);
 
   const handleCategoryChange = useCallback((value: string) => {
     setVuln(prev => prev ? ({ ...prev, tags: [value] }) : null);
@@ -532,7 +533,7 @@ export default function VulnerabilityEditorPage() {
             ...vuln,
             overview_en: fullEnContent,
             overview_es: fullEsContent,
-            references: references,
+            references: references.filter(ref => ref.trim() !== ''),
         };
         
         updateVulnerability(updatedVuln);
@@ -616,6 +617,20 @@ export default function VulnerabilityEditorPage() {
     const newReferences = references.filter((_, i) => i !== index);
     setReferences(newReferences);
   };
+  
+  const handleOrganizeClick = (lang: 'en' | 'es') => {
+    if (lang === 'en') {
+      if (!isEnOrganizing && activeAccordion !== 'en-content') {
+        setActiveAccordion('en-content');
+      }
+      setIsEnOrganizing(!isEnOrganizing);
+    } else {
+      if (!isEsOrganizing && activeAccordion !== 'es-content') {
+        setActiveAccordion('es-content');
+      }
+      setIsEsOrganizing(!isEsOrganizing);
+    }
+  };
 
   if (!vuln) {
     return null;
@@ -638,46 +653,46 @@ export default function VulnerabilityEditorPage() {
         <Button onClick={handleSave}><Save className="mr-2 h-4 w-4" /> {t[language].save}</Button>
       </header>
       
-      <div className="space-y-6">
-          <Card>
-              <CardHeader>
-                  <CardTitle>{t[language].detailsTitle}</CardTitle>
-              </CardHeader>
-              <CardContent className="space-y-4">
+        <div className="space-y-6">
+            <Card>
+                <CardHeader>
+                    <CardTitle>{t[language].detailsTitle}</CardTitle>
+                </CardHeader>
+                <CardContent className="space-y-4">
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div className="space-y-2">
+                            <Label htmlFor="title_en">{t[language].titleEnLabel}</Label>
+                            <Input id="title_en" value={vuln.title_en} onChange={e => handleInputChange('title_en', e.target.value)} />
+                        </div>
+                        <div className="space-y-2">
+                            <Label htmlFor="title_es">{t[language].titleEsLabel}</Label>
+                            <Input id="title_es" value={vuln.title_es} onChange={e => handleInputChange('title_es', e.target.value)} />
+                        </div>
+                    </div>
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                      <div className="space-y-2">
-                          <Label htmlFor="title_en">{t[language].titleEnLabel}</Label>
-                          <Input id="title_en" value={vuln.title_en} onChange={e => handleInputChange('title_en', e.target.value)} />
-                      </div>
-                      <div className="space-y-2">
-                          <Label htmlFor="title_es">{t[language].titleEsLabel}</Label>
-                          <Input id="title_es" value={vuln.title_es} onChange={e => handleInputChange('title_es', e.target.value)} />
-                      </div>
-                  </div>
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                      <div className="space-y-2">
-                          <Label htmlFor="cwe">{t[language].cweLabel}</Label>
-                          <Input id="cwe" value={vuln.cwe} onChange={e => handleInputChange('cwe', e.target.value)} />
-                      </div>
-                      <div className="space-y-2">
-                          <Label htmlFor="category">{t[language].categoryLabel}</Label>
+                        <div className="space-y-2">
+                            <Label htmlFor="cwe">{t[language].cweLabel}</Label>
+                            <Input id="cwe" value={vuln.cwe} onChange={e => handleInputChange('cwe', e.target.value)} />
+                        </div>
+                        <div className="space-y-2">
+                            <Label htmlFor="category">{t[language].categoryLabel}</Label>
                             <Select value={vuln.tags[0] || ''} onValueChange={handleCategoryChange}>
-                              <SelectTrigger id="category">
-                                  <SelectValue placeholder={t[language].selectCategory} />
-                              </SelectTrigger>
-                              <SelectContent>
-                                  {vulnerabilityCategories.map(cat => (
-                                      <SelectItem key={cat.value} value={cat.value}>
-                                          {language === 'es' ? cat.label_es : cat.label_en}
-                                      </SelectItem>
-                                  ))}
-                              </SelectContent>
-                          </Select>
-                      </div>
-                  </div>
+                                <SelectTrigger id="category">
+                                    <SelectValue placeholder={t[language].selectCategory} />
+                                </SelectTrigger>
+                                <SelectContent>
+                                    {vulnerabilityCategories.map(cat => (
+                                        <SelectItem key={cat.value} value={cat.value}>
+                                            {language === 'es' ? cat.label_es : cat.label_en}
+                                        </SelectItem>
+                                    ))}
+                                </SelectContent>
+                            </Select>
+                        </div>
+                    </div>
                     <div className="space-y-2">
-                      <Label>{t[language].referencesLabel}</Label>
-                      <div className="space-y-2 mt-4">
+                        <Label>{t[language].referencesLabel}</Label>
+                        <div className="space-y-2 mt-4">
                         {references.length === 0 ? (
                             <Button variant="outline" onClick={handleAddReference} className="w-auto">
                                 <Plus className="mr-2 h-4 w-4" />
@@ -705,30 +720,33 @@ export default function VulnerabilityEditorPage() {
                               </div>
                             ))
                         )}
+                        </div>
+                    </div>
+                </CardContent>
+            </Card>
+
+            <Card>
+                <CardHeader>
+                    <div className="flex items-center justify-between">
+                      <div className="space-y-1.5">
+                        <CardTitle>{t[language].cvssTitle}</CardTitle>
+                        <CardDescription>{t[language].cvssDescription}</CardDescription>
+                      </div>
+                      {vuln.severity && <Badge variant={getSeverityVariant(vuln.severity)}>{vuln.severity}</Badge>}
+                    </div>
+                </CardHeader>
+                <CardContent className="space-y-4">
+                    <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
+                      <div className="space-y-2">
+                          <Label htmlFor="cvss_score">{t[language].score}</Label>
+                          <Input id="cvss_score" type="number" step="0.1" value={vuln.cvss.score} readOnly className="font-bold text-lg" />
+                      </div>
+                      <div className="space-y-2">
+                          <Label htmlFor="cvss_vector">{t[language].vectorString}</Label>
+                          <Input id="cvss_vector" value={vuln.cvss.vectorString} readOnly />
                       </div>
                     </div>
-              </CardContent>
-          </Card>
-          
-          <Card>
-            <CardHeader>
-                <div className="flex items-center gap-2">
-                    <CardTitle>{t[language].cvssTitle}</CardTitle>
-                    {vuln.severity && <Badge variant={getSeverityVariant(vuln.severity)}>{vuln.severity}</Badge>}
-                </div>
-            </CardHeader>
-              <CardContent className="space-y-4">
-                  <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
-                    <div className="space-y-2">
-                        <Label htmlFor="cvss_score">{t[language].score}</Label>
-                        <Input id="cvss_score" type="number" step="0.1" value={vuln.cvss.score} readOnly className="font-bold text-lg" />
-                    </div>
-                      <div className="space-y-2">
-                        <Label htmlFor="cvss_vector">{t[language].vectorString}</Label>
-                        <Input id="cvss_vector" value={vuln.cvss.vectorString} readOnly />
-                    </div>
-                  </div>
-                   <div className="grid grid-cols-1 gap-4 md:grid-cols-4">
+                    <div className="grid grid-cols-1 gap-4 md:grid-cols-4">
                         {(Object.keys(cvssOptions) as Array<keyof typeof cvssOptions>).slice(0,4).map(key => (
                              <div className="space-y-2" key={key}>
                                 <Label htmlFor={`cvss-${key}`}>{t[language][key as keyof typeof t['en']]}</Label>
@@ -758,101 +776,93 @@ export default function VulnerabilityEditorPage() {
                             </div>
                         ))}
                     </div>
-              </CardContent>
-          </Card>
-          
-          <Accordion type="single" collapsible className="w-full space-y-6">
-            <AccordionItem value="en-content" className="border-none">
-              <Card className="bg-card">
-                  <CardHeader className="p-0">
-                    <div className="flex w-full items-center justify-between p-4">
-                      <AccordionTrigger className="flex-1 text-left font-semibold p-0 hover:no-underline text-base">
-                        {t[language].englishContent}
-                      </AccordionTrigger>
-                      <Button variant="outline" size="sm" onClick={(e) => { e.stopPropagation(); setIsEnOrganizing(!isEnOrganizing); }}>
-                          <Rows className="mr-2 h-4 w-4" />
-                          {isEnOrganizing ? t[language].finishOrganizing : t[language].organizeSections}
+                </CardContent>
+            </Card>
+
+            <Accordion type="single" collapsible className="w-full space-y-6" value={activeAccordion} onValueChange={setActiveAccordion}>
+              <AccordionItem value="en-content" className="border-b-0 rounded-lg bg-card">
+                <AccordionTrigger className="p-4 hover:no-underline rounded-t-lg">
+                  <div className="flex w-full items-center justify-between">
+                    <span className="font-semibold text-base">{t[language].englishContent}</span>
+                    <Button variant="outline" size="sm" onClick={(e) => { e.stopPropagation(); handleOrganizeClick('en'); }}>
+                        <Rows className="mr-2 h-4 w-4" />
+                        {isEnOrganizing ? t[language].finishOrganizing : t[language].organizeSections}
+                    </Button>
+                  </div>
+                </AccordionTrigger>
+                <AccordionContent className="p-4 pt-0 border-t rounded-b-lg">
+                  <DndContext sensors={sensors} collisionDetection={closestCenter} onDragEnd={(e) => handleDragEnd(e, 'en')}>
+                    <SortableContext items={enSections.map(s => s.id)} strategy={verticalListSortingStrategy}>
+                      <div className="space-y-4">
+                        {enSections.map(section => (
+                          <SortableSection
+                            key={section.id}
+                            section={section}
+                            isOrganizing={isEnOrganizing}
+                            onContentChange={(newContent: string) => handleSectionChange('en', section.id, newContent)}
+                            onTitleChange={(newTitle: string) => handleTitleChange('en', section.id, newTitle)}
+                            onDelete={() => handleDeleteSection('en', section.id)}
+                            view={enSectionViews[section.id] || 'split'}
+                            onViewChange={(newView: ScopeView) => setEnSectionViews(prev => ({ ...prev, [section.id]: newView }))}
+                            getImage={getImage}
+                          />
+                        ))}
+                      </div>
+                    </SortableContext>
+                  </DndContext>
+                  {!isEnOrganizing && (
+                    <div className="flex justify-center pt-4">
+                      <Button variant="outline" onClick={() => handleAddSection('en')}>
+                        <Plus className="mr-2 h-4 w-4" />
+                        {t[language].addNewSection}
                       </Button>
                     </div>
-                  </CardHeader>
-                  <AccordionContent className="p-4 bg-card border-t rounded-b-lg">
-                    <DndContext sensors={sensors} collisionDetection={closestCenter} onDragEnd={(e) => handleDragEnd(e, 'en')}>
-                      <SortableContext items={enSections.map(s => s.id)} strategy={verticalListSortingStrategy}>
+                  )}
+                </AccordionContent>
+              </AccordionItem>
+              
+              <AccordionItem value="es-content" className="border-b-0 rounded-lg bg-card">
+                <AccordionTrigger className="p-4 hover:no-underline rounded-t-lg">
+                  <div className="flex w-full items-center justify-between">
+                    <span className="font-semibold text-base">{t[language].spanishContent}</span>
+                    <Button variant="outline" size="sm" onClick={(e) => { e.stopPropagation(); handleOrganizeClick('es'); }}>
+                        <Rows className="mr-2 h-4 w-4" />
+                        {isEsOrganizing ? t[language].finishOrganizing : t[language].organizeSections}
+                    </Button>
+                  </div>
+                </AccordionTrigger>
+                <AccordionContent className="p-4 pt-0 border-t rounded-b-lg">
+                    <DndContext sensors={sensors} collisionDetection={closestCenter} onDragEnd={(e) => handleDragEnd(e, 'es')}>
+                      <SortableContext items={esSections.map(s => s.id)} strategy={verticalListSortingStrategy}>
                         <div className="space-y-4">
-                          {enSections.map(section => (
+                          {esSections.map(section => (
                             <SortableSection
                               key={section.id}
                               section={section}
-                              isOrganizing={isEnOrganizing}
-                              onContentChange={(newContent: string) => handleSectionChange('en', section.id, newContent)}
-                              onTitleChange={(newTitle: string) => handleTitleChange('en', section.id, newTitle)}
-                              onDelete={() => handleDeleteSection('en', section.id)}
-                              view={enSectionViews[section.id] || 'split'}
-                              onViewChange={(newView: ScopeView) => setEnSectionViews(prev => ({ ...prev, [section.id]: newView }))}
+                              isOrganizing={isEsOrganizing}
+                              onContentChange={(newContent: string) => handleSectionChange('es', section.id, newContent)}
+                              onTitleChange={(newTitle: string) => handleTitleChange('es', section.id, newTitle)}
+                              onDelete={() => handleDeleteSection('es', section.id)}
+                              view={esSectionViews[section.id] || 'split'}
+                              onViewChange={(newView: ScopeView) => setEsSectionViews(prev => ({ ...prev, [section.id]: newView }))}
                               getImage={getImage}
                             />
                           ))}
                         </div>
                       </SortableContext>
                     </DndContext>
-                    {!isEnOrganizing && (
+                    {!isEsOrganizing && (
                       <div className="flex justify-center pt-4">
-                        <Button variant="outline" onClick={() => handleAddSection('en')}>
+                        <Button variant="outline" onClick={() => handleAddSection('es')}>
                           <Plus className="mr-2 h-4 w-4" />
                           {t[language].addNewSection}
                         </Button>
                       </div>
                     )}
-                  </AccordionContent>
-              </Card>
-            </AccordionItem>
-            
-            <AccordionItem value="es-content" className="border-none">
-                <Card className="bg-card">
-                  <CardHeader className="p-0">
-                    <div className="flex w-full items-center justify-between p-4">
-                      <AccordionTrigger className="flex-1 text-left font-semibold p-0 hover:no-underline text-base">
-                          {t[language].spanishContent}
-                      </AccordionTrigger>
-                      <Button variant="outline" size="sm" onClick={(e) => { e.stopPropagation(); setIsEsOrganizing(!isEsOrganizing); }}>
-                          <Rows className="mr-2 h-4 w-4" />
-                          {isEsOrganizing ? t[language].finishOrganizing : t[language].organizeSections}
-                      </Button>
-                    </div>
-                  </CardHeader>
-                  <AccordionContent className="p-4 bg-card border-t rounded-b-lg">
-                      <DndContext sensors={sensors} collisionDetection={closestCenter} onDragEnd={(e) => handleDragEnd(e, 'es')}>
-                        <SortableContext items={esSections.map(s => s.id)} strategy={verticalListSortingStrategy}>
-                          <div className="space-y-4">
-                            {esSections.map(section => (
-                              <SortableSection
-                                key={section.id}
-                                section={section}
-                                isOrganizing={isEsOrganizing}
-                                onContentChange={(newContent: string) => handleSectionChange('es', section.id, newContent)}
-                                onTitleChange={(newTitle: string) => handleTitleChange('es', section.id, newTitle)}
-                                onDelete={() => handleDeleteSection('es', section.id)}
-                                view={esSectionViews[section.id] || 'split'}
-                                onViewChange={(newView: ScopeView) => setEsSectionViews(prev => ({ ...prev, [section.id]: newView }))}
-                                getImage={getImage}
-                              />
-                            ))}
-                          </div>
-                        </SortableContext>
-                      </DndContext>
-                      {!isEsOrganizing && (
-                        <div className="flex justify-center pt-4">
-                          <Button variant="outline" onClick={() => handleAddSection('es')}>
-                            <Plus className="mr-2 h-4 w-4" />
-                            {t[language].addNewSection}
-                          </Button>
-                        </div>
-                      )}
-                  </AccordionContent>
-                </Card>
-            </AccordionItem>
-          </Accordion>
-      </div>
+                </AccordionContent>
+              </AccordionItem>
+            </Accordion>
+        </div>
     </div>
   );
 }

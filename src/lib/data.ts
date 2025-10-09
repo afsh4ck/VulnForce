@@ -324,16 +324,16 @@ Se utilizó una combinación de herramientas automatizadas y técnicas manuales 
 4.  **Explotación Manual:** Intento de explotar vulnerabilidades para obtener más acceso.
 5.  **Análisis de Active Directory:** Búsqueda de configuraciones incorrectas en Active Directory, como contraseñas débiles, oportunidades de kerberoasting y rutas de escalada de privilegios.
 6.  **Informe:** Documentación de hallazgos y recomendaciones de remediación.`,
-    appendix_en: `### A. Captured Flags
-| Host | Location | Flag Value |
-|---|---|---|
-| [TODO: HOST-01] | [TODO: /path/to/flag.txt] | [TODO: flag_value] |
-| [TODO: HOST-02] | [TODO: /path/to/flag.txt] | [TODO: flag_value] |`,
-    appendix_es: `### A. Banderas Capturadas
-| Host | Ubicación | Valor de la Bandera |
-|---|---|---|
-| [TODO: HOST-01] | [TODO: /ruta/a/bandera.txt] | [TODO: valor_bandera] |
-| [TODO: HOST-02] | [TODO: /ruta/a/bandera.txt] | [TODO: valor_bandera] |`
+    appendix_en: `### A. Tooling Used
+- **Network Scanner:** Nmap, Masscan
+- **Vulnerability Scanner:** Nessus
+- **Active Directory:** BloodHound, Impacket
+- **Manual Exploitation:** Metasploit Framework, CrackMapExec`,
+    appendix_es: `### A. Herramientas Utilizadas
+- **Escáner de Red:** Nmap, Masscan
+- **Escáner de Vulnerabilidades:** Nessus
+- **Active Directory:** BloodHound, Impacket
+- **Explotación Manual:** Metasploit Framework, CrackMapExec`
   },
   {
     id: 'ptpl-3',
@@ -374,12 +374,17 @@ La evaluación incluye tanto el análisis estático como el dinámico de la apli
     -   Manipulación en tiempo de ejecución con Frida.
 3.  **Pruebas de API:** Pruebas de las API de backend para vulnerabilidades web comunes (OWASP API Top 10).
 4.  **Informe:** Documentación de hallazgos y recomendaciones de remediación.`,
-    appendix_en: `### A. Test Devices
-- **Android:** Google Pixel 6, Android 13 (Rooted)
-- **iOS:** iPhone 12, iOS 16.5 (Jailbroken)`,
-    appendix_es: `### A. Dispositivos de Prueba
-- **Android:** Google Pixel 6, Android 13 (Rooteado)
-- **iOS:** iPhone 12, iOS 16.5 (con Jailbreak)`
+    appendix_en: `### A. Test Devices & Flags
+| Device | OS Version | Status | Flag |
+|---|---|---|---|
+| Google Pixel 6 | Android 13 | Rooted | [TODO: Flag if any] |
+| iPhone 12 | iOS 16.5 | Jailbroken | [TODO: Flag if any] |
+`,
+    appendix_es: `### A. Dispositivos de Prueba y Banderas
+| Dispositivo | Versión OS | Estado | Bandera |
+|---|---|---|---|
+| Google Pixel 6 | Android 13 | Rooteado | [TODO: Bandera si aplica] |
+| iPhone 12 | iOS 16.5 | con Jailbreak | [TODO: Bandera si aplica] |`
   }
 ];
 
