@@ -96,8 +96,7 @@ export const MarkdownPreview = ({ content, getImage, isReport }: { content: stri
                 style={oneDark}
                 language={match[1]}
                 PreTag="div"
-                className="rounded-md p-4"
-                customStyle={{ margin: 0, border: 'none' }}
+                className="rounded-md p-4 border-0"
                 {...props}
               >
                 {String(children).replace(/\n$/, '')}
