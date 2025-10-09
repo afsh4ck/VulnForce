@@ -316,9 +316,7 @@ const ScopeSectionEditor = ({ section, onContentChange, onDelete, view, onViewCh
                   </div>
                 )}
                  <CardContent className="p-0">
-                  <div className="h-full">
                     {view === 'split' ? (
-                       <div className="h-full">
                         <ResizablePanelGroup direction="horizontal" className="min-h-[300px] rounded-lg">
                             <ResizablePanel defaultSize={50}>
                             <div className="h-full">
@@ -337,7 +335,6 @@ const ScopeSectionEditor = ({ section, onContentChange, onDelete, view, onViewCh
                             </div>
                             </ResizablePanel>
                         </ResizablePanelGroup>
-                      </div>
                     ) : (
                       <div className="grid grid-cols-1 min-h-[300px]">
                         <div className={cn(view === 'preview' && 'hidden', 'h-full')}>
@@ -353,8 +350,7 @@ const ScopeSectionEditor = ({ section, onContentChange, onDelete, view, onViewCh
                         </div>
                       </div>
                     )}
-                  </div>
-                </CardContent>
+                 </CardContent>
             </div>
         )}
       </Card>
