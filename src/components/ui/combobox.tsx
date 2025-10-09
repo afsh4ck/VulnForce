@@ -10,7 +10,6 @@ import {
   CommandEmpty,
   CommandGroup,
   CommandInput,
-  CommandItem,
   CommandList,
 } from "@/components/ui/command"
 import {
@@ -48,8 +47,9 @@ export function Combobox({ options, selectedValue, onSelect, placeholder, search
       <PopoverContent className="w-[--radix-popover-trigger-width] p-0">
         <Command>
           <CommandInput placeholder={searchPlaceholder || "Search..."} />
+          <CommandList>
             <CommandEmpty>No results found.</CommandEmpty>
-            <CommandGroup className="max-h-[200px] overflow-y-auto">
+            <CommandGroup>
               {options.map((option) => (
                 <CommandItem
                   key={option.value}
@@ -69,6 +69,7 @@ export function Combobox({ options, selectedValue, onSelect, placeholder, search
                 </CommandItem>
               ))}
             </CommandGroup>
+          </CommandList>
         </Command>
       </PopoverContent>
     </Popover>
