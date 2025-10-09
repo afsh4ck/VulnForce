@@ -369,13 +369,12 @@ const ScopeSectionEditor = ({ section, onContentChange, onDelete, view, onViewCh
                                         value={section.content}
                                         onValueChange={(newContent) => onContentChange(newContent)}
                                         onPaste={handlePaste}
-                                        className="h-full"
                                     />
                                     </div>
                                 </ResizablePanel>
                                 <ResizableHandle />
                                 <ResizablePanel defaultSize={50}>
-                                <div className="h-full overflow-auto rounded-md p-4 border-l">
+                                <div className="h-full overflow-auto rounded-md p-4">
                                     <MarkdownPreview content={section.content} getImage={getImage} />
                                 </div>
                                 </ResizablePanel>
@@ -383,7 +382,7 @@ const ScopeSectionEditor = ({ section, onContentChange, onDelete, view, onViewCh
                         </div>
                     )}
                     {view === 'edit' && (
-                        <div className="h-full">
+                        <div>
                             <HighlightingTextarea
                                 ref={textareaRef}
                                 value={section.content}
@@ -1016,6 +1015,7 @@ export default function ProjectDetailsPage() {
     
 
     
+
 
 
 
