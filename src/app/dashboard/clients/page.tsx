@@ -403,7 +403,7 @@ export default function ClientsPage() {
             </AlertDialogHeader>
             <AlertDialogFooter>
                 <AlertDialogCancel>{t[language].cancel}</AlertDialogCancel>
-                <AlertDialogAction onClick={handleDeleteClient} className="bg-destructive hover:bg-destructive/90">{t[language].delete}</AlertDialogAction>
+                <AlertDialogAction onClick={handleDeleteClient} className="bg-destructive text-destructive-foreground hover:bg-destructive/90">{t[language].delete}</AlertDialogAction>
             </AlertDialogFooter>
         </AlertDialogContent>
     </AlertDialog>

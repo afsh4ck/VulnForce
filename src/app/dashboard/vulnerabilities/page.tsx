@@ -53,7 +53,7 @@ export default function VulnerabilitiesPage() {
   const router = useRouter();
   const { vulnerabilities, deleteVulnerability } = useData();
   const [searchTerm, setSearchTerm] = useState('');
-  const [sortConfig, setSortConfig] = useState<{ key: SortKey; direction: 'ascending' | 'descending' } | null>(null);
+  const [sortConfig, setSortConfig] = useState<{ key: SortKey; direction: 'ascending' | 'descending' } | null>({ key: 'cvssScore', direction: 'descending' });
   const [vulnerabilityToDelete, setVulnerabilityToDelete] = useState<Vulnerability | null>(null);
   const [selectedCategory, setSelectedCategory] = useState<string>('All');
 
@@ -195,7 +195,7 @@ export default function VulnerabilitiesPage() {
                 />
             </div>
             <Select value={selectedCategory} onValueChange={setSelectedCategory}>
-                <SelectTrigger className="w-auto">
+                <SelectTrigger className="w-auto ml-2">
                     <SelectValue placeholder="Select a category" />
                 </SelectTrigger>
                 <SelectContent>
@@ -275,7 +275,7 @@ export default function VulnerabilitiesPage() {
             </AlertDialogHeader>
             <AlertDialogFooter>
                 <AlertDialogCancel>{t[language].cancel}</AlertDialogCancel>
-                <AlertDialogAction onClick={handleDeleteVulnerability} className="bg-destructive hover:bg-destructive/90">{t[language].delete}</AlertDialogAction>
+                <AlertDialogAction onClick={handleDeleteVulnerability} className="bg-destructive text-destructive-foreground hover:bg-destructive/90">{t[language].delete}</AlertDialogAction>
             </AlertDialogFooter>
         </AlertDialogContent>
     </AlertDialog>

@@ -230,7 +230,7 @@ export default function ProjectsPage() {
             </AlertDialogHeader>
             <AlertDialogFooter>
                 <AlertDialogCancel>{t[language].cancel}</AlertDialogCancel>
-                <AlertDialogAction onClick={handleDeleteProject} className="bg-destructive hover:bg-destructive/90">{t[language].delete}</AlertDialogAction>
+                <AlertDialogAction onClick={handleDeleteProject} className="bg-destructive text-destructive-foreground hover:bg-destructive/90">{t[language].delete}</AlertDialogAction>
             </AlertDialogFooter>
         </AlertDialogContent>
     </AlertDialog>

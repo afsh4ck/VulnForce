@@ -193,7 +193,7 @@ export default function TemplatesPage() {
                                       </AlertDialogHeader>
                                       <AlertDialogFooter>
                                           <AlertDialogCancel onClick={() => setTemplateToDelete(null)}>{t[language].cancel}</AlertDialogCancel>
-                                          <AlertDialogAction onClick={handleDelete} className="bg-destructive hover:bg-destructive/90">{t[language].delete}</AlertDialogAction>
+                                          <AlertDialogAction onClick={handleDelete} className="bg-destructive text-destructive-foreground hover:bg-destructive/90">{t[language].delete}</AlertDialogAction>
                                       </AlertDialogFooter>
                                   </AlertDialogContent>
                               </AlertDialog>
