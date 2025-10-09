@@ -19,7 +19,7 @@ import { Dialog, DialogTrigger, DialogContent, DialogDescription, DialogFooter, 
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from "@/components/ui/alert-dialog";
+import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from "@/componentsui/alert-dialog";
 import { useToast } from '@/hooks/use-toast';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
 import { Calendar } from '@/components/ui/calendar';
@@ -317,24 +317,26 @@ const ScopeSectionEditor = ({ section, onContentChange, onDelete, view, onViewCh
                 )}
                  <CardContent className="p-0">
                   {view === 'split' ? (
-                    <ResizablePanelGroup direction="horizontal" className="min-h-[300px] rounded-lg">
-                      <ResizablePanel defaultSize={50}>
-                        <div className="h-full">
-                           <HighlightingTextarea
-                              ref={textareaRef}
-                              value={section.content}
-                              onValueChange={(newContent) => onContentChange(newContent)}
-                              onPaste={handlePaste}
-                            />
-                        </div>
-                      </ResizablePanel>
-                      <ResizableHandle withHandle />
-                      <ResizablePanel defaultSize={50}>
-                         <div className="h-full overflow-auto rounded-md border-l p-4">
-                           <MarkdownPreview content={section.content} getImage={getImage} />
-                         </div>
-                      </ResizablePanel>
-                    </ResizablePanelGroup>
+                    <div className="h-full">
+                      <ResizablePanelGroup direction="horizontal" className="min-h-[300px] rounded-lg">
+                        <ResizablePanel defaultSize={50}>
+                          <div className="h-full">
+                            <HighlightingTextarea
+                                ref={textareaRef}
+                                value={section.content}
+                                onValueChange={(newContent) => onContentChange(newContent)}
+                                onPaste={handlePaste}
+                              />
+                          </div>
+                        </ResizablePanel>
+                        <ResizableHandle withHandle />
+                        <ResizablePanel defaultSize={50}>
+                          <div className="h-full overflow-auto rounded-md border-l p-4">
+                            <MarkdownPreview content={section.content} getImage={getImage} />
+                          </div>
+                        </ResizablePanel>
+                      </ResizablePanelGroup>
+                    </div>
                   ) : (
                     <div className="grid grid-cols-1 min-h-[300px]">
                       <div className={cn(view === 'preview' && 'hidden', 'h-full')}>
