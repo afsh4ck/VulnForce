@@ -260,7 +260,7 @@ const ScopeSectionEditor = ({ section, onContentChange, onDelete, view, onViewCh
   return (
     <>
       <Card>
-        <CardHeader className="flex flex-row items-center justify-between bg-muted/50 py-3 px-4">
+        <CardHeader className="flex h-14 flex-row items-center justify-between bg-muted/50 px-4">
             <div className="flex items-center gap-2 w-full">
               {isOrganizing && <div {...dragHandleProps} {...dragListeners} className="cursor-grab"><GripVertical className="h-5 w-5 text-muted-foreground" /></div>}
               <Input 
