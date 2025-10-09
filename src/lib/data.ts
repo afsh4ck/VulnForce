@@ -14,10 +14,14 @@ export const projects: Project[] = [
     id: 'proj-1', 
     clientId: 'cli-1', 
     name: 'Q3 Web App Pentest', 
-    reportBody: `## Executive Summary
+    reportBody: `<!-- section-id: section-1690891200000 -->
+
+## Executive Summary
 This report outlines the results of an external penetration test conducted on the internet-facing assets of **Innovatech Solutions**. The assessment aimed to identify vulnerabilities that could be exploited by a remote attacker to compromise the security of the organization's perimeter.
 
 ---
+
+<!-- section-id: section-1690891200001 -->
 
 ## Scope & Methodology
 The assessment was conducted between **July 1, 2023** and **July 15, 2023** from the perspective of an external, unauthenticated attacker (black-box).
@@ -34,10 +38,14 @@ The assessment was conducted between **July 1, 2023** and **July 15, 2023** from
 
 ---
 
+<!-- section-id: section-1690891200002 -->
+
 ## Attack Narrative
 The engagement began with reconnaissance against the *.innovatech.com domain, which revealed the existence of an outdated blog at 'blog.innovatech.com' and a development server at 'dev.innovatech.com' with directory listing enabled. An SQL Injection vulnerability was discovered and exploited on the main web application's login form, allowing for authentication bypass. This access was leveraged to uncover a Stored XSS vulnerability in the user profile section, which could be used to target other users, including administrators.
 
 ---
+
+<!-- section-id: section-1690891200003 -->
 
 ## Findings Classification
 | Severity | CVSS v3.1 Score | Description |
@@ -59,10 +67,14 @@ The engagement began with reconnaissance against the *.innovatech.com domain, wh
     id: 'proj-2', 
     clientId: 'cli-2', 
     name: 'API Security Audit', 
-    reportBody: `## Executive Summary
+    reportBody: `<!-- section-id: section-1692014400000 -->
+
+## Executive Summary
 This report outlines the results of an external penetration test conducted on the internet-facing assets of **Quantum Dynamics**. The assessment aimed to identify vulnerabilities that could be exploited by a remote attacker to compromise the security of the organization's perimeter, with a focus on the company's main API.
 
 ---
+
+<!-- section-id: section-1692014400001 -->
 
 ## Scope & Methodology
 The assessment was conducted between **August 10, 2023** and **August 25, 2023** from the perspective of an external, unauthenticated attacker (black-box).
@@ -79,10 +91,14 @@ The assessment was conducted between **August 10, 2023** and **August 25, 2023**
 
 ---
 
+<!-- section-id: section-1692014400002 -->
+
 ## Attack Narrative
 The assessment identified a critical Insecure Direct Object Reference (IDOR) vulnerability in the /api/v1/users/[userId] endpoint. By iterating the \`userId\` parameter, it was possible to retrieve sensitive personal information for any user on the platform. Furthermore, the API was missing rate limiting, allowing for automated enumeration of user IDs.
 
 ---
+
+<!-- section-id: section-1692014400003 -->
 
 ## Findings Classification
 | Severity | CVSS v3.1 Score | Description |
@@ -104,10 +120,14 @@ The assessment identified a critical Insecure Direct Object Reference (IDOR) vul
     id: 'proj-3', 
     clientId: 'cli-3', 
     name: 'Auditoría Red Interna', 
-    reportBody: `## Resumen Ejecutivo
+    reportBody: `<!-- section-id: section-1693562400000 -->
+
+## Resumen Ejecutivo
 Este informe presenta los hallazgos de una prueba de penetración de la red interna para **SecureBank Corp**. La evaluación simuló a un atacante que ya ha obtenido acceso inicial a la red corporativa interna (p. ej., un empleado malintencionado o una estación de trabajo comprometida). El objetivo fue identificar vulnerabilidades que pudieran conducir a la escalada de privilegios, movimiento lateral y compromiso de sistemas internos críticos como los Controladores de Dominio.
 
 ---
+
+<!-- section-id: section-1693562400001 -->
 
 ## Alcance y Metodología
 La evaluación se llevó a cabo entre el **1 de Septiembre de 2023** y el **30 de Septiembre de 2023** desde la perspectiva de un usuario autenticado y sin privilegios en la red interna (caja gris).
@@ -125,10 +145,14 @@ La evaluación se llevó a cabo entre el **1 de Septiembre de 2023** y el **30 d
 
 ---
 
+<!-- section-id: section-1693562400002 -->
+
 ## Narrativa del Ataque
 El ataque comenzó con la enumeración de recursos compartidos SMB en la red, lo que reveló un recurso compartido con permisos de escritura para todos los usuarios. Se subió un ejecutable malicioso a este recurso. Luego, se utilizó una vulnerabilidad de Kerberoasting para obtener el hash de la contraseña de una cuenta de servicio con privilegios. El hash fue crackeado offline, otorgando acceso a un servidor de aplicaciones. Desde este servidor, se explotó la vulnerabilidad Zerologon (CVE-2020-1472) contra un controlador de dominio no parcheado (DC02), lo que resultó en un compromiso total del dominio.
 
 ---
+
+<!-- section-id: section-1693562400003 -->
 
 ## Clasificación de Hallazgos
 | Severidad | Puntuación CVSS v3.1 | Descripción |
@@ -150,10 +174,14 @@ El ataque comenzó con la enumeración de recursos compartidos SMB en la red, lo
     id: 'proj-4', 
     clientId: 'cli-1', 
     name: 'Mobile App Assessment', 
-    reportBody: `## Executive Summary
+    reportBody: `<!-- section-id: section-1696496400000 -->
+
+## Executive Summary
 This report documents the findings of a security assessment of the **Innovatech GO** mobile application (version 1.5.2) for **Innovatech Solutions**. The test focused on identifying vulnerabilities within the mobile application itself and its backend API interactions, covering areas such as insecure data storage, insecure communication, and client-side logic flaws.
 
 ---
+
+<!-- section-id: section-1696496400001 -->
 
 ## Scope & Methodology
 The assessment was conducted between **October 5, 2023** and **October 20, 2023**.
@@ -171,10 +199,14 @@ The assessment was conducted between **October 5, 2023** and **October 20, 2023*
 
 ---
 
+<!-- section-id: section-1696496400002 -->
+
 ## Attack Narrative
 Dynamic analysis revealed that the application stores the user's session token insecurely in SharedPreferences on Android and a plist file on iOS. An attacker with physical access to a user's device, or a malicious application on the device, could steal this token and hijack the user's session. The API key for a third-party mapping service was also found hardcoded in the application's resources, which could lead to abuse and financial costs if extracted.
 
 ---
+
+<!-- section-id: section-1696496400003 -->
 
 ## Findings Classification
 | Severity | CVSS v3.1 Score | Description |
@@ -202,7 +234,27 @@ export const findings: Finding[] = [
     title: 'SQL Injection in Login Form',
     severity: 'Critical',
     cvss: 9.8,
-    markdown: `### Description\n\nThe login form at /login is vulnerable to SQL injection. By providing a crafted payload in the username field, an attacker can bypass authentication.\n\n### Evidence\n\nPayload: \`' OR 1=1 -- \`\n\n### Mitigation\n\nUse parameterized queries.`,
+    markdown: `<!-- section-id: section-1688551200000 -->
+
+### Description
+
+The login form at /login is vulnerable to SQL injection. By providing a crafted payload in the username field, an attacker can bypass authentication.
+
+---
+
+<!-- section-id: section-1688551200001 -->
+
+### Evidence
+
+Payload: \`' OR 1=1 -- \`
+
+---
+
+<!-- section-id: section-1688551200002 -->
+
+### Mitigation
+
+Use parameterized queries.`,
     createdAt: '2023-07-05',
     updatedAt: '2023-07-06',
   },
@@ -213,7 +265,27 @@ export const findings: Finding[] = [
     title: 'Cross-Site Scripting (XSS) in Search Results',
     severity: 'High',
     cvss: 8.8,
-    markdown: `### Description\n\nThe search functionality is vulnerable to reflected XSS. Malicious scripts can be injected via the search query parameter.\n\n### Evidence\n\nURL: \`/search?q=<script>alert('XSS')</script>\`\n\n### Mitigation\n\nEncode output and validate input.`,
+    markdown: `<!-- section-id: section-1688803200000 -->
+
+### Description
+
+The search functionality is vulnerable to reflected XSS. Malicious scripts can be injected via the search query parameter.
+
+---
+
+<!-- section-id: section-1688803200001 -->
+
+### Evidence
+
+URL: \`/search?q=<script>alert('XSS')</script>\`
+
+---
+
+<!-- section-id: section-1688803200002 -->
+
+### Mitigation
+
+Encode output and validate input.`,
     createdAt: '2023-07-08',
     updatedAt: '2023-07-08',
   },
@@ -223,7 +295,28 @@ export const findings: Finding[] = [
     title: 'Exposición de servicio SMB sin protección',
     severity: 'Medium',
     cvss: 6.5,
-    markdown: `### Descripción\n\nSe ha identificado un servicio SMB en la red interna que permite el acceso anónimo, exponiendo archivos sensibles de la compañía.\n\n### Evidencia\n\n- Host: 10.1.5.22\n- Acceso como invitado habilitado.\n\n### Mitigación\n\nDeshabilitar el acceso anónimo y aplicar autenticación en el recurso compartido SMB.`,
+    markdown: `<!-- section-id: section-1694332800000 -->
+
+### Descripción
+
+Se ha identificado un servicio SMB en la red interna que permite el acceso anónimo, exponiendo archivos sensibles de la compañía.
+
+---
+
+<!-- section-id: section-1694332800001 -->
+
+### Evidencia
+
+- Host: 10.1.5.22
+- Acceso como invitado habilitado.
+
+---
+
+<!-- section-id: section-1694332800002 -->
+
+### Mitigación
+
+Deshabilitar el acceso anónimo y aplicar autenticación en el recurso compartido SMB.`,
     createdAt: '2023-09-10',
     updatedAt: '2023-09-11',
   }
@@ -2564,10 +2657,14 @@ export const projectTemplates: ProjectTemplate[] = [
     description_en: 'A comprehensive security audit covering external, internal, and web application testing.',
     description_es: 'Auditoría de seguridad integral que abarca pruebas externas, internas y de aplicaciones web.',
     scope_en:
-`## Executive Summary
+`<!-- section-id: template-1-en-1 -->
+
+## Executive Summary
 This report details the findings of a comprehensive security assessment conducted on behalf of **[TODO Client Name]**. The primary objective was to identify and assess security vulnerabilities across the company's external and internal networks, as well as key web applications. The engagement simulated real-world attack scenarios to provide a realistic evaluation of the current security posture.
 
 ---
+
+<!-- section-id: template-1-en-2 -->
 
 ## Scope & Methodology
 The assessment was conducted between **[TODO Start Date]** and **[TODO End Date]**. The testing approach combined automated scanning and manual exploitation techniques, following a black-box/gray-box model.
@@ -2586,10 +2683,14 @@ The assessment was conducted between **[TODO Start Date]** and **[TODO End Date]
 
 ---
 
+<!-- section-id: template-1-en-3 -->
+
 ## Attack Narrative
 [TODO Provide a step-by-step narrative of the attack path, from initial reconnaissance to the final objectives achieved. This should be detailed and easy to follow.]
 
 ---
+
+<!-- section-id: template-1-en-4 -->
 
 ## Findings Classification
 | Severity | CVSS v3.1 Score | Description |
@@ -2600,10 +2701,14 @@ The assessment was conducted between **[TODO Start Date]** and **[TODO End Date]
 | Low | 0.1 - 3.9 | Minor issues that have a low impact or are difficult to exploit. |
 | Informational | 0.0 | Observations that do not pose an immediate risk but are relevant to the security posture. |`,
     scope_es:
-`## Resumen Ejecutivo
+`<!-- section-id: template-1-es-1 -->
+
+## Resumen Ejecutivo
 Este informe detalla los hallazgos de una evaluación de seguridad integral realizada para **[TODO Nombre del Cliente]**. El objetivo principal fue identificar y evaluar las vulnerabilidades de seguridad en las redes externas e internas de la empresa, así como en aplicaciones web clave. El compromiso simuló escenarios de ataque del mundo real para proporcionar una evaluación realista de la postura de seguridad actual.
 
 ---
+
+<!-- section-id: template-1-es-2 -->
 
 ## Alcance y Metodología
 La evaluación se llevó a cabo entre el **[TODO Fecha de Inicio]** y el **[TODO Fecha de Fin]**. El enfoque de las pruebas combinó escaneo automatizado y técnicas de explotación manual, siguiendo un modelo de caja negra/gris.
@@ -2622,10 +2727,14 @@ La evaluación se llevó a cabo entre el **[TODO Fecha de Inicio]** y el **[TODO
 
 ---
 
+<!-- section-id: template-1-es-3 -->
+
 ## Narrativa del Ataque
 [TODO Proporcione una narrativa paso a paso de la ruta de ataque, desde el reconocimiento inicial hasta los objetivos finales alcanzados. Debe ser detallada y fácil de seguir.]
 
 ---
+
+<!-- section-id: template-1-es-4 -->
 
 ## Clasificación de Hallazgos
 | Severidad | Puntuación CVSS v3.1 | Descripción |
@@ -2644,10 +2753,14 @@ La evaluación se llevó a cabo entre el **[TODO Fecha de Inicio]** y el **[TODO
     description_en: 'Focuses on publicly accessible assets to identify vulnerabilities from an attacker\'s perspective.',
     description_es: 'Se centra en los activos accesibles públicamente para identificar vulnerabilidades desde la perspectiva de un atacante.',
     scope_en:
-`## Executive Summary
+`<!-- section-id: template-2-en-1 -->
+
+## Executive Summary
 This report outlines the results of an external penetration test conducted on the internet-facing assets of **[TODO Client Name]**. The assessment aimed to identify vulnerabilities that could be exploited by a remote attacker to compromise the security of the organization's perimeter.
 
 ---
+
+<!-- section-id: template-2-en-2 -->
 
 ## Scope & Methodology
 The assessment was conducted between **[TODO Start Date]** and **[TODO End Date]** from the perspective of an external, unauthenticated attacker (black-box).
@@ -2664,10 +2777,14 @@ The assessment was conducted between **[TODO Start Date]** and **[TODO End Date]
 
 ---
 
+<!-- section-id: template-2-en-3 -->
+
 ## Attack Narrative
 [TODO Provide a step-by-step narrative of the attack path, focusing on how the external perimeter was breached or could be breached.]
 
 ---
+
+<!-- section-id: template-2-en-4 -->
 
 ## Findings Classification
 | Severity | CVSS v3.1 Score | Description |
@@ -2678,10 +2795,14 @@ The assessment was conducted between **[TODO Start Date]** and **[TODO End Date]
 | Low | 0.1 - 3.9 | Minor issues that reduce the overall security posture but are not directly exploitable. |
 | Informational | 0.0 | Observations about the external footprint of the organization. |`,
     scope_es:
-`## Resumen Ejecutivo
+`<!-- section-id: template-2-es-1 -->
+
+## Resumen Ejecutivo
 Este informe describe los resultados de una prueba de penetración externa realizada sobre los activos de **[TODO Nombre del Cliente]** expuestos a Internet. La evaluación tuvo como objetivo identificar vulnerabilidades que podrían ser explotadas por un atacante remoto para comprometer la seguridad del perímetro de la organización.
 
 ---
+
+<!-- section-id: template-2-es-2 -->
 
 ## Alcance y Metodología
 La evaluación se llevó a cabo entre el **[TODO Fecha de Inicio]** y el **[TODO Fecha de Fin]** desde la perspectiva de un atacante externo no autenticado (caja negra).
@@ -2698,10 +2819,14 @@ La evaluación se llevó a cabo entre el **[TODO Fecha de Inicio]** y el **[TODO
 
 ---
 
+<!-- section-id: template-2-es-3 -->
+
 ## Narrativa del Ataque
 [TODO Proporcione una narrativa paso a paso de la ruta de ataque, centrándose en cómo se rompió o podría romperse el perímetro externo.]
 
 ---
+
+<!-- section-id: template-2-es-4 -->
 
 ## Clasificación de Hallazgos
 | Severidad | Puntuación CVSS v3.1 | Descripción |
@@ -2712,10 +2837,16 @@ La evaluación se llevó a cabo entre el **[TODO Fecha de Inicio]** y el **[TODO
 | Baja | 0.1 - 3.9 | Problemas menores que reducen la postura de seguridad general pero no son directamente explotables. |
 | Informativa | 0.0 | Observaciones sobre la huella externa de la organización. |`,
     appendix_en: `
+<!-- section-id: template-2-en-appendix-1 -->
+
 ### A. Subdomain Discovery
 | URL | Description | Discovery Method |
 |---|---|---|
 | [TODO FILL IN DISCOVERED VHOSTS/SUBDOMAINS] | | |
+
+---
+
+<!-- section-id: template-2-en-appendix-2 -->
 
 ### B. Open Ports and Services
 | IP Address | Port | Service | Banner/Version |
@@ -2723,10 +2854,16 @@ La evaluación se llevó a cabo entre el **[TODO Fecha de Inicio]** y el **[TODO
 | [TODO FILL IN AS APPROPRIATE] | | | |
 `,
     appendix_es: `
+<!-- section-id: template-2-es-appendix-1 -->
+
 ### A. Descubrimiento de Subdominios
 | URL | Descripción | Método de Descubrimiento |
 |---|---|---|
 | [TODO RELLENAR VHOSTS/SUBDOMINIOS DESCUBIERTOS] | | |
+
+---
+
+<!-- section-id: template-2-es-appendix-2 -->
 
 ### B. Puertos y Servicios Abiertos
 | Dirección IP | Puerto | Servicio | Banner/Versión |
@@ -2742,10 +2879,14 @@ La evaluación se llevó a cabo entre el **[TODO Fecha de Inicio]** y el **[TODO
     description_en: 'An assessment of the internal network to find security weaknesses from within the perimeter.',
     description_es: 'Evaluación de la red interna para encontrar debilidades de seguridad desde dentro del perímetro.',
     scope_en:
-`## Executive Summary
+`<!-- section-id: template-3-en-1 -->
+
+## Executive Summary
 This report presents the findings from an internal network penetration test for **[TODO Client Name]**. The assessment simulated an attacker who has already gained initial access to the internal corporate network (e.g., a malicious insider or a compromised workstation). The goal was to identify vulnerabilities that could lead to privilege escalation, lateral movement, and compromise of critical internal systems like Domain Controllers.
 
 ---
+
+<!-- section-id: template-3-en-2 -->
 
 ## Scope & Methodology
 The assessment was conducted between **[TODO Start Date]** and **[TODO End Date]** from the perspective of an authenticated, non-privileged user on the internal network (gray-box).
@@ -2763,10 +2904,14 @@ The assessment was conducted between **[TODO Start Date]** and **[TODO End Date]
 
 ---
 
+<!-- section-id: template-3-en-3 -->
+
 ## Attack Narrative
 [TODO Provide a step-by-step narrative of the attack path, from initial internal access to domain compromise.]
 
 ---
+
+<!-- section-id: template-3-en-4 -->
 
 ## Findings Classification
 | Severity | CVSS v3.1 Score | Description |
@@ -2777,10 +2922,14 @@ The assessment was conducted between **[TODO Start Date]** and **[TODO End Date]
 | Low | 0.1 - 3.9 | Minor issues that represent a deviation from best practices. |
 | Informational | 0.0 | Observations about the internal network environment. |`,
     scope_es:
-`## Resumen Ejecutivo
+`<!-- section-id: template-3-es-1 -->
+
+## Resumen Ejecutivo
 Este informe presenta los hallazgos de una prueba de penetración de la red interna para **[TODO Nombre del Cliente]**. La evaluación simuló a un atacante que ya ha obtenido acceso inicial a la red corporativa interna (p. ej., un empleado malintencionado o una estación de trabajo comprometida). El objetivo fue identificar vulnerabilidades que pudieran conducir a la escalada de privilegios, movimiento lateral y compromiso de sistemas internos críticos como los Controladores de Dominio.
 
 ---
+
+<!-- section-id: template-3-es-2 -->
 
 ## Alcance y Metodología
 La evaluación se llevó a cabo entre el **[TODO Fecha de Inicio]** y el **[TODO Fecha de Fin]** desde la perspectiva de un usuario autenticado y sin privilegios en la red interna (caja gris).
@@ -2798,10 +2947,14 @@ La evaluación se llevó a cabo entre el **[TODO Fecha de Inicio]** y el **[TODO
 
 ---
 
+<!-- section-id: template-3-es-3 -->
+
 ## Narrativa del Ataque
 [TODO Proporcione una narrativa paso a paso de la ruta de ataque, desde el acceso interno inicial hasta el compromiso del dominio.]
 
 ---
+
+<!-- section-id: template-3-es-4 -->
 
 ## Clasificación de Hallazgos
 | Severidad | Puntuación CVSS v3.1 | Descripción |
@@ -2812,10 +2965,16 @@ La evaluación se llevó a cabo entre el **[TODO Fecha de Inicio]** y el **[TODO
 | Baja | 0.1 - 3.9 | Problemas menores que representan una desviación de las mejores prácticas. |
 | Informativa | 0.0 | Observaciones sobre el entorno de la red interna. |`,
     appendix_en: `
+<!-- section-id: template-3-en-appendix-1 -->
+
 ### A. Host & Service Discovery
 | IP Address | Port | Service | Notes |
 |---|---|---|---|
 | [TODO FILL IN AS APPROPRIATE] | | | |
+
+---
+
+<!-- section-id: template-3-en-appendix-2 -->
 
 ### B. Compromised Credentials
 | Username | Domain | Password / Hash | Source |
@@ -2823,10 +2982,16 @@ La evaluación se llevó a cabo entre el **[TODO Fecha de Inicio]** y el **[TODO
 | [TODO user1] | [TODO domain.local] | [TODO Password123] | [TODO e.g., Kerberoasting] |
 `,
     appendix_es: `
+<!-- section-id: template-3-es-appendix-1 -->
+
 ### A. Descubrimiento de Hosts y Servicios
 | Dirección IP | Puerto | Servicio | Notas |
 |---|---|---|---|
 | [TODO RELLENAR SEGÚN CORRESPONDA] | | | |
+
+---
+
+<!-- section-id: template-3-es-appendix-2 -->
 
 ### B. Credenciales Comprometidas
 | Usuario | Dominio | Contraseña / Hash | Origen |
@@ -2842,10 +3007,14 @@ La evaluación se llevó a cabo entre el **[TODO Fecha de Inicio]** y el **[TODO
     description_en: 'Assesses wireless network security, including password cracking and client isolation.',
     description_es: 'Evalúa la seguridad de redes inalámbricas, incluyendo cracking de contraseñas y aislamiento de clientes.',
     scope_en:
-`## Executive Summary
+`<!-- section-id: template-wifi-en-1 -->
+
+## Executive Summary
 This report summarizes the security assessment of the wireless networks at **[TODO Client Name]**. The audit focused on identifying vulnerabilities related to authentication, encryption, and client segregation that could allow an unauthorized user to gain access to the corporate or guest wireless networks.
 
 ---
+
+<!-- section-id: template-wifi-en-2 -->
 
 ## Scope & Methodology
 The assessment was conducted on **[TODO Date]** at the **[TODO Physical Location]** premises.
@@ -2863,10 +3032,14 @@ The assessment was conducted on **[TODO Date]** at the **[TODO Physical Location
 
 ---
 
+<!-- section-id: template-wifi-en-3 -->
+
 ## Attack Narrative
 [TODO Provide a step-by-step narrative of the attack path, such as capturing a WPA handshake and cracking it, or setting up an Evil Twin AP.]
 
 ---
+
+<!-- section-id: template-wifi-en-4 -->
 
 ## Findings Classification
 | Severity | CVSS v3.1 Score | Description |
@@ -2877,10 +3050,14 @@ The assessment was conducted on **[TODO Date]** at the **[TODO Physical Location
 | Low | 0.1 - 3.9 | Deviations from best practices, such as broadcasting unnecessary SSIDs. |
 | Informational | 0.0 | General observations about the wireless environment. |`,
     scope_es:
-`## Resumen Ejecutivo
+`<!-- section-id: template-wifi-es-1 -->
+
+## Resumen Ejecutivo
 Este informe resume la evaluación de seguridad de las redes inalámbricas en **[TODO Nombre del Cliente]**. La auditoría se centró en identificar vulnerabilidades relacionadas con la autenticación, el cifrado y la segregación de clientes que podrían permitir a un usuario no autorizado obtener acceso a las redes inalámbricas corporativas o de invitados.
 
 ---
+
+<!-- section-id: template-wifi-es-2 -->
 
 ## Alcance y Metodología
 La evaluación se llevó a cabo el **[TODO Fecha]** en las instalaciones de **[TODO Ubicación Física]**.
@@ -2898,10 +3075,14 @@ La evaluación se llevó a cabo el **[TODO Fecha]** en las instalaciones de **[T
 
 ---
 
+<!-- section-id: template-wifi-es-3 -->
+
 ## Narrativa del Ataque
 [TODO Proporcione una narrativa paso a paso de la ruta de ataque, como la captura de un handshake WPA y su crackeo, o la configuración de un AP Evil Twin.]
 
 ---
+
+<!-- section-id: template-wifi-es-4 -->
 
 ## Clasificación de Hallazgos
 | Severidad | Puntuación CVSS v3.1 | Descripción |
@@ -2912,10 +3093,16 @@ La evaluación se llevó a cabo el **[TODO Fecha]** en las instalaciones de **[T
 | Baja | 0.1 - 3.9 | Desviaciones de las mejores prácticas, como la difusión de SSIDs innecesarios. |
 | Informativa | 0.0 | Observaciones generales sobre el entorno inalámbrico. |`,
     appendix_en: `
+<!-- section-id: template-wifi-en-appendix-1 -->
+
 ### A. Discovered Wireless Networks
 | SSID | BSSID | Signal Strength | Encryption | Authentication |
 |---|---|---|---|---|
 | [TODO FILL IN] | | | | |
+
+---
+
+<!-- section-id: template-wifi-en-appendix-2 -->
 
 ### B. Cracked Passwords
 | SSID | Password | Cracking Method |
@@ -2923,10 +3110,16 @@ La evaluación se llevó a cabo el **[TODO Fecha]** en las instalaciones de **[T
 | [TODO FILL IN] | | |
 `,
     appendix_es: `
+<!-- section-id: template-wifi-es-appendix-1 -->
+
 ### A. Redes Inalámbricas Descubiertas
 | SSID | BSSID | Potencia de Señal | Cifrado | Autenticación |
 |---|---|---|---|---|
 | [TODO RELLENAR] | | | | |
+
+---
+
+<!-- section-id: template-wifi-es-appendix-2 -->
 
 ### B. Contraseñas Crackeadas
 | SSID | Contraseña | Método de Crackeo |
@@ -2942,10 +3135,14 @@ La evaluación se llevó a cabo el **[TODO Fecha]** en las instalaciones de **[T
     description_en: 'A security assessment of Android and/or iOS mobile apps, including static and dynamic analysis.',
     description_es: 'Evaluación de seguridad de apps móviles Android y/o iOS, incluyendo análisis estático y dinámico.',
     scope_en:
-`## Executive Summary
+`<!-- section-id: template-mobile-en-1 -->
+
+## Executive Summary
 This report documents the findings of a security assessment of the **[TODO App Name]** mobile application (version [TODO App Version]) for **[TODO Client Name]**. The test focused on identifying vulnerabilities within the mobile application itself and its backend API interactions, covering areas such as insecure data storage, insecure communication, and client-side logic flaws.
 
 ---
+
+<!-- section-id: template-mobile-en-2 -->
 
 ## Scope & Methodology
 The assessment was conducted between **[TODO Start Date]** and **[TODO End Date]**.
@@ -2963,10 +3160,14 @@ The assessment was conducted between **[TODO Start Date]** and **[TODO End Date]
 
 ---
 
+<!-- section-id: template-mobile-en-3 -->
+
 ## Attack Narrative
 [TODO Provide a step-by-step narrative of the most significant attack path. For example, how insecure data storage was leveraged to extract an API key, which was then used to abuse a vulnerable API endpoint.]
 
 ---
+
+<!-- section-id: template-mobile-en-4 -->
 
 ## Findings Classification
 | Severity | CVSS v3.1 Score | Description |
@@ -2977,10 +3178,14 @@ The assessment was conducted between **[TODO Start Date]** and **[TODO End Date]
 | Low | 0.1 - 3.9 | Issues that deviate from security best practices but have a low direct impact. |
 | Informational | 0.0 | Observations about the application's security posture. |`,
     scope_es:
-`## Resumen Ejecutivo
+`<!-- section-id: template-mobile-es-1 -->
+
+## Resumen Ejecutivo
 Este informe documenta los hallazgos de una evaluación de seguridad de la aplicación móvil **[TODO Nombre de la App]** (versión [TODO Versión de la App]) para **[TODO Nombre del Cliente]**. La prueba se centró en identificar vulnerabilidades dentro de la propia aplicación móvil y sus interacciones con la API de backend, cubriendo áreas como el almacenamiento inseguro de datos, la comunicación insegura y los fallos en la lógica del lado del cliente.
 
 ---
+
+<!-- section-id: template-mobile-es-2 -->
 
 ## Alcance y Metodología
 La evaluación se llevó a cabo entre el **[TODO Fecha de Inicio]** y el **[TODO Fecha de Fin]**.
@@ -2998,10 +3203,14 @@ La evaluación se llevó a cabo entre el **[TODO Fecha de Inicio]** y el **[TODO
 
 ---
 
+<!-- section-id: template-mobile-es-3 -->
+
 ## Narrativa del Ataque
 [TODO Proporcione una narrativa paso a paso de la ruta de ataque más significativa. Por ejemplo, cómo se aprovechó el almacenamiento inseguro de datos para extraer una clave de API, que luego se usó para abusar de un endpoint de API vulnerable.]
 
 ---
+
+<!-- section-id: template-mobile-es-4 -->
 
 ## Clasificación de Hallazgos
 | Severidad | Puntuación CVSS v3.1 | Descripción |
@@ -3012,10 +3221,16 @@ La evaluación se llevó a cabo entre el **[TODO Fecha de Inicio]** y el **[TODO
 | Baja | 0.1 - 3.9 | Problemas que se desvían de las mejores prácticas de seguridad pero tienen un bajo impacto directo. |
 | Informativa | 0.0 | Observaciones sobre la postura de seguridad de la aplicación. |`,
     appendix_en: `
+<!-- section-id: template-mobile-en-appendix-1 -->
+
 ### A. Hardcoded Secrets
 | Secret | Location |
 |---|---|
 | [TODO e.g., API Key] | [TODO e.g., strings.xml] |
+
+---
+
+<!-- section-id: template-mobile-en-appendix-2 -->
 
 ### B. Insecurely Stored Data
 | Data | Storage Method | Location |
@@ -3023,10 +3238,16 @@ La evaluación se llevó a cabo entre el **[TODO Fecha de Inicio]** y el **[TODO
 | [TODO e.g., Session Token] | [TODO e.g., SharedPreferences] | [TODO e.g., /data/data/com.app/shared_prefs/prefs.xml] |
 `,
     appendix_es: `
+<!-- section-id: template-mobile-es-appendix-1 -->
+
 ### A. Secretos Embebidos en el Código
 | Secreto | Ubicación |
 |---|---|
 | [TODO p. ej., Clave de API] | [TODO p. ej., strings.xml] |
+
+---
+
+<!-- section-id: template-mobile-es-appendix-2 -->
 
 ### B. Datos Almacenados Inseguramente
 | Dato | Método de Almacenamiento | Ubicación |
@@ -3042,10 +3263,14 @@ La evaluación se llevó a cabo entre el **[TODO Fecha de Inicio]** y el **[TODO
     description_en: 'A generic template for offensive security certification reports (e.g., OSCP, CPTS).',
     description_es: 'Plantilla genérica para informes de certificación de seguridad ofensiva (p. ej., OSCP, CPTS).',
     scope_en: 
-`## Executive Summary
+`<!-- section-id: cpts-template-en-1 -->
+
+## Executive Summary
 This report details the results of a penetration test performed on the [TODO Organization Name, e.g., Hack The Box] enterprise network as part of the [TODO Certification Name, e.g., CPTS] certification exam. The objective of this assessment was to identify and exploit security vulnerabilities to compromise the internal network and gain access to sensitive systems, simulating a real-world attack scenario. This report documents the attack path, findings, and provides a detailed narrative of the engagement.
 
 ---
+
+<!-- section-id: cpts-template-en-2 -->
 
 ## Scope & Methodology
 The scope of this penetration test was limited to the hosts and networks provided within the [TODO Exam Environment Name] environment. The assessment was conducted from an external attacker's perspective, with no prior knowledge of the internal network architecture.
@@ -3064,10 +3289,14 @@ The penetration test followed a structured methodology:
 
 ---
 
+<!-- section-id: cpts-template-en-3 -->
+
 ## Attack Narrative
 [TODO Provide a step-by-step narrative of the attack path, from initial reconnaissance to the final flag capture. This should be detailed and easy to follow.]
 
 ---
+
+<!-- section-id: cpts-template-en-4 -->
 
 ## Findings Classification
 | Severity | CVSS v3.1 Score | Description |
@@ -3079,10 +3308,14 @@ The penetration test followed a structured methodology:
 | Informational | 0.0 | Observations about the network environment. |
 `,
     scope_es:
-`## Resumen Ejecutivo
+`<!-- section-id: cpts-template-es-1 -->
+
+## Resumen Ejecutivo
 Se realizó una prueba de penetración contra la red empresarial de [TODO Nombre de la Organización, p. ej., Hack The Box] para el examen de certificación [TODO Nombre de la Certificación, p. ej., CPTS]. El objetivo de esta evaluación fue identificar e informar sobre las vulnerabilidades de seguridad que podrían ser explotadas por un atacante externo para comprometer la red interna y obtener acceso a datos o sistemas sensibles, simulando un escenario de ataque del mundo real. Este informe detalla los hallazgos de la evaluación y proporciona recomendaciones para su remediación.
 
 ---
+
+<!-- section-id: cpts-template-es-2 -->
 
 ## Alcance y Metodología
 El alcance de esta prueba de penetración se limitó a los hosts y redes proporcionados dentro del entorno de [TODO Nombre del Entorno del Examen]. La evaluación se realizó desde la perspectiva de un atacante externo, sin conocimiento previo de la arquitectura de la red interna.
@@ -3101,10 +3334,14 @@ La prueba de penetración siguió una metodología estructurada:
 
 ---
 
+<!-- section-id: cpts-template-es-3 -->
+
 ## Narrativa del Ataque
 [TODO Proporcione una narrativa paso a paso de la ruta de ataque, desde el reconocimiento inicial hasta la captura de la bandera final. Debe ser detallada y fácil de seguir.]
 
 ---
+
+<!-- section-id: cpts-template-es-4 -->
 
 ## Clasificación de Hallazgos
 | Severidad | Puntuación CVSS v3.1 | Descripción |
@@ -3116,30 +3353,52 @@ La prueba de penetración siguió una metodología estructurada:
 | Informativa | 0.0 | Observaciones sobre el entorno de la red. |
 `,
     appendix_en: `
+<!-- section-id: cpts-template-en-appendix-1 -->
+
 ### A. Compromised Users
 | Username | Domain | Password |
 |---|---|---|
 | [TODO user1] | [TODO domain.local] | [TODO Password123] |
+
+---
+
+<!-- section-id: cpts-template-en-appendix-2 -->
 
 ### B. Exploited Hosts
 | Hostname | IP Address | Operating System |
 |---|---|---|
 | [TODO WEB01] | [TODO 192.168.X.X] | [TODO Windows Server 2019] |
 
+---
+
+<!-- section-id: cpts-template-en-appendix-3 -->
+
 ### C. Flags Captured
 | Host | Flag Type | Flag Value |
 |---|---|---|
 | [TODO WEB01] | user.txt | [TODO flag_value] |
+
+---
+
+<!-- section-id: cpts-template-en-appendix-4 -->
 
 ### D. Host & Service Discovery
 | IP Address | Port | Service | Notes |
 |---|---|---|---|
 | [TODO FILL IN AS APPROPRIATE] | | | |
 
+---
+
+<!-- section-id: cpts-template-en-appendix-5 -->
+
 ### E. Subdomain Discovery
 | URL | Description | Discovery Method |
 |---|---|---|
 | [TODO FILL IN DISCOVERED VHOSTS/SUBDOMAINS] | | |
+
+---
+
+<!-- section-id: cpts-template-en-appendix-6 -->
 
 ### F. Tools Used
 [TODO List the primary tools used during the assessment.]
@@ -3151,30 +3410,52 @@ La prueba de penetración siguió una metodología estructurada:
 - Burp Suite
 `,
     appendix_es: `
+<!-- section-id: cpts-template-es-appendix-1 -->
+
 ### A. Usuarios Comprometidos
 | Usuario | Dominio | Contraseña |
 |---|---|---|
 | [TODO user1] | [TODO domain.local] | [TODO Password123] |
+
+---
+
+<!-- section-id: cpts-template-es-appendix-2 -->
 
 ### B. Hosts Explotados
 | Hostname | Dirección IP | Sistema Operativo |
 |---|---|---|
 | [TODO WEB01] | [TODO 192.168.X.X] | [TODO Windows Server 2019] |
 
+---
+
+<!-- section-id: cpts-template-es-appendix-3 -->
+
 ### C. Banderas Capturadas
 | Host | Tipo de Bandera | Valor de la Bandera |
 |---|---|---|
 | [TODO WEB01] | user.txt | [TODO flag_value] |
+
+---
+
+<!-- section-id: cpts-template-es-appendix-4 -->
 
 ### D. Descubrimiento de Hosts y Servicios
 | Dirección IP | Puerto | Servicio | Notas |
 |---|---|---|---|
 | [TODO RELLENAR SEGÚN CORRESPONDA] | | | |
 
+---
+
+<!-- section-id: cpts-template-es-appendix-5 -->
+
 ### E. Descubrimiento de Subdominios
 | URL | Descripción | Método de Descubrimiento |
 |---|---|---|
 | [TODO RELLENAR VHOSTS/SUBDOMINIOS DESCUBIERTOS] | | |
+
+---
+
+<!-- section-id: cpts-template-es-appendix-6 -->
 
 ### F. Herramientas Utilizadas
 [TODO Enumere las principales herramientas utilizadas durante la evaluación.]

@@ -490,6 +490,33 @@ export default function ProjectDetailsPage() {
   const projectFindings = useMemo(() => findings.filter(f => f.projectId === params.id), [findings, params.id]);
   const client = useMemo(() => clients.find(c => c.id === project?.clientId), [clients, project]);
   
+  const parseSections = useCallback((markdown: string): ScopeSection[] => {
+    if (!markdown) return [];
+    // This regex looks for the separator, but also for a potential ID in the line above it.
+    // Format: <!-- section-id: some-id -->\n\n---\n\n
+    const sectionRegex = /(?:<!-- section-id: (.*) -->\n\n)?---\n\n/g;
+    const parts = markdown.split(sectionRegex);
+
+    const sections: ScopeSection[] = [];
+    let i = 0;
+    while (i < parts.length) {
+      const content = parts[i];
+      const id = parts[i + 1] || `section-${Date.now()}-${Math.random()}`; // Use saved ID or generate new one
+      if (content?.trim()) {
+          sections.push({ id, content: content.trim() });
+      }
+      i += 2;
+    }
+     if (sections.length === 0 && markdown.trim() !== '') {
+        return markdown.split('\n\n---\n\n').map((content) => ({
+            id: `section-${Date.now()}-${Math.random()}`,
+            content: content.trim(),
+        }));
+    }
+
+    return sections;
+  }, []);
+
   useEffect(() => {
     const currentProject = projects.find(p => p.id === params.id);
     if (!currentProject) {
@@ -499,16 +526,13 @@ export default function ProjectDetailsPage() {
     setProject(currentProject);
     
     if (currentProject.reportBody) {
-        const sections = (currentProject.reportBody || '').split('\n\n---\n\n').map((content, index) => ({
-        id: `section-${index}-${Date.now()}`,
-        content: content.trim()
-        }));
-        setScopeSections(sections);
-        const initialViews = sections.reduce((acc, section) => {
-            acc[section.id] = 'split';
-            return acc;
-        }, {} as Record<string, ScopeView>);
-        setSectionViews(initialViews);
+      const sections = parseSections(currentProject.reportBody);
+      setScopeSections(sections);
+      const initialViews = sections.reduce((acc, section) => {
+          acc[section.id] = 'split';
+          return acc;
+      }, {} as Record<string, ScopeView>);
+      setSectionViews(initialViews);
     }
 
     // Set edit dialog fields
@@ -519,7 +543,7 @@ export default function ProjectDetailsPage() {
     setEditLanguage(currentProject.language);
     setEditIcon(currentProject.icon || 'FileText');
     setSaveStatus('saved');
-  }, [params.id, projects, router]);
+  }, [params.id, projects, router, parseSections]);
   
   useEffect(() => {
     const hash = window.location.hash;
@@ -546,6 +570,7 @@ export default function ProjectDetailsPage() {
             clearTimeout(handler);
         };
     }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [scopeSections, saveStatus]);
 
 
@@ -629,7 +654,7 @@ export default function ProjectDetailsPage() {
   const handleSaveScope = (showToast = true) => {
     if (project) {
         setSaveStatus('saving');
-        const newReportBody = scopeSections.map(s => s.content).join('\n\n---\n\n');
+        const newReportBody = scopeSections.map(s => `<!-- section-id: ${s.id} -->\n\n${s.content}`).join('\n\n---\n\n');
         updateProject({...project, reportBody: newReportBody});
         if (showToast) {
             toast({ title: language === 'es' ? 'Informe guardado' : 'Report saved' });
@@ -663,7 +688,7 @@ export default function ProjectDetailsPage() {
 
   const handleAddSection = () => {
       const newSection: ScopeSection = {
-          id: `section-new-${Date.now()}`,
+          id: `section-${Date.now()}-${Math.random()}`,
           content: '## ' + t[language].newSection
       };
       setScopeSections(prev => [...prev, newSection]);
@@ -701,10 +726,7 @@ export default function ProjectDetailsPage() {
         setProject(updatedProject); // Update local state immediately
 
         // Also update the sections in the editor
-        const sections = newReportBody.split('\n\n---\n\n').map((content, index) => ({
-            id: `section-${index}-${Date.now()}`,
-            content: content.trim()
-        }));
+        const sections = parseSections(newReportBody);
         setScopeSections(sections);
         setSaveStatus('unsaved');
         
@@ -1068,12 +1090,14 @@ export default function ProjectDetailsPage() {
                   </SortableContext>
                 </DndContext>
 
-                <div className="flex justify-center">
-                    <Button variant="outline" onClick={handleAddSection}>
-                        <Plus className="mr-2 h-4 w-4" />
-                        {t[language].addNewSection}
-                    </Button>
-                </div>
+                {!isOrganizing && (
+                    <div className="flex justify-center pt-4">
+                        <Button variant="outline" onClick={handleAddSection}>
+                            <Plus className="mr-2 h-4 w-4" />
+                            {t[language].addNewSection}
+                        </Button>
+                    </div>
+                 )}
             </div>
         </TabsContent>
         <TabsContent value="findings">
