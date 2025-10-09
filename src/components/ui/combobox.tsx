@@ -11,6 +11,7 @@ import {
   CommandGroup,
   CommandInput,
   CommandList,
+  CommandItem,
 } from "@/components/ui/command"
 import {
   Popover,
