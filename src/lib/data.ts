@@ -1,5 +1,3 @@
-
-
 import type { Client, Project, Finding, Vulnerability, ProjectTemplate } from './types';
 
 export const clients: Client[] = [
@@ -600,7 +598,7 @@ export let vulnerabilities: Vulnerability[] = [
       availability: 'None',
     },
     overview_en: 'The mobile application communicates with its backend over an insecure channel or fails to properly validate server certificates, making it vulnerable to man-in-the-middle (MitM) attacks.',
-    overview_es: 'La aplicación móvil se comunica con su backend a través de un canal inseguro o no valida correctamente los certificados del servidor, lo que la hace vulnerable a ataques de hombre en el medio (MitM).',
+    overview_es: 'La aplicación móvil se comunica con su backend a través de un canal no seguro o no valida correctamente los certificados del servidor, lo que la hace vulnerable a ataques de hombre en el medio (MitM).',
     technicalDescription_en: 'The application transmits sensitive data over HTTP instead of HTTPS. Alternatively, it communicates over HTTPS but does not implement certificate pinning or properly validate the server\'s TLS certificate. An attacker on the same network can intercept, read, and modify all traffic between the app and the server.',
     technicalDescription_es: 'La aplicación transmite datos sensibles a través de HTTP en lugar de HTTPS. Alternativamente, se comunica a través de HTTPS pero no implementa "certificate pinning" o no valida correctamente el certificado TLS del servidor. Un atacante en la misma red puede interceptar, leer y modificar todo el tráfico entre la aplicación y el servidor.',
     affectedComponents_en: 'All network requests made by the application to the backend API at [TODO api.example.com]',

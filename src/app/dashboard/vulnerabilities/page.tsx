@@ -195,8 +195,8 @@ export default function VulnerabilitiesPage() {
                 />
             </div>
             <Select value={selectedCategory} onValueChange={setSelectedCategory}>
-                <SelectTrigger className="w-auto ml-2">
-                    <SelectValue placeholder="Select a category" />
+                <SelectTrigger className="w-auto">
+                    <SelectValue placeholder={language === 'es' ? 'Todo' : 'All'} />
                 </SelectTrigger>
                 <SelectContent>
                     {vulnerabilityCategories.map(cat => (
@@ -226,7 +226,7 @@ export default function VulnerabilitiesPage() {
                   <div className="flex flex-row items-center">{t[language].tableSeverity} {getSortIcon('severity')}</div>
                 </TableHead>
                 <TableHead onClick={() => requestSort('cvssScore')} className="cursor-pointer hover:bg-muted/50">
-                  <div className="flex flex-row items-center">{t[language].tableCvss} {getSortIcon('cvssScore')}</div>
+                   <div className="flex items-center">{t[language].tableCvss} {getSortIcon('cvssScore')}</div>
                 </TableHead>
                 <TableHead onClick={() => requestSort('cwe')} className="cursor-pointer hover:bg-muted/50">
                   <div className="flex flex-row items-center">{t[language].tableReference} {getSortIcon('cwe')}</div>
