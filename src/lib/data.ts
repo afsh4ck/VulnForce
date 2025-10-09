@@ -2337,7 +2337,7 @@ export const vulnerabilities: Vulnerability[] = [
       },
       references: ['https://github.com/EdOverflow/can-i-take-over-xyz'],
       tags: ['Subdomain Takeover', 'DNS'],
-    },
+  },
     {
         id: 'vuln-046',
         title_en: 'Insecure Object-Relational Mapping (ORM) Configuration',
@@ -3043,12 +3043,12 @@ La evaluación se llevó a cabo entre el **[TODO Fecha de Inicio]** y el **[TODO
     description_es: 'Plantilla genérica para informes de certificación de seguridad ofensiva (p. ej., OSCP, CPTS).',
     scope_en: 
 `## Executive Summary
-This report details the results of a penetration test performed on the [Name of the Organization, e.g., Hack The Box] enterprise network as part of the [Certification Name, e.g., CPTS] certification exam. The objective of this assessment was to identify and exploit security vulnerabilities to compromise the internal network and gain access to sensitive systems, simulating a real-world attack scenario. This report documents the attack path, findings, and provides a detailed narrative of the engagement.
+This report details the results of a penetration test performed on the [TODO Organization Name, e.g., Hack The Box] enterprise network as part of the [TODO Certification Name, e.g., CPTS] certification exam. The objective of this assessment was to identify and exploit security vulnerabilities to compromise the internal network and gain access to sensitive systems, simulating a real-world attack scenario. This report documents the attack path, findings, and provides a detailed narrative of the engagement.
 
 ---
 
 ## Scope & Methodology
-The scope of this penetration test was limited to the hosts and networks provided within the [Exam Environment Name] environment. The assessment was conducted from an external attacker's perspective, with no prior knowledge of the internal network architecture.
+The scope of this penetration test was limited to the hosts and networks provided within the [TODO Exam Environment Name] environment. The assessment was conducted from an external attacker's perspective, with no prior knowledge of the internal network architecture.
 
 ### Scope
 - **Included:** External IP addresses provided in the exam, and any hosts discovered and accessible from the initial foothold within the specified subnets.
@@ -3080,12 +3080,12 @@ The penetration test followed a structured methodology:
 `,
     scope_es:
 `## Resumen Ejecutivo
-Este informe detalla los resultados de una prueba de penetración realizada en la red empresarial de [Nombre de la Organización, p. ej., Hack The Box] como parte del examen de certificación [Nombre de la Certificación, p. ej., CPTS]. El objetivo de esta evaluación fue identificar y explotar vulnerabilidades de seguridad para comprometer la red interna y obtener acceso a sistemas sensibles, simulando un escenario de ataque del mundo real. Este informe documenta la ruta de ataque, los hallazgos y proporciona una narrativa detallada del compromiso.
+Se realizó una prueba de penetración contra la red empresarial de [TODO Nombre de la Organización, p. ej., Hack The Box] para el examen de certificación [TODO Nombre de la Certificación, p. ej., CPTS]. El objetivo de esta evaluación fue identificar e informar sobre las vulnerabilidades de seguridad que podrían ser explotadas por un atacante externo para comprometer la red interna y obtener acceso a datos o sistemas sensibles, simulando un escenario de ataque del mundo real. Este informe detalla los hallazgos de la evaluación y proporciona recomendaciones para su remediación.
 
 ---
 
 ## Alcance y Metodología
-El alcance de esta prueba de penetración se limitó a los hosts y redes proporcionados dentro del entorno de [Nombre del Entorno del Examen]. La evaluación se realizó desde la perspectiva de un atacante externo, sin conocimiento previo de la arquitectura de la red interna.
+El alcance de esta prueba de penetración se limitó a los hosts y redes proporcionados dentro del entorno de [TODO Nombre del Entorno del Examen]. La evaluación se realizó desde la perspectiva de un atacante externo, sin conocimiento previo de la arquitectura de la red interna.
 
 ### Alcance
 - **Incluido:** Direcciones IP externas proporcionadas en el examen, y cualquier host descubierto y accesible desde el punto de apoyo inicial dentro de las subredes especificadas.
@@ -3187,10 +3187,3 @@ La prueba de penetración siguió una metodología estructurada:
 `
   }
 ];
-
-
-
-
-
-
-
