@@ -1,4 +1,5 @@
 
+
 'use client';
 
 import React, { useState, useMemo, useEffect, useCallback } from 'react';
@@ -35,6 +36,7 @@ import { translateText } from '@/ai/flows/translate-text-flow';
 import { HighlightingTextarea } from '@/components/ui/highlighting-textarea';
 import { ResizableHandle, ResizablePanel, ResizablePanelGroup } from '@/components/ui/resizable';
 import { Textarea } from '@/components/ui/textarea';
+import { Combobox } from '@/components/ui/combobox';
 
 
 type SortKey = keyof Finding;
@@ -55,6 +57,42 @@ const iconOptions = [
     { value: 'Award', label: 'Award' },
 ];
 
+const languageOptions = [
+    { value: 'bash', label: 'Bash' },
+    { value: 'c', label: 'C' },
+    { value: 'cpp', label: 'C++' },
+    { value: 'csharp', label: 'C#' },
+    { value: 'css', label: 'CSS' },
+    { value: 'diff', label: 'Diff' },
+    { value: 'go', label: 'Go' },
+    { value: 'graphql', label: 'GraphQL' },
+    { value: 'ini', label: 'INI' },
+    { value: 'java', label: 'Java' },
+    { value: 'javascript', label: 'JavaScript' },
+    { value: 'json', label: 'JSON' },
+    { value: 'kotlin', label: 'Kotlin' },
+    { value: 'less', label: 'Less' },
+    { value: 'lua', label: 'Lua' },
+    { value: 'makefile', label: 'Makefile' },
+    { value: 'markdown', label: 'Markdown' },
+    { value: 'objectivec', label: 'Objective-C' },
+    { value: 'perl', label: 'Perl' },
+    { value: 'php', label: 'PHP' },
+    { value: 'python', label: 'Python' },
+    { value: 'r', label: 'R' },
+    { value: 'ruby', label: 'Ruby' },
+    { value: 'rust', label: 'Rust' },
+    { value: 'scss', label: 'SCSS' },
+    { value: 'shell', label: 'Shell' },
+    { value: 'sql', label: 'SQL' },
+    { value: 'swift', label: 'Swift' },
+    { value: 'typescript', label: 'TypeScript' },
+    { value: 'vbnet', label: 'VB.Net' },
+    { value: 'wasm', label: 'WebAssembly' },
+    { value: 'xml', label: 'XML' },
+    { value: 'yaml', label: 'YAML' },
+];
+
 const CodeBlockDialog = ({ onInsert, children }: { onInsert: (lang: string, code: string) => void, children: React.ReactNode }) => {
   const [open, setOpen] = useState(false);
   const [lang, setLang] = useState('javascript');
@@ -62,8 +100,8 @@ const CodeBlockDialog = ({ onInsert, children }: { onInsert: (lang: string, code
   const { language } = useLanguage();
 
   const t = {
-    en: { title: 'Insert Code Block', langLabel: 'Language', codeLabel: 'Code', insertBtn: 'Insert' },
-    es: { title: 'Insertar Bloque de Código', langLabel: 'Lenguaje', codeLabel: 'Código', insertBtn: 'Insertar' },
+    en: { title: 'Insert Code Block', langLabel: 'Language', codeLabel: 'Code', insertBtn: 'Insert', searchLanguage: 'Search language...' },
+    es: { title: 'Insertar Bloque de Código', langLabel: 'Lenguaje', codeLabel: 'Código', insertBtn: 'Insertar', searchLanguage: 'Buscar lenguaje...' },
   }
 
   const handleInsert = () => {
@@ -82,7 +120,13 @@ const CodeBlockDialog = ({ onInsert, children }: { onInsert: (lang: string, code
         <div className="grid gap-4 py-4">
           <div className="space-y-2">
             <Label htmlFor="lang-select">{t[language].langLabel}</Label>
-            <Input id="lang-select" value={lang} onChange={e => setLang(e.target.value)} placeholder="js, python, html..." />
+            <Combobox
+                options={languageOptions}
+                selectedValue={lang}
+                onSelect={setLang}
+                placeholder={t[language].searchLanguage}
+                searchPlaceholder={t[language].searchLanguage}
+            />
           </div>
           <div className="space-y-2">
             <Label htmlFor="code-input">{t[language].codeLabel}</Label>
@@ -331,7 +375,7 @@ const ScopeSectionEditor = ({ section, onContentChange, onDelete, view, onViewCh
                                 </ResizablePanel>
                                 <ResizableHandle />
                                 <ResizablePanel defaultSize={50}>
-                                <div className="h-full overflow-auto rounded-md p-4">
+                                <div className="h-full overflow-auto rounded-md p-4 border-l">
                                     <MarkdownPreview content={section.content} getImage={getImage} />
                                 </div>
                                 </ResizablePanel>
