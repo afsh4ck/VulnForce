@@ -451,22 +451,25 @@ export default function FindingEditorPage() {
     const hash = window.location.hash.substring(1);
     if (hash) {
       const decodedHash = decodeURIComponent(hash);
+      // Timeout to allow DOM to render
       setTimeout(() => {
-        // Find all section editor containers
-        const editorElements = document.querySelectorAll<HTMLElement>('[data-section-title]');
-        for (const el of editorElements) {
-          const title = el.getAttribute('data-section-title');
-          const titleId = title?.replace(/\s+/g, '-').replace(/[^a-zA-Z0-9-]/g, '');
-          if (titleId === decodedHash) {
-            el.scrollIntoView({ behavior: 'smooth', block: 'start' });
-            el.classList.add('flash-highlight');
-            setTimeout(() => el.classList.remove('flash-highlight'), 2000);
-            break;
+        const headings = Array.from(document.querySelectorAll('h1, h2, h3, h4, h5, h6'));
+        const targetHeading = headings.find(h => {
+          const id = h.textContent?.trim().replace(/\s+/g, '-').replace(/[^a-zA-Z0-9-]/g, '') || '';
+          return id === decodedHash;
+        });
+
+        if (targetHeading) {
+          targetHeading.scrollIntoView({ behavior: 'smooth', block: 'start' });
+          const card = targetHeading.closest('.flashable-card');
+          if (card) {
+            card.classList.add('flash-highlight');
+            setTimeout(() => card.classList.remove('flash-highlight'), 2000);
           }
         }
-      }, 500); // Increased delay to ensure DOM is fully ready
+      }, 500); 
     }
-  }, [sections]); // Rerun when sections change, which happens on initial load
+  }, [sections]);
 
 
   const handleSave = () => {
@@ -749,9 +752,8 @@ export default function FindingEditorPage() {
                 <SortableContext items={sections.map(s => s.id)} strategy={verticalListSortingStrategy}>
                   <div className="space-y-4">
                     {sections.map(section => {
-                       const sectionTitle = section.content.match(/^(#{2,4}) (.*)/)?.[2].trim() || 'untitled';
                        return (
-                          <div key={section.id} data-section-title={sectionTitle}>
+                          <div key={section.id} className="flashable-card">
                               <SortableSection
                                 section={section}
                                 isOrganizing={isOrganizing}

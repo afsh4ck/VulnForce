@@ -403,15 +403,13 @@ export default function ReportPreviewPage() {
                   <ul className="space-y-2">
                     {todos.map((todo, index) => (
                       <li key={index}>
-                        <Link href={todo.link} className="block border-l-4 border-destructive pl-4 p-2 rounded-r-md hover:bg-muted/50 transition-colors group">
+                        <Link href={todo.link} className="block border-l-4 border-accent p-3 rounded-r-md hover:bg-muted/50 transition-colors group">
                            <div className="flex justify-between items-center">
                               <div className="flex-1">
                                 <p className="font-semibold text-sm">{todo.location}</p>
                                 <p className="text-xs text-muted-foreground font-code truncate my-1">"{todo.context.replace(/\[|\]/g, '')}"</p>
                               </div>
-                              <Button variant="ghost" size="icon" className="h-8 w-8 opacity-0 group-hover:opacity-100 transition-opacity">
-                                <ArrowRight className="h-4 w-4" />
-                              </Button>
+                              <ArrowRight className="h-5 w-5 text-primary ml-4" />
                            </div>
                         </Link>
                       </li>
