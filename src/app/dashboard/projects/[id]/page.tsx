@@ -95,7 +95,7 @@ const languageOptions = [
 
 const CodeBlockDialog = ({ onInsert, children }: { onInsert: (lang: string, code: string) => void, children: React.ReactNode }) => {
   const [open, setOpen] = useState(false);
-  const [lang, setLang] = useState('javascript');
+  const [lang, setLang] = useState('bash');
   const [code, setCode] = useState('');
   const { language } = useLanguage();
 
@@ -375,7 +375,7 @@ const ScopeSectionEditor = ({ section, onContentChange, onDelete, view, onViewCh
                                 </ResizablePanel>
                                 <ResizableHandle />
                                 <ResizablePanel defaultSize={50}>
-                                <div className="h-full overflow-auto rounded-md p-4">
+                                <div className="h-full overflow-auto rounded-md p-4 border-l">
                                     <MarkdownPreview content={section.content} getImage={getImage} />
                                 </div>
                                 </ResizablePanel>
@@ -383,7 +383,7 @@ const ScopeSectionEditor = ({ section, onContentChange, onDelete, view, onViewCh
                         </div>
                     )}
                     {view === 'edit' && (
-                        <div>
+                        <div className="h-full">
                             <HighlightingTextarea
                                 ref={textareaRef}
                                 value={section.content}
@@ -1016,6 +1016,7 @@ export default function ProjectDetailsPage() {
     
 
     
+
 
 
 
