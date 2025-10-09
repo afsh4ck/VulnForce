@@ -358,7 +358,7 @@ const SectionEditor = ({ section, onContentChange, onDelete, view, onViewChange,
 const emptyVulnerability: Omit<Vulnerability, 'id' | 'remediation_en' | 'remediation_es'> = {
   title_en: '',
   title_es: '',
-  overview_en: `### Overview\n\n[TODO: Add overview in English]\n\n---\n\n### Technical Description\n\n[TODO: Add technical description in English]\n\n---\n\n### Impact\n\n[TODO: Add impact in English]\n\n---\n\n### Recommendations\n\n[TODO: Add recommendations in English]`,
+  overview_en: `### Resumen\n\n[TODO: Añadir resumen en español]\n\n---\n\n### Descripción Técnica\n\n[TODO: Añadir descripción técnica en español]\n\n---\n\n### Impacto\n\n[TODO: Añadir impacto en español]\n\n---\n\n### Recomendaciones\n\n[TODO: Añadir recomendaciones en español]`,
   overview_es: `### Resumen\n\n[TODO: Añadir resumen en español]\n\n---\n\n### Descripción Técnica\n\n[TODO: Añadir descripción técnica en español]\n\n---\n\n### Impacto\n\n[TODO: Añadir impacto en español]\n\n---\n\n### Recomendaciones\n\n[TODO: Añadir recomendaciones en español]`,
   cwe: '',
   cvss: {
@@ -405,7 +405,7 @@ export default function NewVulnerabilityPage() {
   const router = useRouter();
   const { addVulnerability, getImage } = useData();
   const [vuln, setVuln] = useState<Omit<Vulnerability, 'id' | 'remediation_en' | 'remediation_es'>>(emptyVulnerability);
-  const [references, setReferences] = useState<string[]>(['']);
+  const [references, setReferences] = useState<string[]>([]);
   const sensors = useSensors( useSensor(PointerSensor), useSensor(KeyboardSensor, { coordinateGetter: sortableKeyboardCoordinates }) );
   
   const [enSections, setEnSections] = useState<FindingSection[]>([]);
@@ -635,49 +635,47 @@ export default function NewVulnerabilityPage() {
   }, [vuln.overview_en, vuln.overview_es, parseMarkdownToSections]);
 
   const renderSectionEditors = (lang: 'en' | 'es', sections: FindingSection[], isOrganizing: boolean, setIsOrganizing: (val: boolean) => void) => (
-    <AccordionItem value={`${lang}-content`} className="border-b-0">
-       <div className="flex w-full items-center justify-between p-4 bg-muted/50 border-y">
-        <AccordionTrigger className="flex-1 text-left font-semibold p-0 hover:no-underline text-lg">
-            {lang === 'en' ? t[language].englishContent : t[language].spanishContent}
-        </AccordionTrigger>
+    <Card>
+      <CardHeader className="flex flex-row items-center justify-between">
+        <CardTitle>{lang === 'en' ? t[language].englishContent : t[language].spanishContent}</CardTitle>
         <Button variant="outline" size="sm" onClick={(e) => { e.stopPropagation(); setIsOrganizing(!isOrganizing); }}>
             <Rows className="mr-2 h-4 w-4" />
             {isOrganizing ? t[language].finishOrganizing : t[language].organizeSections}
         </Button>
-      </div>
-        <AccordionContent className="space-y-4 pt-4">
-            <DndContext sensors={sensors} collisionDetection={closestCenter} onDragEnd={(e) => handleDragEnd(e, lang)}>
-                <SortableContext items={sections.map(s => s.id)} strategy={verticalListSortingStrategy}>
-                    <div className="space-y-4">
-                        {sections.map(section => (
-                            <SortableSection
-                                key={section.id}
-                                section={section}
-                                isOrganizing={isOrganizing}
-                                onContentChange={(newContent: string) => handleSectionChange(lang, section.id, newContent)}
-                                onTitleChange={(newTitle: string) => handleTitleChange(lang, section.id, newTitle)}
-                                onDelete={() => handleDeleteSection(lang, section.id)}
-                                view={(lang === 'en' ? enSectionViews : esSectionViews)[section.id] || 'split'}
-                                onViewChange={(newView: ScopeView) => {
-                                    const updater = lang === 'en' ? setEnSectionViews : setEsSectionViews;
-                                    updater(prev => ({ ...prev, [section.id]: newView }));
-                                }}
-                                getImage={getImage}
-                            />
-                        ))}
-                    </div>
-                </SortableContext>
-            </DndContext>
-            {!isOrganizing && (
-                <div className="flex justify-center pt-4">
-                    <Button variant="outline" onClick={() => handleAddSection(lang)}>
-                        <Plus className="mr-2 h-4 w-4" />
-                        {t[language].addNewSection}
-                    </Button>
-                </div>
-            )}
-        </AccordionContent>
-    </AccordionItem>
+      </CardHeader>
+      <CardContent>
+        <DndContext sensors={sensors} collisionDetection={closestCenter} onDragEnd={(e) => handleDragEnd(e, lang)}>
+          <SortableContext items={sections.map(s => s.id)} strategy={verticalListSortingStrategy}>
+            <div className="space-y-4">
+              {sections.map(section => (
+                <SortableSection
+                  key={section.id}
+                  section={section}
+                  isOrganizing={isOrganizing}
+                  onContentChange={(newContent: string) => handleSectionChange(lang, section.id, newContent)}
+                  onTitleChange={(newTitle: string) => handleTitleChange(lang, section.id, newTitle)}
+                  onDelete={() => handleDeleteSection(lang, section.id)}
+                  view={(lang === 'en' ? enSectionViews : esSectionViews)[section.id] || 'split'}
+                  onViewChange={(newView: ScopeView) => {
+                    const updater = lang === 'en' ? setEnSectionViews : setEsSectionViews;
+                    updater(prev => ({ ...prev, [section.id]: newView }));
+                  }}
+                  getImage={getImage}
+                />
+              ))}
+            </div>
+          </SortableContext>
+        </DndContext>
+        {!isOrganizing && (
+          <div className="flex justify-center pt-4">
+            <Button variant="outline" onClick={() => handleAddSection(lang)}>
+              <Plus className="mr-2 h-4 w-4" />
+              {t[language].addNewSection}
+            </Button>
+          </div>
+        )}
+      </CardContent>
+    </Card>
   );
 
   return (
@@ -737,7 +735,13 @@ export default function NewVulnerabilityPage() {
                     </div>
                         <div className="space-y-2">
                             <Label>{t[language].referencesLabel}</Label>
-                            <div className="space-y-2">
+                            {references.length === 0 ? (
+                                <Button variant="outline" onClick={handleAddReference} className="w-full">
+                                    <Plus className="mr-2 h-4 w-4" />
+                                    {t[language].addReference}
+                                </Button>
+                            ) : (
+                                <div className="space-y-2">
                                 {references.map((ref, index) => (
                                 <div key={index} className="flex items-center gap-2">
                                     <Input
@@ -749,17 +753,19 @@ export default function NewVulnerabilityPage() {
                                     variant="ghost"
                                     size="icon"
                                     onClick={() => handleRemoveReference(index)}
-                                    className="text-destructive"
+                                    className="text-destructive hover:bg-destructive hover:text-destructive-foreground"
                                     >
                                     <Trash2 className="h-4 w-4" />
                                     </Button>
+                                    {index === references.length - 1 && (
+                                    <Button variant="ghost" size="icon" onClick={handleAddReference}>
+                                        <Plus className="h-4 w-4" />
+                                    </Button>
+                                    )}
                                 </div>
                                 ))}
-                            </div>
-                            <Button variant="outline" size="sm" onClick={handleAddReference} className="mt-2">
-                                <Plus className="mr-2 h-4 w-4" />
-                                {t[language].addReference}
-                            </Button>
+                                </div>
+                            )}
                         </div>
                 </CardContent>
             </Card>
@@ -783,7 +789,7 @@ export default function NewVulnerabilityPage() {
                     <div className="grid grid-cols-1 gap-4 md:grid-cols-4">
                         {(Object.keys(cvssOptions) as Array<keyof typeof cvssOptions>).slice(0,4).map(key => (
                              <div className="space-y-2" key={key}>
-                                <Label htmlFor={`cvss-${key}`}>{t[language][key]}</Label>
+                                <Label htmlFor={`cvss-${key}`}>{t[language][key as keyof typeof t['en']]}</Label>
                                 <Select onValueChange={(value) => handleCvssChange(key, value)} value={vuln.cvss[key]}>
                                     <SelectTrigger id={`cvss-${key}`}>
                                         <SelectValue />
@@ -798,7 +804,7 @@ export default function NewVulnerabilityPage() {
                      <div className="grid grid-cols-1 gap-4 md:grid-cols-4">
                         {(Object.keys(cvssOptions) as Array<keyof typeof cvssOptions>).slice(4).map(key => (
                              <div className="space-y-2" key={key}>
-                                <Label htmlFor={`cvss-${key}`}>{t[language][key]}</Label>
+                                <Label htmlFor={`cvss-${key}`}>{t[language][key as keyof typeof t['en']]}</Label>
                                 <Select onValueChange={(value) => handleCvssChange(key, value)} value={vuln.cvss[key]}>
                                     <SelectTrigger id={`cvss-${key}`}>
                                         <SelectValue />
@@ -813,13 +819,9 @@ export default function NewVulnerabilityPage() {
                 </CardContent>
             </Card>
 
-            <Accordion type="multiple" defaultValue={['en-content', 'es-content']} className="w-full space-y-4">
-                {renderSectionEditors('en', enSections, isEnOrganizing, setIsEnOrganizing)}
-                {renderSectionEditors('es', esSections, isEsOrganizing, setIsEsOrganizing)}
-            </Accordion>
+            {renderSectionEditors('en', enSections, isEnOrganizing, setIsEnOrganizing)}
+            {renderSectionEditors('es', esSections, isEsOrganizing, setIsEsOrganizing)}
         </div>
     </div>
   );
 }
-
-    

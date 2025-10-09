@@ -620,17 +620,15 @@ export default function VulnerabilityEditorPage() {
   };
 
   const renderSectionEditors = (lang: 'en' | 'es', sections: FindingSection[], isOrganizing: boolean, setIsOrganizing: (val: boolean) => void) => (
-    <AccordionItem value={`${lang}-content`}>
-      <div className="flex w-full items-center justify-between p-4 bg-muted/50 border-y">
-        <AccordionTrigger className="flex-1 text-left font-semibold p-0 hover:no-underline text-lg">
-          {lang === 'en' ? t[language].englishContent : t[language].spanishContent}
-        </AccordionTrigger>
+    <Card>
+      <CardHeader className="flex flex-row items-center justify-between">
+        <CardTitle>{lang === 'en' ? t[language].englishContent : t[language].spanishContent}</CardTitle>
         <Button variant="outline" size="sm" onClick={(e) => { e.stopPropagation(); setIsOrganizing(!isOrganizing); }}>
-          <Rows className="mr-2 h-4 w-4" />
-          {isOrganizing ? t[language].finishOrganizing : t[language].organizeSections}
+            <Rows className="mr-2 h-4 w-4" />
+            {isOrganizing ? t[language].finishOrganizing : t[language].organizeSections}
         </Button>
-      </div>
-      <AccordionContent className="space-y-4 pt-4">
+      </CardHeader>
+      <CardContent>
         <DndContext sensors={sensors} collisionDetection={closestCenter} onDragEnd={(e) => handleDragEnd(e, lang)}>
           <SortableContext items={sections.map(s => s.id)} strategy={verticalListSortingStrategy}>
             <div className="space-y-4">
@@ -661,8 +659,8 @@ export default function VulnerabilityEditorPage() {
             </Button>
           </div>
         )}
-      </AccordionContent>
-    </AccordionItem>
+      </CardContent>
+    </Card>
   );
 
 
@@ -726,29 +724,37 @@ export default function VulnerabilityEditorPage() {
                   </div>
                     <div className="space-y-2">
                       <Label>{t[language].referencesLabel}</Label>
-                      <div className="space-y-2">
-                        {references.map((ref, index) => (
-                          <div key={index} className="flex items-center gap-2">
-                            <Input
-                              value={ref}
-                              onChange={(e) => handleReferenceChange(index, e.target.value)}
-                              placeholder="https://example.com"
-                            />
-                            <Button
-                              variant="ghost"
-                              size="icon"
-                              onClick={() => handleRemoveReference(index)}
-                              className="text-destructive"
-                            >
-                              <Trash2 className="h-4 w-4" />
+                        {references.length === 0 ? (
+                            <Button variant="outline" onClick={handleAddReference} className="w-full">
+                                <Plus className="mr-2 h-4 w-4" />
+                                {t[language].addReference}
                             </Button>
+                        ) : (
+                          <div className="space-y-2">
+                            {references.map((ref, index) => (
+                              <div key={index} className="flex items-center gap-2">
+                                <Input
+                                  value={ref}
+                                  onChange={(e) => handleReferenceChange(index, e.target.value)}
+                                  placeholder="https://example.com"
+                                />
+                                <Button
+                                  variant="ghost"
+                                  size="icon"
+                                  onClick={() => handleRemoveReference(index)}
+                                  className="text-destructive hover:bg-destructive hover:text-destructive-foreground"
+                                >
+                                  <Trash2 className="h-4 w-4" />
+                                </Button>
+                                {index === references.length - 1 && (
+                                  <Button variant="ghost" size="icon" onClick={handleAddReference}>
+                                    <Plus className="h-4 w-4" />
+                                  </Button>
+                                )}
+                              </div>
+                            ))}
                           </div>
-                        ))}
-                      </div>
-                      <Button variant="outline" size="sm" onClick={handleAddReference} className="mt-2">
-                        <Plus className="mr-2 h-4 w-4" />
-                        {t[language].addReference}
-                      </Button>
+                        )}
                     </div>
               </CardContent>
           </Card>
@@ -801,11 +807,9 @@ export default function VulnerabilityEditorPage() {
                     </div>
               </CardContent>
           </Card>
-
-          <Accordion type="multiple" defaultValue={['en-content', 'es-content']} className="w-full space-y-4">
-            {renderSectionEditors('en', enSections, isEnOrganizing, setIsEnOrganizing)}
-            {renderSectionEditors('es', esSections, isEsOrganizing, setIsEsOrganizing)}
-          </Accordion>
+          
+          {renderSectionEditors('en', enSections, isEnOrganizing, setIsEnOrganizing)}
+          {renderSectionEditors('es', esSections, isEsOrganizing, setIsEsOrganizing)}
       </div>
     </div>
   );
