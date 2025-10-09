@@ -89,7 +89,7 @@ function DashboardNav({ children }: { children: React.ReactNode }) {
             ))}
           </SidebarMenu>
         </SidebarContent>
-         <SidebarHeader>
+         <SidebarHeader className="pb-4">
           <SidebarMenu>
             {bottomNavItems.map((item) => (
               <SidebarMenuItem key={item.href}>

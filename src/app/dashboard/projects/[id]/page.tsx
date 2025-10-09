@@ -318,24 +318,26 @@ const ScopeSectionEditor = ({ section, onContentChange, onDelete, view, onViewCh
                  <CardContent className="p-0">
                   <div className="h-full">
                     {view === 'split' ? (
-                      <ResizablePanelGroup direction="horizontal" className="min-h-[300px] rounded-lg">
-                        <ResizablePanel defaultSize={50}>
-                          <div className="h-full">
-                            <HighlightingTextarea
-                                ref={textareaRef}
-                                value={section.content}
-                                onValueChange={(newContent) => onContentChange(newContent)}
-                                onPaste={handlePaste}
-                              />
-                          </div>
-                        </ResizablePanel>
-                        <ResizableHandle withHandle />
-                        <ResizablePanel defaultSize={50}>
-                          <div className="h-full overflow-auto rounded-md border-l p-4">
-                            <MarkdownPreview content={section.content} getImage={getImage} />
-                          </div>
-                        </ResizablePanel>
-                      </ResizablePanelGroup>
+                       <div className="h-full">
+                        <ResizablePanelGroup direction="horizontal" className="min-h-[300px] rounded-lg">
+                            <ResizablePanel defaultSize={50}>
+                            <div className="h-full">
+                                <HighlightingTextarea
+                                    ref={textareaRef}
+                                    value={section.content}
+                                    onValueChange={(newContent) => onContentChange(newContent)}
+                                    onPaste={handlePaste}
+                                />
+                            </div>
+                            </ResizablePanel>
+                            <ResizableHandle withHandle />
+                            <ResizablePanel defaultSize={50}>
+                            <div className="h-full overflow-auto rounded-md border-l p-4">
+                                <MarkdownPreview content={section.content} getImage={getImage} />
+                            </div>
+                            </ResizablePanel>
+                        </ResizablePanelGroup>
+                      </div>
                     ) : (
                       <div className="grid grid-cols-1 min-h-[300px]">
                         <div className={cn(view === 'preview' && 'hidden', 'h-full')}>
