@@ -128,12 +128,8 @@ const SortableSection = ({ section, isOrganizing, ...props }: { section: Finding
     opacity: isDragging ? 0.5 : 1,
   };
   
-  const headingMatch = section.content.match(/^(#{2,4}) (.*)/);
-  const sectionTitle = headingMatch ? headingMatch[2].trim() : '';
-  const sectionId = sectionTitle.replace(/\s+/g, '-').replace(/[^a-zA-Z0-9-]/g, '');
-
   return (
-    <div ref={setNodeRef} style={style} id={sectionId}>
+    <div ref={setNodeRef} style={style}>
       <SectionEditor section={section} isOrganizing={isOrganizing} dragHandleProps={attributes} dragListeners={listeners} {...props} />
     </div>
   );
@@ -413,17 +409,14 @@ export default function FindingEditorPage() {
   const parseMarkdownToSections = useCallback((markdown: string): FindingSection[] => {
     if (!markdown) return [];
     
-    // This regex splits the text by '---' separators that are on their own line,
-    // possibly surrounded by whitespace, but not by the '<!-- section-id: ... -->' comments.
+    // This regex splits the text by '---' separators that are on their own line
     const parts = markdown.split(/\n\s*---\s*\n/);
     
     return parts
       .map((part, index) => {
-        // Remove any section-id comments from the content that will be edited
-        const cleanContent = part.replace(/<!--\s*section-id:.*?-->\n*/g, '').trim();
         return {
           id: `section-${index}-${Date.now()}`, // Generate a transient ID for the session
-          content: cleanContent
+          content: part.trim()
         };
       })
       .filter(p => p.content.trim() !== '');
@@ -457,21 +450,23 @@ export default function FindingEditorPage() {
   useEffect(() => {
     const hash = window.location.hash.substring(1);
     if (hash) {
-        const decodedHash = decodeURIComponent(hash);
-        setTimeout(() => {
-            const sections = document.querySelectorAll<HTMLElement>('[id^="finding-section-"]');
-            for (const section of sections) {
-                const titleElement = section.querySelector<HTMLInputElement>('input.font-semibold');
-                if (titleElement && titleElement.value.replace(/\s+/g, '-').replace(/[^a-zA-Z0-9-]/g, '') === decodedHash) {
-                    section.scrollIntoView({ behavior: 'smooth', block: 'start' });
-                    section.classList.add('flash-highlight');
-                    setTimeout(() => section.classList.remove('flash-highlight'), 2000);
-                    break; 
-                }
-            }
-        }, 300);
+      const decodedHash = decodeURIComponent(hash);
+      setTimeout(() => {
+        // Find all section editor containers
+        const editorElements = document.querySelectorAll<HTMLElement>('[data-section-title]');
+        for (const el of editorElements) {
+          const title = el.getAttribute('data-section-title');
+          const titleId = title?.replace(/\s+/g, '-').replace(/[^a-zA-Z0-9-]/g, '');
+          if (titleId === decodedHash) {
+            el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+            el.classList.add('flash-highlight');
+            setTimeout(() => el.classList.remove('flash-highlight'), 2000);
+            break;
+          }
+        }
+      }, 500); // Increased delay to ensure DOM is fully ready
     }
-}, [sections]);
+  }, [sections]); // Rerun when sections change, which happens on initial load
 
 
   const handleSave = () => {
@@ -653,7 +648,7 @@ export default function FindingEditorPage() {
   const vulnerabilityOptions = useMemo(() => vulnerabilities.map(v => ({
       value: v.id,
       label: getVulnTitle(v),
-  })), [vulnerabilities, projectLanguage]);
+  })), [vulnerabilities, projectLanguage, getVulnTitle]);
 
 
   const handleImport = (vulnId: string) => {
@@ -753,20 +748,23 @@ export default function FindingEditorPage() {
               <DndContext sensors={sensors} collisionDetection={closestCenter} onDragEnd={handleDragEnd}>
                 <SortableContext items={sections.map(s => s.id)} strategy={verticalListSortingStrategy}>
                   <div className="space-y-4">
-                    {sections.map(section => (
-                      <SortableSection
-                        key={section.id}
-                        id={`finding-section-${section.id}`}
-                        section={section}
-                        isOrganizing={isOrganizing}
-                        onContentChange={(newContent: string) => handleSectionContentChange(section.id, newContent)}
-                        onTitleChange={(newTitle: string) => handleSectionTitleChange(section.id, newTitle)}
-                        onDelete={() => handleDeleteSection(section.id)}
-                        view={sectionViews[section.id] || 'split'}
-                        onViewChange={(newView: ScopeView) => setSectionViews(prev => ({ ...prev, [section.id]: newView }))}
-                        getImage={getImage}
-                      />
-                    ))}
+                    {sections.map(section => {
+                       const sectionTitle = section.content.match(/^(#{2,4}) (.*)/)?.[2].trim() || 'untitled';
+                       return (
+                          <div key={section.id} data-section-title={sectionTitle}>
+                              <SortableSection
+                                section={section}
+                                isOrganizing={isOrganizing}
+                                onContentChange={(newContent: string) => handleSectionContentChange(section.id, newContent)}
+                                onTitleChange={(newTitle: string) => handleSectionTitleChange(section.id, newTitle)}
+                                onDelete={() => handleDeleteSection(section.id)}
+                                view={sectionViews[section.id] || 'split'}
+                                onViewChange={(newView: ScopeView) => setSectionViews(prev => ({ ...prev, [section.id]: newView }))}
+                                getImage={getImage}
+                              />
+                          </div>
+                       );
+                    })}
                   </div>
                 </SortableContext>
               </DndContext>

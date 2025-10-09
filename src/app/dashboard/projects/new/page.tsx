@@ -48,6 +48,7 @@ export default function NewProjectPage() {
   const [templateId, setTemplateId] = useState<string | null>(searchParams.get('template'));
   const [projectLanguage, setProjectLanguage] = useState<Project['language']>('es');
   const [icon, setIcon] = useState('FileText');
+  const [errors, setErrors] = useState<Record<string, boolean>>({});
 
   useEffect(() => {
     if (templateId) {
@@ -72,9 +73,19 @@ export default function NewProjectPage() {
     }
   }
 
+  const validateFields = () => {
+    const newErrors: Record<string, boolean> = {};
+    if (!name) newErrors.name = true;
+    if (!clientId) newErrors.clientId = true;
+    if (!scope) newErrors.scope = true;
+    if (!date?.from || !date?.to) newErrors.date = true;
+    setErrors(newErrors);
+    return Object.keys(newErrors).length === 0;
+  }
+
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    if (!name || !clientId || !scope || !date?.from || !date?.to) {
+    if (!validateFields()) {
       toast({
         variant: 'destructive',
         title: uiLanguage === 'es' ? 'Campos Incompletos' : 'Incomplete Fields',
@@ -89,8 +100,8 @@ export default function NewProjectPage() {
       scope,
       appendix,
       icon,
-      startDate: format(date.from, 'yyyy-MM-dd'),
-      endDate: format(date.to, 'yyyy-MM-dd'),
+      startDate: date!.from!,
+      endDate: date!.to!,
       status: 'In Progress' as const,
       language: projectLanguage,
     };
@@ -191,7 +202,9 @@ export default function NewProjectPage() {
              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div className="space-y-2">
                     <Label htmlFor="name">{t[uiLanguage].projectNameLabel}</Label>
-                    <Input id="name" placeholder={t[uiLanguage].projectNamePlaceholder} value={name} onChange={e => setName(e.target.value)} required />
+                    <Input id="name" placeholder={t[uiLanguage].projectNamePlaceholder} value={name} onChange={e => setName(e.target.value)} required 
+                        className={cn(errors.name && 'border-destructive')}
+                    />
                 </div>
                  <div className="space-y-2">
                     <Label htmlFor="icon">{t[uiLanguage].iconLabel}</Label>
@@ -210,7 +223,7 @@ export default function NewProjectPage() {
              <div className="space-y-2">
                 <Label htmlFor="client">{t[uiLanguage].clientLabel}</Label>
                 <Select onValueChange={setClientId} value={clientId} required>
-                    <SelectTrigger id="client">
+                    <SelectTrigger id="client" className={cn(errors.clientId && 'border-destructive')}>
                         <SelectValue placeholder={t[uiLanguage].selectClient} />
                     </SelectTrigger>
                     <SelectContent>
@@ -222,7 +235,7 @@ export default function NewProjectPage() {
             </div>
             <div className="space-y-2">
                 <Label htmlFor="scope">{t[uiLanguage].scopeLabel}</Label>
-                <Textarea id="scope" placeholder={t[uiLanguage].scopePlaceholder} className="font-code min-h-[120px]" value={scope} onChange={e => setScope(e.target.value)} required />
+                <Textarea id="scope" placeholder={t[uiLanguage].scopePlaceholder} className={cn("font-code min-h-[120px]", errors.scope && 'border-destructive')} value={scope} onChange={e => setScope(e.target.value)} required />
             </div>
             <div className="space-y-2">
                 <Label htmlFor="appendix">Appendix</Label>
@@ -237,7 +250,8 @@ export default function NewProjectPage() {
                         variant={"outline"}
                         className={cn(
                         "w-full justify-start text-left font-normal",
-                        !date && "text-muted-foreground"
+                        !date && "text-muted-foreground",
+                        errors.date && "border-destructive"
                         )}
                     >
                         <CalendarIcon className="mr-2 h-4 w-4" />

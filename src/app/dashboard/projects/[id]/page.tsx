@@ -152,12 +152,8 @@ const SortableScopeSection = ({ section, isOrganizing, ...props }: { section: Sc
     opacity: isDragging ? 0.5 : 1,
   };
   
-  const headingMatch = section.content.match(/^(#{2,4}) (.*)/);
-  const sectionTitle = headingMatch ? headingMatch[2].trim() : '';
-  const sectionId = sectionTitle.replace(/\s+/g, '-').replace(/[^a-zA-Z0-9-]/g, '');
-
   return (
-    <div ref={setNodeRef} style={style} id={sectionId}>
+    <div ref={setNodeRef} style={style}>
       <ScopeSectionEditor section={section} isOrganizing={isOrganizing} dragHandleProps={attributes} dragListeners={listeners} {...props} />
     </div>
   );
@@ -497,17 +493,14 @@ export default function ProjectDetailsPage() {
   const parseSections = useCallback((markdown: string): ScopeSection[] => {
     if (!markdown) return [];
     
-    // This regex splits the text by '---' separators that are on their own line,
-    // possibly surrounded by whitespace.
+    // This regex splits the text by '---' separators that are on their own line
     const parts = markdown.split(/\n\s*---\s*\n/);
     
     return parts
       .map((part, index) => {
-        // Remove any section-id comments from the content that will be edited
-        const cleanContent = part.replace(/<!--\s*section-id:.*?-->\n*/g, '').trim();
         return {
           id: `section-${index}-${Math.random()}`, // Generate a transient ID for the session
-          content: cleanContent
+          content: part.trim()
         };
       })
       .filter(p => p.content.trim() !== '');
@@ -546,19 +539,22 @@ export default function ProjectDetailsPage() {
     if (hash) {
       const decodedHash = decodeURIComponent(hash);
       setTimeout(() => {
-        const sections = document.querySelectorAll<HTMLElement>('[id^="scope-section-"]');
-        for (const section of sections) {
-          const titleElement = section.querySelector<HTMLInputElement>('input.font-semibold');
-          if (titleElement && titleElement.value.replace(/\s+/g, '-').replace(/[^a-zA-Z0-9-]/g, '') === decodedHash) {
-            section.scrollIntoView({ behavior: 'smooth', block: 'start' });
-            section.classList.add('flash-highlight');
-            setTimeout(() => section.classList.remove('flash-highlight'), 2000);
-            break; 
+        // Find all section editor containers
+        const editorElements = document.querySelectorAll<HTMLElement>('[data-section-title]');
+        for (const el of editorElements) {
+          const title = el.getAttribute('data-section-title');
+          const titleId = title?.replace(/\s+/g, '-').replace(/[^a-zA-Z0-9-]/g, '');
+          if (titleId === decodedHash) {
+            el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+            el.classList.add('flash-highlight');
+            setTimeout(() => el.classList.remove('flash-highlight'), 2000);
+            break;
           }
         }
-      }, 300); // A small delay to ensure the DOM is ready
+      }, 500); // Increased delay to ensure DOM is fully ready
     }
-  }, [scopeSections]);
+  }, [scopeSections]); // Rerun when scopeSections change to ensure elements are in the DOM
+
   
   // Debounced auto-save
   useEffect(() => {
@@ -837,7 +833,7 @@ export default function ProjectDetailsPage() {
       saving: "Guardando...",
       saved: "Guardado",
       editProject: "Editar Proyecto",
-      eliminarProyecto: "Eliminar Proyecto",
+      deleteProject: "Eliminar Proyecto",
       updateProject: "Actualizar Proyecto",
       confirmDeleteTitle: "¿Estás seguro?",
       confirmDeleteDesc: "Esta acción no se puede deshacer. Esto eliminará permanentemente el proyecto y todos sus hallazgos.",
@@ -1073,20 +1069,23 @@ export default function ProjectDetailsPage() {
                 <DndContext sensors={sensors} collisionDetection={closestCenter} onDragEnd={handleDragEnd}>
                   <SortableContext items={scopeSections.map(s => s.id)} strategy={verticalListSortingStrategy}>
                     <div className="space-y-4">
-                      {scopeSections.map(section => (
-                        <SortableScopeSection
-                          key={section.id}
-                          id={`scope-section-${section.id}`}
-                          section={section}
-                          isOrganizing={isOrganizing}
-                          onContentChange={(newContent: string) => handleSectionContentChange(section.id, newContent)}
-                          onTitleChange={(newTitle: string) => handleSectionTitleChange(section.id, newTitle)}
-                          onDelete={() => handleDeleteSection(section.id)}
-                          view={sectionViews[section.id] || 'split'}
-                          onViewChange={(newView: ScopeView) => setSectionViews(prev => ({ ...prev, [section.id]: newView }))}
-                          getImage={getImage}
-                        />
-                      ))}
+                      {scopeSections.map(section => {
+                        const sectionTitle = section.content.match(/^(#{2,4}) (.*)/)?.[2].trim() || 'untitled';
+                        return (
+                          <div key={section.id} data-section-title={sectionTitle}>
+                              <SortableScopeSection
+                                section={section}
+                                isOrganizing={isOrganizing}
+                                onContentChange={(newContent: string) => handleSectionContentChange(section.id, newContent)}
+                                onTitleChange={(newTitle: string) => handleSectionTitleChange(section.id, newTitle)}
+                                onDelete={() => handleDeleteSection(section.id)}
+                                view={sectionViews[section.id] || 'split'}
+                                onViewChange={(newView: ScopeView) => setSectionViews(prev => ({ ...prev, [section.id]: newView }))}
+                                getImage={getImage}
+                              />
+                          </div>
+                        )
+                      })}
                     </div>
                   </SortableContext>
                 </DndContext>

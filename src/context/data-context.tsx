@@ -11,6 +11,8 @@ import {
     vulnerabilities as initialVulnerabilities,
     projectTemplates as initialProjectTemplates,
 } from '@/lib/data';
+import { format } from 'date-fns';
+
 
 interface DataContextType {
   clients: Client[];
@@ -22,7 +24,7 @@ interface DataContextType {
   addClient: (client: Omit<Client, 'id'>) => void;
   updateClient: (client: Client) => void;
   deleteClient: (clientId: string) => void;
-  addProject: (project: Omit<Project, 'id' | 'createdAt' | 'updatedAt' | 'reportBody'> & { scope: string; appendix?: string }) => Project;
+  addProject: (project: Omit<Project, 'id' | 'createdAt' | 'updatedAt' | 'reportBody'> & { scope: string; appendix?: string, startDate: Date, endDate: Date }) => Project;
   updateProject: (project: Project) => void;
   deleteProject: (projectId: string) => void;
   addFinding: (finding: Omit<Finding, 'id' | 'createdAt' | 'updatedAt'>) => void;
@@ -96,14 +98,26 @@ export function DataProvider({ children }: { children: ReactNode }) {
     }
 
     // Project functions
-    const addProject = (project: Omit<Project, 'id' | 'createdAt' | 'updatedAt' | 'reportBody'> & { scope: string; appendix?: string }): Project => {
+    const addProject = (project: Omit<Project, 'id' | 'createdAt' | 'updatedAt' | 'reportBody'> & { scope: string; appendix?: string; startDate: Date, endDate: Date }): Project => {
         const now = new Date().toISOString();
-        const reportBody = project.appendix ? `${project.scope}\n\n---\n\n${project.appendix}` : project.scope;
+        let reportBody = project.scope;
+
+        if (project.scope) {
+          reportBody = reportBody.replace(/\[TODO Start Date\]/g, format(project.startDate, 'yyyy-MM-dd'));
+          reportBody = reportBody.replace(/\[TODO End Date\]/g, format(project.endDate, 'yyyy-MM-dd'));
+        }
+        
+        if (project.appendix) {
+            reportBody += `\n\n---\n\n${project.appendix}`;
+        }
+        
         const newProject: Project = {
             ...project,
             id: `proj-${Date.now()}`,
             icon: project.icon || 'FileText',
             reportBody,
+            startDate: format(project.startDate, 'yyyy-MM-dd'),
+            endDate: format(project.endDate, 'yyyy-MM-dd'),
             createdAt: now,
             updatedAt: now,
         };
