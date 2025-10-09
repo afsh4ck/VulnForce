@@ -4,7 +4,7 @@ import React from 'react';
 import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
 import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter';
-import { monokai } from 'react-syntax-highlighter/dist/esm/styles/prism';
+import { oneDark } from 'react-syntax-highlighter/dist/esm/styles/prism';
 import type { ImageAsset } from '@/lib/types';
 import { cn } from '@/lib/utils';
 
@@ -55,7 +55,7 @@ const CustomTableCell = ({ children, ...props }: any) => {
 export const MarkdownPreview = ({ content, getImage, isReport }: { content: string, getImage: (id: string) => ImageAsset | undefined, isReport?: boolean }) => {
 
   return (
-    <div className="prose prose-lg dark:prose-invert max-w-none">
+    <div className="prose dark:prose-invert max-w-none">
       <ReactMarkdown
         remarkPlugins={[remarkGfm]}
         components={{
@@ -93,15 +93,10 @@ export const MarkdownPreview = ({ content, getImage, isReport }: { content: stri
 
             return match ? (
               <SyntaxHighlighter
-                style={monokai}
+                style={oneDark}
                 language={match[1]}
                 PreTag="div"
-                className="rounded-md p-4"
-                customStyle={{
-                    border: 'none',
-                    padding: '1rem',
-                    backgroundColor: 'hsl(var(--card))',
-                }}
+                className="rounded-md p-4 bg-card"
                 codeTagProps={{
                     style: {
                         fontFamily: 'inherit',
