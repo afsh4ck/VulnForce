@@ -66,23 +66,24 @@ export interface Vulnerability {
   title_es: string;
   overview_en: string;
   overview_es: string;
-  technicalDescription_en: string;
-  technicalDescription_es: string;
-  affectedComponents_en: string;
-  affectedComponents_es: string;
-  impact_en: string;
-  impact_es: string;
-  recommendations_en: string;
-  recommendations_es: string;
-  details_en: string;
-  details_es: string;
-  remediation_en: Remediation;
-  remediation_es: Remediation;
   cwe: string;
   cvss: CVSS;
   severity: Severity;
   references: string[];
   tags: string[];
+  // Deprecated fields, kept for data migration. Will be removed.
+  technicalDescription_en?: string;
+  technicalDescription_es?: string;
+  affectedComponents_en?: string;
+  affectedComponents_es?: string;
+  impact_en?: string;
+  impact_es?: string;
+  recommendations_en?: string;
+  recommendations_es?: string;
+  details_en?: string;
+  details_es?: string;
+  remediation_en?: Remediation;
+  remediation_es?: Remediation;
 }
 
 export interface Report {
