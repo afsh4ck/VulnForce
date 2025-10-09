@@ -3,7 +3,6 @@
 
 import { useState, useEffect } from 'react';
 import { useParams, useRouter } from 'next/navigation';
-import { vulnerabilities as allVulnerabilities, updateVulnerability, addVulnerability } from '@/lib/data';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
@@ -22,6 +21,17 @@ import {
   AccordionTrigger,
 } from "@/components/ui/accordion"
 import { useData } from '@/context/data-context';
+import { Badge } from '@/components/ui/badge';
+
+const vulnerabilityCategories = [
+    { value: 'Web', label_en: 'Web', label_es: 'Web' },
+    { value: 'Mobile', label_en: 'Mobile', label_es: 'Móvil' },
+    { value: 'Network', label_en: 'Network', label_es: 'Red' },
+    { value: 'Infrastructure', label_en: 'Infrastructure', label_es: 'Infraestructura' },
+    { value: 'Authentication', label_en: 'Authentication', label_es: 'Autenticación' },
+    { value: 'Cryptography', label_en: 'Cryptography', label_es: 'Criptografía' },
+    { value: 'Additional', label_en: 'Additional', label_es: 'Adicionales' },
+];
 
 export default function VulnerabilityEditorPage() {
   const params = useParams();
@@ -45,6 +55,12 @@ export default function VulnerabilityEditorPage() {
   const handleInputChange = <T extends keyof Vulnerability>(field: T, value: Vulnerability[T]) => {
     if (vuln) {
       setVuln({ ...vuln, [field]: value });
+    }
+  };
+
+  const handleCategoryChange = (value: string) => {
+    if (vuln) {
+      setVuln({ ...vuln, tags: [value] });
     }
   };
 
@@ -73,15 +89,26 @@ export default function VulnerabilityEditorPage() {
     }
   };
 
+  const getSeverityVariant = (severity?: string): 'destructive' | 'high' | 'medium' | 'low' | 'secondary' => {
+    switch (severity) {
+      case 'Critical': return 'destructive';
+      case 'High': return 'high';
+      case 'Medium': return 'medium';
+      case 'Low': return 'low';
+      default: return 'secondary';
+    }
+  };
+
   const t = {
     en: {
       back: 'Back to Vulnerabilities',
       save: 'Save Changes',
-      detailsTitle: 'Vulnerability Template Details',
+      detailsTitle: 'Description',
       titleEnLabel: 'Title (English)',
       titleEsLabel: 'Title (Spanish)',
       cweLabel: 'CWE',
-      tagsLabel: 'Tags (comma-separated)',
+      categoryLabel: 'Category',
+      selectCategory: 'Select a category',
       referencesLabel: 'References (comma-separated URLs)',
       saveSuccessTitle: 'Vulnerability Saved',
       saveSuccessDescription: 'The template has been updated successfully.',
@@ -119,11 +146,12 @@ export default function VulnerabilityEditorPage() {
     es: {
       back: 'Volver a Vulnerabilidades',
       save: 'Guardar Cambios',
-      detailsTitle: 'Detalles de la Plantilla de Vulnerabilidad',
+      detailsTitle: 'Descripción',
       titleEnLabel: 'Título (Inglés)',
       titleEsLabel: 'Título (Español)',
       cweLabel: 'CWE',
-      tagsLabel: 'Etiquetas (separadas por comas)',
+      categoryLabel: 'Categoría',
+      selectCategory: 'Selecciona una categoría',
       referencesLabel: 'Referencias (URLs separadas por comas)',
       saveSuccessTitle: 'Vulnerabilidad Guardada',
       saveSuccessDescription: 'La plantilla se ha actualizado correctamente.',
@@ -227,13 +255,16 @@ export default function VulnerabilityEditorPage() {
     <div className="space-y-6">
       <header className="flex items-center justify-between">
         <div className="flex items-center gap-4">
-          <Button variant="outline" size="sm" asChild>
-            <Link href="/dashboard/vulnerabilities">
-              <ChevronLeft className="mr-2 h-4 w-4" />
-              {t[language].back}
-            </Link>
-          </Button>
-          <h1 className="font-headline text-xl font-bold">{vuln.title_en}</h1>
+            <Button variant="outline" size="icon" asChild>
+                <Link href="/dashboard/vulnerabilities">
+                    <ChevronLeft className="h-4 w-4" />
+                    <span className="sr-only">{t[language].back}</span>
+                </Link>
+            </Button>
+            <div className="flex items-center gap-2">
+                <h1 className="font-headline text-xl font-bold">{vuln.title_en}</h1>
+                {vuln.severity && <Badge variant={getSeverityVariant(vuln.severity)}>{vuln.severity}</Badge>}
+            </div>
         </div>
         <Button onClick={handleSave}><Save className="mr-2 h-4 w-4" /> {t[language].save}</Button>
       </header>
@@ -275,9 +306,20 @@ export default function VulnerabilityEditorPage() {
                                 </SelectContent>
                             </Select>
                         </div>
-                        <div className="space-y-2">
-                            <Label htmlFor="tags">{t[language].tagsLabel}</Label>
-                            <Input id="tags" value={vuln.tags.join(', ')} onChange={e => handleInputChange('tags', e.target.value.split(',').map(t => t.trim()))} />
+                         <div className="space-y-2">
+                            <Label htmlFor="category">{t[language].categoryLabel}</Label>
+                             <Select value={vuln.tags[0] || ''} onValueChange={handleCategoryChange}>
+                                <SelectTrigger id="category">
+                                    <SelectValue placeholder={t[language].selectCategory} />
+                                </SelectTrigger>
+                                <SelectContent>
+                                    {vulnerabilityCategories.map(cat => (
+                                        <SelectItem key={cat.value} value={cat.value}>
+                                            {language === 'es' ? cat.label_es : cat.label_en}
+                                        </SelectItem>
+                                    ))}
+                                </SelectContent>
+                            </Select>
                         </div>
                     </div>
                      <div className="space-y-2">
@@ -287,7 +329,7 @@ export default function VulnerabilityEditorPage() {
                 </CardContent>
             </Card>
 
-            <Accordion type="multiple" defaultValue={['en-content', 'es-content']} className="w-full">
+            <Accordion type="multiple" className="w-full">
               <AccordionItem value="en-content">
                 <AccordionTrigger className="text-lg font-semibold">{t[language].englishContent}</AccordionTrigger>
                 <AccordionContent className="space-y-4 pt-4">
