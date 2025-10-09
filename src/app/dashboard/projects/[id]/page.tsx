@@ -360,16 +360,16 @@ const ScopeSectionEditor = ({ section, onContentChange, onDelete, view, onViewCh
                 )}
                  <CardContent className="p-0">
                         {view === 'split' ? (
-                          <ResizablePanelGroup direction="horizontal" className="rounded-lg">
+                          <ResizablePanelGroup direction="horizontal" className="min-h-[300px] rounded-lg">
                               <ResizablePanel defaultSize={50}>
-                              <div className="h-full">
+                                <div className="h-full">
                                   <HighlightingTextarea
                                       ref={textareaRef}
                                       value={section.content}
                                       onValueChange={(newContent) => onContentChange(newContent)}
                                       onPaste={handlePaste}
                                   />
-                              </div>
+                                </div>
                               </ResizablePanel>
                               <ResizableHandle />
                               <ResizablePanel defaultSize={50}>
@@ -380,7 +380,7 @@ const ScopeSectionEditor = ({ section, onContentChange, onDelete, view, onViewCh
                           </ResizablePanelGroup>
                         ) : (
                         <div className="grid grid-cols-1">
-                            <div className={cn(view === 'preview' && 'hidden', 'h-full')}>
+                            <div className={cn(view === 'preview' && 'hidden')}>
                                 <HighlightingTextarea
                                     ref={textareaRef}
                                     value={section.content}
@@ -388,7 +388,7 @@ const ScopeSectionEditor = ({ section, onContentChange, onDelete, view, onViewCh
                                     onPaste={handlePaste}
                                 />
                             </div>
-                            <div className={cn(view === 'edit' && 'hidden', "rounded-md p-4 h-full overflow-auto")}>
+                            <div className={cn(view === 'edit' && 'hidden', "rounded-md p-4 min-h-[300px] overflow-auto")}>
                                 <MarkdownPreview content={section.content} getImage={getImage} />
                             </div>
                         </div>
@@ -1012,4 +1012,5 @@ export default function ProjectDetailsPage() {
     
 
     
+
 
