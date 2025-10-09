@@ -1,5 +1,3 @@
-
-
 'use client';
 
 import React, { useState, useMemo, useEffect, useCallback } from 'react';
@@ -331,7 +329,7 @@ const ScopeSectionEditor = ({ section, onContentChange, onDelete, view, onViewCh
                                 </ResizablePanel>
                                 <ResizableHandle />
                                 <ResizablePanel defaultSize={50}>
-                                <div className="h-full overflow-auto rounded-md border-l p-4">
+                                <div className="h-full overflow-auto rounded-md p-4">
                                     <MarkdownPreview content={section.content} getImage={getImage} />
                                 </div>
                                 </ResizablePanel>
