@@ -38,17 +38,6 @@ const vulnerabilityCategories = [
     { value: 'Additional', label_en: 'Additional', label_es: 'Adicionales' },
 ];
 
-const categoryMapping: { [key: string]: string[] } = {
-    Web: ['Web'],
-    Mobile: ['Mobile'],
-    Network: ['Network'],
-    Infrastructure: ['Infrastructure'],
-    Authentication: ['Authentication'],
-    Cryptography: ['Cryptography'],
-    Additional: ['Additional'],
-};
-
-
 export default function VulnerabilitiesPage() {
   const { language } = useLanguage();
   const { toast } = useToast();
@@ -84,10 +73,7 @@ export default function VulnerabilitiesPage() {
     let filtered = vulnerabilities.filter(vuln => {
       const term = searchTerm.toLowerCase();
       
-      let categoryMatch = selectedCategory === 'All';
-      if (selectedCategory !== 'All' && categoryMapping[selectedCategory]) {
-          categoryMatch = vuln.tags.some(tag => categoryMapping[selectedCategory].includes(tag));
-      }
+      const categoryMatch = selectedCategory === 'All' || vuln.tags.includes(selectedCategory);
 
       const searchMatch = vuln.title_en.toLowerCase().includes(term) ||
                           (vuln.title_es && vuln.title_es.toLowerCase().includes(term)) ||
