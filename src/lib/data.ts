@@ -127,16 +127,6 @@ Implement context-aware output encoding for all user-supplied data before it is 
 const emptyVulnBoilerplate = {
   overview_en: "[TODO: Add overview]",
   overview_es: "[TODO: Añadir resumen]",
-  technicalDescription_en: "[TODO: Add technical description]",
-  technicalDescription_es: "[TODO: Añadir descripción técnica]",
-  affectedComponents_en: "[TODO: Add affected components]",
-  affectedComponents_es: "[TODO: Añadir componentes afectados]",
-  impact_en: "[TODO: Add impact]",
-  impact_es: "[TODO: Añadir impacto]",
-  recommendations_en: "[TODO: Add recommendations]",
-  recommendations_es: "[TODO: Añadir recomendaciones]",
-  details_en: "[TODO: Add details]",
-  details_es: "[TODO: Añadir detalles]",
   remediation_en: { shortTerm: '[TODO]', mediumTerm: '[TODO]', longTerm: '[TODO]' },
   remediation_es: { shortTerm: '[TODO]', mediumTerm: '[TODO]', longTerm: '[TODO]' },
   references: [],
@@ -290,11 +280,13 @@ La evaluación seguirá una metodología estándar de pruebas de penetración de
 2.  **Escaneo Automatizado:** Uso de herramientas para identificar vulnerabilidades de bajo esfuerzo.
 3.  **Pruebas Manuales:** Pruebas en profundidad para vulnerabilidades complejas como fallos de lógica de negocio, problemas de control de acceso y ataques de inyección.
 4.  **Informe:** Documentación de hallazgos y recomendaciones de remediación.`,
-    appendix_en: `### A. Tooling
+    appendix_en: `### A. Tooling Used
+A combination of automated tools and manual techniques were used to perform this assessment.
 - **Proxy:** Burp Suite Professional
 - **Scanners:** Nessus, Nuclei
 - **Reconnaissance:** Amass, Subfinder`,
-    appendix_es: `### A. Herramientas
+    appendix_es: `### A. Herramientas Utilizadas
+Se utilizó una combinación de herramientas automatizadas y técnicas manuales para realizar esta evaluación.
 - **Proxy:** Burp Suite Professional
 - **Escáneres:** Nessus, Nuclei
 - **Reconocimiento:** Amass, Subfinder`
@@ -332,16 +324,16 @@ La evaluación seguirá una metodología estándar de pruebas de penetración de
 4.  **Explotación Manual:** Intento de explotar vulnerabilidades para obtener más acceso.
 5.  **Análisis de Active Directory:** Búsqueda de configuraciones incorrectas en Active Directory, como contraseñas débiles, oportunidades de kerberoasting y rutas de escalada de privilegios.
 6.  **Informe:** Documentación de hallazgos y recomendaciones de remediación.`,
-    appendix_en: `### A. Tooling
-- **Port Scanner:** Nmap
-- **Vulnerability Scanner:** Nessus
-- **AD Toolkit:** Impacket, BloodHound
-- **Exploitation:** Metasploit Framework`,
-    appendix_es: `### A. Herramientas
-- **Escáner de Puertos:** Nmap
-- **Escáner de Vulnerabilidades:** Nessus
-- **Kit de Herramientas AD:** Impacket, BloodHound
-- **Explotación:** Metasploit Framework`
+    appendix_en: `### A. Captured Flags
+| Host | Location | Flag Value |
+|---|---|---|
+| [TODO: HOST-01] | [TODO: /path/to/flag.txt] | [TODO: flag_value] |
+| [TODO: HOST-02] | [TODO: /path/to/flag.txt] | [TODO: flag_value] |`,
+    appendix_es: `### A. Banderas Capturadas
+| Host | Ubicación | Valor de la Bandera |
+|---|---|---|
+| [TODO: HOST-01] | [TODO: /ruta/a/bandera.txt] | [TODO: valor_bandera] |
+| [TODO: HOST-02] | [TODO: /ruta/a/bandera.txt] | [TODO: valor_bandera] |`
   },
   {
     id: 'ptpl-3',
@@ -382,16 +374,12 @@ La evaluación incluye tanto el análisis estático como el dinámico de la apli
     -   Manipulación en tiempo de ejecución con Frida.
 3.  **Pruebas de API:** Pruebas de las API de backend para vulnerabilidades web comunes (OWASP API Top 10).
 4.  **Informe:** Documentación de hallazgos y recomendaciones de remediación.`,
-    appendix_en: `### A. Tooling
-- **Proxy:** Burp Suite Professional
-- **Static Analysis:** MobSF, Jadx
-- **Dynamic Analysis:** Frida, Objection
-- **Device:** Rooted Android / Jailbroken iPhone`,
-    appendix_es: `### A. Herramientas
-- **Proxy:** Burp Suite Professional
-- **Análisis Estático:** MobSF, Jadx
-- **Análisis Dinámico:** Frida, Objection
-- **Dispositivo:** Android Rooteado / iPhone con Jailbreak`
+    appendix_en: `### A. Test Devices
+- **Android:** Google Pixel 6, Android 13 (Rooted)
+- **iOS:** iPhone 12, iOS 16.5 (Jailbroken)`,
+    appendix_es: `### A. Dispositivos de Prueba
+- **Android:** Google Pixel 6, Android 13 (Rooteado)
+- **iOS:** iPhone 12, iOS 16.5 (con Jailbreak)`
   }
 ];
 

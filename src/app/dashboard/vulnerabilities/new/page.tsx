@@ -32,7 +32,7 @@ import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, 
 import { Dialog, DialogContent, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
 import { Combobox } from '@/components/ui/combobox';
 import { getCVSS, getScore, getSeverity } from '@/lib/cvss';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs';
 
 
 const languageOptions = [
@@ -727,47 +727,47 @@ export default function NewVulnerabilityPage() {
                             </Select>
                         </div>
                     </div>
-                        <div className="space-y-2">
-                            <Label>{t[language].referencesLabel}</Label>
-                            {references.length === 0 ? (
-                                <Button variant="outline" onClick={handleAddReference} className="w-auto">
-                                    <Plus className="mr-2 h-4 w-4" />
-                                    {t[language].addReference}
+                    <div className="space-y-2">
+                        <Label>{t[language].referencesLabel}</Label>
+                        <div className="space-y-2 mt-4">
+                        {references.length === 0 ? (
+                            <Button variant="outline" onClick={handleAddReference} className="w-auto">
+                                <Plus className="mr-2 h-4 w-4" />
+                                {t[language].addReference}
+                            </Button>
+                        ) : (
+                          references.map((ref, index) => (
+                              <div key={index} className="flex items-center gap-2">
+                                <Input
+                                  value={ref}
+                                  onChange={(e) => handleReferenceChange(index, e.target.value)}
+                                  placeholder="https://example.com"
+                                />
+                                <Button
+                                  variant="ghost"
+                                  size="icon"
+                                  onClick={() => handleRemoveReference(index)}
+                                  className="text-destructive hover:bg-destructive hover:text-destructive-foreground"
+                                >
+                                  <Trash2 className="h-4 w-4" />
                                 </Button>
-                            ) : (
-                                <div className="space-y-2">
-                                {references.map((ref, index) => (
-                                <div key={index} className="flex items-center gap-2">
-                                    <Input
-                                    value={ref}
-                                    onChange={(e) => handleReferenceChange(index, e.target.value)}
-                                    placeholder="https://example.com"
-                                    />
-                                    <Button
-                                    variant="ghost"
-                                    size="icon"
-                                    onClick={() => handleRemoveReference(index)}
-                                    className="text-destructive hover:bg-destructive hover:text-destructive-foreground"
-                                    >
-                                    <Trash2 className="h-4 w-4" />
-                                    </Button>
-                                    {index === references.length - 1 && (
-                                    <Button variant="ghost" size="icon" onClick={handleAddReference}>
-                                        <Plus className="h-4 w-4" />
-                                    </Button>
-                                    )}
-                                </div>
-                                ))}
-                                </div>
-                            )}
+                                <Button variant="ghost" size="icon" onClick={handleAddReference}>
+                                    <Plus className="h-4 w-4" />
+                                </Button>
+                              </div>
+                            ))
+                        )}
                         </div>
+                    </div>
                 </CardContent>
             </Card>
 
             <Card>
-                <CardHeader className="flex flex-row items-center justify-between">
-                    <CardTitle>{t[language].cvssTitle}</CardTitle>
-                    {vuln.severity && <Badge variant={getSeverityVariant(vuln.severity)}>{vuln.severity}</Badge>}
+                <CardHeader>
+                    <div className="flex items-center gap-2">
+                        <CardTitle>{t[language].cvssTitle}</CardTitle>
+                        {vuln.severity && <Badge variant={getSeverityVariant(vuln.severity)}>{vuln.severity}</Badge>}
+                    </div>
                 </CardHeader>
                 <CardContent className="space-y-4">
                     <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
@@ -814,86 +814,94 @@ export default function NewVulnerabilityPage() {
             </Card>
 
             <Accordion type="single" collapsible className="w-full space-y-6">
-              <AccordionItem value="en-content" className="border-b-0 rounded-lg overflow-hidden bg-card border">
-                  <div className="flex w-full items-center justify-between p-4 bg-muted/50 border-b">
-                      <AccordionTrigger className="flex-1 text-left font-semibold p-0 hover:no-underline text-base">
-                          {t[language].englishContent}
-                      </AccordionTrigger>
-                      <Button variant="outline" size="sm" onClick={(e) => { e.stopPropagation(); setIsEnOrganizing(!isEnOrganizing); }}>
-                          <Rows className="mr-2 h-4 w-4" />
-                          {isEnOrganizing ? t[language].finishOrganizing : t[language].organizeSections}
-                      </Button>
-                  </div>
-                <AccordionContent className="p-4 bg-card">
-                  <DndContext sensors={sensors} collisionDetection={closestCenter} onDragEnd={(e) => handleDragEnd(e, 'en')}>
-                    <SortableContext items={enSections.map(s => s.id)} strategy={verticalListSortingStrategy}>
-                      <div className="space-y-4">
-                        {enSections.map(section => (
-                          <SortableSection
-                            key={section.id}
-                            section={section}
-                            isOrganizing={isEnOrganizing}
-                            onContentChange={(newContent: string) => handleSectionChange('en', section.id, newContent)}
-                            onTitleChange={(newTitle: string) => handleTitleChange('en', section.id, newTitle)}
-                            onDelete={() => handleDeleteSection('en', section.id)}
-                            view={enSectionViews[section.id] || 'split'}
-                            onViewChange={(newView: ScopeView) => setEnSectionViews(prev => ({ ...prev, [section.id]: newView }))}
-                            getImage={getImage}
-                          />
-                        ))}
-                      </div>
-                    </SortableContext>
-                  </DndContext>
-                  {!isEnOrganizing && (
-                    <div className="flex justify-center pt-4">
-                      <Button variant="outline" onClick={() => handleAddSection('en')}>
-                        <Plus className="mr-2 h-4 w-4" />
-                        {t[language].addNewSection}
-                      </Button>
-                    </div>
-                  )}
-                </AccordionContent>
+              <AccordionItem value="en-content" className="border-none">
+                  <Card className="bg-card">
+                     <CardHeader className="p-0">
+                        <div className="flex w-full items-center justify-between p-4">
+                          <AccordionTrigger className="flex-1 text-left font-semibold p-0 hover:no-underline text-base">
+                              {t[language].englishContent}
+                          </AccordionTrigger>
+                          <Button variant="outline" size="sm" onClick={(e) => { e.stopPropagation(); setIsEnOrganizing(!isEnOrganizing); }}>
+                              <Rows className="mr-2 h-4 w-4" />
+                              {isEnOrganizing ? t[language].finishOrganizing : t[language].organizeSections}
+                          </Button>
+                        </div>
+                      </CardHeader>
+                    <AccordionContent className="p-4 bg-card border-t rounded-b-lg">
+                      <DndContext sensors={sensors} collisionDetection={closestCenter} onDragEnd={(e) => handleDragEnd(e, 'en')}>
+                        <SortableContext items={enSections.map(s => s.id)} strategy={verticalListSortingStrategy}>
+                          <div className="space-y-4">
+                            {enSections.map(section => (
+                              <SortableSection
+                                key={section.id}
+                                section={section}
+                                isOrganizing={isEnOrganizing}
+                                onContentChange={(newContent: string) => handleSectionChange('en', section.id, newContent)}
+                                onTitleChange={(newTitle: string) => handleTitleChange('en', section.id, newTitle)}
+                                onDelete={() => handleDeleteSection('en', section.id)}
+                                view={enSectionViews[section.id] || 'split'}
+                                onViewChange={(newView: ScopeView) => setEnSectionViews(prev => ({ ...prev, [section.id]: newView }))}
+                                getImage={getImage}
+                              />
+                            ))}
+                          </div>
+                        </SortableContext>
+                      </DndContext>
+                      {!isEnOrganizing && (
+                        <div className="flex justify-center pt-4">
+                          <Button variant="outline" onClick={() => handleAddSection('en')}>
+                            <Plus className="mr-2 h-4 w-4" />
+                            {t[language].addNewSection}
+                          </Button>
+                        </div>
+                      )}
+                    </AccordionContent>
+                  </Card>
               </AccordionItem>
               
-              <AccordionItem value="es-content" className="border-b-0 rounded-lg overflow-hidden bg-card border">
-                  <div className="flex w-full items-center justify-between p-4 bg-muted/50 border-b">
-                      <AccordionTrigger className="flex-1 text-left font-semibold p-0 hover:no-underline text-base">
-                          {t[language].spanishContent}
-                      </AccordionTrigger>
-                      <Button variant="outline" size="sm" onClick={(e) => { e.stopPropagation(); setIsEsOrganizing(!isEsOrganizing); }}>
-                          <Rows className="mr-2 h-4 w-4" />
-                          {isEsOrganizing ? t[language].finishOrganizing : t[language].organizeSections}
-                      </Button>
-                  </div>
-                <AccordionContent className="p-4 bg-card">
-                    <DndContext sensors={sensors} collisionDetection={closestCenter} onDragEnd={(e) => handleDragEnd(e, 'es')}>
-                      <SortableContext items={esSections.map(s => s.id)} strategy={verticalListSortingStrategy}>
-                        <div className="space-y-4">
-                          {esSections.map(section => (
-                            <SortableSection
-                              key={section.id}
-                              section={section}
-                              isOrganizing={isEsOrganizing}
-                              onContentChange={(newContent: string) => handleSectionChange('es', section.id, newContent)}
-                              onTitleChange={(newTitle: string) => handleTitleChange('es', section.id, newTitle)}
-                              onDelete={() => handleDeleteSection('es', section.id)}
-                              view={esSectionViews[section.id] || 'split'}
-                              onViewChange={(newView: ScopeView) => setEsSectionViews(prev => ({ ...prev, [section.id]: newView }))}
-                              getImage={getImage}
-                            />
-                          ))}
+              <AccordionItem value="es-content" className="border-none">
+                 <Card className="bg-card">
+                   <CardHeader className="p-0">
+                        <div className="flex w-full items-center justify-between p-4">
+                          <AccordionTrigger className="flex-1 text-left font-semibold p-0 hover:no-underline text-base">
+                              {t[language].spanishContent}
+                          </AccordionTrigger>
+                          <Button variant="outline" size="sm" onClick={(e) => { e.stopPropagation(); setIsEsOrganizing(!isEsOrganizing); }}>
+                              <Rows className="mr-2 h-4 w-4" />
+                              {isEsOrganizing ? t[language].finishOrganizing : t[language].organizeSections}
+                          </Button>
                         </div>
-                      </SortableContext>
-                    </DndContext>
-                    {!isEsOrganizing && (
-                      <div className="flex justify-center pt-4">
-                        <Button variant="outline" onClick={() => handleAddSection('es')}>
-                          <Plus className="mr-2 h-4 w-4" />
-                          {t[language].addNewSection}
-                        </Button>
-                      </div>
-                    )}
-                </AccordionContent>
+                      </CardHeader>
+                    <AccordionContent className="p-4 bg-card border-t rounded-b-lg">
+                        <DndContext sensors={sensors} collisionDetection={closestCenter} onDragEnd={(e) => handleDragEnd(e, 'es')}>
+                          <SortableContext items={esSections.map(s => s.id)} strategy={verticalListSortingStrategy}>
+                            <div className="space-y-4">
+                              {esSections.map(section => (
+                                <SortableSection
+                                  key={section.id}
+                                  section={section}
+                                  isOrganizing={isEsOrganizing}
+                                  onContentChange={(newContent: string) => handleSectionChange('es', section.id, newContent)}
+                                  onTitleChange={(newTitle: string) => handleTitleChange('es', section.id, newTitle)}
+                                  onDelete={() => handleDeleteSection('es', section.id)}
+                                  view={esSectionViews[section.id] || 'split'}
+                                  onViewChange={(newView: ScopeView) => setEsSectionViews(prev => ({ ...prev, [section.id]: newView }))}
+                                  getImage={getImage}
+                                />
+                              ))}
+                            </div>
+                          </SortableContext>
+                        </DndContext>
+                        {!isEsOrganizing && (
+                          <div className="flex justify-center pt-4">
+                            <Button variant="outline" onClick={() => handleAddSection('es')}>
+                              <Plus className="mr-2 h-4 w-4" />
+                              {t[language].addNewSection}
+                            </Button>
+                          </div>
+                        )}
+                    </AccordionContent>
+                  </Card>
               </AccordionItem>
             </Accordion>
         </div>
