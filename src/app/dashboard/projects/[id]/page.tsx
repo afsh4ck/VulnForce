@@ -375,7 +375,7 @@ const ScopeSectionEditor = ({ section, onContentChange, onDelete, view, onViewCh
                                 </ResizablePanel>
                                 <ResizableHandle />
                                 <ResizablePanel defaultSize={50}>
-                                <div className="h-full overflow-auto rounded-md p-4 border-l">
+                                <div className="h-full overflow-auto rounded-md p-4">
                                     <MarkdownPreview content={section.content} getImage={getImage} />
                                 </div>
                                 </ResizablePanel>
@@ -1016,6 +1016,7 @@ export default function ProjectDetailsPage() {
     
 
     
+
 
 
 
