@@ -48,9 +48,8 @@ export function Combobox({ options, selectedValue, onSelect, placeholder, search
       <PopoverContent className="w-[--radix-popover-trigger-width] p-0">
         <Command>
           <CommandInput placeholder={searchPlaceholder || "Search..."} />
-          <CommandList>
             <CommandEmpty>No results found.</CommandEmpty>
-            <CommandGroup>
+            <CommandGroup className="max-h-[200px] overflow-y-auto">
               {options.map((option) => (
                 <CommandItem
                   key={option.value}
@@ -70,7 +69,6 @@ export function Combobox({ options, selectedValue, onSelect, placeholder, search
                 </CommandItem>
               ))}
             </CommandGroup>
-          </CommandList>
         </Command>
       </PopoverContent>
     </Popover>
