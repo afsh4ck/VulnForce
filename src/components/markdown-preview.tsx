@@ -6,6 +6,7 @@ import remarkGfm from 'remark-gfm';
 import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter';
 import { vscDarkPlus } from 'react-syntax-highlighter/dist/esm/styles/prism';
 import type { ImageAsset } from '@/lib/types';
+import { cn } from '@/lib/utils';
 
 const highlightTodos = (text: string) => {
     if (typeof text !== 'string') return text;
@@ -51,16 +52,16 @@ const CustomTableCell = ({ children, ...props }: any) => {
 };
 
 
-export const MarkdownPreview = ({ content, getImage }: { content: string, getImage: (id: string) => ImageAsset | undefined }) => {
+export const MarkdownPreview = ({ content, getImage, isReport }: { content: string, getImage: (id: string) => ImageAsset | undefined, isReport?: boolean }) => {
 
   return (
     <div className="prose prose-sm dark:prose-invert max-w-none">
       <ReactMarkdown
         remarkPlugins={[remarkGfm]}
         components={{
-          h1: ({ node, ...props }) => <h1 className="text-3xl font-bold mb-4 border-b pb-2 mt-12" {...props} />,
-          h2: ({ node, ...props }) => <h2 className="text-2xl font-semibold mb-3 border-b pb-2 mt-12" {...props} />,
-          h3: ({ node, ...props }) => <h3 className="text-xl font-semibold mb-3 mt-8" {...props} />,
+          h1: ({ node, ...props }) => <h1 className={cn("text-3xl font-bold mb-4 border-b pb-2", isReport && "mt-12")} {...props} />,
+          h2: ({ node, ...props }) => <h2 className={cn("text-2xl font-semibold mb-3 border-b pb-2", isReport && "mt-12")} {...props} />,
+          h3: ({ node, ...props }) => <h3 className={cn("text-xl font-semibold mb-3", isReport && "mt-8")} {...props} />,
           p: renderWithTodos('p'),
           li: renderWithTodos('li'),
           table: ({ node, ...props }) => <table className="table-auto w-full my-4 border-collapse border border-border" {...props} />,

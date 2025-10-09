@@ -269,7 +269,7 @@ export default function ReportPreviewPage() {
           <section>
             <h2 className="font-headline text-2xl font-bold border-b-2 border-primary pb-2 mb-4 mt-12">{langT.executiveSummary}</h2>
             <div className="prose prose-lg dark:prose-invert max-w-none">
-              <MarkdownPreview content={executiveSummaryContent} getImage={getImage} />
+              <MarkdownPreview content={executiveSummaryContent} getImage={getImage} isReport />
             </div>
             <div className="prose prose-lg dark:prose-invert max-w-none mt-8">
                 <h3 className="font-headline text-xl font-bold">{langT.severityTableTitle}</h3>
@@ -308,7 +308,7 @@ export default function ReportPreviewPage() {
           <section>
             <h2 className="font-headline text-2xl font-bold border-b-2 border-primary pb-2 mb-4 mt-12">{langT.scopeAndMethodology}</h2>
             <div className="prose prose-lg dark:prose-invert max-w-none">
-              <MarkdownPreview content={scopeContent} getImage={getImage} />
+              <MarkdownPreview content={scopeContent} getImage={getImage} isReport />
             </div>
           </section>
 
@@ -350,7 +350,7 @@ export default function ReportPreviewPage() {
                   <p className="font-code text-sm text-muted-foreground mb-6">CVSS: {finding.cvss.toFixed(1)}</p>
                   <Separator className="my-6" />
                   <div className="prose prose-lg dark:prose-invert max-w-none">
-                    <MarkdownPreview content={finding.markdown} getImage={getImage} />
+                    <MarkdownPreview content={finding.markdown} getImage={getImage} isReport />
                   </div>
                 </div>
               ))}
@@ -361,7 +361,7 @@ export default function ReportPreviewPage() {
              <section>
               <h2 className="font-headline text-2xl font-bold border-b-2 border-primary pb-2 mb-4 mt-12">{langT.appendix}</h2>
               <div className="prose prose-lg dark:prose-invert max-w-none">
-                <MarkdownPreview content={appendixContent} getImage={getImage} />
+                <MarkdownPreview content={appendixContent} getImage={getImage} isReport />
               </div>
             </section>
           )}
