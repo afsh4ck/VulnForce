@@ -83,3 +83,15 @@
     @apply bg-background text-foreground;
   }
 }
+
+@layer utilities {
+  @keyframes flash {
+    0% { background-color: hsl(var(--primary) / 0); }
+    25% { background-color: hsl(var(--primary) / 0.3); }
+    100% { background-color: hsl(var(--primary) / 0); }
+  }
+
+  .flash-highlight {
+    animation: flash 2s ease-out;
+  }
+}

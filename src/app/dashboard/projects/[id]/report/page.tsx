@@ -136,10 +136,11 @@ export default function ReportPreviewPage() {
     const todoRegex = /\[TODO:?.*?\]?/gi;
   
     if (project.reportBody) {
-        const sections = project.reportBody.split(/\n---\n/);
-        sections.forEach(section => {
+        const sections = project.reportBody.split(/\n\n---\n\n/);
+        sections.forEach((section, index) => {
             const headingMatch = section.match(/^(?:#+)\s(.*)/m);
             const sectionTitle = headingMatch ? headingMatch[1].trim() : langT.scope;
+            const sectionId = `section-${index}`;
             
             const scopeMatches = section.match(todoRegex);
             if (scopeMatches) {
@@ -147,7 +148,7 @@ export default function ReportPreviewPage() {
                     foundTodos.push({
                         location: sectionTitle,
                         context: match,
-                        link: `/dashboard/projects/${projectId}?tab=scope`,
+                        link: `/dashboard/projects/${projectId}?tab=scope#${sectionId}`,
                     });
                 });
             }
@@ -155,16 +156,23 @@ export default function ReportPreviewPage() {
     }
 
     projectFindings.forEach(finding => {
-      const findingMatches = finding.markdown.match(todoRegex);
-      if (findingMatches) {
-        findingMatches.forEach(match => {
-          foundTodos.push({
-            location: `${langT.finding}: ${finding.title}`,
-            context: match,
-            link: `/dashboard/projects/${projectId}/findings/${finding.id}`,
+      const findingSections = finding.markdown.split(/(?=^###\s)/gm);
+      findingSections.forEach((section, index) => {
+        const sectionId = `section-${index}`;
+        const findingMatches = section.match(todoRegex);
+        if (findingMatches) {
+          findingMatches.forEach(match => {
+            const sectionTitleMatch = section.match(/^###\s(.*)/);
+            const locationName = sectionTitleMatch ? sectionTitleMatch[1].trim() : finding.title;
+            
+            foundTodos.push({
+              location: `${langT.finding}: ${locationName}`,
+              context: match,
+              link: `/dashboard/projects/${projectId}/findings/${finding.id}#${sectionId}`,
+            });
           });
-        });
-      }
+        }
+      });
     });
   
     return foundTodos;
@@ -229,6 +237,14 @@ export default function ReportPreviewPage() {
             size: A4;
             margin: 1.5cm;
           }
+        }
+        @keyframes flash {
+            0% { background-color: transparent; }
+            25% { background-color: rgba(255, 255, 0, 0.3); }
+            100% { background-color: transparent; }
+        }
+        .flash-highlight {
+            animation: flash 2s ease-out;
         }
       `}</style>
       

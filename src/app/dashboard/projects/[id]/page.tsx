@@ -153,7 +153,7 @@ const SortableScopeSection = ({ section, isOrganizing, ...props }: { section: Sc
   };
   
   return (
-    <div ref={setNodeRef} style={style}>
+    <div ref={setNodeRef} style={style} id={section.id}>
       <ScopeSectionEditor section={section} isOrganizing={isOrganizing} dragHandleProps={attributes} dragListeners={listeners} {...props} />
     </div>
   );
@@ -521,6 +521,20 @@ export default function ProjectDetailsPage() {
     setSaveStatus('saved');
   }, [params.id, projects, router]);
   
+  useEffect(() => {
+    const hash = window.location.hash;
+    if (hash) {
+      const element = document.getElementById(hash.substring(1));
+      if (element) {
+        setTimeout(() => {
+            element.scrollIntoView({ behavior: 'smooth', block: 'start' });
+            element.classList.add('flash-highlight');
+            setTimeout(() => element.classList.remove('flash-highlight'), 2000);
+        }, 100);
+      }
+    }
+  }, []);
+
   // Debounced auto-save
   useEffect(() => {
     if (saveStatus === 'unsaved') {
@@ -1106,16 +1120,3 @@ export default function ProjectDetailsPage() {
     </div>
   );
 }
-
-
-    
-
-    
-
-
-
-
-
-
-
-

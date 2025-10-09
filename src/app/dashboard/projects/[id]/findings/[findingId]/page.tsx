@@ -2,7 +2,7 @@
 'use client';
 
 import React, { useState, useEffect, useMemo, useCallback, useRef } from 'react';
-import { useParams, useRouter } from 'next/navigation';
+import { useParams, useRouter, useSearchParams } from 'next/navigation';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
@@ -129,7 +129,7 @@ const SortableSection = ({ section, isOrganizing, ...props }: { section: Finding
   };
   
   return (
-    <div ref={setNodeRef} style={style}>
+    <div ref={setNodeRef} style={style} id={section.id}>
       <SectionEditor section={section} isOrganizing={isOrganizing} dragHandleProps={attributes} dragListeners={listeners} {...props} />
     </div>
   );
@@ -383,6 +383,7 @@ const SectionEditor = ({ section, onContentChange, onDelete, view, onViewChange,
 export default function FindingEditorPage() {
   const params = useParams();
   const router = useRouter();
+  const searchParams = useSearchParams();
   const { id: projectId, findingId } = params;
   const { toast } = useToast();
   const { language: uiLanguage } = useLanguage();
@@ -439,6 +440,20 @@ export default function FindingEditorPage() {
       setSections([]);
     }
   }, [findingId, projectId, projectLanguage, findings, router, projects, parseMarkdownToSections]);
+
+  useEffect(() => {
+    const hash = window.location.hash;
+    if (hash) {
+      const element = document.getElementById(hash.substring(1));
+      if (element) {
+        setTimeout(() => {
+            element.scrollIntoView({ behavior: 'smooth', block: 'start' });
+            element.classList.add('flash-highlight');
+            setTimeout(() => element.classList.remove('flash-highlight'), 2000);
+        }, 100);
+      }
+    }
+  }, [sections]);
 
 
   const handleSave = () => {
@@ -627,7 +642,7 @@ export default function FindingEditorPage() {
     const vuln = vulnerabilities.find(v => v.id === vulnId);
     if (vuln) {
       setTitle(getVulnTitle(vuln));
-      setSeverity(vuln.severity);
+      handleSeverityChange(vuln.severity);
       setCvss(vuln.cvss.score.toString());
       
       const langT = t[projectLanguage];
@@ -751,5 +766,3 @@ export default function FindingEditorPage() {
     </div>
   );
 }
-
-    
