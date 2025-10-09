@@ -19,7 +19,7 @@ import { Dialog, DialogTrigger, DialogContent, DialogDescription, DialogFooter, 
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from "@/componentsui/alert-dialog";
+import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from "@/components/ui/alert-dialog";
 import { useToast } from '@/hooks/use-toast';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
 import { Calendar } from '@/components/ui/calendar';
@@ -316,8 +316,8 @@ const ScopeSectionEditor = ({ section, onContentChange, onDelete, view, onViewCh
                   </div>
                 )}
                  <CardContent className="p-0">
-                  {view === 'split' ? (
-                    <div className="h-full">
+                  <div className="h-full">
+                    {view === 'split' ? (
                       <ResizablePanelGroup direction="horizontal" className="min-h-[300px] rounded-lg">
                         <ResizablePanel defaultSize={50}>
                           <div className="h-full">
@@ -336,22 +336,22 @@ const ScopeSectionEditor = ({ section, onContentChange, onDelete, view, onViewCh
                           </div>
                         </ResizablePanel>
                       </ResizablePanelGroup>
-                    </div>
-                  ) : (
-                    <div className="grid grid-cols-1 min-h-[300px]">
-                      <div className={cn(view === 'preview' && 'hidden', 'h-full')}>
-                          <HighlightingTextarea
-                              ref={textareaRef}
-                              value={section.content}
-                              onValueChange={(newContent) => onContentChange(newContent)}
-                              onPaste={handlePaste}
-                          />
+                    ) : (
+                      <div className="grid grid-cols-1 min-h-[300px]">
+                        <div className={cn(view === 'preview' && 'hidden', 'h-full')}>
+                            <HighlightingTextarea
+                                ref={textareaRef}
+                                value={section.content}
+                                onValueChange={(newContent) => onContentChange(newContent)}
+                                onPaste={handlePaste}
+                            />
+                        </div>
+                        <div className={cn(view === 'edit' && 'hidden', "rounded-md p-4 h-full overflow-auto")}>
+                            <MarkdownPreview content={section.content} getImage={getImage} />
+                        </div>
                       </div>
-                      <div className={cn(view === 'edit' && 'hidden', "rounded-md p-4 h-full overflow-auto")}>
-                          <MarkdownPreview content={section.content} getImage={getImage} />
-                      </div>
-                    </div>
-                  )}
+                    )}
+                  </div>
                 </CardContent>
             </div>
         )}
