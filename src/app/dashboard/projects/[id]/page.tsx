@@ -1,3 +1,4 @@
+
 'use client';
 
 import React, { useState, useMemo, useEffect, useCallback } from 'react';
@@ -260,7 +261,7 @@ const ScopeSectionEditor = ({ section, onContentChange, onDelete, view, onViewCh
   return (
     <>
       <Card>
-        <CardHeader className="flex h-14 flex-row items-center justify-between bg-muted/50 px-4">
+        <CardHeader className="flex flex-row items-center justify-between bg-muted/50 px-4 py-3">
             <div className="flex items-center gap-2 w-full">
               {isOrganizing && <div {...dragHandleProps} {...dragListeners} className="cursor-grab"><GripVertical className="h-5 w-5 text-muted-foreground" /></div>}
               <Input 
@@ -316,7 +317,8 @@ const ScopeSectionEditor = ({ section, onContentChange, onDelete, view, onViewCh
                  <CardContent className="p-0">
                     <div className="h-full">
                         {view === 'split' ? (
-                            <ResizablePanelGroup direction="horizontal" className="min-h-[300px] rounded-lg">
+                          <div className="min-h-[300px] h-full">
+                            <ResizablePanelGroup direction="horizontal" className="rounded-lg">
                                 <ResizablePanel defaultSize={50}>
                                 <div className="h-full">
                                     <HighlightingTextarea
@@ -334,6 +336,7 @@ const ScopeSectionEditor = ({ section, onContentChange, onDelete, view, onViewCh
                                 </div>
                                 </ResizablePanel>
                             </ResizablePanelGroup>
+                          </div>
                         ) : (
                         <div className="grid grid-cols-1 min-h-[300px]">
                             <div className={cn(view === 'preview' && 'hidden', 'h-full')}>
@@ -965,5 +968,7 @@ export default function ProjectDetailsPage() {
   );
 }
 
+
+    
 
     
