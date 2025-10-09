@@ -1,5 +1,4 @@
 
-
 'use client';
 
 import { useState, useEffect, useCallback, useMemo, useRef } from 'react';
@@ -829,7 +828,7 @@ export default function VulnerabilityEditorPage() {
               </AccordionItem>
               
               <AccordionItem value="es-content" className="border bg-card rounded-lg data-[state=closed]:border data-[state=open]:border-b-0">
-                  <AccordionTrigger className="p-4 hover:no-underline flex-1">
+                  <AccordionTrigger className="p-4 hover:no-underline flex-1" onClick={(e) => e.stopPropagation()}>
                     <div className="flex w-full items-center justify-between">
                         <div className="flex items-center gap-2">
                           <span className="font-semibold text-base">{t[language].spanishContent}</span>
@@ -863,7 +862,7 @@ export default function VulnerabilityEditorPage() {
                           </div>
                         </SortableContext>
                       </DndContext>
-                      {!isEsOrganizing && (
+                      {!isEnOrganizing && (
                         <div className="flex justify-center pt-4">
                           <Button variant="outline" onClick={() => handleAddSection('es')}>
                             <Plus className="mr-2 h-4 w-4" />
@@ -880,3 +879,6 @@ export default function VulnerabilityEditorPage() {
   );
 }
 
+
+
+    

@@ -1,5 +1,4 @@
 
-
 'use client';
 
 import { useState, useMemo, useCallback, useRef, useEffect } from 'react';
@@ -859,19 +858,19 @@ export default function NewVulnerabilityPage() {
 
             <Accordion type="multiple" className="w-full space-y-6" value={activeAccordion} onValueChange={setActiveAccordion}>
               <AccordionItem value="en-content" className="border bg-card rounded-lg data-[state=closed]:border data-[state=open]:border-b-0">
-                <AccordionTrigger className="p-4 hover:no-underline flex-1">
+                <AccordionTrigger className="p-4 hover:no-underline flex-1" onClick={(e) => e.stopPropagation()}>
                   <div className="flex w-full items-center justify-between">
                       <div className="flex items-center gap-2">
                         <span className="font-semibold text-base">{t[language].englishContent}</span>
                       </div>
                   </div>
                 </AccordionTrigger>
-                 <div className="absolute right-4 top-4 flex items-center gap-2">
-                   <Button variant="outline" size="sm" onClick={(e) => { e.stopPropagation(); handleOrganizeClick('en'); }} className="mr-2">
-                      <Rows className="mr-2 h-4 w-4" />
-                      {isEnOrganizing ? t[language].finishOrganizing : t[language].organizeSections}
-                   </Button>
-                  </div>
+                <div className="absolute right-4 top-4 flex items-center gap-2">
+                    <Button variant="outline" size="sm" onClick={(e) => { e.stopPropagation(); handleOrganizeClick('en'); }} className="mr-2">
+                        <Rows className="mr-2 h-4 w-4" />
+                        {isEnOrganizing ? t[language].finishOrganizing : t[language].organizeSections}
+                    </Button>
+                </div>
                 <AccordionContent className="p-4 pt-0">
                   <div className="space-y-4 pt-4 border-t">
                     <DndContext sensors={sensors} collisionDetection={closestCenter} onDragEnd={(e) => handleDragEnd(e, 'en')}>
@@ -906,7 +905,7 @@ export default function NewVulnerabilityPage() {
               </AccordionItem>
               
               <AccordionItem value="es-content" className="border bg-card rounded-lg data-[state=closed]:border data-[state=open]:border-b-0">
-                  <AccordionTrigger className="p-4 hover:no-underline flex-1">
+                  <AccordionTrigger className="p-4 hover:no-underline flex-1" onClick={(e) => e.stopPropagation()}>
                     <div className="flex w-full items-center justify-between">
                         <div className="flex items-center gap-2">
                           <span className="font-semibold text-base">{t[language].spanishContent}</span>
@@ -940,7 +939,7 @@ export default function NewVulnerabilityPage() {
                           </div>
                         </SortableContext>
                       </DndContext>
-                      {!isEsOrganizing && (
+                      {!isEnOrganizing && (
                         <div className="flex justify-center pt-4">
                           <Button variant="outline" onClick={() => handleAddSection('es')}>
                             <Plus className="mr-2 h-4 w-4" />
@@ -957,3 +956,6 @@ export default function NewVulnerabilityPage() {
   );
 }
 
+
+
+    
