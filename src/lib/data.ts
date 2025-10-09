@@ -221,7 +221,7 @@ export let vulnerabilities: Vulnerability[] = [
     { id: "vuln-add-073", title_en: "LDAP Injection", title_es: "Inyección LDAP", cwe: "CWE-90", severity: "High", cvss: { score: 7.8, vectorString: "CVSS:3.1/AV:N/AC:L/PR:L/UI:N/S:U/C:H/I:H/A:N", attackVector: "N", attackComplexity: "L", privilegesRequired: "L", userInteraction: "N", scope: "U", confidentiality: "H", integrity: "H", availability: "N" }, ...emptyVulnBoilerplate, tags: ["Additional"] },
     { id: "vuln-add-074", title_en: "XPath Injection", title_es: "Inyección XPath", cwe: "CWE-643", severity: "High", cvss: { score: 7.8, vectorString: "CVSS:3.1/AV:N/AC:L/PR:L/UI:N/S:U/C:H/I:H/A:N", attackVector: "N", attackComplexity: "L", privilegesRequired: "L", userInteraction: "N", scope: "U", confidentiality: "H", integrity: "H", availability: "N" }, ...emptyVulnBoilerplate, tags: ["Additional"] },
     { id: "vuln-add-075", title_en: "Server-Side Template Injection", title_es: "Inyección de plantillas del servidor", cwe: "CWE-1336", severity: "High", cvss: { score: 8.8, vectorString: "CVSS:3.1/AV:N/AC:L/PR:L/UI:N/S:U/C:H/I:H/A:H", attackVector: "N", attackComplexity: "L", privilegesRequired: "L", userInteraction: "N", scope: "U", confidentiality: "H", integrity: "H", availability: "H" }, ...emptyVulnBoilerplate, tags: ["Additional"] },
-    { id: "vuln-add-076", title_en: "Open-Source Vulnerabilities", title_es: "Vulnerabilidades en código abierto", cwe: "CWE-1104", severity: "Critical", cvss: { score: 9.2, vectorString: "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:H/I:H/A:H", attackVector: "N", attackComplexity: "L", privilegesRequired: "N", userInteraction: "N", scope: "U", confidentiality: "H", integrity: "H", availability: "H" }, ...emptyVulnBoilerplate, tags: ["Additional"] },
+    { id: "vuln-add-076", title_en: "Known Vulnerable Components", title_es: "Componentes con vulnerabilidades conocidas", cwe: "CWE-1104", severity: "Critical", cvss: { score: 9.8, vectorString: "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:H/I:H/A:H", attackVector: "N", attackComplexity: "L", privilegesRequired: "N", userInteraction: "N", scope: "U", confidentiality: "H", integrity: "H", availability: "H" }, ...emptyVulnBoilerplate, tags: ["Additional"] },
     { id: "vuln-add-077", title_en: "Insecure Direct Object References (IDOR)", title_es: "Referencias directas a objetos inseguras", cwe: "CWE-639", severity: "High", cvss: { score: 7.8, vectorString: "CVSS:3.1/AV:N/AC:L/PR:L/UI:N/S:U/C:H/I:H/A:N", attackVector: "N", attackComplexity: "L", privilegesRequired: "L", userInteraction: "N", scope: "U", confidentiality: "H", integrity: "H", availability: "N" }, ...emptyVulnBoilerplate, tags: ["Additional"] },
     { id: "vuln-add-078", title_en: "Missing Security Headers", title_es: "Cabeceras de seguridad faltantes", cwe: "CWE-693", severity: "Medium", cvss: { score: 6.5, vectorString: "CVSS:3.1/AV:N/AC:L/PR:N/UI:R/S:U/C:L/I:L/A:N", attackVector: "N", attackComplexity: "L", privilegesRequired: "N", userInteraction: "R", scope: "U", confidentiality: "L", integrity: "L", availability: "N" }, ...emptyVulnBoilerplate, tags: ["Additional"] },
     { id: "vuln-add-079", title_en: "Clickjacking", title_es: "Secuestro de clics", cwe: "CWE-1021", severity: "Medium", cvss: { score: 5.8, vectorString: "CVSS:3.1/AV:N/AC:L/PR:N/UI:R/S:U/C:L/I:L/A:N", attackVector: "N", attackComplexity: "L", privilegesRequired: "N", userInteraction: "R", scope: "U", confidentiality: "L", integrity: "L", availability: "N" }, ...emptyVulnBoilerplate, tags: ["Additional"] },
@@ -412,20 +412,12 @@ El objetivo fue realizar una prueba de penetración, identificando y explotando 
 | Hostname / IP | Location | Value |
 |---|---|---|
 | [TODO: Hostname/IP] | [TODO: e.g., /root/proof.txt] | [TODO: Flag Value] |
-
-### B. Tooling Used
-- **Network Scanner:** Nmap
-- **Web Enumeration:** Gobuster, Feroxbuster
-- **Exploitation:** Metasploit, Impacket, Custom Scripts`,
+`,
     appendix_es: `### A. Banderas Capturadas
 | Hostname / IP | Ubicación | Valor |
 |---|---|---|
 | [TODO: Hostname/IP] | [TODO: p. ej., /root/proof.txt] | [TODO: Valor de la Bandera] |
-
-### B. Herramientas Utilizadas
-- **Escáner de Red:** Nmap
-- **Enumeración Web:** Gobuster, Feroxbuster
-- **Explotación:** Metasploit, Impacket, Scripts Personalizados`
+`
   }
 ];
 
