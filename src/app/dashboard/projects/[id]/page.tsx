@@ -316,10 +316,29 @@ const ScopeSectionEditor = ({ section, onContentChange, onDelete, view, onViewCh
                   </div>
                 )}
                  <CardContent className="p-0">
-                    {view === 'split' ? (
-                        <ResizablePanelGroup direction="horizontal" className="min-h-[300px] rounded-lg">
-                            <ResizablePanel defaultSize={50}>
-                            <div className="h-full">
+                    <div className="h-full">
+                        {view === 'split' ? (
+                            <ResizablePanelGroup direction="horizontal" className="min-h-[300px] rounded-lg">
+                                <ResizablePanel defaultSize={50}>
+                                <div className="h-full">
+                                    <HighlightingTextarea
+                                        ref={textareaRef}
+                                        value={section.content}
+                                        onValueChange={(newContent) => onContentChange(newContent)}
+                                        onPaste={handlePaste}
+                                    />
+                                </div>
+                                </ResizablePanel>
+                                <ResizableHandle />
+                                <ResizablePanel defaultSize={50}>
+                                <div className="h-full overflow-auto rounded-md border-l p-4">
+                                    <MarkdownPreview content={section.content} getImage={getImage} />
+                                </div>
+                                </ResizablePanel>
+                            </ResizablePanelGroup>
+                        ) : (
+                        <div className="grid grid-cols-1 min-h-[300px]">
+                            <div className={cn(view === 'preview' && 'hidden', 'h-full')}>
                                 <HighlightingTextarea
                                     ref={textareaRef}
                                     value={section.content}
@@ -327,29 +346,12 @@ const ScopeSectionEditor = ({ section, onContentChange, onDelete, view, onViewCh
                                     onPaste={handlePaste}
                                 />
                             </div>
-                            </ResizablePanel>
-                            <ResizableHandle withHandle />
-                            <ResizablePanel defaultSize={50}>
-                            <div className="h-full overflow-auto rounded-md border-l p-4">
+                            <div className={cn(view === 'edit' && 'hidden', "rounded-md p-4 h-full overflow-auto")}>
                                 <MarkdownPreview content={section.content} getImage={getImage} />
                             </div>
-                            </ResizablePanel>
-                        </ResizablePanelGroup>
-                    ) : (
-                      <div className="grid grid-cols-1 min-h-[300px]">
-                        <div className={cn(view === 'preview' && 'hidden', 'h-full')}>
-                            <HighlightingTextarea
-                                ref={textareaRef}
-                                value={section.content}
-                                onValueChange={(newContent) => onContentChange(newContent)}
-                                onPaste={handlePaste}
-                            />
                         </div>
-                        <div className={cn(view === 'edit' && 'hidden', "rounded-md p-4 h-full overflow-auto")}>
-                            <MarkdownPreview content={section.content} getImage={getImage} />
-                        </div>
-                      </div>
-                    )}
+                        )}
+                    </div>
                  </CardContent>
             </div>
         )}
