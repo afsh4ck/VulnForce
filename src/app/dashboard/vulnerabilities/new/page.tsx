@@ -858,18 +858,20 @@ export default function NewVulnerabilityPage() {
             </Card>
 
             <Accordion type="multiple" className="w-full space-y-6" value={activeAccordion} onValueChange={setActiveAccordion}>
-              <AccordionItem value="en-content" className="border bg-card rounded-lg data-[state=closed]:border data-[state=open]:border">
-                <AccordionTrigger className="p-4 hover:no-underline data-[state=open]:border-b">
+              <AccordionItem value="en-content" className="border bg-card rounded-lg data-[state=closed]:border data-[state=open]:border-b-0">
+                <AccordionTrigger className="p-4 hover:no-underline flex-1">
                   <div className="flex w-full items-center justify-between">
                       <div className="flex items-center gap-2">
                         <span className="font-semibold text-base">{t[language].englishContent}</span>
                       </div>
-                      <Button variant="outline" size="sm" onClick={(e) => { e.stopPropagation(); handleOrganizeClick('en'); }}>
-                          <Rows className="mr-2 h-4 w-4" />
-                          {isEnOrganizing ? t[language].finishOrganizing : t[language].organizeSections}
-                      </Button>
                   </div>
                 </AccordionTrigger>
+                 <div className="absolute right-4 top-4 flex items-center gap-2">
+                   <Button variant="outline" size="sm" onClick={(e) => { e.stopPropagation(); handleOrganizeClick('en'); }} className="mr-2">
+                      <Rows className="mr-2 h-4 w-4" />
+                      {isEnOrganizing ? t[language].finishOrganizing : t[language].organizeSections}
+                   </Button>
+                  </div>
                 <AccordionContent className="p-4 pt-0">
                   <div className="space-y-4 pt-4 border-t">
                     <DndContext sensors={sensors} collisionDetection={closestCenter} onDragEnd={(e) => handleDragEnd(e, 'en')}>
@@ -903,18 +905,20 @@ export default function NewVulnerabilityPage() {
                 </AccordionContent>
               </AccordionItem>
               
-              <AccordionItem value="es-content" className="border bg-card rounded-lg data-[state=closed]:border data-[state=open]:border">
-                  <AccordionTrigger className="p-4 hover:no-underline data-[state=open]:border-b">
+              <AccordionItem value="es-content" className="border bg-card rounded-lg data-[state=closed]:border data-[state=open]:border-b-0">
+                  <AccordionTrigger className="p-4 hover:no-underline flex-1">
                     <div className="flex w-full items-center justify-between">
                         <div className="flex items-center gap-2">
                           <span className="font-semibold text-base">{t[language].spanishContent}</span>
                         </div>
-                        <Button variant="outline" size="sm" onClick={(e) => { e.stopPropagation(); handleOrganizeClick('es'); }}>
-                            <Rows className="mr-2 h-4 w-4" />
-                            {isEsOrganizing ? t[language].finishOrganizing : t[language].organizeSections}
-                        </Button>
                     </div>
                   </AccordionTrigger>
+                  <div className="absolute right-4 top-4 flex items-center gap-2">
+                    <Button variant="outline" size="sm" onClick={(e) => { e.stopPropagation(); handleOrganizeClick('es'); }} className="mr-2">
+                        <Rows className="mr-2 h-4 w-4" />
+                        {isEsOrganizing ? t[language].finishOrganizing : t[language].organizeSections}
+                    </Button>
+                  </div>
                   <AccordionContent className="p-4 pt-0">
                     <div className="space-y-4 pt-4 border-t">
                       <DndContext sensors={sensors} collisionDetection={closestCenter} onDragEnd={(e) => handleDragEnd(e, 'es')}>
@@ -952,3 +956,4 @@ export default function NewVulnerabilityPage() {
     </div>
   );
 }
+
