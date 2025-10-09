@@ -322,7 +322,7 @@ Deshabilitar el acceso anónimo y aplicar autenticación en el recurso compartid
   }
 ];
 
-export const vulnerabilities: Vulnerability[] = [
+export let vulnerabilities: Vulnerability[] = [
   {
     id: 'vuln-001',
     title_en: 'SQL Injection (SQLi)',
@@ -2648,6 +2648,54 @@ export const vulnerabilities: Vulnerability[] = [
     }
 ];
 
+vulnerabilities.push(
+  ...[
+    {
+        id: 'vuln-051',
+        title_en: 'Prototype Pollution',
+        title_es: 'Contaminación de Prototipos',
+        cwe: 'CWE-1321',
+        severity: 'High',
+        cvss: {
+            score: 8.8,
+            vectorString: 'CVSS:3.1/AV:N/AC:L/PR:N/UI:R/S:U/C:H/I:H/A:H',
+            attackVector: 'Network',
+            attackComplexity: 'Low',
+            privilegesRequired: 'None',
+            userInteraction: 'Required',
+            scope: 'Unchanged',
+            confidentiality: 'High',
+            integrity: 'High',
+            availability: 'High',
+        },
+        overview_en: 'An attacker can manipulate the `__proto__`, `constructor`, or `prototype` properties of JavaScript objects, leading to the modification of the prototype of base objects. This can result in denial of service, cross-site scripting, or even remote code execution.',
+        overview_es: 'Un atacante puede manipular las propiedades `__proto__`, `constructor` o `prototype` de los objetos de JavaScript, lo que lleva a la modificación del prototipo de los objetos base. Esto puede resultar en denegación de servicio, cross-site scripting o incluso ejecución remota de código.',
+        technicalDescription_en: 'The application insecurely merges or clones objects. An attacker can supply a malicious JSON payload (e.g., `{"__proto__": {"isAdmin": true}}`) that, when processed, modifies the `Object.prototype` to include an `isAdmin` property. Subsequently, every object in the application will inherit this property, potentially leading to privilege escalation.',
+        technicalDescription_es: 'La aplicación fusiona o clona objetos de forma insegura. Un atacante puede suministrar una carga útil JSON maliciosa (p. ej., `{"__proto__": {"isAdmin": true}}`) que, al procesarse, modifica el `Object.prototype` para incluir una propiedad `isAdmin`. Posteriormente, cada objeto en la aplicación heredará esta propiedad, lo que podría conducir a una escalada de privilegios.',
+        affectedComponents_en: '[TODO Specify the vulnerable code, often related to object merging or query parameter parsing libraries.]',
+        affectedComponents_es: '[TODO Especificar el código vulnerable, a menudo relacionado con la fusión de objetos o las librerías de análisis de parámetros de consulta.]',
+        impact_en: 'Prototype pollution can have widespread and unpredictable consequences, ranging from denial of service to remote code execution, depending on the application logic and the properties that are polluted.',
+        impact_es: 'La contaminación de prototipos puede tener consecuencias generalizadas e impredecibles, que van desde la denegación de servicio hasta la ejecución remota de código, dependiendo de la lógica de la aplicación y las propiedades que se contaminan.',
+        recommendations_en: 'Sanitize user input to reject keys named `__proto__`, `constructor`, or `prototype`. Use `Object.create(null)` to create objects that do not have a prototype. Use secure object merging libraries and keep all dependencies up to date.',
+        recommendations_es: 'Sanitizar la entrada del usuario para rechazar claves llamadas `__proto__`, `constructor` o `prototype`. Usar `Object.create(null)` para crear objetos que no tengan un prototipo. Usar librerías seguras de fusión de objetos y mantener todas las dependencias actualizadas.',
+        details_en: '[TODO Provide a PoC payload and demonstrate its effect on the application.]',
+        details_es: '[TODO Proporcionar una carga útil de PoC y demostrar su efecto en la aplicación.]',
+        remediation_en: {
+            shortTerm: 'Implement input validation to block any payloads containing `__proto__`, `constructor`, or `prototype` keys.',
+            mediumTerm: 'Update all libraries and frameworks to their latest versions, as many common libraries have been patched for this vulnerability.',
+            longTerm: 'Use `Object.freeze(Object.prototype)` at the start of the application to prevent any modifications to the base object prototype.',
+        },
+        remediation_es: {
+            shortTerm: 'Implementar la validación de entrada para bloquear cualquier carga útil que contenga las claves `__proto__`, `constructor` o `prototype`.',
+            mediumTerm: 'Actualizar todas las librerías y frameworks a sus últimas versiones, ya que muchas librerías comunes han sido parcheadas para esta vulnerabilidad.',
+            longTerm: 'Usar `Object.freeze(Object.prototype)` al inicio de la aplicación para evitar cualquier modificación al prototipo del objeto base.',
+        },
+        references: ['https://portswigger.net/web-security/prototype-pollution'],
+        tags: ['Prototype Pollution', 'JavaScript'],
+    }
+  ]
+);
+
 export const projectTemplates: ProjectTemplate[] = [
   {
     id: 'template-1',
@@ -3266,7 +3314,7 @@ La evaluación se llevó a cabo entre el **[TODO Fecha de Inicio]** y el **[TODO
 `<!-- section-id: cpts-template-en-1 -->
 
 ## Executive Summary
-This report details the results of a penetration test performed on the [TODO Organization Name, e.g., Hack The Box] enterprise network as part of the [TODO Certification Name, e.g., CPTS] certification exam. The objective of this assessment was to identify and exploit security vulnerabilities to compromise the internal network and gain access to sensitive systems, simulating a real-world attack scenario. This report documents the attack path, findings, and provides a detailed narrative of the engagement.
+This report details the results of a penetration test performed on the [TODO Organization Name] enterprise network as part of the [TODO Certification Name] certification exam. The objective of this assessment was to identify and exploit security vulnerabilities to compromise the internal network and gain access to sensitive systems, simulating a real-world attack scenario. This report documents the attack path, findings, and provides a detailed narrative of the engagement.
 
 ---
 
@@ -3311,7 +3359,7 @@ The penetration test followed a structured methodology:
 `<!-- section-id: cpts-template-es-1 -->
 
 ## Resumen Ejecutivo
-Se realizó una prueba de penetración contra la red empresarial de [TODO Nombre de la Organización, p. ej., Hack The Box] para el examen de certificación [TODO Nombre de la Certificación, p. ej., CPTS]. El objetivo de esta evaluación fue identificar e informar sobre las vulnerabilidades de seguridad que podrían ser explotadas por un atacante externo para comprometer la red interna y obtener acceso a datos o sistemas sensibles, simulando un escenario de ataque del mundo real. Este informe detalla los hallazgos de la evaluación y proporciona recomendaciones para su remediación.
+Se realizó una prueba de penetración contra la red empresarial de [TODO Nombre de la Organización] para el examen de certificación [TODO Nombre de la Certificación]. El objetivo de esta evaluación fue identificar e informar sobre las vulnerabilidades de seguridad que podrían ser explotadas por un atacante externo para comprometer la red interna y obtener acceso a datos o sistemas sensibles, simulando un escenario de ataque del mundo real. Este informe detalla los hallazgos de la evaluación y proporciona recomendaciones para su remediación.
 
 ---
 

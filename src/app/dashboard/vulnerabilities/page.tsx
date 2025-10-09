@@ -1,4 +1,5 @@
 
+
 'use client';
 
 import React, { useState, useMemo } from 'react';
@@ -27,7 +28,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 type SortKey = keyof Vulnerability | 'cvssScore';
 
 const vulnerabilityCategories = [
-    { value: 'All', label_en: 'All Categories', label_es: 'Todas las Categorías' },
+    { value: 'All', label_en: 'All', label_es: 'Todo' },
     { value: 'Web', label_en: 'Web', label_es: 'Web' },
     { value: 'Mobile', label_en: 'Mobile', label_es: 'Móvil' },
     { value: 'Network', label_en: 'Network', label_es: 'Red' },
@@ -194,7 +195,7 @@ export default function VulnerabilitiesPage() {
                 />
             </div>
             <Select value={selectedCategory} onValueChange={setSelectedCategory}>
-                <SelectTrigger className="w-[180px]">
+                <SelectTrigger className="w-auto">
                     <SelectValue placeholder="Select a category" />
                 </SelectTrigger>
                 <SelectContent>
