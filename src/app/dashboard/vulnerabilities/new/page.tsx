@@ -358,18 +358,8 @@ const SectionEditor = ({ section, onContentChange, onDelete, view, onViewChange,
 const emptyVulnerability: Omit<Vulnerability, 'id' | 'remediation_en' | 'remediation_es'> = {
   title_en: '',
   title_es: '',
-  overview_en: '### Overview\n\n[TODO: Add overview]',
-  overview_es: '### Resumen\n\n[TODO: Añadir resumen]',
-  technicalDescription_en: '',
-  technicalDescription_es: '',
-  affectedComponents_en: '',
-  affectedComponents_es: '',
-  impact_en: '',
-  impact_es: '',
-  recommendations_en: '',
-  recommendations_es: '',
-  details_en: '',
-  details_es: '',
+  overview_en: `### Overview\n\n[TODO: Add overview in English]\n\n---\n\n### Technical Description\n\n[TODO: Add technical description in English]\n\n---\n\n### Impact\n\n[TODO: Add impact in English]\n\n---\n\n### Recommendations\n\n[TODO: Add recommendations in English]`,
+  overview_es: `### Resumen\n\n[TODO: Añadir resumen en español]\n\n---\n\n### Descripción Técnica\n\n[TODO: Añadir descripción técnica en español]\n\n---\n\n### Impacto\n\n[TODO: Añadir impacto en español]\n\n---\n\n### Recomendaciones\n\n[TODO: Añadir recomendaciones en español]`,
   cwe: '',
   cvss: {
     score: 0,
@@ -415,6 +405,7 @@ export default function NewVulnerabilityPage() {
   const router = useRouter();
   const { addVulnerability, getImage } = useData();
   const [vuln, setVuln] = useState<Omit<Vulnerability, 'id' | 'remediation_en' | 'remediation_es'>>(emptyVulnerability);
+  const [references, setReferences] = useState<string[]>(['']);
   const sensors = useSensors( useSensor(PointerSensor), useSensor(KeyboardSensor, { coordinateGetter: sortableKeyboardCoordinates }) );
   
   const [enSections, setEnSections] = useState<FindingSection[]>([]);
@@ -436,7 +427,8 @@ export default function NewVulnerabilityPage() {
       cweLabel: 'CWE',
       categoryLabel: 'Category',
       selectCategory: 'Select a category',
-      referencesLabel: 'References (comma-separated URLs)',
+      referencesLabel: 'References',
+      addReference: 'Add Reference',
       saveSuccessTitle: 'Vulnerability Created',
       saveSuccessDescription: 'The new template has been added to the database.',
       englishContent: 'English Content',
@@ -465,7 +457,7 @@ export default function NewVulnerabilityPage() {
       finishOrganizing: 'Finish Organizing',
     },
     es: {
-      back: 'Back to Vulnerabilities',
+      back: 'Volver a Vulnerabilidades',
       save: 'Crear Vulnerabilidad',
       title: 'Nueva Plantilla de Vulnerabilidad',
       description: 'Crea una nueva plantilla de vulnerabilidad reutilizable para la base de datos.',
@@ -475,7 +467,8 @@ export default function NewVulnerabilityPage() {
       cweLabel: 'CWE',
       categoryLabel: 'Categoría',
       selectCategory: 'Selecciona una categoría',
-      referencesLabel: 'Referencias (URLs separadas por comas)',
+      referencesLabel: 'Referencias',
+      addReference: 'Añadir Referencia',
       saveSuccessTitle: 'Vulnerabilidad Creada',
       saveSuccessDescription: 'La nueva plantilla ha sido añadida a la base de datos.',
       englishContent: 'Contenido en Inglés',
@@ -544,8 +537,9 @@ export default function NewVulnerabilityPage() {
         ...vuln,
         overview_en: fullEnContent,
         overview_es: fullEsContent,
+        references: references.filter(ref => ref.trim() !== ''),
         remediation_en: { shortTerm: '[TODO]', mediumTerm: '[TODO]', longTerm: '[TODO]' },
-        remediation_es: { shortTerm: '[TODO]', mediumTerm: '[TODO]', longTerm: '[TODO]' },
+        remediation_es: { shortTerm: '[TODO]', mediumTerm: '[TODO]' ,longTerm: '[TODO]' },
     };
 
     addVulnerability(newVuln);
@@ -605,6 +599,21 @@ export default function NewVulnerabilityPage() {
     }
   };
 
+  const handleReferenceChange = (index: number, value: string) => {
+    const newReferences = [...references];
+    newReferences[index] = value;
+    setReferences(newReferences);
+  };
+
+  const handleAddReference = () => {
+    setReferences([...references, '']);
+  };
+
+  const handleRemoveReference = (index: number) => {
+    const newReferences = references.filter((_, i) => i !== index);
+    setReferences(newReferences);
+  };
+
 
   const getSeverityVariant = (severity?: string): 'destructive' | 'high' | 'medium' | 'low' | 'secondary' => {
     switch (severity) {
@@ -627,7 +636,7 @@ export default function NewVulnerabilityPage() {
 
   const renderSectionEditors = (lang: 'en' | 'es', sections: FindingSection[], isOrganizing: boolean, setIsOrganizing: (val: boolean) => void) => (
     <AccordionItem value={`${lang}-content`} className="border-b-0">
-      <div className="flex w-full items-center justify-between p-4 bg-muted/50 border-y">
+       <div className="flex w-full items-center justify-between p-4 bg-muted/50 border-y">
         <AccordionTrigger className="flex-1 text-left font-semibold p-0 hover:no-underline text-lg">
             {lang === 'en' ? t[language].englishContent : t[language].spanishContent}
         </AccordionTrigger>
@@ -727,15 +736,38 @@ export default function NewVulnerabilityPage() {
                         </div>
                     </div>
                         <div className="space-y-2">
-                        <Label htmlFor="references">{t[language].referencesLabel}</Label>
-                        <Input id="references" value={vuln.references.join(', ')} onChange={e => handleInputChange('references', e.target.value.split(',').map(r => r.trim()))} />
-                    </div>
+                            <Label>{t[language].referencesLabel}</Label>
+                            <div className="space-y-2">
+                                {references.map((ref, index) => (
+                                <div key={index} className="flex items-center gap-2">
+                                    <Input
+                                    value={ref}
+                                    onChange={(e) => handleReferenceChange(index, e.target.value)}
+                                    placeholder="https://example.com"
+                                    />
+                                    <Button
+                                    variant="ghost"
+                                    size="icon"
+                                    onClick={() => handleRemoveReference(index)}
+                                    className="text-destructive"
+                                    >
+                                    <Trash2 className="h-4 w-4" />
+                                    </Button>
+                                </div>
+                                ))}
+                            </div>
+                            <Button variant="outline" size="sm" onClick={handleAddReference} className="mt-2">
+                                <Plus className="mr-2 h-4 w-4" />
+                                {t[language].addReference}
+                            </Button>
+                        </div>
                 </CardContent>
             </Card>
 
             <Card>
-                <CardHeader>
+                <CardHeader className="flex flex-row items-center justify-between">
                     <CardTitle>{t[language].cvssTitle}</CardTitle>
+                    {vuln.severity && <Badge variant={getSeverityVariant(vuln.severity)}>{vuln.severity}</Badge>}
                 </CardHeader>
                 <CardContent className="space-y-4">
                     <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
@@ -789,3 +821,5 @@ export default function NewVulnerabilityPage() {
     </div>
   );
 }
+
+    

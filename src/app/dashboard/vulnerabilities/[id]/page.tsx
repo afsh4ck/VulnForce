@@ -386,6 +386,7 @@ export default function VulnerabilityEditorPage() {
   const sensors = useSensors( useSensor(PointerSensor), useSensor(KeyboardSensor, { coordinateGetter: sortableKeyboardCoordinates }) );
 
   const [vuln, setVuln] = useState<Vulnerability | null>(null);
+  const [references, setReferences] = useState<string[]>([]);
 
   const [enSections, setEnSections] = useState<FindingSection[]>([]);
   const [esSections, setEsSections] = useState<FindingSection[]>([]);
@@ -404,7 +405,8 @@ export default function VulnerabilityEditorPage() {
       cweLabel: 'CWE',
       categoryLabel: 'Category',
       selectCategory: 'Select a category',
-      referencesLabel: 'References (comma-separated URLs)',
+      referencesLabel: 'References',
+      addReference: 'Add Reference',
       saveSuccessTitle: 'Vulnerability Saved',
       saveSuccessDescription: 'The template has been updated successfully.',
       englishContent: 'English Content',
@@ -433,7 +435,7 @@ export default function VulnerabilityEditorPage() {
       finishOrganizing: 'Finish Organizing',
     },
     es: {
-      back: 'Back to Vulnerabilities',
+      back: 'Volver a Vulnerabilidades',
       save: 'Guardar Cambios',
       detailsTitle: 'Descripción',
       titleEnLabel: 'Título (Inglés)',
@@ -441,7 +443,8 @@ export default function VulnerabilityEditorPage() {
       cweLabel: 'CWE',
       categoryLabel: 'Categoría',
       selectCategory: 'Selecciona una categoría',
-      referencesLabel: 'Referencias (URLs separadas por comas)',
+      referencesLabel: 'Referencias',
+      addReference: 'Añadir Referencia',
       saveSuccessTitle: 'Vulnerabilidad Guardada',
       saveSuccessDescription: 'La plantilla se ha actualizado correctamente.',
       englishContent: 'Contenido en Inglés',
@@ -483,9 +486,11 @@ export default function VulnerabilityEditorPage() {
   useEffect(() => {
     const vulnerability = vulnerabilities.find(v => v.id === id);
     if (vulnerability) {
-      setVuln(JSON.parse(JSON.stringify(vulnerability)));
-      const initialEnSections = parseMarkdownToSections(vulnerability.overview_en);
-      const initialEsSections = parseMarkdownToSections(vulnerability.overview_es);
+      const vulnCopy = JSON.parse(JSON.stringify(vulnerability));
+      setVuln(vulnCopy);
+      setReferences(vulnCopy.references || []);
+      const initialEnSections = parseMarkdownToSections(vulnCopy.overview_en);
+      const initialEsSections = parseMarkdownToSections(vulnCopy.overview_es);
       setEnSections(initialEnSections);
       setEsSections(initialEsSections);
       setEnSectionViews(initialEnSections.reduce((acc, sec) => ({ ...acc, [sec.id]: 'split' }), {}));
@@ -529,6 +534,7 @@ export default function VulnerabilityEditorPage() {
             ...vuln,
             overview_en: fullEnContent,
             overview_es: fullEsContent,
+            references: references,
         };
         
         updateVulnerability(updatedVuln);
@@ -596,6 +602,21 @@ export default function VulnerabilityEditorPage() {
             return arrayMove(items, oldIndex, newIndex);
         });
     }
+  };
+
+  const handleReferenceChange = (index: number, value: string) => {
+    const newReferences = [...references];
+    newReferences[index] = value;
+    setReferences(newReferences);
+  };
+
+  const handleAddReference = () => {
+    setReferences([...references, '']);
+  };
+
+  const handleRemoveReference = (index: number) => {
+    const newReferences = references.filter((_, i) => i !== index);
+    setReferences(newReferences);
   };
 
   const renderSectionEditors = (lang: 'en' | 'es', sections: FindingSection[], isOrganizing: boolean, setIsOrganizing: (val: boolean) => void) => (
@@ -704,16 +725,39 @@ export default function VulnerabilityEditorPage() {
                       </div>
                   </div>
                     <div className="space-y-2">
-                      <Label htmlFor="references">{t[language].referencesLabel}</Label>
-                      <Input id="references" value={vuln.references.join(', ')} onChange={e => handleInputChange('references', e.target.value.split(',').map(r => r.trim()))} />
-                  </div>
+                      <Label>{t[language].referencesLabel}</Label>
+                      <div className="space-y-2">
+                        {references.map((ref, index) => (
+                          <div key={index} className="flex items-center gap-2">
+                            <Input
+                              value={ref}
+                              onChange={(e) => handleReferenceChange(index, e.target.value)}
+                              placeholder="https://example.com"
+                            />
+                            <Button
+                              variant="ghost"
+                              size="icon"
+                              onClick={() => handleRemoveReference(index)}
+                              className="text-destructive"
+                            >
+                              <Trash2 className="h-4 w-4" />
+                            </Button>
+                          </div>
+                        ))}
+                      </div>
+                      <Button variant="outline" size="sm" onClick={handleAddReference} className="mt-2">
+                        <Plus className="mr-2 h-4 w-4" />
+                        {t[language].addReference}
+                      </Button>
+                    </div>
               </CardContent>
           </Card>
           
           <Card>
-              <CardHeader>
-                  <CardTitle>{t[language].cvssTitle}</CardTitle>
-              </CardHeader>
+            <CardHeader className="flex flex-row items-center justify-between">
+                <CardTitle>{t[language].cvssTitle}</CardTitle>
+                {vuln.severity && <Badge variant={getSeverityVariant(vuln.severity)}>{vuln.severity}</Badge>}
+            </CardHeader>
               <CardContent className="space-y-4">
                   <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
                     <div className="space-y-2">
@@ -766,3 +810,5 @@ export default function VulnerabilityEditorPage() {
     </div>
   );
 }
+
+    
