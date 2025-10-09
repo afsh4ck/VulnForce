@@ -2645,11 +2645,7 @@ export let vulnerabilities: Vulnerability[] = [
         },
         references: ['https://portswigger.net/web-security/race-conditions'],
         tags: ['Race Condition', 'Business Logic'],
-    }
-];
-
-vulnerabilities.push(
-  ...[
+    },
     {
         id: 'vuln-051',
         title_en: 'Prototype Pollution',
@@ -2693,8 +2689,7 @@ vulnerabilities.push(
         references: ['https://portswigger.net/web-security/prototype-pollution'],
         tags: ['Prototype Pollution', 'JavaScript'],
     }
-  ]
-);
+];
 
 export const projectTemplates: ProjectTemplate[] = [
   {
