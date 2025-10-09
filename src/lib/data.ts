@@ -3521,12 +3521,3 @@ export const addVulnerability = (newVuln: Omit<Vulnerability, 'id'>) => {
   const newId = `vuln-${Date.now()}`;
   vulnerabilities.push({ id: newId, ...newVuln });
 };
-
-```
-- src/lib/templates.ts:
-```ts
-// This file is deprecated and will be removed in a future update.
-// Project templates are now managed through the DataContext.
-import type { ProjectTemplate } from './types';
-export const projectTemplates: ProjectTemplate[] = [];
-```
