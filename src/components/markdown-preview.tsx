@@ -4,7 +4,7 @@ import React from 'react';
 import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
 import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter';
-import { oneDark } from 'react-syntax-highlighter/dist/esm/styles/prism';
+import { vscDarkPlus } from 'react-syntax-highlighter/dist/esm/styles/prism';
 import type { ImageAsset } from '@/lib/types';
 import { cn } from '@/lib/utils';
 
@@ -93,7 +93,7 @@ export const MarkdownPreview = ({ content, getImage, isReport }: { content: stri
 
             return match ? (
               <SyntaxHighlighter
-                style={oneDark}
+                style={vscDarkPlus}
                 language={match[1]}
                 PreTag="div"
                 className="rounded-md p-4 bg-card"
