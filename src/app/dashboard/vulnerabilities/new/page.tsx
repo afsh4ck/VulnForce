@@ -237,7 +237,7 @@ const SectionEditor = ({ section, onContentChange, onDelete, view, onViewChange,
   };
   
   const handleInsertCode = (lang: string, code: string) => {
-    const codeBlock = `\`\`\`${lang}\n${code}\n\`\`\``;
+    const codeBlock = '```' + lang + '\n' + code + '\n' + '```';
     const textarea = textareaRef.current;
     if (!textarea) return;
 
@@ -455,6 +455,7 @@ export default function NewVulnerabilityPage() {
   const [isEnOrganizing, setIsEnOrganizing] = useState(false);
   const [isEsOrganizing, setIsEsOrganizing] = useState(false);
   const [activeAccordion, setActiveAccordion] = useState<string | undefined>();
+  const [errors, setErrors] = useState<Record<string, boolean>>({});
 
   const t = {
     en: {
@@ -497,6 +498,8 @@ export default function NewVulnerabilityPage() {
       addNewSection: 'Add New Section',
       organizeSections: 'Organize Sections',
       finishOrganizing: 'Finish Organizing',
+      validationErrorTitle: 'Required Fields Missing',
+      validationErrorDescription: 'Please fill in the English title, Spanish title, and category.',
     },
     es: {
       back: 'Volver a Vulnerabilidades',
@@ -538,6 +541,8 @@ export default function NewVulnerabilityPage() {
       addNewSection: 'Añadir Nueva Sección',
       organizeSections: 'Organizar Secciones',
       finishOrganizing: 'Finalizar Organización',
+      validationErrorTitle: 'Faltan Campos Obligatorios',
+      validationErrorDescription: 'Por favor, rellena el título en inglés, el título en español y la categoría.',
     }
   };
 
@@ -572,7 +577,25 @@ export default function NewVulnerabilityPage() {
     });
   }, []);
   
+  const validateFields = () => {
+    const newErrors: Record<string, boolean> = {};
+    if (!vuln.title_en) newErrors.title_en = true;
+    if (!vuln.title_es) newErrors.title_es = true;
+    if (!vuln.tags || vuln.tags.length === 0 || !vuln.tags[0]) newErrors.category = true;
+    setErrors(newErrors);
+    return Object.keys(newErrors).length === 0;
+  }
+
   const handleSave = () => {
+    if (!validateFields()) {
+      toast({
+        variant: 'destructive',
+        title: t[language].validationErrorTitle,
+        description: t[language].validationErrorDescription,
+      });
+      return;
+    }
+
     const fullEnContent = enSections.map(s => s.content).join('\n\n---\n\n');
     const fullEsContent = esSections.map(s => s.content).join('\n\n---\n\n');
     
@@ -718,11 +741,11 @@ export default function NewVulnerabilityPage() {
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                         <div className="space-y-2">
                             <Label htmlFor="title_en">{t[language].titleEnLabel}</Label>
-                            <Input id="title_en" value={vuln.title_en} onChange={e => handleInputChange('title_en', e.target.value)} />
+                            <Input id="title_en" value={vuln.title_en} onChange={e => handleInputChange('title_en', e.target.value)} className={cn(errors.title_en && 'border-destructive')} />
                         </div>
                         <div className="space-y-2">
                             <Label htmlFor="title_es">{t[language].titleEsLabel}</Label>
-                            <Input id="title_es" value={vuln.title_es} onChange={e => handleInputChange('title_es', e.target.value)} />
+                            <Input id="title_es" value={vuln.title_es} onChange={e => handleInputChange('title_es', e.target.value)} className={cn(errors.title_es && 'border-destructive')} />
                         </div>
                     </div>
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -733,7 +756,7 @@ export default function NewVulnerabilityPage() {
                         <div className="space-y-2">
                             <Label htmlFor="category">{t[language].categoryLabel}</Label>
                             <Select value={vuln.tags[0] || ''} onValueChange={handleCategoryChange}>
-                                <SelectTrigger id="category">
+                                <SelectTrigger id="category" className={cn(errors.category && 'border-destructive')}>
                                     <SelectValue placeholder={t[language].selectCategory} />
                                 </SelectTrigger>
                                 <SelectContent>
@@ -835,23 +858,21 @@ export default function NewVulnerabilityPage() {
                 </CardContent>
             </Card>
 
-            <Accordion type="single" collapsible className="w-full space-y-6" value={activeAccordion} onValueChange={setActiveAccordion}>
-              <AccordionItem value="en-content" className="border-0 bg-card rounded-lg">
-                <AccordionTrigger className={cn("p-4 hover:no-underline rounded-t-lg", activeAccordion === 'en-content' && "border-b")}>
-                  <div className="flex w-full items-center justify-between">
-                    <div className="flex items-center gap-2">
+            <Accordion type="single" collapsible className="w-full space-y-6">
+              <AccordionItem value="en-content" className="border bg-card rounded-lg">
+                <div className="flex w-full items-center justify-between p-4">
+                    <AccordionTrigger className="p-0 hover:no-underline">
+                      <div className="flex items-center gap-2">
                         <span className="font-semibold text-base">{t[language].englishContent}</span>
-                        <ChevronDown className="h-4 w-4 shrink-0 transition-transform duration-200" />
-                    </div>
+                      </div>
+                    </AccordionTrigger>
                     <Button variant="outline" size="sm" onClick={(e) => { e.stopPropagation(); handleOrganizeClick('en'); }}>
                         <Rows className="mr-2 h-4 w-4" />
                         {isEnOrganizing ? t[language].finishOrganizing : t[language].organizeSections}
-                        <span />
                     </Button>
                   </div>
-                </AccordionTrigger>
                 <AccordionContent className="p-4 pt-0">
-                  <div className="space-y-4 pt-4">
+                  <div className="space-y-4 pt-4 border-t">
                     <DndContext sensors={sensors} collisionDetection={closestCenter} onDragEnd={(e) => handleDragEnd(e, 'en')}>
                       <SortableContext items={enSections.map(s => s.id)} strategy={verticalListSortingStrategy}>
                         <div className="space-y-4">
@@ -883,22 +904,20 @@ export default function NewVulnerabilityPage() {
                 </AccordionContent>
               </AccordionItem>
               
-              <AccordionItem value="es-content" className="border-0 bg-card rounded-lg">
-                  <AccordionTrigger className={cn("p-4 hover:no-underline rounded-t-lg", activeAccordion === 'es-content' && "border-b")}>
-                    <div className="flex w-full items-center justify-between">
+              <AccordionItem value="es-content" className="border bg-card rounded-lg">
+                  <div className="flex w-full items-center justify-between p-4">
+                    <AccordionTrigger className="p-0 hover:no-underline">
                       <div className="flex items-center gap-2">
                         <span className="font-semibold text-base">{t[language].spanishContent}</span>
-                        <ChevronDown className="h-4 w-4 shrink-0 transition-transform duration-200" />
                       </div>
-                      <Button variant="outline" size="sm" onClick={(e) => { e.stopPropagation(); handleOrganizeClick('es'); }}>
-                          <Rows className="mr-2 h-4 w-4" />
-                          {isEsOrganizing ? t[language].finishOrganizing : t[language].organizeSections}
-                          <span />
-                      </Button>
-                    </div>
-                  </AccordionTrigger>
+                    </AccordionTrigger>
+                    <Button variant="outline" size="sm" onClick={(e) => { e.stopPropagation(); handleOrganizeClick('es'); }}>
+                        <Rows className="mr-2 h-4 w-4" />
+                        {isEsOrganizing ? t[language].finishOrganizing : t[language].organizeSections}
+                    </Button>
+                  </div>
                   <AccordionContent className="p-4 pt-0">
-                    <div className="space-y-4 pt-4">
+                    <div className="space-y-4 pt-4 border-t">
                       <DndContext sensors={sensors} collisionDetection={closestCenter} onDragEnd={(e) => handleDragEnd(e, 'es')}>
                         <SortableContext items={esSections.map(s => s.id)} strategy={verticalListSortingStrategy}>
                           <div className="space-y-4">
@@ -934,4 +953,3 @@ export default function NewVulnerabilityPage() {
     </div>
   );
 }
-
