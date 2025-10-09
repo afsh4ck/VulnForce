@@ -12,7 +12,7 @@ import Link from 'next/link';
 import { ChevronLeft, Save, Plus, GripVertical, Rows, Bold, Italic, Code, List, ListOrdered, FileCode, Trash2 } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import { useLanguage } from '@/context/language-context';
-import type { Vulnerability, Finding, Project, ImageAsset } from '@/lib/types';
+import type { Vulnerability, Finding, Project, ImageAsset, Severity } from '@/lib/types';
 import { useData } from '@/context/data-context';
 import { Combobox } from '@/components/ui/combobox';
 import { DndContext, closestCenter, KeyboardSensor, PointerSensor, useSensor, useSensors, DragEndEvent } from '@dnd-kit/core';
@@ -25,6 +25,7 @@ import { MarkdownPreview } from '@/components/markdown-preview';
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from '@/components/ui/alert-dialog';
 import { Textarea } from '@/components/ui/textarea';
 import { Dialog, DialogContent, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
+import { Badge } from '@/components/ui/badge';
 
 type ScopeView = 'edit' | 'split' | 'preview';
 
@@ -148,7 +149,7 @@ const SectionEditor = ({ section, onContentChange, onDelete, view, onViewChange,
 }) => {
   const { language } = useLanguage();
   const { addImage } = useData();
-  const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
+  const [showDeleteConfirm, useState] = useState(false);
   const textareaRef = useRef<HTMLTextAreaElement>(null);
 
   const t = {
@@ -299,7 +300,7 @@ const SectionEditor = ({ section, onContentChange, onDelete, view, onViewChange,
                       </TabsList>
                   </Tabs>
               )}
-               <AlertDialog open={showDeleteConfirm} onOpenChange={setShowDeleteConfirm}>
+               <AlertDialog open={showDeleteConfirm} onOpenChange={useState}>
                 <AlertDialogTrigger asChild>
                     <Button variant="ghost" size="icon" className="h-8 w-8 text-destructive hover:bg-destructive hover:text-destructive-foreground">
                         <Trash2 className="h-4 w-4" />
@@ -385,15 +386,15 @@ export default function FindingEditorPage() {
   const { id: projectId, findingId } = params;
   const { toast } = useToast();
   const { language: uiLanguage } = useLanguage();
-  const { projects, clients, findings, vulnerabilities, addFinding, updateFinding, getImage, addImage } = useData();
+  const { projects, clients, findings, vulnerabilities, addFinding, updateFinding, getImage } = useData();
   const sensors = useSensors(
     useSensor(PointerSensor),
     useSensor(KeyboardSensor, { coordinateGetter: sortableKeyboardCoordinates })
   );
 
   const [title, setTitle] = useState('');
-  const [severity, setSeverity] = useState<string>('');
-  const [cvss, setCvss] = useState<string>('');
+  const [severity, setSeverity] = useState<Severity>('Informational');
+  const [cvss, setCvss] = useState<string>('0.0');
   
   const [project, setProject] = useState<Project | undefined>();
   const [projectLanguage, setProjectLanguage] = useState<Project['language']>('en');
@@ -524,6 +525,28 @@ export default function FindingEditorPage() {
     }
   }
 
+  const handleSeverityChange = (newSeverity: Severity) => {
+    setSeverity(newSeverity);
+    switch (newSeverity) {
+        case 'Critical': setCvss('9.5'); break;
+        case 'High': setCvss('8.5'); break;
+        case 'Medium': setCvss('5.5'); break;
+        case 'Low': setCvss('2.5'); break;
+        case 'Informational': setCvss('0.0'); break;
+        default: setCvss('0.0');
+    }
+  }
+
+  const getSeverityVariant = (severity: string): 'destructive' | 'high' | 'medium' | 'low' | 'secondary' => {
+    switch (severity) {
+      case 'Critical': return 'destructive';
+      case 'High': return 'high';
+      case 'Medium': return 'medium';
+      case 'Low': return 'low';
+      default: return 'secondary';
+    }
+  }
+
 
   const t = {
     en: {
@@ -648,8 +671,9 @@ export default function FindingEditorPage() {
 
       <div className="grid grid-cols-1 gap-6">
           <Card>
-            <CardHeader>
+            <CardHeader className="flex flex-row items-center justify-between">
               <CardTitle>{t[uiLanguage].findingDetails}</CardTitle>
+              {severity && <Badge variant={getSeverityVariant(severity)}>{severity}</Badge>}
             </CardHeader>
             <CardContent className="space-y-4">
               <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
@@ -671,7 +695,7 @@ export default function FindingEditorPage() {
               <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
                 <div className="space-y-2">
                   <Label htmlFor="severity">{t[uiLanguage].severityLabel}</Label>
-                  <Select value={severity} onValueChange={setSeverity}>
+                  <Select value={severity} onValueChange={(value) => handleSeverityChange(value as Severity)}>
                     <SelectTrigger id="severity">
                       <SelectValue placeholder={t[uiLanguage].selectSeverity} />
                     </SelectTrigger>
@@ -727,3 +751,6 @@ export default function FindingEditorPage() {
     </div>
   );
 }
+
+
+      
