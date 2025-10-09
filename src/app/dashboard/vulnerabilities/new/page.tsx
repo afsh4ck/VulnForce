@@ -858,19 +858,17 @@ export default function NewVulnerabilityPage() {
 
             <Accordion type="multiple" className="w-full space-y-6" value={activeAccordion} onValueChange={setActiveAccordion}>
               <AccordionItem value="en-content" className="border bg-card rounded-lg data-[state=closed]:border data-[state=open]:border-b-0">
-                <AccordionTrigger className="p-4 hover:no-underline flex-1" onClick={(e) => e.stopPropagation()}>
+                <AccordionTrigger className="p-4 hover:no-underline flex-1" onClick={(e) => { e.stopPropagation(); setActiveAccordion(prev => prev.includes('en-content') ? prev.filter(item => item !== 'en-content') : [...prev, 'en-content'])}}>
                   <div className="flex w-full items-center justify-between">
-                      <div className="flex items-center gap-2">
-                        <span className="font-semibold text-base">{t[language].englishContent}</span>
-                      </div>
-                  </div>
-                </AccordionTrigger>
-                <div className="absolute right-4 top-4 flex items-center gap-2">
-                    <Button variant="outline" size="sm" onClick={(e) => { e.stopPropagation(); handleOrganizeClick('en'); }} className="mr-2">
+                    <div className="flex items-center gap-2">
+                      <span className="font-semibold text-base">{t[language].englishContent}</span>
+                      <Button variant="outline" size="sm" onClick={(e) => { e.stopPropagation(); handleOrganizeClick('en'); }} className="mr-2">
                         <Rows className="mr-2 h-4 w-4" />
                         {isEnOrganizing ? t[language].finishOrganizing : t[language].organizeSections}
-                    </Button>
-                </div>
+                      </Button>
+                    </div>
+                  </div>
+                </AccordionTrigger>
                 <AccordionContent className="p-4 pt-0">
                   <div className="space-y-4 pt-4 border-t">
                     <DndContext sensors={sensors} collisionDetection={closestCenter} onDragEnd={(e) => handleDragEnd(e, 'en')}>
@@ -905,19 +903,17 @@ export default function NewVulnerabilityPage() {
               </AccordionItem>
               
               <AccordionItem value="es-content" className="border bg-card rounded-lg data-[state=closed]:border data-[state=open]:border-b-0">
-                  <AccordionTrigger className="p-4 hover:no-underline flex-1" onClick={(e) => e.stopPropagation()}>
+                  <AccordionTrigger className="p-4 hover:no-underline flex-1" onClick={(e) => { e.stopPropagation(); setActiveAccordion(prev => prev.includes('es-content') ? prev.filter(item => item !== 'es-content') : [...prev, 'es-content'])}}>
                     <div className="flex w-full items-center justify-between">
-                        <div className="flex items-center gap-2">
-                          <span className="font-semibold text-base">{t[language].spanishContent}</span>
-                        </div>
+                      <div className="flex items-center gap-2">
+                        <span className="font-semibold text-base">{t[language].spanishContent}</span>
+                        <Button variant="outline" size="sm" onClick={(e) => { e.stopPropagation(); handleOrganizeClick('es'); }} className="mr-2">
+                            <Rows className="mr-2 h-4 w-4" />
+                            {isEsOrganizing ? t[language].finishOrganizing : t[language].organizeSections}
+                        </Button>
+                      </div>
                     </div>
                   </AccordionTrigger>
-                  <div className="absolute right-4 top-4 flex items-center gap-2">
-                    <Button variant="outline" size="sm" onClick={(e) => { e.stopPropagation(); handleOrganizeClick('es'); }} className="mr-2">
-                        <Rows className="mr-2 h-4 w-4" />
-                        {isEsOrganizing ? t[language].finishOrganizing : t[language].organizeSections}
-                    </Button>
-                  </div>
                   <AccordionContent className="p-4 pt-0">
                     <div className="space-y-4 pt-4 border-t">
                       <DndContext sensors={sensors} collisionDetection={closestCenter} onDragEnd={(e) => handleDragEnd(e, 'es')}>
@@ -955,7 +951,3 @@ export default function NewVulnerabilityPage() {
     </div>
   );
 }
-
-
-
-    
