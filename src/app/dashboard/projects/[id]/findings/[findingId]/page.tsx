@@ -149,7 +149,7 @@ const SectionEditor = ({ section, onContentChange, onDelete, view, onViewChange,
 }) => {
   const { language } = useLanguage();
   const { addImage } = useData();
-  const [showDeleteConfirm, useState] = useState(false);
+  const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
   const textareaRef = useRef<HTMLTextAreaElement>(null);
 
   const t = {
@@ -300,7 +300,7 @@ const SectionEditor = ({ section, onContentChange, onDelete, view, onViewChange,
                       </TabsList>
                   </Tabs>
               )}
-               <AlertDialog open={showDeleteConfirm} onOpenChange={useState}>
+               <AlertDialog open={showDeleteConfirm} onOpenChange={setShowDeleteConfirm}>
                 <AlertDialogTrigger asChild>
                     <Button variant="ghost" size="icon" className="h-8 w-8 text-destructive hover:bg-destructive hover:text-destructive-foreground">
                         <Trash2 className="h-4 w-4" />
@@ -752,5 +752,4 @@ export default function FindingEditorPage() {
   );
 }
 
-
-      
+    
