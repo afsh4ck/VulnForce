@@ -321,7 +321,7 @@ Se utilizó una combinación de herramientas automatizadas y técnicas manuales 
 1.  **Descubrimiento de Red:** Identificación de hosts activos y puertos abiertos.
 2.  **Enumeración de Servicios:** Identificación de los servicios que se ejecutan en los puertos descubiertos.
 3.  **Escaneo de Vulnerabilidades:** Búsqueda de vulnerabilidades conocidas en los servicios identificados.
-4.  **Explotación Manual:** Intento de explotar vulnerabilidades para obtener más acceso.
+4.  **Explotación Manual:** Intento de explotar vulnerabilities para obtener más acceso.
 5.  **Análisis de Active Directory:** Búsqueda de configuraciones incorrectas en Active Directory, como contraseñas débiles, oportunidades de kerberoasting y rutas de escalada de privilegios.
 6.  **Informe:** Documentación de hallazgos y recomendaciones de remediación.`,
     appendix_en: `### A. Tooling Used
@@ -374,17 +374,27 @@ La evaluación incluye tanto el análisis estático como el dinámico de la apli
     -   Manipulación en tiempo de ejecución con Frida.
 3.  **Pruebas de API:** Pruebas de las API de backend para vulnerabilidades web comunes (OWASP API Top 10).
 4.  **Informe:** Documentación de hallazgos y recomendaciones de remediación.`,
-    appendix_en: `### A. Test Devices & Flags
-| Device | OS Version | Status | Flag |
-|---|---|---|---|
-| Google Pixel 6 | Android 13 | Rooted | [TODO: Flag if any] |
-| iPhone 12 | iOS 16.5 | Jailbroken | [TODO: Flag if any] |
+    appendix_en: `### A. Flags Captured
+| Flag ID | Location | Value |
+|---|---|---|
+| [TODO: Flag ID] | [TODO: Location, e.g., /etc/flag.txt] | [TODO: Flag Value] |
+
+### B. Test Devices
+| Device | OS Version | Status |
+|---|---|---|
+| Google Pixel 6 | Android 13 | Rooted |
+| iPhone 12 | iOS 16.5 | Jailbroken |
 `,
-    appendix_es: `### A. Dispositivos de Prueba y Banderas
-| Dispositivo | Versión OS | Estado | Bandera |
-|---|---|---|---|
-| Google Pixel 6 | Android 13 | Rooteado | [TODO: Bandera si aplica] |
-| iPhone 12 | iOS 16.5 | con Jailbreak | [TODO: Bandera si aplica] |`
+    appendix_es: `### A. Banderas Capturadas
+| ID de Bandera | Ubicación | Valor |
+|---|---|---|
+| [TODO: ID Bandera] | [TODO: Ubicación, p.ej., /etc/flag.txt] | [TODO: Valor Bandera] |
+
+### B. Dispositivos de Prueba
+| Dispositivo | Versión OS | Estado |
+|---|---|---|
+| Google Pixel 6 | Android 13 | Rooteado |
+| iPhone 12 | iOS 16.5 | con Jailbreak |`
   }
 ];
 

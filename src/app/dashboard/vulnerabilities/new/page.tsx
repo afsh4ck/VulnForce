@@ -1,4 +1,5 @@
 
+
 'use client';
 
 import { useState, useMemo, useCallback, useRef, useEffect } from 'react';
@@ -9,7 +10,7 @@ import { Textarea } from '@/components/ui/textarea';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import Link from 'next/link';
-import { ChevronLeft, Save, GripVertical, Plus, Trash2, Rows, Bold, Italic, Code, List, ListOrdered, FileCode } from 'lucide-react';
+import { ChevronDown, ChevronLeft, Save, GripVertical, Plus, Trash2, Rows, Bold, Italic, Code, List, ListOrdered, FileCode } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import { useLanguage } from '@/context/language-context';
 import type { Vulnerability, CVSS, Remediation, ImageAsset, Severity } from '@/lib/types';
@@ -33,6 +34,7 @@ import { Dialog, DialogContent, DialogFooter, DialogHeader, DialogTitle, DialogT
 import { Combobox } from '@/components/ui/combobox';
 import { getCVSS, getScore, getSeverity } from '@/lib/cvss';
 import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { cn } from '@/lib/utils';
 
 
 const languageOptions = [
@@ -834,86 +836,96 @@ export default function NewVulnerabilityPage() {
             </Card>
 
             <Accordion type="single" collapsible className="w-full space-y-6" value={activeAccordion} onValueChange={setActiveAccordion}>
-              <AccordionItem value="en-content" className="border-b-0 rounded-lg bg-card">
-                  <AccordionTrigger className="p-4 hover:no-underline rounded-t-lg">
-                    <div className="flex w-full items-center justify-between">
-                      <span className="font-semibold text-base">{t[language].englishContent}</span>
-                      <Button variant="outline" size="sm" onClick={(e) => { e.stopPropagation(); handleOrganizeClick('en'); }}>
-                          <Rows className="mr-2 h-4 w-4" />
-                          {isEnOrganizing ? t[language].finishOrganizing : t[language].organizeSections}
-                      </Button>
-                    </div>
-                  </AccordionTrigger>
-                <AccordionContent className="p-4 pt-0 border-t rounded-b-lg">
-                  <DndContext sensors={sensors} collisionDetection={closestCenter} onDragEnd={(e) => handleDragEnd(e, 'en')}>
-                    <SortableContext items={enSections.map(s => s.id)} strategy={verticalListSortingStrategy}>
-                      <div className="space-y-4">
-                        {enSections.map(section => (
-                          <SortableSection
-                            key={section.id}
-                            section={section}
-                            isOrganizing={isEnOrganizing}
-                            onContentChange={(newContent: string) => handleSectionChange('en', section.id, newContent)}
-                            onTitleChange={(newTitle: string) => handleTitleChange('en', section.id, newTitle)}
-                            onDelete={() => handleDeleteSection('en', section.id)}
-                            view={enSectionViews[section.id] || 'split'}
-                            onViewChange={(newView: ScopeView) => setEnSectionViews(prev => ({ ...prev, [section.id]: newView }))}
-                            getImage={getImage}
-                          />
-                        ))}
+              <AccordionItem value="en-content" className="border-0">
+                <Card className="bg-card">
+                    <AccordionTrigger className="hover:no-underline p-4 rounded-t-lg data-[state=open]:border-b">
+                      <div className="flex w-full items-center justify-between">
+                        <div className="flex items-center gap-2">
+                            <span className="font-semibold text-base">{t[language].englishContent}</span>
+                            <ChevronDown className="h-4 w-4 shrink-0 transition-transform duration-200" />
+                        </div>
+                        <Button variant="outline" size="sm" onClick={(e) => { e.stopPropagation(); handleOrganizeClick('en'); }}>
+                            <Rows className="mr-2 h-4 w-4" />
+                            {isEnOrganizing ? t[language].finishOrganizing : t[language].organizeSections}
+                        </Button>
                       </div>
-                    </SortableContext>
-                  </DndContext>
-                  {!isEnOrganizing && (
-                    <div className="flex justify-center pt-4">
-                      <Button variant="outline" onClick={() => handleAddSection('en')}>
-                        <Plus className="mr-2 h-4 w-4" />
-                        {t[language].addNewSection}
-                      </Button>
-                    </div>
-                  )}
-                </AccordionContent>
-              </AccordionItem>
-              
-              <AccordionItem value="es-content" className="border-b-0 rounded-lg bg-card">
-                  <AccordionTrigger className="p-4 hover:no-underline rounded-t-lg">
-                    <div className="flex w-full items-center justify-between">
-                      <span className="font-semibold text-base">{t[language].spanishContent}</span>
-                      <Button variant="outline" size="sm" onClick={(e) => { e.stopPropagation(); handleOrganizeClick('es'); }}>
-                          <Rows className="mr-2 h-4 w-4" />
-                          {isEsOrganizing ? t[language].finishOrganizing : t[language].organizeSections}
-                      </Button>
-                    </div>
-                  </AccordionTrigger>
-                <AccordionContent className="p-4 pt-0 border-t rounded-b-lg">
-                    <DndContext sensors={sensors} collisionDetection={closestCenter} onDragEnd={(e) => handleDragEnd(e, 'es')}>
-                      <SortableContext items={esSections.map(s => s.id)} strategy={verticalListSortingStrategy}>
+                    </AccordionTrigger>
+                  <AccordionContent className="p-4 pt-0">
+                    <DndContext sensors={sensors} collisionDetection={closestCenter} onDragEnd={(e) => handleDragEnd(e, 'en')}>
+                      <SortableContext items={enSections.map(s => s.id)} strategy={verticalListSortingStrategy}>
                         <div className="space-y-4">
-                          {esSections.map(section => (
+                          {enSections.map(section => (
                             <SortableSection
                               key={section.id}
                               section={section}
-                              isOrganizing={isEsOrganizing}
-                              onContentChange={(newContent: string) => handleSectionChange('es', section.id, newContent)}
-                              onTitleChange={(newTitle: string) => handleTitleChange('es', section.id, newTitle)}
-                              onDelete={() => handleDeleteSection('es', section.id)}
-                              view={esSectionViews[section.id] || 'split'}
-                              onViewChange={(newView: ScopeView) => setEsSectionViews(prev => ({ ...prev, [section.id]: newView }))}
+                              isOrganizing={isEnOrganizing}
+                              onContentChange={(newContent: string) => handleSectionChange('en', section.id, newContent)}
+                              onTitleChange={(newTitle: string) => handleTitleChange('en', section.id, newTitle)}
+                              onDelete={() => handleDeleteSection('en', section.id)}
+                              view={enSectionViews[section.id] || 'split'}
+                              onViewChange={(newView: ScopeView) => setEnSectionViews(prev => ({ ...prev, [section.id]: newView }))}
                               getImage={getImage}
                             />
                           ))}
                         </div>
                       </SortableContext>
                     </DndContext>
-                    {!isEsOrganizing && (
+                    {!isEnOrganizing && (
                       <div className="flex justify-center pt-4">
-                        <Button variant="outline" onClick={() => handleAddSection('es')}>
+                        <Button variant="outline" onClick={() => handleAddSection('en')}>
                           <Plus className="mr-2 h-4 w-4" />
                           {t[language].addNewSection}
                         </Button>
                       </div>
                     )}
-                </AccordionContent>
+                  </AccordionContent>
+                </Card>
+              </AccordionItem>
+              
+              <AccordionItem value="es-content" className="border-0">
+                 <Card className="bg-card">
+                    <AccordionTrigger className="hover:no-underline p-4 rounded-t-lg data-[state=open]:border-b">
+                      <div className="flex w-full items-center justify-between">
+                        <div className="flex items-center gap-2">
+                          <span className="font-semibold text-base">{t[language].spanishContent}</span>
+                          <ChevronDown className="h-4 w-4 shrink-0 transition-transform duration-200" />
+                        </div>
+                        <Button variant="outline" size="sm" onClick={(e) => { e.stopPropagation(); handleOrganizeClick('es'); }}>
+                            <Rows className="mr-2 h-4 w-4" />
+                            {isEsOrganizing ? t[language].finishOrganizing : t[language].organizeSections}
+                        </Button>
+                      </div>
+                    </AccordionTrigger>
+                    <AccordionContent className="p-4 pt-0">
+                      <DndContext sensors={sensors} collisionDetection={closestCenter} onDragEnd={(e) => handleDragEnd(e, 'es')}>
+                        <SortableContext items={esSections.map(s => s.id)} strategy={verticalListSortingStrategy}>
+                          <div className="space-y-4">
+                            {esSections.map(section => (
+                              <SortableSection
+                                key={section.id}
+                                section={section}
+                                isOrganizing={isEsOrganizing}
+                                onContentChange={(newContent: string) => handleSectionChange('es', section.id, newContent)}
+                                onTitleChange={(newTitle: string) => handleTitleChange('es', section.id, newTitle)}
+                                onDelete={() => handleDeleteSection('es', section.id)}
+                                view={esSectionViews[section.id] || 'split'}
+                                onViewChange={(newView: ScopeView) => setEsSectionViews(prev => ({ ...prev, [section.id]: newView }))}
+                                getImage={getImage}
+                              />
+                            ))}
+                          </div>
+                        </SortableContext>
+                      </DndContext>
+                      {!isEsOrganizing && (
+                        <div className="flex justify-center pt-4">
+                          <Button variant="outline" onClick={() => handleAddSection('es')}>
+                            <Plus className="mr-2 h-4 w-4" />
+                            {t[language].addNewSection}
+                          </Button>
+                        </div>
+                      )}
+                  </AccordionContent>
+                </Card>
               </AccordionItem>
             </Accordion>
         </div>
