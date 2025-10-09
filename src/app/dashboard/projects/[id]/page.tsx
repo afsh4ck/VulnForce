@@ -9,7 +9,7 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import Link from 'next/link';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
-import { PlusCircle, FileText, ArrowUpDown, Edit, Save, Trash2, CalendarIcon, Split, Eye, Plus, GripVertical, Rows, Languages, Bold, Italic, Code, List, ListOrdered, FileCode, Scan, Globe, Network, Smartphone, Wifi, Award, ChevronLeft } from "lucide-react";
+import { PlusCircle, FileText, ArrowUpDown, Edit, Save, Trash2, CalendarIcon, Split, Eye, Plus, GripVertical, Rows, Languages, Bold, Italic, Code, List, ListOrdered, FileCode, Scan, Globe, Network, Smartphone, Wifi, Award, ChevronLeft, CheckCircle } from "lucide-react";
 import { Separator } from "@/components/ui/separator";
 import { useLanguage } from "@/context/language-context";
 import type { Finding, Project, ImageAsset } from '@/lib/types';
@@ -41,6 +41,7 @@ import { Combobox } from '@/components/ui/combobox';
 
 type SortKey = keyof Finding;
 type ScopeView = 'edit' | 'split' | 'preview';
+type SaveStatus = 'unsaved' | 'saving' | 'saved';
 
 interface ScopeSection {
   id: string;
@@ -360,7 +361,7 @@ const ScopeSectionEditor = ({ section, onContentChange, onDelete, view, onViewCh
                 )}
                  <CardContent className="p-0">
                     {view === 'split' && (
-                        <div className="relative min-h-[300px]">
+                        <div className="relative">
                             <ResizablePanelGroup direction="horizontal" className="min-h-[300px] rounded-lg">
                                 <ResizablePanel defaultSize={50}>
                                     <div className="h-full">
@@ -372,7 +373,7 @@ const ScopeSectionEditor = ({ section, onContentChange, onDelete, view, onViewCh
                                     />
                                     </div>
                                 </ResizablePanel>
-                                <ResizableHandle />
+                                <ResizableHandle withHandle />
                                 <ResizablePanel defaultSize={50}>
                                 <div className="h-full overflow-auto rounded-md p-4">
                                     <MarkdownPreview content={section.content} getImage={getImage} />
@@ -404,6 +405,46 @@ const ScopeSectionEditor = ({ section, onContentChange, onDelete, view, onViewCh
   )
 }
 
+function LeaveConfirmationDialog({ open, onOpenChange, onConfirm, onCancel }: {
+    open: boolean;
+    onOpenChange: (open: boolean) => void;
+    onConfirm: () => void;
+    onCancel: () => void;
+}) {
+    const { language } = useLanguage();
+    const t = {
+        en: {
+            title: 'Unsaved Changes',
+            description: 'You have unsaved changes. Would you like to save them before leaving?',
+            saveAndExit: 'Save and Exit',
+            discardAndExit: 'Discard and Exit',
+            cancel: 'Cancel',
+        },
+        es: {
+            title: 'Cambios sin Guardar',
+            description: 'Tienes cambios sin guardar. ¿Quieres guardarlos antes de salir?',
+            saveAndExit: 'Guardar y Salir',
+            discardAndExit: 'Salir sin Guardar',
+            cancel: 'Cancelar',
+        },
+    };
+
+    return (
+        <AlertDialog open={open} onOpenChange={onOpenChange}>
+            <AlertDialogContent>
+                <AlertDialogHeader>
+                    <AlertDialogTitle>{t[language].title}</AlertDialogTitle>
+                    <AlertDialogDescription>{t[language].description}</AlertDialogDescription>
+                </AlertDialogHeader>
+                <AlertDialogFooter>
+                    <AlertDialogCancel onClick={onCancel}>{t[language].cancel}</AlertDialogCancel>
+                    <Button variant="destructive" onClick={() => router.push('/dashboard/projects')}>{t[language].discardAndExit}</Button>
+                    <AlertDialogAction onClick={onConfirm}>{t[language].saveAndExit}</AlertDialogAction>
+                </AlertDialogFooter>
+            </AlertDialogContent>
+        </AlertDialog>
+    );
+}
 
 export default function ProjectDetailsPage() {
   const params = useParams();
@@ -434,6 +475,10 @@ export default function ProjectDetailsPage() {
   const [editIcon, setEditIcon] = useState('FileText');
   const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
 
+  // Save state
+  const [saveStatus, setSaveStatus] = useState<SaveStatus>('saved');
+  const [showLeaveConfirm, setShowLeaveConfirm] = useState(false);
+
   const sensors = useSensors(
     useSensor(PointerSensor),
     useSensor(KeyboardSensor, {
@@ -452,17 +497,18 @@ export default function ProjectDetailsPage() {
     }
     setProject(currentProject);
     
-    // Parse reportBody into sections
-    const sections = (currentProject.reportBody || '').split(/\n---\n/).map((content, index) => ({
-      id: `section-${index}-${Date.now()}`,
-      content: content.trim()
-    }));
-    setScopeSections(sections);
-    const initialViews = sections.reduce((acc, section) => {
-        acc[section.id] = 'split';
-        return acc;
-    }, {} as Record<string, ScopeView>);
-    setSectionViews(initialViews);
+    if (currentProject.reportBody) {
+        const sections = (currentProject.reportBody || '').split('\n\n---\n\n').map((content, index) => ({
+        id: `section-${index}-${Date.now()}`,
+        content: content.trim()
+        }));
+        setScopeSections(sections);
+        const initialViews = sections.reduce((acc, section) => {
+            acc[section.id] = 'split';
+            return acc;
+        }, {} as Record<string, ScopeView>);
+        setSectionViews(initialViews);
+    }
 
     // Set edit dialog fields
     setEditName(currentProject.name);
@@ -471,8 +517,23 @@ export default function ProjectDetailsPage() {
     setEditStatus(currentProject.status);
     setEditLanguage(currentProject.language);
     setEditIcon(currentProject.icon || 'FileText');
+    setSaveStatus('saved');
   }, [params.id, projects, router]);
   
+  // Debounced auto-save
+  useEffect(() => {
+    if (saveStatus === 'unsaved') {
+        const handler = setTimeout(() => {
+            handleSaveScope(false); // Don't show toast on auto-save
+        }, 2000); // 2-second delay
+
+        return () => {
+            clearTimeout(handler);
+        };
+    }
+  }, [scopeSections, saveStatus]);
+
+
   const handleUpdateProject = () => {
     if (!project || !editName || !editClientId || !editDate?.from || !editDate?.to) {
         toast({
@@ -550,12 +611,16 @@ export default function ProjectDetailsPage() {
     return sortConfig.direction === 'ascending' ? ' ▲' : ' ▼';
   };
 
-  const handleSaveScope = () => {
+  const handleSaveScope = (showToast = true) => {
     if (project) {
+        setSaveStatus('saving');
         const newReportBody = scopeSections.map(s => s.content).join('\n\n---\n\n');
         updateProject({...project, reportBody: newReportBody});
-        toast({ title: language === 'es' ? 'Informe guardado' : 'Report saved' });
+        if (showToast) {
+            toast({ title: language === 'es' ? 'Informe guardado' : 'Report saved' });
+        }
         setIsOrganizing(false);
+        setTimeout(() => setSaveStatus('saved'), 500); // Give a moment to show "Saving..."
     }
   }
 
@@ -563,6 +628,7 @@ export default function ProjectDetailsPage() {
     setScopeSections(prevSections =>
       prevSections.map(sec => sec.id === sectionId ? { ...sec, content: newContent } : sec)
     );
+    setSaveStatus('unsaved');
   };
   
   const handleSectionTitleChange = (sectionId: string, newTitle: string) => {
@@ -577,6 +643,7 @@ export default function ProjectDetailsPage() {
         return sec;
       })
     );
+    setSaveStatus('unsaved');
   }
 
   const handleAddSection = () => {
@@ -586,6 +653,7 @@ export default function ProjectDetailsPage() {
       };
       setScopeSections(prev => [...prev, newSection]);
       setSectionViews(prev => ({ ...prev, [newSection.id]: 'edit' }));
+      setSaveStatus('unsaved');
   };
 
   const handleDeleteSection = (sectionId: string) => {
@@ -595,6 +663,7 @@ export default function ProjectDetailsPage() {
           delete newViews[sectionId];
           return newViews;
       });
+      setSaveStatus('unsaved');
   };
   
   const handleLanguageChange = async (newLang: 'en' | 'es') => {
@@ -617,11 +686,12 @@ export default function ProjectDetailsPage() {
         setProject(updatedProject); // Update local state immediately
 
         // Also update the sections in the editor
-        const sections = newReportBody.split(/\n---\n/).map((content, index) => ({
+        const sections = newReportBody.split('\n\n---\n\n').map((content, index) => ({
             id: `section-${index}-${Date.now()}`,
             content: content.trim()
         }));
         setScopeSections(sections);
+        setSaveStatus('unsaved');
         
         toast({ title: t[language].translationSuccess });
 
@@ -641,10 +711,26 @@ export default function ProjectDetailsPage() {
       setScopeSections((items) => {
         const oldIndex = items.findIndex((item) => item.id === active.id);
         const newIndex = items.findIndex((item) => item.id === over.id);
-        return arrayMove(items, oldIndex, newIndex);
+        const newItems = arrayMove(items, oldIndex, newIndex);
+        setSaveStatus('unsaved');
+        return newItems;
       });
     }
   }
+
+  const handleLeave = () => {
+    if (saveStatus === 'unsaved') {
+      setShowLeaveConfirm(true);
+    } else {
+      router.push('/dashboard/projects');
+    }
+  };
+
+  const handleSaveAndLeave = () => {
+    handleSaveScope();
+    setShowLeaveConfirm(false);
+    router.push('/dashboard/projects');
+  };
 
   const t = {
     en: {
@@ -664,6 +750,8 @@ export default function ProjectDetailsPage() {
       completed: "Completed",
       onHold: "On Hold",
       saveScope: "Save Report",
+      saving: "Saving...",
+      saved: "Saved",
       editProject: "Edit Project",
       deleteProject: "Delete Project",
       updateProject: "Update Project",
@@ -708,6 +796,8 @@ export default function ProjectDetailsPage() {
       completed: "Completado",
       onHold: "En Espera",
       saveScope: "Guardar Informe",
+      saving: "Guardando...",
+      saved: "Guardado",
       editProject: "Editar Proyecto",
       eliminarProyecto: "Eliminar Proyecto",
       updateProject: "Actualizar Proyecto",
@@ -753,13 +843,17 @@ export default function ProjectDetailsPage() {
 
   return (
     <div className="space-y-6">
+       <LeaveConfirmationDialog 
+        open={showLeaveConfirm}
+        onOpenChange={setShowLeaveConfirm}
+        onConfirm={handleSaveAndLeave}
+        onCancel={() => setShowLeaveConfirm(false)}
+       />
        <div className="flex justify-between items-start">
           <div className="flex items-center gap-4">
-            <Button variant="outline" size="icon" className="h-10 w-10" asChild>
-                <Link href="/dashboard/projects">
-                    <ChevronLeft className="h-5 w-5" />
-                    <span className="sr-only">{t[language].backToProjects}</span>
-                </Link>
+            <Button variant="outline" size="icon" className="h-10 w-10" onClick={handleLeave}>
+                <ChevronLeft className="h-5 w-5" />
+                <span className="sr-only">{t[language].backToProjects}</span>
             </Button>
             <div className="space-y-2">
                 <p className="text-sm text-muted-foreground">{client?.name}</p>
@@ -921,9 +1015,10 @@ export default function ProjectDetailsPage() {
                 <Rows className="mr-2 h-4 w-4" />
                 {isOrganizing ? t[language].finishOrganizing : t[language].organizeSections}
               </Button>
-              <Button size="sm" onClick={handleSaveScope}>
-                <Save className="mr-2 h-4 w-4" />
-                {t[language].saveScope}
+              <Button size="sm" onClick={() => handleSaveScope(true)} disabled={saveStatus === 'saving'}>
+                {saveStatus === 'saving' ? (<><Save className="mr-2 h-4 w-4 animate-spin" />{t[language].saving}</>) : 
+                 saveStatus === 'saved' ? (<><CheckCircle className="mr-2 h-4 w-4" />{t[language].saved}</>) : 
+                 (<><Save className="mr-2 h-4 w-4" />{t[language].saveScope}</>)}
               </Button>
             </div>
           )}
@@ -938,7 +1033,7 @@ export default function ProjectDetailsPage() {
         <TabsContent value="scope">
              <div className="space-y-4">
                 <DndContext sensors={sensors} collisionDetection={closestCenter} onDragEnd={handleDragEnd}>
-                  <SortableContext items={scopeSections} strategy={verticalListSortingStrategy}>
+                  <SortableContext items={scopeSections.map(s => s.id)} strategy={verticalListSortingStrategy}>
                     <div className="space-y-4">
                       {scopeSections.map(section => (
                         <SortableScopeSection
@@ -1015,6 +1110,7 @@ export default function ProjectDetailsPage() {
     
 
     
+
 
 
 
