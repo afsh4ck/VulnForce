@@ -136,13 +136,13 @@ export default function ReportPreviewPage() {
     const todoRegex = /\[TODO:?.*?\]?/gi;
   
     if (project.reportBody) {
-        const sections = project.reportBody.split(/\n\n---\n\n/);
-        sections.forEach((section, index) => {
-            const headingMatch = section.match(/^(?:#+)\s(.*)/m);
+        const sections = project.reportBody.split(/\n\s*---\s*\n/);
+        sections.forEach((sectionContent) => {
+            const headingMatch = sectionContent.match(/^(?:#+)\s(.*)/m);
             const sectionTitle = headingMatch ? headingMatch[1].trim() : langT.scope;
-            const sectionId = `section-${index}`;
+            const sectionId = sectionTitle.replace(/\s+/g, '-').replace(/[^a-zA-Z0-9-]/g, '');
             
-            const scopeMatches = section.match(todoRegex);
+            const scopeMatches = sectionContent.match(todoRegex);
             if (scopeMatches) {
                 scopeMatches.forEach(match => {
                     foundTodos.push({
@@ -157,13 +157,13 @@ export default function ReportPreviewPage() {
 
     projectFindings.forEach(finding => {
       const findingSections = finding.markdown.split(/(?=^###\s)/gm);
-      findingSections.forEach((section, index) => {
-        const sectionId = `section-${index}`;
-        const findingMatches = section.match(todoRegex);
+      findingSections.forEach((sectionContent) => {
+        const findingMatches = sectionContent.match(todoRegex);
         if (findingMatches) {
           findingMatches.forEach(match => {
-            const sectionTitleMatch = section.match(/^###\s(.*)/);
+            const sectionTitleMatch = sectionContent.match(/^###\s(.*)/);
             const locationName = sectionTitleMatch ? sectionTitleMatch[1].trim() : finding.title;
+            const sectionId = locationName.replace(/\s+/g, '-').replace(/[^a-zA-Z0-9-]/g, '');
             
             foundTodos.push({
               location: `${langT.finding}: ${locationName}`,

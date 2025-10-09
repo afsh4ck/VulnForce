@@ -152,8 +152,12 @@ const SortableScopeSection = ({ section, isOrganizing, ...props }: { section: Sc
     opacity: isDragging ? 0.5 : 1,
   };
   
+  const headingMatch = section.content.match(/^(#{2,4}) (.*)/);
+  const sectionTitle = headingMatch ? headingMatch[2].trim() : '';
+  const sectionId = sectionTitle.replace(/\s+/g, '-').replace(/[^a-zA-Z0-9-]/g, '');
+
   return (
-    <div ref={setNodeRef} style={style} id={section.id}>
+    <div ref={setNodeRef} style={style} id={sectionId}>
       <ScopeSectionEditor section={section} isOrganizing={isOrganizing} dragHandleProps={attributes} dragListeners={listeners} {...props} />
     </div>
   );
@@ -492,29 +496,21 @@ export default function ProjectDetailsPage() {
   
   const parseSections = useCallback((markdown: string): ScopeSection[] => {
     if (!markdown) return [];
-    // This regex looks for the separator, but also for a potential ID in the line above it.
-    // Format: <!-- section-id: some-id -->\n\n---\n\n
-    const sectionRegex = /(?:<!-- section-id: (.*) -->\n\n)?---\n\n/g;
-    const parts = markdown.split(sectionRegex);
-
-    const sections: ScopeSection[] = [];
-    let i = 0;
-    while (i < parts.length) {
-      const content = parts[i];
-      const id = parts[i + 1] || `section-${Date.now()}-${Math.random()}`; // Use saved ID or generate new one
-      if (content?.trim()) {
-          sections.push({ id, content: content.trim() });
-      }
-      i += 2;
-    }
-     if (sections.length === 0 && markdown.trim() !== '') {
-        return markdown.split('\n\n---\n\n').map((content) => ({
-            id: `section-${Date.now()}-${Math.random()}`,
-            content: content.trim(),
-        }));
-    }
-
-    return sections;
+    
+    // This regex splits the text by '---' separators that are on their own line,
+    // possibly surrounded by whitespace.
+    const parts = markdown.split(/\n\s*---\s*\n/);
+    
+    return parts
+      .map((part, index) => {
+        // Remove any section-id comments from the content that will be edited
+        const cleanContent = part.replace(/<!--\s*section-id:.*?-->\n*/g, '').trim();
+        return {
+          id: `section-${index}-${Math.random()}`, // Generate a transient ID for the session
+          content: cleanContent
+        };
+      })
+      .filter(p => p.content.trim() !== '');
   }, []);
 
   useEffect(() => {
@@ -546,19 +542,24 @@ export default function ProjectDetailsPage() {
   }, [params.id, projects, router, parseSections]);
   
   useEffect(() => {
-    const hash = window.location.hash;
+    const hash = window.location.hash.substring(1);
     if (hash) {
-      const element = document.getElementById(hash.substring(1));
-      if (element) {
-        setTimeout(() => {
-            element.scrollIntoView({ behavior: 'smooth', block: 'start' });
-            element.classList.add('flash-highlight');
-            setTimeout(() => element.classList.remove('flash-highlight'), 2000);
-        }, 100);
-      }
+      const decodedHash = decodeURIComponent(hash);
+      setTimeout(() => {
+        const sections = document.querySelectorAll<HTMLElement>('[id^="scope-section-"]');
+        for (const section of sections) {
+          const titleElement = section.querySelector<HTMLInputElement>('input.font-semibold');
+          if (titleElement && titleElement.value.replace(/\s+/g, '-').replace(/[^a-zA-Z0-9-]/g, '') === decodedHash) {
+            section.scrollIntoView({ behavior: 'smooth', block: 'start' });
+            section.classList.add('flash-highlight');
+            setTimeout(() => section.classList.remove('flash-highlight'), 2000);
+            break; 
+          }
+        }
+      }, 300); // A small delay to ensure the DOM is ready
     }
-  }, []);
-
+  }, [scopeSections]);
+  
   // Debounced auto-save
   useEffect(() => {
     if (saveStatus === 'unsaved') {
@@ -654,7 +655,7 @@ export default function ProjectDetailsPage() {
   const handleSaveScope = (showToast = true) => {
     if (project) {
         setSaveStatus('saving');
-        const newReportBody = scopeSections.map(s => `<!-- section-id: ${s.id} -->\n\n${s.content}`).join('\n\n---\n\n');
+        const newReportBody = scopeSections.map(s => s.content).join('\n\n---\n\n');
         updateProject({...project, reportBody: newReportBody});
         if (showToast) {
             toast({ title: language === 'es' ? 'Informe guardado' : 'Report saved' });
@@ -1075,7 +1076,7 @@ export default function ProjectDetailsPage() {
                       {scopeSections.map(section => (
                         <SortableScopeSection
                           key={section.id}
-                          id={section.id}
+                          id={`scope-section-${section.id}`}
                           section={section}
                           isOrganizing={isOrganizing}
                           onContentChange={(newContent: string) => handleSectionContentChange(section.id, newContent)}
@@ -1119,7 +1120,7 @@ export default function ProjectDetailsPage() {
                         <div className="flex flex-row items-center">{t[language].severity} {getSortIcon('severity')}</div>
                     </TableHead>
                     <TableHead onClick={() => requestSort('cvss')} className="cursor-pointer hover:bg-muted/50">
-                        <div className="flex flex-row items-center">{t[language].cvss} {getSortIcon('cvss')}</div>
+                        <div className="flex items-center">{t[language].cvss} {getSortIcon('cvss')}</div>
                     </TableHead>
                     </TableRow>
                 </TableHeader>

@@ -128,8 +128,12 @@ const SortableSection = ({ section, isOrganizing, ...props }: { section: Finding
     opacity: isDragging ? 0.5 : 1,
   };
   
+  const headingMatch = section.content.match(/^(#{2,4}) (.*)/);
+  const sectionTitle = headingMatch ? headingMatch[2].trim() : '';
+  const sectionId = sectionTitle.replace(/\s+/g, '-').replace(/[^a-zA-Z0-9-]/g, '');
+
   return (
-    <div ref={setNodeRef} style={style} id={section.id}>
+    <div ref={setNodeRef} style={style} id={sectionId}>
       <SectionEditor section={section} isOrganizing={isOrganizing} dragHandleProps={attributes} dragListeners={listeners} {...props} />
     </div>
   );
@@ -408,12 +412,21 @@ export default function FindingEditorPage() {
 
   const parseMarkdownToSections = useCallback((markdown: string): FindingSection[] => {
     if (!markdown) return [];
-    const sectionRegex = /(?=^###\s)/gm;
-    const parts = markdown.split(sectionRegex);
-    return parts.filter(p => p.trim() !== '').map((content, index) => ({
-      id: `section-${index}-${Date.now()}`,
-      content: content.trim()
-    }));
+    
+    // This regex splits the text by '---' separators that are on their own line,
+    // possibly surrounded by whitespace, but not by the '<!-- section-id: ... -->' comments.
+    const parts = markdown.split(/\n\s*---\s*\n/);
+    
+    return parts
+      .map((part, index) => {
+        // Remove any section-id comments from the content that will be edited
+        const cleanContent = part.replace(/<!--\s*section-id:.*?-->\n*/g, '').trim();
+        return {
+          id: `section-${index}-${Date.now()}`, // Generate a transient ID for the session
+          content: cleanContent
+        };
+      })
+      .filter(p => p.content.trim() !== '');
   }, []);
 
   useEffect(() => {
@@ -442,18 +455,23 @@ export default function FindingEditorPage() {
   }, [findingId, projectId, projectLanguage, findings, router, projects, parseMarkdownToSections]);
 
   useEffect(() => {
-    const hash = window.location.hash;
+    const hash = window.location.hash.substring(1);
     if (hash) {
-      const element = document.getElementById(hash.substring(1));
-      if (element) {
+        const decodedHash = decodeURIComponent(hash);
         setTimeout(() => {
-            element.scrollIntoView({ behavior: 'smooth', block: 'start' });
-            element.classList.add('flash-highlight');
-            setTimeout(() => element.classList.remove('flash-highlight'), 2000);
-        }, 100);
-      }
+            const sections = document.querySelectorAll<HTMLElement>('[id^="finding-section-"]');
+            for (const section of sections) {
+                const titleElement = section.querySelector<HTMLInputElement>('input.font-semibold');
+                if (titleElement && titleElement.value.replace(/\s+/g, '-').replace(/[^a-zA-Z0-9-]/g, '') === decodedHash) {
+                    section.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                    section.classList.add('flash-highlight');
+                    setTimeout(() => section.classList.remove('flash-highlight'), 2000);
+                    break; 
+                }
+            }
+        }, 300);
     }
-  }, [sections]);
+}, [sections]);
 
 
   const handleSave = () => {
@@ -466,7 +484,7 @@ export default function FindingEditorPage() {
       return;
     }
     
-    const markdownContent = sections.map(s => s.content).join('\n\n');
+    const markdownContent = sections.map(s => s.content).join('\n\n---\n\n');
 
     const findingData = {
       title,
@@ -738,7 +756,7 @@ export default function FindingEditorPage() {
                     {sections.map(section => (
                       <SortableSection
                         key={section.id}
-                        id={section.id}
+                        id={`finding-section-${section.id}`}
                         section={section}
                         isOrganizing={isOrganizing}
                         onContentChange={(newContent: string) => handleSectionContentChange(section.id, newContent)}
