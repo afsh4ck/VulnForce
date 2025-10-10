@@ -9,7 +9,7 @@ import type {
 } from "@/components/ui/toast"
 
 const TOAST_LIMIT = 1
-const TOAST_REMOVE_DELAY = 1000000
+const TOAST_REMOVE_DELAY = 5000 // 5 seconds
 
 type ToasterToast = ToastProps & {
   id: string
@@ -183,6 +183,15 @@ function useToast() {
       }
     }
   }, [state])
+  
+  React.useEffect(() => {
+    if (state.toasts.length > 0) {
+      const timer = setTimeout(() => {
+        dispatch({ type: 'DISMISS_TOAST' });
+      }, TOAST_REMOVE_DELAY - 1000); // Dismiss a bit earlier than removal
+      return () => clearTimeout(timer);
+    }
+  }, [state.toasts]);
 
   return {
     ...state,

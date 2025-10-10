@@ -1,4 +1,5 @@
 
+
 'use client';
 
 import { useState, useEffect, useCallback, useMemo, useRef } from 'react';
@@ -491,10 +492,13 @@ export default function VulnerabilityEditorPage() {
       const vulnCopy = JSON.parse(JSON.stringify(vulnerability));
       setVuln(vulnCopy);
       setReferences(vulnCopy.references || []);
+      
       const initialEnSections = parseMarkdownToSections(vulnCopy.overview_en);
       const initialEsSections = parseMarkdownToSections(vulnCopy.overview_es);
+      
       setEnSections(initialEnSections);
       setEsSections(initialEsSections);
+      
       setEnSectionViews(initialEnSections.reduce((acc, sec) => ({ ...acc, [sec.id]: 'split' }), {}));
       setEsSectionViews(initialEsSections.reduce((acc, sec) => ({ ...acc, [sec.id]: 'split' }), {}));
     } else {

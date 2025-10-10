@@ -11,17 +11,19 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Textarea } from "@/components/ui/textarea";
 import { Calendar } from "@/components/ui/calendar";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
-import { CalendarIcon, FilePlus2, FileText, Scan, Globe, Network, Smartphone, Wifi, Award } from "lucide-react";
+import { CalendarIcon, FilePlus2, FileText, Scan, Globe, Network, Smartphone, Wifi, Award, PlusCircle, Upload } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { format } from "date-fns";
 import { es } from "date-fns/locale";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import Link from "next/link";
 import { useSearchParams, useRouter } from "next/navigation";
 import { useToast } from "@/hooks/use-toast";
 import { useData } from "@/context/data-context";
-import type { Project } from "@/lib/types";
+import type { Project, Client } from "@/lib/types";
 import { DateRange } from "react-day-picker";
+import { Dialog, DialogTrigger, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from "@/components/ui/dialog";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 
 const iconOptions = [
     { value: 'FileText', label: 'FileText' },
@@ -38,7 +40,7 @@ export default function NewProjectPage() {
   const searchParams = useSearchParams();
   const router = useRouter();
   const { toast } = useToast();
-  const { clients, addProject, projectTemplates } = useData();
+  const { clients, addProject, projectTemplates, addClient } = useData();
 
   const [name, setName] = useState('');
   const [clientId, setClientId] = useState<string>('');
@@ -49,6 +51,14 @@ export default function NewProjectPage() {
   const [projectLanguage, setProjectLanguage] = useState<Project['language']>('es');
   const [icon, setIcon] = useState('FileText');
   const [errors, setErrors] = useState<Record<string, boolean>>({});
+
+  // States for the new client dialog
+  const [isClientDialogOpen, setIsClientDialogOpen] = useState(false);
+  const [newClientName, setNewClientName] = useState('');
+  const [newClientContact, setNewClientContact] = useState('');
+  const [newClientLogo, setNewClientLogo] = useState<string | null>(null);
+  const createFileInputRef = useRef<HTMLInputElement>(null);
+
 
   useEffect(() => {
     if (templateId) {
@@ -116,6 +126,55 @@ export default function NewProjectPage() {
     router.push(`/dashboard/projects/${newProject.id}`);
   };
 
+  const handleLogoChange = (e: React.ChangeEvent<HTMLInputElement>, setLogo: (logo: string | null) => void) => {
+    if (e.target.files && e.target.files[0]) {
+      const file = e.target.files[0];
+      if (file.type.startsWith('image/')) {
+        const reader = new FileReader();
+        reader.onloadend = () => {
+          setLogo(reader.result as string);
+        };
+        reader.readAsDataURL(file);
+      } else {
+        toast({
+          variant: 'destructive',
+          title: 'Invalid file type',
+          description: 'Please select an image file.',
+        });
+      }
+    }
+  };
+
+  const handleCreateClient = () => {
+    if (!newClientName || !newClientContact) {
+      toast({
+        variant: 'destructive',
+        title: uiLanguage === 'es' ? 'Campos incompletos' : 'Incomplete fields',
+        description: uiLanguage === 'es' ? 'Por favor, rellena todos los campos.' : 'Please fill in all fields.',
+      });
+      return;
+    }
+
+    const newClient: Omit<Client, 'id'> = {
+      name: newClientName,
+      contact: newClientContact,
+      logoUrl: newClientLogo || '',
+    };
+
+    addClient(newClient);
+    toast({
+        title: uiLanguage === 'es' ? 'Cliente Creado' : 'Client Created',
+        description: `${newClient.name} ${uiLanguage === 'es' ? 'ha sido añadido.' : 'has been added.'}`,
+    });
+
+    // Reset form and close dialog
+    setNewClientName('');
+    setNewClientContact('');
+    setNewClientLogo(null);
+    setIsClientDialogOpen(false);
+  };
+
+
   const t = {
     en: {
         title: "Create New Project",
@@ -124,6 +183,7 @@ export default function NewProjectPage() {
         projectNamePlaceholder: "e.g., Q4 Web App Pentest",
         clientLabel: "Client",
         selectClient: "Select a client",
+        createNewClient: "Create New Client",
         scopeLabel: "Scope",
         scopePlaceholder: "e.g., *.example.com, 192.168.1.0/24",
         datesLabel: "Project Dates",
@@ -137,6 +197,15 @@ export default function NewProjectPage() {
         spanish: "Spanish",
         iconLabel: "Icon",
         selectIcon: "Select an icon",
+        newClientTitle: "Create New Client",
+        newClientDescription: "Add a new client to manage their projects and findings.",
+        nameLabel: "Name",
+        namePlaceholder: "Client Company Name",
+        contactLabel: "Contact",
+        contactPlaceholder: "contact@email.com",
+        createClient: "Create Client",
+        logoLabel: "Logo",
+        uploadLogo: "Upload Logo",
     },
     es: {
         title: "Crear Nuevo Proyecto",
@@ -145,6 +214,7 @@ export default function NewProjectPage() {
         projectNamePlaceholder: "p.ej., Pentest App Web Q4",
         clientLabel: "Cliente",
         selectClient: "Selecciona un cliente",
+        createNewClient: "Crear Nuevo Cliente",
         scopeLabel: "Alcance",
         scopePlaceholder: "p.ej., *.ejemplo.com, 192.168.1.0/24",
         datesLabel: "Fechas del Proyecto",
@@ -158,6 +228,15 @@ export default function NewProjectPage() {
         spanish: "Español",
         iconLabel: "Icono",
         selectIcon: "Selecciona un icono",
+        newClientTitle: "Crear Nuevo Cliente",
+        newClientDescription: "Añade un nuevo cliente para gestionar sus proyectos y hallazgos.",
+        nameLabel: "Nombre",
+        namePlaceholder: "Nombre de la Empresa Cliente",
+        contactLabel: "Contacto",
+        contactPlaceholder: "contacto@email.com",
+        createClient: "Crear Cliente",
+        logoLabel: "Logo",
+        uploadLogo: "Subir Logo",
     }
   }
 
@@ -222,16 +301,56 @@ export default function NewProjectPage() {
             </div>
              <div className="space-y-2">
                 <Label htmlFor="client">{t[uiLanguage].clientLabel}</Label>
-                <Select onValueChange={setClientId} value={clientId} required>
-                    <SelectTrigger id="client" className={cn(errors.clientId && 'border-destructive')}>
-                        <SelectValue placeholder={t[uiLanguage].selectClient} />
-                    </SelectTrigger>
-                    <SelectContent>
-                        {clients.map(client => (
-                            <SelectItem key={client.id} value={client.id}>{client.name}</SelectItem>
-                        ))}
-                    </SelectContent>
-                </Select>
+                <Dialog open={isClientDialogOpen} onOpenChange={setIsClientDialogOpen}>
+                  <Select onValueChange={setClientId} value={clientId} required>
+                      <SelectTrigger id="client" className={cn(errors.clientId && 'border-destructive')}>
+                          <SelectValue placeholder={t[uiLanguage].selectClient} />
+                      </SelectTrigger>
+                      <SelectContent>
+                          {clients.map(client => (
+                              <SelectItem key={client.id} value={client.id}>{client.name}</SelectItem>
+                          ))}
+                          <DialogTrigger asChild>
+                              <Button variant="ghost" className="w-full justify-start mt-1">
+                                  <PlusCircle className="mr-2 h-4 w-4" />
+                                  {t[uiLanguage].createNewClient}
+                              </Button>
+                          </DialogTrigger>
+                      </SelectContent>
+                  </Select>
+                  <DialogContent>
+                      <DialogHeader>
+                          <DialogTitle>{t[uiLanguage].newClientTitle}</DialogTitle>
+                          <DialogDescription>{t[uiLanguage].newClientDescription}</DialogDescription>
+                      </DialogHeader>
+                      <div className="grid gap-4 py-4">
+                          <div className="grid grid-cols-4 items-center gap-4">
+                              <Label htmlFor="new-client-name" className="text-right">{t[uiLanguage].nameLabel}</Label>
+                              <Input id="new-client-name" placeholder={t[uiLanguage].namePlaceholder} className="col-span-3" value={newClientName} onChange={(e) => setNewClientName(e.target.value)} />
+                          </div>
+                          <div className="grid grid-cols-4 items-center gap-4">
+                              <Label htmlFor="new-client-contact" className="text-right">{t[uiLanguage].contactLabel}</Label>
+                              <Input id="new-client-contact" placeholder={t[uiLanguage].contactPlaceholder} className="col-span-3" value={newClientContact} onChange={(e) => setNewClientContact(e.target.value)} />
+                          </div>
+                          <div className="grid grid-cols-4 items-center gap-4">
+                              <Label className="text-right">{t[uiLanguage].logoLabel}</Label>
+                              <div className="col-span-3 flex items-center gap-4">
+                                  <Avatar className="h-10 w-10">
+                                      {newClientLogo ? <AvatarImage src={newClientLogo} /> : <AvatarFallback>{newClientName ? newClientName.charAt(0) : '?'}</AvatarFallback>}
+                                  </Avatar>
+                                  <input type="file" ref={createFileInputRef} onChange={(e) => handleLogoChange(e, setNewClientLogo)} className="hidden" accept="image/*" />
+                                  <Button variant="outline" type="button" onClick={() => createFileInputRef.current?.click()}>
+                                      <Upload className="mr-2 h-4 w-4" />
+                                      {t[uiLanguage].uploadLogo}
+                                  </Button>
+                              </div>
+                          </div>
+                      </div>
+                      <DialogFooter>
+                          <Button onClick={handleCreateClient} type="button">{t[uiLanguage].createClient}</Button>
+                      </DialogFooter>
+                  </DialogContent>
+                </Dialog>
             </div>
             <div className="space-y-2">
                 <Label htmlFor="scope">{t[uiLanguage].scopeLabel}</Label>
