@@ -45,15 +45,14 @@ export default function ReportPreviewPage() {
   const [isSidebarOpen, setIsSidebarOpen] = useState(true);
   const [headings, setHeadings] = useState<Heading[]>([]);
   const [showTodos, setShowTodos] = useState(true);
+  const [activeHeading, setActiveHeading] = useState<string>('');
   
   const reportContentRef = useRef<HTMLDivElement>(null);
 
   const t = {
     en: {
-      executiveSummary: 'Executive Summary',
       findingsSummary: 'Findings Summary',
       tableOfContents: 'Table of Contents',
-      scopeAndMethodology: 'Scope & Methodology',
       findings: 'Findings',
       reportPreview: 'Report Preview',
       pending: 'Pending',
@@ -81,10 +80,8 @@ export default function ReportPreviewPage() {
       darkMode: 'Dark Mode',
     },
     es: {
-      executiveSummary: 'Resumen Ejecutivo',
       findingsSummary: 'Resumen de Hallazgos',
       tableOfContents: 'Índice de Contenidos',
-      scopeAndMethodology: 'Alcance y Metodología',
       findings: 'Hallazgos',
       reportPreview: 'Previsualización del Informe',
       pending: 'Pendiente',
@@ -138,9 +135,9 @@ export default function ReportPreviewPage() {
       })
       .join('\n\n');
       
-    const findingsSection = `# ${langT.findings}\n\n${findingsContent}`;
+    const findingsSection = `\n\n# ${langT.findings}\n\n${findingsContent}`;
 
-    return `${mainContent}\n\n${findingsSection}`;
+    return `${mainContent}${findingsSection}`;
   }, [project, client, projectFindings, t]);
 
   useEffect(() => {
@@ -172,6 +169,35 @@ export default function ReportPreviewPage() {
         });
         setHeadings(newHeadings);
     }
+    
+    const handleScroll = () => {
+      if (!reportContentRef.current) return;
+      
+      const headingElements = Array.from(
+        reportContentRef.current.querySelectorAll('h1, h2, h3')
+      ) as HTMLElement[];
+      
+      let currentActiveHeadingId = '';
+      
+      for (let i = headingElements.length - 1; i >= 0; i--) {
+        const heading = headingElements[i];
+        const rect = heading.getBoundingClientRect();
+        
+        if (rect.top <= 100) { // 100px offset from the top
+          currentActiveHeadingId = heading.id;
+          break;
+        }
+      }
+      
+      setActiveHeading(currentActiveHeadingId);
+    };
+
+    window.addEventListener('scroll', handleScroll);
+    handleScroll(); // Initial check
+    
+    return () => {
+      window.removeEventListener('scroll', handleScroll);
+    };
   }, [fullReportContent]); 
 
 
@@ -414,25 +440,15 @@ export default function ReportPreviewPage() {
       <div className="max-w-7xl mx-auto p-4 md:p-8 flex flex-row-reverse">
         <aside className={cn("no-print w-72 pl-8 shrink-0 hidden md:block", isSidebarOpen ? "md:sticky top-20 h-[calc(100vh-6rem)]" : "hidden")}>
           <div className="h-full overflow-y-auto space-y-6">
-            {showTodos && (
+            {showTodos && todos.length > 0 && (
                 <Card>
                   <CardHeader className="flex-row items-center justify-between p-4">
                     <div className="flex items-center gap-2">
-                      {todos.length === 0 ? (
-                        <CheckCircle className="h-5 w-5 text-green-500" />
-                      ) : (
                         <AlertCircle className="h-5 w-5 text-destructive" />
-                      )}
-                      <CardTitle className="text-sm font-semibold">{todos.length > 0 ? `${todos.length} ${t[uiLanguage].pending}` : t[uiLanguage].noPendingItems}</CardTitle>
+                        <CardTitle className="text-sm font-semibold">{todos.length} {t[uiLanguage].pending}</CardTitle>
                     </div>
-                    {todos.length === 0 && (
-                        <Button variant="ghost" size="icon" className="h-6 w-6" onClick={() => setShowTodos(false)}>
-                            <X className="h-4 w-4" />
-                        </Button>
-                    )}
                   </CardHeader>
                   <CardContent className="p-4 pt-0">
-                    {todos.length > 0 ? (
                       <ul className="space-y-2 text-sm">
                         {todos.map((todo, index) => (
                           <li key={index}>
@@ -448,20 +464,36 @@ export default function ReportPreviewPage() {
                           </li>
                         ))}
                       </ul>
-                    ) : (
-                      <p className="text-sm text-muted-foreground">{t[uiLanguage].readyToExport}</p>
-                    )}
                   </CardContent>
                 </Card>
             )}
+             {showTodos && todos.length === 0 && (
+                <Card>
+                    <CardHeader className="flex-row items-center justify-between p-4">
+                        <div className="flex items-center gap-2">
+                           <CheckCircle className="h-5 w-5 text-green-500" />
+                           <CardTitle className="text-sm font-semibold">{t[uiLanguage].noPendingItems}</CardTitle>
+                        </div>
+                        <Button variant="ghost" size="icon" className="h-6 w-6" onClick={() => setShowTodos(false)}>
+                            <X className="h-4 w-4" />
+                        </Button>
+                    </CardHeader>
+                     <CardContent className="p-4 pt-0">
+                         <p className="text-sm text-muted-foreground">{t[uiLanguage].readyToExport}</p>
+                    </CardContent>
+                </Card>
+             )}
             
             <nav className="space-y-2">
               <p className="font-semibold text-sm px-2">{langT.tableOfContents}</p>
               <ul className="space-y-1">
                 {headings.map((heading) => (
                   <li key={heading.id}>
-                    <a href={`#${heading.id}`} className={cn("block text-sm rounded-md py-1 px-2 hover:bg-muted hover:text-primary transition-colors", {
-                      'font-semibold text-base': heading.level === 1,
+                    <a 
+                      href={`#${heading.id}`} 
+                      className={cn("block text-sm rounded-md py-1 px-2 hover:bg-muted hover:text-primary transition-colors", {
+                      'font-semibold': heading.level <= 2,
+                      'text-primary': heading.id === activeHeading,
                       'pl-4': heading.level === 2,
                       'pl-8 text-xs': heading.level === 3,
                     })}>
@@ -485,7 +517,7 @@ export default function ReportPreviewPage() {
             </header>
             
             <section className="hidden print:block break-after-page">
-              <h2 className="font-headline text-2xl font-bold border-b-2 border-primary pb-2 mb-4 mt-12">{langT.tableOfContents}</h2>
+              <h1 className="font-headline text-2xl font-bold border-b-2 border-primary pb-2 mb-4 mt-12">{langT.tableOfContents}</h1>
               <ul className="list-none space-y-2 print-toc">
                 {headings.map((h) => (
                   <li key={`toc-print-${h.id}`} className={cn({
@@ -507,3 +539,4 @@ export default function ReportPreviewPage() {
     </div>
   );
 }
+
