@@ -48,13 +48,12 @@ export default function ReportPreviewPage() {
 
   const reportContentRef = useRef<HTMLDivElement>(null);
 
-  const generateSlug = (() => {
-    let counter = 0;
+  const generateSlug = useMemo(() => {
     const seen = new Set<string>();
     return (text: string) => {
       const baseSlug = text.toLowerCase().replace(/\s+/g, '-').replace(/[^\w-]+/g, '');
       let finalSlug = baseSlug;
-      counter = 0;
+      let counter = 0;
       while (seen.has(finalSlug)) {
         counter++;
         finalSlug = `${baseSlug}-${counter}`;
@@ -62,8 +61,7 @@ export default function ReportPreviewPage() {
       seen.add(finalSlug);
       return finalSlug;
     };
-  })();
-
+  }, []);
 
   const getSeverityVariant = (severity: string): 'destructive' | 'high' | 'medium' | 'low' | 'secondary' => {
     switch (severity) {
@@ -256,10 +254,15 @@ ${appendixContent}
   
   const handlePrint = (printTheme: 'light' | 'dark') => {
     const originalTheme = theme;
-    setTheme(printTheme);
+    // Temporarily set the theme for printing without causing a state update loop
+    document.documentElement.classList.remove('light', 'dark');
+    document.documentElement.classList.add(printTheme);
+
     setTimeout(() => {
       window.print();
-      setTheme(originalTheme);
+      // Restore original theme
+      document.documentElement.classList.remove('light', 'dark');
+      document.documentElement.classList.add(originalTheme);
     }, 500); 
   };
   
@@ -267,33 +270,56 @@ ${appendixContent}
     if (reportContentRef.current) {
         const fullHtml = `
 <!DOCTYPE html>
-<html lang="${project?.language || 'en'}" class="${theme}">
+<html lang="${project?.language || 'en'}" class="dark">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>${project?.name}</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <style>
-    :root {
-      --background: 0 0% 94.1%; --foreground: 240 10% 3.9%; --card: 0 0% 100%; --card-foreground: 240 10% 3.9%; --popover: 0 0% 100%; --popover-foreground: 240 10% 3.9%; --primary: 76 100% 50%; --primary-foreground: 76 100% 5%; --secondary: 240 4.8% 95.9%; --secondary-foreground: 240 5.9% 10%; --muted: 240 4.8% 95.9%; --muted-foreground: 240 3.8% 46.1%; --accent: 76 100% 60%; --accent-foreground: 76 100% 10%; --destructive: 0 80% 50%; --destructive-foreground: 0 0% 98%; --border: 240 5.9% 90%; --input: 240 5.9% 90%; --ring: 76 100% 50%;
-    }
-    .dark {
-      --background: 224 71% 4%; --foreground: 210 40% 98%; --card: 224 71% 6%; --card-foreground: 210 40% 98%; --popover: 224 71% 4%; --popover-foreground: 210 40% 98%; --primary: 76 100% 50%; --primary-foreground: 76 100% 5%; --secondary: 220 15% 15%; --secondary-foreground: 210 40% 98%; --muted: 220 15% 15%; --muted-foreground: 215 20% 65%; --accent: 76 100% 60%; --accent-foreground: 76 100% 10%; --destructive: 0 72% 51%; --destructive-foreground: 210 40% 98%; --border: 220 15% 15%; --input: 220 15% 15%; --ring: 76 100% 50%;
-    }
+    :root { --background: 0 0% 100%; --foreground: 240 10% 3.9%; --card: 0 0% 100%; --card-foreground: 240 10% 3.9%; --popover: 0 0% 100%; --popover-foreground: 240 10% 3.9%; --primary: 76 100% 50%; --primary-foreground: 76 100% 5%; --secondary: 240 4.8% 95.9%; --secondary-foreground: 240 5.9% 10%; --muted: 240 4.8% 95.9%; --muted-foreground: 240 3.8% 46.1%; --accent: 76 100% 60%; --accent-foreground: 76 100% 10%; --destructive: 0 80% 50%; --destructive-foreground: 0 0% 98%; --border: 240 5.9% 90%; --input: 240 5.9% 90%; --ring: 76 100% 50%; }
+    .dark { --background: 224 71% 4%; --foreground: 210 40% 98%; --card: 224 71% 6%; --card-foreground: 210 40% 98%; --popover: 224 71% 4%; --popover-foreground: 210 40% 98%; --primary: 76 100% 50%; --primary-foreground: 76 100% 5%; --secondary: 220 15% 15%; --secondary-foreground: 210 40% 98%; --muted: 220 15% 15%; --muted-foreground: 215 20% 65%; --accent: 76 100% 60%; --accent-foreground: 76 100% 10%; --destructive: 0 72% 51%; --destructive-foreground: 210 40% 98%; --border: 220 15% 15%; --input: 220 15% 15%; --ring: 76 100% 50%; }
     body { background-color: hsl(var(--background)); color: hsl(var(--foreground)); font-family: sans-serif; }
-    .prose { color: hsl(var(--foreground)); }
-    .prose h1, .prose h2, .prose h3, .prose h4, .prose h5, .prose h6 { color: hsl(var(--foreground)); }
-    .prose a { color: hsl(var(--primary)); }
-    .prose strong { color: hsl(var(--foreground)); }
-    .prose blockquote { color: hsl(var(--muted-foreground)); border-left-color: hsl(var(--border)); }
-    .prose code { color: hsl(var(--foreground)); background-color: hsl(var(--muted)); padding: 2px 4px; border-radius: 4px; }
-    .prose pre { background-color: #282c34; color: #abb2bf; padding: 1em; border-radius: 8px; overflow-x: auto; }
-    .prose table { width: 100%; } .prose th { background-color: hsl(var(--muted)); } .prose td, .prose th { border: 1px solid hsl(var(--border)); padding: 8px; }
-    hr { border-top-color: hsl(var(--border)); }
+    .prose { color: hsl(var(--foreground)); } .prose h1, .prose h2, .prose h3, .prose h4, .prose h5, .prose h6 { color: hsl(var(--foreground)); } .prose a { color: hsl(var(--primary)); } .prose strong { color: hsl(var(--foreground)); } .prose blockquote { color: hsl(var(--muted-foreground)); border-left-color: hsl(var(--border)); } .prose code:not(pre code) { color: hsl(var(--accent-foreground)); background-color: hsl(var(--accent)); padding: 2px 4px; border-radius: 4px; } .prose pre { background-color: #282c34; color: #abb2bf; padding: 1em; border-radius: 8px; overflow-x: auto; } .prose table { width: 100%; } .prose th { background-color: hsl(var(--muted)); } .prose td, .prose th { border: 1px solid hsl(var(--border)); padding: 8px; } hr { border-top-color: hsl(var(--border)); }
   </style>
 </head>
 <body class="p-8">
+  <div style="position: fixed; top: 1rem; right: 1rem;">
+    <button id="theme-switcher" style="background: hsl(var(--muted)); color: hsl(var(--foreground)); padding: 0.5rem; border-radius: 9999px; border: 1px solid hsl(var(--border));">
+        <svg id="sun-icon" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-sun"><circle cx="12" cy="12" r="4"></circle><path d="M12 2v2"></path><path d="M12 20v2"></path><path d="m4.93 4.93 1.41 1.41"></path><path d="m17.66 17.66 1.41 1.41"></path><path d="M2 12h2"></path><path d="M20 12h2"></path><path d="m6.34 17.66-1.41 1.41"></path><path d="m19.07 4.93-1.41 1.41"></path></svg>
+        <svg id="moon-icon" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-moon" style="display: none;"><path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z"></path></svg>
+    </button>
+  </div>
   ${reportContentRef.current.innerHTML}
+  <script>
+    const switcher = document.getElementById('theme-switcher');
+    const sunIcon = document.getElementById('sun-icon');
+    const moonIcon = document.getElementById('moon-icon');
+    const html = document.documentElement;
+
+    switcher.addEventListener('click', () => {
+      if (html.classList.contains('dark')) {
+        html.classList.remove('dark');
+        html.classList.add('light');
+        sunIcon.style.display = 'none';
+        moonIcon.style.display = 'block';
+      } else {
+        html.classList.remove('light');
+        html.classList.add('dark');
+        sunIcon.style.display = 'block';
+        moonIcon.style.display = 'none';
+      }
+    });
+
+    // Initial state based on class
+    if (html.classList.contains('dark')) {
+      sunIcon.style.display = 'block';
+      moonIcon.style.display = 'none';
+    } else {
+      sunIcon.style.display = 'none';
+      moonIcon.style.display = 'block';
+    }
+  </script>
 </body>
 </html>`;
         const blob = new Blob([fullHtml], { type: 'text/html' });
@@ -350,6 +376,9 @@ ${appendixContent}
           .no-print {
             display: none !important;
           }
+          main {
+             scroll-behavior: auto !important;
+          }
           @page {
             size: A4;
             margin: 1.5cm;
@@ -375,14 +404,9 @@ ${appendixContent}
                       <span className="sr-only">{t[uiLanguage].backToProject}</span>
                   </Link>
               </Button>
-              <h1 className="font-headline text-2xl font-bold">{t[uiLanguage].reportPreview}</h1>
+              <h1 className="font-headline text-xl md:text-2xl font-bold">{t[uiLanguage].reportPreview}</h1>
             </div>
              <div className="flex items-center gap-2">
-                <Button variant="outline" onClick={() => setTheme(theme === 'dark' ? 'light' : 'dark')} size="icon">
-                  <Sun className="h-5 w-5 rotate-0 scale-100 transition-all dark:-rotate-90 dark:scale-0" />
-                  <Moon className="absolute h-5 w-5 rotate-90 scale-0 transition-all dark:rotate-0 dark:scale-100" />
-                  <span className="sr-only">Toggle theme</span>
-                </Button>
                 <Button variant="outline" onClick={handleDownloadHTML}>
                     <Globe className="mr-2 h-4 w-4" />
                     {t[uiLanguage].downloadHTML}
@@ -407,8 +431,8 @@ ${appendixContent}
       </header>
 
       <div className="max-w-7xl mx-auto p-4 md:p-8 flex">
-        <aside className={cn("no-print w-64 pr-8 border-r transition-all duration-300 overflow-y-auto", isSidebarOpen ? "block" : "hidden")}>
-          <div className="sticky top-20">
+        <aside className={cn("no-print w-64 pr-8 shrink-0 transition-all duration-300", isSidebarOpen ? "block" : "hidden")}>
+          <div className="sticky top-20 h-[calc(100vh-6rem)] overflow-y-auto">
             <Card className="mb-6">
               <CardHeader>
                 <div className="flex items-center gap-2">
@@ -427,11 +451,11 @@ ${appendixContent}
                       <li key={index}>
                         <Link href={todo.link} className="block border-l-4 border-accent p-3 rounded-r-md hover:bg-muted/50 transition-colors group">
                            <div className="flex justify-between items-center">
-                              <div className="flex-1">
-                                <p className="font-semibold text-sm">{todo.location}</p>
+                              <div className="flex-1 overflow-hidden">
+                                <p className="font-semibold text-sm truncate">{todo.location}</p>
                                 <p className="text-xs text-muted-foreground font-code truncate my-1">"{todo.context.replace(/\[|\]/g, '')}"</p>
                               </div>
-                              <ArrowRight className="h-5 w-5 text-primary ml-4" />
+                              <ArrowRight className="h-5 w-5 text-primary ml-4 shrink-0" />
                            </div>
                         </Link>
                       </li>
@@ -473,7 +497,7 @@ ${appendixContent}
               <Logo />
             </header>
 
-            <section id={generateSlug(langT.executiveSummary)}>
+            <section id={headings.find(h => h.level === 1 && h.text.includes(langT.executiveSummary))?.id}>
               <h2 className="font-headline text-2xl font-bold border-b-2 border-primary pb-2 mb-4 mt-12">{`1. ${langT.executiveSummary}`}</h2>
               <div className="prose dark:prose-invert max-w-none">
                 <MarkdownPreview content={executiveSummaryContent} getImage={getImage} isReport />
@@ -512,18 +536,20 @@ ${appendixContent}
               </div>
             </section>
 
-            <section id={generateSlug(langT.scopeAndMethodology)}>
+            <section id={headings.find(h => h.level === 1 && h.text.includes(langT.scopeAndMethodology))?.id}>
               <h2 className="font-headline text-2xl font-bold border-b-2 border-primary pb-2 mb-4 mt-12">{`2. ${langT.scopeAndMethodology}`}</h2>
               <div className="prose dark:prose-invert max-w-none">
                 <MarkdownPreview content={scopeContent} getImage={getImage} isReport />
               </div>
             </section>
 
-            <section id={generateSlug(langT.findingsSummary)}>
+            <section id={headings.find(h => h.level === 1 && h.text.includes(langT.findingsSummary))?.id}>
               <h2 className="font-headline text-2xl font-bold border-b-2 border-primary pb-2 mb-4 mt-12">{`3. ${langT.findingsSummary}`}</h2>
               <div className="space-y-12">
-                {projectFindings.map((finding, index) => (
-                  <div key={finding.id} id={generateSlug(`3.${index + 1} ${finding.title}`)} className="break-after-page">
+                {projectFindings.map((finding, index) => {
+                  const headingId = headings.find(h => h.level === 2 && h.text.includes(finding.title))?.id;
+                  return (
+                  <div key={finding.id} id={headingId} className="break-after-page">
                     <div className="flex justify-between items-center mb-2">
                       <h3 className="font-headline text-xl font-bold mt-8">{`3.${index + 1} ${finding.title}`}</h3>
                       <Badge variant={getSeverityVariant(finding.severity)} className="text-base px-3 py-1">{finding.severity}</Badge>
@@ -534,12 +560,12 @@ ${appendixContent}
                       <MarkdownPreview content={finding.markdown} getImage={getImage} isReport />
                     </div>
                   </div>
-                ))}
+                )})}
               </div>
             </section>
 
             {appendixContent && (
-              <section id={generateSlug(langT.appendix)}>
+              <section id={headings.find(h => h.level === 1 && h.text.includes(langT.appendix))?.id}>
                 <h2 className="font-headline text-2xl font-bold border-b-2 border-primary pb-2 mb-4 mt-12">{`4. ${langT.appendix}`}</h2>
                 <div className="prose dark:prose-invert max-w-none">
                   <MarkdownPreview content={appendixContent} getImage={getImage} isReport />
