@@ -68,9 +68,6 @@ const addHeaderIds = (markdownContent: string) => {
 
 export const MarkdownPreview = ({ content, getImage, isReport }: { content: string, getImage: (id: string) => ImageAsset | undefined, isReport?: boolean }) => {
     
-    // The remark-gfm plugin doesn't directly support custom IDs. A common workaround is to manually add them
-    // to the markdown string. However, for a more robust solution, a custom remark plugin would be better.
-    // For simplicity, we'll manually inject IDs into headers here.
     const processedContent = useMemo(() => addHeaderIds(content), [content]);
 
     const extractIdFromText = (text: string): [string, string] => {
@@ -88,7 +85,7 @@ export const MarkdownPreview = ({ content, getImage, isReport }: { content: stri
                 components={{
                     h1: ({ node, children, ...props }) => {
                         const [text, id] = extractIdFromText(String(children));
-                        return <h1 id={id} {...props} className={cn("text-3xl font-bold mb-4 border-b pb-2", isReport && "mt-12")}>{renderWithTodos('span', '')({children: text})}</h1>
+                        return <h1 id={id} {...props} className={cn("text-3xl font-bold mb-4 border-b-2 border-primary pb-2", isReport && "mt-12")}>{renderWithTodos('span', '')({children: text})}</h1>
                     },
                     h2: ({ node, children, ...props }) => {
                         const [text, id] = extractIdFromText(String(children));
