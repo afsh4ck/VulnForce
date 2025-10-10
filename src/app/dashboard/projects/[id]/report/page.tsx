@@ -1,5 +1,4 @@
 
-
 'use client';
 
 import { useParams, useRouter } from 'next/navigation';
@@ -44,26 +43,27 @@ export default function ReportPreviewPage() {
   const [client, setClient] = useState<Client | undefined>();
   const [projectFindings, setProjectFindings] = useState<Finding[]>([]);
   const [isSidebarOpen, setIsSidebarOpen] = useState(true);
-
+  const [headings, setHeadings] = useState<Heading[]>([]);
+  
   const reportContentRef = useRef<HTMLDivElement>(null);
   
-    const generateSlug = useMemo(() => {
-        const seen = new Set<string>();
-        return (text: string) => {
-            let baseSlug = text.toLowerCase().replace(/\s+/g, '-').replace(/[^\w-]+/g, '');
-            if (!baseSlug) {
-                baseSlug = 'section';
-            }
-            let finalSlug = baseSlug;
-            let counter = 1;
-            while (seen.has(finalSlug)) {
-                finalSlug = `${baseSlug}-${counter}`;
-                counter++;
-            }
-            seen.add(finalSlug);
-            return finalSlug;
-        };
-    }, []);
+  const generateSlug = useMemo(() => {
+    const seen = new Set<string>();
+    return (text: string) => {
+        let baseSlug = text.toLowerCase().replace(/\s+/g, '-').replace(/[^\w-]+/g, '');
+        if (!baseSlug) {
+            baseSlug = 'section';
+        }
+        let finalSlug = baseSlug;
+        let counter = 1;
+        while (seen.has(finalSlug)) {
+            finalSlug = `${baseSlug}-${counter}`;
+            counter++;
+        }
+        seen.add(finalSlug);
+        return finalSlug;
+    };
+  }, []);
 
   const getSeverityVariant = (severity: string): 'destructive' | 'high' | 'medium' | 'low' | 'secondary' => {
     switch (severity) {
@@ -144,22 +144,20 @@ export default function ReportPreviewPage() {
   
   const [scopeContent, appendixContent] = useMemo(() => {
     if (!project?.reportBody) return ['', ''];
-    const parts = project.reportBody.split('### Appendix');
-    const appendixPart = parts.length > 1 ? '### Appendix' + parts.slice(1).join('### Appendix') : '';
-    const scopePart = parts[0].replace('### Appendix', '').trim();
+    const parts = project.reportBody.split(/(\n### Apéndice|\n### Appendix)/);
+    const appendixPart = parts.length > 1 ? (parts[1] || '') + (parts[2] || '') : '';
+    const scopePart = parts[0].trim();
     return [scopePart, appendixPart];
   }, [project?.reportBody]);
 
-  const headings = useMemo(() => {
-    if (!project || !client) return [];
-    
-    const reportLang = project.language;
-    const langT = t[reportLang];
+  useEffect(() => {
+    if (project && client) {
+        const reportLang = project.language;
+        const langT = t[reportLang];
+        const criticalCount = projectFindings.filter(f => f.severity === 'Critical').length;
+        const highCount = projectFindings.filter(f => f.severity === 'High').length;
 
-    const criticalCount = projectFindings.filter(f => f.severity === 'Critical').length;
-    const highCount = projectFindings.filter(f => f.severity === 'High').length;
-
-    const allContent = `
+        const allContent = `
 # 1. ${langT.executiveSummary}
 ${langT.executiveSummaryContent(project.name, client?.name || '', project.startDate, project.endDate, projectFindings.length, criticalCount, highCount)}
 # 2. ${langT.scopeAndMethodology}
@@ -170,14 +168,16 @@ ${appendixContent ? `# 4. ${langT.appendix}` : ''}
 ${appendixContent}
 `;
 
-    const headingRegex = /^(#{1,3}) (.*)/gm;
-    const matches = [...allContent.matchAll(headingRegex)];
-    const slugger = generateSlug;
-    return matches.map(match => ({
-      level: match[1].length,
-      text: match[2],
-      id: slugger(match[2]),
-    }));
+        const headingRegex = /^(#{1,3}) (.*)/gm;
+        const matches = [...allContent.matchAll(headingRegex)];
+        const slugger = generateSlug;
+        const newHeadings = matches.map(match => ({
+            level: match[1].length,
+            text: match[2],
+            id: slugger(match[2]),
+        }));
+        setHeadings(newHeadings);
+    }
   }, [project, client, projectFindings, scopeContent, appendixContent, t, generateSlug]);
 
 
@@ -372,6 +372,9 @@ ${appendixContent}
           main {
              scroll-behavior: auto !important;
           }
+          [id] {
+            scroll-margin-top: 80px;
+          }
           @page {
             size: A4;
             margin: 1.5cm;
@@ -386,6 +389,9 @@ ${appendixContent}
             animation: flash 2s ease-out;
         }
         html { scroll-behavior: smooth; }
+        [id] {
+          scroll-margin-top: 80px;
+        }
       `}</style>
       
       <header className="sticky top-0 z-30 w-full bg-background/80 backdrop-blur-sm border-b no-print">
@@ -439,7 +445,7 @@ ${appendixContent}
               </CardHeader>
               <CardContent>
                 {todos.length > 0 ? (
-                  <ul className="space-y-2">
+                  <ul className="space-y-2 text-sm">
                     {todos.map((todo, index) => (
                       <li key={index}>
                         <Link href={todo.link} className="block border-l-4 border-accent p-3 rounded-r-md hover:bg-muted/50 transition-colors group">
@@ -571,4 +577,3 @@ ${appendixContent}
     </div>
   );
 }
-
