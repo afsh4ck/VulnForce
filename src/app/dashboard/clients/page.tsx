@@ -39,6 +39,7 @@ export default function ClientsPage() {
   const [isCreateDialogOpen, setIsCreateDialogOpen] = useState(false);
   const [newClientName, setNewClientName] = useState('');
   const [newClientContact, setNewClientContact] = useState('');
+  const [newClientPhone, setNewClientPhone] = useState('');
   const [newClientLogo, setNewClientLogo] = useState<string | null>(null);
   const createFileInputRef = useRef<HTMLInputElement>(null);
 
@@ -48,6 +49,7 @@ export default function ClientsPage() {
   const [editingClient, setEditingClient] = useState<Client | null>(null);
   const [editClientName, setEditClientName] = useState('');
   const [editClientContact, setEditClientContact] = useState('');
+  const [editClientPhone, setEditClientPhone] = useState('');
   const [editClientLogo, setEditClientLogo] = useState<string | null>(null);
   const editFileInputRef = useRef<HTMLInputElement>(null);
 
@@ -55,6 +57,7 @@ export default function ClientsPage() {
     if (editingClient) {
       setEditClientName(editingClient.name);
       setEditClientContact(editingClient.contact);
+      setEditClientPhone(editingClient.phone || '');
       setEditClientLogo(editingClient.logoUrl || null);
     }
   }, [editingClient]);
@@ -104,6 +107,7 @@ export default function ClientsPage() {
       ...editingClient, 
       name: editClientName, 
       contact: editClientContact, 
+      phone: editClientPhone,
       logoUrl: editClientLogo || '', 
     });
 
@@ -130,6 +134,7 @@ export default function ClientsPage() {
     const newClient: Omit<Client, 'id'> = {
       name: newClientName,
       contact: newClientContact,
+      phone: newClientPhone,
       logoUrl: newClientLogo || '',
     };
 
@@ -142,6 +147,7 @@ export default function ClientsPage() {
     // Reset form and close dialog
     setNewClientName('');
     setNewClientContact('');
+    setNewClientPhone('');
     setNewClientLogo(null);
     setIsCreateDialogOpen(false);
   };
@@ -149,15 +155,19 @@ export default function ClientsPage() {
   const sortedAndFilteredClients = useMemo(() => {
     let filteredClients = clients.filter(client =>
       client.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      client.contact.toLowerCase().includes(searchTerm.toLowerCase())
+      client.contact.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      (client.phone && client.phone.toLowerCase().includes(searchTerm.toLowerCase()))
     );
 
-    if (sortConfig !== null) {
+    if (sortConfig !== null && sortConfig.key) {
       filteredClients.sort((a, b) => {
-        if (a[sortConfig.key] < b[sortConfig.key]) {
+        const aValue = a[sortConfig.key] || '';
+        const bValue = b[sortConfig.key] || '';
+
+        if (aValue < bValue) {
           return sortConfig.direction === 'ascending' ? -1 : 1;
         }
-        if (a[sortConfig.key] > b[sortConfig.key]) {
+        if (aValue > bValue) {
           return sortConfig.direction === 'ascending' ? 1 : -1;
         }
         return 0;
@@ -194,11 +204,14 @@ export default function ClientsPage() {
       namePlaceholder: "Client Company Name",
       contactLabel: "Contact",
       contactPlaceholder: "contact@email.com",
+      phoneLabel: "Phone",
+      phonePlaceholder: "+1 (555) 123-4567",
       createClient: "Create Client",
       updateClient: "Update Client",
       logoHeader: "Logo",
       nameHeader: "Name",
       contactHeader: "Contact",
+      phoneHeader: "Phone",
       actionsHeader: "Actions",
       edit: "Edit",
       delete: "Delete",
@@ -221,11 +234,14 @@ export default function ClientsPage() {
       namePlaceholder: "Nombre de la Empresa Cliente",
       contactLabel: "Contacto",
       contactPlaceholder: "contacto@email.com",
+      phoneLabel: "Teléfono",
+      phonePlaceholder: "+34 91 123 45 67",
       createClient: "Crear Cliente",
       updateClient: "Actualizar Cliente",
       logoHeader: "Logo",
       nameHeader: "Nombre",
       contactHeader: "Contacto",
+      phoneHeader: "Teléfono",
       actionsHeader: "Acciones",
       edit: "Editar",
       delete: "Eliminar",
@@ -259,7 +275,7 @@ export default function ClientsPage() {
                 <PlusCircle className="mr-2 h-4 w-4" /> {t[language].newClient}
               </Button>
             </DialogTrigger>
-            <DialogContent>
+            <DialogContent className="sm:max-w-[480px]">
               <DialogHeader>
                 <DialogTitle>{t[language].newClientTitle}</DialogTitle>
                 <DialogDescription>
@@ -276,6 +292,10 @@ export default function ClientsPage() {
                   <Input id="contact" placeholder={t[language].contactPlaceholder} className="col-span-3" value={newClientContact} onChange={(e) => setNewClientContact(e.target.value)} />
                 </div>
                 <div className="grid grid-cols-4 items-center gap-4">
+                  <Label htmlFor="phone" className="text-right">{t[language].phoneLabel}</Label>
+                  <Input id="phone" placeholder={t[language].phonePlaceholder} className="col-span-3" value={newClientPhone} onChange={(e) => setNewClientPhone(e.target.value)} />
+                </div>
+                <div className="grid grid-cols-4 items-center gap-4">
                   <Label htmlFor="new-logo" className="text-right">{t[language].logoLabel}</Label>
                    <div className="col-span-3 flex items-center gap-4">
                      <Avatar className="h-10 w-10">
@@ -288,7 +308,7 @@ export default function ClientsPage() {
                         className="hidden"
                         accept="image/*"
                     />
-                    <Button variant="outline" onClick={() => createFileInputRef.current?.click()}>
+                    <Button variant="outline" type="button" onClick={() => createFileInputRef.current?.click()}>
                         <Upload className="mr-2 h-4 w-4" />
                         {t[language].uploadLogo}
                     </Button>
@@ -315,6 +335,9 @@ export default function ClientsPage() {
                 <TableHead onClick={() => requestSort('contact')} className="cursor-pointer hover:bg-muted/50">
                    <div className="flex flex-row items-center">{t[language].contactHeader} {getSortIcon('contact')}</div>
                 </TableHead>
+                <TableHead onClick={() => requestSort('phone')} className="cursor-pointer hover:bg-muted/50">
+                   <div className="flex flex-row items-center">{t[language].phoneHeader} {getSortIcon('phone')}</div>
+                </TableHead>
                 <TableHead className="text-right">{t[language].actionsHeader}</TableHead>
               </TableRow>
             </TableHeader>
@@ -331,6 +354,7 @@ export default function ClientsPage() {
                   </TableCell>
                   <TableCell className="font-medium">{client.name}</TableCell>
                   <TableCell className="text-muted-foreground">{client.contact}</TableCell>
+                  <TableCell className="text-muted-foreground">{client.phone}</TableCell>
                   <TableCell className="text-right">
                     <div className="flex justify-end gap-2">
                         <Button variant="ghost" size="icon" onClick={() => handleEditClick(client)}>
@@ -352,7 +376,7 @@ export default function ClientsPage() {
 
       {/* Edit Client Dialog */}
       <Dialog open={isEditDialogOpen} onOpenChange={setIsEditDialogOpen}>
-        <DialogContent>
+        <DialogContent className="sm:max-w-[480px]">
           <DialogHeader>
             <DialogTitle>{t[language].editClientTitle}</DialogTitle>
             <DialogDescription>
@@ -369,6 +393,10 @@ export default function ClientsPage() {
               <Input id="edit-contact" placeholder={t[language].contactPlaceholder} className="col-span-3" value={editClientContact} onChange={(e) => setEditClientContact(e.target.value)} />
             </div>
             <div className="grid grid-cols-4 items-center gap-4">
+              <Label htmlFor="edit-phone" className="text-right">{t[language].phoneLabel}</Label>
+              <Input id="edit-phone" placeholder={t[language].phonePlaceholder} className="col-span-3" value={editClientPhone} onChange={(e) => setEditClientPhone(e.target.value)} />
+            </div>
+            <div className="grid grid-cols-4 items-center gap-4">
               <Label htmlFor="edit-logo" className="text-right">{t[language].logoLabel}</Label>
               <div className="col-span-3 flex items-center gap-4">
                   <Avatar className="h-10 w-10">
@@ -381,7 +409,7 @@ export default function ClientsPage() {
                     className="hidden"
                     accept="image/*"
                   />
-                  <Button variant="outline" onClick={() => editFileInputRef.current?.click()}>
+                  <Button variant="outline" type="button" onClick={() => editFileInputRef.current?.click()}>
                     <Upload className="mr-2 h-4 w-4" />
                     {t[language].uploadLogo}
                   </Button>

@@ -4,10 +4,10 @@ import type { Client, Project, Finding, Vulnerability, ProjectTemplate } from '.
 import { format } from 'date-fns';
 
 export const clients: Client[] = [
-  { id: 'cli-htb', name: 'Hack The Box', contact: 'contact@hackthebox.eu', logoUrl: '' },
-  { id: 'cli-ine', name: 'INE Security', contact: 'security@ine.com', logoUrl: '' },
-  { id: 'cli-offsec', name: 'Offsec', contact: 'audit@offsec.com', logoUrl: '' },
-  { id: 'cli-h4ck', name: 'h4ckercademy', contact: 'info@h4ckercademy.com', logoUrl: '' },
+  { id: 'cli-htb', name: 'Hack The Box', contact: 'contact@hackthebox.eu', phone: '+1-202-555-0182', logoUrl: '' },
+  { id: 'cli-ine', name: 'INE Security', contact: 'security@ine.com', phone: '+1-202-555-0182', logoUrl: '' },
+  { id: 'cli-offsec', name: 'Offsec', contact: 'audit@offsec.com', phone: '+1-202-555-0182', logoUrl: '' },
+  { id: 'cli-h4ck', name: 'h4ckercademy', contact: 'info@h4ckercademy.com', phone: '+1-202-555-0182', logoUrl: '' },
 ];
 
 export const projects: Project[] = [
@@ -96,7 +96,7 @@ The 'username' parameter of the login POST request to /auth/login is vulnerable.
 ---
 
 ### Impact
-Successful exploitation grants an attacker unauthorized access to the application. Depending on the user account compromised (e.g., an administrator), this could lead to a full compromise of the application, data exfiltration, and further attacks against the underlying infrastructure.
+Successful exploitation grants an attacker unauthorized access to the application. Depending on the user account compromised (e.g., an administrator), this could lead to a full application compromise, data exfiltration, and further attacks against the underlying infrastructure.
 
 ---
 
@@ -1732,6 +1732,7 @@ ffuf -w /usr/share/seclists/Discovery/DNS/subdomains-top1million-5000.txt:FUZZ -
 ];
 
   
+
 
 
 

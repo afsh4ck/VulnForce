@@ -213,7 +213,7 @@ export function DataProvider({ children }: { children: ReactNode }) {
     // Backup & Import
     const exportData = () => {
         const backupData = {
-          version: '1.0.0',
+          version: '1.0.1',
           createdAt: new Date().toISOString(),
           data: { clients, projects, findings, vulnerabilities, images, projectTemplates },
         };
