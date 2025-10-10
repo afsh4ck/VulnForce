@@ -172,7 +172,7 @@ const SectionEditor = ({ section, onContentChange, onDelete, view, onViewChange,
                     const dataUrl = event.target?.result as string;
                     if (dataUrl) {
                         const newImage = addImage(dataUrl);
-                        const markdownImage = `![Pasted Image](image://${'\'\'\''}{newImage.id})`
+                        const markdownImage = `![Pasted Image](image://${newImage.id})`;
                         const textarea = e.target as HTMLTextAreaElement;
                         const start = textarea.selectionStart;
                         const end = textarea.selectionEnd;
@@ -387,7 +387,7 @@ export default function VulnerabilityEditorPage() {
 
   const [vuln, setVuln] = useState<Vulnerability | null>(null);
   const [references, setReferences] = useState<string[]>([]);
-  const [activeAccordion, setActiveAccordion] = useState<string[]>([]);
+  const [activeAccordion, setActiveAccordion] = useState<string[]>(['details', 'en-content']);
 
   const [enSections, setEnSections] = useState<FindingSection[]>([]);
   const [esSections, setEsSections] = useState<FindingSection[]>([]);
@@ -478,7 +478,7 @@ export default function VulnerabilityEditorPage() {
   };
 
   const parseMarkdownToSections = useCallback((markdown: string): FindingSection[] => {
-    if (!markdown) return [];
+    if (!markdown || typeof markdown !== 'string') return [];
     const parts = markdown.split(/\n\s*---\s*\n/);
     return parts.map((part, index) => ({
         id: `section-${index}-${Date.now()}-${Math.random()}`,
@@ -658,88 +658,92 @@ export default function VulnerabilityEditorPage() {
       </header>
       
         <div className="space-y-6">
-            <Card>
-                <CardHeader>
-                    <CardTitle>{t[language].detailsTitle}</CardTitle>
-                </CardHeader>
-                <CardContent className="space-y-4">
-                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                        <div className="space-y-2">
-                            <Label htmlFor="title_en">{t[language].titleEnLabel}</Label>
-                            <Input id="title_en" value={vuln.title_en} onChange={e => handleInputChange('title_en', e.target.value)} />
-                        </div>
-                        <div className="space-y-2">
-                            <Label htmlFor="title_es">{t[language].titleEsLabel}</Label>
-                            <Input id="title_es" value={vuln.title_es} onChange={e => handleInputChange('title_es', e.target.value)} />
-                        </div>
-                    </div>
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                        <div className="space-y-2">
-                            <Label htmlFor="cwe">{t[language].cweLabel}</Label>
-                            <Input id="cwe" value={vuln.cwe} onChange={e => handleInputChange('cwe', e.target.value)} />
-                        </div>
-                        <div className="space-y-2">
-                            <Label htmlFor="category">{t[language].categoryLabel}</Label>
-                            <Select value={vuln.tags[0] || ''} onValueChange={handleCategoryChange}>
-                                <SelectTrigger id="category">
-                                    <SelectValue placeholder={t[language].selectCategory} />
-                                </SelectTrigger>
-                                <SelectContent>
-                                    {vulnerabilityCategories.map(cat => (
-                                        <SelectItem key={cat.value} value={cat.value}>
-                                            {language === 'es' ? cat.label_es : cat.label_en}
-                                        </SelectItem>
-                                    ))}
-                                </SelectContent>
-                            </Select>
-                        </div>
-                    </div>
-                    <div className="space-y-2">
-                        <Label>{t[language].referencesLabel}</Label>
-                        <div className="space-y-2 mt-4">
-                        {references.length === 0 ? (
-                            <Button variant="outline" onClick={handleAddReference} className="w-auto">
-                                <Plus className="mr-2 h-4 w-4" />
-                                {t[language].addReference}
-                            </Button>
-                        ) : (
-                          references.map((ref, index) => (
-                              <div key={index} className="flex items-center gap-2">
-                                <Input
-                                  value={ref}
-                                  onChange={(e) => handleReferenceChange(index, e.target.value)}
-                                  placeholder="https://example.com"
-                                />
-                                <Button
-                                  variant="ghost"
-                                  size="icon"
-                                  onClick={() => handleRemoveReference(index)}
-                                  className="text-destructive hover:bg-destructive hover:text-destructive-foreground"
-                                >
-                                  <Trash2 className="h-4 w-4" />
-                                </Button>
-                                <Button variant="ghost" size="icon" onClick={handleAddReference}>
-                                    <Plus className="h-4 w-4" />
-                                </Button>
-                              </div>
-                            ))
-                        )}
-                        </div>
-                    </div>
-                </CardContent>
-            </Card>
-
-            <Card>
-                <CardHeader>
-                    <div className="flex items-center justify-between">
-                      <div className="space-y-1.5">
-                        <CardTitle>{t[language].cvssTitle}</CardTitle>
-                        <CardDescription>{t[language].cvssDescription}</CardDescription>
+          <Accordion type="multiple" className="w-full space-y-6" defaultValue={['details']} value={activeAccordion} onValueChange={setActiveAccordion}>
+            <AccordionItem value="details" className="border bg-card rounded-lg data-[state=closed]:border">
+              <AccordionTrigger className="p-4 hover:no-underline">
+                <span className="font-semibold text-base">{t[language].detailsTitle}</span>
+              </AccordionTrigger>
+              <AccordionContent className="p-4 pt-0">
+                <div className="space-y-4 pt-4 border-t">
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                      <div className="space-y-2">
+                          <Label htmlFor="title_en">{t[language].titleEnLabel}</Label>
+                          <Input id="title_en" value={vuln.title_en} onChange={e => handleInputChange('title_en', e.target.value)} />
                       </div>
-                      {vuln.severity && <Badge variant={getSeverityVariant(vuln.severity)}>{vuln.severity}</Badge>}
+                      <div className="space-y-2">
+                          <Label htmlFor="title_es">{t[language].titleEsLabel}</Label>
+                          <Input id="title_es" value={vuln.title_es} onChange={e => handleInputChange('title_es', e.target.value)} />
+                      </div>
+                  </div>
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                      <div className="space-y-2">
+                          <Label htmlFor="cwe">{t[language].cweLabel}</Label>
+                          <Input id="cwe" value={vuln.cwe} onChange={e => handleInputChange('cwe', e.target.value)} />
+                      </div>
+                      <div className="space-y-2">
+                          <Label htmlFor="category">{t[language].categoryLabel}</Label>
+                          <Select value={vuln.tags[0] || ''} onValueChange={handleCategoryChange}>
+                              <SelectTrigger id="category">
+                                  <SelectValue placeholder={t[language].selectCategory} />
+                              </SelectTrigger>
+                              <SelectContent>
+                                  {vulnerabilityCategories.map(cat => (
+                                      <SelectItem key={cat.value} value={cat.value}>
+                                          {language === 'es' ? cat.label_es : cat.label_en}
+                                      </SelectItem>
+                                  ))}
+                              </SelectContent>
+                          </Select>
+                      </div>
+                  </div>
+                  <div className="space-y-2">
+                      <Label>{t[language].referencesLabel}</Label>
+                      <div className="space-y-2 mt-4">
+                      {references.length === 0 ? (
+                          <Button variant="outline" onClick={handleAddReference} className="w-auto">
+                              <Plus className="mr-2 h-4 w-4" />
+                              {t[language].addReference}
+                          </Button>
+                      ) : (
+                        references.map((ref, index) => (
+                            <div key={index} className="flex items-center gap-2">
+                              <Input
+                                value={ref}
+                                onChange={(e) => handleReferenceChange(index, e.target.value)}
+                                placeholder="https://example.com"
+                              />
+                              <Button
+                                variant="ghost"
+                                size="icon"
+                                onClick={() => handleRemoveReference(index)}
+                                className="text-destructive hover:bg-destructive hover:text-destructive-foreground"
+                              >
+                                <Trash2 className="h-4 w-4" />
+                              </Button>
+                              <Button variant="ghost" size="icon" onClick={handleAddReference}>
+                                  <Plus className="h-4 w-4" />
+                              </Button>
+                            </div>
+                          ))
+                      )}
+                      </div>
+                  </div>
+                </div>
+              </AccordionContent>
+            </AccordionItem>
+            
+            <AccordionItem value="cvss" className="border bg-card rounded-lg data-[state=closed]:border">
+              <AccordionTrigger className="p-4 hover:no-underline">
+                 <div className="flex w-full items-center justify-between">
+                    <div className="flex flex-col text-left">
+                      <span className="font-semibold text-base">{t[language].cvssTitle}</span>
+                      <span className="text-sm text-muted-foreground font-normal">{t[language].cvssDescription}</span>
                     </div>
-                </CardHeader>
-                <CardContent className="space-y-4">
+                    {vuln.severity && <Badge variant={getSeverityVariant(vuln.severity)}>{vuln.severity}</Badge>}
+                  </div>
+              </AccordionTrigger>
+              <AccordionContent className="p-4 pt-0">
+                  <div className="space-y-4 pt-4 border-t">
                     <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
                       <div className="space-y-2">
                           <Label htmlFor="cvss_score">{t[language].score}</Label>
@@ -780,10 +784,9 @@ export default function VulnerabilityEditorPage() {
                             </div>
                         ))}
                     </div>
-                </CardContent>
-            </Card>
-
-            <Accordion type="multiple" className="w-full space-y-6" value={activeAccordion} onValueChange={setActiveAccordion}>
+                  </div>
+              </AccordionContent>
+            </AccordionItem>
               <AccordionItem value="en-content" className="border bg-card rounded-lg data-[state=closed]:border data-[state=open]:border-b-0">
                 <AccordionTrigger className="p-4 hover:no-underline flex-1" onClick={(e) => { e.stopPropagation(); setActiveAccordion(prev => prev.includes('en-content') ? prev.filter(item => item !== 'en-content') : [...prev, 'en-content'])}}>
                     <div className="flex w-full items-center justify-between">

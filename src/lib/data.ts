@@ -3,7 +3,7 @@
 import type { Client, Project, Finding, Vulnerability, ProjectTemplate } from './types';
 import { format } from 'date-fns';
 
-export let clients: Client[] = [
+export const clients: Client[] = [
   { id: 'cli-1', name: 'Innovatech Solutions', contact: 'contact@innovatech.com', logoUrl: 'https://picsum.photos/seed/innovatech/128/128' },
   { id: 'cli-2', name: 'Quantum Dynamics', contact: 'security@quantum.com', logoUrl: 'https://picsum.photos/seed/quantum/128/128' },
   { id: 'cli-3', name: 'SecureBank Corp', contact: 'audit@securebank.com', logoUrl: 'https://picsum.photos/seed/securebank/128/128' },
@@ -715,25 +715,257 @@ El objetivo fue realizar una prueba de penetración, identificando y explotando 
 |---|---|---|
 | [TODO: Hostname/IP] | [TODO: p. ej., /root/proof.txt] | [TODO: Valor de la Bandera] |
 `
-  }
+  },
+  {
+    id: 'ptpl-5',
+    name_en: 'Machine Writeup',
+    name_es: 'Writeup de Máquina',
+    description_en: 'A template for documenting the process of solving a CTF machine, such as those on Hack The Box.',
+    description_es: 'Una plantilla para documentar el proceso de resolución de una máquina CTF, como las de Hack The Box.',
+    icon: 'FileText',
+    scope_en: `## General Information
+- **Machine Name:** [TODO: Machine Name]
+- **IP Address:** [TODO: IP Address]
+- **Operating System:** Linux
+- **Difficulty:** [TODO: Select Difficulty]
+- **Date:** ${format(new Date(), 'dd-MM-yyyy')}
+
+---
+
+## Initial Reconnaissance
+
+### Add IP to /etc/hosts
+\`\`\`bash
+echo "[TODO: IP Address] [TODO: machine.htb]" | sudo tee -a /etc/hosts
+\`\`\`
+
+### Port Scanning (Nmap)
+
+#### Simple Scan
+\`\`\`bash
+sudo nmap -p- -sS --min-rate 5000 -v -n -Pn [TODO: IP Address]
+\`\`\`
+
+#### Advanced Scan
+\`\`\`bash
+sudo nmap -sCV -p22,80 [TODO: IP Address] -oN targeted
+\`\`\`
+*Result: Found ports 22 (SSH) and 80 (HTTP) open.*
+
+---
+
+## Web Enumeration
+
+### Initial Access & Analysis
+- **URL:** \`http://[TODO: machine.htb]\`
+- **Useful Commands:**
+  \`\`\`bash
+  # Check DNS
+  host [TODO: machine.htb]
+  dig [TODO: machine.htb]
+  
+  # Check headers
+  curl -I http://[TODO: machine.htb]
+  
+  # Web technology identification
+  whatweb -a3 -v http://[TODO: machine.htb]
+  
+  # Check common ports
+  netcat -vz [TODO: machine.htb] 1-1000
+  \`\`\`
+
+### Directory Fuzzing
+\`\`\`bash
+# Using dirsearch
+dirsearch -u http://[TODO: machine.htb] -x 403,404
+
+# Using gobuster
+gobuster dir -u http://[TODO: machine.htb] -w /usr/share/wordlists/dirb/common.txt
+
+# Using ffuf
+ffuf -u http://[TODO: machine.htb]/FUZZ -w /usr/share/seclists/Discovery/Web-Content/common.txt
+\`\`\`
+*Found directories: [TODO: List found directories like /about.php, /contact.php]*
+
+### Subdomain Enumeration (VHosts)
+Check for different response sizes to identify potential virtual hosts.
+\`\`\`bash
+# Fuzz for subdomains using ffuf and filter by response size
+ffuf -w /usr/share/seclists/Discovery/DNS/subdomains-top1million-5000.txt:FUZZ -u http://[TODO: machine.htb]/ -H 'Host: FUZZ.[TODO: machine.htb]' -fs [TODO: base_response_size]
+\`\`\`
+*Found subdomain: [TODO: e.g., grafana.planning.htb]. Added to /etc/hosts.*
+
+---
+
+## Exploitation
+
+### Vulnerability Research
+*Identified Service/Version: [TODO: e.g., Grafana v11.0.0]*
+- Searched for exploits on:
+  - https://exploit-db.com
+  - https://sploitus.com
+  - GitHub
+- **Selected Exploit:** [TODO: Describe the selected exploit and its reference URL]
+
+### Exploit Execution
+[TODO: Step-by-step description of how the exploit was executed to gain initial access.]
+
+---
+
+## Initial Access
+- **User:** \`whoami\` -> [TODO: user]
+- **Environment:** \`uname -a\`, \`id\`, \`sudo -l\`
+
+### User Flag
+- **Command:** \`cat /home/[TODO: user]/user.txt\`
+
+---
+
+## Privilege Escalation
+
+### Enumeration
+- **Check sudo permissions:** \`sudo -l\`
+- **Find SUID/GUID files:**
+  \`\`\`bash
+  find / -user root -perm -4000 -print 2>/dev/null
+  \`\`\`
+- **Check running services:** \`ss -tuln\`
+- **Automated enumeration scripts:** \`linpeas.sh\`, \`pspy\`
+
+### Applied Technique
+[TODO: Describe the technique used: SUID binary, misconfigured cronjob, hardcoded credentials, etc.]
+
+---
+
+## 👑 Root Flag
+- **Command:** \`cat /root/root.txt\`
+`,
+    scope_es: `## Información General
+- **Nombre de la máquina:** [TODO: Nombre de la máquina]
+- **Dirección IP:** [TODO: Dirección IP]
+- **Sistema Operativo:** Linux
+- **Dificultad:** [TODO: Seleccionar Dificultad]
+- **Fecha:** ${format(new Date(), 'dd-MM-yyyy')}
+
+---
+
+## Reconocimiento Inicial
+
+### Añadir IP a /etc/hosts
+\`\`\`bash
+echo "[TODO: Dirección IP] [TODO: maquina.htb]" | sudo tee -a /etc/hosts
+\`\`\`
+
+### Escaneo de Puertos (Nmap)
+
+#### Escaneo Simple
+\`\`\`bash
+sudo nmap -p- -sS --min-rate 5000 -v -n -Pn [TODO: Dirección IP]
+\`\`\`
+
+#### Escaneo Avanzado
+\`\`\`bash
+sudo nmap -sCV -p22,80 [TODO: Dirección IP] -oN targeted
+\`\`\`
+*Resultado: Se encontraron los puertos 22 (SSH) y 80 (HTTP) abiertos.*
+
+---
+
+## Enumeración Web
+
+### Acceso y Análisis Inicial
+- **URL:** \`http://[TODO: maquina.htb]\`
+- **Comandos útiles:**
+  \`\`\`bash
+  # Comprobar DNS
+  host [TODO: maquina.htb]
+  dig [TODO: maquina.htb]
+  
+  # Comprobar cabeceras
+  curl -I http://[TODO: maquina.htb]
+  
+  # Identificación de tecnología web
+  whatweb -a3 -v http://[TODO: maquina.htb]
+  
+  # Comprobar puertos comunes
+  netcat -vz [TODO: maquina.htb] 1-1000
+  \`\`\`
+
+### Fuzzing de Directorios
+\`\`\`bash
+# Usando dirsearch
+dirsearch -u http://[TODO: maquina.htb] -x 403,404
+
+# Usando gobuster
+gobuster dir -u http://[TODO: maquina.htb] -w /usr/share/wordlists/dirb/common.txt
+
+# Usando ffuf
+ffuf -u http://[TODO: maquina.htb]/FUZZ -w /usr/share/seclists/Discovery/Web-Content/common.txt
+\`\`\`
+*Directorios encontrados: [TODO: Listar directorios como /about.php, /contact.php]*
+
+### Enumeración de Subdominios (VHosts)
+Comprobar diferentes tamaños de respuesta para identificar posibles hosts virtuales.
+\`\`\`bash
+# Fuzzing de subdominios con ffuf y filtrado por tamaño de respuesta
+ffuf -w /usr/share/seclists/Discovery/DNS/subdomains-top1million-5000.txt:FUZZ -u http://[TODO: maquina.htb]/ -H 'Host: FUZZ.[TODO: maquina.htb]' -fs [TODO: tamaño_respuesta_base]
+\`\`\`
+*Subdominio encontrado: [TODO: p.ej., grafana.planning.htb]. Añadido a /etc/hosts.*
+
+---
+
+## Explotación
+
+### Investigación de Vulnerabilidades
+*Servicio/Versión Identificado: [TODO: p.ej., Grafana v11.0.0]*
+- Búsqueda de exploits en:
+  - https://exploit-db.com
+  - https://sploitus.com
+  - GitHub
+- **Exploit Seleccionado:** [TODO: Describir el exploit usado y su URL de referencia]
+
+### Ejecución del Exploit
+[TODO: Descripción paso a paso de cómo se ejecutó el exploit para obtener acceso inicial.]
+
+---
+
+## Acceso Inicial
+- **Usuario:** \`whoami\` -> [TODO: usuario]
+- **Entorno:** \`uname -a\`, \`id\`, \`sudo -l\`
+
+### Bandera de Usuario (User Flag)
+- **Comando:** \`cat /home/[TODO: usuario]/user.txt\`
+
+---
+
+## Escalada de Privilegios
+
+### Enumeración
+- **Comprobar permisos de sudo:** \`sudo -l\`
+- **Buscar archivos SUID/GUID:**
+  \`\`\`bash
+  find / -user root -perm -4000 -print 2>/dev/null
+  \`\`\`
+- **Ver servicios en ejecución:** \`ss -tuln\`
+- **Scripts de enumeración automatizada:** \`linpeas.sh\`, \`pspy\`
+
+### Técnica Aplicada
+[TODO: Describir la técnica usada: binario SUID, cronjob mal configurado, credenciales hardcoded, etc.]
+
+---
+
+## 👑 Bandera de Root (Root Flag)
+- **Comando:** \`cat /root/root.txt\`
+`,
+    appendix_en: `### A. Tooling Used
+- **Network Scanner:** Nmap
+- **Web Fuzzer:** ffuf, dirsearch
+- **Exploitation:** [TODO: e.g., Metasploit, Python script]
+- **Privilege Escalation:** linpeas.sh`,
+    appendix_es: `### A. Herramientas Utilizadas
+- **Escáner de Red:** Nmap
+- **Fuzzer Web:** ffuf, dirsearch
+- **Explotación:** [TODO: p. ej., Metasploit, script de Python]
+- **Escalada de Privilegios:** linpeas.sh`
+  },
 ];
-
-// Functions to manage data (add, update, delete)
-// These are illustrative and in a real app would interact with a persistent store.
-export const addVulnerability = (vulnerability: Omit<Vulnerability, 'id'>) => {
-  const newId = `vuln-usr-${Date.now()}`;
-  const newVuln = { ...vulnerability, id: newId };
-  vulnerabilities.push(newVuln);
-  return newVuln;
-};
-
-export const updateVulnerability = (vulnerability: Vulnerability) => {
-  const index = vulnerabilities.findIndex(v => v.id === vulnerability.id);
-  if (index !== -1) {
-    vulnerabilities[index] = vulnerability;
-  }
-};
-
-export const deleteVulnerability = (vulnerabilityId: string) => {
-  vulnerabilities = vulnerabilities.filter(v => v.id !== vulnerabilityId);
-};

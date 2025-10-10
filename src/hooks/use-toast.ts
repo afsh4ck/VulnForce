@@ -164,6 +164,12 @@ function toast({ ...props }: Toast) {
     },
   })
 
+  // Automatically dismiss the toast after a delay
+  setTimeout(() => {
+    dismiss();
+  }, TOAST_REMOVE_DELAY);
+
+
   return {
     id: id,
     dismiss,
@@ -183,15 +189,6 @@ function useToast() {
       }
     }
   }, [state])
-  
-  React.useEffect(() => {
-    if (state.toasts.length > 0) {
-      const timer = setTimeout(() => {
-        dispatch({ type: 'DISMISS_TOAST' });
-      }, TOAST_REMOVE_DELAY - 1000); // Dismiss a bit earlier than removal
-      return () => clearTimeout(timer);
-    }
-  }, [state.toasts]);
 
   return {
     ...state,
