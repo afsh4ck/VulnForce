@@ -1,3 +1,4 @@
+
 'use client';
 
 import { useState, useEffect, useCallback, useMemo, useRef } from 'react';
@@ -481,7 +482,7 @@ export default function VulnerabilityEditorPage() {
         vuln[`technicalDescription_${lang}`],
         vuln[`affectedComponents_${lang}`],
         vuln[`impact_${lang}`],
-        vuln[`recommendations_${lang}`],
+        vuln[`immediateActions_${lang}`],
         vuln[`details_${lang}`]
     ];
     return sections.filter(Boolean).join('\n\n---\n\n');
@@ -547,19 +548,18 @@ export default function VulnerabilityEditorPage() {
         // This logic needs to be smarter to map back to the correct fields
         const updatedVuln = {
             ...vuln,
-            // Example of a simple reconstruction, this might need more robust logic
             overview_en: enSections.find(s => s.content.includes('### Overview'))?.content || '',
             technicalDescription_en: enSections.find(s => s.content.includes('### Technical Description'))?.content || '',
             affectedComponents_en: enSections.find(s => s.content.includes('### Affected Components'))?.content || '',
             impact_en: enSections.find(s => s.content.includes('### Impact'))?.content || '',
-            recommendations_en: enSections.find(s => s.content.includes('### Recommendations'))?.content || '',
+            immediateActions_en: enSections.find(s => s.content.includes('### Immediate Actions'))?.content || '',
             details_en: enSections.find(s => s.content.includes('### Details'))?.content || '',
 
             overview_es: esSections.find(s => s.content.includes('### Resumen'))?.content || '',
             technicalDescription_es: esSections.find(s => s.content.includes('### Descripción Técnica'))?.content || '',
             affectedComponents_es: esSections.find(s => s.content.includes('### Componentes Afectados'))?.content || '',
             impact_es: esSections.find(s => s.content.includes('### Impacto'))?.content || '',
-            recommendations_es: esSections.find(s => s.content.includes('### Recomendaciones'))?.content || '',
+            immediateActions_es: esSections.find(s => s.content.includes('### Acciones Inmediatas'))?.content || '',
             details_es: esSections.find(s => s.content.includes('### Detalles'))?.content || '',
             
             references: references.filter(ref => ref.trim() !== ''),

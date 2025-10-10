@@ -100,7 +100,7 @@ Successful exploitation grants an attacker unauthorized access to the applicatio
 
 ---
 
-### Recommendations
+### Immediate Actions
 Implement parameterized queries (prepared statements) to handle all user-supplied input in database queries. This is the most effective way to prevent SQL Injection attacks. Validate and sanitize all user input on the server side as a defense-in-depth measure.`, 
     createdAt: '2023-07-05T11:00:00Z', 
     updatedAt: '2023-07-10T15:00:00Z' 
@@ -133,7 +133,7 @@ This vulnerability can be used to steal session cookies, perform actions on beha
 
 ---
 
-### Recommendations
+### Immediate Actions
 Implement context-aware output encoding for all user-supplied data before it is rendered in the browser. Use a library like DOMPurify to sanitize HTML content if users are allowed to submit rich text.`, 
     createdAt: '2023-07-06T14:00:00Z', 
     updatedAt: '2023-07-11T10:00:00Z' 
@@ -141,10 +141,18 @@ Implement context-aware output encoding for all user-supplied data before it is 
 ];
 
 const emptyVulnBoilerplate = {
-  remediation_en: { shortTerm: '[TODO]', mediumTerm: '[TODO]', longTerm: '[TODO]' },
-  remediation_es: { shortTerm: '[TODO]', mediumTerm: '[TODO]', longTerm: '[TODO]' },
-  details_en: "[TODO: Provide a PoC, evidence, or detailed steps to reproduce the vulnerability.]",
-  details_es: "[TODO: Proporcionar una PoC, evidencia o pasos detallados para reproducir la vulnerabilidad.]",
+  remediation_en: {
+    shortTerm: "[TODO: Describe the immediate fix, e.g., applying a patch or a hotfix.]",
+    mediumTerm: "[TODO: Describe the medium-term solution, e.g., refactoring the vulnerable code.]",
+    longTerm: "[TODO: Describe the long-term strategy, e.g., implementing a new security control or providing developer training.]"
+  },
+  remediation_es: {
+    shortTerm: "[TODO: Describir la solución inmediata, p. ej., aplicar un parche o un hotfix.]",
+    mediumTerm: "[TODO: Describir la solución a medio plazo, p. ej., refactorizar el código vulnerable.]",
+    longTerm: "[TODO: Describir la estrategia a largo plazo, p. ej., implementar un nuevo control de seguridad o proporcionar formación a los desarrolladores.]"
+  },
+  details_en: "### Details (PoC, Evidence)\n[TODO: Provide a PoC, evidence, or detailed steps to reproduce the vulnerability.]",
+  details_es: "### Detalles (PoC, Evidencia)\n[TODO: Proporcionar una PoC, evidencia o pasos detallados para reproducir la vulnerabilidad.]",
 };
 
 export const vulnerabilities: Vulnerability[] = [
@@ -163,8 +171,8 @@ export const vulnerabilities: Vulnerability[] = [
         affectedComponents_es: "### Componentes Afectados\n[TODO: Especificar parámetros y endpoints vulnerables, p. ej., parámetro 'id' en /products/view.php, formularios de inicio de sesión]",
         impact_en: "### Impact\nThis might include data belonging to other users, or any other data that the application itself is able to access. In many cases, an attacker can modify or delete this data, causing persistent changes to the application's content or behavior, and in some cases, take control of the database server.",
         impact_es: "### Impacto\nEsto podría incluir datos pertenecientes a otros usuarios o cualquier otro dato al que la propia aplicación pueda acceder. En muchos casos, un atacante puede modificar o eliminar estos datos, provocando cambios persistentes en el contenido o el comportamiento de la aplicación, y en algunos casos, tomar el control del servidor de la base de datos.",
-        recommendations_en: "### Recommendations\nUse parameterized queries (prepared statements) to prevent the interpreter from confusing data with code. Validate and sanitize all user input. Apply the principle of least privilege to the database user.",
-        recommendations_es: "### Recomendaciones\nUtilizar consultas parametrizadas (sentencias preparadas) para evitar que el intérprete confunda los datos con el código. Validar y desinfectar todas las entradas del usuario. Aplicar el principio de privilegio mínimo al usuario de la base de datos.",
+        immediateActions_en: "### Immediate Actions\nUse parameterized queries (prepared statements) to prevent the interpreter from confusing data with code. Validate and sanitize all user input. Apply the principle of least privilege to the database user.",
+        immediateActions_es: "### Acciones Inmediatas\nUtilizar consultas parametrizadas (sentencias preparadas) para evitar que el intérprete confunda los datos con el código. Validar y desinfectar todas las entradas del usuario. Aplicar el principio de privilegio mínimo al usuario de la base de datos.",
         references: ["https://owasp.org/www-community/attacks/SQL_Injection"],
         tags: ["Web", "Injection"],
         ...emptyVulnBoilerplate
@@ -184,8 +192,8 @@ export const vulnerabilities: Vulnerability[] = [
         affectedComponents_es: "### Componentes Afectados\n[TODO: Especificar el campo o parámetro vulnerable, p. ej., consulta de búsqueda, biografía del perfil, sección de comentarios]",
         impact_en: "### Impact\nAn attacker can use XSS to send a malicious script to an unsuspecting user. The end user’s browser has no way to know that the script should not be trusted, and will execute the script. Because it thinks the script came from a trusted source, the malicious script can access any cookies, session tokens, or other sensitive information retained by the browser and used with that site.",
         impact_es: "### Impacto\nUn atacante puede usar XSS para enviar un script malicioso a un usuario desprevenido. El navegador del usuario final no tiene forma de saber que no se debe confiar en el script y lo ejecutará. Debido a que cree que el script proviene de una fuente confiable, el script malicioso puede acceder a cualquier cookie, token de sesión u otra información confidencial retenida por el navegador y utilizada con ese sitio.",
-        recommendations_en: "### Recommendations\nImplement context-aware output encoding. Use a modern web framework that provides built-in XSS protection. Implement a Content Security Policy (CSP) to mitigate the impact of any XSS that might still occur.",
-        recommendations_es: "### Recomendaciones\nImplementar codificación de salida sensible al contexto. Utilizar un marco web moderno que proporcione protección XSS incorporada. Implementar una Política de Seguridad de Contenido (CSP) para mitigar el impacto de cualquier XSS que aún pueda ocurrir.",
+        immediateActions_en: "### Immediate Actions\nImplement context-aware output encoding. Use a modern web framework that provides built-in XSS protection. Implement a Content Security Policy (CSP) to mitigate the impact of any XSS that might still occur.",
+        immediateActions_es: "### Acciones Inmediatas\nImplementar codificación de salida sensible al contexto. Utilizar un marco web moderno que proporcione protección XSS incorporada. Implementar una Política de Seguridad de Contenido (CSP) para mitigar el impacto de cualquier XSS que aún pueda ocurrir.",
         references: ["https://owasp.org/www-community/attacks/xss/"],
         tags: ["Web", "XSS"],
         ...emptyVulnBoilerplate
@@ -205,8 +213,8 @@ export const vulnerabilities: Vulnerability[] = [
       affectedComponents_es: "### Componentes Afectados\n[TODO: Especificar los componentes afectados, p. ej., páginas de inicio de sesión, sistema de gestión de sesiones, funcionalidad de restablecimiento de contraseña.]",
       impact_en: "### Impact\nAttackers can gain unauthorized access to user accounts, leading to data breaches, financial loss, and reputational damage. In some cases, they may be able to escalate privileges and compromise the entire system.",
       impact_es: "### Impacto\nLos atacantes pueden obtener acceso no autorizado a las cuentas de los usuarios, lo que conduce a violaciones de datos, pérdidas financieras y daños a la reputación. En algunos casos, pueden escalar privilegios y comprometer todo el sistema.",
-      recommendations_en: "### Recommendations\nImplement strong password policies, multi-factor authentication (MFA), secure session management (e.g., using random, long session IDs), and invalidate sessions upon logout or password change. Use a secure method for password storage, such as bcrypt or Argon2.",
-      recommendations_es: "### Recomendaciones\nImplementar políticas de contraseñas seguras, autenticación multifactor (MFA), gestión segura de sesiones (p. ej., utilizando ID de sesión largos y aleatorios) e invalidar las sesiones al cerrar sesión o cambiar la contraseña. Utilizar un método seguro para el almacenamiento de contraseñas, como bcrypt o Argon2.",
+      immediateActions_en: "### Immediate Actions\nImplement strong password policies, multi-factor authentication (MFA), secure session management (e.g., using random, long session IDs), and invalidate sessions upon logout or password change. Use a secure method for password storage, such as bcrypt or Argon2.",
+      immediateActions_es: "### Acciones Inmediatas\nImplementar políticas de contraseñas seguras, autenticación multifactor (MFA), gestión segura de sesiones (p. ej., utilizando ID de sesión largos y aleatorios) e invalidar las sesiones al cerrar sesión o cambiar la contraseña. Utilizar un método seguro para el almacenamiento de contraseñas, como bcrypt o Argon2.",
       references: ["https://owasp.org/www-project-top-ten/2017/A2_2017-Broken_Authentication"],
       tags: ["Web", "Authentication"],
       ...emptyVulnBoilerplate
@@ -226,8 +234,8 @@ export const vulnerabilities: Vulnerability[] = [
       affectedComponents_es: "### Componentes Afectados\n[TODO: Especificar dónde se exponen los datos sensibles, p. ej., endpoints de API, campos de la base de datos, almacenamiento del lado del cliente.]",
       impact_en: "### Impact\nExposure of sensitive data can lead to regulatory fines, reputational damage, and significant financial losses. Attackers can use this data for various malicious purposes, including identity theft and fraud.",
       impact_es: "### Impacto\nLa exposición de datos sensibles puede dar lugar a multas reglamentarias, daños a la reputación y pérdidas financieras significativas. Los atacantes pueden usar estos datos para diversos fines maliciosos, incluido el robo de identidad y el fraude.",
-      recommendations_en: "### Recommendations\nEncrypt data at rest and in transit using strong, up-to-date cryptographic protocols (e.g., TLS 1.2/1.3). Avoid storing sensitive data unless absolutely necessary. Implement proper access controls to restrict access to sensitive information.",
-      recommendations_es: "### Recomendaciones\nCifrar los datos en reposo y en tránsito utilizando protocolos criptográficos sólidos y actualizados (p. ej., TLS 1.2/1.3). Evitar almacenar datos sensibles a menos que sea absolutamente necesario. Implementar controles de acceso adecuados para restringir el acceso a la información sensible.",
+      immediateActions_en: "### Immediate Actions\nEncrypt data at rest and in transit using strong, up-to-date cryptographic protocols (e.g., TLS 1.2/1.3). Avoid storing sensitive data unless absolutely necessary. Implement proper access controls to restrict access to sensitive information.",
+      immediateActions_es: "### Acciones Inmediatas\nCifrar los datos en reposo y en tránsito utilizando protocolos criptográficos sólidos y actualizados (p. ej., TLS 1.2/1.3). Evitar almacenar datos sensibles a menos que sea absolutamente necesario. Implementar controles de acceso adecuados para restringir el acceso a la información sensible.",
       references: ["https://owasp.org/www-project-top-ten/2017/A3_2017-Sensitive_Data_Exposure"],
       tags: ["Web", "Data"],
       ...emptyVulnBoilerplate
@@ -247,8 +255,8 @@ export const vulnerabilities: Vulnerability[] = [
       affectedComponents_es: "### Componentes Afectados\n[TODO: Especificar la funcionalidad que procesa la entrada XML, p. ej., funciones de carga de archivos, endpoints de API que aceptan XML.]",
       impact_en: "### Impact\nXXE can lead to the disclosure of sensitive data, server-side request forgery (SSRF), and denial of service (DoS). In some cases, it can enable remote code execution.",
       impact_es: "### Impacto\nXXE puede conducir a la divulgación de datos sensibles, la falsificación de solicitudes del lado del servidor (SSRF) y la denegación de servicio (DoS). En algunos casos, puede permitir la ejecución remota de código.",
-      recommendations_en: "### Recommendations\nDisable external entity and DTD processing in all XML parsers. Use less complex data formats like JSON where possible. Implement input validation and sanitization.",
-      recommendations_es: "### Recomendaciones\nDeshabilitar el procesamiento de entidades externas y DTD en todos los procesadores XML. Usar formatos de datos menos complejos como JSON siempre que sea posible. Implementar la validación y desinfección de entradas.",
+      immediateActions_en: "### Immediate Actions\nDisable external entity and DTD processing in all XML parsers. Use less complex data formats like JSON where possible. Implement input validation and sanitization.",
+      immediateActions_es: "### Acciones Inmediatas\nDeshabilitar el procesamiento de entidades externas y DTD en todos los procesadores XML. Usar formatos de datos menos complejos como JSON siempre que sea posible. Implementar la validación y desinfección de entradas.",
       references: ["https://owasp.org/www-project-top-ten/2017/A4_2017-XML_External_Entities_(XXE)"],
       tags: ["Web", "XXE"],
       ...emptyVulnBoilerplate
@@ -268,8 +276,8 @@ export const vulnerabilities: Vulnerability[] = [
       affectedComponents_es: "### Componentes Afectados\n[TODO: Especificar la funcionalidad con control de acceso roto, p. ej., endpoints de API, interfaces administrativas, mecanismos de acceso a archivos.]",
       impact_en: "### Impact\nAttackers can gain unauthorized access to sensitive information, perform administrative actions, and potentially compromise the entire application.",
       impact_es: "### Impacto\nLos atacantes pueden obtener acceso no autorizado a información sensible, realizar acciones administrativas y comprometer potencialmente toda la aplicación.",
-      recommendations_en: "### Recommendations\nEnforce access control checks on the server-side for every request. Use a centralized access control mechanism. Deny by default and implement the principle of least privilege.",
-      recommendations_es: "### Recomendaciones\nForzar las comprobaciones de control de acceso en el lado del servidor para cada solicitud. Utilizar un mecanismo de control de acceso centralizado. Denegar por defecto e implementar el principio de privilegio mínimo.",
+      immediateActions_en: "### Immediate Actions\nEnforce access control checks on the server-side for every request. Use a centralized access control mechanism. Deny by default and implement the principle of least privilege.",
+      immediateActions_es: "### Acciones Inmediatas\nForzar las comprobaciones de control de acceso en el lado del servidor para cada solicitud. Utilizar un mecanismo de control de acceso centralizado. Denegar por defecto e implementar el principio de privilegio mínimo.",
       references: ["https://owasp.org/www-project-top-ten/2017/A5_2017-Broken_Access_Control"],
       tags: ["Web", "Access Control"],
       ...emptyVulnBoilerplate
@@ -289,8 +297,8 @@ export const vulnerabilities: Vulnerability[] = [
       affectedComponents_es: "### Componentes Afectados\n[TODO: Especificar el componente mal configurado, p. ej., servidor de aplicaciones, marco, almacenamiento en la nube, cabeceras HTTP.]",
       impact_en: "### Impact\nSecurity misconfigurations can lead to unauthorized access, data exposure, and full system compromise.",
       impact_es: "### Impacto\nLas configuraciones de seguridad incorrectas pueden conducir a acceso no autorizado, exposición de datos y compromiso total del sistema.",
-      recommendations_en: "### Recommendations\nImplement a repeatable hardening process and secure configurations for all components. Use automated tools to verify configurations. Regularly patch and update all software.",
-      recommendations_es: "### Recomendaciones\nImplementar un proceso de fortalecimiento repetible y configuraciones seguras para todos los componentes. Utilizar herramientas automatizadas para verificar las configuraciones. Parchear y actualizar regularmente todo el software.",
+      immediateActions_en: "### Immediate Actions\nImplement a repeatable hardening process and secure configurations for all components. Use automated tools to verify configurations. Regularly patch and update all software.",
+      immediateActions_es: "### Acciones Inmediatas\nImplementar un proceso de fortalecimiento repetible y configuraciones seguras para todos los componentes. Utilizar herramientas automatizadas para verificar las configuraciones. Parchear y actualizar regularmente todo el software.",
       references: ["https://owasp.org/www-project-top-ten/2017/A6_2017-Security_Misconfiguration"],
       tags: ["Web", "Configuration"],
       ...emptyVulnBoilerplate
@@ -310,8 +318,8 @@ export const vulnerabilities: Vulnerability[] = [
       affectedComponents_es: "### Componentes Afectados\n[TODO: Especificar la funcionalidad que cambia el estado y que carece de protección CSRF, p. ej., formulario de cambio de contraseña, endpoint de transferencia de fondos.]",
       impact_en: "### Impact\nAttackers can trick users into performing sensitive actions, such as changing their email address, password, or making a purchase, without their consent.",
       impact_es: "### Impacto\nLos atacantes pueden engañar a los usuarios para que realicen acciones sensibles, como cambiar su dirección de correo electrónico, contraseña o realizar una compra, sin su consentimiento.",
-      recommendations_en: "### Recommendations\nImplement anti-CSRF tokens (synchronizer token pattern). Use the SameSite cookie attribute to prevent browsers from sending cookies with cross-site requests. Verify the Origin and Referer headers.",
-      recommendations_es: "### Recomendaciones\nImplementar tokens anti-CSRF (patrón de token sincronizador). Usar el atributo de cookie SameSite para evitar que los navegadores envíen cookies con solicitudes entre sitios. Verificar las cabeceras Origin y Referer.",
+      immediateActions_en: "### Immediate Actions\nImplement anti-CSRF tokens (synchronizer token pattern). Use the SameSite cookie attribute to prevent browsers from sending cookies with cross-site requests. Verify the Origin and Referer headers.",
+      immediateActions_es: "### Acciones Inmediatas\nImplementar tokens anti-CSRF (patrón de token sincronizador). Usar el atributo de cookie SameSite para evitar que los navegadores envíen cookies con solicitudes entre sitios. Verificar las cabeceras Origin y Referer.",
       references: ["https://owasp.org/www-community/attacks/csrf"],
       tags: ["Web", "CSRF"],
       ...emptyVulnBoilerplate
@@ -331,8 +339,8 @@ export const vulnerabilities: Vulnerability[] = [
       affectedComponents_es: "### Componentes Afectados\n[TODO: Especificar la funcionalidad que deserializa la entrada del usuario, p. ej., cookies de sesión, parámetros de API, carga de archivos.]",
       impact_en: "### Impact\nThis vulnerability can lead to remote code execution, giving an attacker full control over the application server.",
       impact_es: "### Impacto\nEsta vulnerabilidad puede conducir a la ejecución remota de código, otorgando a un atacante el control total sobre el servidor de aplicaciones.",
-      recommendations_en: "### Recommendations\nAvoid deserializing user-supplied data. If necessary, use a secure deserialization library and implement strict type constraints. Perform integrity checks on the serialized data.",
-      recommendations_es: "### Recomendaciones\nEvitar la deserialización de datos proporcionados por el usuario. Si es necesario, usar una biblioteca de deserialización segura e implementar restricciones de tipo estrictas. Realizar comprobaciones de integridad en los datos serializados.",
+      immediateActions_en: "### Immediate Actions\nAvoid deserializing user-supplied data. If necessary, use a secure deserialization library and implement strict type constraints. Perform integrity checks on the serialized data.",
+      immediateActions_es: "### Acciones Inmediatas\nEvitar la deserialización de datos proporcionados por el usuario. Si es necesario, usar una biblioteca de deserialización segura e implementar restricciones de tipo estrictas. Realizar comprobaciones de integridad en los datos serializados.",
       references: ["https://owasp.org/www-project-top-ten/2017/A8_2017-Insecure_Deserialization"],
       tags: ["Web", "Deserialization"],
       ...emptyVulnBoilerplate
@@ -352,8 +360,8 @@ export const vulnerabilities: Vulnerability[] = [
       affectedComponents_es: "### Componentes Afectados\n[TODO: Especificar la funcionalidad que obtiene recursos de una URL proporcionada por el usuario, p. ej., webhooks, generadores de PDF, descargadores de imágenes.]",
       impact_en: "### Impact\nSSRF can lead to port scanning of internal networks, information disclosure, and remote code execution if the application interacts with a vulnerable internal service.",
       impact_es: "### Impacto\nSSRF puede conducir al escaneo de puertos de redes internas, divulgación de información y ejecución remota de código si la aplicación interactúa con un servicio interno vulnerable.",
-      recommendations_en: "### Recommendations\nImplement a whitelist of allowed domains and protocols. Disable redirects. Do not send raw responses from the server to the client. Ensure that the response from the internal service is parsed and validated.",
-      recommendations_es: "### Recomendaciones\nImplementar una lista blanca de dominios y protocolos permitidos. Deshabilitar las redirecciones. No enviar respuestas sin procesar del servidor al cliente. Asegurarse de que la respuesta del servicio interno se analice y valide.",
+      immediateActions_en: "### Immediate Actions\nImplement a whitelist of allowed domains and protocols. Disable redirects. Do not send raw responses from the server to the client. Ensure that the response from the internal service is parsed and validated.",
+      immediateActions_es: "### Acciones Inmediatas\nImplementar una lista blanca de dominios y protocolos permitidos. Deshabilitar las redirecciones. No enviar respuestas sin procesar del servidor al cliente. Asegurarse de que la respuesta del servicio interno se analice y valide.",
       references: ["https://owasp.org/www-community/attacks/Server_Side_Request_Forgery"],
       tags: ["Web", "SSRF"],
       ...emptyVulnBoilerplate
@@ -373,8 +381,8 @@ export const vulnerabilities: Vulnerability[] = [
       affectedComponents_es: "### Componentes Afectados\n[TODO: Especificar los endpoints vulnerables a la manipulación de verbos.]",
       impact_en: "### Impact\nAttackers can bypass access controls to perform unauthorized actions, such as deleting resources, viewing sensitive information, or executing administrative functions.",
       impact_es: "### Impacto\nLos atacantes pueden eludir los controles de acceso para realizar acciones no autorizadas, como eliminar recursos, ver información sensible o ejecutar funciones administrativas.",
-      recommendations_en: "### Recommendations\nConfigure the application to deny all requests for a given endpoint that do not use the intended HTTP method. Use a whitelist of allowed verbs for each endpoint.",
-      recommendations_es: "### Recomendaciones\nConfigurar la aplicación para denegar todas las solicitudes para un endpoint determinado que no utilicen el método HTTP previsto. Usar una lista blanca de verbos permitidos para cada endpoint.",
+      immediateActions_en: "### Immediate Actions\nConfigure the application to deny all requests for a given endpoint that do not use the intended HTTP method. Use a whitelist of allowed verbs for each endpoint.",
+      immediateActions_es: "### Acciones Inmediatas\nConfigurar la aplicación para denegar todas las solicitudes para un endpoint determinado que no utilicen el método HTTP previsto. Usar una lista blanca de verbos permitidos para cada endpoint.",
       references: ["https://www.imperva.com/learn/application-security/http-verb-tampering/"],
       tags: ["Web", "Access Control"],
       ...emptyVulnBoilerplate
@@ -394,8 +402,8 @@ export const vulnerabilities: Vulnerability[] = [
       affectedComponents_es: "### Componentes Afectados\n[TODO: Especificar la funcionalidad que incluye archivos según la entrada del usuario, p. ej., selección de idioma, renderizado de plantillas.]",
       impact_en: "### Impact\nLFI can lead to the disclosure of sensitive information, such as application source code, credentials, and system configuration files. In some cases, it can be escalated to remote code execution.",
       impact_es: "### Impacto\nLFI puede conducir a la divulgación de información sensible, como el código fuente de la aplicación, credenciales y archivos de configuración del sistema. En algunos casos, se puede escalar a la ejecución remota de código.",
-      recommendations_en: "### Recommendations\nAvoid passing user-supplied input to filesystem APIs. If necessary, use a whitelist of allowed filenames and validate the input to ensure it does not contain path traversal characters. Run the application with the minimum required privileges.",
-      recommendations_es: "### Recomendaciones\nEvitar pasar la entrada proporcionada por el usuario a las API del sistema de archivos. Si es necesario, usar una lista blanca de nombres de archivo permitidos y validar la entrada para asegurarse de que no contenga caracteres de salto de directorio. Ejecutar la aplicación con los privilegios mínimos requeridos.",
+      immediateActions_en: "### Immediate Actions\nAvoid passing user-supplied input to filesystem APIs. If necessary, use a whitelist of allowed filenames and validate the input to ensure it does not contain path traversal characters. Run the application with the minimum required privileges.",
+      immediateActions_es: "### Acciones Inmediatas\nEvitar pasar la entrada proporcionada por el usuario a las API del sistema de archivos. Si es necesario, usar una lista blanca de nombres de archivo permitidos y validar la entrada para asegurarse de que no contenga caracteres de salto de directorio. Ejecutar la aplicación con los privilegios mínimos requeridos.",
       references: ["https://owasp.org/www-project-web-security-testing-guide/latest/4-Web_Application_Security_Testing/07-Input_Validation_Testing/11.1-Testing_for_Local_File_Inclusion"],
       tags: ["Web", "File Inclusion"],
       ...emptyVulnBoilerplate
@@ -415,8 +423,8 @@ export const vulnerabilities: Vulnerability[] = [
       affectedComponents_es: "### Componentes Afectados\n[TODO: Especificar la funcionalidad que obtiene recursos de una URL proporcionada por el usuario, p. ej., webhooks, generadores de PDF, descargadores de imágenes.]",
       impact_en: "### Impact\nThis allows an attacker to read sensitive files from the server's filesystem, including source code, configuration files, and credentials, leading to a full system compromise.",
       impact_es: "### Impacto\nEsto permite a un atacante leer archivos sensibles del sistema de archivos del servidor, incluido el código fuente, los archivos de configuración y las credenciales, lo que lleva a un compromiso total del sistema.",
-      recommendations_en: "### Recommendations\nImplement a strict whitelist of allowed protocols (e.g., only HTTP and HTTPS). Validate that the user-supplied URL points to an external, public resource. Disable redirects.",
-      recommendations_es: "### Recomendaciones\nImplementar una lista blanca estricta de protocolos permitidos (p. ej., solo HTTP y HTTPS). Validar que la URL proporcionada por el usuario apunte a un recurso externo y público. Deshabilitar las redirecciones.",
+      immediateActions_en: "### Immediate Actions\nImplement a strict whitelist of allowed protocols (e.g., only HTTP and HTTPS). Validate that the user-supplied URL points to an external, public resource. Disable redirects.",
+      immediateActions_es: "### Acciones Inmediatas\nImplementar una lista blanca estricta de protocolos permitidos (p. ej., solo HTTP y HTTPS). Validar que la URL proporcionada por el usuario apunte a un recurso externo y público. Deshabilitar las redirecciones.",
       references: ["https://portswigger.net/web-security/ssrf"],
       tags: ["Web", "SSRF", "File Read"],
       ...emptyVulnBoilerplate
@@ -436,8 +444,8 @@ export const vulnerabilities: Vulnerability[] = [
       affectedComponents_es: "### Componentes Afectados\n[TODO: Especificar el/los archivo(s) y la(s) ubicación(es) donde se almacenan los datos sensibles, p. ej., /data/data/com.app.name/shared_prefs/user.xml]",
       impact_en: "### Impact\nAn attacker can steal sensitive user data, leading to account compromise, identity theft, and other privacy violations.",
       impact_es: "### Impacto\nUn atacante puede robar datos sensibles del usuario, lo que lleva al compromiso de la cuenta, robo de identidad y otras violaciones de la privacidad.",
-      recommendations_en: "### Recommendations\nDo not store sensitive data on the device if possible. If necessary, use platform-provided secure storage mechanisms like the Android Keystore and iOS Keychain. Encrypt all sensitive data before storing it.",
-      recommendations_es: "### Recomendaciones\nNo almacenar datos sensibles en el dispositivo si es posible. Si es necesario, utilizar mecanismos de almacenamiento seguro proporcionados por la plataforma como el Keystore de Android y el Keychain de iOS. Cifrar todos los datos sensibles antes de almacenarlos.",
+      immediateActions_en: "### Immediate Actions\nDo not store sensitive data on the device if possible. If necessary, use platform-provided secure storage mechanisms like the Android Keystore and iOS Keychain. Encrypt all sensitive data before storing it.",
+      immediateActions_es: "### Acciones Inmediatas\nNo almacenar datos sensibles en el dispositivo si es posible. Si es necesario, utilizar mecanismos de almacenamiento seguro proporcionados por la plataforma como el Keystore de Android y el Keychain de iOS. Cifrar todos los datos sensibles antes de almacenarlos.",
       references: ["https://owasp.org/www-project-mobile-top-10/2016-risks/m1-improper-platform-usage"],
       tags: ["Mobile", "Data Storage"],
       ...emptyVulnBoilerplate
@@ -457,8 +465,8 @@ export const vulnerabilities: Vulnerability[] = [
       affectedComponents_es: "### Componentes Afectados\n[TODO: Especificar el endpoint de la API de backend vulnerable y la vulnerabilidad específica, p. ej., /api/v1/user/{id} es vulnerable a IDOR.]",
       impact_en: "### Impact\nThe impact is equivalent to the corresponding web vulnerability and can range from information disclosure to full system compromise.",
       impact_es: "### Impacto\nEl impacto es equivalente a la vulnerabilidad web correspondiente y puede variar desde la divulgación de información hasta el compromiso total del sistema.",
-      recommendations_en: "### Recommendations\nTreat the mobile application as an untrusted client. Implement all security controls on the server-side, including input validation, access control, and strong authentication. Do not rely on any client-side validation.",
-      recommendations_es: "### Recomendaciones\nTratar la aplicación móvil como un cliente no confiable. Implementar todos los controles de seguridad en el lado del servidor, incluida la validación de entradas, el control de acceso y la autenticación fuerte. No confiar en ninguna validación del lado del cliente.",
+      immediateActions_en: "### Immediate Actions\nTreat the mobile application as an untrusted client. Implement all security controls on the server-side, including input validation, access control, and strong authentication. Do not rely on any client-side validation.",
+      immediateActions_es: "### Acciones Inmediatas\nTratar la aplicación móvil como un cliente no confiable. Implementar todos los controles de seguridad en el lado del servidor, incluida la validación de entradas, el control de acceso y la autenticación fuerte. No confiar en ninguna validación del lado del cliente.",
       references: ["https://owasp.org/www-project-mobile-top-10/2016-risks/m2-insecure-data-storage"],
       tags: ["Mobile", "API Security"],
       ...emptyVulnBoilerplate
@@ -478,8 +486,8 @@ export const vulnerabilities: Vulnerability[] = [
       affectedComponents_es: "### Componentes Afectados\n[TODO: Especificar los endpoints que utilizan protocolos de transporte inseguros.]",
       impact_en: "### Impact\nAn attacker can intercept sensitive information such as login credentials, session tokens, and personal data.",
       impact_es: "### Impacto\nUn atacante puede interceptar información sensible como credenciales de inicio de sesión, tokens de sesión y datos personales.",
-      recommendations_en: "### Recommendations\nEnforce the use of TLS 1.2 or higher for all network communications. Implement certificate pinning to prevent MitM attacks. Use strong, industry-standard cipher suites.",
-      recommendations_es: "### Recomendaciones\nForzar el uso de TLS 1.2 o superior para todas las comunicaciones de red. Implementar anclaje de certificados (certificate pinning) para prevenir ataques MitM. Utilizar conjuntos de cifrado sólidos y estándar de la industria.",
+      immediateActions_en: "### Immediate Actions\nEnforce the use of TLS 1.2 or higher for all network communications. Implement certificate pinning to prevent MitM attacks. Use strong, industry-standard cipher suites.",
+      immediateActions_es: "### Acciones Inmediatas\nForzar el uso de TLS 1.2 o superior para todas las comunicaciones de red. Implementar anclaje de certificados (certificate pinning) para prevenir ataques MitM. Utilizar conjuntos de cifrado sólidos y estándar de la industria.",
       references: ["https://owasp.org/www-project-mobile-top-10/2016-risks/m3-insecure-communication"],
       tags: ["Mobile", "Network"],
       ...emptyVulnBoilerplate
@@ -499,8 +507,8 @@ export const vulnerabilities: Vulnerability[] = [
       affectedComponents_es: "### Componentes Afectados\n[TODO: Especificar la fuente de la fuga de datos, p. ej., registros del sistema, caché del teclado, IPC inseguro.]",
       impact_en: "### Impact\nThis can lead to the exposure of sensitive user or application data to other apps on the device or to an attacker with physical access.",
       impact_es: "### Impacto\nEsto puede llevar a la exposición de datos sensibles del usuario o de la aplicación a otras aplicaciones en el dispositivo o a un atacante con acceso físico.",
-      recommendations_en: "### Recommendations\nDisable logging in production builds. Avoid storing sensitive data in insecure locations. Use secure IPC mechanisms and properly configure content providers and intents.",
-      recommendations_es: "### Recomendaciones\nDeshabilitar el registro en las compilaciones de producción. Evitar almacenar datos sensibles en ubicaciones inseguras. Utilizar mecanismos IPC seguros y configurar correctamente los proveedores de contenido y los intents.",
+      immediateActions_en: "### Immediate Actions\nDisable logging in production builds. Avoid storing sensitive data in insecure locations. Use secure IPC mechanisms and properly configure content providers and intents.",
+      immediateActions_es: "### Acciones Inmediatas\nDeshabilitar el registro en las compilaciones de producción. Evitar almacenar datos sensibles en ubicaciones inseguras. Utilizar mecanismos IPC seguros y configurar correctamente los proveedores de contenido y los intents.",
       references: ["https://owasp.org/www-project-mobile-top-10/2016-risks/m4-insecure-authentication"],
       tags: ["Mobile", "Data Leakage"],
       ...emptyVulnBoilerplate
@@ -520,8 +528,8 @@ export const vulnerabilities: Vulnerability[] = [
       affectedComponents_es: "### Componentes Afectados\n[TODO: Especificar la funcionalidad del lado del cliente a la que pueden acceder usuarios no autorizados.]",
       impact_en: "### Impact\nAn attacker can perform administrative actions or access data belonging to other users.",
       impact_es: "### Impacto\nUn atacante puede realizar acciones administrativas o acceder a datos pertenecientes a otros usuarios.",
-      recommendations_en: "### Recommendations\nAll authorization checks must be performed on the server-side. The client should be treated as an untrusted environment. Do not rely on hidden UI elements for security.",
-      recommendations_es: "### Recomendaciones\nTodas las comprobaciones de autorización deben realizarse en el lado del servidor. El cliente debe ser tratado como un entorno no confiable. No confiar en elementos de la interfaz de usuario ocultos para la seguridad.",
+      immediateActions_en: "### Immediate Actions\nAll authorization checks must be performed on the server-side. The client should be treated as an untrusted environment. Do not rely on hidden UI elements for security.",
+      immediateActions_es: "### Acciones Inmediatas\nTodas las comprobaciones de autorización deben realizarse en el lado del servidor. El cliente debe ser tratado como un entorno no confiable. No confiar en elementos de la interfaz de usuario ocultos para la seguridad.",
       references: ["https://owasp.org/www-project-mobile-top-10/2016-risks/m5-insufficient-cryptography"],
       tags: ["Mobile", "Authorization"],
       ...emptyVulnBoilerplate
@@ -541,8 +549,8 @@ export const vulnerabilities: Vulnerability[] = [
       affectedComponents_es: "### Componentes Afectados\n[TODO: Especificar la funcionalidad que utiliza criptografía débil, p. ej., cifrado de datos, hashing de contraseñas.]",
       impact_en: "### Impact\nAn attacker can decrypt sensitive information, leading to data breaches and account compromise.",
       impact_es: "### Impacto\nUn atacante puede descifrar información sensible, lo que conduce a violaciones de datos y compromiso de cuentas.",
-      recommendations_en: "### Recommendations\nUse strong, industry-standard cryptographic algorithms (e.g., AES-256-GCM, SHA-256). Do not hardcode cryptographic keys. Use well-vetted cryptographic libraries and follow best practices for their use.",
-      recommendations_es: "### Recomendaciones\nUtilizar algoritmos criptográficos sólidos y estándar de la industria (p. ej., AES-256-GCM, SHA-256). No embeber claves criptográficas en el código. Utilizar bibliotecas criptográficas bien examinadas y seguir las mejores prácticas para su uso.",
+      immediateActions_en: "### Immediate Actions\nUse strong, industry-standard cryptographic algorithms (e.g., AES-256-GCM, SHA-256). Do not hardcode cryptographic keys. Use well-vetted cryptographic libraries and follow best practices for their use.",
+      immediateActions_es: "### Acciones Inmediatas\nUtilizar algoritmos criptográficos sólidos y estándar de la industria (p. ej., AES-256-GCM, SHA-256). No embeber claves criptográficas en el código. Utilizar bibliotecas criptográficas bien examinadas y seguir las mejores prácticas para su uso.",
       references: ["https://owasp.org/www-project-mobile-top-10/2016-risks/m6-insecure-authorization"],
       tags: ["Mobile", "Cryptography"],
       ...emptyVulnBoilerplate
@@ -557,13 +565,13 @@ export const vulnerabilities: Vulnerability[] = [
       overview_en: "### Overview\nThis category includes vulnerabilities like SQL injection, XSS, and command injection that occur on the client-side, often within a WebView component or a local SQLite database.",
       overview_es: "### Resumen\nEsta categoría incluye vulnerabilidades como inyección SQL, XSS e inyección de comandos que ocurren en el lado del cliente, a menudo dentro de un componente WebView o una base de datos SQLite local.",
       technicalDescription_en: "### Technical Description\nThe application processes user input in an unsafe way on the client-side. For example, a vulnerable WebView might be susceptible to XSS if it loads untrusted web content. A local SQLite database could be vulnerable to SQL injection if it constructs queries with unvalidated input.",
-      technicalDescription_es: "### Descripción Técnica\nLa aplicación procesa la entrada del usuario de manera insegura en el lado del cliente. Por ejemplo, un WebView vulnerable podría ser susceptible a XSS si carga contenido web no confiable. Una base deatos SQLite local podría ser vulnerable a la inyección SQL si construye consultas con entradas no validadas.",
+      technicalDescription_es: "### Descripción Técnica\nLa aplicación procesa la entrada del usuario de manera insegura en el lado del cliente. Por ejemplo, un WebView vulnerable podría ser susceptible a XSS si carga contenido web no confiable. Una base de datos SQLite local podría ser vulnerable a la inyección SQL si construye consultas con entradas no validadas.",
       affectedComponents_en: "### Affected Components\n[TODO: Specify the client-side component vulnerable to injection, e.g., WebView, local database.]",
       affectedComponents_es: "### Componentes Afectados\n[TODO: Especificar el componente del lado del cliente vulnerable a la inyección, p. ej., WebView, base de datos local.]",
       impact_en: "### Impact\nClient-side injection can lead to data theft from the local application, unauthorized actions, and in some cases, remote code execution within the context of the app.",
       impact_es: "### Impacto\nLa inyección del lado del cliente puede llevar al robo de datos de la aplicación local, acciones no autorizadas y, en algunos casos, a la ejecución remota de código en el contexto de la aplicación.",
-      recommendations_en: "### Recommendations\nValidate all user input, even if it is only used on the client-side. Use parameterized queries for local databases. Configure WebViews securely and avoid loading untrusted content.",
-      recommendations_es: "### Recomendaciones\nValidar todas las entradas del usuario, incluso si solo se usan en el lado del cliente. Usar consultas parametrizadas para las bases de datos locales. Configurar los WebViews de forma segura y evitar cargar contenido no confiable.",
+      immediateActions_en: "### Immediate Actions\nValidate all user input, even if it is only used on the client-side. Use parameterized queries for local databases. Configure WebViews securely and avoid loading untrusted content.",
+      immediateActions_es: "### Acciones Inmediatas\nValidar todas las entradas del usuario, incluso si solo se usan en el lado del cliente. Usar consultas parametrizadas para las bases de datos locales. Configurar los WebViews de forma segura y evitar cargar contenido no confiable.",
       references: ["https://owasp.org/www-project-mobile-top-10/2016-risks/m7-client-code-quality"],
       tags: ["Mobile", "Injection"],
       ...emptyVulnBoilerplate
@@ -583,8 +591,8 @@ export const vulnerabilities: Vulnerability[] = [
       affectedComponents_es: "### Componentes Afectados\n[TODO: Especificar la funcionalidad que toma una decisión de seguridad basada en una entrada no confiable.]",
       impact_en: "### Impact\nThis can lead to authorization bypass, information disclosure, and other security control failures.",
       impact_es: "### Impacto\nEsto puede llevar a la omisión de la autorización, la divulgación de información y otros fallos en los controles de seguridad.",
-      recommendations_en: "### Recommendations\nNever trust input from the client-side for security decisions. All security checks and decisions must be made on the server-side.",
-      recommendations_es: "### Recomendaciones\nNunca confiar en la entrada del lado del cliente para las decisiones de seguridad. Todas las comprobaciones y decisiones de seguridad deben realizarse en el lado del servidor.",
+      immediateActions_en: "### Immediate Actions\nNever trust input from the client-side for security decisions. All security checks and decisions must be made on the server-side.",
+      immediateActions_es: "### Acciones Inmediatas\nNunca confiar en la entrada del lado del cliente para las decisiones de seguridad. Todas las comprobaciones y decisiones de seguridad deben realizarse en el lado del servidor.",
       references: ["https://cwe.mitre.org/data/definitions/807.html"],
       tags: ["Mobile", "Access Control"],
       ...emptyVulnBoilerplate
@@ -604,8 +612,8 @@ export const vulnerabilities: Vulnerability[] = [
       affectedComponents_es: "### Componentes Afectados\n[TODO: Especificar qué información sensible se encontró a través de la ingeniería inversa, p. ej., clave de API embebida, algoritmo propietario.]",
       impact_en: "### Impact\nReverse engineering can facilitate the discovery of other vulnerabilities, expose intellectual property, and reveal hardcoded secrets that can be used to attack backend systems.",
       impact_es: "### Impacto\nLa ingeniería inversa puede facilitar el descubrimiento de otras vulnerabilidades, exponer propiedad intelectual y revelar secretos embebidos que pueden ser utilizados para atacar sistemas backend.",
-      recommendations_en: "### Recommendations\nUse code obfuscation tools like ProGuard (for Android) or commercial solutions to make reverse engineering more difficult. Avoid hardcoding any sensitive information in the client-side code.",
-      recommendations_es: "### Recomendaciones\nUtilizar herramientas de ofuscación de código como ProGuard (para Android) o soluciones comerciales para dificultar la ingeniería inversa. Evitar embeber cualquier información sensible en el código del lado del cliente.",
+      immediateActions_en: "### Immediate Actions\nUse code obfuscation tools like ProGuard (for Android) or commercial solutions to make reverse engineering more difficult. Avoid hardcoding any sensitive information in the client-side code.",
+      immediateActions_es: "### Acciones Inmediatas\nUtilizar herramientas de ofuscación de código como ProGuard (para Android) o soluciones comerciales para dificultar la ingeniería inversa. Evitar embeber cualquier información sensible en el código del lado del cliente.",
       references: ["https://owasp.org/www-project-mobile-top-10/2016-risks/m9-reverse-engineering"],
       tags: ["Mobile", "Reverse Engineering"],
       ...emptyVulnBoilerplate
@@ -625,8 +633,8 @@ export const vulnerabilities: Vulnerability[] = [
       affectedComponents_es: "### Componentes Afectados\n[TODO: Describir la funcionalidad oculta que se descubrió, p. ej., un panel de administración oculto, una cuenta de usuario de puerta trasera.]",
       impact_en: "### Impact\nThis could lead to unauthorized access, information disclosure, or provide a convenient backdoor for an attacker.",
       impact_es: "### Impacto\nEsto podría llevar a un acceso no autorizado, divulgación de información o proporcionar una puerta trasera conveniente para un atacante.",
-      recommendations_en: "### Recommendations\nRemove all debug code, backdoors, and other unused functionality from the production build of the application. Use build flags to automatically strip out this code.",
-      recommendations_es: "### Recomendaciones\nEliminar todo el código de depuración, puertas traseras y otras funcionalidades no utilizadas de la compilación de producción de la aplicación. Usar indicadores de compilación para eliminar automáticamente este código.",
+      immediateActions_en: "### Immediate Actions\nRemove all debug code, backdoors, and other unused functionality from the production build of the application. Use build flags to automatically strip out this code.",
+      immediateActions_es: "### Acciones Inmediatas\nEliminar todo el código de depuración, puertas traseras y otras funcionalidades no utilizadas de la compilación de producción de la aplicación. Usar indicadores de compilación para eliminar automáticamente este código.",
       references: ["https://owasp.org/www-project-mobile-top-10/2016-risks/m10-extraneous-functionality"],
       tags: ["Mobile", "Configuration"],
       ...emptyVulnBoilerplate
@@ -646,8 +654,8 @@ export const vulnerabilities: Vulnerability[] = [
       affectedComponents_es: "### Componentes Afectados\n[TODO: Especificar el canal de comunicación que es vulnerable, p. ej., toda la comunicación a api.example.com.]",
       impact_en: "### Impact\nAn attacker can steal credentials, session tokens, and other sensitive data. They can also modify data in transit to perform fraudulent actions.",
       impact_es: "### Impacto\nUn atacante puede robar credenciales, tokens de sesión y otros datos sensibles. También pueden modificar los datos en tránsito para realizar acciones fraudulentas.",
-      recommendations_en: "### Recommendations\nEnforce TLS for all communications. Implement certificate pinning to prevent attackers from using fraudulent certificates. Educate users about the risks of using insecure networks.",
-      recommendations_es: "### Recomendaciones\nForzar TLS para todas las comunicaciones. Implementar anclaje de certificados (certificate pinning) para evitar que los atacantes usen certificados fraudulentos. Educar a los usuarios sobre los riesgos de usar redes inseguras.",
+      immediateActions_en: "### Immediate Actions\nEnforce TLS for all communications. Implement certificate pinning to prevent attackers from using fraudulent certificates. Educate users about the risks of using insecure networks.",
+      immediateActions_es: "### Acciones Inmediatas\nForzar TLS para todas las comunicaciones. Implementar anclaje de certificados (certificate pinning) para evitar que los atacantes usen certificados fraudulentos. Educar a los usuarios sobre los riesgos de usar redes inseguras.",
       references: ["https://owasp.org/www-community/attacks/Man-in-the-middle_attack"],
       tags: ["Network", "MitM"],
       ...emptyVulnBoilerplate
@@ -667,8 +675,8 @@ export const vulnerabilities: Vulnerability[] = [
       affectedComponents_es: "### Componentes Afectados\n[TODO: Especificar la infraestructura DNS o los sistemas cliente vulnerables a la suplantación.]",
       impact_en: "### Impact\nThis can be used for phishing attacks, to trick users into providing credentials, or to serve malware.",
       impact_es: "### Impacto\nEsto se puede usar para ataques de phishing, para engañar a los usuarios para que proporcionen credenciales o para servir malware.",
-      recommendations_en: "### Recommendations\nUse DNSSEC to ensure the authenticity and integrity of DNS responses. Use a trusted, secure DNS resolver. Monitor for signs of DNS spoofing.",
-      recommendations_es: "### Recomendaciones\nUsar DNSSEC para garantizar la autenticidad e integridad de las respuestas DNS. Usar un resolutor DNS seguro y de confianza. Monitorear en busca de signos de suplantación de DNS.",
+      immediateActions_en: "### Immediate Actions\nUse DNSSEC to ensure the authenticity and integrity of DNS responses. Use a trusted, secure DNS resolver. Monitor for signs of DNS spoofing.",
+      immediateActions_es: "### Acciones Inmediatas\nUsar DNSSEC para garantizar la autenticidad e integridad de las respuestas DNS. Usar un resolutor DNS seguro y de confianza. Monitorear en busca de signos de suplantación de DNS.",
       references: ["https://www.cloudflare.com/learning/dns/dns-cache-poisoning/"],
       tags: ["Network", "Spoofing"],
       ...emptyVulnBoilerplate
@@ -688,8 +696,8 @@ export const vulnerabilities: Vulnerability[] = [
       affectedComponents_es: "### Componentes Afectados\n[TODO: Especificar el segmento de red local que es vulnerable.]",
       impact_en: "### Impact\nThis enables Man-in-the-Middle attacks, allowing the attacker to intercept, modify, or drop traffic. It can lead to session hijacking and the theft of sensitive information.",
       impact_es: "### Impacto\nEsto permite ataques de intermediario (Man-in-the-Middle), lo que permite al atacante interceptar, modificar o descartar el tráfico. Puede conducir al secuestro de sesiones y al robo de información sensible.",
-      recommendations_en: "### Recommendations\nUse static ARP entries for critical systems. Implement ARP spoofing detection tools. Use switch security features like Dynamic ARP Inspection (DAI).",
-      recommendations_es: "### Recomendaciones\nUsar entradas ARP estáticas para sistemas críticos. Implementar herramientas de detección de suplantación de ARP. Usar funciones de seguridad del switch como la Inspección Dinámica de ARP (DAI).",
+      immediateActions_en: "### Immediate Actions\nUse static ARP entries for critical systems. Implement ARP spoofing detection tools. Use switch security features like Dynamic ARP Inspection (DAI).",
+      immediateActions_es: "### Acciones Inmediatas\nUsar entradas ARP estáticas para sistemas críticos. Implementar herramientas de detección de suplantación de ARP. Usar funciones de seguridad del switch como la Inspección Dinámica de ARP (DAI).",
       references: ["https://www.veracode.com/security/arp-poisoning"],
       tags: ["Network", "Spoofing"],
       ...emptyVulnBoilerplate
@@ -709,8 +717,8 @@ export const vulnerabilities: Vulnerability[] = [
       affectedComponents_es: "### Componentes Afectados\n[TODO: Especificar sistemas o segmentos de red que son vulnerables a ataques de suplantación de IP.]",
       impact_en: "### Impact\nIP spoofing can be used to bypass authentication mechanisms, launch DoS attacks, and hide the attacker's identity.",
       impact_es: "### Impacto\nLa suplantación de IP se puede usar para eludir mecanismos de autenticación, lanzar ataques DoS y ocultar la identidad del atacante.",
-      recommendations_en: "### Recommendations\nImplement ingress and egress filtering on routers and firewalls to block packets with forged source addresses. Use cryptographic authentication to verify the identity of hosts.",
-      recommendations_es: "### Recomendaciones\nImplementar filtrado de entrada y salida en enrutadores y cortafuegos para bloquear paquetes con direcciones de origen falsificadas. Usar autenticación criptográfica para verificar la identidad de los hosts.",
+      immediateActions_en: "### Immediate Actions\nImplement ingress and egress filtering on routers and firewalls to block packets with forged source addresses. Use cryptographic authentication to verify the identity of hosts.",
+      immediateActions_es: "### Acciones Inmediatas\nImplementar filtrado de entrada y salida en enrutadores y cortafuegos para bloquear paquetes con direcciones de origen falsificadas. Usar autenticación criptográfica para verificar la identidad de los hosts.",
       references: ["https://www.imperva.com/learn/ddos/ip-spoofing/"],
       tags: ["Network", "Spoofing"],
       ...emptyVulnBoilerplate
@@ -730,8 +738,8 @@ export const vulnerabilities: Vulnerability[] = [
       affectedComponents_es: "### Componentes Afectados\n[TODO: Especificar el servicio o sistema que es vulnerable a un ataque DoS.]",
       impact_en: "### Impact\nA successful DoS attack can render a service completely unavailable, leading to financial losses and reputational damage.",
       impact_es: "### Impacto\nUn ataque DoS exitoso puede hacer que un servicio no esté disponible por completo, lo que conduce a pérdidas financieras y daños a la reputación.",
-      recommendations_en: "### Recommendations\nImplement rate limiting and traffic shaping. Use a DoS mitigation service. Configure firewalls and routers to block malicious traffic patterns. Regularly apply security patches.",
-      recommendations_es: "### Recomendaciones\nImplementar limitación de velocidad y modelado de tráfico. Usar un servicio de mitigación de DoS. Configurar cortafuegos y enrutadores para bloquear patrones de tráfico maliciosos. Aplicar parches de seguridad regularmente.",
+      immediateActions_en: "### Immediate Actions\nImplement rate limiting and traffic shaping. Use a DoS mitigation service. Configure firewalls and routers to block malicious traffic patterns. Regularly apply security patches.",
+      immediateActions_es: "### Acciones Inmediatas\nImplementar limitación de velocidad y modelado de tráfico. Usar un servicio de mitigación de DoS. Configurar cortafuegos y enrutadores para bloquear patrones de tráfico maliciosos. Aplicar parches de seguridad regularmente.",
       references: ["https://www.cloudflare.com/learning/ddos/denial-of-service-attack/"],
       tags: ["Network", "DoS"],
       ...emptyVulnBoilerplate
@@ -751,8 +759,8 @@ export const vulnerabilities: Vulnerability[] = [
       affectedComponents_es: "### Componentes Afectados\n[TODO: Especificar los switches de red y los puertos que están mal configurados.]",
       impact_en: "### Impact\nAn attacker can bypass network segmentation controls, allowing them to access sensitive systems and intercept traffic from other VLANs.",
       impact_es: "### Impacto\nUn atacante puede eludir los controles de segmentación de red, lo que le permite acceder a sistemas sensibles e interceptar tráfico de otras VLAN.",
-      recommendations_en: "### Recommendations\nDisable Dynamic Trunking Protocol (DTP) on user-facing ports. Set ports to access mode explicitly. Configure the native VLAN to an unused VLAN ID. Use private VLANs where appropriate.",
-      recommendations_es: "### Recomendaciones\nDeshabilitar el Protocolo de Enlace Troncal Dinámico (DTP) en los puertos de cara al usuario. Establecer los puertos en modo de acceso explícitamente. Configurar la VLAN nativa a un ID de VLAN no utilizado. Usar VLAN privadas cuando sea apropiado.",
+      immediateActions_en: "### Immediate Actions\nDisable Dynamic Trunking Protocol (DTP) on user-facing ports. Set ports to access mode explicitly. Configure the native VLAN to an unused VLAN ID. Use private VLANs where appropriate.",
+      immediateActions_es: "### Acciones Inmediatas\nDeshabilitar el Protocolo de Enlace Troncal Dinámico (DTP) en los puertos de cara al usuario. Establecer los puertos en modo de acceso explícitamente. Configurar la VLAN nativa a un ID de VLAN no utilizado. Usar VLAN privadas cuando sea apropiado.",
       references: ["https://www.cisco.com/c/en/us/td/docs/switches/lan/catalyst_2950/software/release/12-1_9_ea1/configuration/guide/scg/swvlan.html#wp1139414"],
       tags: ["Network", "VLAN"],
       ...emptyVulnBoilerplate
@@ -772,8 +780,8 @@ export const vulnerabilities: Vulnerability[] = [
       affectedComponents_es: "### Componentes Afectados\n[TODO: Especificar el servicio o dispositivo que utiliza cifrado débil, p. ej., punto de acceso Wi-Fi usando WEP, servidor web usando SSLv3.]",
       impact_en: "### Impact\nThis allows an attacker to eavesdrop on all network communications, stealing sensitive data like credentials and session tokens.",
       impact_es: "### Impacto\nEsto permite a un atacante espiar todas las comunicaciones de la red, robando datos sensibles como credenciales y tokens de sesión.",
-      recommendations_en: "### Recommendations\nUse strong, modern encryption protocols (e.g., WPA3 for Wi-Fi, TLS 1.2/1.3 for web traffic). Disable support for outdated and insecure protocols and cipher suites.",
-      recommendations_es: "### Recomendaciones\nUsar protocolos de cifrado fuertes y modernos (p. ej., WPA3 para Wi-Fi, TLS 1.2/1.3 para el tráfico web). Deshabilitar el soporte para protocolos y conjuntos de cifrado obsoletos e inseguros.",
+      immediateActions_en: "### Immediate Actions\nUse strong, modern encryption protocols (e.g., WPA3 for Wi-Fi, TLS 1.2/1.3 for web traffic). Disable support for outdated and insecure protocols and cipher suites.",
+      immediateActions_es: "### Acciones Inmediatas\nUsar protocolos de cifrado fuertes y modernos (p. ej., WPA3 para Wi-Fi, TLS 1.2/1.3 para el tráfico web). Deshabilitar el soporte para protocolos y conjuntos de cifrado obsoletos e inseguros.",
       references: ["https://nvlpubs.nist.gov/nistpubs/SpecialPublications/NIST.SP.800-52r2.pdf"],
       tags: ["Network", "Cryptography"],
       ...emptyVulnBoilerplate
@@ -793,8 +801,8 @@ export const vulnerabilities: Vulnerability[] = [
       affectedComponents_es: "### Componentes Afectados\n[TODO: Especificar el cortafuegos y la(s) regla(s) específica(s) mal configurada(s).]",
       impact_en: "### Impact\nThis can expose vulnerable services on the internal network to external attackers, bypassing a key perimeter defense.",
       impact_es: "### Impacto\nEsto puede exponer servicios vulnerables en la red interna a atacantes externos, eludiendo una defensa perimetral clave.",
-      recommendations_en: "### Recommendations\nFollow the principle of least privilege: deny all traffic by default and only allow what is explicitly required. Regularly audit firewall rules. Remove any unnecessary or overly permissive rules.",
-      recommendations_es: "### Recomendaciones\nSeguir el principio de privilegio mínimo: denegar todo el tráfico por defecto y solo permitir lo que se requiere explícitamente. Auditar regularmente las reglas del cortafuegos. Eliminar cualquier regla innecesaria o demasiado permisiva.",
+      immediateActions_en: "### Immediate Actions\nFollow the principle of least privilege: deny all traffic by default and only allow what is explicitly required. Regularly audit firewall rules. Remove any unnecessary or overly permissive rules.",
+      immediateActions_es: "### Acciones Inmediatas\nSeguir el principio de privilegio mínimo: denegar todo el tráfico por defecto y solo permitir lo que se requiere explícitamente. Auditar regularmente las reglas del cortafuegos. Eliminar cualquier regla innecesaria o demasiado permisiva.",
       references: ["https://www.sans.org/posters/firewall-packet-filtering/"],
       tags: ["Network", "Configuration"],
       ...emptyVulnBoilerplate
@@ -814,8 +822,8 @@ export const vulnerabilities: Vulnerability[] = [
       affectedComponents_es: "### Componentes Afectados\n[TODO: Especificar el SSID de la red Wi-Fi insegura.]",
       impact_en: "### Impact\nUnauthorized access to the internal network can lead to further attacks, data theft, and compromise of internal systems.",
       impact_es: "### Impacto\nEl acceso no autorizado a la red interna puede conducir a más ataques, robo de datos y compromiso de los sistemas internos.",
-      recommendations_en: "### Recommendations\nSecure all Wi-Fi networks with WPA3 encryption and a strong, complex password. Segment guest networks from internal corporate networks. Hide the SSID if possible.",
-      recommendations_es: "### Recomendaciones\nAsegurar todas las redes Wi-Fi con cifrado WPA3 y una contraseña fuerte y compleja. Segmentar las redes de invitados de las redes corporativas internas. Ocultar el SSID si es posible.",
+      immediateActions_en: "### Immediate Actions\nSecure all Wi-Fi networks with WPA3 encryption and a strong, complex password. Segment guest networks from internal corporate networks. Hide the SSID if possible.",
+      immediateActions_es: "### Acciones Inmediatas\nAsegurar todas las redes Wi-Fi con cifrado WPA3 y una contraseña fuerte y compleja. Segmentar las redes de invitados de las redes corporativas internas. Ocultar el SSID si es posible.",
       references: ["https://www.fcc.gov/consumers/guides/securing-your-wireless-network"],
       tags: ["Network", "Wi-Fi"],
       ...emptyVulnBoilerplate
@@ -835,8 +843,8 @@ export const vulnerabilities: Vulnerability[] = [
       affectedComponents_es: "### Componentes Afectados\n[TODO: Especificar el protocolo o la aplicación que transmite datos en texto plano.]",
       impact_en: "### Impact\nThis can lead to the exposure of sensitive data, credentials, and session tokens, enabling further attacks.",
       impact_es: "### Impacto\nEsto puede llevar a la exposición de datos sensibles, credenciales y tokens de sesión, lo que permite más ataques.",
-      recommendations_en: "### Recommendations\nEncrypt all network traffic using strong protocols like TLS 1.2/1.3 and SSH. Avoid using insecure legacy protocols like Telnet and FTP.",
-      recommendations_es: "### Recomendaciones\nCifrar todo el tráfico de red utilizando protocolos sólidos como TLS 1.2/1.3 y SSH. Evitar el uso de protocolos heredados inseguros como Telnet y FTP.",
+      immediateActions_en: "### Immediate Actions\nEncrypt all network traffic using strong protocols like TLS 1.2/1.3 and SSH. Avoid using insecure legacy protocols like Telnet and FTP.",
+      immediateActions_es: "### Acciones Inmediatas\nCifrar todo el tráfico de red utilizando protocolos sólidos como TLS 1.2/1.3 y SSH. Evitar el uso de protocolos heredados inseguros como Telnet y FTP.",
       references: ["https://www.wireshark.org/"],
       tags: ["Network", "Eavesdropping"],
       ...emptyVulnBoilerplate
@@ -851,13 +859,13 @@ export const vulnerabilities: Vulnerability[] = [
       overview_en: "### Overview\nThe system is running outdated software with publicly known vulnerabilities. Attackers can exploit these vulnerabilities to compromise the system.",
       overview_es: "### Resumen\nEl sistema está ejecutando software obsoleto con vulnerabilidades conocidas públicamente. Los atacantes pueden explotar estas vulnerabilidades para comprometer el sistema.",
       technicalDescription_en: "### Technical Description\nA service or application (e.g., Apache, WordPress, OpenSSH) is running a version that is known to be vulnerable to a specific CVE. Public exploits are often available for these vulnerabilities, making them easy to exploit.",
-      technicalDescription_es: "### Descripción Técnica\nUn servicio o aplicación (p. ej., Apache, WordPress, OpenSSH) está ejecutando una versión que se sabe que es vulnerable a un CVE específico. A menudo hay exploits públicos disponibles para estas vulnerabilidades, lo que las hace fáciles de explotar.",
+      technicalDescription_es: "### Descripción Técnica\nUn servicio o aplicación (p. ej., Apache, WordPress, OpenSSH) está ejecutando una versión que se sabe que es vulnerable a un CVE específico. A menudo hay exploits públicos disponibles para estasulnerabilidades, lo que las hace fáciles de explotar.",
       affectedComponents_en: "### Affected Components\n[TODO: Specify the unpatched software, its version, and the relevant CVE(s).]",
       affectedComponents_es: "### Componentes Afectados\n[TODO: Especificar el software sin parches, su versión y el/los CVE(s) relevante(s).]",
       impact_en: "### Impact\nExploitation can lead to remote code execution, denial of service, or full system compromise.",
       impact_es: "### Impacto\nLa explotación puede conducir a la ejecución remota de código, la denegación de servicio o el compromiso total del sistema.",
-      recommendations_en: "### Recommendations\nImplement a robust patch management process. Regularly scan for and apply security patches to all software. Prioritize patching for critical, internet-facing systems.",
-      recommendations_es: "### Recomendaciones\nImplementar un proceso sólido de gestión de parches. Escanear y aplicar regularmente parches de seguridad a todo el software. Priorizar la aplicación de parches para sistemas críticos de cara a Internet.",
+      immediateActions_en: "### Immediate Actions\nImplement a robust patch management process. Regularly scan for and apply security patches to all software. Prioritize patching for critical, internet-facing systems.",
+      immediateActions_es: "### Acciones Inmediatas\nImplementar un proceso sólido de gestión de parches. Escanear y aplicar regularmente parches de seguridad a todo el software. Priorizar la aplicación de parches para sistemas críticos de cara a Internet.",
       references: ["https://www.cisa.gov/known-exploited-vulnerabilities-catalog"],
       tags: ["Infrastructure", "Patch Management"],
       ...emptyVulnBoilerplate
@@ -877,8 +885,8 @@ export const vulnerabilities: Vulnerability[] = [
       affectedComponents_es: "### Componentes Afectados\n[TODO: Especificar el sistema o la aplicación que utiliza credenciales predeterminadas, p. ej., panel de administración del enrutador, servicio de base de datos.]",
       impact_en: "### Impact\nThis provides an attacker with an easy path to gaining privileged access to a system, potentially leading to a full compromise of the network.",
       impact_es: "### Impacto\nEsto proporciona a un atacante un camino fácil para obtener acceso privilegiado a un sistema, lo que podría llevar a un compromiso total de la red.",
-      recommendations_en: "### Recommendations\nChange all default passwords immediately upon deploying a new system or application. Implement a policy to ensure that all default credentials are changed.",
-      recommendations_es: "### Recomendaciones\nCambiar todas las contraseñas predeterminadas inmediatamente después de implementar un nuevo sistema o aplicación. Implementar una política para garantizar que todas las credenciales predeterminadas se cambien.",
+      immediateActions_en: "### Immediate Actions\nChange all default passwords immediately upon deploying a new system or application. Implement a policy to ensure that all default credentials are changed.",
+      immediateActions_es: "### Acciones Inmediatas\nCambiar todas las contraseñas predeterminadas inmediatamente después de implementar un nuevo sistema o aplicación. Implementar una política para garantizar que todas las credenciales predeterminadas se cambien.",
       references: ["https://cwe.mitre.org/data/definitions/1393.html"],
       tags: ["Infrastructure", "Authentication"],
       ...emptyVulnBoilerplate
@@ -898,8 +906,8 @@ export const vulnerabilities: Vulnerability[] = [
       affectedComponents_es: "### Componentes Afectados\n[TODO: Especificar el parámetro y la funcionalidad vulnerables, p. ej., el parámetro `filename` en una función de descarga de archivos.]",
       impact_en: "### Impact\nThis can lead to the disclosure of sensitive information, such as source code, credentials, and system configuration files.",
       impact_es: "### Impacto\nEsto puede conducir a la divulgación de información sensible, como el código fuente, las credenciales y los archivos de configuración del sistema.",
-      recommendations_en: "### Recommendations\nValidate user input before using it in filesystem operations. Use a whitelist of allowed file paths. Run the application in a sandboxed environment to restrict filesystem access.",
-      recommendations_es: "### Recomendaciones\nValidar la entrada del usuario antes de usarla en operaciones del sistema de archivos. Usar una lista blanca de rutas de archivo permitidas. Ejecutar la aplicación en un entorno aislado (sandbox) para restringir el acceso al sistema de archivos.",
+      immediateActions_en: "### Immediate Actions\nValidate user input before using it in filesystem operations. Use a whitelist of allowed file paths. Run the application in a sandboxed environment to restrict filesystem access.",
+      immediateActions_es: "### Acciones Inmediatas\nValidar la entrada del usuario antes de usarla en operaciones del sistema de archivos. Usar una lista blanca de rutas de archivo permitidas. Ejecutar la aplicación en un entorno aislado (sandbox) para restringir el acceso al sistema de archivos.",
       references: ["https://owasp.org/www-community/attacks/Path_Traversal"],
       tags: ["Infrastructure", "File Inclusion"],
       ...emptyVulnBoilerplate
@@ -919,8 +927,8 @@ export const vulnerabilities: Vulnerability[] = [
       affectedComponents_es: "### Componentes Afectados\n[TODO: Especificar el componente vulnerable y el vector utilizado para lograr RCE.]",
       impact_en: "### Impact\nA successful RCE attack gives an attacker full control over the compromised system, allowing them to steal data, install malware, or use the system as a pivot point for further attacks.",
       impact_es: "### Impacto\nUn ataque RCE exitoso le da a un atacante el control total sobre el sistema comprometido, lo que le permite robar datos, instalar malware o usar el sistema como punto de pivote para más ataques.",
-      recommendations_en: "### Recommendations\nFollow secure coding practices. Keep all software and dependencies patched. Implement strict input validation. Use a web application firewall (WAF) as a defense-in-depth measure.",
-      recommendations_es: "### Recomendaciones\nSeguir prácticas de codificación segura. Mantener todo el software y las dependencias parcheadas. Implementar una validación de entrada estricta. Usar un cortafuegos de aplicaciones web (WAF) como medida de defensa en profundidad.",
+      immediateActions_en: "### Immediate Actions\nFollow secure coding practices. Keep all software and dependencies patched. Implement strict input validation. Use a web application firewall (WAF) as a defense-in-depth measure.",
+      immediateActions_es: "### Acciones Inmediatas\nSeguir prácticas de codificación segura. Mantener todo el software y las dependencias parcheadas. Implementar una validación de entrada estricta. Usar un cortafuegos de aplicaciones web (WAF) como medida de defensa en profundidad.",
       references: ["https://www.imperva.com/learn/application-security/remote-code-execution-rce/"],
       tags: ["Infrastructure", "RCE"],
       ...emptyVulnBoilerplate
@@ -940,8 +948,8 @@ export const vulnerabilities: Vulnerability[] = [
       affectedComponents_es: "### Componentes Afectados\n[TODO: Especificar el vector utilizado para la escalada de privilegios, p. ej., un binario SUID específico, una versión vulnerable del kernel.]",
       impact_en: "### Impact\nAn attacker with administrative privileges has full control over the system.",
       impact_es: "### Impacto\nUn atacante con privilegios administrativos tiene el control total sobre el sistema.",
-      recommendations_en: "### Recommendations\nApply the principle of least privilege. Keep systems patched. Regularly audit for misconfigurations, such as insecure file permissions or SUID binaries.",
-      recommendations_es: "### Recomendaciones\nAplicar el principio de privilegio mínimo. Mantener los sistemas parcheados. Auditar regularmente en busca de configuraciones incorrectas, como permisos de archivo inseguros o binarios SUID.",
+      immediateActions_en: "### Immediate Actions\nApply the principle of least privilege. Keep systems patched. Regularly audit for misconfigurations, such as insecure file permissions or SUID binaries.",
+      immediateActions_es: "### Acciones Inmediatas\nAplicar el principio de privilegio mínimo. Mantener los sistemas parcheados. Auditar regularmente en busca de configuraciones incorrectas, como permisos de archivo inseguros o binarios SUID.",
       references: ["https://www.crowdstrike.com/cybersecurity-101/privilege-escalation/"],
       tags: ["Infrastructure", "Privilege Escalation"],
       ...emptyVulnBoilerplate
@@ -961,8 +969,8 @@ export const vulnerabilities: Vulnerability[] = [
       affectedComponents_es: "### Componentes Afectados\n[TODO: Especificar la fuente de la divulgación de información, p. ej., cabeceras HTTP, páginas de error, comentarios en el código fuente.]",
       impact_en: "### Impact\nWhile not directly exploitable, information disclosure makes it easier for an attacker to find and exploit other vulnerabilities.",
       impact_es: "### Impacto\nAunque no es directamente explotable, la divulgación de información facilita que un atacante encuentre y explote otrasulnerabilidades.",
-      recommendations_en: "### Recommendations\nConfigure the application to return generic error messages. Remove or obfuscate server banners and version information. Sanitize the code to remove any sensitive comments or debug information.",
-      recommendations_es: "### Recomendaciones\nConfigurar la aplicación para que devuelva mensajes de error genéricos. Eliminar u ofuscar los banners del servidor y la información de la versión. Desinfectar el código para eliminar cualquier comentario sensible o información de depuración.",
+      immediateActions_en: "### Immediate Actions\nConfigure the application to return generic error messages. Remove or obfuscate server banners and version information. Sanitize the code to remove any sensitive comments or debug information.",
+      immediateActions_es: "### Acciones Inmediatas\nConfigurar la aplicación para que devuelva mensajes de error genéricos. Eliminar u ofuscar los banners del servidor y la información de la versión. Desinfectar el código para eliminar cualquier comentario sensible o información de depuración.",
       references: ["https://owasp.org/www-community/attacks/Information_Leakage"],
       tags: ["Infrastructure", "Information Disclosure"],
       ...emptyVulnBoilerplate
@@ -982,8 +990,8 @@ export const vulnerabilities: Vulnerability[] = [
       affectedComponents_es: "### Componentes Afectados\n[TODO: Especificar el parámetro y la funcionalidad vulnerables, p. ej., el parámetro `filename` en una herramienta de conversión de archivos que utiliza un comando de shell.]",
       impact_en: "### Impact\nThis can lead to remote code execution with the privileges of the web server process, potentially leading to a full system compromise.",
       impact_es: "### Impacto\nEsto puede conducir a la ejecución remota de código con los privilegios del proceso del servidor web, lo que podría llevar a un compromiso total del sistema.",
-      recommendations_en: "### Recommendations\nAvoid calling out to shell commands if at all possible. Use built-in library functions instead. If necessary, strictly validate user input using a whitelist of allowed values. Sanitize input to escape shell metacharacters.",
-      recommendations_es: "### Recomendaciones\nEvitar llamar a comandos de shell si es posible. Usar funciones de biblioteca integradas en su lugar. Si es necesario, validar estrictamente la entrada del usuario utilizando una lista blanca de valores permitidos. Desinfectar la entrada para escapar los metacaracteres de shell.",
+      immediateActions_en: "### Immediate Actions\nAvoid calling out to shell commands if at all possible. Use built-in library functions instead. If necessary, strictly validate user input using a whitelist of allowed values. Sanitize input to escape shell metacharacters.",
+      immediateActions_es: "### Acciones Inmediatas\nEvitar llamar a comandos de shell si es posible. Usar funciones de biblioteca integradas en su lugar. Si es necesario, validar estrictamente la entrada del usuario utilizando una lista blanca de valores permitidos. Desinfectar la entrada para escapar los metacaracteres de shell.",
       references: ["https://owasp.org/www-community/attacks/Command_Injection"],
       tags: ["Infrastructure", "Injection"],
       ...emptyVulnBoilerplate
@@ -1003,8 +1011,8 @@ export const vulnerabilities: Vulnerability[] = [
       affectedComponents_es: "### Componentes Afectados\n[TODO: Especificar el parámetro y la funcionalidad vulnerables, p. ej., el parámetro `filename` en una función de descarga de archivos.]",
       impact_en: "### Impact\nThis can lead to the disclosure of sensitive information, such as source code, credentials, and system configuration files.",
       impact_es: "### Impacto\nEsto puede conducir a la divulgación de información sensible, como el código fuente, las credenciales y los archivos de configuración del sistema.",
-      recommendations_en: "### Recommendations\nValidate user input before using it in filesystem operations. Use a whitelist of allowed file paths. Run the application in a sandboxed environment to restrict filesystem access.",
-      recommendations_es: "### Recomendaciones\nValidar la entrada del usuario antes de usarla en operaciones del sistema de archivos. Usar una lista blanca de rutas de archivo permitidas. Ejecutar la aplicación en un entorno aislado (sandbox) para restringir el acceso al sistema de archivos.",
+      immediateActions_en: "### Immediate Actions\nValidate user input before using it in filesystem operations. Use a whitelist of allowed file paths. Run the application in a sandboxed environment to restrict filesystem access.",
+      immediateActions_es: "### Acciones Inmediatas\nValidar la entrada del usuario antes de usarla en operaciones del sistema de archivos. Usar una lista blanca de rutas de archivo permitidas. Ejecutar la aplicación en un entorno aislado (sandbox) para restringir el acceso al sistema de archivos.",
       references: ["https://owasp.org/www-community/attacks/Path_Traversal"],
       tags: ["Infrastructure", "File Inclusion"],
       ...emptyVulnBoilerplate
@@ -1024,8 +1032,8 @@ export const vulnerabilities: Vulnerability[] = [
       affectedComponents_es: "### Componentes Afectados\n[TODO: Especificar la URL y el parámetro vulnerables, p. ej., `/login?redirect=...`]",
       impact_en: "### Impact\nThis vulnerability facilitates phishing attacks, which can lead to credential theft and other social engineering attacks.",
       impact_es: "### Impacto\nEsta vulnerabilidad facilita los ataques de phishing, que pueden conducir al robo de credenciales y otros ataques de ingeniería social.",
-      recommendations_en: "### Recommendations\nAvoid using redirects. If necessary, use a whitelist of allowed redirect destinations. Do not allow the user to control the entire redirect URL.",
-      recommendations_es: "### Recomendaciones\nEvitar el uso de redirecciones. Si es necesario, usar una lista blanca de destinos de redirección permitidos. No permitir que el usuario controle toda la URL de redirección.",
+      immediateActions_en: "### Immediate Actions\nAvoid using redirects. If necessary, use a whitelist of allowed redirect destinations. Do not allow the user to control the entire redirect URL.",
+      immediateActions_es: "### Acciones Inmediatas\nEvitar el uso de redirecciones. Si es necesario, usar una lista blanca de destinos de redirección permitidos. No permitir que el usuario controle toda la URL de redirección.",
       references: ["https://cheatsheetseries.owasp.org/cheatsheets/Unvalidated_Redirects_and_Forwards_Cheat_Sheet.html"],
       tags: ["Web", "Redirect"],
       ...emptyVulnBoilerplate
@@ -1045,8 +1053,8 @@ export const vulnerabilities: Vulnerability[] = [
       affectedComponents_es: "### Componentes Afectados\n[TODO: Especificar la ruta al recurso compartido de archivos inseguro, p. ej., `\\\\SERVIDOR\\recurso`.]",
       impact_en: "### Impact\nThis can lead to the exposure of sensitive data, intellectual property, or provide a means for an attacker to plant malware.",
       impact_es: "### Impacto\nEsto puede llevar a la exposición de datos sensibles, propiedad intelectual o proporcionar un medio para que un atacante plante malware.",
-      recommendations_en: "### Recommendations\nApply the principle of least privilege to all file shares. Remove 'Everyone' and 'Anonymous' access. Use strong authentication and restrict access to authorized user groups.",
-      recommendations_es: "### Recomendaciones\nAplicar el principio de privilegio mínimo a todos los recursos compartidos de archivos. Eliminar el acceso de 'Todos' y 'Anónimo'. Usar autenticación fuerte y restringir el acceso a grupos de usuarios autorizados.",
+      immediateActions_en: "### Immediate Actions\nApply the principle of least privilege to all file shares. Remove 'Everyone' and 'Anonymous' access. Use strong authentication and restrict access to authorized user groups.",
+      immediateActions_es: "### Acciones Inmediatas\nAplicar el principio de privilegio mínimo a todos los recursos compartidos de archivos. Eliminar el acceso de 'Todos' y 'Anónimo'. Usar autenticación fuerte y restringir el acceso a grupos de usuarios autorizados.",
       references: ["https://www.stigviewer.com/stig/windows_10/2021-08-18/finding/V-63453"],
       tags: ["Infrastructure", "File Share"],
       ...emptyVulnBoilerplate
@@ -1066,8 +1074,8 @@ export const vulnerabilities: Vulnerability[] = [
       affectedComponents_es: "### Componentes Afectados\n[TODO: Especificar la ruta al/los archivo(s) sensible(s) en el recurso compartido, p. ej., `\\\\SERVIDOR\\recurso\\config.ini` que contiene una contraseña.]",
       impact_en: "### Impact\nThis can lead to immediate compromise of accounts and systems, providing an attacker with credentials to move laterally within the network.",
       impact_es: "### Impacto\nEsto puede conducir al compromiso inmediato de cuentas y sistemas, proporcionando a un atacante las credenciales para moverse lateralmente dentro de la red.",
-      recommendations_en: "### Recommendations\nDo not store sensitive information on file shares. If necessary, encrypt the files and strictly control access. Regularly audit file shares for sensitive content.",
-      recommendations_es: "### Recomendaciones\nNo almacenar información sensible en recursos compartidos de archivos. Si es necesario, cifrar los archivos y controlar estrictamente el acceso. Auditar regularmente los recursos compartidos de archivos en busca de contenido sensible.",
+      immediateActions_en: "### Immediate Actions\nDo not store sensitive information on file shares. If necessary, encrypt the files and strictly control access. Regularly audit file shares for sensitive content.",
+      immediateActions_es: "### Acciones Inmediatas\nNo almacenar información sensible en recursos compartidos de archivos. Si es necesario, cifrar los archivos y controlar estrictamente el acceso. Auditar regularmente los recursos compartidos de archivos en busca de contenido sensible.",
       references: ["https://cwe.mitre.org/data/definitions/312.html"],
       tags: ["Infrastructure", "Data"],
       ...emptyVulnBoilerplate
@@ -1087,8 +1095,8 @@ export const vulnerabilities: Vulnerability[] = [
       affectedComponents_es: "### Componentes Afectados\n[TODO: Especificar el host y el puerto del servicio expuesto, p. ej., 1.2.3.4:3389 (RDP).]",
       impact_en: "### Impact\nThis significantly increases the attack surface and provides a direct vector for attackers to compromise internal systems.",
       impact_es: "### Impacto\nEsto aumenta significativamente la superficie de ataque y proporciona un vector directo para que los atacantes comprometan los sistemas internos.",
-      recommendations_en: "### Recommendations\nRestrict access to all management and internal services using a firewall. If remote access is required, use a secure VPN with multi-factor authentication.",
-      recommendations_es: "### Recomendaciones\nRestringir el acceso a todos los servicios de gestión e internos utilizando un cortafuegos. Si se requiere acceso remoto, usar una VPN segura con autenticación multifactor.",
+      immediateActions_en: "### Immediate Actions\nRestrict access to all management and internal services using a firewall. If remote access is required, use a secure VPN with multi-factor authentication.",
+      immediateActions_es: "### Acciones Inmediatas\nRestringir el acceso a todos los servicios de gestión e internos utilizando un cortafuegos. Si se requiere acceso remoto, usar una VPN segura con autenticación multifactor.",
       references: ["https://www.shodan.io/"],
       tags: ["Infrastructure", "Configuration"],
       ...emptyVulnBoilerplate
@@ -1108,8 +1116,8 @@ export const vulnerabilities: Vulnerability[] = [
       affectedComponents_es: "### Componentes Afectados\n[TODO: Especificar la URL o dirección IP de la instancia de la aplicación mal configurada.]",
       impact_en: "### Impact\nThe impact varies depending on the application and misconfiguration, but can range from sensitive information disclosure to full system compromise.",
       impact_es: "### Impacto\nEl impacto varía según la aplicación y la configuración incorrecta, pero puede ir desde la divulgación de información sensible hasta el compromiso total del sistema.",
-      recommendations_en: "### Recommendations\nFollow the security best practices for <APPLICATION>. Change default credentials, restrict access to authorized users, and disable any unnecessary features.",
-      recommendations_es: "### Recomendaciones\nSeguir las mejores prácticas de seguridad para <APPLICATION>. Cambiar las credenciales predeterminadas, restringir el acceso a usuarios autorizados y deshabilitar cualquier característica innecesaria.",
+      immediateActions_en: "### Immediate Actions\nFollow the security best practices for <APPLICATION>. Change default credentials, restrict access to authorized users, and disable any unnecessary features.",
+      immediateActions_es: "### Acciones Inmediatas\nSeguir las mejores prácticas de seguridad para <APPLICATION>. Cambiar las credenciales predeterminadas, restringir el acceso a usuarios autorizados y deshabilitar cualquier característica innecesaria.",
       references: ["https://www.google.com/search?q=security+hardening+for+<APPLICATION>"],
       tags: ["Infrastructure", "Configuration"],
       ...emptyVulnBoilerplate
@@ -1129,8 +1137,8 @@ export const vulnerabilities: Vulnerability[] = [
       affectedComponents_es: "### Componentes Afectados\n[TODO: Especificar las cuentas encontradas con contraseñas débiles.]",
       impact_en: "### Impact\nThis can lead to widespread account compromise, data breaches, and further attacks.",
       impact_es: "### Impacto\nEsto puede conducir a un compromiso generalizado de cuentas, violaciones de datos y más ataques.",
-      recommendations_en: "### Recommendations\nEnforce a strong password policy (e.g., minimum length, complexity requirements). Implement account lockout mechanisms to slow down brute-force attacks. Educate users on creating strong passwords.",
-      recommendations_es: "### Recomendaciones\nImponer una política de contraseñas segura (p. ej., longitud mínima, requisitos de complejidad). Implementar mecanismos de bloqueo de cuentas para ralentizar los ataques de fuerza bruta. Educar a los usuarios sobre la creación de contraseñas seguras.",
+      immediateActions_en: "### Immediate Actions\nEnforce a strong password policy (e.g., minimum length, complexity requirements). Implement account lockout mechanisms to slow down brute-force attacks. Educate users on creating strong passwords.",
+      immediateActions_es: "### Acciones Inmediatas\nImponer una política de contraseñas segura (p. ej., longitud mínima, requisitos de complejidad). Implementar mecanismos de bloqueo de cuentas para ralentizar los ataques de fuerza bruta. Educar a los usuarios sobre la creación de contraseñas seguras.",
       references: ["https://www.nist.gov/itl/applied-cybersecurity/privacy-engineering/collaboration-space/password-puid-guidance"],
       tags: ["Authentication", "Passwords"],
       ...emptyVulnBoilerplate
@@ -1150,8 +1158,8 @@ export const vulnerabilities: Vulnerability[] = [
       affectedComponents_es: "### Componentes Afectados\n[TODO: Especificar las cuentas y sistemas donde se reutilizó la contraseña.]",
       impact_en: "### Impact\nPassword reuse allows an attacker to move laterally across the network and escalate their privileges.",
       impact_es: "### Impacto\nLa reutilización de contraseñas permite a un atacante moverse lateralmente a través de la red y escalar sus privilegios.",
-      recommendations_en: "### Recommendations\nImplement a policy that prohibits password reuse. Use a password manager to generate and store unique, complex passwords for each service. Enable multi-factor authentication where possible.",
-      recommendations_es: "### Recomendaciones\nImplementar una política que prohíba la reutilización de contraseñas. Usar un gestor de contraseñas para generar y almacenar contraseñas únicas y complejas para cada servicio. Habilitar la autenticación multifactor siempre que sea posible.",
+      immediateActions_en: "### Immediate Actions\nImplement a policy that prohibits password reuse. Use a password manager to generate and store unique, complex passwords for each service. Enable multi-factor authentication where possible.",
+      immediateActions_es: "### Acciones Inmediatas\nImplementar una política que prohíba la reutilización de contraseñas. Usar un gestor de contraseñas para generar y almacenar contraseñas únicas y complejas para cada servicio. Habilitar la autenticación multifactor siempre que sea posible.",
       references: ["https://cwe.mitre.org/data/definitions/262.html"],
       tags: ["Authentication", "Passwords"],
       ...emptyVulnBoilerplate
@@ -1171,8 +1179,8 @@ export const vulnerabilities: Vulnerability[] = [
       affectedComponents_es: "### Componentes Afectados\n[TODO: Especificar la aplicación o servicio que carece de MFA, p. ej., VPN, correo electrónico, interfaces administrativas.]",
       impact_en: "### Impact\nThis significantly increases the risk of unauthorized access, as an attacker only needs a single factor (the password) to compromise an account.",
       impact_es: "### Impacto\nEsto aumenta significativamente el riesgo de acceso no autorizado, ya que un atacante solo necesita un único factor (la contraseña) para comprometer una cuenta.",
-      recommendations_en: "### Recommendations\nEnable MFA for all users, especially for privileged accounts and access to sensitive systems. Use strong MFA methods like FIDO2/WebAuthn or TOTP apps.",
-      recommendations_es: "### Recomendaciones\nHabilitar MFA para todos los usuarios, especialmente para las cuentas privilegiadas y el acceso a sistemas sensibles. Usar métodos de MFA fuertes como FIDO2/WebAuthn o aplicaciones TOTP.",
+      immediateActions_en: "### Immediate Actions\nEnable MFA for all users, especially for privileged accounts and access to sensitive systems. Use strong MFA methods like FIDO2/WebAuthn or TOTP apps.",
+      immediateActions_es: "### Acciones Inmediatas\nHabilitar MFA para todos los usuarios, especialmente para las cuentas privilegiadas y el acceso a sistemas sensibles. Usar métodos de MFA fuertes como FIDO2/WebAuthn o aplicaciones TOTP.",
       references: ["https://www.cisa.gov/mfa"],
       tags: ["Authentication", "MFA"],
       ...emptyVulnBoilerplate
@@ -1192,8 +1200,8 @@ export const vulnerabilities: Vulnerability[] = [
       affectedComponents_es: "### Componentes Afectados\n[TODO: Especificar la funcionalidad que es vulnerable a una condición de carrera, p. ej., transferir fondos o usar un cupón de un solo uso.]",
       impact_en: "### Impact\nRace conditions can lead to data corruption, financial loss, and bypass of security logic. The impact is highly dependent on the specific context.",
       impact_es: "### Impacto\nLas condiciones de carrera pueden conducir a la corrupción de datos, pérdidas financieras y la elusión de la lógica de seguridad. El impacto depende en gran medida del contexto específico.",
-      recommendations_en: "### Recommendations\nEnsure that sequences of operations that must be atomic are protected by proper locking mechanisms (e.g., database transactions, mutexes, semaphores).",
-      recommendations_es: "### Recomendaciones\nAsegurarse de que las secuencias de operaciones que deben ser atómicas estén protegidas por mecanismos de bloqueo adecuados (p. ej., transacciones de base de datos, mutex, semáforos).",
+      immediateActions_en: "### Immediate Actions\nEnsure that sequences of operations that must be atomic are protected by proper locking mechanisms (e.g., database transactions, mutexes, semaphores).",
+      immediateActions_es: "### Acciones Inmediatas\nAsegurarse de que las secuencias de operaciones que deben ser atómicas estén protegidas por mecanismos de bloqueo adecuados (p. ej., transacciones de base de datos, mutex, semáforos).",
       references: ["https://portswigger.net/web-security/race-conditions"],
       tags: ["Race Condition", "Business Logic"],
       ...emptyVulnBoilerplate
@@ -1213,8 +1221,8 @@ export const vulnerabilities: Vulnerability[] = [
       affectedComponents_es: "### Componentes Afectados\n[TODO: Especificar el mecanismo de gestión de sesiones de la aplicación.]",
       impact_en: "### Impact\nThe attacker gains all the privileges of the hijacked user, potentially leading to data theft, fraud, or further system compromise.",
       impact_es: "### Impacto\nEl atacante obtiene todos los privilegios del usuario secuestrado, lo que puede conducir al robo de datos, fraude o un mayor compromiso del sistema.",
-      recommendations_en: "### Recommendations\nUse secure, HttpOnly, and SameSite cookies. Regenerate session IDs upon login. Bind session IDs to other user-specific data like IP address or user agent.",
-      recommendations_es: "### Recomendaciones\nUsar cookies seguras, HttpOnly y SameSite. Regenerar los ID de sesión al iniciar sesión. Vincular los ID de sesión a otros datos específicos del usuario como la dirección IP o el agente de usuario.",
+      immediateActions_en: "### Immediate Actions\nUse secure, HttpOnly, and SameSite cookies. Regenerate session IDs upon login. Bind session IDs to other user-specific data like IP address or user agent.",
+      immediateActions_es: "### Acciones Inmediatas\nUsar cookies seguras, HttpOnly y SameSite. Regenerar los ID de sesión al iniciar sesión. Vincular los ID de sesión a otros datos específicos del usuario como la dirección IP o el agente de usuario.",
       references: ["https://owasp.org/www-community/attacks/Session_hijacking_attack"],
       tags: ["Authentication", "Session"],
       ...emptyVulnBoilerplate
@@ -1234,8 +1242,8 @@ export const vulnerabilities: Vulnerability[] = [
       affectedComponents_es: "### Componentes Afectados\n[TODO: Especificar la funcionalidad de inicio de sesión y gestión de sesiones de la aplicación.]",
       impact_en: "### Impact\nThis allows an attacker to impersonate a user and gain unauthorized access to their account.",
       impact_es: "### Impacto\nEsto permite a un atacante suplantar a un usuario y obtener acceso no autorizado a su cuenta.",
-      recommendations_en: "### Recommendations\nGenerate a new session ID upon successful authentication. Do not accept session identifiers from URL parameters.",
-      recommendations_es: "### Recomendaciones\nGenerar un nuevo ID de sesión tras una autenticación exitosa. No aceptar identificadores de sesión de los parámetros de la URL.",
+      immediateActions_en: "### Immediate Actions\nGenerate a new session ID upon successful authentication. Do not accept session identifiers from URL parameters.",
+      immediateActions_es: "### Acciones Inmediatas\nGenerar un nuevo ID de sesión tras una autenticación exitosa. No aceptar identificadores de sesión de los parámetros de la URL.",
       references: ["https://owasp.org/www-community/attacks/Session_fixation"],
       tags: ["Authentication", "Session"],
       ...emptyVulnBoilerplate
@@ -1255,8 +1263,8 @@ export const vulnerabilities: Vulnerability[] = [
       affectedComponents_es: "### Componentes Afectados\n[TODO: Especificar la funcionalidad de inicio de sesión de la aplicación.]",
       impact_en: "### Impact\nThis can result in widespread account takeovers, leading to data breaches and fraud.",
       impact_es: "### Impacto\nEsto puede resultar en la toma de control de cuentas a gran escala, lo que conduce a violaciones de datos y fraude.",
-      recommendations_en: "### Recommendations\nImplement Multi-Factor Authentication (MFA). Use bot detection and account lockout mechanisms. Monitor for a high rate of failed login attempts.",
-      recommendations_es: "### Recomendaciones\nImplementar la autenticación multifactor (MFA). Usar detección de bots y mecanismos de bloqueo de cuentas. Monitorear una alta tasa de intentos de inicio de sesión fallidos.",
+      immediateActions_en: "### Immediate Actions\nImplement Multi-Factor Authentication (MFA). Use bot detection and account lockout mechanisms. Monitor for a high rate of failed login attempts.",
+      immediateActions_es: "### Acciones Inmediatas\nImplementar la autenticación multifactor (MFA). Usar detección de bots y mecanismos de bloqueo de cuentas. Monitorear una alta tasa de intentos de inicio de sesión fallidos.",
       references: ["https://owasp.org/www-community/attacks/Credential_stuffing"],
       tags: ["Authentication", "Brute Force"],
       ...emptyVulnBoilerplate
@@ -1276,8 +1284,8 @@ export const vulnerabilities: Vulnerability[] = [
       affectedComponents_es: "### Componentes Afectados\n[TODO: Especificar la funcionalidad de recuperación de contraseñas.]",
       impact_en: "### Impact\nAn attacker can gain full control of a user's account.",
       impact_es: "### Impacto\nUn atacante puede obtener el control total de la cuenta de un usuario.",
-      recommendations_en: "### Recommendations\nUse strong, unpredictable, and single-use password reset tokens. Send tokens via a secure channel (e.g., email). Expire tokens after a short period. Do not leak tokens in logs or URLs.",
-      recommendations_es: "### Recomendaciones\nUsar tokens de restablecimiento de contraseña fuertes, impredecibles y de un solo uso. Enviar tokens a través de un canal seguro (p. ej., correo electrónico). Hacer que los tokens caduquen después de un corto período. No filtrar tokens en registros o URL.",
+      immediateActions_en: "### Immediate Actions\nUse strong, unpredictable, and single-use password reset tokens. Send tokens via a secure channel (e.g., email). Expire tokens after a short period. Do not leak tokens in logs or URLs.",
+      immediateActions_es: "### Acciones Inmediatas\nUsar tokens de restablecimiento de contraseña fuertes, impredecibles y de un solo uso. Enviar tokens a través de un canal seguro (p. ej., correo electrónico). Hacer que los tokens caduquen después de un corto período. No filtrar tokens en registros o URL.",
       references: ["https://owasp.org/www-project-cheat-sheets/cheatsheets/Forgot_Password_Cheat_Sheet.html"],
       tags: ["Authentication", "Password"],
       ...emptyVulnBoilerplate
@@ -1297,8 +1305,8 @@ export const vulnerabilities: Vulnerability[] = [
       affectedComponents_es: "### Componentes Afectados\n[TODO: Especificar la página de inicio de sesión o de restablecimiento de contraseña.]",
       impact_en: "### Impact\nThis provides an attacker with a list of valid targets for other attacks, such as password spraying or phishing.",
       impact_es: "### Impacto\nEsto proporciona a un atacante una lista de objetivos válidos para otros ataques, como la pulverización de contraseñas o el phishing.",
-      recommendations_en: "### Recommendations\nReturn a generic error message for all login failures, regardless of whether the username was valid or not (e.g., 'Invalid username or password').",
-      recommendations_es: "### Recomendaciones\nDevolver un mensaje de error genérico para todos los fallos de inicio de sesión, independientemente de si el nombre de usuario era válido o no (p. ej., 'Nombre de usuario o contraseña no válidos').",
+      immediateActions_en: "### Immediate Actions\nReturn a generic error message for all login failures, regardless of whether the username was valid or not (e.g., 'Invalid username or password').",
+      immediateActions_es: "### Acciones Inmediatas\nDevolver un mensaje de error genérico para todos los fallos de inicio de sesión, independientemente de si el nombre de usuario era válido o no (p. ej., 'Nombre de usuario o contraseña no válidos').",
       references: ["https://owasp.org/www-project-web-security-testing-guide/latest/4-Web_Application_Security_Testing/03-Identity_Management_Testing/04-Testing_for_Account_Enumeration_and_Guessable_User_Account"],
       tags: ["Authentication", "Enumeration"],
       ...emptyVulnBoilerplate
@@ -1318,8 +1326,8 @@ export const vulnerabilities: Vulnerability[] = [
       affectedComponents_es: "### Componentes Afectados\n[TODO: Especificar la implementación de la gestión de sesiones.]",
       impact_en: "### Impact\nThis increases the risk of session hijacking, allowing an attacker to impersonate a user.",
       impact_es: "### Impacto\nEsto aumenta el riesgo de secuestro de sesión, lo que permite a un atacante suplantar a un usuario.",
-      recommendations_en: "### Recommendations\nImplement short session timeouts. Use Secure, HttpOnly, and SameSite attributes for cookies. Regenerate session IDs upon any change in privilege level, including login.",
-      recommendations_es: "### Recomendaciones\nImplementar tiempos de espera de sesión cortos. Usar los atributos Secure, HttpOnly y SameSite para las cookies. Regenerar los ID de sesión ante cualquier cambio en el nivel de privilegio, incluido el inicio de sesión.",
+      immediateActions_en: "### Immediate Actions\nImplement short session timeouts. Use Secure, HttpOnly, and SameSite attributes for cookies. Regenerate session IDs upon any change in privilege level, including login.",
+      immediateActions_es: "### Acciones Inmediatas\nImplementar tiempos de espera de sesión cortos. Usar los atributos Secure, HttpOnly y SameSite para las cookies. Regenerar los ID de sesión ante cualquier cambio en el nivel de privilegio, incluido el inicio de sesión.",
       references: ["https://owasp.org/www-project-cheat-sheets/cheatsheets/Session_Management_Cheat_Sheet.html"],
       tags: ["Authentication", "Session"],
       ...emptyVulnBoilerplate
@@ -1339,8 +1347,8 @@ export const vulnerabilities: Vulnerability[] = [
       affectedComponents_es: "### Componentes Afectados\n[TODO: Especificar la funcionalidad de inicio de sesión.]",
       impact_en: "### Impact\nA successful brute force attack leads to account compromise.",
       impact_es: "### Impacto\nUn ataque de fuerza bruta exitoso conduce al compromiso de la cuenta.",
-      recommendations_en: "### Recommendations\nImplement account lockout policies (e.g., lock account for 15 minutes after 5 failed attempts). Use CAPTCHA to prevent automated attacks. Implement Multi-Factor Authentication (MFA).",
-      recommendations_es: "### Recomendaciones\nImplementar políticas de bloqueo de cuentas (p. ej., bloquear la cuenta durante 15 minutos después de 5 intentos fallidos). Usar CAPTCHA para prevenir ataques automatizados. Implementar Autenticación Multifactor (MFA).",
+      immediateActions_en: "### Immediate Actions\nImplement account lockout policies (e.g., lock account for 15 minutes after 5 failed attempts). Use CAPTCHA to prevent automated attacks. Implement Multi-Factor Authentication (MFA).",
+      immediateActions_es: "### Acciones Inmediatas\nImplementar políticas de bloqueo de cuentas (p. ej., bloquear la cuenta durante 15 minutos después de 5 intentos fallidos). Usar CAPTCHA para prevenir ataques automatizados. Implementar Autenticación Multifactor (MFA).",
       references: ["https://owasp.org/www-community/attacks/Brute_force_attack"],
       tags: ["Authentication", "Brute Force"],
       ...emptyVulnBoilerplate
@@ -1360,8 +1368,8 @@ export const vulnerabilities: Vulnerability[] = [
       affectedComponents_es: "### Componentes Afectados\n[TODO: Especificar la URL del panel de administración de <APPLICATION>.]",
       impact_en: "### Impact\nFull administrative control over the <APPLICATION> instance, which can lead to further system compromise, data exfiltration, or denial of service.",
       impact_es: "### Impacto\nControl administrativo total sobre la instancia de <APPLICATION>, lo que puede conducir a un mayor compromiso del sistema, exfiltración de datos o denegación de servicio.",
-      recommendations_en: "### Recommendations\nChange default credentials immediately. Enforce a strong password policy for all administrative accounts. Implement MFA for administrative access.",
-      recommendations_es: "### Recomendaciones\nCambiar las credenciales predeterminadas inmediatamente. Imponer una política de contraseñas segura para todas las cuentas administrativas. Implementar MFA para el acceso administrativo.",
+      immediateActions_en: "### Immediate Actions\nChange default credentials immediately. Enforce a strong password policy for all administrative accounts. Implement MFA for administrative access.",
+      immediateActions_es: "### Acciones Inmediatas\nCambiar las credenciales predeterminadas inmediatamente. Imponer una política de contraseñas segura para todas las cuentas administrativas. Implementar MFA para el acceso administrativo.",
       references: ["https://cwe.mitre.org/data/definitions/521.html"],
       tags: ["Authentication", "Credentials"],
       ...emptyVulnBoilerplate
@@ -1381,8 +1389,8 @@ export const vulnerabilities: Vulnerability[] = [
       affectedComponents_es: "### Componentes Afectados\n[TODO: Especificar las cuentas de usuario con contraseñas en su campo de descripción.]",
       impact_en: "### Impact\nThis leads to the direct compromise of user accounts and can facilitate widespread lateral movement and privilege escalation within the domain.",
       impact_es: "### Impacto\nEsto conduce al compromiso directo de las cuentas de usuario y puede facilitar un amplio movimiento lateral y escalada de privilegios dentro del dominio.",
-      recommendations_en: "### Recommendations\nImmediately remove all passwords from user description fields. Implement a policy and training to forbid this practice. Regularly audit AD user objects for sensitive information.",
-      recommendations_es: "### Recomendaciones\nEliminar inmediatamente todas las contraseñas de los campos de descripción de los usuarios. Implementar una política y capacitación para prohibir esta práctica. Auditar regularmente los objetos de usuario de AD en busca de información sensible.",
+      immediateActions_en: "### Immediate Actions\nImmediately remove all passwords from user description fields. Implement a policy and training to forbid this practice. Regularly audit AD user objects for sensitive information.",
+      immediateActions_es: "### Acciones Inmediatas\nEliminar inmediatamente todas las contraseñas de los campos de descripción de los usuarios. Implementar una política y capacitación para prohibir esta práctica. Auditar regularmente los objetos de usuario de AD en busca de información sensible.",
       references: ["https://adsecurity.org/?p=2535"],
       tags: ["Authentication", "Active Directory"],
       ...emptyVulnBoilerplate
@@ -1402,8 +1410,8 @@ export const vulnerabilities: Vulnerability[] = [
       affectedComponents_es: "### Componentes Afectados\n[TODO: Especificar la funcionalidad que utiliza criptografía débil, p. ej., cifrado de datos, hash de contraseñas, configuración de TLS.]",
       impact_en: "### Impact\nAn attacker can decrypt sensitive information, leading to data breaches and account compromise.",
       impact_es: "### Impacto\nUn atacante puede descifrar información sensible, lo que conduce a violaciones de datos y compromiso de cuentas.",
-      recommendations_en: "### Recommendations\nUse strong, industry-standard cryptographic algorithms (e.g., AES-256-GCM, SHA-256). Migrate away from all legacy and weak algorithms.",
-      recommendations_es: "### Recomendaciones\nUtilizar algoritmos criptográficos sólidos y estándar de la industria (p. ej., AES-256-GCM, SHA-256). Migrar y dejar de usar todos los algoritmos heredados y débiles.",
+      immediateActions_en: "### Immediate Actions\nUse strong, industry-standard cryptographic algorithms (e.g., AES-256-GCM, SHA-256). Migrate away from all legacy and weak algorithms.",
+      immediateActions_es: "### Acciones Inmediatas\nUtilizar algoritmos criptográficos sólidos y estándar de la industria (p. ej., AES-256-GCM, SHA-256). Migrar y dejar de usar todos los algoritmos heredados y débiles.",
       references: ["https://cwe.mitre.org/data/definitions/327.html"],
       tags: ["Cryptography", "Weak Algorithm"],
       ...emptyVulnBoilerplate
@@ -1423,8 +1431,8 @@ export const vulnerabilities: Vulnerability[] = [
       affectedComponents_es: "### Componentes Afectados\n[TODO: Especificar la práctica de gestión de claves insegura y la ubicación de la clave.]",
       impact_en: "### Impact\nCompromise of a cryptographic key can lead to the decryption of all sensitive data, past and future, that is protected by that key.",
       impact_es: "### Impacto\nEl compromiso de una clave criptográfica puede llevar al descifrado de todos los datos sensibles, pasados y futuros, que están protegidos por esa clave.",
-      recommendations_en: "### Recommendations\nUse a dedicated key management solution (e.g., HSM, KMS). Do not hardcode keys. Generate strong, random keys. Implement a key rotation policy.",
-      recommendations_es: "### Recomendaciones\nUtilizar una solución de gestión de claves dedicada (p. ej., HSM, KMS). No incrustar claves en el código. Generar claves fuertes y aleatorias. Implementar una política de rotación de claves.",
+      immediateActions_en: "### Immediate Actions\nUse a dedicated key management solution (e.g., HSM, KMS). Do not hardcode keys. Generate strong, random keys. Implement a key rotation policy.",
+      immediateActions_es: "### Acciones Inmediatas\nUtilizar una solución de gestión de claves dedicada (p. ej., HSM, KMS). No incrustar claves en el código. Generar claves fuertes y aleatorias. Implementar una política de rotación de claves.",
       references: ["https://cwe.mitre.org/data/definitions/320.html"],
       tags: ["Cryptography", "Key Management"],
       ...emptyVulnBoilerplate
@@ -1444,8 +1452,8 @@ export const vulnerabilities: Vulnerability[] = [
       affectedComponents_es: "### Componentes Afectados\n[TODO: Especificar el archivo y el número de línea donde el secreto está incrustado.]",
       impact_en: "### Impact\nThis can lead to the compromise of backend services, databases, or third-party APIs.",
       impact_es: "### Impacto\nEsto puede llevar al compromiso de servicios backend, bases de datos o API de terceros.",
-      recommendations_en: "### Recommendations\nStore secrets in a secure vault or key management system. Use environment variables or a secure configuration service to provide secrets to the application at runtime.",
-      recommendations_es: "### Recomendaciones\nAlmacenar secretos en una bóveda segura o sistema de gestión de claves. Usar variables de entorno o un servicio de configuración seguro para proporcionar secretos a la aplicación en tiempo de ejecución.",
+      immediateActions_en: "### Immediate Actions\nStore secrets in a secure vault or key management system. Use environment variables or a secure configuration service to provide secrets to the application at runtime.",
+      immediateActions_es: "### Acciones Inmediatas\nAlmacenar secretos en una bóveda segura o sistema de gestión de claves. Usar variables de entorno o un servicio de configuración seguro para proporcionar secretos a la aplicación en tiempo de ejecución.",
       references: ["https://cwe.mitre.org/data/definitions/798.html"],
       tags: ["Cryptography", "Hardcoded Secret"],
       ...emptyVulnBoilerplate
@@ -1465,8 +1473,8 @@ export const vulnerabilities: Vulnerability[] = [
       affectedComponents_es: "### Componentes Afectados\n[TODO: Especificar la funcionalidad que utiliza un generador de números aleatorios débil.]",
       impact_en: "### Impact\nThis can lead to session hijacking, account takeover, or other attacks that rely on predicting a 'random' value.",
       impact_es: "### Impacto\nEsto puede llevar al secuestro de sesión, la toma de control de cuentas u otros ataques que dependen de la predicción de un valor 'aleatorio'.",
-      recommendations_en: "### Recommendations\nUse a cryptographically secure pseudo-random number generator (CSPRNG) for all security-sensitive operations.",
-      recommendations_es: "### Recomendaciones\nUtilizar un generador de números pseudoaleatorios criptográficamente seguro (CSPRNG) para todas las operaciones sensibles a la seguridad.",
+      immediateActions_en: "### Immediate Actions\nUse a cryptographically secure pseudo-random number generator (CSPRNG) for all security-sensitive operations.",
+      immediateActions_es: "### Acciones Inmediatas\nUtilizar un generador de números pseudoaleatorios criptográficamente seguro (CSPRNG) para todas las operaciones sensibles a la seguridad.",
       references: ["https://cwe.mitre.org/data/definitions/331.html"],
       tags: ["Cryptography", "Randomness"],
       ...emptyVulnBoilerplate
@@ -1486,8 +1494,8 @@ export const vulnerabilities: Vulnerability[] = [
       affectedComponents_es: "### Componentes Afectados\n[TODO: Especificar la funcionalidad que descifra datos y devuelve errores de relleno distinguibles.]",
       impact_en: "### Impact\nAn attacker can decrypt sensitive information, such as session cookies or encrypted data in a database.",
       impact_es: "### Impacto\nUn atacante puede descifrar información sensible, como cookies de sesión o datos cifrados en una base de datos.",
-      recommendations_en: "### Recommendations\nUse authenticated encryption (e.g., AES-GCM) which provides integrity checks. Ensure that padding errors are handled generically and do not provide different responses.",
-      recommendations_es: "### Recomendaciones\nUtilizar cifrado autenticado (p. ej., AES-GCM) que proporciona comprobaciones de integridad. Asegurarse de que los errores de relleno se manejen de forma genérica y no proporcionen respuestas diferentes.",
+      immediateActions_en: "### Immediate Actions\nUse authenticated encryption (e.g., AES-GCM) which provides integrity checks. Ensure that padding errors are handled generically and do not provide different responses.",
+      immediateActions_es: "### Acciones Inmediatas\nUtilizar cifrado autenticado (p. ej., AES-GCM) que proporciona comprobaciones de integridad. Asegurarse de que los errores de relleno se manejen de forma genérica y no proporcionen respuestas diferentes.",
       references: ["https://portswigger.net/web-security/attacks/padding-oracle"],
       tags: ["Cryptography", "Oracle Attack"],
       ...emptyVulnBoilerplate
@@ -1507,8 +1515,8 @@ export const vulnerabilities: Vulnerability[] = [
       affectedComponents_es: "### Componentes Afectados\n[TODO: Especificar la funcionalidad que depende de una aleatoriedad débil.]",
       impact_en: "### Impact\nThis can lead to the compromise of security mechanisms that rely on unpredictability, such as session hijacking or account takeover.",
       impact_es: "### Impacto\nEsto puede llevar al compromiso de los mecanismos de seguridad que dependen de la imprevisibilidad, como el secuestro de sesiones o la toma de control de cuentas.",
-      recommendations_en: "### Recommendations\nAlways use a Cryptographically Secure Pseudo-Random Number Generator (CSPRNG) for generating any security-sensitive values. Examples include `/dev/urandom` on Linux, `java.security.SecureRandom` in Java, and Python's `secrets` module.",
-      recommendations_es: "### Recomendaciones\nUtilizar siempre un Generador de Números Pseudoaleatorios Criptográficamente Seguro (CSPRNG) para generar cualquier valor sensible a la seguridad. Ejemplos incluyen `/dev/urandom` en Linux, `java.security.SecureRandom` en Java y el módulo `secrets` de Python.",
+      immediateActions_en: "### Immediate Actions\nAlways use a Cryptographically Secure Pseudo-Random Number Generator (CSPRNG) for generating any security-sensitive values. Examples include `/dev/urandom` on Linux, `java.security.SecureRandom` in Java, and Python's `secrets` module.",
+      immediateActions_es: "### Acciones Inmediatas\nUtilizar siempre un Generador de Números Pseudoaleatorios Criptográficamente Seguro (CSPRNG) para generar cualquier valor sensible a la seguridad. Ejemplos incluyen `/dev/urandom` en Linux, `java.security.SecureRandom` en Java y el módulo `secrets` de Python.",
       references: ["https://cwe.mitre.org/data/definitions/338.html"],
       tags: ["Cryptography", "Randomness"],
       ...emptyVulnBoilerplate
@@ -1528,8 +1536,8 @@ export const vulnerabilities: Vulnerability[] = [
       affectedComponents_es: "### Componentes Afectados\n[TODO: Describir el diseño criptográfico defectuoso.]",
       impact_en: "### Impact\nThis can lead to a complete compromise of the security goals (confidentiality, integrity, authenticity) that the cryptography was meant to provide.",
       impact_es: "### Impacto\nEsto puede llevar a un compromiso completo de los objetivos de seguridad (confidencialidad, integridad, autenticidad) que la criptografía debía proporcionar.",
-      recommendations_en: "### Recommendations\nUse well-vetted, standard cryptographic libraries and protocols. Do not attempt to design your own cryptographic schemes. Follow established best practices for using cryptography.",
-      recommendations_es: "### Recomendaciones\nUtilizar bibliotecas y protocolos criptográficos estándar y bien examinados. No intentar diseñar sus propios esquemas criptográficos. Seguir las mejores prácticas establecidas para el uso de la criptografía.",
+      immediateActions_en: "### Immediate Actions\nUse well-vetted, standard cryptographic libraries and protocols. Do not attempt to design your own cryptographic schemes. Follow established best practices for using cryptography.",
+      immediateActions_es: "### Acciones Inmediatas\nUtilizar bibliotecas y protocolos criptográficos estándar y bien examinados. No intentar diseñar sus propios esquemas criptográficos. Seguir las mejores prácticas establecidas para el uso de la criptografía.",
       references: ["https://cwe.mitre.org/data/definitions/310.html"],
       tags: ["Cryptography", "Design Flaw"],
       ...emptyVulnBoilerplate
@@ -1549,8 +1557,8 @@ export const vulnerabilities: Vulnerability[] = [
       affectedComponents_es: "### Componentes Afectados\n[TODO: Especificar la funcionalidad que filtra información a través de un canal lateral.]",
       impact_en: "### Impact\nSide-channel attacks can lead to the compromise of cryptographic keys, passwords, and other sensitive data.",
       impact_es: "### Impacto\nLos ataques de canal lateral pueden llevar al compromiso de claves criptográficas, contraseñas y otros datos sensibles.",
-      recommendations_en: "### Recommendations\nUse constant-time algorithms for all security-sensitive operations, especially cryptographic comparisons. Ensure that error messages are generic and do not leak information.",
-      recommendations_es: "### Recomendaciones\nUtilizar algoritmos de tiempo constante para todas las operaciones sensibles a la seguridad, especialmente las comparaciones criptográficas. Asegurarse de que los mensajes de error sean genéricos y no filtren información.",
+      immediateActions_en: "### Immediate Actions\nUse constant-time algorithms for all security-sensitive operations, especially cryptographic comparisons. Ensure that error messages are generic and do not leak information.",
+      immediateActions_es: "### Acciones Inmediatas\nUtilizar algoritmos de tiempo constante para todas las operaciones sensibles a la seguridad, especialmente las comparaciones criptográficas. Asegurarse de que los mensajes de error sean genéricos y no filtren información.",
       references: ["https://portswigger.net/web-security/timing-attacks"],
       tags: ["Cryptography", "Side Channel"],
       ...emptyVulnBoilerplate
@@ -1570,8 +1578,8 @@ export const vulnerabilities: Vulnerability[] = [
       affectedComponents_es: "### Componentes Afectados\n[TODO: Especificar el código del lado del cliente responsable de las conexiones TLS.]",
       impact_en: "### Impact\nThis completely undermines the protection offered by TLS, allowing an attacker to read and modify all traffic between the client and server.",
       impact_es: "### Impacto\nEsto socava por completo la protección ofrecida por TLS, permitiendo a un atacante leer y modificar todo el tráfico entre el cliente y el servidor.",
-      recommendations_en: "### Recommendations\nEnsure that the SSL/TLS certificate validation is enabled and properly configured. Implement certificate pinning for high-security applications.",
-      recommendations_es: "### Recomendaciones\nAsegurarse de que la validación de certificados SSL/TLS esté habilitada y configurada correctamente. Implementar el anclaje de certificados para aplicaciones de alta seguridad.",
+      immediateActions_en: "### Immediate Actions\nEnsure that the SSL/TLS certificate validation is enabled and properly configured. Implement certificate pinning for high-security applications.",
+      immediateActions_es: "### Acciones Inmediatas\nAsegurarse de que la validación de certificados SSL/TLS esté habilitada y configurada correctamente. Implementar el anclaje de certificados para aplicaciones de alta seguridad.",
       references: ["https://cwe.mitre.org/data/definitions/295.html"],
       tags: ["Cryptography", "MitM"],
       ...emptyVulnBoilerplate
@@ -1591,8 +1599,8 @@ export const vulnerabilities: Vulnerability[] = [
       affectedComponents_es: "### Componentes Afectados\n[TODO: Especificar el servidor y el puerto con la configuración TLS insegura.]",
       impact_en: "### Impact\nAn attacker may be able to decrypt or tamper with traffic between the client and the server.",
       impact_es: "### Impacto\nUn atacante podría ser capaz de descifrar o manipular el tráfico entre el cliente y el servidor.",
-      recommendations_en: "### Recommendations\nDisable support for all legacy SSL/TLS protocols. Configure the server to only use strong, modern cipher suites and protocols (TLS 1.2 and TLS 1.3).",
-      recommendations_es: "### Recomendaciones\nDeshabilitar el soporte para todos los protocolos SSL/TLS heredados. Configurar el servidor para que solo use conjuntos de cifrado y protocolos fuertes y modernos (TLS 1.2 y TLS 1.3).",
+      immediateActions_en: "### Immediate Actions\nDisable support for all legacy SSL/TLS protocols. Configure the server to only use strong, modern cipher suites and protocols (TLS 1.2 and TLS 1.3).",
+      immediateActions_es: "### Acciones Inmediatas\nDeshabilitar el soporte para todos los protocolos SSL/TLS heredados. Configurar el servidor para que solo use conjuntos de cifrado y protocolos fuertes y modernos (TLS 1.2 y TLS 1.3).",
       references: ["https://cheatsheetseries.owasp.org/cheatsheets/Transport_Layer_Security_Cheat_Sheet.html"],
       tags: ["Cryptography", "TLS"],
       ...emptyVulnBoilerplate
@@ -1612,8 +1620,8 @@ export const vulnerabilities: Vulnerability[] = [
       affectedComponents_es: "### Componentes Afectados\n[TODO: Especificar la función y el parámetro vulnerables.]",
       impact_en: "### Impact\nThis can lead to denial of service or remote code execution, giving an attacker full control of the application.",
       impact_es: "### Impacto\nEsto puede conducir a una denegación de servicio o a la ejecución remota de código, dando a un atacante el control total de la aplicación.",
-      recommendations_en: "### Recommendations\nUse memory-safe languages or libraries. Perform bounds checking on all inputs. Use compiler-level protections like Stack Canaries, ASLR, and DEP.",
-      recommendations_es: "### Recomendaciones\nUsar lenguajes o bibliotecas seguros para la memoria. Realizar comprobaciones de límites en todas las entradas. Usar protecciones a nivel de compilador como Stack Canaries, ASLR y DEP.",
+      immediateActions_en: "### Immediate Actions\nUse memory-safe languages or libraries. Perform bounds checking on all inputs. Use compiler-level protections like Stack Canaries, ASLR, and DEP.",
+      immediateActions_es: "### Acciones Inmediatas\nUsar lenguajes o bibliotecas seguros para la memoria. Realizar comprobaciones de límites en todas las entradas. Usar protecciones a nivel de compilador como Stack Canaries, ASLR y DEP.",
       references: ["https://cwe.mitre.org/data/definitions/120.html"],
       tags: ["Additional", "Memory Corruption"],
       ...emptyVulnBoilerplate
@@ -1633,8 +1641,8 @@ export const vulnerabilities: Vulnerability[] = [
       affectedComponents_es: "### Componentes Afectados\n[TODO: Especificar la función (p. ej., `printf`, `sprintf`) y la ruta del código donde la entrada del usuario se usa como la cadena de formato.]",
       impact_en: "### Impact\nThis can lead to information disclosure, denial of service, and arbitrary code execution.",
       impact_es: "### Impacto\nEsto puede llevar a la divulgación de información, denegación de servicio y ejecución de código arbitrario.",
-      recommendations_en: "### Recommendations\nAlways specify a static format string for functions like `printf`. For example, use `printf(\"%s\", userInput)` instead of `printf(userInput)`.",
-      recommendations_es: "### Recomendaciones\nSiempre especificar una cadena de formato estática para funciones como `printf`. Por ejemplo, usar `printf(\"%s\", userInput)` en lugar de `printf(userInput)`.",
+      immediateActions_en: "### Immediate Actions\nAlways specify a static format string for functions like `printf`. For example, use `printf(\"%s\", userInput)` instead of `printf(userInput)`.",
+      immediateActions_es: "### Acciones Inmediatas\nSiempre especificar una cadena de formato estática para funciones como `printf`. Por ejemplo, usar `printf(\"%s\", userInput)` en lugar de `printf(userInput)`.",
       references: ["https://cwe.mitre.org/data/definitions/134.html"],
       tags: ["Additional", "Memory Corruption"],
       ...emptyVulnBoilerplate
@@ -1654,8 +1662,8 @@ export const vulnerabilities: Vulnerability[] = [
       affectedComponents_es: "### Componentes Afectados\n[TODO: Especificar la funcionalidad que es vulnerable a una condición de carrera, p. ej., transferir fondos o usar un cupón de un solo uso.]",
       impact_en: "### Impact\nRace conditions can lead to data corruption, financial loss, and bypass of security logic. The impact is highly dependent on the specific context.",
       impact_es: "### Impacto\nLas condiciones de carrera pueden conducir a la corrupción de datos, pérdidas financieras y la elusión de la lógica de seguridad. El impacto depende en gran medida del contexto específico.",
-      recommendations_en: "### Recommendations\nEnsure that sequences of operations that must be atomic are protected by proper locking mechanisms (e.g., database transactions, mutexes, semaphores).",
-      recommendations_es: "### Recomendaciones\nAsegurarse de que las secuencias de operaciones que deben ser atómicas estén protegidas por mecanismos de bloqueo adecuados (p. ej., transacciones de base de datos, mutex, semáforos).",
+      immediateActions_en: "### Immediate Actions\nEnsure that sequences of operations that must be atomic are protected by proper locking mechanisms (e.g., database transactions, mutexes, semaphores).",
+      immediateActions_es: "### Acciones Inmediatas\nAsegurarse de que las secuencias de operaciones que deben ser atómicas estén protegidas por mecanismos de bloqueo adecuados (p. ej., transacciones de base de datos, mutex, semáforos).",
       references: ["https://portswigger.net/web-security/race-conditions"],
       tags: ["Additional", "Business Logic"],
       ...emptyVulnBoilerplate
@@ -1675,8 +1683,8 @@ export const vulnerabilities: Vulnerability[] = [
       affectedComponents_es: "### Componentes Afectados\n[TODO: Especificar la funcionalidad que construye consultas LDAP a partir de la entrada del usuario.]",
       impact_en: "### Impact\nThis can lead to authentication bypass, privilege escalation, and information disclosure.",
       impact_es: "### Impacto\nEsto puede llevar a la omisión de la autenticación, la escalada de privilegios y la divulgación de información.",
-      recommendations_en: "### Recommendations\nSanitize all user-supplied input before including it in LDAP queries. Use a framework-provided LDAP encoding function.",
-      recommendations_es: "### Recomendaciones\nDesinfectar todas las entradas proporcionadas por el usuario antes de incluirlas en las consultas LDAP. Usar una función de codificación LDAP proporcionada por el marco de trabajo.",
+      immediateActions_en: "### Immediate Actions\nSanitize all user-supplied input before including it in LDAP queries. Use a framework-provided LDAP encoding function.",
+      immediateActions_es: "### Acciones Inmediatas\nDesinfectar todas las entradas proporcionadas por el usuario antes de incluirlas en las consultas LDAP. Usar una función de codificación LDAP proporcionada por el marco de trabajo.",
       references: ["https://owasp.org/www-community/attacks/LDAP_Injection"],
       tags: ["Additional", "Injection"],
       ...emptyVulnBoilerplate
@@ -1696,8 +1704,8 @@ export const vulnerabilities: Vulnerability[] = [
       affectedComponents_es: "### Componentes Afectados\n[TODO: Especificar la funcionalidad que construye consultas XPath a partir de la entrada del usuario.]",
       impact_en: "### Impact\nThis can lead to the disclosure of sensitive information from the XML data source.",
       impact_es: "### Impacto\nEsto puede llevar a la divulgación de información sensible de la fuente de datos XML.",
-      recommendations_en: "### Recommendations\nUse parameterized XPath queries. Sanitize user input before including it in an XPath query.",
-      recommendations_es: "### Recomendaciones\nUtilizar consultas XPath parametrizadas. Desinfectar la entrada del usuario antes de incluirla en una consulta XPath.",
+      immediateActions_en: "### Immediate Actions\nUse parameterized XPath queries. Sanitize user input before including it in an XPath query.",
+      immediateActions_es: "### Acciones Inmediatas\nUtilizar consultas XPath parametrizadas. Desinfectar la entrada del usuario antes de incluirla en una consulta XPath.",
       references: ["https://owasp.org/www-community/attacks/XPATH_Injection"],
       tags: ["Additional", "Injection"],
       ...emptyVulnBoilerplate
@@ -1717,8 +1725,8 @@ export const vulnerabilities: Vulnerability[] = [
       affectedComponents_es: "### Componentes Afectados\n[TODO: Especificar la funcionalidad que renderiza plantillas con la entrada del usuario.]",
       impact_en: "### Impact\nThis can lead to remote code execution and full server compromise.",
       impact_es: "### Impacto\nEsto puede conducir a la ejecución remota de código y al compromiso total del servidor.",
-      recommendations_en: "### Recommendations\nAlways pass user input as data to the template engine. Do not concatenate user input into the template itself. Use a sandboxed template engine if possible.",
-      recommendations_es: "### Recomendaciones\nSiempre pasar la entrada del usuario como datos al motor de plantillas. No concatenar la entrada del usuario en la propia plantilla. Usar un motor de plantillas en un entorno aislado (sandbox) si es posible.",
+      immediateActions_en: "### Immediate Actions\nAlways pass user input as data to the template engine. Do not concatenate user input into the template itself. Use a sandboxed template engine if possible.",
+      immediateActions_es: "### Acciones Inmediatas\nSiempre pasar la entrada del usuario como datos al motor de plantillas. No concatenar la entrada del usuario en la propia plantilla. Usar un motor de plantillas en un entorno aislado (sandbox) si es posible.",
       references: ["https://portswigger.net/web-security/server-side-template-injection"],
       tags: ["Additional", "Injection"],
       ...emptyVulnBoilerplate
@@ -1738,8 +1746,8 @@ export const vulnerabilities: Vulnerability[] = [
       affectedComponents_es: "### Componentes Afectados\n[TODO: Especificar la biblioteca vulnerable, su versión y el CVE relevante.]",
       impact_en: "### Impact\nThe impact depends on the specific vulnerability but can range from information disclosure to remote code execution.",
       impact_es: "### Impacto\nEl impacto depende de la vulnerabilidad específica, pero puede variar desde la divulgación de información hasta la ejecución remota de código.",
-      recommendations_en: "### Recommendations\nUse a software composition analysis (SCA) tool to regularly scan for vulnerable dependencies. Update all libraries to the latest secure version. Implement a patch management process for third-party components.",
-      recommendations_es: "### Recomendaciones\nUtilizar una herramienta de análisis de composición de software (SCA) para escanear regularmente en busca de dependencias vulnerables. Actualizar todas las bibliotecas a la última versión segura. Implementar un proceso de gestión de parches para componentes de terceros.",
+      immediateActions_en: "### Immediate Actions\nUse a software composition analysis (SCA) tool to regularly scan for vulnerable dependencies. Update all libraries to the latest secure version. Implement a patch management process for third-party components.",
+      immediateActions_es: "### Acciones Inmediatas\nUtilizar una herramienta de análisis de composición de software (SCA) para escanear regularmente en busca de dependencias vulnerables. Actualizar todas las bibliotecas a la última versión segura. Implementar un proceso de gestión de parches para componentes de terceros.",
       references: ["https://owasp.org/www-project-top-ten/2017/A9_2017-Using_Components_with_Known_Vulnerabilities"],
       tags: ["Additional", "Dependency"],
       ...emptyVulnBoilerplate
@@ -1759,8 +1767,8 @@ export const vulnerabilities: Vulnerability[] = [
       affectedComponents_es: "### Componentes Afectados\n[TODO: Especificar la URL y el parámetro vulnerables.]",
       impact_en: "### Impact\nThis can lead to unauthorized access to sensitive data, modification of data, and other privilege escalation issues.",
       impact_es: "### Impacto\nEsto puede llevar a un acceso no autorizado a datos sensibles, modificación de datos y otros problemas de escalada de privilegios.",
-      recommendations_en: "### Recommendations\nImplement access control checks on the server-side for every request to a private object. Use per-user or per-session indirect object references (e.g., mapping an integer from 1 to n to the actual object ID).",
-      recommendations_es: "### Recomendaciones\nImplementar comprobaciones de control de acceso en el lado del servidor para cada solicitud a un objeto privado. Usar referencias indirectas a objetos por usuario o por sesión (p. ej., mapeando un entero de 1 a n al ID del objeto real).",
+      immediateActions_en: "### Immediate Actions\nImplement access control checks on the server-side for every request to a private object. Use per-user or per-session indirect object references (e.g., mapping an integer from 1 to n to the actual object ID).",
+      immediateActions_es: "### Acciones Inmediatas\nImplementar comprobaciones de control de acceso en el lado del servidor para cada solicitud a un objeto privado. Usar referencias indirectas a objetos por usuario o por sesión (p. ej., mapeando un entero de 1 a n al ID del objeto real).",
       references: ["https://owasp.org/www-project-top-ten/2013/a4-insecure-direct-object-references"],
       tags: ["Additional", "Access Control"],
       ...emptyVulnBoilerplate
@@ -1780,8 +1788,8 @@ export const vulnerabilities: Vulnerability[] = [
       affectedComponents_es: "### Componentes Afectados\n[TODO: Especificar el servidor o la aplicación y listar las cabeceras faltantes.]",
       impact_en: "### Impact\nThe absence of these headers reduces the effectiveness of browser-based security mechanisms, making attacks like XSS and clickjacking easier to execute.",
       impact_es: "### Impacto\nLa ausencia de estas cabeceras reduce la eficacia de los mecanismos de seguridad basados en el navegador, lo que facilita la ejecución de ataques como XSS y clickjacking.",
-      recommendations_en: "### Recommendations\nImplement all relevant HTTP security headers with appropriate policies. Use a tool like Security Headers by Mozilla to check the configuration.",
-      recommendations_es: "### Recomendaciones\nImplementar todas las cabeceras de seguridad HTTP relevantes con las políticas adecuadas. Usar una herramienta como Security Headers de Mozilla para verificar la configuración.",
+      immediateActions_en: "### Immediate Actions\nImplement all relevant HTTP security headers with appropriate policies. Use a tool like Security Headers by Mozilla to check the configuration.",
+      immediateActions_es: "### Acciones Inmediatas\nImplementar todas las cabeceras de seguridad HTTP relevantes con las políticas adecuadas. Usar una herramienta como Security Headers de Mozilla para verificar la configuración.",
       references: ["https://owasp.org/www-project-secure-headers/"],
       tags: ["Additional", "Configuration"],
       ...emptyVulnBoilerplate
@@ -1801,8 +1809,8 @@ export const vulnerabilities: Vulnerability[] = [
       affectedComponents_es: "### Componentes Afectados\n[TODO: Especificar las páginas de la aplicación que pueden ser enmarcadas.]",
       impact_en: "### Impact\nAn attacker can trick a user into performing unintended actions, such as making a purchase, deleting data, or changing permissions.",
       impact_es: "### Impacto\nUn atacante puede engañar a un usuario para que realice acciones no deseadas, como realizar una compra, eliminar datos o cambiar permisos.",
-      recommendations_en: "### Recommendations\nImplement the `X-Frame-Options` header (with `DENY` or `SAMEORIGIN`) and a `Content-Security-Policy` with a `frame-ancestors` directive to prevent the application from being framed.",
-      recommendations_es: "### Recomendaciones\nImplementar la cabecera `X-Frame-Options` (con `DENY` o `SAMEORIGIN`) y una `Content-Security-Policy` con una directiva `frame-ancestors` para evitar que la aplicación sea enmarcada.",
+      immediateActions_en: "### Immediate Actions\nImplement the `X-Frame-Options` header (with `DENY` or `SAMEORIGIN`) and a `Content-Security-Policy` with a `frame-ancestors` directive to prevent the application from being framed.",
+      immediateActions_es: "### Acciones Inmediatas\nImplementar la cabecera `X-Frame-Options` (con `DENY` o `SAMEORIGIN`) y una `Content-Security-Policy` con una directiva `frame-ancestors` para evitar que la aplicación sea enmarcada.",
       references: ["https://owasp.org/www-community/attacks/Clickjacking"],
       tags: ["Additional", "Clickjacking"],
       ...emptyVulnBoilerplate
@@ -1822,8 +1830,8 @@ export const vulnerabilities: Vulnerability[] = [
       affectedComponents_es: "### Componentes Afectados\n[TODO: Especificar el script del lado del cliente, la fuente (p. ej., `location.hash`) y el sumidero (p. ej., `innerHTML`).]",
       impact_en: "### Impact\nThis can lead to session hijacking, defacement, or redirection to malicious sites, similar to other forms of XSS.",
       impact_es: "### Impacto\nEsto puede llevar al secuestro de sesiones, la desfiguración o la redirección a sitios maliciosos, de forma similar a otras formas de XSS.",
-      recommendations_en: "### Recommendations\nAvoid using user-controlled data in dangerous sinks. If necessary, use a safe method to render the data (e.g., `textContent` instead of `innerHTML`) or use a robust client-side sanitization library like DOMPurify.",
-      recommendations_es: "### Recomendaciones\nEvitar el uso de datos controlados por el usuario en sumideros peligrosos. Si es necesario, usar un método seguro para representar los datos (p. ej., `textContent` en lugar de `innerHTML`) o usar una biblioteca de desinfección robusta del lado del cliente como DOMPurify.",
+      immediateActions_en: "### Immediate Actions\nAvoid using user-controlled data in dangerous sinks. If necessary, use a safe method to render the data (e.g., `textContent` instead of `innerHTML`) or use a robust client-side sanitization library like DOMPurify.",
+      immediateActions_es: "### Acciones Inmediatas\nEvitar el uso de datos controlados por el usuario en sumideros peligrosos. Si es necesario, usar un método seguro para representar los datos (p. ej., `textContent` en lugar de `innerHTML`) o usar una biblioteca de desinfección robusta del lado del cliente como DOMPurify.",
       references: ["https://owasp.org/www-community/attacks/DOM_Based_XSS"],
       tags: ["Additional", "XSS"],
       ...emptyVulnBoilerplate
@@ -1843,8 +1851,8 @@ export const vulnerabilities: Vulnerability[] = [
       affectedComponents_es: "### Componentes Afectados\n[TODO: Especificar la funcionalidad de subida de archivos.]",
       impact_en: "### Impact\nThis can lead to remote code execution and full server compromise.",
       impact_es: "### Impacto\nEsto puede conducir a la ejecución remota de código y al compromiso total del servidor.",
-      recommendations_en: "### Recommendations\nImplement a strict whitelist of allowed file extensions and MIME types. Rename uploaded files to a random string and store them outside of the web root. Use a content scanner to check for malicious content.",
-      recommendations_es: "### Recomendaciones\nImplementar una lista blanca estricta de extensiones de archivo y tipos MIME permitidos. Renombrar los archivos subidos a una cadena aleatoria y almacenarlos fuera de la raíz web. Usar un escáner de contenido para buscar contenido malicioso.",
+      immediateActions_en: "### Immediate Actions\nImplement a strict whitelist of allowed file extensions and MIME types. Rename uploaded files to a random string and store them outside of the web root. Use a content scanner to check for malicious content.",
+      immediateActions_es: "### Acciones Inmediatas\nImplementar una lista blanca estricta de extensiones de archivo y tipos MIME permitidos. Renombrar los archivos subidos a una cadena aleatoria y almacenarlos fuera de la raíz web. Usar un escáner de contenido para buscar contenido malicioso.",
       references: ["https://owasp.org/www-community/vulnerabilities/Unrestricted_File_Upload"],
       tags: ["Additional", "File Upload"],
       ...emptyVulnBoilerplate
@@ -1864,8 +1872,8 @@ export const vulnerabilities: Vulnerability[] = [
       affectedComponents_es: "### Componentes Afectados\n[TODO: Describir el proceso de negocio y cómo se puede abusar de él.]",
       impact_en: "### Impact\nThe impact can range from financial loss to reputational damage, depending on the specific flaw.",
       impact_es: "### Impacto\nEl impacto puede variar desde la pérdida financiera hasta el daño a la reputación, dependiendo del fallo específico.",
-      recommendations_en: "### Recommendations\nThoroughly model the application's business logic and workflows. Perform manual, in-depth testing to identify potential abuse cases. Implement server-side checks to enforce the intended logic.",
-      recommendations_es: "### Recomendaciones\nModelar a fondo la lógica de negocio y los flujos de trabajo de la aplicación. Realizar pruebas manuales y en profundidad para identificar posibles casos de abuso. Implementar comprobaciones del lado del servidor para hacer cumplir la lógica prevista.",
+      immediateActions_en: "### Immediate Actions\nThoroughly model the application's business logic and workflows. Perform manual, in-depth testing to identify potential abuse cases. Implement server-side checks to enforce the intended logic.",
+      immediateActions_es: "### Acciones Inmediatas\nModelar a fondo la lógica de negocio y los flujos de trabajo de la aplicación. Realizar pruebas manuales y en profundidad para identificar posibles casos de abuso. Implementar comprobaciones del lado del servidor para hacer cumplir la lógica prevista.",
       references: ["https://portswigger.net/web-security/business-logic-vulnerabilities"],
       tags: ["Additional", "Business Logic"],
       ...emptyVulnBoilerplate
@@ -1885,8 +1893,8 @@ export const vulnerabilities: Vulnerability[] = [
       affectedComponents_es: "### Componentes Afectados\n[TODO: Especificar el endpoint de API vulnerable y la naturaleza de la configuración incorrecta.]",
       impact_en: "### Impact\nThis can lead to data breaches, account takeover, and denial of service.",
       impact_es: "### Impacto\nEsto puede llevar a violaciones de datos, toma de control de cuentas y denegación de servicio.",
-      recommendations_en: "### Recommendations\nFollow the OWASP API Security Top 10. Implement strong authentication and authorization on all endpoints. Implement rate limiting and resource quotas. Design responses to return only the necessary data.",
-      recommendations_es: "### Recomendaciones\nSeguir el Top 10 de Seguridad de API de OWASP. Implementar una autenticación y autorización fuertes en todos los endpoints. Implementar limitación de velocidad y cuotas de recursos. Diseñar las respuestas para que devuelvan solo los datos necesarios.",
+      immediateActions_en: "### Immediate Actions\nFollow the OWASP API Security Top 10. Implement strong authentication and authorization on all endpoints. Implement rate limiting and resource quotas. Design responses to return only the necessary data.",
+      immediateActions_es: "### Acciones Inmediatas\nSeguir el Top 10 de Seguridad de API de OWASP. Implementar una autenticación y autorización fuertes en todos los endpoints. Implementar limitación de velocidad y cuotas de recursos. Diseñar las respuestas para que devuelvan solo los datos necesarios.",
       references: ["https://owasp.org/www-project-api-security/"],
       tags: ["Additional", "API Security"],
       ...emptyVulnBoilerplate
@@ -1906,8 +1914,8 @@ export const vulnerabilities: Vulnerability[] = [
       affectedComponents_es: "### Componentes Afectados\n[TODO: Especificar la cookie y los atributos faltantes.]",
       impact_en: "### Impact\nThis increases the risk of session hijacking via XSS or packet sniffing.",
       impact_es: "### Impacto\nEsto aumenta el riesgo de secuestro de sesión a través de XSS o análisis de paquetes.",
-      recommendations_en: "### Recommendations\nSet the `Secure`, `HttpOnly`, and `SameSite=Strict` (or `Lax`) attributes for all session cookies.",
-      recommendations_es: "### Recomendaciones\nEstablecer los atributos `Secure`, `HttpOnly` y `SameSite=Strict` (o `Lax`) para todas las cookies de sesión.",
+      immediateActions_en: "### Immediate Actions\nSet the `Secure`, `HttpOnly`, and `SameSite=Strict` (or `Lax`) attributes for all session cookies.",
+      immediateActions_es: "### Acciones Inmediatas\nEstablecer los atributos `Secure`, `HttpOnly` y `SameSite=Strict` (o `Lax`) para todas las cookies de sesión.",
       references: ["https://owasp.org/www-project-cheat-sheets/cheatsheets/Session_Management_Cheat_Sheet.html#cookie-attributes"],
       tags: ["Additional", "Session"],
       ...emptyVulnBoilerplate
@@ -1927,8 +1935,8 @@ export const vulnerabilities: Vulnerability[] = [
       affectedComponents_es: "### Componentes Afectados\n[TODO: Especificar el parámetro y la cabecera vulnerables.]",
       impact_en: "### Impact\nThis can lead to XSS, cache poisoning, and other client-side attacks.",
       impact_es: "### Impacto\nEsto puede llevar a XSS, envenenamiento de caché y otros ataques del lado del cliente.",
-      recommendations_en: "### Recommendations\nSanitize all user input before including it in HTTP headers. Specifically, filter out CRLF and other newline characters.",
-      recommendations_es: "### Recomendaciones\nDesinfectar todas las entradas del usuario antes de incluirlas en las cabeceras HTTP. Específicamente, filtrar los caracteres CRLF y otros de nueva línea.",
+      immediateActions_en: "### Immediate Actions\nSanitize all user input before including it in HTTP headers. Specifically, filter out CRLF and other newline characters.",
+      immediateActions_es: "### Acciones Inmediatas\nDesinfectar todas las entradas del usuario antes de incluirlas en las cabeceras HTTP. Específicamente, filtrar los caracteres CRLF y otros de nueva línea.",
       references: ["https://owasp.org/www-community/attacks/HTTP_Response_Splitting"],
       tags: ["Additional", "Injection"],
       ...emptyVulnBoilerplate
@@ -1948,8 +1956,8 @@ export const vulnerabilities: Vulnerability[] = [
       affectedComponents_es: "### Componentes Afectados\n[TODO: Describir el mecanismo de caché y la solicitud específica utilizada para envenenarla.]",
       impact_en: "### Impact\nThis can lead to widespread XSS attacks, session hijacking, and other client-side vulnerabilities affecting a large number of users.",
       impact_es: "### Impacto\nEsto puede llevar a ataques XSS generalizados, secuestro de sesiones y otras vulnerabilidades del lado del cliente que afectan a un gran número de usuarios.",
-      recommendations_en: "### Recommendations\nConfigure the cache to not store responses that contain user input. Use cache keys that are specific enough to prevent collisions. Disable caching for dynamic content.",
-      recommendations_es: "### Recomendaciones\nConfigurar la caché para no almacenar respuestas que contengan entradas de usuario. Usar claves de caché que sean lo suficientemente específicas para evitar colisiones. Deshabilitar el almacenamiento en caché para contenido dinámico.",
+      immediateActions_en: "### Immediate Actions\nConfigure the cache to not store responses that contain user input. Use cache keys that are specific enough to prevent collisions. Disable caching for dynamic content.",
+      immediateActions_es: "### Acciones Inmediatas\nConfigurar la caché para no almacenar respuestas que contengan entradas de usuario. Usar claves de caché que sean lo suficientemente específicas para evitar colisiones. Deshabilitar el almacenamiento en caché para contenido dinámico.",
       references: ["https://portswigger.net/web-security/web-cache-poisoning"],
       tags: ["Additional", "Cache Poisoning"],
       ...emptyVulnBoilerplate
@@ -1969,8 +1977,8 @@ export const vulnerabilities: Vulnerability[] = [
       affectedComponents_es: "### Componentes Afectados\n[TODO: Especificar la funcionalidad que depende de la cabecera Host, p. ej., correos electrónicos de restablecimiento de contraseña.]",
       impact_en: "### Impact\nThis can be used to facilitate phishing attacks, web cache poisoning, and other attacks.",
       impact_es: "### Impacto\nEsto se puede utilizar para facilitar ataques de phishing, envenenamiento de caché web y otros ataques.",
-      recommendations_en: "### Recommendations\nDo not trust the `Host` header. Use a server-side, statically configured value for the application's domain name.",
-      recommendations_es: "### Recomendaciones\nNo confiar en la cabecera `Host`. Utilizar un valor estático configurado en el lado del servidor para el nombre de dominio de la aplicación.",
+      immediateActions_en: "### Immediate Actions\nDo not trust the `Host` header. Use a server-side, statically configured value for the application's domain name.",
+      immediateActions_es: "### Acciones Inmediatas\nNo confiar en la cabecera `Host`. Utilizar un valor estático configurado en el lado del servidor para el nombre de dominio de la aplicación.",
       references: ["https://portswigger.net/web-security/host-header"],
       tags: ["Additional", "Injection"],
       ...emptyVulnBoilerplate
@@ -1990,8 +1998,8 @@ export const vulnerabilities: Vulnerability[] = [
       affectedComponents_es: "### Componentes Afectados\n[TODO: Especificar el parámetro vulnerable.]",
       impact_en: "### Impact\nAn attacker can exfiltrate sensitive data from the database, although it is a slower process than a regular SQL injection.",
       impact_es: "### Impacto\nUn atacante puede exfiltrar datos sensibles de la base de datos, aunque es un proceso más lento que una inyección SQL normal.",
-      recommendations_en: "### Recommendations\nUse parameterized queries (prepared statements) for all database interactions. This is the most effective way to prevent all forms of SQL injection.",
-      recommendations_es: "### Recomendaciones\nUtilizar consultas parametrizadas (sentencias preparadas) para todas las interacciones con la base de datos. Esta es la forma más efectiva de prevenir todas las formas de inyección SQL.",
+      immediateActions_en: "### Immediate Actions\nUse parameterized queries (prepared statements) for all database interactions. This is the most effective way to prevent all forms of SQL injection.",
+      immediateActions_es: "### Acciones Inmediatas\nUtilizar consultas parametrizadas (sentencias preparadas) para todas las interacciones con la base de datos. Esta es la forma más efectiva de prevenir todas las formas de inyección SQL.",
       references: ["https://owasp.org/www-community/attacks/Blind_SQL_Injection"],
       tags: ["Additional", "SQLi"],
       ...emptyVulnBoilerplate
@@ -2011,8 +2019,8 @@ export const vulnerabilities: Vulnerability[] = [
       affectedComponents_es: "### Componentes Afectados\n[TODO: Especificar la funcionalidad y el parámetro vulnerables.]",
       impact_en: "### Impact\nThis can lead to full compromise of the server.",
       impact_es: "### Impacto\nEsto puede llevar al compromiso total del servidor.",
-      recommendations_en: "### Recommendations\nAvoid calling out to OS commands directly. Use built-in library functions where possible. If you must use user input in a command, use strict whitelisting and input validation.",
-      recommendations_es: "### Recomendaciones\nEvitar llamar directamente a los comandos del SO. Usar funciones de biblioteca integradas siempre que sea posible. Si debe usar la entrada del usuario en un comando, use una lista blanca estricta y validación de entrada.",
+      immediateActions_en: "### Immediate Actions\nAvoid calling out to OS commands directly. Use built-in library functions where possible. If you must use user input in a command, use strict whitelisting and input validation.",
+      immediateActions_es: "### Acciones Inmediatas\nEvitar llamar directamente a los comandos del SO. Usar funciones de biblioteca integradas siempre que sea posible. Si debe usar la entrada del usuario en un comando, use una lista blanca estricta y validación de entrada.",
       references: ["https://portswigger.net/web-security/os-command-injection"],
       tags: ["Additional", "Injection"],
       ...emptyVulnBoilerplate
@@ -2032,8 +2040,8 @@ export const vulnerabilities: Vulnerability[] = [
       affectedComponents_es: "### Componentes Afectados\n[TODO: Especificar la funcionalidad donde se almacena el script malicioso, p. ej., formulario de comentarios.]",
       impact_en: "### Impact\nThis can lead to session hijacking, defacement, and other client-side attacks affecting all users who view the malicious content.",
       impact_es: "### Impacto\nEsto puede llevar al secuestro de sesiones, la desfiguración y otros ataques del lado del cliente que afectan a todos los usuarios que ven el contenido malicioso.",
-      recommendations_en: "### Recommendations\nImplement context-aware output encoding for all user-supplied data. Use a library like DOMPurify to sanitize HTML content if users are allowed to submit rich text.",
-      recommendations_es: "### Recomendaciones\nImplementar codificación de salida sensible al contexto para todos los datos proporcionados por el usuario. Usar una biblioteca como DOMPurify para desinfectar el contenido HTML si se permite a los usuarios enviar texto enriquecido.",
+      immediateActions_en: "### Immediate Actions\nImplement context-aware output encoding for all user-supplied data. Use a library like DOMPurify to sanitize HTML content if users are allowed to submit rich text.",
+      immediateActions_es: "### Acciones Inmediatas\nImplementar codificación de salida sensible al contexto para todos los datos proporcionados por el usuario. Usar una biblioteca como DOMPurify para desinfectar el contenido HTML si se permite a los usuarios enviar texto enriquecido.",
       references: ["https://owasp.org/www-community/attacks/xss/"],
       tags: ["Additional", "XSS"],
       ...emptyVulnBoilerplate
@@ -2053,8 +2061,8 @@ export const vulnerabilities: Vulnerability[] = [
       affectedComponents_es: "### Componentes Afectados\n[TODO: Describir cómo se está filtrando el token CSRF.]",
       impact_en: "### Impact\nAn attacker can craft a valid request to perform a CSRF attack, bypassing the intended protection.",
       impact_es: "### Impacto\nUn atacante puede crear una solicitud válida para realizar un ataque CSRF, eludiendo la protección prevista.",
-      recommendations_en: "### Recommendations\nEnsure that CSRF tokens are not leaked in URLs or logs. Bind the token to the user's session. Use the double-submit cookie pattern correctly.",
-      recommendations_es: "### Recomendaciones\nAsegurarse de que los tokens CSRF no se filtren en las URL o los registros. Vincular el token a la sesión del usuario. Usar correctamente el patrón de doble envío de cookies.",
+      immediateActions_en: "### Immediate Actions\nEnsure that CSRF tokens are not leaked in URLs or logs. Bind the token to the user's session. Use the double-submit cookie pattern correctly.",
+      immediateActions_es: "### Acciones Inmediatas\nAsegurarse de que los tokens CSRF no se filtren en las URL o los registros. Vincular el token a la sesión del usuario. Usar correctamente el patrón de doble envío de cookies.",
       references: ["https://portswigger.net/web-security/csrf/tokens"],
       tags: ["Additional", "CSRF"],
       ...emptyVulnBoilerplate
@@ -2074,8 +2082,8 @@ export const vulnerabilities: Vulnerability[] = [
       affectedComponents_es: "### Componentes Afectados\n[TODO: Especificar la implementación de JWT y el fallo específico.]",
       impact_en: "### Impact\nAn attacker can forge valid JWTs to impersonate other users, escalate privileges, or bypass authentication.",
       impact_es: "### Impacto\nUn atacante puede falsificar JWT válidos para suplantar a otros usuarios, escalar privilegios u omitir la autenticación.",
-      recommendations_en: "### Recommendations\nUse a strong, secret key for signing. Always validate the signature and the `alg` header. Enforce validation of all standard claims. Use a well-vetted JWT library.",
-      recommendations_es: "### Recomendaciones\nUsar una clave secreta fuerte para firmar. Validar siempre la firma y la cabecera `alg`. Forzar la validación de todas las reclamaciones estándar. Usar una biblioteca JWT bien examinada.",
+      immediateActions_en: "### Immediate Actions\nUse a strong, secret key for signing. Always validate the signature and the `alg` header. Enforce validation of all standard claims. Use a well-vetted JWT library.",
+      immediateActions_es: "### Acciones Inmediatas\nUsar una clave secreta fuerte para firmar. Validar siempre la firma y la cabecera `alg`. Forzar la validación de todas las reclamaciones estándar. Usar una biblioteca JWT bien examinada.",
       references: ["https://jwt.io/introduction"],
       tags: ["Additional", "JWT"],
       ...emptyVulnBoilerplate
@@ -2095,8 +2103,8 @@ export const vulnerabilities: Vulnerability[] = [
       affectedComponents_es: "### Componentes Afectados\n[TODO: Describir la configuración incorrecta de OAuth específica.]",
       impact_en: "### Impact\nThis can lead to account takeover, allowing an attacker to impersonate a user.",
       impact_es: "### Impacto\nEsto puede llevar a la toma de control de cuentas, permitiendo a un atacante suplantar a un usuario.",
-      recommendations_en: "### Recommendations\nUse a strict, exact-match whitelist for redirect URIs. Use the `state` parameter to prevent CSRF. Use the PKCE extension for mobile and single-page applications.",
-      recommendations_es: "### Recomendaciones\nUsar una lista blanca estricta y de coincidencia exacta para las URI de redirección. Usar el parámetro `state` para prevenir CSRF. Usar la extensión PKCE para aplicaciones móviles y de una sola página.",
+      immediateActions_en: "### Immediate Actions\nUse a strict, exact-match whitelist for redirect URIs. Use the `state` parameter to prevent CSRF. Use the PKCE extension for mobile and single-page applications.",
+      immediateActions_es: "### Acciones Inmediatas\nUsar una lista blanca estricta y de coincidencia exacta para las URI de redirección. Usar el parámetro `state` para prevenir CSRF. Usar la extensión PKCE para aplicaciones móviles y de una sola página.",
       references: ["https://oauth.net/2/"],
       tags: ["Additional", "OAuth"],
       ...emptyVulnBoilerplate
@@ -2116,8 +2124,8 @@ export const vulnerabilities: Vulnerability[] = [
       affectedComponents_es: "### Componentes Afectados\n[TODO: Especificar la funcionalidad que construye consultas GraphQL a partir de la entrada del usuario.]",
       impact_en: "### Impact\nThis can lead to unauthorized data access and manipulation.",
       impact_es: "### Impacto\nEsto puede llevar a un acceso y manipulación de datos no autorizados.",
-      recommendations_en: "### Recommendations\nUse parameterized queries (GraphQL variables). Avoid building queries from user-controlled strings. Implement proper access control on all fields and types in the GraphQL schema.",
-      recommendations_es: "### Recomendaciones\nUtilizar consultas parametrizadas (variables de GraphQL). Evitar construir consultas a partir de cadenas controladas por el usuario. Implementar un control de acceso adecuado en todos los campos y tipos en el esquema de GraphQL.",
+      immediateActions_en: "### Immediate Actions\nUse parameterized queries (GraphQL variables). Avoid building queries from user-controlled strings. Implement proper access control on all fields and types in the GraphQL schema.",
+      immediateActions_es: "### Acciones Inmediatas\nUtilizar consultas parametrizadas (variables de GraphQL). Evitar construir consultas a partir de cadenas controladas por el usuario. Implementar un control de acceso adecuado en todos los campos y tipos en el esquema de GraphQL.",
       references: ["https://graphql.org/learn/security/"],
       tags: ["Additional", "GraphQL"],
       ...emptyVulnBoilerplate
@@ -2137,8 +2145,8 @@ export const vulnerabilities: Vulnerability[] = [
       affectedComponents_es: "### Componentes Afectados\n[TODO: Especificar el endpoint de WebSocket y la vulnerabilidad específica.]",
       impact_en: "### Impact\nThis can lead to unauthorized actions, data leakage, and other attacks.",
       impact_es: "### Impacto\nEsto puede llevar a acciones no autorizadas, fuga de datos y otros ataques.",
-      recommendations_en: "### Recommendations\nValidate the `Origin` header for all WebSocket handshakes. Implement a token-based authentication mechanism for WebSocket messages. Sanitize all data sent over the WebSocket.",
-      recommendations_es: "### Recomendaciones\nValidar la cabecera `Origin` para todos los saludos de WebSocket. Implementar un mecanismo de autenticación basado en tokens para los mensajes de WebSocket. Desinfectar todos los datos enviados a través del WebSocket.",
+      immediateActions_en: "### Immediate Actions\nValidate the `Origin` header for all WebSocket handshakes. Implement a token-based authentication mechanism for WebSocket messages. Sanitize all data sent over the WebSocket.",
+      immediateActions_es: "### Acciones Inmediatas\nValidar la cabecera `Origin` para todos los saludos de WebSocket. Implementar un mecanismo de autenticación basado en tokens para los mensajes de WebSocket. Desinfectar todos los datos enviados a través del WebSocket.",
       references: ["https://portswigger.net/web-security/websockets"],
       tags: ["Additional", "WebSocket"],
       ...emptyVulnBoilerplate
@@ -2158,8 +2166,8 @@ export const vulnerabilities: Vulnerability[] = [
       affectedComponents_es: "### Componentes Afectados\n[TODO: Describir el mecanismo de detección de root y cómo se eludió.]",
       impact_en: "### Impact\nBypassing root detection facilitates further attacks, such as reverse engineering, tampering, and data extraction.",
       impact_es: "### Impacto\nEludir la detección de root facilita otros ataques, como la ingeniería inversa, la manipulación y la extracción de datos.",
-      recommendations_en: "### Recommendations\nImplement multiple, layered root detection checks. Use server-side checks where possible. Note that client-side root detection can always be bypassed by a determined attacker.",
-      recommendations_es: "### Recomendaciones\nImplementar múltiples comprobaciones de detección de root en capas. Usar comprobaciones del lado del servidor siempre que sea posible. Tener en cuenta que la detección de root del lado del cliente siempre puede ser eludida por un atacante decidido.",
+      immediateActions_en: "### Immediate Actions\nImplement multiple, layered root detection checks. Use server-side checks where possible. Note that client-side root detection can always be bypassed by a determined attacker.",
+      immediateActions_es: "### Acciones Inmediatas\nImplementar múltiples comprobaciones de detección de root en capas. Usar comprobaciones del lado del servidor siempre que sea posible. Tener en cuenta que la detección de root del lado del cliente siempre puede ser eludida por un atacante decidido.",
       references: ["https://owasp.org/www-project-mobile-top-10/2016-risks/m8-code-tampering"],
       tags: ["Mobile", "Bypass"],
       ...emptyVulnBoilerplate
@@ -2179,8 +2187,8 @@ export const vulnerabilities: Vulnerability[] = [
       affectedComponents_es: "### Componentes Afectados\n[TODO: Especificar el esquema de enlace profundo inseguro y la funcionalidad vulnerable.]",
       impact_en: "### Impact\nThis can lead to information disclosure, account takeover, or other vulnerabilities depending on the functionality exposed via the deep link.",
       impact_es: "### Impacto\nEsto puede llevar a la divulgación de información, la toma de control de cuentas u otras vulnerabilidades dependiendo de la funcionalidad expuesta a través del enlace profundo.",
-      recommendations_en: "### Recommendations\nValidate all parameters passed through deep links. Prompt the user for confirmation before performing any sensitive actions. Use App Links (Android) or Universal Links (iOS) to ensure that only your app can handle links to your domain.",
-      recommendations_es: "### Recomendaciones\nValidar todos los parámetros pasados a través de enlaces profundos. Solicitar confirmación al usuario antes de realizar cualquier acción sensible. Usar App Links (Android) o Universal Links (iOS) para garantizar que solo su aplicación pueda manejar los enlaces a su dominio.",
+      immediateActions_en: "### Immediate Actions\nValidate all parameters passed through deep links. Prompt the user for confirmation before performing any sensitive actions. Use App Links (Android) or Universal Links (iOS) to ensure that only your app can handle links to your domain.",
+      immediateActions_es: "### Acciones Inmediatas\nValidar todos los parámetros pasados a través de enlaces profundos. Solicitar confirmación al usuario antes de realizar cualquier acción sensible. Usar App Links (Android) o Universal Links (iOS) para garantizar que solo su aplicación pueda manejar los enlaces a su dominio.",
       references: ["https://developer.android.com/training/app-links"],
       tags: ["Mobile", "Deep Link"],
       ...emptyVulnBoilerplate
@@ -2200,8 +2208,8 @@ export const vulnerabilities: Vulnerability[] = [
       affectedComponents_es: "### Componentes Afectados\n[TODO: El propio binario de la aplicación.]",
       impact_en: "### Impact\nThis can lead to widespread fraud and data theft from users who install the malicious version.",
       impact_es: "### Impacto\nEsto puede llevar a un fraude generalizado y al robo de datos de los usuarios que instalan la versión maliciosa.",
-      recommendations_en: "### Recommendations\nImplement code integrity checks (e.g., checksum validation) and certificate pinning. Use app shielding and hardening solutions. Educate users to only download the app from official app stores.",
-      recommendations_es: "### Recomendaciones\nImplementar comprobaciones de integridad de código (p. ej., validación de suma de verificación) y anclaje de certificados. Usar soluciones de protección y fortalecimiento de aplicaciones. Educar a los usuarios para que solo descarguen la aplicación de las tiendas de aplicaciones oficiales.",
+      immediateActions_en: "### Immediate Actions\nImplement code integrity checks (e.g., checksum validation) and certificate pinning. Use app shielding and hardening solutions. Educate users to only download the app from official app stores.",
+      immediateActions_es: "### Acciones Inmediatas\nImplementar comprobaciones de integridad de código (p. ej., validación de suma de verificación) y anclaje de certificados. Usar soluciones de protección y fortalecimiento de aplicaciones. Educar a los usuarios para que solo descarguen la aplicación de las tiendas de aplicaciones oficiales.",
       references: ["https://owasp.org/www-project-mobile-top-10/2016-risks/m8-code-tampering"],
       tags: ["Mobile", "Tampering"],
       ...emptyVulnBoilerplate
@@ -2221,8 +2229,8 @@ export const vulnerabilities: Vulnerability[] = [
       affectedComponents_es: "### Componentes Afectados\n[TODO: Especificar el sistema operativo y la vulnerabilidad TCP/IP específica.]",
       impact_en: "### Impact\nThis can lead to denial of service, making the system unavailable.",
       impact_es: "### Impacto\nEsto puede llevar a una denegación de servicio, haciendo que el sistema no esté disponible.",
-      recommendations_en: "### Recommendations\nKeep the operating system and network devices patched. Use a firewall and an Intrusion Detection/Prevention System (IDS/IPS) to block malicious traffic patterns.",
-      recommendations_es: "### Recomendaciones\nMantener el sistema operativo y los dispositivos de red parcheados. Usar un cortafuegos y un Sistema de Detección/Prevención de Intrusiones (IDS/IPS) para bloquear patrones de tráfico maliciosos.",
+      immediateActions_en: "### Immediate Actions\nKeep the operating system and network devices patched. Use a firewall and an Intrusion Detection/Prevention System (IDS/IPS) to block malicious traffic patterns.",
+      immediateActions_es: "### Acciones Inmediatas\nMantener el sistema operativo y los dispositivos de red parcheados. Usar un cortafuegos y un Sistema de Detección/Prevención de Intrusiones (IDS/IPS) para bloquear patrones de tráfico maliciosos.",
       references: ["https://en.wikipedia.org/wiki/TCP/IP_model"],
       tags: ["Network", "TCP/IP"],
       ...emptyVulnBoilerplate
@@ -2242,8 +2250,8 @@ export const vulnerabilities: Vulnerability[] = [
       affectedComponents_es: "### Componentes Afectados\n[TODO: Describir la vulnerabilidad de día cero en detalle.]",
       impact_en: "### Impact\nThe impact is typically critical, leading to full system compromise.",
       impact_es: "### Impacto\nEl impacto suele ser crítico, lo que lleva a un compromiso total del sistema.",
-      recommendations_en: "### Recommendations\nWork with the vendor to develop a patch. In the interim, implement compensating controls, such as network segmentation, enhanced monitoring, and access restrictions, to mitigate the risk.",
-      recommendations_es: "### Recomendaciones\nTrabajar con el proveedor para desarrollar un parche. Mientras tanto, implementar controles de compensación, como la segmentación de la red, la monitorización mejorada y las restricciones de acceso, para mitigar el riesgo.",
+      immediateActions_en: "### Immediate Actions\nWork with the vendor to develop a patch. In the interim, implement compensating controls, such as network segmentation, enhanced monitoring, and access restrictions, to mitigate the risk.",
+      immediateActions_es: "### Acciones Inmediatas\nTrabajar con el proveedor para desarrollar un parche. Mientras tanto, implementar controles de compensación, como la segmentación de la red, la monitorización mejorada y las restricciones de acceso, para mitigar el riesgo.",
       references: ["https://www.cisa.gov/stopransomware/understanding-and-responding-zero-day-exploits"],
       tags: ["Additional", "Zero-Day"],
       ...emptyVulnBoilerplate
@@ -2676,4 +2684,5 @@ ffuf -w /usr/share/seclists/Discovery/DNS/subdomains-top1million-5000.txt:FUZZ -
 ];
 
   
+
 
