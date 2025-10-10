@@ -33,11 +33,6 @@ const renderWithTodos = (Component: React.ElementType) => {
             if (typeof child === 'string') {
                  return <span dangerouslySetInnerHTML={{ __html: highlightTodos(child) }} />;
             }
-             if (React.isValidElement(child) && child.props.children && typeof child.props.children === 'string') {
-                return React.cloneElement(child, {
-                    children: <span dangerouslySetInnerHTML={{ __html: highlightTodos(child.props.children) }} />
-                });
-            }
             return child;
         });
         return <Component {...props}>{newChildren}</Component>;
@@ -49,7 +44,7 @@ const CustomTableCell = ({ children, ...props }: any) => {
         if (typeof child === 'string') {
             return <span dangerouslySetInnerHTML={{ __html: highlightTodos(child) }} />;
         }
-        if (React.isValidElement(child) && child.props.children && typeof child.props.children === 'string') {
+        if (React.isValidElement(child) && child.props.node?.tagName !== 'code') {
             return React.cloneElement(child, {
                  children: <span dangerouslySetInnerHTML={{ __html: highlightTodos(child.props.children) }} />
             });
@@ -126,7 +121,7 @@ export const MarkdownPreview = ({ content, getImage, isReport }: { content: stri
             
             const highlightedCode = <span dangerouslySetInnerHTML={{ __html: highlightTodos(codeContent) }} />;
             return (
-              <code className="bg-muted text-muted-foreground font-code px-1 py-0.5 rounded-sm" {...props}>
+              <code className="bg-muted text-muted-foreground font-code px-1 py-0.5 rounded-sm break-all" {...props}>
                 {highlightedCode}
               </code>
             );
