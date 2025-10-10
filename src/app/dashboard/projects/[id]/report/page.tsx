@@ -8,7 +8,7 @@ import { Separator } from '@/components/ui/separator';
 import { Logo } from '@/components/logo';
 import React, { useEffect, useMemo, useState, useCallback, useRef } from 'react';
 import { Button } from '@/components/ui/button';
-import { AlertCircle, ArrowRight, CheckCircle, ChevronLeft, Printer, Globe, Sun, Moon, PanelLeft, Menu, X } from 'lucide-react';
+import { AlertCircle, ArrowRight, CheckCircle, ChevronLeft, Printer, Globe, Sun, Moon, PanelLeft, Menu, X, ChevronsUpDown } from 'lucide-react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import Link from 'next/link';
 import { useLanguage } from '@/context/language-context';
@@ -38,7 +38,7 @@ export default function ReportPreviewPage() {
   const { language: uiLanguage } = useLanguage();
   const { id: projectId } = params;
   const { projects, clients, findings, getImage } = useData();
-  const { theme } = useTheme();
+  const { theme, setTheme } = useTheme();
 
   const [project, setProject] = useState<Project | undefined>();
   const [client, setClient] = useState<Client | undefined>();
@@ -147,15 +147,11 @@ ${project.reportBody || ''}
 
     const findingsContent = projectFindings
       .map(f => {
-        const severityBadge = `<Badge variant="${getSeverityVariant(f.severity)}">${f.severity}</Badge>`;
-        const cvssInfo = `CVSS: ${f.cvss.toFixed(1)}`;
-        // Note: Using a non-standard markdown-like syntax for embedding components.
-        // This will be handled by the custom renderer.
-        return `## ${f.title} [SEVERITY:${f.severity},CVSS:${f.cvss.toFixed(1)}]\n${f.markdown}`;
+        return `## ${f.title} [SEVERITY:${f.severity},CVSS:${f.cvss.toFixed(1)}] {#finding-${f.id}}\n${f.markdown}`;
       })
       .join('\n\n');
       
-    const findingsSection = `# ${langT.findingsSummary}\n\n${findingsContent}`;
+    const findingsSection = `# ${langT.findings}\n\n${findingsContent}`;
 
     return `${mainContent}\n${findingsSection}`;
   }, [project, client, projectFindings, t]);
@@ -175,33 +171,21 @@ ${project.reportBody || ''}
   }, [projectId, projects, clients, findings, router]);
   
   useEffect(() => {
-    if (fullReportContent) {
-        const headingRegex = /^(#{1,3}) (.*?)(?: {#(.*?)})?$/gm;
-        let matches = Array.from(fullReportContent.matchAll(headingRegex));
-        
-        let idCounter = 0;
-        const seen = new Set<string>();
-        const generateId = (text: string) => {
-            let baseSlug = text.toLowerCase().replace(/\s+/g, '-').replace(/\[.*?\]/g, '').replace(/[^\w-]+/g, '') || `section`;
-            let finalSlug = baseSlug;
-            let counter = 1;
-            while (seen.has(finalSlug)) {
-                finalSlug = `${baseSlug}-${counter}`;
-                counter++;
+    if (reportContentRef.current) {
+        const headingElements = reportContentRef.current.querySelectorAll('h1, h2, h3');
+        const newHeadings: Heading[] = [];
+        headingElements.forEach(heading => {
+            if (heading.id) { // Only include headings that have an ID
+                newHeadings.push({
+                    level: parseInt(heading.tagName.substring(1)),
+                    text: heading.textContent || '',
+                    id: heading.id
+                });
             }
-            seen.add(finalSlug);
-            return finalSlug;
-        };
-
-        const newHeadings = matches.map(match => {
-            const level = match[1].length;
-            let text = match[2].replace(/\[SEVERITY:.*?,CVSS:.*?\]/, '').trim();
-            let id = match[3] || generateId(text);
-            return { level, text, id };
         });
         setHeadings(newHeadings);
     }
-  }, [fullReportContent]);
+  }, [fullReportContent]); // Re-run when content changes
 
 
   const todos = useMemo(() => {
@@ -299,14 +283,14 @@ ${project.reportBody || ''}
     @import url('https://fonts.googleapis.com/css2?family=Source+Code+Pro:wght@400;500&display=swap');
     :root { --background: 0 0% 94.1%; --foreground: 240 10% 3.9%; --card: 0 0% 100%; --card-foreground: 240 10% 3.9%; --popover: 0 0% 100%; --popover-foreground: 240 10% 3.9%; --primary: 76 100% 50%; --primary-foreground: 76 100% 5%; --secondary: 240 4.8% 95.9%; --secondary-foreground: 240 5.9% 10%; --muted: 240 4.8% 95.9%; --muted-foreground: 240 3.8% 46.1%; --accent: 76 100% 60%; --accent-foreground: 76 100% 10%; --destructive: 0 80% 50%; --destructive-foreground: 0 0% 98%; --border: 240 5.9% 90%; --input: 240 5.9% 90%; --ring: 76 100% 50%; }
     .dark { --background: 224 71% 4%; --foreground: 210 40% 98%; --card: 224 71% 6%; --card-foreground: 210 40% 98%; --popover: 224 71% 4%; --popover-foreground: 210 40% 98%; --primary: 76 100% 50%; --primary-foreground: 76 100% 5%; --secondary: 220 15% 15%; --secondary-foreground: 210 40% 98%; --muted: 220 15% 15%; --muted-foreground: 215 20% 65%; --accent: 76 100% 60%; --accent-foreground: 76 100% 10%; --destructive: 0 72% 51%; --destructive-foreground: 210 40% 98%; --border: 220 15% 15%; --input: 220 15% 15%; --ring: 76 100% 50%; }
-    body { background-color: hsl(var(--background)); color: hsl(var(--foreground)); font-family: 'Inter', sans-serif; }
+    body { background-color: hsl(var(--background)); color: hsl(var(--foreground)); font-family: 'Inter', sans-serif; transition: background-color 0.2s ease-in-out, color 0.2s ease-in-out; }
     h1, h2, h3, h4, h5, h6 { font-family: 'Space Grotesk', sans-serif; }
     pre, code { font-family: 'Source Code Pro', monospace; }
     .prose { color: hsl(var(--foreground)); max-width: 100% !important; } .prose h1, .prose h2, .prose h3, .prose h4, .prose h5, .prose h6 { color: hsl(var(--foreground)); } .prose a { color: hsl(var(--primary)); } .prose strong { color: hsl(var(--foreground)); } .prose blockquote { color: hsl(var(--muted-foreground)); border-left-color: hsl(var(--border)); } .prose code:not(pre code) { background-color: hsl(var(--muted)) !important; color: hsl(var(--muted-foreground)) !important; padding: 2px 5px; border-radius: 4px; } .prose pre { background-color: hsl(var(--muted)) !important; color: hsl(var(--muted-foreground)) !important; padding: 1em; border-radius: 8px; overflow-x: auto; } .prose table { width: 100%; } .prose th { background-color: hsl(var(--muted)); } .prose td, .prose th { border: 1px solid hsl(var(--border)); padding: 8px; } hr { border-top-color: hsl(var(--border)); }
     [id] { scroll-margin-top: 80px; }
     #toc-sidebar { transition: right 0.3s ease-in-out; }
     .toc-level-1 { font-weight: bold; } .toc-level-2 { padding-left: 1rem; } .toc-level-3 { padding-left: 2rem; }
-    #toc-sidebar a { display: block; padding: 4px 8px; border-radius: 4px; transition: background-color 0.2s ease-in-out; } #toc-sidebar a:hover { background-color: hsl(var(--muted)); }
+    #toc-sidebar a { display: block; padding: 4px 8px; border-radius: 4px; transition: background-color 0.2s ease-in-out, color 0.2s ease-in-out; } #toc-sidebar a:hover { background-color: hsl(var(--muted)); color: hsl(var(--primary)); }
   </style>
 </head>
 <body class="bg-background text-foreground">
@@ -318,13 +302,13 @@ ${project.reportBody || ''}
       </div>
       <div class="flex items-center gap-4">
         <button id="theme-switcher" class="p-2 rounded-md hover:bg-muted"><svg id="sun-icon" style="display:none;" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="4"/><path d="M12 2v2"/><path d="M12 20v2"/><path d="m4.93 4.93 1.41 1.41"/><path d="m17.66 17.66 1.41 1.41"/><path d="M2 12h2"/><path d="M20 12h2"/><path d="m6.34 17.66-1.41 1.41"/><path d="m19.07 4.93-1.41 1.41"/></svg><svg id="moon-icon" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9z"/></svg></button>
-        <button id="toc-toggler" class="p-2 rounded-md hover:bg-muted"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="4" x2="20" y1="12" y2="12"/><line x1="4" x2="20" y1="6" y2="6"/><line x1="4" x2="20" y1="18" y2="18"/></svg></button>
+        <button id="toc-toggler" class="p-2 rounded-md hover:bg-muted md:hidden"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="4" x2="20" y1="12" y2="12"/><line x1="4" x2="20" y1="6" y2="6"/><line x1="4" x2="20" y1="18" y2="18"/></svg></button>
       </div>
     </div>
   </header>
   
-  <div class="max-w-7xl mx-auto p-4 md:p-8 flex flex-row-reverse">
-    <aside id="toc-sidebar" class="w-72 pl-8 shrink-0 fixed top-20 right-8 h-[calc(100vh-6rem)] transition-all hidden md:block">
+  <div class="max-w-7xl mx-auto p-4 md:p-8 flex flex-row-reverse relative">
+    <aside id="toc-sidebar" class="w-72 pl-8 shrink-0 hidden md:block md:sticky top-20 h-[calc(100vh-6rem)]">
       <div class="h-full overflow-y-auto">
         <h3 class="text-lg font-semibold mb-4">${t[reportLang].tableOfContents}</h3>
         <ul class="space-y-2 text-sm">${tocHtml}</ul>
@@ -346,7 +330,7 @@ ${project.reportBody || ''}
       updateIcons();
     });
 
-    let tocOpen = true;
+    let tocOpen = false;
     tocToggler.addEventListener('click', () => {
         tocOpen = !tocOpen;
         tocSidebar.style.display = tocOpen ? 'block' : 'none';
@@ -436,7 +420,7 @@ ${project.reportBody || ''}
                     <DropdownMenuItem onClick={() => handlePrint('dark')}>{langT.darkMode}</DropdownMenuItem>
                   </DropdownMenuContent>
                 </DropdownMenu>
-                <Button variant="outline" size="icon" onClick={() => setIsSidebarOpen(!isSidebarOpen)}>
+                <Button variant="outline" size="icon" className="md:hidden" onClick={() => setIsSidebarOpen(!isSidebarOpen)}>
                     <PanelLeft className="h-5 w-5" />
                 </Button>
             </div>
@@ -444,8 +428,8 @@ ${project.reportBody || ''}
       </header>
 
       <div className="max-w-7xl mx-auto p-4 md:p-8 flex flex-row-reverse">
-        <aside className={cn("no-print w-72 pl-8 shrink-0 transition-all duration-300", isSidebarOpen ? "block" : "hidden")}>
-          <div className="sticky top-20 h-[calc(100vh-6rem)] overflow-y-auto space-y-6">
+        <aside className={cn("no-print w-72 pl-8 shrink-0 hidden md:block", isSidebarOpen ? "md:sticky top-20 h-[calc(100vh-6rem)]" : "hidden")}>
+          <div className="h-full overflow-y-auto space-y-6">
             {showTodos && (
                 <Card>
                   <CardHeader className="flex-row items-center justify-between p-4">
@@ -492,10 +476,10 @@ ${project.reportBody || ''}
               <ul className="space-y-1">
                 {headings.map((heading) => (
                   <li key={heading.id}>
-                    <a href={`#${heading.id}`} className={cn("block text-sm rounded-md py-1 hover:text-primary", {
-                      'pl-2 font-semibold': heading.level === 1,
-                      'pl-6': heading.level === 2,
-                      'pl-10': heading.level === 3,
+                    <a href={`#${heading.id}`} className={cn("block text-sm rounded-md py-1 px-2 hover:bg-muted hover:text-primary transition-colors", {
+                      'font-semibold text-base': heading.level === 1,
+                      'pl-4': heading.level === 2,
+                      'pl-8 text-xs': heading.level === 3,
                     })}>
                       {heading.text}
                     </a>
@@ -503,12 +487,11 @@ ${project.reportBody || ''}
                 ))}
               </ul>
             </nav>
-
           </div>
         </aside>
         
-        <main ref={reportContentRef} className={cn("flex-1 transition-all duration-300 printable-content")}>
-          <div className="space-y-12">
+        <main className={cn("flex-1 transition-all duration-300 printable-content max-w-4xl")}>
+          <div className="space-y-12" ref={reportContentRef}>
             <header className="flex justify-between items-start">
               <div>
                 <h1 className="font-headline text-4xl font-bold text-primary">{project.name}</h1>
@@ -516,8 +499,8 @@ ${project.reportBody || ''}
               </div>
               <Logo />
             </header>
-
-            <section className="print-only break-after-page">
+            
+            <section className="hidden print:block break-after-page">
               <h2 className="font-headline text-2xl font-bold border-b-2 border-primary pb-2 mb-4 mt-12">{langT.tableOfContents}</h2>
               <ul className="list-none space-y-2 print-toc">
                 {headings.map((h) => (

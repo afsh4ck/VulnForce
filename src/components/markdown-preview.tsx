@@ -44,26 +44,30 @@ const renderWithTodos = (Component: React.ElementType, className?: string, props
     return RenderComponent;
 };
 
-// This function now just processes the markdown and adds IDs to headers.
 const addHeaderIds = (markdownContent: string) => {
     if (!markdownContent) return '';
     let idCounter = 0;
     const seen = new Set<string>();
+
     const generateId = (text: string) => {
         idCounter++;
-        let baseSlug = text.toLowerCase().replace(/\s+/g, '-').replace(/[^\w-]+/g, '') || `section-${idCounter}`;
-        let finalSlug = baseSlug;
-        let counter = 1;
+        let baseSlug = text.toLowerCase().replace(/\[.*?\]/g, '').replace(/\s+/g, '-').replace(/[^\w-]+/g, '') || `section`;
+        let finalSlug = `${baseSlug}-${idCounter}`;
         while (seen.has(finalSlug)) {
-            finalSlug = `${baseSlug}-${counter}`;
-            counter++;
+            idCounter++
+            finalSlug = `${baseSlug}-${idCounter}`;
         }
         seen.add(finalSlug);
         return finalSlug;
     };
 
     return markdownContent.replace(/^(#{1,6}) (.*)/gm, (match, hashes, text) => {
-        const id = generateId(text);
+        const existingIdMatch = text.match(/{#([^}]+)}/);
+        if (existingIdMatch) {
+            return match; 
+        }
+        const cleanText = text.replace(/\[.*?\]/g, '').trim();
+        const id = generateId(cleanText);
         return `${hashes} ${text} {#${id}}`;
     });
 };
@@ -100,8 +104,30 @@ export const MarkdownPreview = ({ content, getImage, isReport }: { content: stri
                         return <h1 id={id} {...props} className={cn("font-headline text-3xl font-bold mb-4 border-b-2 border-primary pb-2", isReport && "mt-12")}>{renderWithTodos('span', '')({children: text})}</h1>
                     },
                     h2: ({ node, children, ...props }) => {
-                        const [text, id] = extractIdFromText(String(children));
-                        return <h2 id={id} {...props} className={cn("text-2xl font-semibold mb-3 border-b pb-2", isReport && "mt-12 font-headline")}>{renderWithTodos('span', '')({children: text})}</h2>
+                        const [rawText, id] = extractIdFromText(String(children));
+                        
+                        const severityRegex = /\[SEVERITY:(.*?),CVSS:(.*?)\]/;
+                        const severityMatch = rawText.match(severityRegex);
+
+                        if (isReport && severityMatch) {
+                            const title = rawText.replace(severityRegex, '').trim();
+                            const severity = severityMatch[1];
+                            const cvss = severityMatch[2];
+                            return (
+                                <div id={id}>
+                                    <div className="flex justify-between items-center mb-2">
+                                      <h2 {...props} className={cn("text-2xl font-semibold border-b-0 pb-0", isReport && "mt-12 font-headline")}>
+                                        {renderWithTodos('span', '')({children: title})}
+                                      </h2>
+                                      <Badge variant={getSeverityVariant(severity)} className="text-base px-3 py-1">{severity}</Badge>
+                                    </div>
+                                    <p className="font-code text-sm text-muted-foreground mt-0 mb-6">CVSS: {cvss}</p>
+                                    <Separator className="my-6" />
+                                </div>
+                            );
+                        }
+                        
+                        return <h2 id={id} {...props} className={cn("text-2xl font-semibold mb-3 border-b pb-2", isReport && "mt-12 font-headline")}>{renderWithTodos('span', '')({children: rawText})}</h2>
                     },
                     h3: ({ node, children, ...props }) => {
                         const [text, id] = extractIdFromText(String(children));
@@ -125,24 +151,7 @@ export const MarkdownPreview = ({ content, getImage, isReport }: { content: stri
                     tr: ({ node, ...props }) => <tr className="border-b border-border" {...props} />,
                     th: renderWithTodos('th', "border border-border px-4 py-2 text-left font-semibold"),
                     td: renderWithTodos('td', "border border-border px-4 py-2"),
-                    img: ({ node, ...props }) => {
-                        const url = props.src || '';
-                        if (url.startsWith('image://')) {
-                            const imageId = url.substring('image://'.length);
-                            const imageAsset = getImage(imageId);
-                            if (imageAsset) {
-                                // eslint-disable-next-line @next/next/no-img-element
-                                return <img src={imageAsset.dataUrl} alt={props.alt || 'Pasted Image'} className="max-w-full h-auto rounded-md border" />;
-                            }
-                            return <div className="p-4 border border-dashed border-destructive rounded-md text-destructive bg-destructive/10">
-                                <p className="font-semibold">Image not found</p>
-                                <p className="text-xs">Reference: {imageId}</p>
-                            </div>;
-                        }
-                        // eslint-disable-next-line @next/next/no-img-element
-                        return <img {...props} className="max-w-full h-auto rounded-md border" />;
-                    },
-                    hr: () => isReport ? <hr className="my-8" /> : null,
+                    hr: () => isReport ? null : <hr className="my-8" />,
                     code({ node, className, children, ...props }) {
                         const match = /language-(\w+)/.exec(className || '');
                         const codeContent = String(children).replace(/\n$/, '');
