@@ -313,7 +313,18 @@ export const vulnerabilities: Vulnerability[] = [
         ...emptyVulnBoilerplate,
         tags: ["Web", "Injection"]
     },
-    // ... many more entries ...
+    {
+        id: "vuln-050",
+        title_en: "Race Condition",
+        title_es: "Condición de Carrera",
+        cwe: "CWE-362",
+        severity: "Medium",
+        cvss: { score: 6.5, vectorString: "CVSS:3.1/AV:N/AC:H/PR:L/UI:N/S:U/C:N/I:H/A:L", attackVector: "N", attackComplexity: "H", privilegesRequired: "L", userInteraction: "N", scope: "U", confidentiality: "N", integrity: "H", availability: "L" },
+        overview_en: "### Description\nAn attacker can exploit a flaw in the application's handling of concurrent operations to cause unintended behavior, such as bypassing security checks or corrupting data.\n\n---\n\n### Impact\nRace conditions can lead to data corruption, financial loss, and bypass of security logic. The impact is highly dependent on the specific context.",
+        overview_es: "### Descripción\nUn atacante puede explotar un fallo en el manejo de operaciones concurrentes de la aplicación para causar un comportamiento no deseado, como eludir controles de seguridad o corromper datos.\n\n---\n\n### Impacto\nLas condiciones de carrera pueden conducir a la corrupción de datos, pérdidas financieras y la elusión de la lógica de seguridad. El impacto depende en gran medida del contexto específico.",
+        ...emptyVulnBoilerplate,
+        tags: ["Race Condition", "Business Logic"]
+    },
     {
         id: "vuln-100",
         title_en: "Improper Input Validation",
@@ -752,5 +763,3 @@ ffuf -w /usr/share/seclists/Discovery/DNS/subdomains-top1million-5000.txt:FUZZ -
 - **Escalada de Privilegios:** linpeas.sh`
   },
 ];
-
-    
