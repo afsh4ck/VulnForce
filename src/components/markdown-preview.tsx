@@ -8,7 +8,6 @@ import { vscDarkPlus } from 'react-syntax-highlighter/dist/esm/styles/prism';
 import type { ImageAsset } from '@/lib/types';
 import { cn } from '@/lib/utils';
 import { Badge } from './ui/badge';
-import { Separator } from './ui/separator';
 
 const highlightTodos = (text: string) => {
     if (typeof text !== 'string') return text;
@@ -102,21 +101,7 @@ export const MarkdownPreview = ({ content, getImage, isReport }: { content: stri
                     },
                     h2: ({ node, children, ...props }) => {
                         const [text, id] = extractIdFromText(String(children));
-                        // Special handling for finding titles in report view
-                        if (isReport && /^\d\.\d+ /.test(text)) {
-                            const findingTitle = text.replace(/^\d\.\d+ /, '');
-                            const finding = { severity: 'High', cvss: 7.5 }; // DUMMY DATA, needs real data
-                            return (
-                                <div>
-                                    <div className="flex justify-between items-center mb-2">
-                                        <h2 id={id} {...props} className="font-headline text-2xl font-bold mt-8 border-none pb-0">{renderWithTodos('span', '')({children: findingTitle})}</h2>
-                                        {finding && <Badge variant={getSeverityVariant(finding.severity)} className="text-base px-3 py-1">{finding.severity}</Badge>}
-                                    </div>
-                                    {finding && <p className="font-code text-sm text-muted-foreground my-0">CVSS: {finding.cvss.toFixed(1)}</p>}
-                                </div>
-                            );
-                        }
-                        return <h2 id={id} {...props} className={cn("text-2xl font-semibold mb-3 border-b pb-2", isReport && "mt-12")}>{renderWithTodos('span', '')({children: text})}</h2>
+                        return <h2 id={id} {...props} className={cn("text-2xl font-semibold mb-3 border-b pb-2", isReport && "mt-12 font-headline")}>{renderWithTodos('span', '')({children: text})}</h2>
                     },
                     h3: ({ node, children, ...props }) => {
                         const [text, id] = extractIdFromText(String(children));
@@ -157,7 +142,7 @@ export const MarkdownPreview = ({ content, getImage, isReport }: { content: stri
                         // eslint-disable-next-line @next/next/no-img-element
                         return <img {...props} className="max-w-full h-auto rounded-md border" />;
                     },
-                    hr: () => null, // Remove horizontal rules
+                    hr: () => isReport ? <hr className="my-8" /> : null,
                     code({ node, className, children, ...props }) {
                         const match = /language-(\w+)/.exec(className || '');
                         const codeContent = String(children).replace(/\n$/, '');
