@@ -10,7 +10,7 @@ export const clients: Client[] = [
   { id: 'cli-4', name: 'HealthFirst Providers', contact: 'compliance@healthfirst.com', logoUrl: 'https://picsum.photos/seed/healthfirst/128/128' },
 ];
 
-export let projects: Project[] = [
+export const projects: Project[] = [
   { 
     id: 'proj-1', 
     clientId: 'cli-1', 
@@ -71,7 +71,7 @@ The engagement began with reconnaissance against the *.innovatech.com domain, wh
   },
 ];
 
-export let findings: Finding[] = [
+export const findings: Finding[] = [
   { 
     id: 'find-1', 
     projectId: 'proj-1', 
@@ -130,7 +130,7 @@ const emptyVulnBoilerplate = {
   references: [],
 };
 
-export let vulnerabilities: Vulnerability[] = [
+export const vulnerabilities: Vulnerability[] = [
     {
     id: "vuln-web-001",
     title_en: "SQL Injection (SQLi)",
@@ -170,9 +170,9 @@ The most effective way to prevent SQL Injection is to use parameterized queries 
 ---
 
 ### Remediation Summary
-- **Short Term:** Implement input validation to reject queries containing malicious SQL characters.
-- **Medium Term:** Refactor all database queries to use parameterized statements.
-- **Long Term:** Conduct a full code review of all data access components and provide secure coding training to developers.
+- **Short Term Mitigation:** Implement input validation to reject queries containing malicious SQL characters.
+- **Medium Term Mitigation:** Refactor all database queries to use parameterized statements.
+- **Long Term Mitigation:** Conduct a full code review of all data access components and provide secure coding training to developers.
 `,
     overview_es: `
 ### Descripción
@@ -206,9 +206,9 @@ La forma más efectiva de prevenir la Inyección SQL es utilizar consultas param
 ---
 
 ### Resumen de Remediación
-- **Corto Plazo:** Implementar validación de entradas para rechazar consultas que contengan caracteres SQL maliciosos.
-- **Medio Plazo:** Refactorizar todas las consultas a la base de datos para utilizar sentencias parametrizadas.
-- **Largo Plazo:** Realizar una revisión completa del código de todos los componentes de acceso a datos y proporcionar formación en codificación segura a los desarrolladores.
+- **Mitigación a Corto Plazo:** Implementar validación de entradas para rechazar consultas que contengan caracteres SQL maliciosos.
+- **Mitigación a Medio Plazo:** Refactorizar todas las consultas a la base de datos para utilizar sentencias parametrizadas.
+- **Mitigación a Largo Plazo:** Realizar una revisión completa del código de todos los componentes de acceso a datos y proporcionar formación en codificación segura a los desarrolladores.
 `,
     ...emptyVulnBoilerplate,
     tags: ["Web"]
@@ -252,9 +252,9 @@ Implement robust context-aware output encoding. Whenever user-controllable data 
 ---
 
 ### Remediation Summary
-- **Short Term:** Apply a strict allow-list based input validation to temporarily block malicious payloads.
-- **Medium Term:** Implement context-aware output encoding across the entire application.
-- **Long Term:** Adopt a secure frontend framework that automatically handles output encoding, such as React.
+- **Short Term Mitigation:** Apply a strict allow-list based input validation to temporarily block malicious payloads.
+- **Medium Term Mitigation:** Implement context-aware output encoding across the entire application.
+- **Long Term Mitigation:** Adopt a secure frontend framework that automatically handles output encoding, such as React.
 `,
     overview_es: `
 ### Descripción
@@ -288,9 +288,9 @@ Implementar una codificación de salida robusta y sensible al contexto. Siempre 
 ---
 
 ### Resumen de Remediación
-- **Corto Plazo:** Aplicar una validación de entrada estricta basada en una lista blanca para bloquear temporalmente los payloads maliciosos.
-- **Medio Plazo:** Implementar una codificación de salida sensible al contexto en toda la aplicación.
-- **Largo Plazo:** Adoptar un framework de frontend seguro que maneje automáticamente la codificación de salida, como React.
+- **Mitigación a Corto Plazo:** Aplicar una validación de entrada estricta basada en una lista blanca para bloquear temporalmente los payloads maliciosos.
+- **Mitigación a Medio Plazo:** Implementar una codificación de salida sensible al contexto en toda la aplicación.
+- **Mitigación a Largo Plazo:** Adoptar un framework de frontend seguro que maneje automáticamente la codificación de salida, como React.
 `,
     ...emptyVulnBoilerplate,
     tags: ["Web"]
@@ -335,9 +335,9 @@ Implement multi-factor authentication (MFA), enforce strong password policies, u
 ---
 
 ### Remediation Summary
-- **Short Term:** Enforce MFA for all users.
-- **Medium Term:** Implement strong password complexity and rotation policies.
-- **Long Term:** Redesign the authentication and session management system following security best practices.
+- **Short Term Mitigation:** Enforce MFA for all users.
+- **Medium Term Mitigation:** Implement strong password complexity and rotation policies.
+- **Long Term Mitigation:** Redesign the authentication and session management system following security best practices.
 `,
     overview_es: `
 ### Descripción
@@ -371,9 +371,9 @@ Implementar la autenticación multifactor (MFA), hacer cumplir políticas de con
 ---
 
 ### Resumen de Remediación
-- **Corto Plazo:** Forzar el uso de MFA para todos los usuarios.
-- **Medio Plazo:** Implementar políticas de complejidad y rotación de contraseñas robustas.
-- **Largo Plazo:** Rediseñar el sistema de autenticación y gestión de sesiones siguiendo las mejores prácticas de seguridad.
+- **Mitigación a Corto Plazo:** Forzar el uso de MFA para todos los usuarios.
+- **Mitigación a Medio Plazo:** Implementar políticas de complejidad y rotación de contraseñas robustas.
+- **Mitigación a Largo Plazo:** Rediseñar el sistema de autenticación y gestión de sesiones siguiendo las mejores prácticas de seguridad.
 `,
     ...emptyVulnBoilerplate,
     tags: ["Web", "Authentication"]
@@ -418,9 +418,9 @@ Ensure that both frontend and backend servers use the same HTTP protocol version
 ---
 
 ### Remediation Summary
-- **Short Term:** Configure the frontend server to normalize requests before forwarding them.
-- **Medium Term:** Upgrade all web infrastructure to be consistent in its interpretation of HTTP requests (e.g., HTTP/2).
-- **Long Term:** Regularly test for request smuggling vulnerabilities as part of the SDLC.
+- **Short Term Mitigation:** Configure the frontend server to normalize requests before forwarding them.
+- **Medium Term Mitigation:** Upgrade all web infrastructure to be consistent in its interpretation of HTTP requests (e.g., HTTP/2).
+- **Long Term Mitigation:** Regularly test for request smuggling vulnerabilities as part of the SDLC.
 `,
     overview_es: `
 ### Descripción
@@ -454,9 +454,9 @@ Asegúrese de que tanto los servidores frontend como los backend utilicen la mis
 ---
 
 ### Resumen de Remediación
-- **Corto Plazo:** Configurar el servidor frontend para normalizar las solicitudes antes de reenviarlas.
-- **Medio Plazo:** Actualizar toda la infraestructura web para que sea coherente en su interpretación de las solicitudes HTTP (p. ej., HTTP/2).
-- **Largo Plazo:** Probar regularmente las vulnerabilidades de contrabando de solicitudes como parte del SDLC.
+- **Mitigación a Corto Plazo:** Configurar el servidor frontend para normalizar las solicitudes antes de reenviarlas.
+- **Mitigación a Medio Plazo:** Actualizar toda la infraestructura web para que sea coherente en su interpretación de las solicitudes HTTP (p. ej., HTTP/2).
+- **Mitigación a Largo Plazo:** Probar regularmente las vulnerabilidades de contrabando de solicitudes como parte del SDLC.
 `,
     ...emptyVulnBoilerplate,
     tags: ["Web", "Network"]
@@ -500,9 +500,9 @@ Validate all parameters passed through deep links. For sensitive actions, requir
 ---
 
 ### Remediation Summary
-- **Short Term:** Implement strict validation for all deep link parameters.
-- **Medium Term:** Migrate from custom URL schemes to Universal Links/App Links.
-- **Long Term:** Include deep link security checks as part of the mobile application security checklist.
+- **Short Term Mitigation:** Implement strict validation for all deep link parameters.
+- **Medium Term Mitigation:** Migrate from custom URL schemes to Universal Links/App Links.
+- **Long Term Mitigation:** Include deep link security checks as part of the mobile application security checklist.
 `,
     overview_es: `
 ### Descripción
@@ -536,9 +536,9 @@ Valide todos los parámetros pasados a través de enlaces profundos. Para accion
 ---
 
 ### Resumen de Remediación
-- **Corto Plazo:** Implementar una validación estricta para todos los parámetros de los enlaces profundos.
-- **Medio Plazo:** Migrar de esquemas de URL personalizados a Universal Links/App Links.
-- **Largo Plazo:** Incluir verificaciones de seguridad de enlaces profundos como parte de la lista de verificación de seguridad de la aplicación móvil.
+- **Mitigación a Corto Plazo:** Implementar una validación estricta para todos los parámetros de los enlaces profundos.
+- **Mitigación a Medio Plazo:** Migrar de esquemas de URL personalizados a Universal Links/App Links.
+- **Mitigación a Largo Plazo:** Incluir verificaciones de seguridad de enlaces profundos como parte de la lista de verificación de seguridad de la aplicación móvil.
 `,
     ...emptyVulnBoilerplate,
     tags: ["Mobile"]
@@ -577,12 +577,12 @@ La evaluación seguirá una metodología estándar de pruebas de penetración de
 2.  **Escaneo Automatizado:** Uso de herramientas para identificar vulnerabilidades de bajo esfuerzo.
 3.  **Pruebas Manuales:** Pruebas en profundidad para vulnerabilidades complejas como fallos de lógica de negocio, problemas de control de acceso y ataques de inyección.
 4.  **Informe:** Documentación de hallazgos y recomendaciones de remediación.`,
-    appendix_en: `### A. Tooling Used
+    appendix_en: `### Appendix
 A combination of automated tools and manual techniques were used to perform this assessment.
 - **Proxy:** Burp Suite Professional
 - **Scanners:** Nessus, Nuclei
 - **Reconnaissance:** Amass, Subfinder`,
-    appendix_es: `### A. Herramientas Utilizadas
+    appendix_es: `### Apéndice
 Se utilizó una combinación de herramientas automatizadas y técnicas manuales para realizar esta evaluación.
 - **Proxy:** Burp Suite Professional
 - **Escáneres:** Nessus, Nuclei
@@ -621,12 +621,12 @@ Se utilizó una combinación de herramientas automatizadas y técnicas manuales 
 4.  **Explotación Manual:** Intento de explotar vulnerabilities para obtener más acceso.
 5.  **Análisis de Active Directory:** Búsqueda de configuraciones incorrectas en Active Directory, como contraseñas débiles, oportunidades de kerberoasting y rutas de escalada de privilegios.
 6.  **Informe:** Documentación de hallazgos y recomendaciones de remediación.`,
-    appendix_en: `### A. Tooling Used
+    appendix_en: `### Appendix
 - **Network Scanner:** Nmap, Masscan
 - **Vulnerability Scanner:** Nessus
 - **Active Directory:** BloodHound, Impacket
 - **Manual Exploitation:** Metasploit Framework, CrackMapExec`,
-    appendix_es: `### A. Herramientas Utilizadas
+    appendix_es: `### Apéndice
 - **Escáner de Red:** Nmap, Masscan
 - **Escáner de Vulnerabilidades:** Nessus
 - **Active Directory:** BloodHound, Impacket
@@ -671,11 +671,11 @@ La evaluación incluye tanto el análisis estático como el dinámico de la apli
     -   Manipulación en tiempo de ejecución con Frida.
 3.  **Pruebas de API:** Pruebas de las API de backend para vulnerabilidades web comunes (OWASP API Top 10).
 4.  **Informe:** Documentación de hallazgos y recomendaciones de remediación.`,
-    appendix_en: `### A. Tooling Used
+    appendix_en: `### Appendix
 - **Static Analysis:** MobSF, jadx
 - **Dynamic Analysis:** Burp Suite, Frida, Objection
 - **Test Devices:** Google Pixel 6 (Rooted), iPhone 12 (Jailbroken)`,
-    appendix_es: `### A. Herramientas Utilizadas
+    appendix_es: `### Apéndice
 - **Análisis Estático:** MobSF, jadx
 - **Análisis Dinámico:** Burp Suite, Frida, Objection
 - **Dispositivos de Prueba:** Google Pixel 6 (Rooteado), iPhone 12 (con Jailbreak)`
@@ -705,12 +705,12 @@ El objetivo fue realizar una prueba de penetración, identificando y explotando 
 ## Alcance
 - **Red Objetivo:** [TODO: p. ej., 10.10.10.0/24]
 - **Duración del Examen:** [TODO Start Date] a [TODO End Date]`,
-    appendix_en: `### A. Flags Captured
+    appendix_en: `### Appendix
 | Hostname / IP | Location | Value |
 |---|---|---|
 | [TODO: Hostname/IP] | [TODO: e.g., /root/proof.txt] | [TODO: Flag Value] |
 `,
-    appendix_es: `### A. Banderas Capturadas
+    appendix_es: `### Apéndice
 | Hostname / IP | Ubicación | Valor |
 |---|---|---|
 | [TODO: Hostname/IP] | [TODO: p. ej., /root/proof.txt] | [TODO: Valor de la Bandera] |
@@ -954,15 +954,15 @@ ffuf -w /usr/share/seclists/Discovery/DNS/subdomains-top1million-5000.txt:FUZZ -
 
 ---
 
-## 👑 Bandera de Root (Root Flag)
+## 👑 Root Flag
 - **Comando:** \`cat /root/root.txt\`
 `,
-    appendix_en: `### A. Tooling Used
+    appendix_en: `### Appendix
 - **Network Scanner:** Nmap
 - **Web Fuzzer:** ffuf, dirsearch
 - **Exploitation:** [TODO: e.g., Metasploit, Python script]
 - **Privilege Escalation:** linpeas.sh`,
-    appendix_es: `### A. Herramientas Utilizadas
+    appendix_es: `### Apéndice
 - **Escáner de Red:** Nmap
 - **Fuzzer Web:** ffuf, dirsearch
 - **Explotación:** [TODO: p. ej., Metasploit, script de Python]

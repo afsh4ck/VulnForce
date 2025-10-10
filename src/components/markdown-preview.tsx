@@ -76,6 +76,7 @@ export const MarkdownPreview = ({ content, getImage, isReport }: { content: stri
                   const imageId = url.substring('image://'.length);
                   const imageAsset = getImage(imageId);
                   if (imageAsset) {
+                      // eslint-disable-next-line @next/next/no-img-element
                       return <img src={imageAsset.dataUrl} alt={props.alt || 'Pasted Image'} className="max-w-full h-auto rounded-md border" />;
                   }
                   // Render a placeholder or an error indicator if the image is not found
@@ -84,6 +85,7 @@ export const MarkdownPreview = ({ content, getImage, isReport }: { content: stri
                       <p className="text-xs">Reference: {imageId}</p>
                   </div>;
               }
+              // eslint-disable-next-line @next/next/no-img-element
               return <img {...props} className="max-w-full h-auto rounded-md border" />;
           },
           code({ node, className, children, ...props }) {
