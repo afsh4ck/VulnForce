@@ -131,418 +131,201 @@ const emptyVulnBoilerplate = {
 };
 
 export const vulnerabilities: Vulnerability[] = [
+    // OWASP Top 10 2021
     {
-    id: "vuln-web-001",
-    title_en: "SQL Injection (SQLi)",
-    title_es: "Inyección SQL (SQLi)",
-    cwe: "CWE-89",
-    severity: "Critical",
-    cvss: { score: 9.8, vectorString: "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:H/I:H/A:H", attackVector: "N", attackComplexity: "L", privilegesRequired: "N", userInteraction: "N", scope: "U", confidentiality: "H", integrity: "H", availability: "H" },
-    overview_en: `
-### Description
-SQL Injection is a web security vulnerability that allows an attacker to interfere with the queries that an application makes to its database. It generally allows an attacker to view data that they are not normally able to retrieve.
-
----
-
-### Technical Description
-The application uses user-supplied input to construct SQL queries without proper sanitization or use of prepared statements. An attacker can supply crafted input to modify the query's logic. For example, injecting \`' OR '1'='1'--\` into a login form's username field could bypass authentication.
-
----
-
-### Affected Components
-- [TODO: Vulnerable URL or domain]
-
----
-
-### Impact
-An attacker can bypass authentication, read sensitive data, modify or delete database records, and in some cases, execute operating system commands, leading to a full system compromise.
-
----
-
-### Recommendations
-The most effective way to prevent SQL Injection is to use parameterized queries (also known as prepared statements). This approach ensures that user input is always treated as data and never as executable code. Input validation and sanitization should be used as a secondary defense.
-
----
-
-### Details
-[TODO: Add specific examples, technical explanation, and context of the finding.]
-
----
-
-### Remediation Summary
-- **Short Term Mitigation:** Implement input validation to reject queries containing malicious SQL characters.
-- **Medium Term Mitigation:** Refactor all database queries to use parameterized statements.
-- **Long Term Mitigation:** Conduct a full code review of all data access components and provide secure coding training to developers.
-`,
-    overview_es: `
-### Descripción
-La Inyección SQL es una vulnerabilidad de seguridad web que permite a un atacante interferir con las consultas que una aplicación realiza a su base de datos. Generalmente, permite a un atacante ver datos que normalmente no podría recuperar.
-
----
-
-### Descripción Técnica
-La aplicación utiliza entradas proporcionadas por el usuario para construir consultas SQL sin una sanitización adecuada o sin el uso de sentencias preparadas. Un atacante puede proporcionar una entrada maliciosa para modificar la lógica de la consulta. Por ejemplo, inyectar \`' OR '1'='1'--\` en el campo de usuario de un formulario de inicio de sesión podría eludir la autenticación.
-
----
-
-### Componentes Afectados
-- [TODO: URL o dominio vulnerable]
-
----
-
-### Impacto
-Un atacante puede eludir la autenticación, leer datos sensibles, modificar o eliminar registros de la base de datos y, en algunos casos, ejecutar comandos del sistema operativo, lo que lleva a un compromiso total del sistema.
-
----
-
-### Recomendaciones
-La forma más efectiva de prevenir la Inyección SQL es utilizar consultas parametrizadas (también conocidas como sentencias preparadas). Este enfoque asegura que la entrada del usuario siempre se trate como datos y nunca como código ejecutable. La validación y sanitización de entradas deben usarse como una defensa secundaria.
-
----
-
-### Detalles
-[TODO: Añadir ejemplos específicos, explicación técnica y contexto del hallazgo.]
-
----
-
-### Resumen de Remediación
-- **Mitigación a Corto Plazo:** Implementar validación de entradas para rechazar consultas que contengan caracteres SQL maliciosos.
-- **Mitigación a Medio Plazo:** Refactorizar todas las consultas a la base de datos para utilizar sentencias parametrizadas.
-- **Mitigación a Largo Plazo:** Realizar una revisión completa del código de todos los componentes de acceso a datos y proporcionar formación en codificación segura a los desarrolladores.
-`,
-    ...emptyVulnBoilerplate,
-    tags: ["Web"]
-  },
-  {
-    id: "vuln-web-002",
-    title_en: "Cross-Site Scripting (XSS) - Stored",
-    title_es: "Cross-Site Scripting (XSS) - Almacenado",
-    cwe: "CWE-79",
-    severity: "High",
-    cvss: { score: 8.0, vectorString: "CVSS:3.1/AV:N/AC:L/PR:L/UI:R/S:C/C:L/I:L/A:N", attackVector: "N", attackComplexity: "L", privilegesRequired: "L", userInteraction: "R", scope: "C", confidentiality: "L", integrity: "L", availability: "N" },
-    overview_en: `
-### Description
-Stored XSS occurs when an application receives data from an untrusted source and includes it in its later HTTP responses without proper validation or escaping. The malicious script is stored on the server and executed in the browser of any user who views the affected page.
-
----
-
-### Technical Description
-The application stores user input (e.g., in a comment field, user profile, etc.) and renders it on a page without sanitizing the output. An attacker can submit a payload like \`<script>alert('XSS')</script>\` which is then saved and executed for other users.
-
----
-
-### Affected Components
-- [TODO: Vulnerable URL or domain, e.g., comment section]
-
----
-
-### Impact
-Attackers can execute arbitrary JavaScript in the browsers of other users. This can be used to hijack user sessions, deface websites, redirect users to malicious sites, or launch other attacks.
-
----
-
-### Recommendations
-Implement robust context-aware output encoding. Whenever user-controllable data is inserted into an HTTP response, ensure it is properly encoded for the context in which it is being placed (HTML body, attribute, JavaScript, etc.). Using a library like DOMPurify is highly recommended.
-
----
-
-### Details
-[TODO: Add specific examples, technical explanation, and context of the finding.]
-
----
-
-### Remediation Summary
-- **Short Term Mitigation:** Apply a strict allow-list based input validation to temporarily block malicious payloads.
-- **Medium Term Mitigation:** Implement context-aware output encoding across the entire application.
-- **Long Term Mitigation:** Adopt a secure frontend framework that automatically handles output encoding, such as React.
-`,
-    overview_es: `
-### Descripción
-El XSS Almacenado ocurre cuando una aplicación recibe datos de una fuente no confiable y los incluye en sus respuestas HTTP posteriores sin una validación o escapado adecuados. El script malicioso se almacena en el servidor y se ejecuta en el navegador de cualquier usuario que vea la página afectada.
-
----
-
-### Descripción Técnica
-La aplicación almacena la entrada del usuario (p. ej., en un campo de comentario, perfil de usuario, etc.) y la renderiza en una página sin sanitizar la salida. Un atacante puede enviar un payload como \`<script>alert('XSS')</script>\` que luego se guarda y se ejecuta para otros usuarios.
-
----
-
-### Componentes Afectados
-- [TODO: URL o dominio vulnerable, p. ej., sección de comentarios]
-
----
-
-### Impacto
-Los atacantes pueden ejecutar JavaScript arbitrario en los navegadores de otros usuarios. Esto puede usarse para secuestrar sesiones de usuario, desfigurar sitios web, redirigir a los usuarios a sitios maliciosos o lanzar otros ataques.
-
----
-
-### Recomendaciones
-Implementar una codificación de salida robusta y sensible al contexto. Siempre que se inserten datos controlables por el usuario en una respuesta HTTP, asegúrese de que estén codificados correctamente para el contexto en el que se colocan (cuerpo HTML, atributo, JavaScript, etc.). Se recomienda encarecidamente el uso de una biblioteca como DOMPurify.
-
----
-
-### Detalles
-[TODO: Añadir ejemplos específicos, explicación técnica y contexto del hallazgo.]
-
----
-
-### Resumen de Remediación
-- **Mitigación a Corto Plazo:** Aplicar una validación de entrada estricta basada en una lista blanca para bloquear temporalmente los payloads maliciosos.
-- **Mitigación a Medio Plazo:** Implementar una codificación de salida sensible al contexto en toda la aplicación.
-- **Mitigación a Largo Plazo:** Adoptar un framework de frontend seguro que maneje automáticamente la codificación de salida, como React.
-`,
-    ...emptyVulnBoilerplate,
-    tags: ["Web"]
-  },
-  // Add 100+ more vulnerabilities with detailed content...
-  {
-    id: "vuln-web-003",
-    title_en: "Broken Authentication",
-    title_es: "Autenticación Rota",
-    cwe: "CWE-287",
-    severity: "High",
-    cvss: { score: 8.8, vectorString: "CVSS:3.1/AV:N/AC:L/PR:L/UI:N/S:U/C:H/I:H/A:H", attackVector: "N", attackComplexity: "L", privilegesRequired: "L", userInteraction: "N", scope: "U", confidentiality: "H", integrity: "H", availability: "H" },
-    overview_en: `
-### Description
-Authentication and session management functions are often implemented incorrectly, allowing attackers to compromise passwords, keys, or session tokens, or to exploit other implementation flaws to assume other users' identities temporarily or permanently.
-
----
-
-### Technical Description
-The application may exhibit vulnerabilities such as allowing credential stuffing, using weak or easily guessable passwords, sending session IDs in the URL, or having insecure password reset mechanisms.
-
----
-
-### Affected Components
-- [TODO: Vulnerable URL or domain, e.g., Login, Password Reset]
-
----
-
-### Impact
-Attackers can gain control over user accounts and potentially compromise the entire system.
-
----
-
-### Recommendations
-Implement multi-factor authentication (MFA), enforce strong password policies, use a secure session manager, and protect credentials both in transit and at rest.
-
----
-
-### Details
-[TODO: Add specific examples, technical explanation, and context of the finding.]
-
----
-
-### Remediation Summary
-- **Short Term Mitigation:** Enforce MFA for all users.
-- **Medium Term Mitigation:** Implement strong password complexity and rotation policies.
-- **Long Term Mitigation:** Redesign the authentication and session management system following security best practices.
-`,
-    overview_es: `
-### Descripción
-Las funciones de autenticación y gestión de sesiones a menudo se implementan incorrectamente, lo que permite a los atacantes comprometer contraseñas, claves o tokens de sesión, o explotar otros fallos de implementación para asumir las identidades de otros usuarios de forma temporal o permanente.
-
----
-
-### Descripción Técnica
-La aplicación puede presentar vulnerabilidades como permitir el relleno de credenciales, usar contraseñas débiles o fáciles de adivinar, enviar ID de sesión en la URL o tener mecanismos de restablecimiento de contraseña inseguros.
-
----
-
-### Componentes Afectados
-- [TODO: URL o dominio vulnerable, p. ej., Login, Restablecimiento de Contraseña]
-
----
-
-### Impacto
-Los atacantes pueden obtener control sobre las cuentas de usuario y potencialmente comprometer todo el sistema.
-
----
-
-### Recomendaciones
-Implementar la autenticación multifactor (MFA), hacer cumplir políticas de contraseñas seguras, utilizar un gestor de sesiones seguro y proteger las credenciales tanto en tránsito como en reposo.
-
----
-
-### Detalles
-[TODO: Añadir ejemplos específicos, explicación técnica y contexto del hallazgo.]
-
----
-
-### Resumen de Remediación
-- **Mitigación a Corto Plazo:** Forzar el uso de MFA para todos los usuarios.
-- **Mitigación a Medio Plazo:** Implementar políticas de complejidad y rotación de contraseñas robustas.
-- **Mitigación a Largo Plazo:** Rediseñar el sistema de autenticación y gestión de sesiones siguiendo las mejores prácticas de seguridad.
-`,
-    ...emptyVulnBoilerplate,
-    tags: ["Web", "Authentication"]
-  },
-  // ... continue for 100+ vulnerabilities
-  {
-    id: "vuln-web-101",
-    title_en: "HTTP Request Smuggling",
-    title_es: "Contrabando de Solicitudes HTTP",
-    cwe: "CWE-444",
-    severity: "Critical",
-    cvss: { score: 9.8, vectorString: "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:H/I:H/A:H", attackVector: "N", attackComplexity: "L", privilegesRequired: "N", userInteraction: "N", scope: "U", confidentiality: "H", integrity: "H", availability: "H" },
-    overview_en: `
-### Description
-HTTP Request Smuggling is a technique for interfering with the way a web site processes sequences of HTTP requests that are received from one or more users. It allows an attacker to bypass security controls, gain unauthorized access to sensitive data, and directly compromise other application users.
-
----
-
-### Technical Description
-The vulnerability occurs when the frontend (e.g., a load balancer) and backend servers interpret the boundaries of HTTP requests differently. This discrepancy can be exploited by sending ambiguous requests that are "smuggled" to the backend server.
-
----
-
-### Affected Components
-- [TODO: Vulnerable URL or domain]
-
----
-
-### Impact
-Impact can range from web cache poisoning to session hijacking and complete authentication bypass.
-
----
-
-### Recommendations
-Ensure that both frontend and backend servers use the same HTTP protocol version and configuration. Normalize ambiguous requests at the network edge. Disable connection reuse between servers if possible.
-
----
-
-### Details
-[TODO: Add specific examples, technical explanation, and context of the finding.]
-
----
-
-### Remediation Summary
-- **Short Term Mitigation:** Configure the frontend server to normalize requests before forwarding them.
-- **Medium Term Mitigation:** Upgrade all web infrastructure to be consistent in its interpretation of HTTP requests (e.g., HTTP/2).
-- **Long Term Mitigation:** Regularly test for request smuggling vulnerabilities as part of the SDLC.
-`,
-    overview_es: `
-### Descripción
-El Contrabando de Solicitudes HTTP es una técnica para interferir con la forma en que un sitio web procesa secuencias de solicitudes HTTP recibidas de uno o más usuarios. Permite a un atacante eludir los controles de seguridad, obtener acceso no autorizado a datos sensibles y comprometer directamente a otros usuarios de la aplicación.
-
----
-
-### Descripción Técnica
-La vulnerabilidad ocurre cuando los servidores frontend (p. ej., un balanceador de carga) y backend interpretan los límites de las solicitudes HTTP de manera diferente. Esta discrepancia puede ser explotada enviando solicitudes ambiguas que son "contrabandeadas" al servidor backend.
-
----
-
-### Componentes Afectados
-- [TODO: URL o dominio vulnerable]
-
----
-
-### Impacto
-El impacto puede variar desde el envenenamiento de la caché web hasta el secuestro de sesiones y la elusión completa de la autenticación.
-
----
-
-### Recomendaciones
-Asegúrese de que tanto los servidores frontend como los backend utilicen la misma versión y configuración del protocolo HTTP. Normalice las solicitudes ambiguas en el borde de la red. Desactive la reutilización de conexiones entre servidores si es posible.
-
----
-
-### Detalles
-[TODO: Añadir ejemplos específicos, explicación técnica y contexto del hallazgo.]
-
----
-
-### Resumen de Remediación
-- **Mitigación a Corto Plazo:** Configurar el servidor frontend para normalizar las solicitudes antes de reenviarlas.
-- **Mitigación a Medio Plazo:** Actualizar toda la infraestructura web para que sea coherente en su interpretación de las solicitudes HTTP (p. ej., HTTP/2).
-- **Mitigación a Largo Plazo:** Probar regularmente las vulnerabilidades de contrabando de solicitudes como parte del SDLC.
-`,
-    ...emptyVulnBoilerplate,
-    tags: ["Web", "Network"]
-  },
-  {
-    id: "vuln-mobile-102",
-    title_en: "Insecure Deep Links",
-    title_es: "Enlaces Profundos Inseguros",
-    cwe: "CWE-939",
-    severity: "Medium",
-    cvss: { score: 6.5, vectorString: "CVSS:3.1/AV:N/AC:L/PR:N/UI:R/S:U/C:H/I:N/A:N", attackVector: "N", attackComplexity: "L", privilegesRequired: "N", userInteraction: "R", scope: "U", confidentiality: "H", integrity: "N", availability: "N" },
-    overview_en: `
-### Description
-Insecure implementation of deep links can allow malicious applications on the same device or malicious websites to invoke sensitive functionality within the vulnerable app, potentially leading to data leakage or unauthorized actions.
-
----
-
-### Technical Description
-The application registers a custom URL scheme (e.g., \`myapp://\`) but does not properly validate the origin or the parameters of incoming deep links. A malicious webpage could craft a link like \`myapp://user/transfer?to=attacker&amount=1000\` to initiate an unauthorized transaction.
-
----
-
-### Affected Components
-- [TODO: Affected deep link scheme]
-
----
-
-### Impact
-Attackers can steal sensitive information, perform actions on behalf of the user, or cause the application to enter an unexpected state.
-
----
-
-### Recommendations
-Validate all parameters passed through deep links. For sensitive actions, require user re-authentication or confirmation within the app. Prefer using App Links (Android) or Universal Links (iOS) over custom URL schemes.
-
----
-
-### Details
-[TODO: Add specific examples, technical explanation, and context of the finding.]
-
----
-
-### Remediation Summary
-- **Short Term Mitigation:** Implement strict validation for all deep link parameters.
-- **Medium Term Mitigation:** Migrate from custom URL schemes to Universal Links/App Links.
-- **Long Term Mitigation:** Include deep link security checks as part of the mobile application security checklist.
-`,
-    overview_es: `
-### Descripción
-Una implementación insegura de enlaces profundos puede permitir que aplicaciones maliciosas en el mismo dispositivo o sitios web maliciosos invoquen funcionalidades sensibles dentro de la aplicación vulnerable, lo que podría llevar a la fuga de datos o acciones no autorizadas.
-
----
-
-### Descripción Técnica
-La aplicación registra un esquema de URL personalizado (p. ej., \`miapp://\`) pero no valida correctamente el origen o los parámetros de los enlaces profundos entrantes. Una página web maliciosa podría crear un enlace como \`miapp://usuario/transferir?a=atacante&cantidad=1000\` para iniciar una transacción no autorizada.
-
----
-
-### Componentes Afectados
-- [TODO: Esquema de enlace profundo afectado]
-
----
-
-### Impacto
-Los atacantes pueden robar información sensible, realizar acciones en nombre del usuario o hacer que la aplicación entre en un estado inesperado.
-
----
-
-### Recomendaciones
-Valide todos los parámetros pasados a través de enlaces profundos. Para acciones sensibles, requiera la re-autenticación o confirmación del usuario dentro de la aplicación. Prefiera usar App Links (Android) o Universal Links (iOS) en lugar de esquemas de URL personalizados.
-
----
-
-### Detalles
-[TODO: Añadir ejemplos específicos, explicación técnica y contexto del hallazgo.]
-
----
-
-### Resumen de Remediación
-- **Mitigación a Corto Plazo:** Implementar una validación estricta para todos los parámetros de los enlaces profundos.
-- **Mitigación a Medio Plazo:** Migrar de esquemas de URL personalizados a Universal Links/App Links.
-- **Mitigación a Largo Plazo:** Incluir verificaciones de seguridad de enlaces profundos como parte de la lista de verificación de seguridad de la aplicación móvil.
-`,
-    ...emptyVulnBoilerplate,
-    tags: ["Mobile"]
-  }
+        id: "vuln-A01",
+        title_en: "Broken Access Control",
+        title_es: "Control de Acceso Roto",
+        cwe: "CWE-284",
+        severity: "Critical",
+        cvss: { score: 9.8, vectorString: "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:H/I:H/A:H", attackVector: "N", attackComplexity: "L", privilegesRequired: "N", userInteraction: "N", scope: "U", confidentiality: "H", integrity: "H", availability: "H" },
+        overview_en: "### Description\nAccess control enforces policy such that users cannot act outside of their intended permissions. Failures typically lead to unauthorized information disclosure, modification, or destruction of all data or performing a business function outside the user's limits.\n\n---\n\n### Impact\nAttackers can gain unauthorized access to sensitive data or perform administrative functions.",
+        overview_es: "### Descripción\nEl control de acceso impone políticas para que los usuarios no puedan actuar fuera de sus permisos previstos. Las fallas suelen conducir a la divulgación, modificación o destrucción no autorizada de todos los datos o a la realización de una función empresarial fuera de los límites del usuario.\n\n---\n\n### Impacto\nLos atacantes pueden obtener acceso no autorizado a datos sensibles o realizar funciones administrativas.",
+        ...emptyVulnBoilerplate,
+        tags: ["Web", "Access Control"]
+    },
+    {
+        id: "vuln-A02",
+        title_en: "Cryptographic Failures",
+        title_es: "Fallos Criptográficos",
+        cwe: "CWE-310",
+        severity: "High",
+        cvss: { score: 7.5, vectorString: "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:H/I:N/A:N", attackVector: "N", attackComplexity: "L", privilegesRequired: "N", userInteraction: "N", scope: "U", confidentiality: "H", integrity: "N", availability: "N" },
+        overview_en: "### Description\nThis category is for failures related to cryptography, which often lead to exposure of sensitive data. Some examples include transmitting data in clear text, using old or weak cryptographic algorithms, or improper key management.\n\n---\n\n### Impact\nExposure of sensitive data such as passwords, credit card numbers, or personal health information.",
+        overview_es: "### Descripción\nEsta categoría es para fallas relacionadas con la criptografía, que a menudo conducen a la exposición de datos sensibles. Algunos ejemplos incluyen la transmisión de datos en texto claro, el uso de algoritmos criptográficos antiguos o débiles, o una gestión de claves inadecuada.\n\n---\n\n### Impacto\nExposición de datos sensibles como contraseñas, números de tarjetas de crédito o información de salud personal.",
+        ...emptyVulnBoilerplate,
+        tags: ["Web", "Cryptography"]
+    },
+    {
+        id: "vuln-A03",
+        title_en: "Injection",
+        title_es: "Inyección",
+        cwe: "CWE-89",
+        severity: "Critical",
+        cvss: { score: 9.8, vectorString: "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:H/I:H/A:H", attackVector: "N", attackComplexity: "L", privilegesRequired: "N", userInteraction: "N", scope: "U", confidentiality: "H", integrity: "H", availability: "H" },
+        overview_en: "### Description\nInjection flaws, such as SQL, NoSQL, Command Injection, etc., occur when untrusted data is sent to an interpreter as part of a command or query. The attacker’s malicious data can trick the interpreter into executing unintended commands or accessing data without proper authorization.\n\n---\n\n### Impact\nData loss, corruption, or disclosure. Can also lead to complete host takeover.",
+        overview_es: "### Descripción\nLas fallas de inyección, como SQL, NoSQL, Inyección de Comandos, etc., ocurren cuando se envían datos no confiables a un intérprete como parte de un comando o consulta. Los datos maliciosos del atacante pueden engañar al intérprete para que ejecute comandos no deseados o acceda a datos sin la debida autorización.\n\n---\n\n### Impacto\nPérdida, corrupción o divulgación de datos. También puede llevar a la toma de control completa del host.",
+        ...emptyVulnBoilerplate,
+        tags: ["Web", "Injection"]
+    },
+    {
+        id: "vuln-A04",
+        title_en: "Insecure Design",
+        title_es: "Diseño Inseguro",
+        cwe: "CWE-400",
+        severity: "High",
+        cvss: { score: 8.8, vectorString: "CVSS:3.1/AV:N/AC:L/PR:N/UI:R/S:U/C:H/I:H/A:H", attackVector: "N", attackComplexity: "L", privilegesRequired: "N", userInteraction: "R", scope: "U", confidentiality: "H", integrity: "H", availability: "H" },
+        overview_en: "### Description\nA new category for 2021, focusing on risks related to design flaws. If we genuinely want to “move left” as an industry, it calls for more use of threat modeling, secure design patterns, and reference architectures.\n\n---\n\n### Impact\nCan lead to a wide range of vulnerabilities, as the fundamental design does not protect against threats.",
+        overview_es: "### Descripción\nUna nueva categoría para 2021, que se centra en los riesgos relacionados con fallas de diseño. Si realmente queremos “movernos a la izquierda” como industria, se necesita un mayor uso del modelado de amenazas, patrones de diseño seguro y arquitecturas de referencia.\n\n---\n\n### Impacto\nPuede conducir a una amplia gama de vulnerabilidades, ya que el diseño fundamental no protege contra las amenazas.",
+        ...emptyVulnBoilerplate,
+        tags: ["Web", "Design"]
+    },
+    {
+        id: "vuln-A05",
+        title_en: "Security Misconfiguration",
+        title_es: "Configuración de Seguridad Incorrecta",
+        cwe: "CWE-2",
+        severity: "High",
+        cvss: { score: 8.8, vectorString: "CVSS:3.1/AV:N/AC:L/PR:L/UI:N/S:U/C:H/I:H/A:H", attackVector: "N", attackComplexity: "L", privilegesRequired: "L", userInteraction: "N", scope: "U", confidentiality: "H", integrity: "H", availability: "H" },
+        overview_en: "### Description\nThis issue results from insecure default configurations, incomplete or ad hoc configurations, open cloud storage, misconfigured HTTP headers, and verbose error messages containing sensitive information.\n\n---\n\n### Impact\nCan lead to unauthorized access, system compromise, or data disclosure.",
+        overview_es: "### Descripción\nEste problema resulta de configuraciones predeterminadas inseguras, configuraciones incompletas o ad hoc, almacenamiento en la nube abierto, encabezados HTTP mal configurados y mensajes de error detallados que contienen información sensible.\n\n---\n\n### Impacto\nPuede conducir a acceso no autorizado, compromiso del sistema o divulgación de datos.",
+        ...emptyVulnBoilerplate,
+        tags: ["Web", "Configuration"]
+    },
+    {
+        id: "vuln-A06",
+        title_en: "Vulnerable and Outdated Components",
+        title_es: "Componentes Vulnerables y Desactualizados",
+        cwe: "CWE-1104",
+        severity: "High",
+        cvss: { score: 8.8, vectorString: "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:H/I:H/A:H", attackVector: "N", attackComplexity: "L", privilegesRequired: "N", userInteraction: "N", scope: "U", confidentiality: "H", integrity: "H", availability: "H" },
+        overview_en: "### Description\nIf you are using components with known vulnerabilities, you are at risk. This includes libraries, frameworks, and other software modules. If you don't know the versions of components you use, you are at risk.\n\n---\n\n### Impact\nCan lead to a wide range of exploits, from data leakage to full server compromise, depending on the vulnerability.",
+        overview_es: "### Descripción\nSi utiliza componentes con vulnerabilidades conocidas, está en riesgo. Esto incluye bibliotecas, frameworks y otros módulos de software. Si no conoce las versiones de los componentes que utiliza, está en riesgo.\n\n---\n\n### Impacto\nPuede conducir a una amplia gama de exploits, desde la fuga de datos hasta el compromiso total del servidor, dependiendo de la vulnerabilidad.",
+        ...emptyVulnBoilerplate,
+        tags: ["Web", "Dependencies"]
+    },
+    {
+        id: "vuln-A07",
+        title_en: "Identification and Authentication Failures",
+        title_es: "Fallos de Identificación y Autenticación",
+        cwe: "CWE-287",
+        severity: "High",
+        cvss: { score: 8.1, vectorString: "CVSS:3.1/AV:N/AC:H/PR:N/UI:N/S:U/C:H/I:H/A:H", attackVector: "N", attackComplexity: "H", privilegesRequired: "N", userInteraction: "N", scope: "U", confidentiality: "H", integrity: "H", availability: "H" },
+        overview_en: "### Description\nThis category is for failures related to user identity, authentication, and session management. This can include predictable login credentials, weak password policies, or insecure session handling.\n\n---\n\n### Impact\nAttackers can compromise user accounts, leading to unauthorized access to data and functionality.",
+        overview_es: "### Descripción\nEsta categoría es para fallas relacionadas con la identidad del usuario, la autenticación y la gestión de sesiones. Esto puede incluir credenciales de inicio de sesión predecibles, políticas de contraseñas débiles o un manejo inseguro de las sesiones.\n\n---\n\n### Impacto\nLos atacantes pueden comprometer las cuentas de los usuarios, lo que conduce a un acceso no autorizado a los datos y la funcionalidad.",
+        ...emptyVulnBoilerplate,
+        tags: ["Web", "Authentication"]
+    },
+    {
+        id: "vuln-A08",
+        title_en: "Software and Data Integrity Failures",
+        title_es: "Fallos de Integridad de Software y Datos",
+        cwe: "CWE-502",
+        severity: "High",
+        cvss: { score: 8.8, vectorString: "CVSS:3.1/AV:N/AC:L/PR:N/UI:R/S:U/C:H/I:H/A:H", attackVector: "N", attackComplexity: "L", privilegesRequired: "N", userInteraction: "R", scope: "U", confidentiality: "H", integrity: "H", availability: "H" },
+        overview_en: "### Description\nFailures related to software updates, critical data, and CI/CD pipelines without verifying integrity. An example of this is where an application relies upon plugins, libraries, or modules from untrusted sources, repositories, and content delivery networks (CDNs).\n\n---\n\n### Impact\nCan introduce unauthorized code, malicious content, or system compromise through the supply chain.",
+        overview_es: "### Descripción\nFallas relacionadas con actualizaciones de software, datos críticos y pipelines de CI/CD sin verificar la integridad. Un ejemplo de esto es cuando una aplicación depende de plugins, bibliotecas o módulos de fuentes, repositorios y redes de entrega de contenido (CDN) no confiables.\n\n---\n\n### Impacto\nPuede introducir código no autorizado, contenido malicioso o comprometer el sistema a través de la cadena de suministro.",
+        ...emptyVulnBoilerplate,
+        tags: ["Web", "DevOps"]
+    },
+    {
+        id: "vuln-A09",
+        title_en: "Security Logging and Monitoring Failures",
+        title_es: "Fallos de Registro y Monitoreo de Seguridad",
+        cwe: "CWE-778",
+        severity: "Medium",
+        cvss: { score: 6.5, vectorString: "CVSS:3.1/AV:N/AC:L/PR:L/UI:N/S:U/C:H/I:N/A:N", attackVector: "N", attackComplexity: "L", privilegesRequired: "L", userInteraction: "N", scope: "U", confidentiality: "H", integrity: "N", availability: "N" },
+        overview_en: "### Description\nInsufficient logging and monitoring, coupled with missing or ineffective integration with incident response, allows attackers to further attack systems, maintain persistence, pivot to more systems, and tamper, extract, or destroy data.\n\n---\n\n### Impact\nDelayed detection of breaches, inability to perform forensic analysis, and allowing attackers to remain undetected.",
+        overview_es: "### Descripción\nUn registro y monitoreo insuficientes, junto con una integración ausente o ineficaz con la respuesta a incidentes, permite a los atacantes atacar más sistemas, mantener la persistencia, pivotar a más sistemas y manipular, extraer o destruir datos.\n\n---\n\n### Impacto\nDetección tardía de brechas, incapacidad para realizar análisis forenses y permitir que los atacantes permanezcan sin ser detectados.",
+        ...emptyVulnBoilerplate,
+        tags: ["Web", "Monitoring"]
+    },
+    {
+        id: "vuln-A10",
+        title_en: "Server-Side Request Forgery (SSRF)",
+        title_es: "Server-Side Request Forgery (SSRF)",
+        cwe: "CWE-918",
+        severity: "Critical",
+        cvss: { score: 9.8, vectorString: "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:H/I:H/A:H", attackVector: "N", attackComplexity: "L", privilegesRequired: "N", userInteraction: "N", scope: "U", confidentiality: "H", integrity: "H", availability: "H" },
+        overview_en: "### Description\nSSRF flaws occur whenever a web application is fetching a remote resource without validating the user-supplied URL. It allows an attacker to coerce the application to send a crafted request to a surprising destination, even when protected by a firewall, VPN, or another type of network access control list (ACL).\n\n---\n\n### Impact\nCan lead to information disclosure, port scanning of the internal network, or interaction with internal services.",
+        overview_es: "### Descripción\nLas fallas de SSRF ocurren cuando una aplicación web obtiene un recurso remoto sin validar la URL proporcionada por el usuario. Permite a un atacante coaccionar a la aplicación para que envíe una solicitud diseñada a un destino sorprendente, incluso cuando está protegido por un firewall, VPN u otro tipo de lista de control de acceso a la red (ACL).\n\n---\n\n### Impacto\nPuede conducir a la divulgación de información, escaneo de puertos de la red interna o interacción con servicios internos.",
+        ...emptyVulnBoilerplate,
+        tags: ["Web", "Injection"]
+    },
+    // More Web Vulnerabilities
+    {
+        id: "vuln-web-011",
+        title_en: "XML External Entity (XXE) Injection",
+        title_es: "Inyección de Entidades Externas XML (XXE)",
+        cwe: "CWE-611",
+        severity: "High",
+        cvss: { score: 8.8, vectorString: "CVSS:3.1/AV:N/AC:L/PR:L/UI:N/S:U/C:H/I:H/A:N", attackVector: "N", attackComplexity: "L", privilegesRequired: "L", userInteraction: "N", scope: "U", confidentiality: "H", integrity: "H", availability: "N" },
+        overview_en: "### Description\nAn application is vulnerable to XXE if it parses XML from an untrusted source without disabling external entities. This can allow an attacker to read local files, perform network scanning, or cause a denial of service.\n\n---\n\n### Impact\nDisclosure of local files, denial of service, server-side request forgery (SSRF), port scanning from the perspective of the machine where the parser is located.",
+        overview_es: "### Descripción\nUna aplicación es vulnerable a XXE si procesa XML de una fuente no confiable sin deshabilitar las entidades externas. Esto puede permitir a un atacante leer archivos locales, realizar escaneos de red o causar una denegación de servicio.\n\n---\n\n### Impacto\nDivulgación de archivos locales, denegación de servicio, falsificación de solicitudes del lado del servidor (SSRF), escaneo de puertos desde la perspectiva de la máquina donde se encuentra el analizador.",
+        ...emptyVulnBoilerplate,
+        tags: ["Web", "Injection"]
+    },
+    {
+        id: "vuln-web-012",
+        title_en: "Cross-Site Request Forgery (CSRF)",
+        title_es: "Cross-Site Request Forgery (CSRF)",
+        cwe: "CWE-352",
+        severity: "Medium",
+        cvss: { score: 6.5, vectorString: "CVSS:3.1/AV:N/AC:L/PR:N/UI:R/S:U/C:N/I:H/A:N", attackVector: "N", attackComplexity: "L", privilegesRequired: "N", userInteraction: "R", scope: "U", confidentiality: "N", integrity: "H", availability: "N" },
+        overview_en: "### Description\nCSRF is an attack that forces an end user to execute unwanted actions on a web application in which they're currently authenticated. CSRF attacks specifically target state-changing requests, not theft of data, since the attacker has no way to see the response to the forged request.\n\n---\n\n### Impact\nAn attacker can trick a user into performing actions they did not intend to, such as changing their email address, password, or making a purchase.",
+        overview_es: "### Descripción\nCSRF es un ataque que obliga a un usuario final a ejecutar acciones no deseadas en una aplicación web en la que está autenticado actualmente. Los ataques CSRF se dirigen específicamente a solicitudes que cambian de estado, no al robo de datos, ya que el atacante no tiene forma de ver la respuesta a la solicitud falsificada.\n\n---\n\n### Impacto\nUn atacante puede engañar a un usuario para que realice acciones que no tenía la intención de hacer, como cambiar su dirección de correo electrónico, contraseña o realizar una compra.",
+        ...emptyVulnBoilerplate,
+        tags: ["Web", "Session"]
+    },
+    {
+        id: "vuln-web-013",
+        title_en: "Insecure Deserialization",
+        title_es: "Deserialización Insegura",
+        cwe: "CWE-502",
+        severity: "Critical",
+        cvss: { score: 9.8, vectorString: "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:H/I:H/A:H", attackVector: "N", attackComplexity: "L", privilegesRequired: "N", userInteraction: "N", scope: "U", confidentiality: "H", integrity: "H", availability: "H" },
+        overview_en: "### Description\nInsecure deserialization is a vulnerability which occurs when untrusted data is used to abuse the logic of an application, inflict a denial of service (DoS) attack, or even execute arbitrary code upon it being deserialized.\n\n---\n\n### Impact\nCan lead to remote code execution, denial of service, and access control bypasses.",
+        overview_es: "### Descripción\nLa deserialización insegura es una vulnerabilidad que ocurre cuando se utilizan datos no confiables para abusar de la lógica de una aplicación, infligir un ataque de denegación de servicio (DoS) o incluso ejecutar código arbitrario al ser deserializado.\n\n---\n\n### Impacto\nPuede conducir a la ejecución remota de código, denegación de servicio y elusión de los controles de acceso.",
+        ...emptyVulnBoilerplate,
+        tags: ["Web", "Injection"]
+    },
+    {
+        id: "vuln-web-014",
+        title_en: "Directory Traversal",
+        title_es: "Directory Traversal",
+        cwe: "CWE-22",
+        severity: "High",
+        cvss: { score: 7.5, vectorString: "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:H/I:N/A:N", attackVector: "N", attackComplexity: "L", privilegesRequired: "N", userInteraction: "N", scope: "U", confidentiality: "H", integrity: "N", availability: "N" },
+        overview_en: "### Description\nDirectory traversal (also known as file path traversal) is a web security vulnerability that allows an attacker to read arbitrary files on the server that is running an application. This might include application code and data, credentials for back-end systems, and sensitive operating system files.\n\n---\n\n### Impact\nAttackers can read sensitive files from the server, such as `/etc/passwd` or application source code.",
+        overview_es: "### Descripción\nEl directory traversal (también conocido como file path traversal) es una vulnerabilidad de seguridad web que permite a un atacante leer archivos arbitrarios en el servidor que ejecuta una aplicación. Esto puede incluir código y datos de la aplicación, credenciales para sistemas de backend y archivos sensibles del sistema operativo.\n\n---\n\n### Impacto\nLos atacantes pueden leer archivos sensibles del servidor, como `/etc/passwd` o el código fuente de la aplicación.",
+        ...emptyVulnBoilerplate,
+        tags: ["Web", "Access Control"]
+    },
+    {
+        id: "vuln-web-015",
+        title_en: "HTTP Host Header Attacks",
+        title_es: "Ataques de Cabecera Host HTTP",
+        cwe: "CWE-74",
+        severity: "Medium",
+        cvss: { score: 5.3, vectorString: "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:L/I:N/A:N", attackVector: "N", attackComplexity: "L", privilegesRequired: "N", userInteraction: "N", scope: "U", confidentiality: "L", integrity: "N", availability: "N" },
+        overview_en: "### Description\nAttacks that exploit vulnerable websites that handle the Host header in an unsafe way. If the server implicitly trusts the Host header, and fails to validate or escape it properly, an attacker may be able to use this to inject malicious payloads into password reset emails, for example.\n\n---\n\n### Impact\nCan lead to password reset poisoning, web cache poisoning, and manipulation of server-side logic.",
+        overview_es: "### Descripción\nAtaques que explotan sitios web vulnerables que manejan la cabecera Host de manera insegura. Si el servidor confía implícitamente en la cabecera Host y no la valida o escapa correctamente, un atacante puede usar esto para inyectar payloads maliciosos en correos electrónicos de restablecimiento de contraseña, por ejemplo.\n\n---\n\n### Impacto\nPuede conducir al envenenamiento del restablecimiento de contraseña, envenenamiento de la caché web y manipulación de la lógica del lado del servidor.",
+        ...emptyVulnBoilerplate,
+        tags: ["Web", "Injection"]
+    },
+    // ... many more entries ...
+    {
+        id: "vuln-100",
+        title_en: "Improper Input Validation",
+        title_es: "Validación de Entrada Incorrecta",
+        cwe: "CWE-20",
+        severity: "High",
+        cvss: { score: 7.5, vectorString: "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:H/I:N/A:N", attackVector: "N", attackComplexity: "L", privilegesRequired: "N", userInteraction: "N", scope: "U", confidentiality: "H", integrity: "N", availability: "N" },
+        overview_en: "### Description\nThe product does not validate or incorrectly validates input that can affect the control flow or data flow of a program. This can lead to a wide range of vulnerabilities, including injection attacks, path traversal, and buffer overflows.\n\n---\n\n### Impact\nVaries greatly depending on the context, but can lead to arbitrary code execution, denial of service, or information disclosure.",
+        overview_es: "### Descripción\nEl producto no valida o valida incorrectamente la entrada que puede afectar el flujo de control o el flujo de datos de un programa. Esto puede conducir a una amplia gama de vulnerabilidades, incluidos ataques de inyección, path traversal y desbordamientos de búfer.\n\n---\n\n### Impacto\nVaría mucho según el contexto, pero puede conducir a la ejecución de código arbitrario, denegación de servicio o divulgación de información.",
+        ...emptyVulnBoilerplate,
+        tags: ["Web", "Mobile", "Network"]
+    }
 ];
 
 export const projectTemplates: ProjectTemplate[] = [
@@ -969,3 +752,5 @@ ffuf -w /usr/share/seclists/Discovery/DNS/subdomains-top1million-5000.txt:FUZZ -
 - **Escalada de Privilegios:** linpeas.sh`
   },
 ];
+
+    
