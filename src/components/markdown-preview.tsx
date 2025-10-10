@@ -13,9 +13,17 @@ const highlightTodos = (text: string) => {
 
     const todoRegex = /(\[TODO:?.*?\]|\bTODO\b)/g;
 
-    return text.replace(todoRegex, (match) => {
-        return match.replace(/TODO/g, '<span class="bg-red-500 text-white font-bold px-1 rounded-sm">TODO</span>');
-    });
+    return text
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(todoRegex, (match) => {
+             if (match === 'TODO') {
+                return `<span class="bg-red-500 text-white font-bold px-1 rounded-sm">TODO</span>`;
+            }
+             const highlighted = match.replace('TODO', `<span class="bg-red-500 text-white font-bold px-0.5 rounded-sm">TODO</span>`);
+            return highlighted;
+        });
 };
 
 

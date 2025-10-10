@@ -391,8 +391,8 @@ export default function TemplateEditorPage() {
         name_en: '', name_es: '', description_en: '', description_es: '',
         scope_en: '## Scope\n\n[TODO: Define scope]', 
         scope_es: '## Alcance\n\n[TODO: Definir alcance]', 
-        appendix_en: '### Appendix A\n\n[TODO: Add appendix]', 
-        appendix_es: '### Apéndice A\n\n[TODO: Añadir apéndice]', 
+        appendix_en: '### Appendix\n\n[TODO: Add appendix]', 
+        appendix_es: '### Apéndice\n\n[TODO: Añadir apéndice]', 
         icon: 'FileText'
       };
       setTemplate(newTemplate);
@@ -427,11 +427,11 @@ export default function TemplateEditorPage() {
         return;
     }
 
-    const [scope_en, ...appendix_en_parts] = enSections.map(s => s.content).join('\n\n---\n\n').split('### A. ');
-    const appendix_en = appendix_en_parts.length > 0 ? '### A. ' + appendix_en_parts.join('### A. ') : '';
+    const [scope_en, ...appendix_en_parts] = enSections.map(s => s.content).join('\n\n---\n\n').split('### Appendix');
+    const appendix_en = appendix_en_parts.length > 0 ? '### Appendix' + appendix_en_parts.join('### Appendix') : '';
 
-    const [scope_es, ...appendix_es_parts] = esSections.map(s => s.content).join('\n\n---\n\n').split('### A. ');
-    const appendix_es = appendix_es_parts.length > 0 ? '### A. ' + appendix_es_parts.join('### A. ') : '';
+    const [scope_es, ...appendix_es_parts] = esSections.map(s => s.content).join('\n\n---\n\n').split('### Apéndice');
+    const appendix_es = appendix_es_parts.length > 0 ? '### Apéndice' + appendix_es_parts.join('### Apéndice') : '';
 
     const finalTemplate = { ...template, scope_en, appendix_en, scope_es, appendix_es };
 
