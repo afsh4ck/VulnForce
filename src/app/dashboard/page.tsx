@@ -4,23 +4,33 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import Link from 'next/link';
-import { PlusCircle, Users, FolderKanban, ShieldCheck } from "lucide-react";
+import { PlusCircle, Users, FolderKanban, ShieldCheck, ChevronLeft, ChevronRight } from "lucide-react";
 import { useLanguage } from "@/context/language-context";
 import { useData } from "@/context/data-context";
-import { useMemo } from "react";
+import { useMemo, useState } from "react";
 import { Badge } from "@/components/ui/badge";
 
 export default function DashboardPage() {
   const { language } = useLanguage();
   const { projects, clients, findings } = useData();
   const criticalFindings = findings.filter(f => f.severity === 'Critical').length;
+  
+  const [currentPage, setCurrentPage] = useState(1);
+  const projectsPerPage = 10;
+
+  const sortedProjects = useMemo(() => {
+    return [...projects]
+      .sort((a, b) => new Date(b.updatedAt).getTime() - new Date(a.updatedAt).getTime());
+  }, [projects]);
 
   const recentProjects = useMemo(() => {
-    return [...projects]
-      .sort((a, b) => new Date(b.updatedAt).getTime() - new Date(a.updatedAt).getTime())
-      .slice(0, 10);
-  }, [projects]);
-  
+    const startIndex = (currentPage - 1) * projectsPerPage;
+    const endIndex = startIndex + projectsPerPage;
+    return sortedProjects.slice(startIndex, endIndex);
+  }, [sortedProjects, currentPage, projectsPerPage]);
+
+  const totalPages = Math.ceil(sortedProjects.length / projectsPerPage);
+
   const getStatusVariant = (status: string) => {
     switch (status) {
       case 'In Progress': return 'default';
@@ -51,7 +61,11 @@ export default function DashboardPage() {
       inActiveProjects: "In active projects",
       criticalFindings: "Critical Findings",
       immediateAttention: "Requiring immediate attention",
-      recentProjects: "Recent Projects"
+      recentProjects: "Recent Projects",
+      previous: "Previous",
+      next: "Next",
+      page: "Page",
+      of: "of"
     },
     es: {
       dashboard: "Dashboard",
@@ -64,7 +78,11 @@ export default function DashboardPage() {
       inActiveProjects: "En proyectos activos",
       criticalFindings: "Hallazgos Críticos",
       immediateAttention: "Requieren atención inmediata",
-      recentProjects: "Proyectos Recientes"
+      recentProjects: "Proyectos Recientes",
+      previous: "Anterior",
+      next: "Siguiente",
+      page: "Página",
+      of: "de"
     }
   }
 
@@ -106,7 +124,7 @@ export default function DashboardPage() {
             </CardContent>
           </Card>
         </Link>
-        <Link href="/dashboard/vulnerabilities">
+        <Link href="/dashboard/vulnerabilities?severity=All">
           <Card className="hover:bg-muted/50 transition-colors">
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
               <CardTitle className="text-sm font-medium">{t[language].totalFindings}</CardTitle>
@@ -118,7 +136,7 @@ export default function DashboardPage() {
             </CardContent>
           </Card>
         </Link>
-        <Link href="/dashboard/vulnerabilities">
+        <Link href="/dashboard/vulnerabilities?severity=Critical">
           <Card className="border-destructive hover:bg-destructive/10 transition-colors">
               <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
                   <CardTitle className="text-sm font-medium">{t[language].criticalFindings}</CardTitle>
@@ -138,6 +156,7 @@ export default function DashboardPage() {
             <CardTitle>{t[language].recentProjects}</CardTitle>
           </CardHeader>
           <CardContent>
+            {recentProjects.length > 0 ? (
             <ul className="space-y-2">
               {recentProjects.map(p => (
                 <li key={p.id} className="flex items-center justify-between rounded-md p-2 hover:bg-muted">
@@ -149,6 +168,32 @@ export default function DashboardPage() {
                 </li>
               ))}
             </ul>
+            ) : (
+              <p className="text-sm text-muted-foreground">No projects found.</p>
+            )}
+             {totalPages > 1 && (
+              <div className="flex items-center justify-between mt-4">
+                <Button 
+                  variant="outline"
+                  onClick={() => setCurrentPage(prev => Math.max(prev - 1, 1))}
+                  disabled={currentPage === 1}
+                >
+                  <ChevronLeft className="mr-2 h-4 w-4" />
+                  {t[language].previous}
+                </Button>
+                <span className="text-sm text-muted-foreground">
+                  {t[language].page} {currentPage} {t[language].of} {totalPages}
+                </span>
+                <Button 
+                  variant="outline"
+                  onClick={() => setCurrentPage(prev => Math.min(prev + 1, totalPages))}
+                  disabled={currentPage === totalPages}
+                >
+                  {t[language].next}
+                  <ChevronRight className="ml-2 h-4 w-4" />
+                </Button>
+              </div>
+            )}
           </CardContent>
         </Card>
       </div>
