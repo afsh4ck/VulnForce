@@ -10,29 +10,27 @@ import { cn } from '@/lib/utils';
 
 const highlightTodos = (text: string) => {
     if (typeof text !== 'string') return text;
-
     const todoRegex = /(\[TODO:?.*?\]|\bTODO\b)/gi;
-
-    const parts = text.split(todoRegex);
-
-    return parts.map((part, index) => {
+    return text.split(todoRegex).map((part, index) => {
         if (todoRegex.test(part)) {
-            const isSimpleTodo = part === 'TODO';
+            const isSimpleTodo = part.toUpperCase() === 'TODO';
             const highlighted = isSimpleTodo
                 ? `<span class="bg-red-500 text-white font-bold px-1 rounded-sm">TODO</span>`
-                : part.replace(/\[(TODO:?.*?)\]/i, `[<span class="bg-red-500 text-white font-bold px-0.5 rounded-sm">TODO</span>:${part.substring(part.indexOf(':') + 1, part.length -1)}]`);
+                : part.replace(/\[(TODO:?.*?)\]/i, `[<span class="bg-red-500 text-white font-bold px-0.5 rounded-sm">TODO</span>:${part.substring(part.indexOf(':') + 1, part.length - 1)}]`);
             return <span key={index} dangerouslySetInnerHTML={{ __html: highlighted }} />;
         }
         return part;
     });
 };
 
-
 const renderWithTodos = (Component: React.ElementType, className?: string) => {
     const RenderComponent = ({ node, children, ...props }: any) => {
         const newChildren = React.Children.map(children, child => {
             if (typeof child === 'string') {
                 return highlightTodos(child);
+            }
+            if (React.isValidElement(child) && child.props.node?.tagName === 'code') {
+                 return child;
             }
             return child;
         });
@@ -54,7 +52,18 @@ export const MarkdownPreview = ({ content, getImage, isReport }: { content: stri
           h2: renderWithTodos('h2', cn("text-2xl font-semibold mb-3 border-b pb-2", isReport && "mt-12")),
           h3: renderWithTodos('h3', cn("text-xl font-semibold mb-3", isReport && "mt-8")),
           p: renderWithTodos('p'),
-          li: ({node, ...props}) => <li {...props} />, // Let default li handle children with highlightTodos
+          li: ({ node, children, ...props }: any) => (
+            <li {...props}>{React.Children.map(children, child => {
+                if (typeof child === 'string') {
+                    return highlightTodos(child);
+                }
+                // Check if the child is a paragraph wrapper and handle its children
+                if (React.isValidElement(child) && child.props.node?.tagName === 'p') {
+                   return <>{renderWithTodos('p', '')(child.props)}</>;
+                }
+                return child;
+            })}</li>
+          ),
           table: ({ node, ...props }) => <table className="table-auto w-full my-4 border-collapse border border-border" {...props} />,
           thead: ({ node, ...props }) => <thead className="bg-muted" {...props} />,
           tbody: ({ node, ...props }) => <tbody {...props} />,
