@@ -133,17 +133,8 @@ export default function ReportPreviewPage() {
 
     const reportLang = project.language;
     const langT = t[reportLang];
-    const criticalCount = projectFindings.filter(f => f.severity === 'Critical').length;
-    const highCount = projectFindings.filter(f => f.severity === 'High').length;
     
-    // Separate main content from findings
-    const mainContent = `
-# ${langT.executiveSummary}
-${langT.executiveSummaryContent(project.name, client?.name || '', project.startDate, project.endDate, projectFindings.length, criticalCount, highCount)}
-
-# ${langT.scopeAndMethodology}
-${project.reportBody || ''}
-`;
+    const mainContent = project.reportBody || '';
 
     const findingsContent = projectFindings
       .map(f => {
@@ -153,7 +144,7 @@ ${project.reportBody || ''}
       
     const findingsSection = `# ${langT.findings}\n\n${findingsContent}`;
 
-    return `${mainContent}\n${findingsSection}`;
+    return `${mainContent}\n\n${findingsSection}`;
   }, [project, client, projectFindings, t]);
 
   useEffect(() => {
@@ -175,7 +166,7 @@ ${project.reportBody || ''}
         const headingElements = reportContentRef.current.querySelectorAll('h1, h2, h3');
         const newHeadings: Heading[] = [];
         headingElements.forEach(heading => {
-            if (heading.id) { // Only include headings that have an ID
+            if (heading.id) {
                 newHeadings.push({
                     level: parseInt(heading.tagName.substring(1)),
                     text: heading.textContent || '',
@@ -185,7 +176,7 @@ ${project.reportBody || ''}
         });
         setHeadings(newHeadings);
     }
-  }, [fullReportContent]); // Re-run when content changes
+  }, [fullReportContent]); 
 
 
   const todos = useMemo(() => {
@@ -523,3 +514,4 @@ ${project.reportBody || ''}
     </div>
   );
 }
+

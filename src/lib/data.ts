@@ -15,7 +15,11 @@ export const projects: Project[] = [
     id: 'proj-1', 
     clientId: 'cli-htb', 
     name: 'Q3 Web App Pentest', 
-    reportBody: `## Scope
+    reportBody: `
+# Executive Summary
+This report outlines the results of an external penetration test performed on the internet-facing assets of **Innovatech Solutions**. The assessment aimed to identify vulnerabilities that could be exploited by a remote attacker to compromise the security of the organization's perimeter.
+
+## Scope
 The assessment was conducted between **[TODO Start Date]** and **[TODO End Date]** from the perspective of an external, unauthenticated attacker (black-box).
 
 ### Scope
@@ -576,7 +580,7 @@ export const vulnerabilities: Vulnerability[] = [
       severity: "Medium",
       cvss: { score: 6.1, vectorString: "CVSS:3.1/AV:N/AC:L/PR:N/UI:R/S:C/C:L/I:L/A:N", attackVector: "N", attackComplexity: "L", privilegesRequired: "N", userInteraction: "R", scope: "C", confidentiality: "L", integrity: "L", availability: "N" },
       overview_en: "### Overview\nThis category includes vulnerabilities like SQL injection, XSS, and command injection that occur on the client-side, often within a WebView component or a local SQLite database.",
-      overview_es: "### Resumen\nEsta categoría incluye vulnerabilidades como inyección SQL, XSS e inyección de comandos que ocurren en el lado del cliente, a menudo dentro de un componente WebView o una base de datos SQLite local.",
+      overview_es: "### Resumen\nEsta categoría incluyeulnerabilidades como inyección SQL, XSS e inyección de comandos que ocurren en el lado del cliente, a menudo dentro de un componente WebView o una base de datos SQLite local.",
       technicalDescription_en: "### Technical Description\nThe application processes user input in an unsafe way on the client-side. For example, a vulnerable WebView might be susceptible to XSS if it loads untrusted web content. A local SQLite database could be vulnerable to SQL injection if it constructs queries with unvalidated input.",
       technicalDescription_es: "### Descripción Técnica\nLa aplicación procesa la entrada del usuario de manera insegura en el lado del cliente. Por ejemplo, un WebView vulnerable podría ser susceptible a XSS si carga contenido web no confiable. Una base de datos SQLite local podría ser vulnerable a la inyección SQL si construye consultas con entradas no validadas.",
       affectedComponents_en: "### Affected Components\n[TODO: Specify the client-side component vulnerable to injection, e.g., WebView, local database.]",
@@ -1291,7 +1295,7 @@ export const projectTemplates: ProjectTemplate[] = [
     description_en: 'A comprehensive security assessment for web applications, covering OWASP Top 10 and other common vulnerabilities.',
     description_es: 'Una evaluación de seguridad completa para aplicaciones web, cubriendo el OWASP Top 10 y otras vulnerabilidades comunes.',
     icon: 'Scan',
-    scope_en: `## Introduction
+    scope_en: `# Executive Summary
 This report details the findings of an external penetration test performed on the internet-facing assets of **[TODO: Client Name]**. The assessment took place from **[TODO: Start Date]** to **[TODO: End Date]**.
 
 ## Scope & Methodology
@@ -1309,7 +1313,7 @@ The assessment was performed from a black-box perspective, meaning no prior know
 | <span style="color:yellow">Medium</span> | 4.0 - 6.9 | Weaknesses that could reveal sensitive information. |
 | <span style="color:blue">Low</span> | 0.1 - 3.9 | Minor issues that reduce the overall security posture. |
 | <span style="color:gray">Informational</span> | 0.0 | Observations about the external footprint. |`,
-    scope_es: `## Introducción
+    scope_es: `# Resumen Ejecutivo
 Este informe detalla los hallazgos de una prueba de penetración externa realizada sobre los activos de **[TODO: Nombre del Cliente]** expuestos a internet. La evaluación se llevó a cabo desde el **[TODO: Start Date]** hasta el **[TODO: End Date]**.
 
 ## Alcance y Metodología
@@ -1697,6 +1701,7 @@ ffuf -w /usr/share/seclists/Discovery/DNS/subdomains-top1million-5000.txt:FUZZ -
 ];
 
   
+
 
 
 
