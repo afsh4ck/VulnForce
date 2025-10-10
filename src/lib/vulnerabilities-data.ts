@@ -1250,3 +1250,5 @@ El atacante puede robar información sensible como credenciales y tokens de sesi
         "details_es": "### Prueba de Concepto\n[TODO: Demostrar el exploit contra el componente de terceros vulnerable.]"
     }
 ]
+
+    
