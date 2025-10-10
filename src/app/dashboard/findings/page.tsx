@@ -92,7 +92,7 @@ export default function AllFindingsPage() {
     en: {
       title: "All Findings",
       filterBySeverity: "Filter by severity...",
-      all: "All Severities",
+      all: "All",
       findingTitle: "Finding Title",
       severity: "Severity",
       project: "Project",
@@ -103,7 +103,7 @@ export default function AllFindingsPage() {
     es: {
       title: "Todos los Hallazgos",
       filterBySeverity: "Filtrar por severidad...",
-      all: "Todas las Severidades",
+      all: "Todo",
       findingTitle: "Título del Hallazgo",
       severity: "Severidad",
       project: "Proyecto",
@@ -176,7 +176,7 @@ export default function AllFindingsPage() {
                   </TableCell>
                   <TableCell className="font-code">{finding.cvss.toFixed(1)}</TableCell>
                   <TableCell>
-                    <Link href={`/dashboard/projects/${finding.projectId}`} className="hover:underline">
+                    <Link href={`/dashboard/projects/${finding.projectId}`} className="hover:text-primary">
                       {finding.projectName}
                     </Link>
                   </TableCell>
