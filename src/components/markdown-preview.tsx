@@ -8,6 +8,11 @@ import { vscDarkPlus } from 'react-syntax-highlighter/dist/esm/styles/prism';
 import type { ImageAsset } from '@/lib/types';
 import { cn } from '@/lib/utils';
 
+const generateSlug = (text: string) => {
+    return text.toLowerCase().replace(/\s+/g, '-').replace(/[^\w-]+/g, '');
+};
+
+
 const highlightTodos = (text: string) => {
     if (typeof text !== 'string') return text;
     const todoRegex = /(\[TODO:?.*?\]|\bTODO\b)/gi;
@@ -23,8 +28,8 @@ const highlightTodos = (text: string) => {
     });
 };
 
-const renderWithTodos = (Component: React.ElementType, className?: string) => {
-    const RenderComponent = ({ node, children, ...props }: any) => {
+const renderWithTodos = (Component: React.ElementType, className?: string, props: any = {}) => {
+    const RenderComponent = ({ node, children, ...componentProps }: any) => {
         const newChildren = React.Children.map(children, child => {
             if (typeof child === 'string') {
                 return highlightTodos(child);
@@ -34,7 +39,14 @@ const renderWithTodos = (Component: React.ElementType, className?: string) => {
             }
             return child;
         });
-        return <Component className={className} {...props}>{newChildren}</Component>;
+
+        const finalProps = { ...props, ...componentProps };
+
+        if (['h1', 'h2', 'h3', 'h4', 'h5', 'h6'].includes(Component as string) && typeof children[0] === 'string') {
+            finalProps.id = generateSlug(children[0]);
+        }
+
+        return <Component className={className} {...finalProps}>{newChildren}</Component>;
     };
     RenderComponent.displayName = `renderWithTodos(${Component.displayName || Component.name || 'Component'})`;
     return RenderComponent;
