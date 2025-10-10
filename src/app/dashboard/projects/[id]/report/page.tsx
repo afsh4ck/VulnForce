@@ -43,25 +43,27 @@ export default function ReportPreviewPage() {
   const [project, setProject] = useState<Project | undefined>();
   const [client, setClient] = useState<Client | undefined>();
   const [projectFindings, setProjectFindings] = useState<Finding[]>([]);
-  const [headings, setHeadings] = useState<Heading[]>([]);
   const [isSidebarOpen, setIsSidebarOpen] = useState(true);
 
   const reportContentRef = useRef<HTMLDivElement>(null);
-
-  const generateSlug = useMemo(() => {
-    const seen = new Set<string>();
-    return (text: string) => {
-      const baseSlug = text.toLowerCase().replace(/\s+/g, '-').replace(/[^\w-]+/g, '');
-      let finalSlug = baseSlug;
-      let counter = 0;
-      while (seen.has(finalSlug)) {
-        counter++;
-        finalSlug = `${baseSlug}-${counter}`;
-      }
-      seen.add(finalSlug);
-      return finalSlug;
-    };
-  }, []);
+  
+    const generateSlug = useMemo(() => {
+        const seen = new Set<string>();
+        return (text: string) => {
+            let baseSlug = text.toLowerCase().replace(/\s+/g, '-').replace(/[^\w-]+/g, '');
+            if (!baseSlug) {
+                baseSlug = 'section';
+            }
+            let finalSlug = baseSlug;
+            let counter = 1;
+            while (seen.has(finalSlug)) {
+                finalSlug = `${baseSlug}-${counter}`;
+                counter++;
+            }
+            seen.add(finalSlug);
+            return finalSlug;
+        };
+    }, []);
 
   const getSeverityVariant = (severity: string): 'destructive' | 'high' | 'medium' | 'low' | 'secondary' => {
     switch (severity) {
@@ -142,14 +144,13 @@ export default function ReportPreviewPage() {
   
   const [scopeContent, appendixContent] = useMemo(() => {
     if (!project?.reportBody) return ['', ''];
-    const parts = project.reportBody.split('### A. ');
-    if (parts.length > 1) {
-        return [parts[0], '### A. ' + parts.slice(1).join('### A. ')];
-    }
-    return [project.reportBody, ''];
+    const parts = project.reportBody.split('### Appendix');
+    const appendixPart = parts.length > 1 ? '### Appendix' + parts.slice(1).join('### Appendix') : '';
+    const scopePart = parts[0].replace('### Appendix', '').trim();
+    return [scopePart, appendixPart];
   }, [project?.reportBody]);
 
-  const extractHeadings = useCallback(() => {
+  const headings = useMemo(() => {
     if (!project || !client) return [];
     
     const reportLang = project.language;
@@ -171,10 +172,11 @@ ${appendixContent}
 
     const headingRegex = /^(#{1,3}) (.*)/gm;
     const matches = [...allContent.matchAll(headingRegex)];
+    const slugger = generateSlug;
     return matches.map(match => ({
       level: match[1].length,
       text: match[2],
-      id: generateSlug(match[2]),
+      id: slugger(match[2]),
     }));
   }, [project, client, projectFindings, scopeContent, appendixContent, t, generateSlug]);
 
@@ -193,18 +195,13 @@ ${appendixContent}
       router.push('/dashboard/projects');
     }
   }, [projectId, projects, clients, findings, router]);
-  
-  useEffect(() => {
-    if(project && client) {
-      setHeadings(extractHeadings());
-    }
-  }, [project, client, projectFindings, extractHeadings]);
 
   const todos = useMemo(() => {
     if (!project) return [];
     
     const reportLang = project.language;
     const langT = t[reportLang];
+    const slugger = generateSlug;
 
     const foundTodos: TodoItem[] = [];
     const todoRegex = /\[TODO:?.*?\]?/gi;
@@ -214,7 +211,7 @@ ${appendixContent}
         sections.forEach((sectionContent) => {
             const headingMatch = sectionContent.match(/^(?:#+)\s(.*)/m);
             const sectionTitle = headingMatch ? headingMatch[1].trim() : langT.scope;
-            const sectionId = generateSlug(sectionTitle);
+            const sectionId = slugger(sectionTitle);
             
             const scopeMatches = sectionContent.match(todoRegex);
             if (scopeMatches) {
@@ -237,7 +234,7 @@ ${appendixContent}
           findingMatches.forEach(match => {
             const sectionTitleMatch = sectionContent.match(/^###\s(.*)/);
             const locationName = sectionTitleMatch ? sectionTitleMatch[1].trim() : finding.title;
-            const sectionId = generateSlug(locationName);
+            const sectionId = slugger(locationName);
             
             foundTodos.push({
               location: `${langT.finding}: ${locationName}`,
@@ -253,16 +250,12 @@ ${appendixContent}
   }, [project, projectFindings, projectId, t, generateSlug]);
   
   const handlePrint = (printTheme: 'light' | 'dark') => {
-    const originalTheme = theme;
-    // Temporarily set the theme for printing without causing a state update loop
-    document.documentElement.classList.remove('light', 'dark');
-    document.documentElement.classList.add(printTheme);
+    const originalTheme = document.documentElement.className;
+    document.documentElement.className = printTheme;
 
     setTimeout(() => {
       window.print();
-      // Restore original theme
-      document.documentElement.classList.remove('light', 'dark');
-      document.documentElement.classList.add(originalTheme);
+      document.documentElement.className = originalTheme;
     }, 500); 
   };
   
@@ -366,7 +359,7 @@ ${appendixContent}
   );
 
   return (
-    <div className="bg-background text-foreground min-h-screen">
+    <div className={cn("bg-background text-foreground min-h-screen", theme)}>
       <style jsx global>{`
         @media print {
           body {
@@ -392,7 +385,7 @@ ${appendixContent}
         .flash-highlight {
             animation: flash 2s ease-out;
         }
-        main { scroll-behavior: smooth; }
+        html { scroll-behavior: smooth; }
       `}</style>
       
       <header className="sticky top-0 z-30 w-full bg-background/80 backdrop-blur-sm border-b no-print">
@@ -441,7 +434,7 @@ ${appendixContent}
                   ) : (
                     <AlertCircle className="h-5 w-5 text-destructive" />
                   )}
-                  <CardTitle className="text-base font-semibold">{todos.length > 0 ? t[uiLanguage].pending : t[uiLanguage].allChecksPassed}</CardTitle>
+                  <CardTitle className="text-base font-semibold">{todos.length > 0 ? `${todos.length} ${t[uiLanguage].pending}` : t[uiLanguage].allChecksPassed}</CardTitle>
                 </div>
               </CardHeader>
               <CardContent>
@@ -578,3 +571,4 @@ ${appendixContent}
     </div>
   );
 }
+
