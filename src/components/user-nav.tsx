@@ -15,7 +15,7 @@ import { useLanguage } from "@/context/language-context";
 import Link from "next/link";
 import { useUser } from "@/context/user-context";
 import { useRouter } from "next/navigation";
-import { ShieldHalf } from "lucide-react";
+import { User } from "lucide-react";
 
 export function UserNav() {
     const { language } = useLanguage();
@@ -47,7 +47,7 @@ export function UserNav() {
           <Avatar className="h-8 w-8">
             <AvatarImage src={user.avatar} alt={user.name} data-ai-hint="person avatar" />
             <AvatarFallback>
-              {user.avatar ? user.name.charAt(0) : <ShieldHalf className="text-primary" />}
+              {user.avatar ? user.name.charAt(0) : <User className="text-primary" />}
             </AvatarFallback>
           </Avatar>
         </Button>
