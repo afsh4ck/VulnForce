@@ -102,6 +102,8 @@ export const MarkdownPreview = ({ content, getImage, isReport }: { content: stri
                         style={vscDarkPlus}
                         language={match[1]}
                         PreTag="div"
+                        wrapLines={true}
+                        wrapLongLines={true}
                         className="rounded-md p-4 bg-card"
                         customStyle={{
                             whiteSpace: 'pre-wrap',
