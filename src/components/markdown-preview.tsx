@@ -100,26 +100,32 @@ export const MarkdownPreview = ({ content, getImage, isReport }: { content: stri
           code({ node, className, children, ...props }) {
             const match = /language-(\w+)/.exec(className || '');
             const codeContent = String(children).replace(/\n$/, '');
-            const highlightedCode = <span dangerouslySetInnerHTML={{ __html: highlightTodos(codeContent) }} />;
 
-            return match ? (
-              <SyntaxHighlighter
-                style={vscDarkPlus}
-                language={match[1]}
-                PreTag="div"
-                className="rounded-md p-4 bg-card"
-                codeTagProps={{
-                    style: {
-                        fontFamily: 'inherit',
-                        whiteSpace: 'pre-wrap',
-                        wordBreak: 'break-all',
-                    }
-                }}
-                {...props}
-              >
-                {String(children).replace(/\n$/, '')}
-              </SyntaxHighlighter>
-            ) : (
+            if (match) {
+                return (
+                    <SyntaxHighlighter
+                        style={vscDarkPlus}
+                        language={match[1]}
+                        PreTag="div"
+                        className="rounded-md p-4 bg-card"
+                        customStyle={{
+                            whiteSpace: 'pre-wrap',
+                            wordBreak: 'break-all',
+                        }}
+                        codeTagProps={{
+                            style: {
+                                fontFamily: 'inherit',
+                            }
+                        }}
+                        {...props}
+                    >
+                        {codeContent}
+                    </SyntaxHighlighter>
+                );
+            }
+            
+            const highlightedCode = <span dangerouslySetInnerHTML={{ __html: highlightTodos(codeContent) }} />;
+            return (
               <code className="bg-muted text-muted-foreground font-code px-1 py-0.5 rounded-sm" {...props}>
                 {highlightedCode}
               </code>
