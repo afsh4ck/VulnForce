@@ -8,7 +8,7 @@ import { Separator } from '@/components/ui/separator';
 import { Logo } from '@/components/logo';
 import React, { useEffect, useMemo, useState, useCallback, useRef } from 'react';
 import { Button } from '@/components/ui/button';
-import { AlertCircle, ArrowRight, CheckCircle, ChevronLeft, Printer, Globe, Sun, Moon, PanelLeft } from 'lucide-react';
+import { AlertCircle, ArrowRight, CheckCircle, ChevronLeft, Printer, Globe, Sun, Moon, PanelLeft, Menu } from 'lucide-react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import Link from 'next/link';
 import { useLanguage } from '@/context/language-context';
@@ -18,6 +18,7 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@
 import { cn } from '@/lib/utils';
 import { useTheme } from '@/context/theme-context';
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '@/components/ui/dropdown-menu';
+import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet';
 
 interface TodoItem {
   location: string;
@@ -37,7 +38,7 @@ export default function ReportPreviewPage() {
   const { language: uiLanguage } = useLanguage();
   const { id: projectId } = params;
   const { projects, clients, findings, getImage } = useData();
-  const { theme, setTheme } = useTheme();
+  const { theme } = useTheme();
 
   const [project, setProject] = useState<Project | undefined>();
   const [client, setClient] = useState<Client | undefined>();
@@ -79,6 +80,7 @@ export default function ReportPreviewPage() {
     en: {
       executiveSummary: 'Executive Summary',
       findingsSummary: 'Findings Summary',
+      tableOfContents: 'Table of Contents',
       scopeAndMethodology: 'Scope & Methodology',
       findings: 'Findings',
       reportPreview: 'Report Preview',
@@ -111,6 +113,7 @@ export default function ReportPreviewPage() {
     es: {
       executiveSummary: 'Resumen Ejecutivo',
       findingsSummary: 'Resumen de Hallazgos',
+      tableOfContents: 'Índice de Contenidos',
       scopeAndMethodology: 'Alcance y Metodología',
       findings: 'Hallazgos',
       reportPreview: 'Previsualización del Informe',
@@ -150,37 +153,8 @@ export default function ReportPreviewPage() {
     return [scopePart, appendixPart];
   }, [project?.reportBody]);
 
-  useEffect(() => {
-    if (project && client) {
-        const reportLang = project.language;
-        const langT = t[reportLang];
-        const criticalCount = projectFindings.filter(f => f.severity === 'Critical').length;
-        const highCount = projectFindings.filter(f => f.severity === 'High').length;
-
-        const allContent = `
-# 1. ${langT.executiveSummary}
-${langT.executiveSummaryContent(project.name, client?.name || '', project.startDate, project.endDate, projectFindings.length, criticalCount, highCount)}
-# 2. ${langT.scopeAndMethodology}
-${scopeContent}
-# 3. ${langT.findingsSummary}
-${projectFindings.map((f, i) => `## 3.${i+1} ${f.title}\n${f.markdown}`).join('\n\n')}
-${appendixContent ? `# 4. ${langT.appendix}` : ''}
-${appendixContent}
-`;
-
-        const headingRegex = /^(#{1,3}) (.*)/gm;
-        const matches = [...allContent.matchAll(headingRegex)];
-        const slugger = generateSlug;
-        const newHeadings = matches.map(match => ({
-            level: match[1].length,
-            text: match[2],
-            id: slugger(match[2]),
-        }));
-        setHeadings(newHeadings);
-    }
-  }, [project, client, projectFindings, scopeContent, appendixContent, t, generateSlug]);
-
-
+  const [fullReportContent, setFullReportContent] = useState('');
+  
   useEffect(() => {
     const currentProject = projects.find(p => p.id === projectId);
     if (currentProject) {
@@ -195,6 +169,39 @@ ${appendixContent}
       router.push('/dashboard/projects');
     }
   }, [projectId, projects, clients, findings, router]);
+  
+  useEffect(() => {
+    if (project && client) {
+      const reportLang = project.language;
+      const langT = t[reportLang];
+      const criticalCount = projectFindings.filter(f => f.severity === 'Critical').length;
+      const highCount = projectFindings.filter(f => f.severity === 'High').length;
+
+      const fullContent = `
+# 1. ${langT.executiveSummary}
+${langT.executiveSummaryContent(project.name, client?.name || '', project.startDate, project.endDate, projectFindings.length, criticalCount, highCount)}
+# 2. ${langT.scopeAndMethodology}
+${scopeContent}
+# 3. ${langT.findingsSummary}
+${projectFindings.map((f, i) => `## 3.${i+1} ${f.title}\n${f.markdown}`).join('\n\n')}
+${appendixContent ? `# 4. ${langT.appendix}` : ''}
+${appendixContent}
+`;
+      setFullReportContent(fullContent);
+
+      const headingRegex = /^(#{1,3}) (.*)/gm;
+      const matches = [...fullContent.matchAll(headingRegex)];
+      const slugger = generateSlug;
+      const newHeadings = matches.map(match => ({
+          level: match[1].length,
+          text: match[2],
+          id: slugger(match[2]),
+      }));
+      setHeadings(newHeadings);
+    }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [project, client, projectFindings, scopeContent, appendixContent, generateSlug]);
+
 
   const todos = useMemo(() => {
     if (!project) return [];
@@ -247,12 +254,13 @@ ${appendixContent}
     });
   
     return foundTodos;
-  }, [project, projectFindings, projectId, t, generateSlug]);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [project, projectFindings, projectId, generateSlug]);
   
   const handlePrint = (printTheme: 'light' | 'dark') => {
     const originalTheme = document.documentElement.className;
     document.documentElement.className = printTheme;
-
+    // Delay to allow styles to apply before printing
     setTimeout(() => {
       window.print();
       document.documentElement.className = originalTheme;
@@ -260,57 +268,86 @@ ${appendixContent}
   };
   
   const handleDownloadHTML = () => {
-    if (reportContentRef.current) {
-        const fullHtml = `
+    if (reportContentRef.current && project) {
+      const reportLang = project.language;
+      const langT = t[reportLang];
+      const tocHtml = headings.map(h => `<li class="toc-level-${h.level}"><a href="#${h.id}">${h.text}</a></li>`).join('');
+
+      const fullHtml = `
 <!DOCTYPE html>
-<html lang="${project?.language || 'en'}" class="dark">
+<html lang="${reportLang}" class="dark scroll-smooth">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>${project?.name}</title>
+  <title>${project.name}</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <style>
     :root { --background: 0 0% 100%; --foreground: 240 10% 3.9%; --card: 0 0% 100%; --card-foreground: 240 10% 3.9%; --popover: 0 0% 100%; --popover-foreground: 240 10% 3.9%; --primary: 76 100% 50%; --primary-foreground: 76 100% 5%; --secondary: 240 4.8% 95.9%; --secondary-foreground: 240 5.9% 10%; --muted: 240 4.8% 95.9%; --muted-foreground: 240 3.8% 46.1%; --accent: 76 100% 60%; --accent-foreground: 76 100% 10%; --destructive: 0 80% 50%; --destructive-foreground: 0 0% 98%; --border: 240 5.9% 90%; --input: 240 5.9% 90%; --ring: 76 100% 50%; }
     .dark { --background: 224 71% 4%; --foreground: 210 40% 98%; --card: 224 71% 6%; --card-foreground: 210 40% 98%; --popover: 224 71% 4%; --popover-foreground: 210 40% 98%; --primary: 76 100% 50%; --primary-foreground: 76 100% 5%; --secondary: 220 15% 15%; --secondary-foreground: 210 40% 98%; --muted: 220 15% 15%; --muted-foreground: 215 20% 65%; --accent: 76 100% 60%; --accent-foreground: 76 100% 10%; --destructive: 0 72% 51%; --destructive-foreground: 210 40% 98%; --border: 220 15% 15%; --input: 220 15% 15%; --ring: 76 100% 50%; }
     body { background-color: hsl(var(--background)); color: hsl(var(--foreground)); font-family: sans-serif; }
-    .prose { color: hsl(var(--foreground)); } .prose h1, .prose h2, .prose h3, .prose h4, .prose h5, .prose h6 { color: hsl(var(--foreground)); } .prose a { color: hsl(var(--primary)); } .prose strong { color: hsl(var(--foreground)); } .prose blockquote { color: hsl(var(--muted-foreground)); border-left-color: hsl(var(--border)); } .prose code:not(pre code) { color: hsl(var(--accent-foreground)); background-color: hsl(var(--accent)); padding: 2px 4px; border-radius: 4px; } .prose pre { background-color: #282c34; color: #abb2bf; padding: 1em; border-radius: 8px; overflow-x: auto; } .prose table { width: 100%; } .prose th { background-color: hsl(var(--muted)); } .prose td, .prose th { border: 1px solid hsl(var(--border)); padding: 8px; } hr { border-top-color: hsl(var(--border)); }
+    .prose { color: hsl(var(--foreground)); max-width: 100% !important; } .prose h1, .prose h2, .prose h3, .prose h4, .prose h5, .prose h6 { color: hsl(var(--foreground)); } .prose a { color: hsl(var(--primary)); } .prose strong { color: hsl(var(--foreground)); } .prose blockquote { color: hsl(var(--muted-foreground)); border-left-color: hsl(var(--border)); } .prose code:not(pre code) { color: hsl(var(--accent-foreground)); background-color: hsl(var(--accent)); padding: 2px 4px; border-radius: 4px; } .prose pre { background-color: #282c34; color: #abb2bf; padding: 1em; border-radius: 8px; overflow-x: auto; } .prose table { width: 100%; } .prose th { background-color: hsl(var(--muted)); } .prose td, .prose th { border: 1px solid hsl(var(--border)); padding: 8px; } hr { border-top-color: hsl(var(--border)); }
+    [id] { scroll-margin-top: 80px; }
+    #toc-sidebar { transition: right 0.3s ease-in-out; }
+    #toc-sidebar.closed { right: -300px; }
+    .toc-level-1 { font-weight: bold; }
+    .toc-level-2 { padding-left: 1rem; }
+    .toc-level-3 { padding-left: 2rem; }
   </style>
 </head>
-<body class="p-8">
-  <div style="position: fixed; top: 1rem; right: 1rem;">
-    <button id="theme-switcher" style="background: hsl(var(--muted)); color: hsl(var(--foreground)); padding: 0.5rem; border-radius: 9999px; border: 1px solid hsl(var(--border));">
-        <svg id="sun-icon" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-sun"><circle cx="12" cy="12" r="4"></circle><path d="M12 2v2"></path><path d="M12 20v2"></path><path d="m4.93 4.93 1.41 1.41"></path><path d="m17.66 17.66 1.41 1.41"></path><path d="M2 12h2"></path><path d="M20 12h2"></path><path d="m6.34 17.66-1.41 1.41"></path><path d="m19.07 4.93-1.41 1.41"></path></svg>
-        <svg id="moon-icon" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-moon" style="display: none;"><path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z"></path></svg>
-    </button>
+<body class="bg-background text-foreground">
+  <header class="sticky top-0 z-30 w-full bg-background/80 backdrop-blur-sm border-b">
+    <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-3 flex justify-between items-center h-16">
+      <div class="flex items-center gap-2 font-bold text-lg">
+          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="hsl(var(--primary))" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-shield-half h-7 w-7"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10"/><path d="M12 22V2"/></svg>
+          <span>VulnForce</span>
+      </div>
+      <div class="flex items-center gap-4">
+        <button id="theme-switcher" class="p-2 rounded-md hover:bg-muted">
+          <svg id="sun-icon" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="4"/><path d="M12 2v2"/><path d="M12 20v2"/><path d="m4.93 4.93 1.41 1.41"/><path d="m17.66 17.66 1.41 1.41"/><path d="M2 12h2"/><path d="M20 12h2"/><path d="m6.34 17.66-1.41 1.41"/><path d="m19.07 4.93-1.41 1.41"/></svg>
+          <svg id="moon-icon" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display: none;"><path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9z"/></svg>
+        </button>
+        <button id="toc-toggler" class="p-2 rounded-md hover:bg-muted">
+          <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="4" x2="20" y1="12" y2="12"/><line x1="4" x2="20" y1="6" y2="6"/><line x1="4" x2="20" y1="18" y2="18"/></svg>
+        </button>
+      </div>
+    </div>
+  </header>
+  
+  <div class="max-w-6xl mx-auto p-4 md:p-8 flex justify-center">
+    <main class="flex-1 max-w-4xl">${reportContentRef.current.innerHTML}</main>
   </div>
-  ${reportContentRef.current.innerHTML}
+
+  <aside id="toc-sidebar" class="fixed top-0 right-0 h-full w-[300px] bg-card border-l border-border p-4 shadow-lg closed">
+    <h3 class="text-lg font-semibold mb-4">Índice de Contenidos</h3>
+    <ul class="space-y-2 overflow-y-auto h-[calc(100%-4rem)]">${tocHtml}</ul>
+  </aside>
+
   <script>
     const switcher = document.getElementById('theme-switcher');
     const sunIcon = document.getElementById('sun-icon');
     const moonIcon = document.getElementById('moon-icon');
+    const tocToggler = document.getElementById('toc-toggler');
+    const tocSidebar = document.getElementById('toc-sidebar');
     const html = document.documentElement;
 
     switcher.addEventListener('click', () => {
       if (html.classList.contains('dark')) {
         html.classList.remove('dark');
-        html.classList.add('light');
-        sunIcon.style.display = 'none';
-        moonIcon.style.display = 'block';
+        sunIcon.style.display = 'none'; moonIcon.style.display = 'block';
       } else {
-        html.classList.remove('light');
         html.classList.add('dark');
-        sunIcon.style.display = 'block';
-        moonIcon.style.display = 'none';
+        sunIcon.style.display = 'block'; moonIcon.style.display = 'none';
       }
     });
 
-    // Initial state based on class
+    tocToggler.addEventListener('click', () => {
+      tocSidebar.classList.toggle('closed');
+    });
+
     if (html.classList.contains('dark')) {
-      sunIcon.style.display = 'block';
-      moonIcon.style.display = 'none';
+      sunIcon.style.display = 'block'; moonIcon.style.display = 'none';
     } else {
-      sunIcon.style.display = 'none';
-      moonIcon.style.display = 'block';
+      sunIcon.style.display = 'none'; moonIcon.style.display = 'block';
     }
   </script>
 </body>
@@ -319,7 +356,7 @@ ${appendixContent}
         const url = URL.createObjectURL(blob);
         const a = document.createElement('a');
         a.href = url;
-        a.download = `${project?.name.replace(/ /g, '_')}_report.html`;
+        a.download = `${project.name.replace(/ /g, '_')}_report.html`;
         document.body.appendChild(a);
         a.click();
         document.body.removeChild(a);
@@ -348,50 +385,22 @@ ${appendixContent}
     { severity: langT.informational, variant: 'secondary', count: informationalCount, range: '0.0' },
   ];
 
-  const executiveSummaryContent = langT.executiveSummaryContent(
-    project.name,
-    client.name,
-    project.startDate,
-    project.endDate,
-    projectFindings.length,
-    criticalCount,
-    highCount
-  );
-
   return (
     <div className={cn("bg-background text-foreground min-h-screen", theme)}>
       <style jsx global>{`
         @media print {
-          body {
-            -webkit-print-color-adjust: exact;
-            print-color-adjust: exact;
-          }
-          .no-print {
-            display: none !important;
-          }
-          main {
-             scroll-behavior: auto !important;
-          }
-          [id] {
-            scroll-margin-top: 80px;
-          }
-          @page {
-            size: A4;
-            margin: 1.5cm;
-          }
-        }
-        @keyframes flash {
-            0% { background-color: transparent; }
-            25% { background-color: hsl(var(--primary) / 0.3); }
-            100% { background-color: transparent; }
-        }
-        .flash-highlight {
-            animation: flash 2s ease-out;
+          body { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+          .no-print { display: none !important; }
+          main, .printable-content { scroll-behavior: auto !important; }
+          [id] { scroll-margin-top: 0 !important; }
+          @page { size: A4; margin: 1.5cm; }
+          .break-after-page { page-break-after: always; }
+          .print-toc a::after { content: leader('.') target-counter(attr(href), page); }
         }
         html { scroll-behavior: smooth; }
-        [id] {
-          scroll-margin-top: 80px;
-        }
+        [id] { scroll-margin-top: 80px; }
+        @keyframes flash { 0% { background-color: transparent; } 25% { background-color: hsl(var(--primary) / 0.3); } 100% { background-color: transparent; } }
+        .flash-highlight { animation: flash 2s ease-out; }
       `}</style>
       
       <header className="sticky top-0 z-30 w-full bg-background/80 backdrop-blur-sm border-b no-print">
@@ -429,10 +438,10 @@ ${appendixContent}
         </div>
       </header>
 
-      <div className="max-w-7xl mx-auto p-4 md:p-8 flex">
-        <aside className={cn("no-print w-64 pr-8 shrink-0 transition-all duration-300", isSidebarOpen ? "block" : "hidden")}>
-          <div className="sticky top-20 h-[calc(100vh-6rem)] overflow-y-auto">
-            <Card className="mb-6">
+      <div className="max-w-7xl mx-auto p-4 md:p-8 flex flex-row-reverse">
+        <aside className={cn("no-print w-72 pl-8 shrink-0 transition-all duration-300", isSidebarOpen ? "block" : "hidden")}>
+          <div className="sticky top-20 h-[calc(100vh-6rem)] overflow-y-auto space-y-6">
+            <Card>
               <CardHeader>
                 <div className="flex items-center gap-2">
                   {todos.length === 0 ? (
@@ -467,12 +476,12 @@ ${appendixContent}
             </Card>
             
             <nav className="space-y-2">
-              <p className="font-semibold text-sm px-2">Contents</p>
+              <p className="font-semibold text-sm px-2">{langT.tableOfContents}</p>
               <ul className="space-y-1">
                 {headings.map((heading) => (
                   <li key={heading.id}>
-                    <a href={`#${heading.id}`} className={cn("block text-sm rounded-md py-1 hover:bg-muted", {
-                      'pl-2': heading.level === 1,
+                    <a href={`#${heading.id}`} className={cn("block text-sm rounded-md py-1 hover:text-primary", {
+                      'pl-2 font-semibold': heading.level === 1,
                       'pl-6': heading.level === 2,
                       'pl-10': heading.level === 3,
                     })}>
@@ -486,7 +495,7 @@ ${appendixContent}
           </div>
         </aside>
 
-        <main ref={reportContentRef} className={cn("flex-1 transition-all duration-300", isSidebarOpen ? "lg:pl-8" : "lg:pl-0")}>
+        <main ref={reportContentRef} className={cn("flex-1 transition-all duration-300 printable-content")}>
           <div className="space-y-12">
             <header className="flex justify-between items-start">
               <div>
@@ -496,81 +505,23 @@ ${appendixContent}
               <Logo />
             </header>
 
-            <section id={headings.find(h => h.level === 1 && h.text.includes(langT.executiveSummary))?.id}>
-              <h2 className="font-headline text-2xl font-bold border-b-2 border-primary pb-2 mb-4 mt-12">{`1. ${langT.executiveSummary}`}</h2>
-              <div className="prose dark:prose-invert max-w-none">
-                <MarkdownPreview content={executiveSummaryContent} getImage={getImage} isReport />
-              </div>
-              <div className="prose dark:prose-invert max-w-none mt-8">
-                  <h3 className="font-headline text-xl font-bold">{langT.severityTableTitle}</h3>
-                  <Table>
-                      <TableHeader>
-                          <TableRow>
-                              <TableHead>{langT.severity}</TableHead>
-                              <TableHead className="text-center">{langT.count}</TableHead>
-                              <TableHead className="text-right">{langT.cvssRange}</TableHead>
-                          </TableRow>
-                      </TableHeader>
-                      <TableBody>
-                          {severitySummaryData.map(item => (
-                              <TableRow key={item.severity}>
-                                  <TableCell>
-                                      <div className="flex items-center gap-2">
-                                          <div className={cn("h-3 w-3 rounded-full", {
-                                              'bg-destructive': item.variant === 'destructive',
-                                              'bg-orange-500': item.variant === 'high',
-                                              'bg-yellow-500': item.variant === 'medium',
-                                              'bg-blue-500': item.variant === 'low',
-                                              'bg-gray-500': item.variant === 'secondary',
-                                          })}></div>
-                                          <span className="font-medium">{item.severity}</span>
-                                      </div>
-                                  </TableCell>
-                                  <TableCell className="text-center font-code">{item.count}</TableCell>
-                                  <TableCell className="text-right font-code">{item.range}</TableCell>
-                              </TableRow>
-                          ))}
-                      </TableBody>
-                  </Table>
-              </div>
+            <section className="print-only">
+              <h2 className="font-headline text-2xl font-bold border-b-2 border-primary pb-2 mb-4 mt-12">{langT.tableOfContents}</h2>
+              <ul className="list-none space-y-2 print-toc">
+                {headings.map((h) => (
+                  <li key={`toc-${h.id}`} className={cn({
+                    'font-bold': h.level === 1,
+                    'pl-4': h.level === 2,
+                    'pl-8': h.level === 3,
+                  })}>
+                    <a href={`#${h.id}`}>{h.text}</a>
+                  </li>
+                ))}
+              </ul>
             </section>
+            
+            <MarkdownPreview content={fullReportContent} getImage={getImage} isReport />
 
-            <section id={headings.find(h => h.level === 1 && h.text.includes(langT.scopeAndMethodology))?.id}>
-              <h2 className="font-headline text-2xl font-bold border-b-2 border-primary pb-2 mb-4 mt-12">{`2. ${langT.scopeAndMethodology}`}</h2>
-              <div className="prose dark:prose-invert max-w-none">
-                <MarkdownPreview content={scopeContent} getImage={getImage} isReport />
-              </div>
-            </section>
-
-            <section id={headings.find(h => h.level === 1 && h.text.includes(langT.findingsSummary))?.id}>
-              <h2 className="font-headline text-2xl font-bold border-b-2 border-primary pb-2 mb-4 mt-12">{`3. ${langT.findingsSummary}`}</h2>
-              <div className="space-y-12">
-                {projectFindings.map((finding, index) => {
-                  const headingId = headings.find(h => h.level === 2 && h.text.includes(finding.title))?.id;
-                  return (
-                  <div key={finding.id} id={headingId} className="break-after-page">
-                    <div className="flex justify-between items-center mb-2">
-                      <h3 className="font-headline text-xl font-bold mt-8">{`3.${index + 1} ${finding.title}`}</h3>
-                      <Badge variant={getSeverityVariant(finding.severity)} className="text-base px-3 py-1">{finding.severity}</Badge>
-                    </div>
-                    <p className="font-code text-sm text-muted-foreground mb-6">CVSS: {finding.cvss.toFixed(1)}</p>
-                    <Separator className="my-6" />
-                    <div className="prose dark:prose-invert max-w-none">
-                      <MarkdownPreview content={finding.markdown} getImage={getImage} isReport />
-                    </div>
-                  </div>
-                )})}
-              </div>
-            </section>
-
-            {appendixContent && (
-              <section id={headings.find(h => h.level === 1 && h.text.includes(langT.appendix))?.id}>
-                <h2 className="font-headline text-2xl font-bold border-b-2 border-primary pb-2 mb-4 mt-12">{`4. ${langT.appendix}`}</h2>
-                <div className="prose dark:prose-invert max-w-none">
-                  <MarkdownPreview content={appendixContent} getImage={getImage} isReport />
-                </div>
-              </section>
-            )}
           </div>
         </main>
       </div>
