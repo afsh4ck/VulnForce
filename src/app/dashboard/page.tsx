@@ -4,11 +4,23 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import Link from 'next/link';
-import { PlusCircle, Users, FolderKanban, ShieldCheck, ChevronLeft, ChevronRight } from "lucide-react";
+import { PlusCircle, Users, FolderKanban, ShieldCheck, ChevronLeft, ChevronRight, CalendarClock, FileText, Scan, Globe, Network, Smartphone, Wifi, Award } from "lucide-react";
 import { useLanguage } from "@/context/language-context";
 import { useData } from "@/context/data-context";
 import { useMemo, useState } from "react";
 import { Badge } from "@/components/ui/badge";
+import { formatDistanceToNow } from 'date-fns';
+import { es } from 'date-fns/locale';
+
+const iconComponents: { [key: string]: React.ElementType } = {
+  FileText,
+  Scan,
+  Globe,
+  Network,
+  Smartphone,
+  Wifi,
+  Award,
+};
 
 export default function DashboardPage() {
   const { language } = useLanguage();
@@ -17,11 +29,18 @@ export default function DashboardPage() {
   
   const [currentPage, setCurrentPage] = useState(1);
   const projectsPerPage = 10;
+  
+  const enrichedProjects = useMemo(() => {
+    return projects.map(p => ({
+        ...p,
+        findingCount: findings.filter(f => f.projectId === p.id).length
+    }))
+  }, [projects, findings]);
 
   const sortedProjects = useMemo(() => {
-    return [...projects]
+    return [...enrichedProjects]
       .sort((a, b) => new Date(b.updatedAt).getTime() - new Date(a.updatedAt).getTime());
-  }, [projects]);
+  }, [enrichedProjects]);
 
   const recentProjects = useMemo(() => {
     const startIndex = (currentPage - 1) * projectsPerPage;
@@ -65,7 +84,9 @@ export default function DashboardPage() {
       previous: "Previous",
       next: "Next",
       page: "Page",
-      of: "of"
+      of: "of",
+      findings: "findings",
+      lastUpdated: "Last updated"
     },
     es: {
       dashboard: "Dashboard",
@@ -82,7 +103,9 @@ export default function DashboardPage() {
       previous: "Anterior",
       next: "Siguiente",
       page: "Página",
-      of: "de"
+      of: "de",
+      findings: "hallazgos",
+      lastUpdated: "Última actualización"
     }
   }
 
@@ -157,22 +180,40 @@ export default function DashboardPage() {
           </CardHeader>
           <CardContent>
             {recentProjects.length > 0 ? (
-            <ul className="space-y-2">
-              {recentProjects.map(p => (
-                <li key={p.id} className="flex items-center justify-between rounded-md p-2 hover:bg-muted">
-                    <div>
-                        <Link href={`/dashboard/projects/${p.id}`} className="font-medium hover:text-primary">{p.name}</Link>
-                        <p className="text-sm text-muted-foreground">{clients.find(c => c.id === p.clientId)?.name}</p>
+            <div className="space-y-4">
+              {recentProjects.map(p => {
+                const Icon = iconComponents[p.icon] || FileText;
+                return (
+                  <Link key={p.id} href={`/dashboard/projects/${p.id}`} className="block rounded-lg p-4 transition-colors hover:bg-muted/50">
+                    <div className="flex items-center justify-between">
+                      <div className="flex items-center gap-4">
+                        <Icon className="h-6 w-6 text-primary" />
+                        <div>
+                          <p className="font-medium">{p.name}</p>
+                          <p className="text-sm text-muted-foreground">{clients.find(c => c.id === p.clientId)?.name}</p>
+                        </div>
+                      </div>
+                      <Badge variant={getStatusVariant(p.status)}>{getStatus(p.status)}</Badge>
                     </div>
-                    <Badge variant={getStatusVariant(p.status)}>{getStatus(p.status)}</Badge>
-                </li>
-              ))}
-            </ul>
+                    <div className="mt-4 flex items-center justify-between text-sm text-muted-foreground">
+                       <div className="flex items-center gap-2">
+                         <ShieldCheck className="h-4 w-4" />
+                         <span>{p.findingCount} {t[language].findings}</span>
+                       </div>
+                       <div className="flex items-center gap-2">
+                         <CalendarClock className="h-4 w-4" />
+                          <span>{t[language].lastUpdated} {formatDistanceToNow(new Date(p.updatedAt), { addSuffix: true, locale: language === 'es' ? es : undefined })}</span>
+                       </div>
+                    </div>
+                  </Link>
+                )
+              })}
+            </div>
             ) : (
               <p className="text-sm text-muted-foreground">No projects found.</p>
             )}
              {totalPages > 1 && (
-              <div className="flex items-center justify-between mt-4">
+              <div className="flex items-center justify-between mt-4 pt-4 border-t">
                 <Button 
                   variant="outline"
                   onClick={() => setCurrentPage(prev => Math.max(prev - 1, 1))}
