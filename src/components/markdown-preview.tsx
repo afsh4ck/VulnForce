@@ -121,7 +121,7 @@ export const MarkdownPreview = ({ content, getImage, isReport }: { content: stri
             
             const highlightedCode = <span dangerouslySetInnerHTML={{ __html: highlightTodos(codeContent) }} />;
             return (
-              <code className="bg-muted text-muted-foreground font-code px-1 py-0.5 rounded-sm break-all" {...props}>
+              <code className="bg-muted text-muted-foreground font-code px-1 py-0.5 rounded-sm break-words" {...props}>
                 {highlightedCode}
               </code>
             );
