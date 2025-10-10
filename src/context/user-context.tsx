@@ -40,7 +40,7 @@ const UserContext = createContext<UserContextType | undefined>(undefined);
 const defaultUser: User = {
   name: 'Pentester',
   email: 'auditor@vulnforce.local',
-  avatar: 'https://picsum.photos/seed/avatar/128/128',
+  avatar: '',
 };
 
 export function UserProvider({ children }: { children: ReactNode }) {
