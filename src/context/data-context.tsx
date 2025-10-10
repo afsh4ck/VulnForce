@@ -80,14 +80,15 @@ export function DataProvider({ children }: { children: ReactNode }) {
     const [projectTemplates, setProjectTemplates] = usePersistedState<ProjectTemplate[]>('vulnforce-project-templates-v4', initialProjectTemplates);
 
     const wipeAllData = () => {
-        setClients(initialClients);
-        setProjects(initialProjects);
-        setFindings(initialFindings);
-        setVulnerabilities(initialVulnerabilities);
-        setImages([]);
-        setProjectTemplates(initialProjectTemplates);
-        // Also clear user data if necessary from user context, or call a method from there
-        // This function would also need to clear localStorage for the user if that's where password hash etc. is stored
+        // This function will clear the data from localStorage,
+        // so the next time the app loads, it will use the initial data.
+        localStorage.removeItem('vulnforce-clients-v4');
+        localStorage.removeItem('vulnforce-projects-v4');
+        localStorage.removeItem('vulnforce-findings-v4');
+        localStorage.removeItem('vulnforce-vulnerabilities-v4');
+        localStorage.removeItem('vulnforce-images-v4');
+        localStorage.removeItem('vulnforce-project-templates-v4');
+        // The user context will handle clearing user data
     };
 
     // Client functions

@@ -27,7 +27,7 @@ interface User {
 interface UserContextType {
   user: User;
   setUser: (user: User) => void;
-  logout: () => void;
+  logout: (deleteAccount?: boolean) => void;
   login: (name: string, pass: string) => boolean;
   setPassword: (name: string, pass: string) => void;
   hasPassword: () => boolean;
@@ -76,10 +76,16 @@ export function UserProvider({ children }: { children: ReactNode }) {
     }
   };
   
-  const logout = () => {
+  const logout = (deleteAccount = false) => {
     sessionStorage.removeItem('vulnforce-authenticated');
-    // We don't remove the user from localStorage so the username/password is persisted
+    if (deleteAccount) {
+      localStorage.removeItem('vulnforce-user');
+      // After deleting the user, we set the state back to a default user without a password
+      // so the app redirects to the setup page.
+      setUserState({ ...defaultUser }); 
+    }
     router.push('/');
+    router.refresh(); // Force a refresh to re-evaluate the state on the login page
   };
 
   const login = (name: string, pass: string): boolean => {
