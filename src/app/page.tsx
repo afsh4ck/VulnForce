@@ -11,6 +11,7 @@ import { Label } from '@/components/ui/label';
 import { useToast } from '@/hooks/use-toast';
 import { Progress } from '@/components/ui/progress';
 import { Eye, EyeOff } from 'lucide-react';
+import Link from 'next/link';
 
 export default function LoginPage() {
   const { user, login, setPassword, hasPassword, forgotPassword } = useUser();
@@ -186,6 +187,17 @@ export default function LoginPage() {
                 </div>
                 <Button type="submit" className="w-full !mt-6">{t.es.setPasswordButton}</Button>
                 </form>
+                <p className="mt-4 text-center text-xs text-muted-foreground">
+                    Developed by{' '}
+                    <a
+                        href="https://github.com/afsh4ck"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="underline hover:text-primary"
+                    >
+                        afsh4ck
+                    </a>
+                </p>
             </CardContent>
             </Card>
         </main>
@@ -226,6 +238,17 @@ export default function LoginPage() {
             </div>
             <Button type="submit" className="w-full !mt-8">{t.es.loginButton}</Button>
           </form>
+           <p className="mt-4 text-center text-xs text-muted-foreground">
+              Developed by{' '}
+              <a
+                  href="https://github.com/afsh4ck"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="underline hover:text-primary"
+              >
+                  afsh4ck
+              </a>
+          </p>
         </CardContent>
       </Card>
     </main>
