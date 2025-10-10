@@ -23,7 +23,7 @@ export default function AllFindingsPage() {
   const { findings, projects, clients } = useData();
   const searchParams = useSearchParams();
 
-  const [sortConfig, setSortConfig] = useState<{ key: SortKey; direction: 'ascending' | 'descending' } | null>({ key: 'updatedAt', direction: 'descending' });
+  const [sortConfig, setSortConfig] = useState<{ key: SortKey; direction: 'ascending' | 'descending' } | null>({ key: 'cvss', direction: 'descending' });
   const [severityFilter, setSeverityFilter] = useState<string>(searchParams.get('severity') || 'All');
 
   const getSeverityVariant = (severity: string): 'destructive' | 'high' | 'medium' | 'low' | 'secondary' => {
