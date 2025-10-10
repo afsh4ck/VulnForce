@@ -142,7 +142,7 @@ export default function DashboardPage() {
               {recentProjects.map(p => (
                 <li key={p.id} className="flex items-center justify-between rounded-md p-2 hover:bg-muted">
                     <div>
-                        <Link href={`/dashboard/projects/${p.id}`} className="font-medium hover:text-primary hover:underline">{p.name}</Link>
+                        <Link href={`/dashboard/projects/${p.id}`} className="font-medium hover:text-primary">{p.name}</Link>
                         <p className="text-sm text-muted-foreground">{clients.find(c => c.id === p.clientId)?.name}</p>
                     </div>
                     <Badge variant={getStatusVariant(p.status)}>{getStatus(p.status)}</Badge>
