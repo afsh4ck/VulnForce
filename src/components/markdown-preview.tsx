@@ -111,6 +111,8 @@ export const MarkdownPreview = ({ content, getImage, isReport }: { content: stri
                 codeTagProps={{
                     style: {
                         fontFamily: 'inherit',
+                        whiteSpace: 'pre-wrap',
+                        wordBreak: 'break-all',
                     }
                 }}
                 {...props}
