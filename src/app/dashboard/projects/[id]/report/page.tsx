@@ -48,9 +48,22 @@ export default function ReportPreviewPage() {
 
   const reportContentRef = useRef<HTMLDivElement>(null);
 
-  const generateSlug = (text: string) => {
-    return text.toLowerCase().replace(/\s+/g, '-').replace(/[^\w-]+/g, '');
-  };
+  const generateSlug = (() => {
+    let counter = 0;
+    const seen = new Set<string>();
+    return (text: string) => {
+      const baseSlug = text.toLowerCase().replace(/\s+/g, '-').replace(/[^\w-]+/g, '');
+      let finalSlug = baseSlug;
+      counter = 0;
+      while (seen.has(finalSlug)) {
+        counter++;
+        finalSlug = `${baseSlug}-${counter}`;
+      }
+      seen.add(finalSlug);
+      return finalSlug;
+    };
+  })();
+
 
   const getSeverityVariant = (severity: string): 'destructive' | 'high' | 'medium' | 'low' | 'secondary' => {
     switch (severity) {
@@ -165,7 +178,7 @@ ${appendixContent}
       text: match[2],
       id: generateSlug(match[2]),
     }));
-  }, [project, client, projectFindings, scopeContent, appendixContent, t]);
+  }, [project, client, projectFindings, scopeContent, appendixContent, t, generateSlug]);
 
 
   useEffect(() => {
@@ -239,7 +252,7 @@ ${appendixContent}
     });
   
     return foundTodos;
-  }, [project, projectFindings, projectId, t]);
+  }, [project, projectFindings, projectId, t, generateSlug]);
   
   const handlePrint = (printTheme: 'light' | 'dark') => {
     const originalTheme = theme;
@@ -404,7 +417,7 @@ ${appendixContent}
                   ) : (
                     <AlertCircle className="h-5 w-5 text-destructive" />
                   )}
-                  <CardTitle className="text-sm font-semibold">{todos.length > 0 ? t[uiLanguage].pending : t[uiLanguage].allChecksPassed}</CardTitle>
+                  <CardTitle className="text-base font-semibold">{todos.length > 0 ? t[uiLanguage].pending : t[uiLanguage].allChecksPassed}</CardTitle>
                 </div>
               </CardHeader>
               <CardContent>
@@ -539,7 +552,3 @@ ${appendixContent}
     </div>
   );
 }
-
-
-
-    
