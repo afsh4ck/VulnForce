@@ -45,7 +45,6 @@ export default function NewProjectPage() {
   const [name, setName] = useState('');
   const [clientId, setClientId] = useState<string>('');
   const [scope, setScope] = useState('');
-  const [appendix, setAppendix] = useState<string | undefined>('');
   const [date, setDate] = React.useState<DateRange | undefined>();
   const [templateId, setTemplateId] = useState<string | null>(searchParams.get('template'));
   const [projectLanguage, setProjectLanguage] = useState<Project['language']>('es');
@@ -66,7 +65,6 @@ export default function NewProjectPage() {
       if (template) {
         setName(projectLanguage === 'es' ? template.name_es : template.name_en);
         setScope(projectLanguage === 'es' ? template.scope_es : template.scope_en);
-        setAppendix(projectLanguage === 'es' ? template.appendix_es : template.appendix_en);
         setIcon(template.icon);
       }
     }
@@ -78,7 +76,6 @@ export default function NewProjectPage() {
         setTemplateId(newTemplateId);
         setName(projectLanguage === 'es' ? template.name_es : template.name_en);
         setScope(projectLanguage === 'es' ? template.scope_es : template.scope_en);
-        setAppendix(projectLanguage === 'es' ? template.appendix_es : template.appendix_en);
         setIcon(template.icon);
     }
   }
@@ -108,7 +105,6 @@ export default function NewProjectPage() {
       clientId,
       name,
       scope,
-      appendix,
       icon,
       startDate: date!.from!,
       endDate: date!.to!,
@@ -355,10 +351,6 @@ export default function NewProjectPage() {
             <div className="space-y-2">
                 <Label htmlFor="scope">{t[uiLanguage].scopeLabel}</Label>
                 <Textarea id="scope" placeholder={t[uiLanguage].scopePlaceholder} className={cn("font-code min-h-[120px]", errors.scope && 'border-destructive')} value={scope} onChange={e => setScope(e.target.value)} required />
-            </div>
-            <div className="space-y-2">
-                <Label htmlFor="appendix">Appendix</Label>
-                <Textarea id="appendix" placeholder="Appendix content..." className="font-code min-h-[120px]" value={appendix} onChange={e => setAppendix(e.target.value)} />
             </div>
             <div className="space-y-2">
                 <Label>{t[uiLanguage].datesLabel}</Label>

@@ -22,7 +22,6 @@ export interface Project {
   language: 'en' | 'es';
   createdAt: string;
   updatedAt: string;
-  appendix?: string; // Kept for backwards compatibility during transition
 }
 
 export interface Finding {
@@ -104,6 +103,4 @@ export interface ProjectTemplate {
   scope_en: string;
   scope_es: string;
   icon: string;
-  appendix_en?: string;
-  appendix_es?: string;
 }
