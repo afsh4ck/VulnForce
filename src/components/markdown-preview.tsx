@@ -96,6 +96,7 @@ export const MarkdownPreview = ({ content, getImage, isReport }: { content: stri
               // eslint-disable-next-line @next/next/no-img-element
               return <img {...props} className="max-w-full h-auto rounded-md border" />;
           },
+          pre: ({ node, ...props }) => <pre className="whitespace-pre-wrap break-all" {...props} />,
           code({ node, className, children, ...props }) {
             const match = /language-(\w+)/.exec(className || '');
             const codeContent = String(children).replace(/\n$/, '');
