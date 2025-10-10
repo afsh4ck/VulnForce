@@ -1,6 +1,6 @@
 
 'use client';
-import React from 'react';
+import React, { useMemo } from 'react';
 import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
 import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter';
@@ -45,6 +45,7 @@ const renderWithTodos = (Component: React.ElementType, className?: string, props
 
 // This function now just processes the markdown and adds IDs to headers.
 const addHeaderIds = (markdownContent: string) => {
+    if (!markdownContent) return '';
     const seen = new Set<string>();
     const generateId = (text: string) => {
         let baseSlug = text.toLowerCase().replace(/\s+/g, '-').replace(/[^\w-]+/g, '');
