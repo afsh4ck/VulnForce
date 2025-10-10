@@ -52,53 +52,15 @@ export default function ReportPreviewPage() {
     return text.toLowerCase().replace(/\s+/g, '-').replace(/[^\w-]+/g, '');
   };
 
-  const extractHeadings = useCallback(() => {
-    if (!project) return [];
-    
-    const reportLang = project.language;
-    const langT = t[reportLang];
-
-    const allContent = `
-# 1. ${langT.executiveSummary}
-${langT.executiveSummaryContent(project.name, client?.name || '', project.startDate, project.endDate, projectFindings.length, projectFindings.filter(f => f.severity === 'Critical').length, projectFindings.filter(f => f.severity === 'High').length)}
-# 2. ${langT.scopeAndMethodology}
-${scopeContent}
-# 3. ${langT.findingsSummary}
-${projectFindings.map((f, i) => `## 3.${i+1} ${f.title}\n${f.markdown}`).join('\n\n')}
-${appendixContent ? `# 4. ${langT.appendix}` : ''}
-${appendixContent}
-`;
-
-    const headingRegex = /^(#{1,3}) (.*)/gm;
-    const matches = [...allContent.matchAll(headingRegex)];
-    return matches.map(match => ({
-      level: match[1].length,
-      text: match[2],
-      id: generateSlug(match[2]),
-    }));
-  }, [project, client, projectFindings]);
-
-
-  useEffect(() => {
-    const currentProject = projects.find(p => p.id === projectId);
-    if (currentProject) {
-      setProject(currentProject);
-      setClient(clients.find(c => c.id === currentProject.clientId));
-      const filteredFindings = findings
-        .filter(f => f.projectId === currentProject.id)
-        .sort((a, b) => b.cvss - a.cvss);
-      setProjectFindings(filteredFindings);
-
-    } else {
-      router.push('/dashboard/projects');
+  const getSeverityVariant = (severity: string): 'destructive' | 'high' | 'medium' | 'low' | 'secondary' => {
+    switch (severity) {
+      case 'Critical': return 'destructive';
+      case 'High': return 'high';
+      case 'Medium': return 'medium';
+      case 'Low': return 'low';
+      default: return 'secondary';
     }
-  }, [projectId, projects, clients, findings, router]);
-  
-  useEffect(() => {
-    if(project && client && projectFindings.length > 0) {
-      setHeadings(extractHeadings());
-    }
-  }, [project, client, projectFindings, extractHeadings]);
+  }
 
   const t = {
     en: {
@@ -166,6 +128,66 @@ ${appendixContent}
         `Este informe detalla los hallazgos de la prueba de penetración realizada en **${projectName}** para **${clientName}** entre el ${new Date(startDate).toLocaleDateString()} y el ${new Date(endDate).toLocaleDateString()}. La evaluación identificó un total de **${totalFindings}** vulnerabilidades, incluyendo **${criticalFindings}** hallazgos críticos y **${highFindings}** de alto riesgo. Se recomienda la remediación urgente de las vulnerabilidades críticas para mitigar el impacto potencial.`,
     },
   };
+  
+  const [scopeContent, appendixContent] = useMemo(() => {
+    if (!project?.reportBody) return ['', ''];
+    const parts = project.reportBody.split('### A. ');
+    if (parts.length > 1) {
+        return [parts[0], '### A. ' + parts.slice(1).join('### A. ')];
+    }
+    return [project.reportBody, ''];
+  }, [project?.reportBody]);
+
+  const extractHeadings = useCallback(() => {
+    if (!project || !client) return [];
+    
+    const reportLang = project.language;
+    const langT = t[reportLang];
+
+    const criticalCount = projectFindings.filter(f => f.severity === 'Critical').length;
+    const highCount = projectFindings.filter(f => f.severity === 'High').length;
+
+    const allContent = `
+# 1. ${langT.executiveSummary}
+${langT.executiveSummaryContent(project.name, client?.name || '', project.startDate, project.endDate, projectFindings.length, criticalCount, highCount)}
+# 2. ${langT.scopeAndMethodology}
+${scopeContent}
+# 3. ${langT.findingsSummary}
+${projectFindings.map((f, i) => `## 3.${i+1} ${f.title}\n${f.markdown}`).join('\n\n')}
+${appendixContent ? `# 4. ${langT.appendix}` : ''}
+${appendixContent}
+`;
+
+    const headingRegex = /^(#{1,3}) (.*)/gm;
+    const matches = [...allContent.matchAll(headingRegex)];
+    return matches.map(match => ({
+      level: match[1].length,
+      text: match[2],
+      id: generateSlug(match[2]),
+    }));
+  }, [project, client, projectFindings, scopeContent, appendixContent, t]);
+
+
+  useEffect(() => {
+    const currentProject = projects.find(p => p.id === projectId);
+    if (currentProject) {
+      setProject(currentProject);
+      setClient(clients.find(c => c.id === currentProject.clientId));
+      const filteredFindings = findings
+        .filter(f => f.projectId === currentProject.id)
+        .sort((a, b) => b.cvss - a.cvss);
+      setProjectFindings(filteredFindings);
+
+    } else {
+      router.push('/dashboard/projects');
+    }
+  }, [projectId, projects, clients, findings, router]);
+  
+  useEffect(() => {
+    if(project && client) {
+      setHeadings(extractHeadings());
+    }
+  }, [project, client, projectFindings, extractHeadings]);
 
   const todos = useMemo(() => {
     if (!project) return [];
@@ -272,15 +294,6 @@ ${appendixContent}
         URL.revokeObjectURL(url);
     }
   };
-
-  const [scopeContent, appendixContent] = useMemo(() => {
-    if (!project?.reportBody) return ['', ''];
-    const parts = project.reportBody.split('### A. ');
-    if (parts.length > 1) {
-        return [parts[0], '### A. ' + parts.slice(1).join('### A. ')];
-    }
-    return [project.reportBody, ''];
-  }, [project?.reportBody]);
 
   if (!project || !client) {
     return null; // or a loading spinner
@@ -526,3 +539,4 @@ ${appendixContent}
     </div>
   );
 }
+
