@@ -124,7 +124,7 @@ export default function DashboardPage() {
 
       <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
         <Link href="/dashboard/projects">
-          <Card className="hover:bg-muted/50 transition-colors">
+          <Card className="border border-transparent hover:border-primary transition-colors">
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
               <CardTitle className="text-sm font-medium">{t[language].totalProjects}</CardTitle>
               <FolderKanban className="h-4 w-4 text-muted-foreground" />
@@ -136,7 +136,7 @@ export default function DashboardPage() {
           </Card>
         </Link>
         <Link href="/dashboard/clients">
-          <Card className="hover:bg-muted/50 transition-colors">
+          <Card className="border border-transparent hover:border-primary transition-colors">
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
               <CardTitle className="text-sm font-medium">{t[language].totalClients}</CardTitle>
               <Users className="h-4 w-4 text-muted-foreground" />
@@ -148,7 +148,7 @@ export default function DashboardPage() {
           </Card>
         </Link>
         <Link href="/dashboard/findings">
-          <Card className="hover:bg-muted/50 transition-colors">
+          <Card className="border border-transparent hover:border-primary transition-colors">
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
               <CardTitle className="text-sm font-medium">{t[language].totalFindings}</CardTitle>
               <Bomb className="h-4 w-4 text-muted-foreground" />
