@@ -8,6 +8,7 @@ import { vscDarkPlus } from 'react-syntax-highlighter/dist/esm/styles/prism';
 import type { ImageAsset } from '@/lib/types';
 import { cn } from '@/lib/utils';
 import { Badge } from './ui/badge';
+import { Separator } from './ui/separator';
 
 const highlightTodos = (text: string) => {
     if (typeof text !== 'string') return text;
