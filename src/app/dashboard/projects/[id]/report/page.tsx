@@ -8,7 +8,7 @@ import { Separator } from '@/components/ui/separator';
 import { Logo } from '@/components/logo';
 import React, { useEffect, useMemo, useState, useCallback, useRef } from 'react';
 import { Button } from '@/components/ui/button';
-import { AlertCircle, ArrowRight, CheckCircle, ChevronLeft, Printer, Globe, Sun, Moon, PanelLeft, Menu, X, ChevronsUpDown } from 'lucide-react';
+import { AlertCircle, ArrowRight, CheckCircle, ChevronLeft, Printer, Globe, X } from 'lucide-react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import Link from 'next/link';
 import { useLanguage } from '@/context/language-context';
@@ -18,7 +18,6 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@
 import { cn } from '@/lib/utils';
 import { useTheme } from '@/context/theme-context';
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '@/components/ui/dropdown-menu';
-import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet';
 
 interface TodoItem {
   location: string;
@@ -80,8 +79,6 @@ export default function ReportPreviewPage() {
       informational: 'Informational',
       lightMode: 'Light Mode',
       darkMode: 'Dark Mode',
-      executiveSummaryContent: (projectName: string, clientName: string, startDate: string, endDate: string, totalFindings: number, criticalFindings: number, highFindings: number) => 
-        `This report details the findings of the penetration test conducted on **${projectName}** for **${clientName}** between ${new Date(startDate).toLocaleDateString()} and ${new Date(endDate).toLocaleDateString()}. The assessment identified **${totalFindings}** total vulnerabilities, including **${criticalFindings}** critical and **${highFindings}** high-risk findings. Urgent remediation is recommended for critical vulnerabilities to mitigate potential impact.`,
     },
     es: {
       executiveSummary: 'Resumen Ejecutivo',
@@ -113,8 +110,6 @@ export default function ReportPreviewPage() {
       informational: 'Informativo',
       lightMode: 'Modo Claro',
       darkMode: 'Modo Oscuro',
-      executiveSummaryContent: (projectName: string, clientName: string, startDate: string, endDate: string, totalFindings: number, criticalFindings: number, highFindings: number) =>
-        `Este informe detalla los hallazgos de la prueba de penetración realizada en **${projectName}** para **${clientName}** entre el ${new Date(startDate).toLocaleDateString()} y el ${new Date(endDate).toLocaleDateString()}. La evaluación identificó un total de **${totalFindings}** vulnerabilidades, incluyendo **${criticalFindings}** hallazgos críticos y **${highFindings}** de alto riesgo. Se recomienda la remediación urgente de las vulnerabilidades críticas para mitigar el impacto potencial.`,
     },
   };
 
@@ -137,6 +132,7 @@ export default function ReportPreviewPage() {
     const mainContent = project.reportBody || '';
 
     const findingsContent = projectFindings
+      .sort((a, b) => b.cvss - a.cvss)
       .map(f => {
         return `## ${f.title} [SEVERITY:${f.severity},CVSS:${f.cvss.toFixed(1)}] {#finding-${f.id}}\n${f.markdown}`;
       })
@@ -411,9 +407,6 @@ export default function ReportPreviewPage() {
                     <DropdownMenuItem onClick={() => handlePrint('dark')}>{langT.darkMode}</DropdownMenuItem>
                   </DropdownMenuContent>
                 </DropdownMenu>
-                <Button variant="outline" size="icon" className="md:hidden" onClick={() => setIsSidebarOpen(!isSidebarOpen)}>
-                    <PanelLeft className="h-5 w-5" />
-                </Button>
             </div>
         </div>
       </header>
@@ -514,4 +507,3 @@ export default function ReportPreviewPage() {
     </div>
   );
 }
-
