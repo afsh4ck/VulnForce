@@ -57,7 +57,6 @@ export const MarkdownPreview = ({ content, getImage, isReport }: { content: stri
                 if (typeof child === 'string') {
                     return highlightTodos(child);
                 }
-                // Check if the child is a paragraph wrapper and handle its children
                 if (React.isValidElement(child) && child.props.node?.tagName === 'p') {
                    return <>{renderWithTodos('p', '')(child.props)}</>;
                 }
