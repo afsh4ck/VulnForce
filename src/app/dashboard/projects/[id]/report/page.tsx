@@ -48,16 +48,6 @@ export default function ReportPreviewPage() {
   const [showTodos, setShowTodos] = useState(true);
   
   const reportContentRef = useRef<HTMLDivElement>(null);
-  
-  const getSeverityVariant = (severity: string): 'destructive' | 'high' | 'medium' | 'low' | 'secondary' => {
-    switch (severity) {
-      case 'Critical': return 'destructive';
-      case 'High': return 'high';
-      case 'Medium': return 'medium';
-      case 'Low': return 'low';
-      default: return 'secondary';
-    }
-  }
 
   const t = {
     en: {
@@ -110,7 +100,7 @@ export default function ReportPreviewPage() {
       finding: 'Hallazgo',
       backToProject: 'Volver al Proyecto',
       vulnerability: 'Vulnerabilidad',
-      severity: 'Severidad',
+      severidad: 'Severidad',
       cvss: 'CVSS',
       appendix: 'Apéndice',
       severityTableTitle: 'Hallazgos por Severidad',
@@ -135,18 +125,24 @@ export default function ReportPreviewPage() {
     const langT = t[reportLang];
     const criticalCount = projectFindings.filter(f => f.severity === 'Critical').length;
     const highCount = projectFindings.filter(f => f.severity === 'High').length;
-    const [scopeContent, appendixContent] = project.reportBody.split(/(\n### Apéndice|\n### Appendix)/);
-
-    return `
+    
+    // Separate main content from findings
+    const mainContent = `
 # ${langT.executiveSummary}
 ${langT.executiveSummaryContent(project.name, client?.name || '', project.startDate, project.endDate, projectFindings.length, criticalCount, highCount)}
+
 # ${langT.scopeAndMethodology}
-${scopeContent || ''}
-# ${langT.findingsSummary}
-${projectFindings.map((f, i) => `## 3.${i+1} ${f.title}\n${f.markdown}`).join('\n\n')}
-${appendixContent ? `# 4. ${langT.appendix}` : ''}
-${appendixContent || ''}
+${project.reportBody || ''}
 `;
+
+    // Combine findings content
+    const findingsContent = projectFindings
+      .map((f, i) => `## 3.${i+1} ${f.title}\n${f.markdown}`)
+      .join('\n\n');
+      
+    const findingsSection = `# ${langT.findingsSummary}\n${findingsContent}`;
+
+    return `${mainContent}\n${findingsSection}`;
   }, [project, client, projectFindings, t]);
   
   useEffect(() => {
@@ -165,27 +161,30 @@ ${appendixContent || ''}
   
   useEffect(() => {
     if (fullReportContent) {
-      const headingRegex = /^(#{1,3}) (.*)/gm;
-      const matches = [...fullReportContent.matchAll(headingRegex)];
-      const seen = new Set<string>();
-      const generateId = (text: string) => {
-          let baseSlug = text.toLowerCase().replace(/\s+/g, '-').replace(/[^\w-]+/g, '');
-          if (!baseSlug) baseSlug = 'section';
-          let finalSlug = baseSlug;
-          let counter = 1;
-          while (seen.has(finalSlug)) {
-              finalSlug = `${baseSlug}-${counter}`;
-              counter++;
-          }
-          seen.add(finalSlug);
-          return finalSlug;
-      };
-      const newHeadings = matches.map(match => ({
-          level: match[1].length,
-          text: match[2],
-          id: generateId(match[2]),
-      }));
-      setHeadings(newHeadings);
+        const headingRegex = /^(#{1,3}) (.*)/gm;
+        let matches = Array.from(fullReportContent.matchAll(headingRegex));
+        
+        let idCounter = 0;
+        const seen = new Set<string>();
+        const generateId = (text: string) => {
+            idCounter++;
+            let baseSlug = text.toLowerCase().replace(/\s+/g, '-').replace(/[^\w-]+/g, '') || `section-${idCounter}`;
+            let finalSlug = baseSlug;
+            let counter = 1;
+            while (seen.has(finalSlug)) {
+                finalSlug = `${baseSlug}-${counter}`;
+                counter++;
+            }
+            seen.add(finalSlug);
+            return finalSlug;
+        };
+
+        const newHeadings = matches.map(match => ({
+            level: match[1].length,
+            text: match[2],
+            id: generateId(match[2]),
+        }));
+        setHeadings(newHeadings);
     }
   }, [fullReportContent]);
 
@@ -198,10 +197,11 @@ ${appendixContent || ''}
     
     const foundTodos: TodoItem[] = [];
     const todoRegex = /\[TODO:?.*?\]?/gi;
+    let idCounter = 0;
     const seen = new Set<string>();
     const generateId = (text: string) => {
-        let baseSlug = text.toLowerCase().replace(/\s+/g, '-').replace(/[^\w-]+/g, '');
-        if (!baseSlug) baseSlug = 'section';
+        idCounter++;
+        let baseSlug = text.toLowerCase().replace(/\s+/g, '-').replace(/[^\w-]+/g, '') || `section-${idCounter}`;
         let finalSlug = baseSlug;
         let counter = 1;
         while (seen.has(finalSlug)) {
@@ -278,16 +278,13 @@ ${appendixContent || ''}
   <title>${project.name}</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <style>
-    :root { --background: 0 0% 100%; --foreground: 240 10% 3.9%; --card: 0 0% 100%; --card-foreground: 240 10% 3.9%; --popover: 0 0% 100%; --popover-foreground: 240 10% 3.9%; --primary: 76 100% 50%; --primary-foreground: 76 100% 5%; --secondary: 240 4.8% 95.9%; --secondary-foreground: 240 5.9% 10%; --muted: 240 4.8% 95.9%; --muted-foreground: 240 3.8% 46.1%; --accent: 76 100% 60%; --accent-foreground: 76 100% 10%; --destructive: 0 80% 50%; --destructive-foreground: 0 0% 98%; --border: 240 5.9% 90%; --input: 240 5.9% 90%; --ring: 76 100% 50%; }
-    .dark { --background: 224 71% 4%; --foreground: 210 40% 98%; --card: 224 71% 6%; --card-foreground: 210 40% 98%; --popover: 224 71% 4%; --popover-foreground: 210 40% 98%; --primary: 76 100% 50%; --primary-foreground: 76 100% 5%; --secondary: 220 15% 15%; --secondary-foreground: 210 40% 98%; --muted: 220 15% 15%; --muted-foreground: 215 20% 65%; --accent: 76 100% 60%; --accent-foreground: 76 100% 10%; --destructive: 0 72% 51%; --destructive-foreground: 210 40% 98%; --border: 220 15% 15%; --input: 220 15% 15%; --ring: 76 100% 50%; }
+    :root { --background: 0 0% 94.1%; --foreground: 240 10% 3.9%; --card: 0 0% 100%; --card-foreground: 240 10% 3.9%; --popover: 0 0% 100%; --popover-foreground: 240 10% 3.9%; --primary: 275 100% 25%; --primary-foreground: 0 0% 98%; --secondary: 240 4.8% 95.9%; --secondary-foreground: 240 5.9% 10%; --muted: 240 4.8% 95.9%; --muted-foreground: 240 3.8% 46.1%; --accent: 180 100% 25%; --accent-foreground: 0 0% 98%; --destructive: 0 84.2% 60.2%; --destructive-foreground: 0 0% 98%; --border: 240 5.9% 90%; --input: 240 5.9% 90%; --ring: 275 100% 25%; --radius: 0.5rem; }
+    .dark { --background: 240 10% 3.9%; --foreground: 0 0% 98%; --card: 240 10% 3.9%; --card-foreground: 0 0% 98%; --popover: 240 10% 3.9%; --popover-foreground: 0 0% 98%; --primary: 275 100% 25%; --primary-foreground: 0 0% 98%; --secondary: 240 3.7% 15.9%; --secondary-foreground: 0 0% 98%; --muted: 240 3.7% 15.9%; --muted-foreground: 240 5% 64.9%; --accent: 180 100% 25%; --accent-foreground: 0 0% 98%; --destructive: 0 62.8% 30.6%; --destructive-foreground: 0 0% 98%; --border: 240 3.7% 15.9%; --input: 240 3.7% 15.9%; --ring: 275 100% 25%; }
     body { background-color: hsl(var(--background)); color: hsl(var(--foreground)); font-family: sans-serif; }
     .prose { color: hsl(var(--foreground)); max-width: 100% !important; } .prose h1, .prose h2, .prose h3, .prose h4, .prose h5, .prose h6 { color: hsl(var(--foreground)); } .prose a { color: hsl(var(--primary)); } .prose strong { color: hsl(var(--foreground)); } .prose blockquote { color: hsl(var(--muted-foreground)); border-left-color: hsl(var(--border)); } .prose code:not(pre code) { color: hsl(var(--accent-foreground)); background-color: hsl(var(--accent)); padding: 2px 4px; border-radius: 4px; } .prose pre { background-color: #282c34; color: #abb2bf; padding: 1em; border-radius: 8px; overflow-x: auto; } .prose table { width: 100%; } .prose th { background-color: hsl(var(--muted)); } .prose td, .prose th { border: 1px solid hsl(var(--border)); padding: 8px; } hr { border-top-color: hsl(var(--border)); }
     [id] { scroll-margin-top: 80px; }
     #toc-sidebar { transition: right 0.3s ease-in-out; }
-    #toc-sidebar.closed { right: -300px; }
-    .toc-level-1 { font-weight: bold; }
-    .toc-level-2 { padding-left: 1rem; }
-    .toc-level-3 { padding-left: 2rem; }
+    .toc-level-1 { font-weight: bold; } .toc-level-2 { padding-left: 1rem; } .toc-level-3 { padding-left: 2rem; }
   </style>
 </head>
 <body class="bg-background text-foreground">
@@ -309,12 +306,14 @@ ${appendixContent || ''}
     </div>
   </header>
   
-  <div class="max-w-7xl mx-auto p-4 md:p-8 flex flex-row-reverse">
-    <aside id="toc-sidebar" class="fixed top-16 right-0 h-[calc(100vh-4rem)] w-[300px] bg-card border-l border-border p-4 shadow-lg transition-all">
-      <h3 class="text-lg font-semibold mb-4">Table of Contents</h3>
-      <ul class="space-y-2 overflow-y-auto h-[calc(100%-4rem)]">${tocHtml}</ul>
-    </aside>
+  <div class="max-w-7xl mx-auto p-4 md:p-8 flex">
     <main class="flex-1 max-w-4xl">${reportContentRef.current.innerHTML}</main>
+    <aside id="toc-sidebar" class="w-72 pl-8 shrink-0 fixed top-20 right-8 h-[calc(100vh-6rem)] transition-all">
+      <div class="h-full overflow-y-auto">
+        <h3 class="text-lg font-semibold mb-4">Table of Contents</h3>
+        <ul class="space-y-2">${tocHtml}</ul>
+      </div>
+    </aside>
   </div>
 
   <script>
@@ -330,8 +329,10 @@ ${appendixContent || ''}
       updateIcons();
     });
 
+    let tocOpen = true;
     tocToggler.addEventListener('click', () => {
-      tocSidebar.classList.toggle('closed');
+        tocOpen = !tocOpen;
+        tocSidebar.style.display = tocOpen ? 'block' : 'none';
     });
 
     function updateIcons() {
@@ -358,6 +359,16 @@ ${appendixContent || ''}
         URL.revokeObjectURL(url);
     }
   };
+  
+  const getSeverityVariant = (severity: string): 'destructive' | 'high' | 'medium' | 'low' | 'secondary' => {
+    switch (severity) {
+      case 'Critical': return 'destructive';
+      case 'High': return 'high';
+      case 'Medium': return 'medium';
+      case 'Low': return 'low';
+      default: return 'secondary';
+    }
+  }
 
   if (!project || !client) {
     return null; // or a loading spinner
@@ -365,6 +376,12 @@ ${appendixContent || ''}
 
   const reportLang = project.language;
   const langT = t[reportLang];
+  const severityCounts = { Critical: 0, High: 0, Medium: 0, Low: 0, Informational: 0 };
+  projectFindings.forEach(f => {
+    if (f.severity in severityCounts) {
+      severityCounts[f.severity]++;
+    }
+  });
 
   return (
     <div className={cn("bg-background text-foreground min-h-screen", theme)}>
@@ -419,37 +436,7 @@ ${appendixContent || ''}
         </div>
       </header>
 
-      <div className="max-w-7xl mx-auto p-4 md:p-8 flex">
-        <main ref={reportContentRef} className={cn("flex-1 transition-all duration-300 printable-content")}>
-          <div className="space-y-12">
-            <header className="flex justify-between items-start">
-              <div>
-                <h1 className="font-headline text-4xl font-bold text-primary">{project.name}</h1>
-                <p className="text-xl text-muted-foreground">{client?.name}</p>
-              </div>
-              <Logo />
-            </header>
-
-            <section className="print-only">
-              <h2 className="font-headline text-2xl font-bold border-b-2 border-primary pb-2 mb-4 mt-12">{langT.tableOfContents}</h2>
-              <ul className="list-none space-y-2 print-toc">
-                {headings.map((h) => (
-                  <li key={`toc-${h.id}`} className={cn({
-                    'font-bold': h.level === 1,
-                    'pl-4': h.level === 2,
-                    'pl-8': h.level === 3,
-                  })}>
-                    <a href={`#${h.id}`}>{h.text}</a>
-                  </li>
-                ))}
-              </ul>
-            </section>
-            
-            <MarkdownPreview content={fullReportContent} getImage={getImage} isReport />
-
-          </div>
-        </main>
-        
+      <div className="max-w-7xl mx-auto p-4 md:p-8 flex flex-row-reverse">
         <aside className={cn("no-print w-72 pl-8 shrink-0 transition-all duration-300", isSidebarOpen ? "block" : "hidden")}>
           <div className="sticky top-20 h-[calc(100vh-6rem)] overflow-y-auto space-y-6">
             {showTodos && (
@@ -461,7 +448,7 @@ ${appendixContent || ''}
                       ) : (
                         <AlertCircle className="h-5 w-5 text-destructive" />
                       )}
-                      <CardTitle className="text-base font-semibold">{todos.length > 0 ? `${todos.length} ${t[uiLanguage].pending}` : t[uiLanguage].noPendingItems}</CardTitle>
+                      <CardTitle className="text-sm font-semibold">{todos.length > 0 ? `${todos.length} ${t[uiLanguage].pending}` : t[uiLanguage].noPendingItems}</CardTitle>
                     </div>
                     {todos.length === 0 && (
                         <Button variant="ghost" size="icon" className="h-6 w-6" onClick={() => setShowTodos(false)}>
@@ -512,6 +499,36 @@ ${appendixContent || ''}
 
           </div>
         </aside>
+        
+        <main ref={reportContentRef} className={cn("flex-1 transition-all duration-300 printable-content")}>
+          <div className="space-y-12">
+            <header className="flex justify-between items-start">
+              <div>
+                <h1 className="font-headline text-4xl font-bold text-primary">{project.name}</h1>
+                <p className="text-xl text-muted-foreground">{client?.name}</p>
+              </div>
+              <Logo />
+            </header>
+
+            <section className="print-only">
+              <h2 className="font-headline text-2xl font-bold border-b-2 border-primary pb-2 mb-4 mt-12">{langT.tableOfContents}</h2>
+              <ul className="list-none space-y-2 print-toc">
+                {headings.map((h) => (
+                  <li key={`toc-print-${h.id}`} className={cn({
+                    'font-bold': h.level === 1,
+                    'pl-4': h.level === 2,
+                    'pl-8': h.level === 3,
+                  })}>
+                    <a href={`#${h.id}`}>{h.text}</a>
+                  </li>
+                ))}
+              </ul>
+            </section>
+            
+            <MarkdownPreview content={fullReportContent} getImage={getImage} isReport />
+
+          </div>
+        </main>
       </div>
     </div>
   );

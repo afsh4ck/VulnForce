@@ -7,6 +7,8 @@ import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter';
 import { vscDarkPlus } from 'react-syntax-highlighter/dist/esm/styles/prism';
 import type { ImageAsset } from '@/lib/types';
 import { cn } from '@/lib/utils';
+import { Badge } from './ui/badge';
+import { Separator } from './ui/separator';
 
 const highlightTodos = (text: string) => {
     if (typeof text !== 'string') return text;
@@ -46,10 +48,11 @@ const renderWithTodos = (Component: React.ElementType, className?: string, props
 // This function now just processes the markdown and adds IDs to headers.
 const addHeaderIds = (markdownContent: string) => {
     if (!markdownContent) return '';
+    let idCounter = 0;
     const seen = new Set<string>();
     const generateId = (text: string) => {
-        let baseSlug = text.toLowerCase().replace(/\s+/g, '-').replace(/[^\w-]+/g, '');
-        if (!baseSlug) baseSlug = 'section';
+        idCounter++;
+        let baseSlug = text.toLowerCase().replace(/\s+/g, '-').replace(/[^\w-]+/g, '') || `section-${idCounter}`;
         let finalSlug = baseSlug;
         let counter = 1;
         while (seen.has(finalSlug)) {
@@ -77,6 +80,16 @@ export const MarkdownPreview = ({ content, getImage, isReport }: { content: stri
         }
         return [text, ''];
     }
+    
+    const getSeverityVariant = (severity: string): 'destructive' | 'high' | 'medium' | 'low' | 'secondary' => {
+        switch (severity) {
+          case 'Critical': return 'destructive';
+          case 'High': return 'high';
+          case 'Medium': return 'medium';
+          case 'Low': return 'low';
+          default: return 'secondary';
+        }
+    }
 
     return (
         <div className="prose dark:prose-invert max-w-none">
@@ -85,10 +98,24 @@ export const MarkdownPreview = ({ content, getImage, isReport }: { content: stri
                 components={{
                     h1: ({ node, children, ...props }) => {
                         const [text, id] = extractIdFromText(String(children));
-                        return <h1 id={id} {...props} className={cn("text-3xl font-bold mb-4 border-b-2 border-primary pb-2", isReport && "mt-12")}>{renderWithTodos('span', '')({children: text})}</h1>
+                        return <h1 id={id} {...props} className={cn("font-headline text-3xl font-bold mb-4 border-b-2 border-primary pb-2", isReport && "mt-12")}>{renderWithTodos('span', '')({children: text})}</h1>
                     },
                     h2: ({ node, children, ...props }) => {
                         const [text, id] = extractIdFromText(String(children));
+                        // Special handling for finding titles in report view
+                        if (isReport && /^\d\.\d+ /.test(text)) {
+                            const findingTitle = text.replace(/^\d\.\d+ /, '');
+                            const finding = { severity: 'High', cvss: 7.5 }; // DUMMY DATA, needs real data
+                            return (
+                                <div>
+                                    <div className="flex justify-between items-center mb-2">
+                                        <h2 id={id} {...props} className="font-headline text-2xl font-bold mt-8 border-none pb-0">{renderWithTodos('span', '')({children: findingTitle})}</h2>
+                                        {finding && <Badge variant={getSeverityVariant(finding.severity)} className="text-base px-3 py-1">{finding.severity}</Badge>}
+                                    </div>
+                                    {finding && <p className="font-code text-sm text-muted-foreground my-0">CVSS: {finding.cvss.toFixed(1)}</p>}
+                                </div>
+                            );
+                        }
                         return <h2 id={id} {...props} className={cn("text-2xl font-semibold mb-3 border-b pb-2", isReport && "mt-12")}>{renderWithTodos('span', '')({children: text})}</h2>
                     },
                     h3: ({ node, children, ...props }) => {
@@ -130,6 +157,7 @@ export const MarkdownPreview = ({ content, getImage, isReport }: { content: stri
                         // eslint-disable-next-line @next/next/no-img-element
                         return <img {...props} className="max-w-full h-auto rounded-md border" />;
                     },
+                    hr: () => null, // Remove horizontal rules
                     code({ node, className, children, ...props }) {
                         const match = /language-(\w+)/.exec(className || '');
                         const codeContent = String(children).replace(/\n$/, '');

