@@ -1,16 +1,15 @@
 
 
+
 'use client';
 
 import React, { createContext, useContext, useState, useEffect, ReactNode } from 'react';
 import type { Client, Project, Finding, Vulnerability, ImageAsset, ProjectTemplate } from '@/lib/types';
-import { 
-    clients as initialClients, 
-    projects as initialProjects, 
-    findings as initialFindings, 
-    vulnerabilities as initialVulnerabilities,
-    projectTemplates as initialProjectTemplates,
-} from '@/lib/data';
+import { initialClients } from '@/lib/clients-data';
+import { initialProjects } from '@/lib/projects-data';
+import { initialFindings } from '@/lib/findings-data';
+import { initialVulnerabilities } from '@/lib/vulnerabilities-data';
+import { initialProjectTemplates } from '@/lib/project-templates-data';
 import { format } from 'date-fns';
 
 
