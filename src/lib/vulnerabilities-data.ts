@@ -19,14 +19,16 @@ La vulnerabilidad ocurre cuando la entrada proporcionada por el usuario no se sa
 Successful exploitation can lead to unauthorized access to sensitive data, such as passwords, credit card details, or personal user information. In many cases, an attacker can modify or delete this data, causing data integrity issues. Depending on the database privileges, it could also allow the attacker to execute commands on the underlying operating system, leading to a full system compromise.`,
         impact_es: `### Impacto
 La explotación exitosa puede conducir al acceso no autorizado a datos sensibles, como contraseñas, detalles de tarjetas de crédito o información personal de los usuarios. En muchos casos, un atacante puede modificar o eliminar estos datos, causando problemas de integridad. Dependiendo de los privilegios de la base de datos, también podría permitir al atacante ejecutar comandos en el sistema operativo subyacente, lo que llevaría a un compromiso total del sistema.`,
+        immediateActions_en: "### Immediate Actions\nDeploy a Web Application Firewall (WAF) with rules to block common SQLi patterns. Identify and temporarily disable the vulnerable functionality if possible.",
+        immediateActions_es: "### Acciones Inmediatas\nDesplegar un Web Application Firewall (WAF) con reglas para bloquear patrones comunes de SQLi. Identificar y deshabilitar temporalmente la funcionalidad vulnerable si es posible.",
         remediation_en: {
-            shortTerm: "Immediately implement a Web Application Firewall (WAF) with rules to block common SQLi patterns. Review and sanitize the most critical inputs of the application.",
-            mediumTerm: "Refactor all database queries to use parameterized queries (also known as prepared statements). This is the most effective defense against SQLi as it separates the query logic from the data.",
+            shortTerm: "Refactor all database queries to use parameterized queries (also known as prepared statements). This is the most effective defense against SQLi as it separates the query logic from the data.",
+            mediumTerm: "Implement least privilege access for database users. The application's database user should only have the minimum necessary permissions.",
             longTerm: "Conduct regular security training for developers on secure coding practices. Implement static (SAST) and dynamic (DAST) application security testing into the CI/CD pipeline to proactively identify and fix vulnerabilities."
         },
         remediation_es: {
-            shortTerm: "Implementar de inmediato un Web Application Firewall (WAF) con reglas para bloquear patrones comunes de SQLi. Revisar y sanear las entradas más críticas de la aplicación.",
-            mediumTerm: "Refactorizar todas las consultas a la base de datos para usar consultas parametrizadas (también conocidas como prepared statements). Esta es la defensa más efectiva contra SQLi ya que separa la lógica de la consulta de los datos.",
+            shortTerm: "Refactorizar todas las consultas a la base de datos para usar consultas parametrizadas (también conocidas como prepared statements). Esta es la defensa más efectiva contra SQLi ya que separa la lógica de la consulta de los datos.",
+            mediumTerm: "Implementar el principio de privilegio mínimo para los usuarios de la base de datos. El usuario de la base de datos de la aplicación solo debe tener los permisos mínimos necesarios.",
             longTerm: "Realizar capacitaciones de seguridad periódicas para los desarrolladores sobre prácticas de codificación segura. Implementar pruebas de seguridad de aplicaciones estáticas (SAST) y dinámicas (DAST) en el pipeline de CI/CD para identificar y corregir vulnerabilidades de forma proactiva."
         },
         cwe: "CWE-89",
@@ -52,20 +54,22 @@ Cross-Site Scripting (XSS) allows attackers to inject malicious client-side scri
         overview_es: `### Resumen
 Cross-Site Scripting (XSS) permite a los atacantes inyectar scripts maliciosos del lado del cliente en páginas web vistas por otros usuarios. Esta vulnerabilidad puede ser utilizada para eludir controles de acceso, robar sesiones de usuario o propagar malware. Se puede clasificar como Reflejado (no persistente), Almacenado (persistente) o basado en DOM.`,
         technicalDescription_en: `### Technical Description
-The application does not properly sanitize user-supplied data before embedding it into HTML output. An attacker can inject a payload like \`<script>alert('XSS')</script>\`. When a victim's browser renders the page, it executes the script, which runs with the same permissions as the application itself. This can be Stored (persistent), Reflected (non-persistent), or DOM-based.`,
+The application does not properly sanitize user-supplied data before embedding it into HTML output. An attacker can inject a payload like \`<script>alert('XSS')</script>\`. When a victim's browser renders the page, it executes the script, which runs with the same permissions as the application itself.`,
         technicalDescription_es: `### Descripción Técnica
-La aplicación no sanea correctamente los datos proporcionados por el usuario antes de incrustarlos en la salida HTML. Un atacante puede inyectar una carga útil como \`<script>alert('XSS')</script>\`. Cuando el navegador de una víctima renderiza la página, ejecuta el script, que se ejecuta con los mismos permisos que la propia aplicación. Puede ser Almacenado (persistente), Reflejado (no persistente) o basado en DOM.`,
+La aplicación no sanea correctamente los datos proporcionados por el usuario antes de incrustarlos en la salida HTML. Un atacante puede inyectar una carga útil como \`<script>alert('XSS')</script>\`. Cuando el navegador de una víctima renderiza la página, ejecuta el script, que se ejecuta con los mismos permisos que la propia aplicación.`,
         impact_en: `### Impact
 XSS can lead to session hijacking, account takeover, redirection to malicious sites, or unauthorized actions on behalf of the user. In the context of an administrator, it could lead to full control of the web application.`,
         impact_es: `### Impacto
 El XSS puede conducir al secuestro de sesiones, la toma de control de cuentas, la redirección a sitios maliciosos o la realización de acciones no autorizadas en nombre del usuario. En el contexto de un administrador, podría llevar al control total de la aplicación web.`,
+        immediateActions_en: "### Immediate Actions\nImplement a strict Content Security Policy (CSP) as a defense-in-depth measure. Identify the most critical vulnerable inputs and apply immediate hotfixes to encode the output.",
+        immediateActions_es: "### Acciones Inmediatas\nImplementar una Política de Seguridad de Contenido (CSP) estricta como medida de defensa en profundidad. Identificar las entradas vulnerables más críticas y aplicar parches inmediatos para codificar la salida.",
         remediation_en: {
-            shortTerm: "Implement a strict Content Security Policy (CSP) to limit the sources from which scripts can be loaded. Apply context-aware output encoding to all user-supplied data before it is rendered in the browser.",
+            shortTerm: "Apply context-aware output encoding to all user-supplied data before it is rendered in the browser. For example, use HTML entity encoding for data placed in HTML context, and JavaScript encoding for data in script contexts.",
             mediumTerm: "Use modern web frameworks (like React, Angular, Vue) that have built-in protections against XSS. Avoid using dangerous functions like `innerHTML`.",
             longTerm: "Implement a security-focused design pattern where untrusted data is never mixed with executable code. Train developers to understand the different contexts of XSS and how to mitigate them."
         },
         remediation_es: {
-            shortTerm: "Implementar una Política de Seguridad de Contenido (CSP) estricta para limitar las fuentes desde las que se pueden cargar scripts. Aplicar codificación de salida sensible al contexto a todos los datos proporcionados por el usuario antes de que se rendericen en el navegador.",
+            shortTerm: "Aplicar codificación de salida sensible al contexto a todos los datos proporcionados por el usuario antes de que se rendericen en el navegador. Por ejemplo, usar codificación de entidades HTML para datos en contexto HTML, y codificación de JavaScript para datos en contextos de script.",
             mediumTerm: "Utilizar frameworks web modernos (como React, Angular, Vue) que tengan protecciones incorporadas contra XSS. Evitar el uso de funciones peligrosas como `innerHTML`.",
             longTerm: "Implementar un patrón de diseño centrado en la seguridad donde los datos no confiables nunca se mezclen con código ejecutable. Capacitar a los desarrolladores para que comprendan los diferentes contextos de XSS y cómo mitigarlos."
         },
@@ -99,13 +103,15 @@ La autenticación rota puede manifestarse de varias maneras, como permitir el re
 Attackers can take over user accounts, potentially gaining access to sensitive data or functionality. If an administrative account is compromised, the attacker could gain full control over the application.`,
         impact_es: `### Impacto
 Los atacantes pueden tomar el control de las cuentas de los usuarios, obteniendo potencialmente acceso a datos o funcionalidades sensibles. Si se compromete una cuenta administrativa, el atacante podría obtener el control total de la aplicación.`,
+        immediateActions_en: "### Immediate Actions\nImmediately invalidate all active user sessions to force re-authentication. Review logs for any signs of account takeover.",
+        immediateActions_es: "### Acciones Inmediatas\nInvalidar inmediatamente todas las sesiones de usuario activas para forzar la re-autenticación. Revisar los registros en busca de signos de toma de control de cuentas.",
         remediation_en: {
-            shortTerm: "Enforce strong password policies and implement rate limiting on login attempts. Ensure session tokens are invalidated on the server-side upon logout.",
+            shortTerm: "Enforce strong password policies and implement rate limiting and account lockout mechanisms on login attempts. Ensure session tokens are invalidated on the server-side upon logout.",
             mediumTerm: "Implement Multi-Factor Authentication (MFA) for all users, especially for administrative accounts. Use a centralized and standardized session management mechanism.",
             longTerm: "Conduct a thorough review of the entire authentication and session management lifecycle. Use industry-standard frameworks and avoid creating custom authentication schemes."
         },
         remediation_es: {
-            shortTerm: "Forzar políticas de contraseñas seguras e implementar limitación de velocidad en los intentos de inicio de sesión. Asegurarse de que los tokens de sesión se invaliden en el lado del servidor al cerrar la sesión.",
+            shortTerm: "Forzar políticas de contraseñas seguras e implementar limitación de velocidad y mecanismos de bloqueo de cuentas en los intentos de inicio de sesión. Asegurarse de que los tokens de sesión se invaliden en el lado del servidor al cerrar la sesión.",
             mediumTerm: "Implementar la autenticación multifactor (MFA) para todos los usuarios, especialmente para las cuentas administrativas. Utilizar un mecanismo de gestión de sesiones centralizado y estandarizado.",
             longTerm: "Realizar una revisión exhaustiva de todo el ciclo de vida de la autenticación y la gestión de sesiones. Utilizar frameworks estándar de la industria y evitar la creación de esquemas de autenticación personalizados."
         },
@@ -139,13 +145,15 @@ Los datos sensibles pueden exponerse en tránsito o en reposo. Esto a menudo suc
 The impact of sensitive data exposure can be severe, leading to significant financial losses, reputational damage, and regulatory fines (e.g., under GDPR, CCPA). It can compromise the privacy of users and expose the organization to legal liability.`,
         impact_es: `### Impacto
 El impacto de la exposición de datos sensibles puede ser severo, lo que lleva a pérdidas financieras significativas, daño a la reputación y multas regulatorias (por ejemplo, bajo GDPR, CCPA). Puede comprometer la privacidad de los usuarios y exponer a la organización a responsabilidad legal.`,
+        immediateActions_en: "### Immediate Actions\nImmediately identify all locations where sensitive data is exposed and restrict access. Rotate any exposed credentials, API keys, or tokens.",
+        immediateActions_es: "### Acciones Inmediatas\nIdentificar inmediatamente todas las ubicaciones donde se exponen datos sensibles y restringir el acceso. Rotar cualquier credencial, clave de API o token expuesto.",
         remediation_en: {
-            shortTerm: "Identify all sensitive data and apply strong encryption both at rest and in transit (e.g., TLS 1.2+). Disable caching for responses that contain sensitive data.",
+            shortTerm: "Identify all sensitive data and apply strong encryption both at rest and in transit (e.g., using TLS 1.2+). Disable caching for responses that contain sensitive data.",
             mediumTerm: "Implement a data classification policy. Use strong, industry-standard encryption algorithms and protocols. Ensure proper key management and rotation.",
             longTerm: "Minimize the collection and storage of sensitive data. Conduct regular data discovery and classification exercises to ensure no sensitive data is being stored improperly."
         },
         remediation_es: {
-            shortTerm: "Identificar todos los datos sensibles y aplicar un cifrado fuerte tanto en reposo como en tránsito (p. ej., TLS 1.2+). Deshabilitar el almacenamiento en caché para las respuestas que contienen datos sensibles.",
+            shortTerm: "Identificar todos los datos sensibles y aplicar un cifrado fuerte tanto en reposo como en tránsito (p. ej., usando TLS 1.2+). Deshabilitar el almacenamiento en caché para las respuestas que contienen datos sensibles.",
             mediumTerm: "Implementar una política de clasificación de datos. Utilizar algoritmos y protocolos de cifrado fuertes y estándar de la industria. Asegurar una gestión y rotación de claves adecuadas.",
             longTerm: "Minimizar la recopilación y el almacenamiento de datos sensibles. Realizar ejercicios regulares de descubrimiento y clasificación de datos para garantizar que no se almacenen datos sensibles de forma incorrecta."
         },
@@ -163,7 +171,7 @@ El impacto de la exposición de datos sensibles puede ser severo, lo que lleva a
         details_es: `### Prueba de Concepto
 [TODO: Proporcionar evidencia de los datos expuestos, p. ej., capturas de pantalla de contraseñas en texto plano en la base de datos o tráfico sin cifrar.]`,
     },
-     {
+    {
         id: "vuln-web-005",
         title_en: "XML External Entities (XXE)",
         title_es: "Entidades Externas XML (XXE)",
@@ -179,14 +187,16 @@ Muchos procesadores XML antiguos permiten la especificación de entidades extern
 XXE can lead to the disclosure of confidential data, denial of service (DoS), server-side request forgery (SSRF), and port scanning from the perspective of the machine where the parser is located.`,
         impact_es: `### Impacto
 XXE puede llevar a la divulgación de datos confidenciales, denegación de servicio (DoS), falsificación de solicitudes del lado del servidor (SSRF) y escaneo de puertos desde la perspectiva de la máquina donde se encuentra el analizador.`,
+        immediateActions_en: "### Immediate Actions\nIdentify all XML parsers in the application. If possible, temporarily disable any functionality that processes XML from untrusted sources.",
+        immediateActions_es: "### Acciones Inmediatas\nIdentificar todos los analizadores XML en la aplicación. Si es posible, deshabilitar temporalmente cualquier funcionalidad que procese XML de fuentes no confiables.",
         remediation_en: {
             shortTerm: "Disable DTDs (Document Type Definitions) and external entities in all XML parsers in the application. This is the most effective and simplest way to prevent XXE.",
-            mediumTerm: "Upgrade XML processors and libraries to the latest versions. Use less complex data formats like JSON where possible.",
+            mediumTerm: "Upgrade XML processors and libraries to their latest versions. Use less complex data formats like JSON where possible.",
             longTerm: "Implement server-side input validation and filtering to prevent hostile data within XML documents. Use a Web Application Firewall (WAF) with rules to detect and block XXE attacks."
         },
         remediation_es: {
             shortTerm: "Deshabilitar los DTDs (Definiciones de Tipo de Documento) y las entidades externas en todos los analizadores XML de la aplicación. Esta es la forma más efectiva y sencilla de prevenir XXE.",
-            mediumTerm: "Actualizar los procesadores y bibliotecas XML a las últimas versiones. Usar formatos de datos menos complejos como JSON cuando sea posible.",
+            mediumTerm: "Actualizar los procesadores y bibliotecas XML a sus últimas versiones. Usar formatos de datos menos complejos como JSON cuando sea posible.",
             longTerm: "Implementar validación y filtrado de entradas del lado del servidor para evitar datos hostiles dentro de los documentos XML. Usar un Web Application Firewall (WAF) con reglas para detectar y bloquear ataques XXE."
         },
         cwe: "CWE-611",
@@ -219,6 +229,8 @@ Esta vulnerabilidad surge cuando las restricciones sobre lo que los usuarios aut
 Broken access control can lead to unauthorized access to data and functionality, potentially allowing attackers to take over a site, modify critical data, or perform unauthorized actions as other users.`,
         impact_es: `### Impacto
 El control de acceso roto puede conducir al acceso no autorizado a datos y funcionalidades, permitiendo potencialmente a los atacantes tomar el control de un sitio, modificar datos críticos o realizar acciones no autorizadas como otros usuarios.`,
+        immediateActions_en: "### Immediate Actions\nReview and audit access control rules for the most critical functionalities. Log all access control failures and set up alerts for repeated failures.",
+        immediateActions_es: "### Acciones Inmediatas\nRevisar y auditar las reglas de control de acceso para las funcionalidades más críticas. Registrar todas las fallas de control de acceso y configurar alertas para fallas repetidas.",
         remediation_en: {
             shortTerm: "Review and enforce access control on the server-side for every request. Use role-based access control (RBAC) mechanisms. Deny by default.",
             mediumTerm: "Implement a centralized access control mechanism that is used by all components of the application. Log access control failures and alert administrators.",
@@ -259,6 +271,8 @@ Esta vulnerabilidad puede ocurrir en cualquier nivel de la pila de aplicaciones,
 Security misconfiguration can lead to a wide range of impacts, from information disclosure to a full system compromise, depending on the nature of the misconfiguration.`,
         impact_es: `### Impacto
 La configuración de seguridad incorrecta puede tener una amplia gama de impactos, desde la divulgación de información hasta el compromiso total del sistema, dependiendo de la naturaleza de la configuración incorrecta.`,
+        immediateActions_en: "### Immediate Actions\nReview and disable any unnecessary features (e.g., debug modes, directory listing). Change all default credentials immediately.",
+        immediateActions_es: "### Acciones Inmediatas\nRevisar y deshabilitar cualquier característica innecesaria (p. ej., modos de depuración, listado de directorios). Cambiar todas las credenciales predeterminadas de inmediato.",
         remediation_en: {
             shortTerm: "Review and harden configurations for all parts of the application stack. Implement security headers like Content Security Policy (CSP). Disable unnecessary features and services.",
             mediumTerm: "Develop a repeatable hardening process that is fast and easy to deploy. Automate the process of verifying configurations in different environments.",
@@ -299,6 +313,8 @@ El ataque funciona incluyendo un enlace o script en una página que accede a un 
 A successful CSRF attack can force the user to perform state-changing requests like transferring funds, changing their email address, or purchasing an item.`,
         impact_es: `### Impacto
 Un ataque CSRF exitoso puede obligar al usuario a realizar solicitudes que cambian el estado, como transferir fondos, cambiar su dirección de correo electrónico o comprar un artículo.`,
+        immediateActions_en: "### Immediate Actions\nReview all state-changing forms and API endpoints to identify which ones lack CSRF protection. Prioritize fixing critical functions like password changes or fund transfers.",
+        immediateActions_es: "### Acciones Inmediatas\nRevisar todos los formularios y puntos de conexión de API que cambian el estado para identificar cuáles carecen de protección CSRF. Priorizar la corrección de funciones críticas como cambios de contraseña o transferencias de fondos.",
         remediation_en: {
             shortTerm: "Implement anti-CSRF tokens (synchronizer token pattern) for all state-changing requests. Verify the `Origin` or `Referer` header.",
             mediumTerm: "Use the SameSite cookie attribute, setting it to `Strict` or `Lax`.",
@@ -339,6 +355,8 @@ La vulnerabilidad ocurre cuando una aplicación deserializa datos de una fuente 
 The impact can range from denial-of-service to arbitrary code execution, which can lead to a full system compromise. It can also be used to bypass authentication and access controls.`,
         impact_es: `### Impacto
 El impacto puede variar desde la denegación de servicio hasta la ejecución de código arbitrario, lo que puede llevar a un compromiso total del sistema. También se puede utilizar para eludir la autenticación y los controles de acceso.`,
+        immediateActions_en: "### Immediate Actions\nIdentify all endpoints that accept serialized objects. If possible, disable these endpoints until a proper fix can be implemented.",
+        immediateActions_es: "### Acciones Inmediatas\nIdentificar todos los puntos de conexión que aceptan objetos serializados. Si es posible, deshabilitar estos puntos de conexión hasta que se pueda implementar una solución adecuada.",
         remediation_en: {
             shortTerm: "Avoid deserializing data from untrusted sources. If necessary, implement strict type checking and validation before deserialization.",
             mediumTerm: "Use data formats that are not vulnerable to deserialization attacks, such as JSON, and avoid using complex native serialization formats.",
@@ -379,6 +397,8 @@ La vulnerabilidad ocurre cuando una aplicación obtiene un recurso remoto basado
 A successful SSRF attack can lead to the scanning of internal networks, unauthorized access to internal services, information disclosure, and remote code execution on internal systems.`,
         impact_es: `### Impacto
 Un ataque SSRF exitoso puede llevar al escaneo de redes internas, acceso no autorizado a servicios internos, divulgación de información y ejecución remota de código en sistemas internos.`,
+        immediateActions_en: "### Immediate Actions\nAdd network-level controls (firewall rules) to block outbound traffic from the application server to internal network ranges.",
+        immediateActions_es: "### Acciones Inmediatas\nAgregar controles a nivel de red (reglas de firewall) para bloquear el tráfico saliente desde el servidor de aplicaciones hacia los rangos de la red interna.",
         remediation_en: {
             shortTerm: "Implement a strict allow-list of domains and protocols that the application is allowed to request. Deny all other requests.",
             mediumTerm: "Validate all user-supplied input to ensure it conforms to the expected format and values. Do not send raw responses from the server back to the client.",
@@ -403,10 +423,7 @@ Un ataque SSRF exitoso puede llevar al escaneo de redes internas, acceso no auto
         details_es: `### Prueba de Concepto
 [TODO: Proporcionar una carga útil que demuestre cómo realizar una solicitud a un recurso interno o restringido y mostrar la respuesta del servidor.]`,
     },
-    // ... More vulnerabilities will be added here
-    // The following is a placeholder for the rest of the 100 vulnerabilities.
-    // The full list will be generated in the final response.
-     {
+    {
         id: "vuln-web-011",
         title_en: "HTTP Verb Tampering",
         title_es: "Manipulación de Verbos HTTP",
@@ -422,6 +439,8 @@ Un atacante puede cambiar el método HTTP (p. ej., de POST a GET) para acceder a
 This can lead to bypassing authentication, privilege escalation, or unauthorized execution of sensitive operations.`,
         impact_es: `### Impacto
 Esto puede conducir a la omisión de la autenticación, la escalada de privilegios o la ejecución no autorizada de operaciones sensibles.`,
+        immediateActions_en: "### Immediate Actions\nReview the web server configuration to ensure it does not allow unexpected HTTP verbs for sensitive endpoints. Implement logging to detect unusual HTTP method usage.",
+        immediateActions_es: "### Acciones Inmediatas\nRevisar la configuración del servidor web para asegurarse de que no permite verbos HTTP inesperados para puntos de conexión sensibles. Implementar registros para detectar el uso inusual de métodos HTTP.",
         remediation_en: {
             shortTerm: "Enforce strict, default-deny access control for all endpoints, regardless of the HTTP verb used.",
             mediumTerm: "Use a framework that correctly maps actions to specific HTTP verbs and enforces this mapping.",
@@ -462,6 +481,8 @@ La vulnerabilidad ocurre cuando una página recibe como entrada la ruta del arch
 LFI can lead to information disclosure, remote code execution, and denial of service. Attackers can read sensitive files like \`/etc/passwd\` or application source code.`,
         impact_es: `### Impacto
 LFI puede conducir a la divulgación de información, ejecución remota de código y denegación de servicio. Los atacantes pueden leer archivos sensibles como \`/etc/passwd\` o el código fuente de la aplicación.`,
+        immediateActions_en: "### Immediate Actions\nImplement input validation to strip out directory traversal characters (`../`, `..\\`). Disable PHP wrappers like `php://filter` if not explicitly needed.",
+        immediateActions_es: "### Acciones Inmediatas\nImplementar la validación de entradas para eliminar los caracteres de salto de directorio (`../`, `..\\`). Deshabilitar los wrappers de PHP como `php://filter` si no se necesitan explícitamente.",
         remediation_en: {
             shortTerm: "Validate user input against a strict allow-list of acceptable file names and paths.",
             mediumTerm: "Avoid passing user-supplied input to filesystem APIs. If unavoidable, use a mapping to safe, pre-defined file paths.",
@@ -502,6 +523,8 @@ Si una aplicación realiza solicitudes basadas en la entrada del usuario y permi
 This leads to the disclosure of sensitive files on the server, including configuration files, source code, and system files.`,
         impact_es: `### Impacto
 Esto conduce a la divulgación de archivos sensibles en el servidor, incluidos archivos de configuración, código fuente y archivos del sistema.`,
+        immediateActions_en: "### Immediate Actions\nDeploy a WAF rule or application-level filter to specifically block any user-supplied URLs that contain the `file://` protocol handler.",
+        immediateActions_es: "### Acciones Inmediatas\nImplementar una regla de WAF o un filtro a nivel de aplicación para bloquear específicamente cualquier URL proporcionada por el usuario que contenga el manejador de protocolo `file://`.",
         remediation_en: {
             shortTerm: "Strictly disallow the `file://` URI scheme in all functions that make server-side requests.",
             mediumTerm: "Implement a robust URI parser that validates and restricts protocols to an allow-list (e.g., only HTTP and HTTPS).",
@@ -526,7 +549,8 @@ Esto conduce a la divulgación de archivos sensibles en el servidor, incluidos a
         details_es: `### Prueba de Concepto
 [TODO: Proporcionar una solicitud utilizando una carga útil \`file://\` y mostrar el contenido de un archivo local en la respuesta.]`,
     },
-     {
+    // --- MOBILE VULNERABILITIES ---
+    {
         id: "vuln-mobile-001",
         title_en: "Insecure Data Storage",
         title_es: "Almacenamiento Inseguro de Datos",
@@ -542,8 +566,10 @@ Información sensible como contraseñas, claves de API o datos personales del us
 Leads to the compromise of user credentials, session tokens, and other sensitive data, which can result in account takeover, identity theft, and other fraudulent activities.`,
         impact_es: `### Impacto
 Conduce al compromiso de credenciales de usuario, tokens de sesión y otros datos sensibles, lo que puede resultar en la toma de control de cuentas, robo de identidad y otras actividades fraudulentas.`,
+        immediateActions_en: "### Immediate Actions\nPush an immediate update that migrates sensitive data from insecure storage to a secure alternative (e.g., iOS Keychain, Android Keystore). Invalidate any exposed tokens or credentials.",
+        immediateActions_es: "### Acciones Inmediatas\nLanzar una actualización inmediata que migre los datos sensibles del almacenamiento inseguro a una alternativa segura (p. ej., Llavero de iOS, Keystore de Android). Invalidar cualquier token o credencial expuesta.",
         remediation_en: {
-            shortTerm: "Immediately encrypt all sensitive data before storing it on the device. Use platform-provided secure storage mechanisms like Android's EncryptedSharedPreferences or iOS's Keychain.",
+            shortTerm: "Encrypt all sensitive data before storing it on the device. Use platform-provided secure storage mechanisms like Android's EncryptedSharedPreferences or iOS's Keychain.",
             mediumTerm: "Develop a data classification policy for the mobile app to identify what data is sensitive and requires encryption. Avoid storing sensitive data on the device whenever possible.",
             longTerm: "Implement a secure data management lifecycle for the mobile app, including secure storage, transmission, and deletion of data. Conduct regular security audits of the app's data storage practices."
         },
@@ -555,7 +581,7 @@ Conduce al compromiso de credenciales de usuario, tokens de sesión y otros dato
         cwe: "CWE-922",
         severity: "High",
         cvss: { score: 7.5, vectorString: "CVSS:3.1/AV:L/AC:L/PR:L/UI:N/S:U/C:H/I:N/A:N", attackVector: "L", attackComplexity: "L", privilegesRequired: "L", userInteraction: "N", scope: "U", confidentiality: "H", integrity: "N", availability: "N" },
-        references: ["https://owasp.org/www-project-mobile-top-10/2024-risks/m10-insecure-data-storage"],
+        references: ["https://owasp.org/www-project-mobile-top-10/2016-risks/m2-insecure-data-storage/"],
         tags: ["Mobile"],
         affectedComponents_en: `### Affected Components
 - [TODO: List the files or databases where data is stored insecurely (e.g., SharedPreferences file, SQLite DB).]`,
@@ -565,5 +591,385 @@ Conduce al compromiso de credenciales de usuario, tokens de sesión y otros dato
 - [TODO: Listar los archivos o bases de datos donde los datos se almacenan de forma insegura (p. ej., archivo SharedPreferences, BD SQLite).]`,
         details_es: `### Prueba de Concepto
 [TODO: Proporcionar los pasos para extraer los datos almacenados de forma insegura de un dispositivo de prueba (p. ej., usando ADB o exploradores de sistema de archivos).]`,
+    },
+    {
+        id: "vuln-mobile-002",
+        title_en: "Weak Server-Side Controls",
+        title_es: "Controles Débiles en el Servidor",
+        overview_en: `### Overview
+This category covers security issues that result from a mobile app's reliance on server-side components. These are not flaws in the mobile app itself but in the backend APIs it communicates with.`,
+        overview_es: `### Resumen
+Esta categoría cubre problemas de seguridad que resultan de la dependencia de una aplicación móvil de componentes del lado del servidor. No son fallas en la aplicación móvil en sí, sino en las API de backend con las que se comunica.`,
+        technicalDescription_en: `### Technical Description
+Mobile applications are often clients to backend services. Flaws in these backend services, such as broken access control (IDOR), SQL injection, or business logic flaws, can be exploited through the mobile app's API requests. The mobile app becomes the attack vector for compromising the server.`,
+        technicalDescription_es: `### Descripción Técnica
+Las aplicaciones móviles suelen ser clientes de servicios de backend. Las fallas en estos servicios de backend, como el control de acceso roto (IDOR), la inyección de SQL o las fallas en la lógica de negocio, pueden explotarse a través de las solicitudes de API de la aplicación móvil. La aplicación móvil se convierte en el vector de ataque para comprometer el servidor.`,
+        impact_en: `### Impact
+The impact is equivalent to the corresponding web vulnerability being exploited. This can range from data disclosure to full system compromise of the backend infrastructure.`,
+        impact_es: `### Impacto
+El impacto es equivalente a la explotación de la vulnerabilidad web correspondiente. Esto puede variar desde la divulgación de datos hasta el compromiso total del sistema de la infraestructura de backend.`,
+        immediateActions_en: "### Immediate Actions\nImplement emergency firewall rules to block malicious requests identified during testing. Invalidate sessions of any users who may have been compromised.",
+        immediateActions_es: "### Acciones Inmediatas\nImplementar reglas de firewall de emergencia para bloquear las solicitudes maliciosas identificadas durante las pruebas. Invalidar las sesiones de los usuarios que puedan haber sido comprometidos.",
+        remediation_en: {
+            shortTerm: "Apply the same security best practices to mobile backend APIs as you would for a standard web application. This includes input validation, parameterized queries, and strong access control.",
+            mediumTerm: "Implement API-specific security measures, such as rate limiting, request throttling, and robust authentication/authorization for all endpoints.",
+            longTerm: "Design the backend API with a 'zero trust' model, assuming that any request from a mobile client could be malicious. Do not rely on client-side controls for security."
+        },
+        remediation_es: {
+            shortTerm: "Aplicar las mismas mejores prácticas de seguridad a las API de backend móvil que se aplicarían a una aplicación web estándar. Esto incluye validación de entradas, consultas parametrizadas y un fuerte control de acceso.",
+            mediumTerm: "Implementar medidas de seguridad específicas para la API, como limitación de velocidad, regulación de solicitudes y autenticación/autorización robustas para todos los puntos de conexión.",
+            longTerm: "Diseñar la API de backend con un modelo de 'confianza cero', asumiendo que cualquier solicitud de un cliente móvil podría ser maliciosa. No depender de los controles del lado del cliente para la seguridad."
+        },
+        cwe: "CWE-602",
+        severity: "High",
+        cvss: { score: 8.8, vectorString: "CVSS:3.1/AV:N/AC:L/PR:L/UI:N/S:U/C:H/I:H/A:H", attackVector: "N", attackComplexity: "L", privilegesRequired: "L", userInteraction: "N", scope: "U", confidentiality: "H", integrity: "H", availability: "H" },
+        references: ["https://owasp.org/www-project-mobile-top-10/2016-risks/m10-extraneous-functionality/"],
+        tags: ["Mobile", "API"],
+        affectedComponents_en: `### Affected Components
+- [TODO: List the vulnerable backend API endpoints.]`,
+        details_en: `### Proof of Concept
+[TODO: Provide the API request and response that demonstrates the server-side vulnerability.]`,
+        affectedComponents_es: `### Componentes Afectados
+- [TODO: Listar los endpoints de la API de backend vulnerables.]`,
+        details_es: `### Prueba de Concepto
+[TODO: Proporcionar la solicitud y respuesta de la API que demuestra la vulnerabilidad del lado del servidor.]`,
+    },
+    {
+        id: "vuln-mobile-003",
+        title_en: "Insufficient Transport Layer Protection",
+        title_es: "Protección Insuficiente de la Capa de Transporte",
+        overview_en: `### Overview
+This vulnerability arises when a mobile application fails to properly implement SSL/TLS for network communications, exposing user data to interception.`,
+        overview_es: `### Resumen
+Esta vulnerabilidad surge cuando una aplicación móvil no implementa correctamente SSL/TLS para las comunicaciones de red, exponiendo los datos del usuario a la interceptación.`,
+        technicalDescription_en: `### Technical Description
+The app may communicate over unencrypted HTTP, use outdated and weak TLS protocols/ciphers, accept self-signed certificates, or fail to properly validate the server's certificate. This allows an attacker in a privileged network position (e.g., on the same Wi-Fi) to perform a Man-in-the-Middle (MitM) attack.`,
+        technicalDescription_es: `### Descripción Técnica
+La aplicación puede comunicarse a través de HTTP sin cifrar, usar protocolos/cifrados TLS obsoletos y débiles, aceptar certificados autofirmados o no validar correctamente el certificado del servidor. Esto permite a un atacante en una posición de red privilegiada (p. ej., en la misma red Wi-Fi) realizar un ataque de Hombre en el Medio (MitM).`,
+        impact_en: `### Impact
+An attacker can intercept, view, and modify all traffic between the mobile app and the server, including login credentials, session tokens, and personal data.`,
+        impact_es: `### Impacto
+Un atacante puede interceptar, ver y modificar todo el tráfico entre la aplicación móvil y el servidor, incluidas las credenciales de inicio de sesión, los tokens de sesión y los datos personales.`,
+        immediateActions_en: "### Immediate Actions\nForce all network connections to use HTTPS. Release a patch that enables SSL pinning.",
+        immediateActions_es: "### Acciones Inmediatas\nForzar todas las conexiones de red para que usen HTTPS. Lanzar un parche que habilite el anclaje de SSL (SSL pinning).",
+        remediation_en: {
+            shortTerm: "Ensure that TLS is used for all network communications. Configure the app to only support strong TLS protocols (TLS 1.2, TLS 1.3) and modern cipher suites.",
+            mediumTerm: "Implement SSL/TLS certificate pinning to prevent MitM attacks even if the device's trust store is compromised. Disallow the use of self-signed certificates in production builds.",
+            longTerm: "Regularly review and update the list of trusted certificates and cipher suites. Use automated tools to scan the application for insecure network configurations during the development cycle."
+        },
+        remediation_es: {
+            shortTerm: "Asegurarse de que se utilice TLS para todas las comunicaciones de red. Configurar la aplicación para que solo admita protocolos TLS fuertes (TLS 1.2, TLS 1.3) y conjuntos de cifrado modernos.",
+            mediumTerm: "Implementar el anclaje de certificados SSL/TLS (certificate pinning) para prevenir ataques MitM incluso si el almacén de confianza del dispositivo está comprometido. No permitir el uso de certificados autofirmados en las compilaciones de producción.",
+            longTerm: "Revisar y actualizar regularmente la lista de certificados y conjuntos de cifrado de confianza. Utilizar herramientas automatizadas para escanear la aplicación en busca de configuraciones de red inseguras durante el ciclo de desarrollo."
+        },
+        cwe: "CWE-319",
+        severity: "High",
+        cvss: { score: 7.4, vectorString: "CVSS:3.1/AV:A/AC:L/PR:N/UI:N/S:U/C:H/I:L/A:N", attackVector: "A", attackComplexity: "L", privilegesRequired: "N", userInteraction: "N", scope: "U", confidentiality: "H", integrity: "L", availability: "N" },
+        references: ["https://owasp.org/www-project-mobile-top-10/2016-risks/m3-insecure-communication/"],
+        tags: ["Mobile", "Network"],
+        affectedComponents_en: `### Affected Components
+- [TODO: List the network requests or API endpoints using insecure communication.]`,
+        details_en: `### Proof of Concept
+[TODO: Provide screenshots from a proxy tool (e.g., Burp Suite) showing intercepted plaintext traffic or a successful TLS downgrade attack.]`,
+        affectedComponents_es: `### Componentes Afectados
+- [TODO: Listar las solicitudes de red o puntos de conexión de API que utilizan comunicación insegura.]`,
+        details_es: `### Prueba de Concepto
+[TODO: Proporcionar capturas de pantalla de una herramienta de proxy (p. ej., Burp Suite) que muestren tráfico en texto plano interceptado o un ataque de degradación de TLS exitoso.]`,
+    },
+    {
+        id: "vuln-mobile-004",
+        title_en: "Unintended Data Leakage",
+        title_es: "Filtración de Datos no Intencionada",
+        overview_en: `### Overview
+Unintended data leakage occurs when sensitive data is unintentionally exposed or written to an insecure location on the mobile device or sent to third parties.`,
+        overview_es: `### Resumen
+La filtración de datos no intencionada ocurre cuando datos sensibles se exponen o se escriben sin querer en una ubicación insegura en el dispositivo móvil o se envían a terceros.`,
+        technicalDescription_en: `### Technical Description
+This can happen in several ways, such as logging sensitive data to system logs (Logcat/ASL), data being placed in the clipboard, URLs caching sensitive information in the browser history, or keyboard press caching. It also includes sending data to third-party analytics or ad services without proper masking.`,
+        technicalDescription_es: `### Descripción Técnica
+Esto puede suceder de varias maneras, como registrar datos sensibles en los registros del sistema (Logcat/ASL), colocar datos en el portapapeles, almacenar en caché información sensible en el historial del navegador o en la caché de pulsaciones de teclas. También incluye el envío de datos a servicios de análisis o publicidad de terceros sin el enmascaramiento adecuado.`,
+        impact_en: `### Impact
+The impact depends on the sensitivity of the leaked data. It can range from privacy violations to the full compromise of user accounts if credentials or session tokens are leaked.`,
+        impact_es: `### Impacto
+El impacto depende de la sensibilidad de los datos filtrados. Puede variar desde violaciones de la privacidad hasta el compromiso total de las cuentas de usuario si se filtran credenciales o tokens de sesión.`,
+        immediateActions_en: "### Immediate Actions\nReview the application's logging statements and disable any that output sensitive information. Disable keyboard caching on sensitive input fields.",
+        immediateActions_es: "### Acciones Inmediatas\nRevisar las declaraciones de registro de la aplicación y deshabilitar cualquiera que genere información sensible. Deshabilitar el almacenamiento en caché del teclado en los campos de entrada sensibles.",
+        remediation_en: {
+            shortTerm: "Remove all logging of sensitive data. Disable keyboard caching for password fields. Clear the clipboard after a user copies sensitive information from the app.",
+            mediumTerm: "Review and minimize the data sent to third-party services. Implement data masking or tokenization for any sensitive data that must be shared.",
+            longTerm: "Establish a clear data flow diagram for the application and conduct a privacy impact assessment. Regularly review third-party SDKs for their data handling practices."
+        },
+        remediation_es: {
+            shortTerm: "Eliminar todo el registro de datos sensibles. Deshabilitar el almacenamiento en caché del teclado para los campos de contraseña. Limpiar el portapapeles después de que un usuario copie información sensible de la aplicación.",
+            mediumTerm: "Revisar y minimizar los datos enviados a servicios de terceros. Implementar enmascaramiento de datos o tokenización para cualquier dato sensible que deba compartirse.",
+            longTerm: "Establecer un diagrama de flujo de datos claro para la aplicación y realizar una evaluación de impacto en la privacidad. Revisar regularmente los SDK de terceros por sus prácticas de manejo de datos."
+        },
+        cwe: "CWE-532",
+        severity: "Medium",
+        cvss: { score: 5.7, vectorString: "CVSS:3.1/AV:N/AC:L/PR:L/UI:N/S:U/C:H/I:N/A:N", attackVector: "N", attackComplexity: "L", privilegesRequired: "L", userInteraction: "N", scope: "U", confidentiality: "H", integrity: "N", availability: "N" },
+        references: ["https://owasp.org/www-project-mobile-top-10/2016-risks/m4-unintended-data-leakage/"],
+        tags: ["Mobile"],
+        affectedComponents_en: `### Affected Components
+- [TODO: Specify where data leakage occurs (e.g., Logcat output, clipboard, analytics data).]`,
+        details_en: `### Proof of Concept
+[TODO: Provide screenshots or log excerpts showing the sensitive data being leaked.]`,
+        affectedComponents_es: `### Componentes Afectados
+- [TODO: Especificar dónde ocurre la filtración de datos (p. ej., salida de Logcat, portapapeles, datos de análisis).]`,
+        details_es: `### Prueba de Concepto
+[TODO: Proporcionar capturas de pantalla o extractos de registros que muestren la filtración de datos sensibles.]`,
+    },
+    {
+        id: "vuln-mobile-005",
+        title_en: "Poor Authorization",
+        title_es: "Autorización Deficiente",
+        overview_en: `### Overview
+Poor authorization vulnerabilities occur when a user is able to access resources or perform actions that they should not be permitted to. This is a server-side flaw, but it is tested and exploited via the mobile app.`,
+        overview_es: `### Resumen
+Las vulnerabilidades de autorización deficiente ocurren cuando un usuario puede acceder a recursos o realizar acciones que no debería tener permitidas. Esta es una falla del lado del servidor, pero se prueba y explota a través de la aplicación móvil.`,
+        technicalDescription_en: `### Technical Description
+This is similar to Broken Access Control in web applications. An attacker, authenticated as a low-privilege user, can manipulate API requests to access data or functionality belonging to another user or a higher-privilege role. For example, changing a user ID in an API call from \`/api/users/123/profile\` to \`/api/users/456/profile\` to view another user's data.`,
+        technicalDescription_es: `### Descripción Técnica
+Esto es similar al Control de Acceso Roto en aplicaciones web. Un atacante, autenticado como un usuario de bajos privilegios, puede manipular las solicitudes de API para acceder a datos o funcionalidades que pertenecen a otro usuario o a un rol de mayor privilegio. Por ejemplo, cambiar un ID de usuario en una llamada a la API de \`/api/users/123/profile\` a \`/api/users/456/profile\` para ver los datos de otro usuario.`,
+        impact_en: `### Impact
+The impact can be severe, allowing attackers to view, modify, or delete any data accessible via the backend API, regardless of ownership or privilege level.`,
+        impact_es: `### Impacto
+El impacto puede ser severo, permitiendo a los atacantes ver, modificar o eliminar cualquier dato accesible a través de la API de backend, independientemente de la propiedad o el nivel de privilegio.`,
+        immediateActions_en: "### Immediate Actions\nReview and audit the authorization logic for the most critical API endpoints. Implement temporary blocking rules for any user exhibiting suspicious access patterns.",
+        immediateActions_es: "### Acciones Inmediatas\nRevisar y auditar la lógica de autorización para los puntos de conexión de API más críticos. Implementar reglas de bloqueo temporales para cualquier usuario que exhiba patrones de acceso sospechosos.",
+        remediation_en: {
+            shortTerm: "Enforce authorization checks on the server-side for every single API request. Do not rely on the client to control which UI elements are shown to the user.",
+            mediumTerm: "Implement a robust, centralized role-based access control (RBAC) system for the backend API. Ensure that ownership is checked for all data access requests.",
+            longTerm: "Conduct a thorough security review of the entire API surface. Unit and integration tests should be created to verify that authorization rules are correctly enforced."
+        },
+        remediation_es: {
+            shortTerm: "Hacer cumplir las comprobaciones de autorización en el lado del servidor para cada solicitud de API individual. No depender del cliente para controlar qué elementos de la interfaz de usuario se muestran al usuario.",
+            mediumTerm: "Implementar un sistema de control de acceso basado en roles (RBAC) robusto y centralizado para la API de backend. Asegurarse de que se compruebe la propiedad para todas las solicitudes de acceso a datos.",
+            longTerm: "Realizar una revisión de seguridad exhaustiva de toda la superficie de la API. Se deben crear pruebas unitarias y de integración para verificar que las reglas de autorización se apliquen correctamente."
+        },
+        cwe: "CWE-863",
+        severity: "High",
+        cvss: { score: 8.1, vectorString: "CVSS:3.1/AV:N/AC:L/PR:L/UI:N/S:U/C:H/I:H/A:N", attackVector: "N", attackComplexity: "L", privilegesRequired: "L", userInteraction: "N", scope: "U", confidentiality: "H", integrity: "H", availability: "N" },
+        references: ["https://owasp.org/www-project-mobile-top-10/2016-risks/m5-poor-authorization-and-authentication/"],
+        tags: ["Mobile", "API"],
+        affectedComponents_en: `### Affected Components
+- [TODO: List the API endpoints that fail to enforce proper authorization.]`,
+        details_en: `### Proof of Concept
+[TODO: Provide a sequence of API requests (e.g., from Burp Suite) showing how a low-privilege user can access or modify data they should not have access to.]`,
+        affectedComponents_es: `### Componentes Afectados
+- [TODO: Listar los puntos de conexión de la API que no aplican la autorización adecuada.]`,
+        details_es: `### Prueba de Concepto
+[TODO: Proporcionar una secuencia de solicitudes de API (p. ej., desde Burp Suite) que muestre cómo un usuario con pocos privilegios puede acceder o modificar datos a los que no debería tener acceso.]`,
+    },
+    {
+        id: "vuln-mobile-006",
+        title_en: "Broken Cryptography",
+        title_es: "Criptografía Rota",
+        overview_en: `### Overview
+This vulnerability arises from the incorrect use of cryptography in a mobile app, such as using weak or outdated algorithms, or implementing custom, insecure cryptographic protocols.`,
+        overview_es: `### Resumen
+Esta vulnerabilidad surge del uso incorrecto de la criptografía en una aplicación móvil, como el uso de algoritmos débiles u obsoletos, o la implementación de protocolos criptográficos personalizados e inseguros.`,
+        technicalDescription_en: `### Technical Description
+The app may use deprecated algorithms like MD5 or SHA1 for hashing passwords, use static keys for encryption, implement its own flawed encryption algorithm, or use predictable initialization vectors (IVs). This allows an attacker to decrypt sensitive data or bypass security controls.`,
+        technicalDescription_es: `### Descripción Técnica
+La aplicación puede usar algoritmos obsoletos como MD5 o SHA1 para hashear contraseñas, usar claves estáticas para el cifrado, implementar su propio algoritmo de cifrado defectuoso o usar vectores de inicialización (IV) predecibles. Esto permite a un atacante descifrar datos sensibles o eludir los controles de seguridad.`,
+        impact_en: `### Impact
+Broken cryptography can lead to the compromise of sensitive data stored on the device or transmitted over the network. It can completely undermine the security of authentication and data protection mechanisms.`,
+        impact_es: `### Impacto
+La criptografía rota puede llevar al compromiso de datos sensibles almacenados en el dispositivo o transmitidos por la red. Puede socavar por completo la seguridad de los mecanismos de autenticación y protección de datos.`,
+        immediateActions_en: "### Immediate Actions\nIdentify and immediately cease the use of any custom or known-weak cryptographic algorithms (e.g., MD5, SHA1, DES).",
+        immediateActions_es: "### Acciones Inmediatas\nIdentificar y cesar inmediatamente el uso de cualquier algoritmo criptográfico personalizado o conocido por ser débil (p. ej., MD5, SHA1, DES).",
+        remediation_en: {
+            shortTerm: "Replace all weak or custom cryptographic algorithms with modern, industry-standard algorithms (e.g., AES-256-GCM for encryption, PBKDF2 or Argon2 for password hashing).",
+            mediumTerm: "Do not implement cryptography from scratch. Use well-vetted, platform-provided cryptographic libraries and APIs.",
+            longTerm: "Establish a policy for cryptographic standards and regularly review the application to ensure compliance. This includes key management, algorithm choice, and protocol usage."
+        },
+        remediation_es: {
+            shortTerm: "Reemplazar todos los algoritmos criptográficos débiles o personalizados con algoritmos modernos y estándar de la industria (p. ej., AES-256-GCM para el cifrado, PBKDF2 o Argon2 para el hasheo de contraseñas).",
+            mediumTerm: "No implementar la criptografía desde cero. Utilizar bibliotecas y API criptográficas bien examinadas y proporcionadas por la plataforma.",
+            longTerm: "Establecer una política para los estándares criptográficos y revisar regularmente la aplicación para asegurar el cumplimiento. Esto incluye la gestión de claves, la elección de algoritmos y el uso de protocolos."
+        },
+        cwe: "CWE-327",
+        severity: "High",
+        cvss: { score: 7.5, vectorString: "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:H/I:N/A:N", attackVector: "N", attackComplexity: "L", privilegesRequired: "N", userInteraction: "N", scope: "U", confidentiality: "H", integrity: "N", availability: "N" },
+        references: ["https://owasp.org/www-project-mobile-top-10/2016-risks/m6-insecure-authorization/"],
+        tags: ["Mobile", "Cryptography"],
+        affectedComponents_en: `### Affected Components
+- [TODO: Specify the part of the code where broken cryptography is used.]`,
+        details_en: `### Proof of Concept
+[TODO: Provide evidence of the weak cryptography, such as decrypting data encrypted with a static key or cracking a password hash.]`,
+        affectedComponents_es: `### Componentes Afectados
+- [TODO: Especificar la parte del código donde se utiliza la criptografía rota.]`,
+        details_es: `### Prueba de Concepto
+[TODO: Proporcionar evidencia de la criptografía débil, como el descifrado de datos cifrados con una clave estática o el craqueo de un hash de contraseña.]`,
+    },
+    {
+        id: "vuln-mobile-007",
+        title_en: "Client-Side Injection",
+        title_es: "Inyección en el Lado del Cliente",
+        overview_en: `### Overview
+Client-side injection vulnerabilities in mobile apps occur when untrusted data is processed by a data interpreter on the client side, such as a SQLite database or a web view.`,
+        overview_es: `### Resumen
+Las vulnerabilidades de inyección en el lado del cliente en aplicaciones móviles ocurren cuando datos no confiables son procesados por un intérprete de datos en el lado del cliente, como una base de datos SQLite o una vista web.`,
+        technicalDescription_en: `### Technical Description
+This category includes vulnerabilities like SQL injection in local SQLite databases, or Cross-Site Scripting (XSS) in local web views (WebView/WKWebView). An attacker might be able to corrupt the local data, or execute malicious scripts in the context of the app's local web content.`,
+        technicalDescription_es: `### Descripción Técnica
+Esta categoría incluye vulnerabilidades como la inyección de SQL en bases de datos SQLite locales, o Cross-Site Scripting (XSS) en vistas web locales (WebView/WKWebView). Un atacante podría ser capaz de corromper los datos locales o ejecutar scripts maliciosos en el contexto del contenido web local de la aplicación.`,
+        impact_en: `### Impact
+The impact can range from data corruption and denial-of-service on the local app, to the execution of arbitrary code within a sandboxed web view, which could lead to session token theft if the token is exposed to the web view.`,
+        impact_es: `### Impacto
+El impacto puede variar desde la corrupción de datos y la denegación de servicio en la aplicación local, hasta la ejecución de código arbitrario dentro de una vista web aislada, lo que podría llevar al robo de tokens de sesión si el token está expuesto a la vista web.`,
+        immediateActions_en: "### Immediate Actions\nIdentify all local data interpreters (SQLite, WebViews) and review the code to find where they process untrusted data. Apply input validation as a temporary fix.",
+        immediateActions_es: "### Acciones Inmediatas\nIdentificar todos los intérpretes de datos locales (SQLite, WebViews) y revisar el código para encontrar dónde procesan datos no confiables. Aplicar la validación de entradas como una solución temporal.",
+        remediation_en: {
+            shortTerm: "Use parameterized queries (prepared statements) for all local SQLite database interactions. For WebViews, ensure JavaScript is disabled if not needed, and properly encode any data displayed in them.",
+            mediumTerm: "Avoid processing untrusted data on the client side whenever possible. Perform validation and sanitization on the server side before sending data to the client.",
+            longTerm: "Implement a secure coding standard for the mobile app that includes guidelines for handling untrusted data on the client side. Use automated scanning tools to detect client-side injection flaws."
+        },
+        remediation_es: {
+            shortTerm: "Usar consultas parametrizadas (prepared statements) para todas las interacciones con la base de datos SQLite local. Para las WebViews, asegurarse de que JavaScript esté deshabilitado si no es necesario, y codificar correctamente cualquier dato que se muestre en ellas.",
+            mediumTerm: "Evitar el procesamiento de datos no confiables en el lado del cliente siempre que sea posible. Realizar la validación y el saneamiento en el lado del servidor antes de enviar los datos al cliente.",
+            longTerm: "Implementar un estándar de codificación segura para la aplicación móvil que incluya pautas para el manejo de datos no confiables en el lado del cliente. Usar herramientas de escaneo automatizadas para detectar fallas de inyección en el lado del cliente."
+        },
+        cwe: "CWE-74",
+        severity: "Medium",
+        cvss: { score: 6.5, vectorString: "CVSS:3.1/AV:L/AC:L/PR:N/UI:R/S:U/C:H/I:L/A:N", attackVector: "L", attackComplexity: "L", privilegesRequired: "N", userInteraction: "R", scope: "U", confidentiality: "H", integrity: "L", availability: "N" },
+        references: ["https://owasp.org/www-project-mobile-top-10/2016-risks/m7-client-side-injection/"],
+        tags: ["Mobile"],
+        affectedComponents_en: `### Affected Components
+- [TODO: Specify the local database query or WebView that is vulnerable.]`,
+        details_en: `### Proof of Concept
+[TODO: Provide a PoC, such as a malicious SQL query that corrupts the local DB, or an XSS payload that executes in a WebView.]`,
+        affectedComponents_es: `### Componentes Afectados
+- [TODO: Especificar la consulta de la base de datos local o la WebView que es vulnerable.]`,
+        details_es: `### Prueba de Concepto
+[TODO: Proporcionar una PoC, como una consulta SQL maliciosa que corrompe la BD local, o una carga útil de XSS que se ejecuta en una WebView.]`,
+    },
+    {
+        id: "vuln-mobile-008",
+        title_en: "Security Decisions Via Untrusted Inputs",
+        title_es: "Decisiones de Seguridad a Través de Entradas no Confiables",
+        overview_en: `### Overview
+This vulnerability occurs when the mobile application makes security-related decisions based on data that comes from an untrusted source, such as user input or IPC messages.`,
+        overview_es: `### Resumen
+Esta vulnerabilidad ocurre cuando la aplicación móvil toma decisiones relacionadas con la seguridad basándose en datos que provienen de una fuente no confiable, como la entrada del usuario o mensajes IPC.`,
+        technicalDescription_en: `### Technical Description
+The application might trust a URL provided in an IPC message to load content into a WebView, or use a boolean flag from a configuration file that can be modified by the user to enable or disable security features (like SSL pinning).`,
+        technicalDescription_es: `### Descripción Técnica
+La aplicación puede confiar en una URL proporcionada en un mensaje IPC para cargar contenido en una WebView, o usar una bandera booleana de un archivo de configuración que puede ser modificado por el usuario para habilitar o deshabilitar características de seguridad (como el anclaje de SSL).`,
+        impact_en: `### Impact
+This can lead to a complete bypass of security controls. For example, an attacker could disable SSL pinning, bypass business logic, or trick the application into loading malicious content.`,
+        impact_es: `### Impacto
+Esto puede conducir a una omisión completa de los controles de seguridad. Por ejemplo, un atacante podría deshabilitar el anclaje de SSL, eludir la lógica de negocio o engañar a la aplicación para que cargue contenido malicioso.`,
+        immediateActions_en: "### Immediate Actions\nIdentify all security decisions made by the app. Trace the data sources for these decisions and immediately implement server-side validation or use hardcoded, secure values.",
+        immediateActions_es: "### Acciones Inmediatas\nIdentificar todas las decisiones de seguridad tomadas por la aplicación. Rastrear las fuentes de datos para estas decisiones e implementar inmediatamente la validación del lado del servidor o usar valores seguros y codificados de forma rígida.",
+        remediation_en: {
+            shortTerm: "Never make security decisions based on user-controlled or otherwise untrusted input. Security controls should be enforced by server-side logic or hardcoded in the application binary.",
+            mediumTerm: "For any security-sensitive configurations, fetch them from a trusted server-side endpoint rather than storing them in a client-modifiable file.",
+            longTerm: "Design the application so that the client is treated as a completely untrusted environment. All significant security checks and decisions must be made on the server."
+        },
+        remediation_es: {
+            shortTerm: "Nunca tomar decisiones de seguridad basadas en entradas controladas por el usuario o de otra manera no confiables. Los controles de seguridad deben ser aplicados por la lógica del lado del servidor o codificados de forma rígida en el binario de la aplicación.",
+            mediumTerm: "Para cualquier configuración sensible a la seguridad, obtenerla de un punto de conexión de confianza del lado del servidor en lugar de almacenarla en un archivo modificable por el cliente.",
+            longTerm: "Diseñar la aplicación de modo que el cliente sea tratado como un entorno completamente no confiable. Todas las comprobaciones y decisiones de seguridad significativas deben realizarse en el servidor."
+        },
+        cwe: "CWE-807",
+        severity: "High",
+        cvss: { score: 8.1, vectorString: "CVSS:3.1/AV:N/AC:H/PR:N/UI:N/S:U/C:H/I:H/A:H", attackVector: "N", attackComplexity: "H", privilegesRequired: "N", userInteraction: "N", scope: "U", confidentiality: "H", integrity: "H", availability: "H" },
+        references: ["https://owasp.org/www-project-mobile-top-10/2016-risks/m8-security-decisions-via-untrusted-inputs/"],
+        tags: ["Mobile"],
+        affectedComponents_en: `### Affected Components
+- [TODO: Specify the security decision and the untrusted input that influences it.]`,
+        details_en: `### Proof of Concept
+[TODO: Provide a PoC demonstrating how to manipulate the untrusted input to bypass a security control.]`,
+        affectedComponents_es: `### Componentes Afectados
+- [TODO: Especificar la decisión de seguridad y la entrada no confiable que la influye.]`,
+        details_es: `### Prueba de Concepto
+[TODO: Proporcionar una PoC que demuestre cómo manipular la entrada no confiable para eludir un control de seguridad.]`,
+    },
+    {
+        id: "vuln-mobile-009",
+        title_en: "Improper Session Handling",
+        title_es: "Manejo Inapropiado de Sesiones",
+        overview_en: `### Overview
+This vulnerability occurs when a mobile application does not properly manage user sessions, particularly session timeouts and token invalidation.`,
+        overview_es: `### Resumen
+Esta vulnerabilidad ocurre cuando una aplicación móvil no gestiona adecuadamente las sesiones de usuario, en particular los tiempos de espera de sesión y la invalidación de tokens.`,
+        technicalDescription_en: `### Technical Description
+The application may issue session tokens that never expire, or fail to invalidate a session token on the server-side after the user logs out. An attacker who gains access to a session token can reuse it indefinitely to impersonate the user.`,
+        technicalDescription_es: `### Descripción Técnica
+La aplicación puede emitir tokens de sesión que nunca caducan, o no invalidar un token de sesión en el lado del servidor después de que el usuario cierre la sesión. Un atacante que obtenga acceso a un token de sesión puede reutilizarlo indefinidamente para hacerse pasar por el usuario.`,
+        impact_en: `### Impact
+Leads to session hijacking and account takeover. An attacker with a stolen session token can maintain persistent access to a user's account.`,
+        impact_es: `### Impacto
+Conduce al secuestro de sesiones y a la toma de control de cuentas. Un atacante con un token de sesión robado puede mantener un acceso persistente a la cuenta de un usuario.`,
+        immediateActions_en: "### Immediate Actions\nForce the invalidation of all current session tokens on the server side. Implement a short-lived session timeout on the server.",
+        immediateActions_es: "### Acciones Inmediatas\nForzar la invalidación de todos los tokens de sesión actuales en el lado del servidor. Implementar un tiempo de espera de sesión de corta duración en el servidor.",
+        remediation_en: {
+            shortTerm: "Implement server-side session timeouts. Session tokens must be invalidated on the server when a user logs out.",
+            mediumTerm: "Use refresh tokens and short-lived access tokens. The access token provides access to resources, and the refresh token is used to obtain a new access token without requiring the user to re-authenticate.",
+            longTerm: "Implement a mechanism to detect and alert on suspicious session activity, such as a session being used from multiple IP addresses or devices simultaneously."
+        },
+        remediation_es: {
+            shortTerm: "Implementar tiempos de espera de sesión del lado del servidor. Los tokens de sesión deben invalidarse en el servidor cuando un usuario cierra la sesión.",
+            mediumTerm: "Usar tokens de actualización y tokens de acceso de corta duración. El token de acceso proporciona acceso a los recursos, y el token de actualización se utiliza para obtener un nuevo token de acceso sin requerir que el usuario se vuelva a autenticar.",
+            longTerm: "Implementar un mecanismo para detectar y alertar sobre actividades de sesión sospechosas, como una sesión que se utiliza desde múltiples direcciones IP o dispositivos simultáneamente."
+        },
+        cwe: "CWE-613",
+        severity: "High",
+        cvss: { score: 8.8, vectorString: "CVSS:3.1/AV:N/AC:L/PR:L/UI:N/S:U/C:H/I:H/A:H", attackVector: "N", attackComplexity: "L", privilegesRequired: "L", userInteraction: "N", scope: "U", confidentiality: "H", integrity: "H", availability: "H" },
+        references: ["https://owasp.org/www-project-mobile-top-10/2016-risks/m9-improper-session-handling/"],
+        tags: ["Mobile", "Authentication"],
+        affectedComponents_en: `### Affected Components
+- [TODO: Specify the session management mechanism of the application.]`,
+        details_en: `### Proof of Concept
+[TODO: Provide a PoC demonstrating that a session token remains valid and can be reused after the user has logged out.]`,
+        affectedComponents_es: `### Componentes Afectados
+- [TODO: Especificar el mecanismo de gestión de sesiones de la aplicación.]`,
+        details_es: `### Prueba de Concepto
+[TODO: Proporcionar una PoC que demuestre que un token de sesión sigue siendo válido y puede ser reutilizado después de que el usuario haya cerrado la sesión.]`,
+    },
+    {
+        id: "vuln-mobile-010",
+        title_en: "Lack of Binary Protections",
+        title_es: "Falta de Protecciones del Binario",
+        overview_en: `### Overview
+This issue occurs when the mobile application's binary is not adequately protected against reverse engineering, tampering, and analysis.`,
+        overview_es: `### Resumen
+Este problema ocurre cuando el binario de la aplicación móvil no está adecuadamente protegido contra la ingeniería inversa, la manipulación y el análisis.`,
+        technicalDescription_en: `### Technical Description
+Mobile app binaries can be decompiled to reveal source code, hardcoded secrets, and business logic. An attacker can analyze this code to find other vulnerabilities, tamper with the app's logic (e.g., bypass security controls), or repackage the app with malicious code. Lack of protections includes no code obfuscation, no anti-tampering checks, and no root/jailbreak detection.`,
+        technicalDescription_es: `### Descripción Técnica
+Los binarios de las aplicaciones móviles pueden ser descompilados para revelar el código fuente, los secretos codificados de forma rígida y la lógica de negocio. Un atacante puede analizar este código para encontrar otras vulnerabilidades, manipular la lógica de la aplicación (p. ej., eludir los controles de seguridad) o reempaquetar la aplicación con código malicioso. La falta de protecciones incluye la no ofuscación del código, la falta de comprobaciones anti-manipulación y la no detección de root/jailbreak.`,
+        impact_en: `### Impact
+Reverse engineering can lead to the discovery of other severe vulnerabilities, theft of intellectual property, and reputational damage. Tampering can lead to fraud, security control bypasses, and the distribution of malicious versions of the app.`,
+        impact_es: `### Impacto
+La ingeniería inversa puede conducir al descubrimiento de otras vulnerabilidades graves, el robo de propiedad intelectual y el daño a la reputación. La manipulación puede conducir al fraude, a la omisión de controles de seguridad y a la distribución de versiones maliciosas de la aplicación.`,
+        immediateActions_en: "### Immediate Actions\nImplement basic root/jailbreak detection to prevent the app from running in an insecure environment. Remove any hardcoded API keys or secrets from the binary.",
+        immediateActions_es: "### Acciones Inmediatas\nImplementar la detección básica de root/jailbreak para evitar que la aplicación se ejecute en un entorno inseguro. Eliminar cualquier clave de API o secreto codificado de forma rígida del binario.",
+        remediation_en: {
+            shortTerm: "Apply code obfuscation to make the decompiled code harder to understand. Implement anti-tampering checks (e.g., checksum validation) to detect if the app has been modified.",
+            mediumTerm: "Implement more robust root/jailbreak detection and anti-debugging techniques. Use tools that provide comprehensive binary protection, including string encryption and control flow obfuscation.",
+            longTerm: "Adopt a defense-in-depth strategy for mobile security. Assume that a determined attacker can bypass client-side controls, and therefore, critical security logic must always be enforced on the server side."
+        },
+        remediation_es: {
+            shortTerm: "Aplicar la ofuscación de código para dificultar la comprensión del código descompilado. Implementar comprobaciones anti-manipulación (p. ej., validación de checksum) para detectar si la aplicación ha sido modificada.",
+            mediumTerm: "Implementar una detección de root/jailbreak más robusta y técnicas anti-depuración. Utilizar herramientas que proporcionen una protección binaria completa, incluido el cifrado de cadenas y la ofuscación del flujo de control.",
+            longTerm: "Adoptar una estrategia de defensa en profundidad para la seguridad móvil. Asumir que un atacante determinado puede eludir los controles del lado del cliente y, por lo tanto, la lógica de seguridad crítica siempre debe aplicarse en el lado del servidor."
+        },
+        cwe: "CWE-657",
+        severity: "Medium",
+        cvss: { score: 5.9, vectorString: "CVSS:3.1/AV:L/AC:L/PR:N/UI:N/S:U/C:L/I:L/A:L", attackVector: "L", attackComplexity: "L", privilegesRequired: "N", userInteraction: "N", scope: "U", confidentiality: "L", integrity: "L", availability: "L" },
+        references: ["https://owasp.org/www-project-mobile-top-10/2016-risks/m1-improper-platform-usage/"],
+        tags: ["Mobile"],
+        affectedComponents_en: `### Affected Components
+- The application binary itself (APK/IPA).`,
+        details_en: `### Proof of Concept
+[TODO: Provide screenshots of decompiled code, or demonstrate bypassing a security control after patching the binary.]`,
+        affectedComponents_es: `### Componentes Afectados
+- El propio binario de la aplicación (APK/IPA).`,
+        details_es: `### Prueba de Concepto
+[TODO: Proporcionar capturas de pantalla del código descompilado, o demostrar cómo se elude un control de seguridad después de parchear el binario.]`,
     }
 ];
+
+    
