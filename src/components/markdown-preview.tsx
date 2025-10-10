@@ -29,7 +29,7 @@ const renderWithTodos = (Component: React.ElementType, className?: string) => {
             if (typeof child === 'string') {
                 return highlightTodos(child);
             }
-            if (React.isValidElement(child) && child.props.node?.tagName === 'code') {
+            if (React.isValidElement(child) && (child.props.node?.tagName === 'code' || child.props.node?.tagName === 'pre')) {
                  return child;
             }
             return child;
