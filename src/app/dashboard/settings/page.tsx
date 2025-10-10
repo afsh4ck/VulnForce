@@ -1,7 +1,7 @@
 'use client';
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { Languages, Moon, Sun, KeyRound, Eye, EyeOff } from "lucide-react";
+import { Languages, Moon, Sun, KeyRound, Eye, EyeOff, Trash2 } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -11,12 +11,15 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { useTheme } from "@/context/theme-context";
 import { Switch } from "@/components/ui/switch";
 import { useUser } from "@/context/user-context";
+import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from "@/components/ui/alert-dialog";
+import { useData } from "@/context/data-context";
 
 export default function SettingsPage() {
   const { toast } = useToast();
   const { language, setLanguage } = useLanguage();
   const { theme, setTheme } = useTheme();
-  const { changePassword } = useUser();
+  const { user, changePassword, logout } = useUser();
+  const { wipeAllData } = useData();
 
   const [currentPassword, setCurrentPassword] = useState('');
   const [newPassword, setNewPassword] = useState('');
@@ -48,6 +51,13 @@ export default function SettingsPage() {
       passwordUpdateSuccess: "Password updated successfully!",
       passwordUpdateError: "Could not update password. Check your current password.",
       passwordMismatch: "New passwords do not match.",
+      deleteAccountTitle: "Delete Account",
+      deleteAccountDesc: "Permanently delete your account and all associated data.",
+      deleteAccountBtn: "Delete Account",
+      confirmDeleteTitle: "Are you sure you want to delete your account?",
+      confirmDeleteDesc: "This action cannot be undone. All your data, including clients, projects, and findings, will be permanently deleted.",
+      cancel: "Cancel",
+      delete: "Delete",
     },
     es: {
       title: "Ajustes",
@@ -69,6 +79,13 @@ export default function SettingsPage() {
       passwordUpdateSuccess: "¡Contraseña actualizada correctamente!",
       passwordUpdateError: "No se pudo actualizar la contraseña. Verifica tu contraseña actual.",
       passwordMismatch: "Las nuevas contraseñas no coinciden.",
+      deleteAccountTitle: "Eliminar Cuenta",
+      deleteAccountDesc: "Elimina permanentemente tu cuenta y todos los datos asociados.",
+      deleteAccountBtn: "Eliminar Cuenta",
+      confirmDeleteTitle: "¿Estás seguro de que quieres eliminar tu cuenta?",
+      confirmDeleteDesc: "Esta acción no se puede deshacer. Todos tus datos, incluyendo clientes, proyectos y hallazgos, serán eliminados permanentemente.",
+      cancel: "Cancelar",
+      delete: "Eliminar",
     }
   }
 
@@ -86,6 +103,11 @@ export default function SettingsPage() {
       toast({ variant: 'destructive', title: t[language].passwordUpdateError });
     }
   };
+
+  const handleDeleteAccount = () => {
+    wipeAllData();
+    logout();
+  }
 
 
   return (
@@ -184,6 +206,35 @@ export default function SettingsPage() {
                     <Button onClick={handlePasswordChange}><KeyRound className="mr-2" />{t[language].updatePasswordBtn}</Button>
                 </div>
             </CardContent>
+        </Card>
+
+        <Card className="border-destructive">
+          <CardHeader>
+            <CardTitle className="text-destructive">{t[language].deleteAccountTitle}</CardTitle>
+            <CardDescription>{t[language].deleteAccountDesc}</CardDescription>
+          </CardHeader>
+          <CardContent>
+            <AlertDialog>
+              <AlertDialogTrigger asChild>
+                <Button variant="destructive">
+                  <Trash2 className="mr-2" />
+                  {t[language].deleteAccountBtn}
+                </Button>
+              </AlertDialogTrigger>
+              <AlertDialogContent>
+                <AlertDialogHeader>
+                  <AlertDialogTitle>{t[language].confirmDeleteTitle}</AlertDialogTitle>
+                  <AlertDialogDescription>{t[language].confirmDeleteDesc}</AlertDialogDescription>
+                </AlertDialogHeader>
+                <AlertDialogFooter>
+                  <AlertDialogCancel>{t[language].cancel}</AlertDialogCancel>
+                  <AlertDialogAction onClick={handleDeleteAccount} className="bg-destructive text-destructive-foreground hover:bg-destructive/90">
+                    {t[language].delete}
+                  </AlertDialogAction>
+                </AlertDialogFooter>
+              </AlertDialogContent>
+            </AlertDialog>
+          </CardContent>
         </Card>
       </div>
       </>

@@ -40,12 +40,13 @@ interface DataContextType {
   deleteProjectTemplate: (templateId: string) => void;
   exportData: () => void;
   importData: (jsonData: string) => void;
+  wipeAllData: () => void;
 }
 
 const DataContext = createContext<DataContextType | undefined>(undefined);
 
-const useLocalStorage = <T,>(key: string, initialValue: T) => {
-    const [storedValue, setStoredValue] = useState<T>(() => {
+function usePersistedState<T>(key: string, initialValue: T): [T, React.Dispatch<React.SetStateAction<T>>] {
+    const [state, setState] = useState<T>(() => {
         if (typeof window === 'undefined') {
             return initialValue;
         }
@@ -53,30 +54,41 @@ const useLocalStorage = <T,>(key: string, initialValue: T) => {
             const item = window.localStorage.getItem(key);
             return item ? JSON.parse(item) : initialValue;
         } catch (error) {
-            console.error(error);
+            console.error(`Error reading localStorage key “${key}”:`, error);
             return initialValue;
         }
     });
 
     useEffect(() => {
         try {
-            const valueToStore = JSON.stringify(storedValue);
-            window.localStorage.setItem(key, valueToStore);
+            window.localStorage.setItem(key, JSON.stringify(state));
         } catch (error) {
-            console.error(error);
+            console.error(`Error setting localStorage key “${key}”:`, error);
         }
-    }, [key, storedValue]);
+    }, [key, state]);
 
-    return [storedValue, setStoredValue] as const;
-};
+    return [state, setState];
+}
+
 
 export function DataProvider({ children }: { children: ReactNode }) {
-    const [clients, setClients] = useLocalStorage<Client[]>('vulnforce-clients', initialClients);
-    const [projects, setProjects] = useLocalStorage<Project[]>('vulnforce-projects', initialProjects);
-    const [findings, setFindings] = useLocalStorage<Finding[]>('vulnforce-findings', initialFindings);
-    const [vulnerabilities, setVulnerabilities] = useLocalStorage<Vulnerability[]>('vulnforce-vulnerabilities', initialVulnerabilities);
-    const [images, setImages] = useLocalStorage<ImageAsset[]>('vulnforce-images', []);
-    const [projectTemplates, setProjectTemplates] = useLocalStorage<ProjectTemplate[]>('vulnforce-project-templates', initialProjectTemplates);
+    const [clients, setClients] = usePersistedState<Client[]>('vulnforce-clients-v4', initialClients);
+    const [projects, setProjects] = usePersistedState<Project[]>('vulnforce-projects-v4', initialProjects);
+    const [findings, setFindings] = usePersistedState<Finding[]>('vulnforce-findings-v4', initialFindings);
+    const [vulnerabilities, setVulnerabilities] = usePersistedState<Vulnerability[]>('vulnforce-vulnerabilities-v4', initialVulnerabilities);
+    const [images, setImages] = usePersistedState<ImageAsset[]>('vulnforce-images-v4', []);
+    const [projectTemplates, setProjectTemplates] = usePersistedState<ProjectTemplate[]>('vulnforce-project-templates-v4', initialProjectTemplates);
+
+    const wipeAllData = () => {
+        setClients(initialClients);
+        setProjects(initialProjects);
+        setFindings(initialFindings);
+        setVulnerabilities(initialVulnerabilities);
+        setImages([]);
+        setProjectTemplates(initialProjectTemplates);
+        // Also clear user data if necessary from user context, or call a method from there
+        // This function would also need to clear localStorage for the user if that's where password hash etc. is stored
+    };
 
     // Client functions
     const addClient = (client: Omit<Client, 'id'>) => {
@@ -238,7 +250,8 @@ export function DataProvider({ children }: { children: ReactNode }) {
             addVulnerability, updateVulnerability, deleteVulnerability,
             addImage, getImage,
             addProjectTemplate, updateProjectTemplate, deleteProjectTemplate,
-            exportData, importData
+            exportData, importData,
+            wipeAllData
         }}>
             {children}
         </DataContext.Provider>

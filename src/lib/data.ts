@@ -4,16 +4,16 @@ import type { Client, Project, Finding, Vulnerability, ProjectTemplate } from '.
 import { format } from 'date-fns';
 
 export const clients: Client[] = [
-  { id: 'cli-1', name: 'Innovatech Solutions', contact: 'contact@innovatech.com', logoUrl: 'https://picsum.photos/seed/innovatech/128/128' },
-  { id: 'cli-2', name: 'Quantum Dynamics', contact: 'security@quantum.com', logoUrl: 'https://picsum.photos/seed/quantum/128/128' },
-  { id: 'cli-3', name: 'SecureBank Corp', contact: 'audit@securebank.com', logoUrl: 'https://picsum.photos/seed/securebank/128/128' },
-  { id: 'cli-4', name: 'HealthFirst Providers', contact: 'compliance@healthfirst.com', logoUrl: 'https://picsum.photos/seed/healthfirst/128/128' },
+  { id: 'cli-htb', name: 'Hack The Box', contact: 'contact@hackthebox.eu', logoUrl: 'https://picsum.photos/seed/htb/128/128' },
+  { id: 'cli-ine', name: 'INE Security', contact: 'security@ine.com', logoUrl: 'https://picsum.photos/seed/ine/128/128' },
+  { id: 'cli-offsec', name: 'Offsec', contact: 'audit@offsec.com', logoUrl: 'https://picsum.photos/seed/offsec/128/128' },
+  { id: 'cli-h4ck', name: 'h4ckercademy', contact: 'contact@h4ckercademy.com', logoUrl: 'https://picsum.photos/seed/h4ckercademy/128/128' },
 ];
 
 export const projects: Project[] = [
   { 
     id: 'proj-1', 
-    clientId: 'cli-1', 
+    clientId: 'cli-htb', 
     name: 'Q3 Web App Pentest', 
     reportBody: `## Executive Summary
 This report outlines the results of an external penetration test conducted on the internet-facing assets of **Innovatech Solutions**. The assessment aimed to identify vulnerabilities that could be exploited by a remote attacker to compromise the security of the organization's perimeter.
@@ -58,7 +58,7 @@ The engagement began with reconnaissance against the *.innovatech.com domain, wh
   },
   { 
     id: 'proj-2', 
-    clientId: 'cli-2', 
+    clientId: 'cli-ine', 
     name: 'Análisis de Red Interna', 
     reportBody: '', 
     startDate: '2023-08-10', 
@@ -960,7 +960,7 @@ export const vulnerabilities: Vulnerability[] = [
       affectedComponents_en: "### Affected Components\n[TODO: Specify the source of the information disclosure, e.g., HTTP headers, error pages, source code comments.]",
       affectedComponents_es: "### Componentes Afectados\n[TODO: Especificar la fuente de la divulgación de información, p. ej., cabeceras HTTP, páginas de error, comentarios en el código fuente.]",
       impact_en: "### Impact\nWhile not directly exploitable, information disclosure makes it easier for an attacker to find and exploit other vulnerabilities.",
-      impact_es: "### Impacto\nAunque no es directamente explotable, la divulgación de información facilita que un atacante encuentre y explote otras vulnerabilidades.",
+      impact_es: "### Impacto\nAunque no es directamente explotable, la divulgación de información facilita que un atacante encuentre y explote otrasulnerabilidades.",
       recommendations_en: "### Recommendations\nConfigure the application to return generic error messages. Remove or obfuscate server banners and version information. Sanitize the code to remove any sensitive comments or debug information.",
       recommendations_es: "### Recomendaciones\nConfigurar la aplicación para que devuelva mensajes de error genéricos. Eliminar u ofuscar los banners del servidor y la información de la versión. Desinfectar el código para eliminar cualquier comentario sensible o información de depuración.",
       references: ["https://owasp.org/www-community/attacks/Information_Leakage"],
@@ -1710,7 +1710,7 @@ export const vulnerabilities: Vulnerability[] = [
       severity: "High",
       cvss: { score: 8.8, vectorString: "CVSS:3.1/AV:N/AC:L/PR:L/UI:N/S:U/C:H/I:H/A:H", attackVector: "N", attackComplexity: "L", privilegesRequired: "L", userInteraction: "N", scope: "U", confidentiality: "H", integrity: "H", availability: "H" },
       overview_en: "### Overview\nServer-side template injection vulnerabilities arise when user input is concatenated into a template, rather than being passed as data. This can allow an attacker to inject template directives and execute arbitrary code.",
-      overview_es: "### Resumen\nLas vulnerabilidades de inyección de plantillas del lado del servidor surgen cuando la entrada del usuario se concatena en una plantilla, en lugar de pasarse como datos. Esto puede permitir que un atacante inyecte directivas de plantilla y ejecute código arbitrario.",
+      overview_es: "### Resumen\nLasulnerabilidades de inyección de plantillas del lado del servidor surgen cuando la entrada del usuario se concatena en una plantilla, en lugar de pasarse como datos. Esto puede permitir que un atacante inyecte directivas de plantilla y ejecute código arbitrario.",
       technicalDescription_en: "### Technical Description\nAn attacker can provide a payload that looks like a template expression, such as `{{7*7}}`. If the application evaluates this and returns `49`, it is vulnerable. The attacker can then use more complex payloads to read files, execute commands, and compromise the server.",
       technicalDescription_es: "### Descripción Técnica\nUn atacante puede proporcionar una carga útil que parece una expresión de plantilla, como `{{7*7}}`. Si la aplicación evalúa esto y devuelve `49`, es vulnerable. El atacante puede luego usar cargas útiles más complejas para leer archivos, ejecutar comandos y comprometer el servidor.",
       affectedComponents_en: "### Affected Components\n[TODO: Specify the functionality that renders templates with user input.]",
@@ -2323,7 +2323,7 @@ Se utilizó una combinación de herramientas automatizadas y técnicas manuales 
 1.  **Descubrimiento de Red:** Identificación de hosts activos y puertos abiertos.
 2.  **Enumeración de Servicios:** Identificación de los servicios que se ejecutan en los puertos descubiertos.
 3.  **Escaneo de Vulnerabilidades:** Búsqueda de vulnerabilidades conocidas en los servicios identificados.
-4.  **Explotación Manual:** Intento de explotar vulnerabilities para obtener más acceso.
+4.  **Explotación Manual:** Intento de explotar vulnerabilidades para obtener más acceso.
 5.  **Análisis de Active Directory:** Búsqueda de configuraciones incorrectas en Active Directory, como contraseñas débiles, oportunidades de kerberoasting y rutas de escalada de privilegios.
 6.  **Informe:** Documentación de hallazgos y recomendaciones de remediación.`,
     appendix_en: `### Appendix
@@ -2676,3 +2676,4 @@ ffuf -w /usr/share/seclists/Discovery/DNS/subdomains-top1million-5000.txt:FUZZ -
 ];
 
   
+
