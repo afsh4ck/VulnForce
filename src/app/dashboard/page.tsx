@@ -4,7 +4,7 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import Link from 'next/link';
-import { PlusCircle, Users, FolderKanban, ShieldCheck, ChevronLeft, ChevronRight, CalendarClock, FileText, Scan, Globe, Network, Smartphone, Wifi, Award } from "lucide-react";
+import { PlusCircle, Users, FolderKanban, ShieldCheck, ChevronLeft, ChevronRight, CalendarClock, FileText, Scan, Globe, Network, Smartphone, Wifi, Award, Bomb } from "lucide-react";
 import { useLanguage } from "@/context/language-context";
 import { useData } from "@/context/data-context";
 import { useMemo, useState } from "react";
@@ -147,11 +147,11 @@ export default function DashboardPage() {
             </CardContent>
           </Card>
         </Link>
-        <Link href="/dashboard/vulnerabilities?severity=All">
+        <Link href="/dashboard/findings">
           <Card className="hover:bg-muted/50 transition-colors">
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
               <CardTitle className="text-sm font-medium">{t[language].totalFindings}</CardTitle>
-              <ShieldCheck className="h-4 w-4 text-muted-foreground" />
+              <Bomb className="h-4 w-4 text-muted-foreground" />
             </CardHeader>
             <CardContent>
               <div className="text-2xl font-bold">{findings.length}</div>
@@ -159,7 +159,7 @@ export default function DashboardPage() {
             </CardContent>
           </Card>
         </Link>
-        <Link href="/dashboard/vulnerabilities?severity=Critical">
+        <Link href="/dashboard/findings?severity=Critical">
           <Card className="border-destructive hover:bg-destructive/10 transition-colors">
               <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
                   <CardTitle className="text-sm font-medium">{t[language].criticalFindings}</CardTitle>
@@ -184,12 +184,12 @@ export default function DashboardPage() {
               {recentProjects.map(p => {
                 const Icon = iconComponents[p.icon] || FileText;
                 return (
-                  <Link key={p.id} href={`/dashboard/projects/${p.id}`} className="block rounded-lg p-4 transition-colors hover:bg-muted/50">
+                  <Link key={p.id} href={`/dashboard/projects/${p.id}`} className="block rounded-lg p-4 transition-colors hover:bg-muted/50 group">
                     <div className="flex items-center justify-between">
                       <div className="flex items-center gap-4">
                         <Icon className="h-6 w-6 text-primary" />
                         <div>
-                          <p className="font-medium">{p.name}</p>
+                          <p className="font-medium group-hover:text-primary transition-colors">{p.name}</p>
                           <p className="text-sm text-muted-foreground">{clients.find(c => c.id === p.clientId)?.name}</p>
                         </div>
                       </div>
