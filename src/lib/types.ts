@@ -66,16 +66,6 @@ export interface Vulnerability {
   title_es: string;
   overview_en: string;
   overview_es: string;
-  technicalDescription_en: string;
-  technicalDescription_es: string;
-  affectedComponents_en: string;
-  affectedComponents_es: string;
-  impact_en: string;
-  impact_es: string;
-  immediateActions_en: string;
-  immediateActions_es: string;
-  details_en: string;
-  details_es: string;
   cwe: string;
   cvss: CVSS;
   severity: Severity;
@@ -102,5 +92,7 @@ export interface ProjectTemplate {
   description_es: string;
   scope_en: string;
   scope_es: string;
+  appendix_en: string;
+  appendix_es: string;
   icon: string;
 }
