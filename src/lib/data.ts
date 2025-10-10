@@ -4,10 +4,10 @@ import type { Client, Project, Finding, Vulnerability, ProjectTemplate } from '.
 import { format } from 'date-fns';
 
 export const clients: Client[] = [
-  { id: 'cli-htb', name: 'Hack The Box', contact: 'contact@hackthebox.eu', logoUrl: 'https://picsum.photos/seed/htb/128/128' },
-  { id: 'cli-ine', name: 'INE Security', contact: 'security@ine.com', logoUrl: 'https://picsum.photos/seed/ine/128/128' },
-  { id: 'cli-offsec', name: 'Offsec', contact: 'audit@offsec.com', logoUrl: 'https://picsum.photos/seed/offsec/128/128' },
-  { id: 'cli-h4ck', name: 'h4ckercademy', contact: 'contact@h4ckercademy.com', logoUrl: 'https://picsum.photos/seed/h4ckercademy/128/128' },
+  { id: 'cli-htb', name: 'Hack The Box', contact: 'contact@hackthebox.eu', logoUrl: '' },
+  { id: 'cli-ine', name: 'INE Security', contact: 'security@ine.com', logoUrl: '' },
+  { id: 'cli-offsec', name: 'Offsec', contact: 'audit@offsec.com', logoUrl: '' },
+  { id: 'cli-h4ck', name: 'h4ckercademy', contact: 'info@h4ckercademy.com', logoUrl: '' },
 ];
 
 export const projects: Project[] = [
@@ -1955,7 +1955,7 @@ export const vulnerabilities: Vulnerability[] = [
       affectedComponents_en: "### Affected Components\n[TODO: Describe the cache mechanism and the specific request used to poison it.]",
       affectedComponents_es: "### Componentes Afectados\n[TODO: Describir el mecanismo de caché y la solicitud específica utilizada para envenenarla.]",
       impact_en: "### Impact\nThis can lead to widespread XSS attacks, session hijacking, and other client-side vulnerabilities affecting a large number of users.",
-      impact_es: "### Impacto\nEsto puede llevar a ataques XSS generalizados, secuestro de sesiones y otras vulnerabilidades del lado del cliente que afectan a un gran número de usuarios.",
+      impact_es: "### Impacto\nEsto puede llevar a ataques XSS generalizados, secuestro de sesiones y otrasulnerabilidades del lado del cliente que afectan a un gran número de usuarios.",
       immediateActions_en: "### Immediate Actions\nConfigure the cache to not store responses that contain user input. Use cache keys that are specific enough to prevent collisions. Disable caching for dynamic content.",
       immediateActions_es: "### Acciones Inmediatas\nConfigurar la caché para no almacenar respuestas que contengan entradas de usuario. Usar claves de caché que sean lo suficientemente específicas para evitar colisiones. Deshabilitar el almacenamiento en caché para contenido dinámico.",
       references: ["https://portswigger.net/web-security/web-cache-poisoning"],
@@ -2320,7 +2320,7 @@ Se utilizó una combinación de herramientas automatizadas y técnicas manuales 
 3.  **Vulnerability Scanning:** Scanning for known vulnerabilities in identified services.
 4.  **Manual Exploitation:** Attempting to exploit vulnerabilities to gain further access.
 5.  **Active Directory Analysis:** Looking for misconfigurations in Active Directory, such as weak passwords, kerberoasting opportunities, and privilege escalation paths.
-6.  **Reporting:** Documenting findings and remediation recommendations.`,
+6.  **Reporting:** Documentation of findings and remediation recommendations.`,
     scope_es: `## Alcance
 - **Rangos IP:** [TODO: Añadir rangos IP, p.ej., 192.168.1.0/24]
 - **Periodo de Pruebas:** [TODO Start Date] a [TODO End Date]
@@ -2684,5 +2684,6 @@ ffuf -w /usr/share/seclists/Discovery/DNS/subdomains-top1million-5000.txt:FUZZ -
 ];
 
   
+
 
 
