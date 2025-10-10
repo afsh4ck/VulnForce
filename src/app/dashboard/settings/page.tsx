@@ -105,8 +105,7 @@ export default function SettingsPage() {
   };
 
   const handleDeleteAccount = () => {
-    wipeAllData();
-    logout(true); // Pass true to indicate a full account deletion
+    logout(true); // Pass true to indicate a full account deletion and data wipe
   }
 
 

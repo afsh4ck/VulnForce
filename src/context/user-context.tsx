@@ -79,13 +79,15 @@ export function UserProvider({ children }: { children: ReactNode }) {
   const logout = (deleteAccount = false) => {
     sessionStorage.removeItem('vulnforce-authenticated');
     if (deleteAccount) {
-      localStorage.removeItem('vulnforce-user');
+      // Clear everything to reset the app to its initial state
+      localStorage.clear();
       // After deleting the user, we set the state back to a default user without a password
       // so the app redirects to the setup page.
       setUserState({ ...defaultUser }); 
     }
     router.push('/');
-    router.refresh(); // Force a refresh to re-evaluate the state on the login page
+    // Use window.location to force a full page reload to clear all states
+    window.location.href = '/'; 
   };
 
   const login = (name: string, pass: string): boolean => {
