@@ -150,7 +150,7 @@ El impacto de la exposición de datos sensibles puede ser severo, lo que lleva a
             longTerm: "### Long-Term Recommendations\nMinimize the collection and storage of sensitive data. Conduct regular data discovery and classification exercises to ensure no sensitive data is being stored improperly."
         },
         remediation_es: {
-            shortTerm: "### Recomendaciones a Corto Plazo\nIdentificar todos los datos sensibles y aplicar un cifrado fuerte tanto en reposo como en tránsito (p. ej., usando TLS 1.2+). Deshabilitar el almacenamiento en caché para las respuestas que contienen datos sensibles.",
+            shortTerm: "### Recomendaciones a Corto Plazo\nIdentificar todos los datos sensibles y aplicar un cifrado fuerte tanto en reposo como en tránsito (p. ej., usando TLS 1.2+). Deshabilitar el almacenamiento en caché para las responses que contienen datos sensibles.",
             mediumTerm: "### Recomendaciones a Medio Plazo\nImplementar una política de clasificación de datos. Utilizar algoritmos y protocolos de cifrado fuertes y estándar de la industria. Asegurar una gestión y rotación de claves adecuadas.",
             longTerm: "### Recomendaciones a Largo Plazo\nMinimizar la recopilación y el almacenamiento de datos sensibles. Realizar ejercicios regulares de descubrimiento y clasificación de datos para garantizar que no se almacenen datos sensibles de forma incorrecta."
         },
@@ -403,7 +403,7 @@ Un ataque SSRF exitoso puede llevar al escaneo de redes internas, acceso no auto
         },
         remediation_es: {
             shortTerm: "### Recomendaciones a Corto Plazo\nImplementar una lista blanca estricta de dominios y protocolos que la aplicación tiene permitido solicitar. Denegar todas las demás solicitudes.",
-            mediumTerm: "### Recomendaciones a Medio Plazo\nValidar todas las entradas proporcionadas por el usuario para asegurarse de que se ajustan al formato y los valores esperados. No enviar respuestas sin procesar del servidor al cliente.",
+            mediumTerm: "### Recomendaciones a Medio Plazo\nValidar todas las entradas proporcionadas por el usuario para asegurarse de que se ajustan al formato y los valores esperados. No enviar responses sin procesar del servidor al cliente.",
             longTerm: "### Recomendaciones a Largo Plazo\nAislar la funcionalidad que realiza solicitudes externas en un entorno de red separado y de bajos privilegios. Esto limita el impacto de una posible vulnerabilidad SSRF."
         },
         cwe: "CWE-918",
@@ -938,7 +938,7 @@ Este problema ocurre cuando el binario de la aplicación móvil no está adecuad
         technicalDescription_en: `### Technical Description
 Mobile app binaries can be decompiled to reveal source code, hardcoded secrets, and business logic. An attacker can analyze this code to find other vulnerabilities, tamper with the app's logic (e.g., bypass security controls), or repackage the app with malicious code. Lack of protections includes no code obfuscation, no anti-tampering checks, and no root/jailbreak detection.`,
         technicalDescription_es: `### Descripción Técnica
-Los binarios de las aplicaciones móviles pueden ser descompilados para revelar el código fuente, los secretos codificados de forma rígida y la lógica de negocio. Un atacante puede analizar este código para encontrar otras vulnerabilities, manipular la lógica de la aplicación (p. ej., eludir los controles de seguridad) o reempaquetar la aplicación con código malicioso. La falta de protecciones incluye la no ofuscación del código, la falta de comprobaciones anti-manipulación y la no detección de root/jailbreak.`,
+Los binarios de las aplicaciones móviles pueden ser descompilados para revelar el código fuente, los secretos codificados de forma rígida y la lógica de negocio. Un atacante puede analizar este código para encontrar otras vulnerabilidades, manipular la lógica de la aplicación (p. ej., eludir los controles de seguridad) o reempaquetar la aplicación con código malicioso. La falta de protecciones incluye la no ofuscación del código, la falta de comprobaciones anti-manipulación y la no detección de root/jailbreak.`,
         impact_en: `### Impact
 Reverse engineering can lead to the discovery of other severe vulnerabilities, theft of intellectual property, and reputational damage. Tampering can lead to fraud, security control bypasses, and the distribution of malicious versions of the app.`,
         impact_es: `### Impacto
@@ -1019,7 +1019,7 @@ El atacante puede robar información sensible como credenciales y tokens de sesi
         overview_en: "### Overview\nDNS spoofing or DNS cache poisoning is an attack where corrupted DNS data is introduced into the DNS resolver's cache, causing the name server to return an incorrect IP address.", 
         overview_es: "### Resumen\nLa suplantación de DNS o envenenamiento de caché de DNS es un ataque en el que se introducen datos DNS corruptos en la caché del resolutor de DNS, lo que hace que el servidor de nombres devuelva una dirección IP incorrecta.", 
         technicalDescription_en: "### Technical Description\nAn attacker can exploit vulnerabilities in the DNS protocol to redirect traffic intended for a legitimate server to a malicious server controlled by the attacker. This is often done by sending forged DNS responses to a DNS resolver.", 
-        technicalDescription_es: "### Descripción Técnica\nUn atacante puede explotar vulnerabilidades en el protocolo DNS para redirigir el tráfico destinado a un servidor legítimo a un servidor malicioso controlado por el atacante. Esto se hace a menudo enviando respuestas DNS falsificadas a un resolutor de DNS.", 
+        technicalDescription_es: "### Descripción Técnica\nUn atacante puede explotar vulnerabilidades en el protocolo DNS para redirigir el tráfico destinado a un servidor legítimo a un servidor malicioso controlado por el atacante. Esto se hace a menudo enviando responses DNS falsificadas a un resolutor de DNS.", 
         impact_en: "### Impact\nThis can be used for phishing attacks, where a user is tricked into entering credentials on a fake website, or for distributing malware. It can also facilitate man-in-the-middle attacks.", 
         impact_es: "### Impacto\nEsto puede usarse para ataques de phishing, donde se engaña a un usuario para que ingrese credenciales en un sitio web falso, o para distribuir malware. También puede facilitar ataques de intermediario (man-in-the-middle).", 
         remediation_en: { 
@@ -1028,7 +1028,7 @@ El atacante puede robar información sensible como credenciales y tokens de sesi
             longTerm: "### Long-Term Recommendations\nMonitor DNS traffic for anomalies. Regularly audit DNS server configurations for security best practices." 
         }, 
         remediation_es: { 
-            shortTerm: "### Recomendaciones a Corto Plazo\nImplementar DNSSEC (Extensiones de Seguridad del Sistema de Nombres de Dominio) para validar la autenticidad de las respuestas DNS.", 
+            shortTerm: "### Recomendaciones a Corto Plazo\nImplementar DNSSEC (Extensiones de Seguridad del Sistema de Nombres de Dominio) para validar la autenticidad de las responses DNS.", 
             mediumTerm: "### Recomendaciones a Medio Plazo\nUsar cifrado de extremo a extremo (TLS) para todas las comunicaciones. Esto asegura que incluso si se suplanta el DNS, el atacante no puede descifrar el tráfico sin la clave privada del servidor.", 
             longTerm: "### Recomendaciones a Largo Plazo\nMonitorear el tráfico DNS en busca de anomalías. Auditar regularmente las configuraciones del servidor DNS para seguir las mejores prácticas de seguridad." 
         }, 
@@ -1145,9 +1145,11 @@ El impacto principal es la falta de disponibilidad del servicio, lo que conduce 
         cvss: { score: 7.5, vectorString: "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:N/I:N/A:H", attackVector: "N", attackComplexity: "L", privilegesRequired: "N", userInteraction: "N", scope: "U", confidentiality: "N", integrity: "N", availability: "H" },
         references: ["https://www.cisa.gov/news-events/news/understanding-denial-service-attacks"],
         tags: ["Network", "Infrastructure"],
-        affectedComponents_en: "### Affected Components\n- [TODO: Specify the targeted servers, services, or network resources.]",
+        affectedComponents_en: `### Affected Components
+- [TODO: Specify the targeted servers, services, or network resources.]`,
         details_en: "### Proof of Concept\n[TODO: Provide data showing the spike in traffic and corresponding resource exhaustion on the target system. Use tools like hping3 or Slowloris for demonstration.]",
-        affectedComponents_es: "### Componentes Afectados\n- [TODO: Especificar los servidores, servicios o recursos de red objetivo.]",
+        affectedComponents_es: `### Componentes Afectados
+- [TODO: Especificar los servidores, servicios o recursos de red objetivo.]`,
         details_es: "### Prueba de Concepto\n[TODO: Proporcionar datos que muestren el pico de tráfico y el agotamiento de recursos correspondiente en el sistema objetivo. Usar herramientas como hping3 o Slowloris para la demostración.]",
         immediateActions_en: "### Immediate Actions\n[TODO: Add immediate actions in English]",
         immediateActions_es: "### Acciones Inmediatas\n[TODO: Añadir acciones inmediatas en español]",
@@ -1373,12 +1375,18 @@ El impacto puede variar desde la denegación de servicio hasta la ejecución rem
         id: "vuln-infra-002",
         title_en: "Default Credentials",
         title_es: "Credenciales por Defecto",
-        overview_en: "### Overview\nMany systems, devices, and applications are shipped with default usernames and passwords. Failure to change these credentials leaves an easy entry point for attackers.",
-        overview_es: "### Resumen\nMuchos sistemas, dispositivos y aplicaciones se entregan con nombres de usuario y contraseñas predeterminados. No cambiar estas credenciales deja un punto de entrada fácil para los atacantes.",
-        technicalDescription_en: "### Technical Description\nAn administrator or user fails to change the default credentials for a piece of software or hardware (e.g., admin/admin on a router, administrator/password on a web application). Attackers can use automated scanners to find systems with these default credentials and gain immediate administrative access.",
-        technicalDescription_es: "### Descripción Técnica\nUn administrador o usuario no cambia las credenciales predeterminadas de un software o hardware (p. ej., admin/admin en un enrutador, administrator/password en una aplicación web). Los atacantes pueden usar escáneres automatizados para encontrar sistemas con estas credenciales predeterminadas y obtener acceso administrativo inmediato.",
-        impact_en: "### Impact\nAn attacker can gain full administrative control of the affected system, leading to data theft, system compromise, and a pivot point to attack other systems on the network.",
-        impact_es: "### Impacto\nUn atacante puede obtener el control administrativo total del sistema afectado, lo que conduce al robo de datos, el compromiso del sistema y un punto de pivote para atacar otros sistemas en la red.",
+        overview_en: `### Overview
+Many systems, devices, and applications are shipped with default usernames and passwords. Failure to change these credentials leaves an easy entry point for attackers.`,
+        overview_es: `### Resumen
+Muchos sistemas, dispositivos y aplicaciones se entregan con nombres de usuario y contraseñas predeterminados. No cambiar estas credenciales deja un punto de entrada fácil para los atacantes.`,
+        technicalDescription_en: `### Technical Description
+An administrator or user fails to change the default credentials for a piece of software or hardware (e.g., admin/admin on a router, administrator/password on a web application). Attackers can use automated scanners to find systems with these default credentials and gain immediate administrative access.`,
+        technicalDescription_es: `### Descripción Técnica
+Un administrador o usuario no cambia las credenciales predeterminadas de un software o hardware (p. ej., admin/admin en un enrutador, administrator/password en una aplicación web). Los atacantes pueden usar escáneres automatizados para encontrar sistemas con estas credenciales predeterminadas y obtener acceso administrativo inmediato.`,
+        impact_en: `### Impact
+An attacker can gain full administrative control of the affected system, leading to data theft, system compromise, and a pivot point to attack other systems on the network.`,
+        impact_es: `### Impacto
+Un atacante puede obtener el control administrativo total del sistema afectado, lo que conduce al robo de datos, el compromiso del sistema y un punto de pivote para atacar otros sistemas en la red.`,
         remediation_en: {
             shortTerm: "### Short-Term Recommendations\nAudit the entire infrastructure for any use of default credentials and change them to strong, unique passwords.",
             mediumTerm: "### Medium-Term Recommendations\nIncorporate checks for default credentials into the standard build and deployment process for all new systems.",
@@ -1491,12 +1499,18 @@ Un ataque RCE exitoso proporciona a un atacante el control total sobre el sistem
         id: "vuln-infra-005",
         title_en: "Privilege Escalation",
         title_es: "Escalación de Privilegios",
-        overview_en: "### Overview\nPrivilege escalation is the act of exploiting a bug, design flaw, or configuration oversight in an operating system or software application to gain elevated access to resources that are normally protected from an application or user.",
-        overview_es: "### Resumen\nLa escalada de privilegios es el acto de explotar un error, un defecto de diseño o una supervisión de configuración en un sistema operativo o una aplicación de software para obtener acceso elevado a recursos que normalmente están protegidos de una aplicación o usuario.",
-        technicalDescription_en: "### Technical Description\nThis can occur in two forms: Vertical privilege escalation, where a lower-privilege user gains higher-privilege access (e.g., user to root), and horizontal privilege escalation, where a user gains access to resources belonging to another user. Common vectors include misconfigured SUID binaries, kernel exploits, services running with excessive privileges, and weak file permissions.",
-        technicalDescription_es: "### Descripción Técnica\nEsto puede ocurrir de dos formas: escalada de privilegios vertical, donde un usuario de bajos privilegios obtiene acceso de mayores privilegios (p. ej., de usuario a root), y escalada de privilegios horizontal, donde un usuario obtiene acceso a recursos que pertenecen a otro usuario. Los vectores comunes incluyen binarios SUID mal configurados, exploits del kernel, servicios que se ejecutan con privilegios excesivos y permisos de archivo débiles.",
-        impact_en: "### Impact\nSuccessful privilege escalation can result in an attacker gaining full administrative control over a system, allowing them to install persistent backdoors, steal all data on the system, and use it as a launchpad for further attacks.",
-        impact_es: "### Impacto\nUna escalada de privilegios exitosa puede resultar en que un atacante obtenga el control administrativo total sobre un sistema, lo que le permite instalar puertas traseras persistentes, robar todos los datos del sistema y usarlo como plataforma de lanzamiento para nuevos ataques.",
+        overview_en: `### Overview
+Privilege escalation is the act of exploiting a bug, design flaw, or configuration oversight in an operating system or software application to gain elevated access to resources that are normally protected from an application or user.`,
+        overview_es: `### Resumen
+La escalada de privilegios es el acto de explotar un error, un defecto de diseño o una supervisión de configuración en un sistema operativo o una aplicación de software para obtener acceso elevado a recursos que normalmente están protegidos de una aplicación o usuario.`,
+        technicalDescription_en: `### Technical Description
+This can occur in two forms: Vertical privilege escalation, where a lower-privilege user gains higher-privilege access (e.g., user to root), and horizontal privilege escalation, where a user gains access to resources belonging to another user. Common vectors include misconfigured SUID binaries, kernel exploits, services running with excessive privileges, and weak file permissions.`,
+        technicalDescription_es: `### Descripción Técnica
+Esto puede ocurrir de dos formas: escalada de privilegios vertical, donde un usuario de bajos privilegios obtiene acceso de mayores privilegios (p. ej., de usuario a root), y escalada de privilegios horizontal, donde un usuario obtiene acceso a recursos que pertenecen a otro usuario. Los vectores comunes incluyen binarios SUID mal configurados, exploits del kernel, servicios que se ejecutan con privilegios excesivos y permisos de archivo débiles.`,
+        impact_en: `### Impact
+Successful privilege escalation can result in an attacker gaining full administrative control over a system, allowing them to install persistent backdoors, steal all data on the system, and use it as a launchpad for further attacks.`,
+        impact_es: `### Impacto
+Una escalada de privilegios exitosa puede resultar en que un atacante obtenga el control administrativo total sobre un sistema, lo que le permite instalar puertas traseras persistentes, robar todos los datos del sistema y usarlo como plataforma de lanzamiento para nuevos ataques.`,
         remediation_en: {
             shortTerm: "### Short-Term Recommendations\nApply the principle of least privilege to all users, processes, and files. Regularly audit SUID/GUID binaries and file permissions.",
             mediumTerm: "### Medium-Term Recommendations\nKeep the operating system and all software fully patched to protect against kernel and software exploits.",
@@ -1525,12 +1539,18 @@ Un ataque RCE exitoso proporciona a un atacante el control total sobre el sistem
         id: "vuln-infra-006",
         title_en: "Information Disclosure",
         title_es: "Divulgación de Información",
-        overview_en: "### Overview\nInformation disclosure vulnerabilities allow an attacker to gain sensitive information about a system, its configuration, or its users, which can be used to facilitate other attacks.",
-        overview_es: "### Resumen\nLas vulnerabilidades de divulgación de información permiten a un atacante obtener información sensible sobre un sistema, su configuración o sus usuarios, que puede ser utilizada para facilitar otros ataques.",
-        technicalDescription_en: "### Technical Description\nThis can happen through verbose error messages that reveal stack traces or database errors, software version banners that reveal unpatched components, exposed debugging endpoints, or publicly accessible configuration files and source code repositories (e.g., exposed `.git` directory).",
-        technicalDescription_es: "### Descripción Técnica\nEsto puede suceder a través de mensajes de error detallados que revelan seguimientos de pila o errores de base de datos, banners de versión de software que revelan componentes sin parches, puntos finales de depuración expuestos o archivos de configuración y repositorios de código fuente de acceso público (p. ej., directorio `.git` exposed).",
-        impact_en: "### Impact\nWhile often a lower-severity finding on its own, information disclosure provides attackers with valuable intelligence for planning more targeted and effective attacks. It can expose software versions, internal paths, and business logic.",
-        impact_es: "### Impacto\nAunque a menudo es un hallazgo de menor gravedad por sí solo, la divulgación de información proporciona a los atacantes una inteligencia valiosa para planificar ataques más dirigidos y efectivos. Puede exponer versiones de software, rutas internas y lógica de negocio.",
+        overview_en: `### Overview
+Information disclosure vulnerabilities allow an attacker to gain sensitive information about a system, its configuration, or its users, which can be used to facilitate other attacks.`,
+        overview_es: `### Resumen
+Las vulnerabilidades de divulgación de información permiten a un atacante obtener información sensible sobre un sistema, su configuración o sus usuarios, que puede ser utilizada para facilitar otros ataques.`,
+        technicalDescription_en: `### Technical Description
+This can happen through verbose error messages that reveal stack traces or database errors, software version banners that reveal unpatched components, exposed debugging endpoints, or publicly accessible configuration files and source code repositories (e.g., exposed \`.git\` directory).`,
+        technicalDescription_es: `### Descripción Técnica
+Esto puede suceder a través de mensajes de error detallados que revelan seguimientos de pila o errores de base de datos, banners de versión de software que revelan componentes sin parches, puntos finales de depuración expuestos o archivos de configuración y repositorios de código fuente de acceso público (p. ej., directorio \`.git\` exposed).`,
+        impact_en: `### Impact
+While often a lower-severity finding on its own, information disclosure provides attackers with valuable intelligence for planning more targeted and effective attacks. It can expose software versions, internal paths, and business logic.`,
+        impact_es: `### Impacto
+Aunque a menudo es un hallazgo de menor gravedad por sí solo, la divulgación de información proporciona a los atacantes una inteligencia valiosa para planificar ataques más dirigidos y efectivos. Puede exponer versiones de software, rutas internas y lógica de negocio.`,
         remediation_en: {
             shortTerm: "### Short-Term Recommendations\nDisable verbose error reporting in production environments. Configure web servers to suppress software version banners.",
             mediumTerm: "### Medium-Term Recommendations\nEnsure that sensitive files, configuration files, and source code repositories are not accessible from the web root.",
@@ -1717,7 +1737,7 @@ Un ataque RCE exitoso proporciona a un atacante el control total sobre el sistem
             longTerm: "### Long-Term Recommendations\nConduct regular security awareness training for all employees on the proper handling and storage of sensitive data. Establish a clear data classification policy."
         },
         remediation_es: {
-            shortTerm: "### Recomendaciones a Corto Plazo\nEliminar los datos sensibles del recurso compartido de archivos. Implementar una solución segura de gestión de secretos para almacenar credenciales y claves de API.",
+            shortTerm: "### Recomendaciones a Corto Plazo\nEliminar los datos sensibles del recurso compartido de archivos. Implementar una solución segura de gestión de secretos para almacenar contraseñas de cuentas de servicio y otras credenciales.",
             mediumTerm: "### Recomendaciones a Medio Plazo\nImplementar una solución de prevención de pérdida de datos (DLP) para escanear automáticamente los recursos compartidos de archivos en busca de información sensible.",
             longTerm: "### Recomendaciones a Largo Plazo\nRealizar capacitaciones periódicas de concienciación sobre seguridad para todos los empleados sobre el manejo y almacenamiento adecuados de datos sensibles. Establecer una política clara de clasificación de datos."
         },
@@ -1741,12 +1761,18 @@ Un ataque RCE exitoso proporciona a un atacante el control total sobre el sistem
         id: "vuln-infra-012",
         title_en: "Unnecessary Exposed Services",
         title_es: "Servicios Expuestos Innecesariamente",
-        overview_en: "### Overview\nServices that are not intended for public access, such as databases, remote management interfaces (RDP, SSH), or internal applications, are exposed to the internet.",
-        overview_es: "### Resumen\nLos servicios que no están destinados al acceso público, como bases de datos, interfaces de gestión remota (RDP, SSH) o aplicaciones internas, están expuestos a Internet.",
-        technicalDescription_en: "### Technical Description\nDue to a misconfiguration in a firewall, cloud security group, or network routing, services that should only be accessible on the internal network are reachable from the public internet. This dramatically increases the attack surface of the organization.",
-        technicalDescription_es: "### Descripción Técnica\nDebido a una configuración incorrecta en un firewall, un grupo de seguridad en la nube o el enrutamiento de la red, los servicios que solo deberían ser accesibles en la red interna son accesibles desde la Internet pública. Esto aumenta drásticamente la superficie de ataque de la organización.",
-        impact_en: "### Impact\nExposed services can be subjected to brute-force attacks, denial-of-service, or exploitation of known vulnerabilities, potentially leading to a full compromise of the system.",
-        impact_es: "### Impacto\nLos servicios expuestos pueden ser objeto de ataques de fuerza bruta, denegación de servicio o explotación de vulnerabilidades conocidas, lo que puede llevar a un compromiso total del sistema.",
+        overview_en: `### Overview
+Services that are not intended for public access, such as databases, remote management interfaces (RDP, SSH), or internal applications, are exposed to the internet.`,
+        overview_es: `### Resumen
+Los servicios que no están destinados al acceso público, como bases de datos, interfaces de gestión remota (RDP, SSH) o aplicaciones internas, están expuestos a Internet.`,
+        technicalDescription_en: `### Technical Description
+Due to a misconfiguration in a firewall, cloud security group, or network routing, services that should only be accessible on the internal network are reachable from the public internet. This dramatically increases the attack surface of the organization.`,
+        technicalDescription_es: `### Descripción Técnica
+Debido a una configuración incorrecta en un firewall, un grupo de seguridad en la nube o el enrutamiento de la red, los servicios que solo deberían ser accesibles en la red interna son accesibles desde la Internet pública. Esto aumenta drásticamente la superficie de ataque de la organización.`,
+        impact_en: `### Impact
+Exposed services can be subjected to brute-force attacks, denial-of-service, or exploitation of known vulnerabilities, potentially leading to a full compromise of the system.`,
+        impact_es: `### Impacto
+Los servicios expuestos pueden ser objeto de ataques de fuerza bruta, denegación de servicio o explotación de vulnerabilidades conocidas, lo que puede llevar a un compromiso total del sistema.`,
         remediation_en: {
             shortTerm: "### Short-Term Recommendations\nImplement a 'deny-by-default' firewall policy. Only allow access to specific services from trusted IP ranges.",
             mediumTerm: "### Medium-Term Recommendations\nConduct regular external network scans to identify any unintentionally exposed services. Use a VPN with multi-factor authentication for all remote management access.",
@@ -1826,12 +1852,12 @@ Account takeover, leading to unauthorized access to sensitive data and functiona
         impact_es: `### Impacto
 Toma de control de la cuenta, lo que conduce a un acceso no autorizado a datos y funcionalidades sensibles. Si se compromete una cuenta administrativa, podría llevar al control total de la aplicación.`,
         remediation_en: {
-            shortTerm: "### Short-Term Recommendations\nEnforce a strong password policy (e.g., minimum length of 12 characters, complexity requirements). Implement account lockout mechanisms after a certain number of failed login attempts.",
+            shortTerm: "### Short-Term Recommendations\nForce a password reset for all users and enforce a new, strong password policy upon their next login.",
             mediumTerm: "### Medium-Term Recommendations\nImplement Multi-Factor Authentication (MFA) as the most effective control to mitigate the risk of weak passwords.",
             longTerm: "### Long-Term Recommendations\nEducate users on the importance of strong, unique passwords and provide tools like password managers to help them manage their credentials securely."
         },
         remediation_es: {
-            shortTerm: "### Recomendaciones a Corto Plazo\nHacer cumplir una política de contraseñas segura (p. ej., longitud mínima de 12 caracteres, requisitos de complejidad). Implementar mecanismos de bloqueo de cuenta después de un cierto número de intentos de inicio de sesión fallidos.",
+            shortTerm: "### Recomendaciones a Corto Plazo\nForzar un restablecimiento de contraseña para todos los usuarios y hacer cumplir una nueva política de contraseñas seguras en su próximo inicio de sesión.",
             mediumTerm: "### Recomendaciones a Medio Plazo\nImplementar la Autenticación Multifactor (MFA) como el control más efectivo para mitigar el riesgo de contraseñas débiles.",
             longTerm: "### Recomendaciones a Largo Plazo\nEducar a los usuarios sobre la importancia de contraseñas seguras y únicas y proporcionar herramientas como gestores de contraseñas para ayudarles a gestionar sus credenciales de forma segura."
         },
@@ -1861,27 +1887,27 @@ Toma de control de la cuenta, lo que conduce a un acceso no autorizado a datos y
         technicalDescription_es: "### Descripción Técnica\nLos usuarios a menudo reutilizan la misma contraseña en múltiples servicios. Si uno de esos servicios sufre una brecha de datos y se filtran las credenciales, un atacante puede probar esas mismas credenciales (un ataque conocido como credential stuffing) en otros servicios, incluida la aplicación objetivo.",
         impact_en: "### Impact\nAn attacker can gain unauthorized access to user accounts without directly attacking the target application, leveraging breaches from entirely separate services.",
         impact_es: "### Impacto\nUn atacante puede obtener acceso no autorizado a las cuentas de los usuarios sin atacar directamente la aplicación objetivo, aprovechando las brechas de servicios completamente separados.",
-        remediation_en: {
-            shortTerm: "### Short-Term Recommendations\nImplement rate limiting and account lockout mechanisms to slow down credential stuffing attacks. Check new passwords against a database of known breached passwords.",
-            mediumTerm: "### Medium-Term Recommendations\nImplement Multi-Factor Authentication (MFA). This is the single most effective control against password reuse and credential stuffing.",
-            longTerm: "### Long-Term Recommendations\nEducate users about the importance of using unique passwords for every service. Provide a password manager as a corporate tool to facilitate this."
-        },
-        remediation_es: {
-            shortTerm: "### Recomendaciones a Corto Plazo\nImplementar limitación de velocidad y mecanismos de bloqueo de cuentas para ralentizar los ataques de credential stuffing. Comprobar las nuevas contraseñas con una base de datos de contraseñas filtradas conocidas.",
-            mediumTerm: "### Recomendaciones a Medio Plazo\nImplementar la Autenticación Multifactor (MFA). Este es el control más efectivo contra la reutilización de contraseñas y el credential stuffing.",
-            longTerm: "### Recomendaciones a Largo Plazo\nEducar a los usuarios sobre la importancia de usar contraseñas únicas para cada servicio. Proporcionar un gestor de contraseñas como herramienta corporativa para facilitar esto."
-        },
-        cwe: "CWE-693",
-        severity: "High",
-        cvss: { score: 8.1, vectorString: "CVSS:3.1/AV:N/AC:H/PR:N/UI:N/S:U/C:H/I:H/A:N", attackVector: "N", attackComplexity: "H", privilegesRequired: "N", userInteraction: "N", scope: "U", confidentiality: "H", integrity: "H", availability: "N" },
-        references: ["https://haveibeenpwned.com/Passwords"],
-        tags: ["Authentication"],
+        remediation_en: { 
+            shortTerm: "### Short-Term Recommendations\nImplement rate limiting and account lockout mechanisms to slow down credential stuffing attacks. Check new passwords against a database of known breached passwords.", 
+            mediumTerm: "### Medium-Term Recommendations\nImplement Multi-Factor Authentication (MFA). This is the single most effective control against password reuse and credential stuffing.", 
+            longTerm: "### Long-Term Recommendations\nEducate users about the importance of using unique passwords for every service. Provide a password manager as a corporate tool to facilitate this." 
+        }, 
+        remediation_es: { 
+            shortTerm: "### Recomendaciones a Corto Plazo\nImplementar limitación de velocidad y mecanismos de bloqueo de cuentas para ralentizar los ataques de credential stuffing. Comprobar las nuevas contraseñas con una base de datos de contraseñas filtradas conocidas.", 
+            mediumTerm: "### Recomendaciones a Medio Plazo\nImplementar la Autenticación Multifactor (MFA). Este es el control más efectivo contra la reutilización de contraseñas y el credential stuffing.", 
+            longTerm: "### Recomendaciones a Largo Plazo\nEducar a los usuarios sobre la importancia de usar contraseñas únicas para cada servicio. Proporcionar un gestor de contraseñas como herramienta corporativa para facilitar esto." 
+        }, 
+        cwe: "CWE-693", 
+        severity: "High", 
+        cvss: { score: 8.1, vectorString: "CVSS:3.1/AV:N/AC:H/PR:N/UI:N/S:U/C:H/I:H/A:N", attackVector: "N", attackComplexity: "H", privilegesRequired: "N", userInteraction: "N", scope: "U", confidentiality: "H", integrity: "H", availability: "N" }, 
+        references: ["https://haveibeenpwned.com/Passwords"], 
+        tags: ["Authentication"], 
         affectedComponents_en: `### Affected Components
-- All user accounts within the application.`,
+- All user accounts within the application.`, 
         details_en: `### Proof of Concept
-[TODO: Provide evidence of a successful login using credentials known to be from a public data breach.]`,
+[TODO: Provide evidence of a successful login using credentials known to be from a public data breach.]`, 
         affectedComponents_es: `### Componentes Afectados
-- Todas las cuentas de usuario dentro de la aplicación.`,
+- Todas las cuentas de usuario dentro de la aplicación.`, 
         details_es: `### Prueba de Concepto
 [TODO: Proporcionar evidencia de un inicio de sesión exitoso utilizando credenciales que se sabe que provienen de una brecha de datos pública.]`,
         immediateActions_en: "### Immediate Actions\nForce a password reset for any identified compromised accounts. Communicate to users the risk of password reuse.",
@@ -1894,7 +1920,7 @@ Toma de control de la cuenta, lo que conduce a un acceso no autorizado a datos y
         overview_en: `### Overview
 The application does not provide the option for multi-factor authentication, which is a critical security layer that helps protect user accounts even if passwords are stolen.`,
         overview_es: `### Resumen
-La aplicación no proporciona la opción de autenticación multifactor, que es una capa de seguridad crítica que ayuda a proteger las cuentas de usuario incluso si se roban las contraseñas.`,
+La aplicación no proporciona la opción de autenticación multifactor, que es una capa de seguridad crítica que ayuda a proteger las cuentas de usuario even si se roban las contraseñas.`,
         technicalDescription_en: `### Technical Description
 The authentication process relies solely on a single factor (something the user knows, i.e., the password). There is no mechanism to require a second factor, such as something the user has (e.g., a code from an authenticator app) or something the user is (e.g., a fingerprint).`,
         technicalDescription_es: `### Descripción Técnica
@@ -1962,8 +1988,8 @@ Sin MFA, las credenciales comprometidas (p. ej., por phishing, reutilización de
 - El mecanismo de gestión de sesiones de la aplicación.`,
         details_es: `### Prueba de Concepto
 [TODO: Proporcionar una PoC que demuestre el robo de una cookie de sesión (p. ej., a través de XSS o sniffing de red) y su reutilización en un navegador diferente para acceder a la aplicación como el usuario víctima.]`,
-        immediateActions_en: "### Immediate Actions\nForce logout of all active sessions to invalidate existing session tokens.",
-        immediateActions_es: "### Acciones Inmediatas\nForzar el cierre de sesión de todas las sesiones activas para invalidar los tokens de sesión existentes.",
+        immediateActions_en: "### Immediate Actions\nForce logout of all active sessions to invalidate all existing session tokens.",
+        immediateActions_es: "### Acciones Inmediatas\nForzar el cierre de sesión de todas las sesiones activas para invalidar todos los tokens de sesión existentes.",
     },
     {
         id: "vuln-auth-005",
@@ -2005,7 +2031,7 @@ Sin MFA, las credenciales comprometidas (p. ej., por phishing, reutilización de
 3. La víctima inicia sesión.
 4. El atacante usa el mismo ID de sesión para acceder a la sesión autenticada de la víctima.`,
         immediateActions_en: "### Immediate Actions\nForce logout of all active sessions to invalidate all current session tokens.",
-        immediateActions_es: "### Acciones Inmediatas\nForzar el cierre de sesión de todas las sesiones activas para invalidar todos los tokens de sesión actuales.",
+        immediateActions_es: "### Acciones Inmediatas\nForzar el cierre de sesión de todas las sesiones activas para invalidar todos los tokens de sesión existentes.",
     },
     {
         id: "vuln-auth-006",
@@ -2051,8 +2077,10 @@ Sin MFA, las credenciales comprometidas (p. ej., por phishing, reutilización de
 The password recovery mechanism is weak, allowing an attacker to gain unauthorized access to a user's account by subverting the recovery process.`,
         overview_es: `### Resumen
 El mecanismo de recuperación de contraseña es débil, lo que permite a un atacante obtener acceso no autorizado a la cuenta de un usuario al subvertir el proceso de recuperación.`,
-        technicalDescription_en: "### Technical Description\nThis can happen in several ways: the recovery link/token sent to the user is easily guessable or has no expiry; the 'secret questions' used for recovery are weak and based on publicly available information; or the application leaks the recovery token to an attacker (e.g., in the `Referer` header).",
-        technicalDescription_es: "### Descripción Técnica\nEsto puede ocurrir de varias maneras: el enlace/token de recuperación enviado al usuario es fácil de adivinar o no tiene caducidad; las 'preguntas secretas' utilizadas para la recuperación son débiles y se basan en información públicamente disponible; o la aplicación filtra el token de recuperación a un atacante (p. ej., en el encabezado `Referer`).",
+        technicalDescription_en: `### Technical Description
+This can happen in several ways: the recovery link/token sent to the user is easily guessable or has no expiry; the 'secret questions' used for recovery are weak and based on publicly available information; or the application leaks the recovery token to an attacker (e.g., in the 'Referer' header).`,
+        technicalDescription_es: `### Descripción Técnica
+Esto puede ocurrir de varias maneras: el enlace/token de recuperación enviado al usuario es fácil de adivinar o no tiene caducidad; las 'preguntas secretas' utilizadas para la recuperación son débiles y se basan en información públicamente disponible; o la aplicación filtra el token de recuperación a un atacante (p. ej., en el encabezado 'Referer').`,
         impact_en: `### Impact
 An attacker can reset a victim's password and take over their account.`,
         impact_es: `### Impacto
@@ -2090,7 +2118,7 @@ Un atacante puede restablecer la contraseña de una víctima y tomar el control 
         overview_en: `### Overview
 User enumeration is a vulnerability where an attacker can use the application's responses to determine whether a given username is valid or not.`,
         overview_es: `### Resumen
-La enumeración de usuarios es una vulnerabilidad en la que un atacante puede usar las respuestas de la aplicación para determinar si un nombre de usuario dado es válido o no.`,
+La enumeración de usuarios es una vulnerabilidad en la que un atacante puede usar las responses de la aplicación para determinar si un nombre de usuario dado es válido o no.`,
         technicalDescription_en: `### Technical Description
 The application provides different responses for valid and invalid usernames on pages like login, password reset, or registration. For example, a login page might respond with "Invalid password" for a valid user and "User not found" for an invalid one. This allows an attacker to build a list of valid usernames.`,
         technicalDescription_es: `### Descripción Técnica
@@ -2105,7 +2133,7 @@ Esta fuga de información ayuda a los atacantes al proporcionarles una lista de 
             longTerm: "### Long-Term Recommendations\nImplement rate limiting and monitoring to detect and block automated user enumeration attempts."
         },
         remediation_es: {
-            shortTerm: "### Recomendaciones a Corto Plazo\nAsegurarse de que todas las respuestas para los intentos de inicio de sesión, restablecimiento de contraseña y registro sean genéricas e idénticas, independientemente de si el nombre de usuario es válido o no (p. ej., 'Nombre de usuario o contraseña inválidos').",
+            shortTerm: "### Recomendaciones a Corto Plazo\nAsegurarse de que todas las responses para los intentos de inicio de sesión, restablecimiento de contraseña y registro sean genéricas e idénticas, independientemente de si el nombre de usuario es válido o no (p. ej., 'Nombre de usuario o contraseña inválidos').",
             mediumTerm: "### Recomendaciones a Medio Plazo\nRevisar todos los puntos de conexión de la aplicación para identificar y remediar cualquier otro posible vector de enumeración de usuarios.",
             longTerm: "### Recomendaciones a Largo Plazo\nImplementar limitación de velocidad y monitoreo para detectar y bloquear los intentos automatizados de enumeración de usuarios."
         },
@@ -2121,7 +2149,7 @@ Esta fuga de información ayuda a los atacantes al proporcionarles una lista de 
         affectedComponents_es: `### Componentes Afectados
 - Páginas de inicio de sesión, restablecimiento de contraseña y registro de usuarios.`,
         details_es: `### Prueba de Concepto
-[TODO: Proporcionar capturas de pantalla que muestren las diferentes respuestas de la aplicación para un nombre de usuario válido frente a un nombre de usuario inválido.]`,
+[TODO: Proporcionar capturas de pantalla que muestren las diferentes responses de la aplicación para un nombre de usuario válido frente a un nombre de usuario inválido.]`,
         immediateActions_en: "### Immediate Actions\nImmediately change the response messages to be generic for all relevant functionalities.",
         immediateActions_es: "### Acciones Inmediatas\nCambiar inmediatamente los mensajes de respuesta para que sean genéricos para todas las funcionalidades relevantes.",
     },
@@ -2184,7 +2212,7 @@ A successful brute-force attack results in account takeover. Even if unsuccessfu
         impact_es: `### Impacto
 Un ataque de fuerza bruta exitoso resulta en la toma de control de la cuenta. Incluso si no tiene éxito, puede provocar una denegación de servicio al bloquear a los usuarios legítimos.`,
         remediation_en: {
-            shortTerm: "### Short-Term Recommendations\nImplement strict rate limiting on login attempts per IP address and per user account.",
+            shortTerm: "### Short-Term Recommendations\nImplement strong rate limiting on login attempts per IP address and per user account.",
             mediumTerm: "### Medium-Term Recommendations\nImplement an account lockout policy that temporarily disables an account after a small number of consecutive failed login attempts (e.g., 5-10 attempts).",
             longTerm: "### Long-Term Recommendations\nUse CAPTCHA or other bot-detection mechanisms after a few failed attempts to prevent automated attacks. Monitor and alert on high volumes of failed logins."
         },
@@ -2283,7 +2311,7 @@ El compromiso de una única cuenta con privilegios excesivos puede llevar al com
         references: ["https://adsecurity.org/?p=3658"],
         tags: ["Authentication", "Infrastructure"],
         affectedComponents_en: `### Affected Components
-- The specified user/service account and the high-privilege AD group.`,
+- [TODO: Specify the user/service account and the high-privilege AD group.]`,
         details_en: `### Proof of Concept
 [TODO: Provide a screenshot from a tool like BloodHound or Active Directory Users and Computers showing the over-privileged group membership.]`,
         affectedComponents_es: `### Componentes Afectados
@@ -2297,18 +2325,12 @@ El compromiso de una única cuenta con privilegios excesivos puede llevar al com
         id: "vuln-auth-013",
         title_en: "Passwords in AD User Description Field",
         title_es: "Contraseñas en Campo de Descripción de Usuario de AD",
-        overview_en: `### Overview
-Passwords or sensitive information are stored in cleartext in the 'Description' field of user or computer accounts in Active Directory.`,
-        overview_es: `### Resumen
-Las contraseñas o información sensible se almacenan en texto claro en el campo 'Descripción' de las cuentas de usuario o de equipo en Active Directory.`,
-        technicalDescription_en: `### Technical Description
-Administrators sometimes store passwords or notes in the Description field for convenience. This field is readable by any authenticated user in the domain, making it a common place for attackers to look for credentials during post-exploitation.`,
-        technicalDescription_es: `### Descripción Técnica
-Los administradores a veces almacenan contraseñas o notas en el campo Descripción por conveniencia. Este campo es legible por cualquier usuario autenticado en el dominio, lo que lo convierte en un lugar común para que los atacantes busquen credenciales durante la post-explotación.`,
-        impact_en: `### Impact
-This leads to the direct compromise of credentials, which can be used to escalate privileges or move laterally within the network.`,
-        impact_es: `### Impacto
-Esto conduce al compromiso directo de credenciales, que pueden ser utilizadas para escalar privilegios o moverse lateralmente dentro de la red.`,
+        overview_en: "### Overview\nPasswords or sensitive information are stored in cleartext in the 'Description' field of user or computer accounts in Active Directory.",
+        overview_es: "### Resumen\nLas contraseñas o información sensible se almacenan en texto claro en el campo 'Descripción' de las cuentas de usuario o de equipo en Active Directory.",
+        technicalDescription_en: "### Technical Description\nAdministrators sometimes store passwords or notes in the Description field for convenience. This field is readable by any authenticated user in the domain, making it a common place for attackers to look for credentials during post-exploitation.",
+        technicalDescription_es: "### Descripción Técnica\nLos administradores a veces almacenan contraseñas o notas en el campo Descripción por conveniencia. Este campo es legible por cualquier usuario autenticado en el dominio, lo que lo convierte en un lugar común para que los atacantes busquen credenciales durante la post-explotación.",
+        impact_en: "### Impact\nThis leads to the direct compromise of credentials, which can be used to escalate privileges or move laterally within the network.",
+        impact_es: "### Impacto\nEsto conduce al compromiso directo de credenciales, que pueden ser utilizadas para escalar privilegios o moverse lateralmente dentro de la red.",
         remediation_en: {
             shortTerm: "### Short-Term Recommendations\nScan all user and computer account Description fields in Active Directory for passwords and other sensitive information and remove them.",
             mediumTerm: "### Medium-Term Recommendations\nImplement a secure secrets management solution (like a password vault) for storing service account passwords and other credentials.",
@@ -2353,7 +2375,7 @@ An attacker can decrypt sensitive data, forge digital signatures, or crack passw
         impact_es: `### Impacto
 Un atacante puede descifrar datos sensibles, falsificar firmas digitales o descifrar hashes de contraseñas, lo que conduce a una pérdida de confidencialidad e integridad.`,
         remediation_en: {
-            shortTerm: "### Short-Term Recommendations\nReplace weak algorithms with strong, industry-standard alternatives. For symmetric encryption, use AES-256 (GCM mode is recommended). For hashing, use SHA-256 or stronger.",
+            shortTerm: "### Short-Term Recommendations\nReplace all weak algorithms with strong, industry-standard alternatives. For symmetric encryption, use AES-256 (GCM mode is recommended). For hashing, use SHA-256 or stronger.",
             mediumTerm: "### Medium-Term Recommendations\nEstablish a corporate policy defining approved cryptographic standards and algorithms. Create a centralized crypto library for developers to use.",
             longTerm: "### Long-Term Recommendations\nImplement a process for regularly reviewing and updating cryptographic standards as new research emerges. Use code scanning tools to detect the use of deprecated cryptographic functions."
         },
@@ -2747,11 +2769,10 @@ Un atacante puede realizar un ataque de intermediario (man-in-the-middle) para d
         tags: ["Cryptography", "Network", "Infrastructure"],
         affectedComponents_en: `### Affected Components
 - The SSL/TLS configuration of the web server or other network services.`,
-        details_en: "### Proof of Concept\n[TODO: Provide a report from a tool like SSL Labs or nmap's ssl-enum-ciphers script showing the support for weak protocols or ciphers.]",
+        details_en: "### Proof of Concept\n[TODO: Provide a report from a tool like `nmap --script ssl-enum-ciphers` or a report from SSL Labs showing the support for weak protocols or ciphers.]",
         affectedComponents_es: `### Componentes Afectados
 - La configuración SSL/TLS del servidor web u otros servicios de red.`,
-        details_es: `### Prueba de Concepto
-[TODO: Proporcionar un informe de una herramienta como SSL Labs o el script ssl-enum-ciphers de nmap que muestre el soporte para protocolos o cifrados débiles.]`,
+        details_es: "### Prueba de Concepto\n[TODO: Proporcionar un informe de una herramienta como `nmap --script ssl-enum-ciphers` o un informe de SSL Labs que muestre el soporte para protocolos o cifrados débiles.]",
         immediateActions_en: "### Immediate Actions\nImmediately disable support for all SSL versions and TLS 1.0/1.1 on the server. Disable all known weak cipher suites.",
         immediateActions_es: "### Acciones Inmediatas\nDeshabilitar inmediatamente el soporte para todas las versiones de SSL y TLS 1.0/1.1 en el servidor. Deshabilitar todos los conjuntos de cifrado débiles conocidos.",
     },
@@ -2804,7 +2825,7 @@ Un atacante puede realizar un ataque de intermediario (man-in-the-middle) para d
         },
         remediation_es: {
             shortTerm: '### Recomendaciones a Corto Plazo\nSiempre especificar una cadena de formato como una constante en funciones como `printf`. Por ejemplo, usar `printf("%s", userInput)` en lugar de `printf(userInput)`.',
-            mediumTerm: '### Recomendaciones a Medio Plazo\nUsar banderas de compilador que adviertan sobre posibles vulnerabilidades de cadena de formato (p. ej., `-Wformat` en GCC).',
+            mediumTerm: '### Recomendaciones a Medio Plazo\nUsar banderas de compilador que adviertan sobre posiblesulnerabilidades de cadena de formato (p. ej., `-Wformat` en GCC).',
             longTerm: '### Recomendaciones a Largo Plazo\nUsar herramientas de análisis estático para detectar automáticamente errores de cadena de formato en el código base.'
         },
         cwe: 'CWE-134',
@@ -3018,7 +3039,7 @@ Un atacante puede realizar un ataque de intermediario (man-in-the-middle) para d
         overview_en: '### Overview\nThe application is missing key HTTP security headers, which leaves it vulnerable to a variety of attacks, such as clickjacking and cross-site scripting.',
         overview_es: '### Resumen\nLa aplicación carece de encabezados de seguridad HTTP clave, lo que la deja vulnerable a una variedad de ataques, como el secuestro de clics y el cross-site scripting.',
         technicalDescription_en: '### Technical Description\nThe server\'s HTTP responses do not include important security headers like `Content-Security-Policy`, `Strict-Transport-Security`, `X-Content-Type-Options`, `X-Frame-Options`, or `Referrer-Policy`.',
-        technicalDescription_es: '### Descripción Técnica\nLas respuestas HTTP del servidor no incluyen encabezados de seguridad importantes como `Content-Security-Policy`, `Strict-Transport-Security`, `X-Content-Type-Options`, `X-Frame-Options` o `Referrer-Policy`.',
+        technicalDescription_es: '### Descripción Técnica\nLas responses HTTP del servidor no incluyen encabezados de seguridad importantes como `Content-Security-Policy`, `Strict-Transport-Security`, `X-Content-Type-Options`, `X-Frame-Options` o `Referrer-Policy`.',
         impact_en: '### Impact\nThe absence of these headers makes the application more susceptible to various client-side attacks, reduces the overall security posture, and may fail compliance checks.',
         impact_es: '### Impacto\nLa ausencia de estos encabezados hace que la aplicación sea más susceptible a varios ataques del lado del cliente, reduce la postura de seguridad general y puede no pasar las comprobaciones de cumplimiento.',
         remediation_en: {
@@ -3038,10 +3059,10 @@ Un atacante puede realizar un ataque de intermediario (man-in-the-middle) para d
         tags: ['Additional'],
         affectedComponents_en: '### Affected Components\n- All HTTP responses from the application server.',
         details_en: '### Proof of Concept\n[TODO: Provide a screenshot of the HTTP response headers showing the absence of recommended security headers.]',
-        affectedComponents_es: '### Componentes Afectados\n- Todas las respuestas HTTP del servidor de aplicaciones.',
+        affectedComponents_es: '### Componentes Afectados\n- Todas las responses HTTP del servidor de aplicaciones.',
         details_es: '### Prueba de Concepto\n[TODO: Proporcionar una captura de pantalla de los encabezados de respuesta HTTP que muestre la ausencia de los encabezados de seguridad recomendados.]',
         immediateActions_en: '### Immediate Actions\nAdd the recommended security headers to all HTTP responses from the server.',
-        immediateActions_es: '### Acciones Inmediatas\nAñadir los encabezados de seguridad recomendados a todas las respuestas HTTP del servidor.',
+        immediateActions_es: '### Acciones Inmediatas\nAñadir los encabezados de seguridad recomendados a todas las responses HTTP del servidor.',
     },
     {
         id: 'vuln-add-010',
@@ -3075,4 +3096,90 @@ Un atacante puede realizar un ataque de intermediario (man-in-the-middle) para d
         immediateActions_en: '### Immediate Actions\nImplement the `X-Frame-Options` or `Content-Security-Policy: frame-ancestors` header to prevent the site from being framed.',
         immediateActions_es: '### Acciones Inmediatas\nImplementar el encabezado `X-Frame-Options` o `Content-Security-Policy: frame-ancestors` para evitar que el sitio sea enmarcado.',
     },
+    {
+        id: "vuln-add-011",
+        title_en: "DOM-based XSS",
+        title_es: "XSS basado en DOM",
+        overview_en: `### Overview
+DOM-based XSS is a form of XSS where the attack payload is executed as a result of modifying the DOM "environment" in the victim's browser used by the original client-side script, so that the client-side code runs in an "unexpected" manner.`,
+        overview_es: `### Resumen
+El XSS basado en DOM es una forma de XSS donde la carga útil del ataque se ejecuta como resultado de la modificación del "entorno" DOM en el navegador de la víctima utilizado por el script original del lado del cliente, de modo que el código del lado del cliente se ejecuta de una manera "inesperada".`,
+        technicalDescription_en: `### Technical Description
+The vulnerability occurs when a client-side script reads data from a controllable part of the DOM (e.g., the URL fragment) and passes it to a "sink" that supports dynamic code execution, like 'eval()' or 'innerHTML'. An attacker can craft a link with a malicious payload in the fragment (#) which, when visited, is executed by the legitimate script.`,
+        technicalDescription_es: `### Descripción Técnica
+La vulnerabilidad ocurre cuando un script del lado del cliente lee datos de una parte controlable del DOM (p. ej., el fragmento de la URL) y los pasa a un "sink" que admite la ejecución dinámica de código, como 'eval()' o 'innerHTML'. Un atacante puede crear un enlace con una carga útil maliciosa en el fragmento (#) que, cuando se visita, es ejecutado por el script legítimo.`,
+        impact_en: `### Impact
+Same as other forms of XSS, it can lead to session hijacking, account takeover, or performing actions on behalf of the user.`,
+        impact_es: `### Impacto
+Al igual que otras formas de XSS, puede conducir al secuestro de sesiones, la toma de control de cuentas o la realización de acciones en nombre del usuario.`,
+        remediation_en: {
+            shortTerm: "### Short-Term Recommendations\nAvoid allowing data from any untrusted source to be dynamically written to the HTML document. Sanitize all untrusted data before using it to modify the DOM.",
+            mediumTerm: "### Medium-Term Recommendations\nUse safe JavaScript APIs that do not interpret HTML or JavaScript, such as 'textContent' instead of 'innerHTML', and avoid 'eval()'.",
+            longTerm: "### Long-Term Recommendations\nImplement a strong Content Security Policy (CSP) to restrict the sources from which scripts can be executed, mitigating the impact of any potential DOM-XSS flaws."
+        },
+        remediation_es: {
+            shortTerm: "### Recomendaciones a Corto Plazo\nEvitar permitir que los datos de cualquier fuente no confiable se escriban dinámicamente en el documento HTML. Sanear todos los datos no confiables antes de usarlos para modificar el DOM.",
+            mediumTerm: "### Recomendaciones a Medio Plazo\nUsar API de JavaScript seguras que no interpreten HTML o JavaScript, como 'textContent' en lugar de 'innerHTML', y evitar 'eval()'.",
+            longTerm: "### Recomendaciones a Largo Plazo\nImplementar una Política de Seguridad de Contenido (CSP) sólida para restringir las fuentes desde las cuales se pueden ejecutar scripts, mitigando el impacto de cualquier posible falla de DOM-XSS."
+        },
+        cwe: "CWE-79",
+        severity: "High",
+        cvss: { score: 7.5, vectorString: "CVSS:3.1/AV:N/AC:L/PR:N/UI:R/S:C/C:H/I:N/A:N", attackVector: "N", attackComplexity: "L", privilegesRequired: "N", userInteraction: "R", scope: "C", confidentiality: "H", integrity: "N", availability: "N" },
+        references: ["https://owasp.org/www-community/attacks/DOM_Based_XSS"],
+        tags: ["Additional", "Web"],
+        affectedComponents_en: `### Affected Components
+- [TODO: Specify the client-side script and the DOM source (e.g., URL fragment) that is vulnerable.]`,
+        details_en: `### Proof of Concept
+[TODO: Provide a URL with a malicious payload in the fragment that demonstrates script execution in the browser.]`,
+        affectedComponents_es: `### Componentes Afectados
+- [TODO: Especificar el script del lado del cliente y la fuente del DOM (p. ej., fragmento de URL) que es vulnerable.]`,
+        details_es: `### Prueba de Concepto
+[TODO: Proporcionar una URL con una carga útil maliciosa en el fragmento que demuestre la ejecución de scripts en el navegador.]`,
+        immediateActions_en: "### Immediate Actions\nReview and sanitize all client-side scripts that read from the DOM.",
+        immediateActions_es: "### Acciones Inmediatas\nRevisar y sanear todos los scripts del lado del cliente que leen del DOM.",
+    },
+    {
+        id: "vuln-add-012",
+        title_en: "Unrestricted File Upload",
+        title_es: "Subida de Archivos sin Restricciones",
+        overview_en: `### Overview
+This vulnerability allows an attacker to upload a file with malicious content (e.g., a web shell) to a server, which can then be executed.`,
+        overview_es: `### Resumen
+Esta vulnerabilidad permite a un atacante subir un archivo con contenido malicioso (p. ej., una shell web) a un servidor, que luego puede ser ejecutado.`,
+        technicalDescription_en: `### Technical Description
+The application's file upload functionality does not properly validate the file type, content, or extension. An attacker can upload a file with an executable extension (like '.php', '.jsp', '.aspx') and then access the uploaded file's URL to execute it on the server.`,
+        technicalDescription_es: `### Descripción Técnica
+La funcionalidad de carga de archivos de la aplicación no valida correctamente el tipo, el contenido o la extensión del archivo. Un atacante puede subir un archivo con una extensión ejecutable (como '.php', '.jsp', '.aspx') y luego acceder a la URL del archivo subido para ejecutarlo en el servidor.`,
+        impact_en: `### Impact
+Leads to full Remote Code Execution (RCE) on the server, allowing the attacker to take complete control.`,
+        impact_es: `### Impacto
+Conduce a la Ejecución Remota de Código (RCE) completa en el servidor, permitiendo al atacante tomar el control total.`,
+        remediation_en: {
+            shortTerm: "### Short-Term Recommendations\nImplement a strict allow-list of permitted file extensions. Validate the file's 'Content-Type' header and perform magic number analysis to verify the actual file type.",
+            mediumTerm: "### Medium-Term Recommendations\nStore uploaded files in a directory outside of the web root, and serve them through a script that enforces proper access control. Rename uploaded files to a random, non-executable name.",
+            longTerm: "### Long-Term Recommendations\nUse a virus scanner to check all uploaded files for malware. Run the web server with minimal privileges to limit the impact of a potential RCE."
+        },
+        remediation_es: {
+            shortTerm: "### Recomendaciones a Corto Plazo\nImplementar una lista blanca estricta de extensiones de archivo permitidas. Validar el encabezado 'Content-Type' del archivo y realizar un análisis de números mágicos para verificar el tipo de archivo real.",
+            mediumTerm: "### Recomendaciones a Medio Plazo\nAlmacenar los archivos subidos en un directorio fuera de la raíz web y servirlos a través de un script que aplique un control de acceso adecuado. Renombrar los archivos subidos a un nombre aleatorio y no ejecutable.",
+            longTerm: "### Recomendaciones a Largo Plazo\nUsar un escáner de virus para comprobar todos los archivos subidos en busca de malware. Ejecutar el servidor web con los privilegios mínimos para limitar el impacto de una posible RCE."
+        },
+        cwe: "CWE-434",
+        severity: "Critical",
+        cvss: { score: 9.8, vectorString: "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:H/I:H/A:H", attackVector: "N", attackComplexity: "L", privilegesRequired: "N", userInteraction: "N", scope: "U", confidentiality: "H", integrity: "H", availability: "H" },
+        references: ["https://owasp.org/www-community/vulnerabilities/Unrestricted_File_Upload"],
+        tags: ["Additional", "Web"],
+        affectedComponents_en: `### Affected Components
+- The file upload functionality.`,
+        details_en: `### Proof of Concept
+[TODO: Provide the steps to upload a web shell and then access it to execute a command on the server.]`,
+        affectedComponents_es: `### Componentes Afectados
+- La funcionalidad de carga de archivos.`,
+        details_es: `### Prueba de Concepto
+[TODO: Proporcionar los pasos para subir una shell web y luego acceder a ella para ejecutar un comando en el servidor.]`,
+        immediateActions_en: "### Immediate Actions\nDisable the file upload functionality until it can be properly secured. Scan the server for any already uploaded malicious files.",
+        immediateActions_es: "### Acciones Inmediatas\nDeshabilitar la funcionalidad de carga de archivos hasta que pueda ser asegurada correctamente. Escanear el servidor en busca de cualquier archivo malicioso ya subido.",
+    }
 ]
+
+    
