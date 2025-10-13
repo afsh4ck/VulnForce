@@ -7,6 +7,11 @@ export const initialVulnerabilities: Vulnerability[] = [
         id: "vuln-web-001",
         title_en: "SQL Injection",
         title_es: "Inyección SQL",
+        cwe: "CWE-89",
+        severity: "Critical",
+        cvss: { score: 9.8, vectorString: "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:H/I:H/A:H", attackVector: "N", attackComplexity: "L", privilegesRequired: "N", userInteraction: "N", scope: "U", confidentiality: "H", integrity: "H", availability: "H" },
+        references: ["https://owasp.org/www-community/attacks/SQL_Injection"],
+        tags: ["Web"],
         overview_en: `### Overview
 SQL Injection is a web security vulnerability that allows an attacker to interfere with the queries that an application makes to its database. It generally allows an attacker to view data that they are not normally able to retrieve, and sometimes modify or delete this data, causing persistent changes to the application's content or behavior.`,
         overview_es: `### Resumen
@@ -31,11 +36,6 @@ Refactorizar todas las consultas a la base de datos para usar consultas parametr
 Implementar el principio de privilegio mínimo para los usuarios de la base de datos. El usuario de la base de datos de la aplicación solo debe tener los permisos mínimos necesarios.
 #### Recomendaciones a Largo Plazo
 Realizar capacitaciones de seguridad periódicas para los desarrolladores sobre prácticas de codificación segura. Implementar pruebas de seguridad de aplicaciones estáticas (SAST) y dinámicas (DAST) en el pipeline de CI/CD para identificar y corregir vulnerabilidades de forma proactiva.`,
-        cwe: "CWE-89",
-        severity: "Critical",
-        cvss: { score: 9.8, vectorString: "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:H/I:H/A:H", attackVector: "N", attackComplexity: "L", privilegesRequired: "N", userInteraction: "N", scope: "U", confidentiality: "H", integrity: "H", availability: "H" },
-        references: ["https://owasp.org/www-community/attacks/SQL_Injection"],
-        tags: ["Web"],
         affectedComponents_en: `### Affected Components
 - [TODO: List affected components, URLs, parameters, etc.]`,
         details_en: `### Proof of Concept
@@ -44,13 +44,18 @@ Realizar capacitaciones de seguridad periódicas para los desarrolladores sobre 
 - [TODO: Listar componentes afectados, URLs, parámetros, etc.]`,
         details_es: `### Prueba de Concepto
 [TODO: Proporcionar una PoC detallada, incluyendo pasos, fragmentos de código y capturas de pantalla en español]`,
-        immediateActions_en: "### Immediate Actions\nImplement parameterized queries (prepared statements) in the vulnerable forms to prevent SQL injection. Review logs for signs of past exploitation.",
+        immediateActions_en: "### Immediate Actions\nImmediately implement parameterized queries (prepared statements) in the vulnerable forms to prevent SQL injection. Review logs for signs of past exploitation.",
         immediateActions_es: "### Acciones Inmediatas\nImplementar inmediatamente consultas parametrizadas (prepared statements) en los formularios vulnerables para prevenir la inyección de SQL. Revisar los registros en busca de signos de explotación pasada.",
     },
     {
         id: "vuln-web-002",
         title_en: "Cross-Site Scripting (XSS)",
         title_es: "Secuencias de Comandos en Sitios Cruzados (XSS)",
+        cwe: "CWE-79",
+        severity: "High",
+        cvss: { score: 7.5, vectorString: "CVSS:3.1/AV:N/AC:L/PR:N/UI:R/S:C/C:H/I:N/A:N", attackVector: "N", attackComplexity: "L", privilegesRequired: "N", userInteraction: "R", scope: "C", confidentiality: "H", integrity: "N", availability: "N" },
+        references: ["https://owasp.org/www-community/attacks/xss/"],
+        tags: ["Web"],
         overview_en: `### Overview
 Cross-Site Scripting (XSS) allows attackers to inject malicious client-side scripts into web pages viewed by other users. This vulnerability can be used to bypass access controls, steal user sessions, or spread malware. It can be classified as Reflected (non-persistent), Stored (persistent), or DOM-based.`,
         overview_es: `### Resumen
@@ -75,11 +80,6 @@ Aplicar codificación de salida sensible al contexto a todos los datos proporcio
 Utilizar frameworks web modernos (como React, Angular, Vue) que tengan protecciones incorporadas contra XSS. Evitar el uso de funciones peligrosas como \`innerHTML\`.
 #### Recomendaciones a Largo Plazo
 Implementar un patrón de diseño centrado en la seguridad donde los datos no confiables nunca se mezclen con código ejecutable. Capacitar a los desarrolladores para que comprendan los diferentes contextos de XSS y cómo mitigarlos.`,
-        cwe: "CWE-79",
-        severity: "High",
-        cvss: { score: 7.5, vectorString: "CVSS:3.1/AV:N/AC:L/PR:N/UI:R/S:C/C:H/I:N/A:N", attackVector: "N", attackComplexity: "L", privilegesRequired: "N", userInteraction: "R", scope: "C", confidentiality: "H", integrity: "N", availability: "N" },
-        references: ["https://owasp.org/www-community/attacks/xss/"],
-        tags: ["Web"],
         affectedComponents_en: `### Affected Components
 - [TODO: List affected components, URLs, parameters, etc.]`,
         details_en: `### Proof of Concept
@@ -95,6 +95,11 @@ Implementar un patrón de diseño centrado en la seguridad donde los datos no co
         id: "vuln-web-003",
         title_en: "Broken Authentication",
         title_es: "Autenticación Rota",
+        cwe: "CWE-287",
+        severity: "High",
+        cvss: { score: 8.8, vectorString: "CVSS:3.1/AV:N/AC:L/PR:L/UI:N/S:U/C:H/I:H/A:H", attackVector: "N", attackComplexity: "L", privilegesRequired: "L", userInteraction: "N", scope: "U", confidentiality: "H", integrity: "H", availability: "H" },
+        references: ["https://owasp.org/www-project-top-ten/2017/A2_2017-Broken_Authentication"],
+        tags: ["Web", "Authentication"],
         overview_en: `### Overview
 Flaws in authentication mechanisms can allow attackers to compromise user accounts, passwords, or session tokens. This can lead to unauthorized access and account takeover.`,
         overview_es: `### Resumen
@@ -119,11 +124,6 @@ Forzar políticas de contraseñas seguras e implementar limitación de velocidad
 Implementar la autenticación multifactor (MFA) para todos los usuarios, especialmente para las cuentas administrativas. Utilizar un mecanismo de gestión de sesiones centralizado y estandarizado.
 #### Recomendaciones a Largo Plazo
 Realizar una revisión exhaustiva de todo el ciclo de vida de la autenticación y la gestión de sesiones. Utilizar frameworks estándar de la industria y evitar la creación de esquemas de autenticación personalizados.`,
-        cwe: "CWE-287",
-        severity: "High",
-        cvss: { score: 8.8, vectorString: "CVSS:3.1/AV:N/AC:L/PR:L/UI:N/S:U/C:H/I:H/A:H", attackVector: "N", attackComplexity: "L", privilegesRequired: "L", userInteraction: "N", scope: "U", confidentiality: "H", integrity: "H", availability: "H" },
-        references: ["https://owasp.org/www-project-top-ten/2017/A2_2017-Broken_Authentication"],
-        tags: ["Web", "Authentication"],
         affectedComponents_en: `### Affected Components
 - [TODO: Specify the affected login forms, API endpoints, or session management components.]`,
         details_en: `### Proof of Concept
@@ -139,6 +139,11 @@ Realizar una revisión exhaustiva de todo el ciclo de vida de la autenticación 
         id: "vuln-web-004",
         title_en: "Sensitive Data Exposure",
         title_es: "Exposición de Datos Sensibles",
+        cwe: "CWE-312",
+        severity: "High",
+        cvss: { score: 7.5, vectorString: "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:H/I:N/A:N", attackVector: "N", attackComplexity: "L", privilegesRequired: "N", userInteraction: "N", scope: "U", confidentiality: "H", integrity: "N", availability: "N" },
+        references: ["https://owasp.org/Top10/A02_2021-Cryptographic_Failures/"],
+        tags: ["Web", "Cryptography"],
         overview_en: `### Overview
 This vulnerability occurs when an application fails to adequately protect sensitive information such as financial data, healthcare records, or Personally Identifiable Information (PII). Attackers may steal or modify such weakly protected data to conduct credit card fraud, identity theft, or other crimes.`,
         overview_es: `### Resumen
@@ -163,11 +168,6 @@ Identificar todos los datos sensibles y aplicar un cifrado fuerte tanto en repos
 Implementar una política de clasificación de datos. Utilizar algoritmos y protocolos de cifrado fuertes y estándar de la industria. Asegurar una gestión y rotación de claves adecuadas.
 #### Recomendaciones a Largo Plazo
 Minimizar la recopilación y el almacenamiento de datos sensibles. Realizar ejercicios regulares de descubrimiento y clasificación de datos para garantizar que no se almacenen datos sensibles de forma incorrecta.`,
-        cwe: "CWE-312",
-        severity: "High",
-        cvss: { score: 7.5, vectorString: "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:H/I:N/A:N", attackVector: "N", attackComplexity: "L", privilegesRequired: "N", userInteraction: "N", scope: "U", confidentiality: "H", integrity: "N", availability: "N" },
-        references: ["https://owasp.org/Top10/A02_2021-Cryptographic_Failures/"],
-        tags: ["Web", "Cryptography"],
         affectedComponents_en: `### Affected Components
 - [TODO: Specify where sensitive data is stored or transmitted insecurely.]`,
         details_en: `### Proof of Concept
@@ -183,6 +183,11 @@ Minimizar la recopilación y el almacenamiento de datos sensibles. Realizar ejer
         id: "vuln-web-005",
         title_en: "XML External Entities (XXE)",
         title_es: "Entidades Externas XML (XXE)",
+        cwe: "CWE-611",
+        severity: "High",
+        cvss: { score: 8.8, vectorString: "CVSS:3.1/AV:N/AC:L/PR:L/UI:N/S:U/C:H/I:H/A:H", attackVector: "N", attackComplexity: "L", privilegesRequired: "L", userInteraction: "N", scope: "U", confidentiality: "H", integrity: "H", availability: "H" },
+        references: ["https://owasp.org/www-community/vulnerabilities/XML_External_Entity_(XXE)_Processing"],
+        tags: ["Web"],
         overview_en: `### Overview
 An XML External Entity (XXE) attack is a type of attack against an application that parses XML input. This attack occurs when XML input containing a reference to an external entity is processed by a weakly configured XML parser.`,
         overview_es: `### Resumen
@@ -207,11 +212,6 @@ Deshabilitar los DTDs (Definiciones de Tipo de Documento) y las entidades extern
 Actualizar los procesadores y bibliotecas XML a sus últimas versiones. Usar formatos de datos menos complejos como JSON cuando sea posible.
 #### Recomendaciones a Largo Plazo
 Implementar validación y filtrado de entradas del lado del servidor para evitar datos hostiles dentro de los documentos XML. Usar un Web Application Firewall (WAF) con reglas para detectar y bloquear ataques XXE.`,
-        cwe: "CWE-611",
-        severity: "High",
-        cvss: { score: 8.8, vectorString: "CVSS:3.1/AV:N/AC:L/PR:L/UI:N/S:U/C:H/I:H/A:H", attackVector: "N", attackComplexity: "L", privilegesRequired: "L", userInteraction: "N", scope: "U", confidentiality: "H", integrity: "H", availability: "H" },
-        references: ["https://owasp.org/www-community/vulnerabilities/XML_External_Entity_(XXE)_Processing"],
-        tags: ["Web"],
         affectedComponents_en: `### Affected Components
 - [TODO: Specify the functionality that processes XML input, e.g., file upload features.]`,
         details_en: `### Proof of Concept
@@ -227,6 +227,11 @@ Implementar validación y filtrado de entradas del lado del servidor para evitar
         id: "vuln-web-006",
         title_en: "Broken Access Control",
         title_es: "Control de Acceso Roto",
+        cwe: "CWE-284",
+        severity: "High",
+        cvss: { score: 8.1, vectorString: "CVSS:3.1/AV:N/AC:L/PR:L/UI:N/S:U/C:H/I:H/A:N", attackVector: "N", attackComplexity: "L", privilegesRequired: "L", userInteraction: "N", scope: "U", confidentiality: "H", integrity: "H", availability: "N" },
+        references: ["https://owasp.org/Top10/A01_2021-Broken_Access_Control/"],
+        tags: ["Web", "Authentication"],
         overview_en: `### Overview
 Access control enforces policy such that users cannot act outside of their intended permissions. Failures typically lead to unauthorized information disclosure, modification, or destruction of all data or performing a business function outside the user's limits.`,
         overview_es: `### Resumen
@@ -251,11 +256,6 @@ Revisar y aplicar el control de acceso en el lado del servidor para cada solicit
 Implementar un mecanismo de control de acceso centralizado que sea utilizado por todos los componentes de la aplicación. Registrar las fallas de control de acceso y alertar a los administradores.
 #### Recomendaciones a Largo Plazo
 Realizar una revisión completa de la lógica de control de acceso. Implementar el principio de privilegio mínimo, donde a los usuarios solo se les otorgan los permisos mínimos necesarios.`,
-        cwe: "CWE-284",
-        severity: "High",
-        cvss: { score: 8.1, vectorString: "CVSS:3.1/AV:N/AC:L/PR:L/UI:N/S:U/C:H/I:H/A:N", attackVector: "N", attackComplexity: "L", privilegesRequired: "L", userInteraction: "N", scope: "U", confidentiality: "H", integrity: "H", availability: "N" },
-        references: ["https://owasp.org/Top10/A01_2021-Broken_Access_Control/"],
-        tags: ["Web", "Authentication"],
         affectedComponents_en: `### Affected Components
 - [TODO: Specify the functions or API endpoints with broken access control.]`,
         details_en: `### Proof of Concept
@@ -271,6 +271,11 @@ Realizar una revisión completa de la lógica de control de acceso. Implementar 
         id: "vuln-web-007",
         title_en: "Security Misconfiguration",
         title_es: "Configuración de Seguridad Incorrecta",
+        cwe: "CWE-16",
+        severity: "High",
+        cvss: { score: 7.5, vectorString: "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:H/I:N/A:N", attackVector: "N", attackComplexity: "L", privilegesRequired: "N", userInteraction: "N", scope: "U", confidentiality: "H", integrity: "N", availability: "N" },
+        references: ["https://owasp.org/Top10/A05_2021-Security_Misconfiguration/"],
+        tags: ["Web", "Infrastructure"],
         overview_en: `### Overview
 Security misconfiguration is the most commonly seen issue. This is commonly a result of insecure default configurations, incomplete or ad hoc configurations, open cloud storage, misconfigured HTTP headers, and verbose error messages containing sensitive information.`,
         overview_es: `### Resumen
@@ -295,11 +300,6 @@ Revisar y fortalecer las configuraciones para todas las partes de la pila de apl
 Desarrollar un proceso de fortalecimiento repetible que sea rápido y fácil de implementar. Automatizar el proceso de verificación de configuraciones en diferentes entornos.
 #### Recomendaciones a Largo Plazo
 Implementar un ciclo de vida de configuración seguro. Escanear y auditar regularmente las configuraciones en busca de errores. Usar herramientas automatizadas para hacer cumplir las líneas de base seguras.`,
-        cwe: "CWE-16",
-        severity: "High",
-        cvss: { score: 7.5, vectorString: "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:H/I:N/A:N", attackVector: "N", attackComplexity: "L", privilegesRequired: "N", userInteraction: "N", scope: "U", confidentiality: "H", integrity: "N", availability: "N" },
-        references: ["https://owasp.org/Top10/A05_2021-Security_Misconfiguration/"],
-        tags: ["Web", "Infrastructure"],
         affectedComponents_en: `### Affected Components
 - [TODO: List the misconfigured components, services, or servers.]`,
         details_en: `### Proof of Concept
@@ -315,6 +315,11 @@ Implementar un ciclo de vida de configuración seguro. Escanear y auditar regula
         id: "vuln-web-008",
         title_en: "Cross-Site Request Forgery (CSRF)",
         title_es: "Falsificación de Solicitudes en Sitios Cruzados (CSRF)",
+        cwe: "CWE-352",
+        severity: "High",
+        cvss: { score: 8.8, vectorString: "CVSS:3.1/AV:N/AC:L/PR:N/UI:R/S:U/C:H/I:H/A:H", attackVector: "N", attackComplexity: "L", privilegesRequired: "N", userInteraction: "R", scope: "U", confidentiality: "H", integrity: "H", availability: "H" },
+        references: ["https://owasp.org/www-community/attacks/csrf"],
+        tags: ["Web"],
         overview_en: `### Overview
 Cross-Site Request Forgery (CSRF) is an attack that forces an end user to execute unwanted actions on a web application in which they're currently authenticated.`,
         overview_es: `### Resumen
@@ -339,11 +344,6 @@ Implementar tokens anti-CSRF (patrón de token sincronizador) para todas las sol
 Usar el atributo de cookie SameSite, configurándolo en \`Strict\` o \`Lax\`.
 #### Recomendaciones a Largo Plazo
 Asegurarse de que el framework de la aplicación tenga protección CSRF incorporada y que esté habilitada y configurada correctamente. Para las API, considerar el uso de autenticación basada en tokens (p. ej., JWT) en lugar de cookies.`,
-        cwe: "CWE-352",
-        severity: "High",
-        cvss: { score: 8.8, vectorString: "CVSS:3.1/AV:N/AC:L/PR:N/UI:R/S:U/C:H/I:H/A:H", attackVector: "N", attackComplexity: "L", privilegesRequired: "N", userInteraction: "R", scope: "U", confidentiality: "H", integrity: "H", availability: "H" },
-        references: ["https://owasp.org/www-community/attacks/csrf"],
-        tags: ["Web"],
         affectedComponents_en: `### Affected Components
 - [TODO: List the forms or actions vulnerable to CSRF.]`,
         details_en: `### Proof of Concept
@@ -359,6 +359,11 @@ Asegurarse de que el framework de la aplicación tenga protección CSRF incorpor
         id: "vuln-web-009",
         title_en: "Insecure Deserialization",
         title_es: "Deserialización Insegura",
+        cwe: "CWE-502",
+        severity: "Critical",
+        cvss: { score: 9.8, vectorString: "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:H/I:H/A:H", attackVector: "N", attackComplexity: "L", privilegesRequired: "N", userInteraction: "N", scope: "U", confidentiality: "H", integrity: "H", availability: "H" },
+        references: ["https://owasp.org/Top10/A08_2021-Software_and_Data_Integrity_Failures/"],
+        tags: ["Web"],
         overview_en: `### Overview
 Insecure deserialization is a vulnerability which occurs when untrusted data is used to abuse the logic of an application, inflict a denial-of-service (DoS) attack, or even execute arbitrary code upon it being deserialized.`,
         overview_es: `### Resumen
@@ -383,11 +388,6 @@ Evitar deserializar datos de fuentes no confiables. Si es necesario, implementar
 Utilizar formatos de datos que no sean vulnerables a ataques de deserialización, como JSON, y evitar el uso de formatos de serialización nativos complejos.
 #### Recomendaciones a Largo Plazo
 Integrar comprobaciones de integridad como firmas digitales en cualquier dato serializado para evitar la manipulación. Aislar el código de deserialización en un entorno de bajos privilegios.`,
-        cwe: "CWE-502",
-        severity: "Critical",
-        cvss: { score: 9.8, vectorString: "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:H/I:H/A:H", attackVector: "N", attackComplexity: "L", privilegesRequired: "N", userInteraction: "N", scope: "U", confidentiality: "H", integrity: "H", availability: "H" },
-        references: ["https://owasp.org/Top10/A08_2021-Software_and_Data_Integrity_Failures/"],
-        tags: ["Web"],
         affectedComponents_en: `### Affected Components
 - [TODO: Specify the function or parameter that accepts serialized data.]`,
         details_en: `### Proof of Concept
@@ -403,6 +403,11 @@ Integrar comprobaciones de integridad como firmas digitales en cualquier dato se
         id: "vuln-web-010",
         title_en: "Server-Side Request Forgery (SSRF)",
         title_es: "Falsificación de Solicitudes del Lado del Servidor (SSRF)",
+        cwe: "CWE-918",
+        severity: "High",
+        cvss: { score: 9.0, vectorString: "CVSS:3.1/AV:N/AC:L/PR:L/UI:N/S:C/C:H/I:L/A:N", attackVector: "N", attackComplexity: "L", privilegesRequired: "L", userInteraction: "N", scope: "C", confidentiality: "H", integrity: "L", availability: "N" },
+        references: ["https://owasp.org/Top10/A10_2021-Server-Side_Request_Forgery_(SSRF)/"],
+        tags: ["Web"],
         overview_en: `### Overview
 Server-Side Request Forgery (SSRF) is a web security vulnerability that allows an attacker to induce the server-side application to make HTTP requests to an arbitrary domain of the attacker's choosing.`,
         overview_es: `### Resumen
@@ -427,11 +432,6 @@ Implementar una lista blanca estricta de dominios y protocolos que la aplicació
 Validar todas las entradas proporcionadas por el usuario para asegurarse de que se ajustan al formato y los valores esperados. No enviar responses sin procesar del servidor al cliente.
 #### Recomendaciones a Largo Plazo
 Aislar la funcionalidad que realiza solicitudes externas en un entorno de red separado y de bajos privilegios. Esto limita el impacto de una posible vulnerabilidad SSRF.`,
-        cwe: "CWE-918",
-        severity: "High",
-        cvss: { score: 9.0, vectorString: "CVSS:3.1/AV:N/AC:L/PR:L/UI:N/S:C/C:H/I:L/A:N", attackVector: "N", attackComplexity: "L", privilegesRequired: "L", userInteraction: "N", scope: "C", confidentiality: "H", integrity: "L", availability: "N" },
-        references: ["https://owasp.org/Top10/A10_2021-Server-Side_Request_Forgery_(SSRF)/"],
-        tags: ["Web"],
         affectedComponents_en: `### Affected Components
 - [TODO: Specify the functionality that makes server-side requests based on user input, e.g., a URL preview generator.]`,
         details_en: `### Proof of Concept
@@ -447,6 +447,11 @@ Aislar la funcionalidad que realiza solicitudes externas en un entorno de red se
         id: "vuln-web-011",
         title_en: "HTTP Verb Tampering",
         title_es: "Manipulación de Verbos HTTP",
+        cwe: "CWE-346",
+        severity: "Medium",
+        cvss: { score: 6.5, vectorString: "CVSS:3.1/AV:N/AC:L/PR:L/UI:N/S:U/C:L/I:L/A:N", attackVector: "N", attackComplexity: "L", privilegesRequired: "L", userInteraction: "N", scope: "U", confidentiality: "L", integrity: "L", availability: "N" },
+        references: ["https://owasp.org/www-project-testing-guide/latest/4-Web_Application_Security_Testing/07-Input_Validation_Testing/01-Testing_for_HTTP_Verb_Tampering"],
+        tags: ["Web"],
         overview_en: `### Overview
 HTTP Verb Tampering exploits relaxed parsing of HTTP methods to bypass access controls. For example, an application might enforce strict controls for POST requests but be permissive for GET requests to the same endpoint.`,
         overview_es: `### Resumen
@@ -471,11 +476,6 @@ Aplicar un control de acceso estricto y de denegación por defecto para todos lo
 Usar un framework que mapee correctamente las acciones a verbos HTTP específicos y haga cumplir este mapeo.
 #### Recomendaciones a Largo Plazo
 Implementar un mecanismo de control de acceso centralizado y robusto que sea independiente del verbo.`,
-        cwe: "CWE-346",
-        severity: "Medium",
-        cvss: { score: 6.5, vectorString: "CVSS:3.1/AV:N/AC:L/PR:L/UI:N/S:U/C:L/I:L/A:N", attackVector: "N", attackComplexity: "L", privilegesRequired: "L", userInteraction: "N", scope: "U", confidentiality: "L", integrity: "L", availability: "N" },
-        references: ["https://owasp.org/www-project-testing-guide/latest/4-Web_Application_Security_Testing/07-Input_Validation_Testing/01-Testing_for_HTTP_Verb_Tampering"],
-        tags: ["Web"],
         affectedComponents_en: `### Affected Components
 - [TODO: List endpoints vulnerable to verb tampering.]`,
         details_en: `### Proof of Concept
@@ -491,6 +491,11 @@ Implementar un mecanismo de control de acceso centralizado y robusto que sea ind
         id: "vuln-web-012",
         title_en: "Local File Inclusion (LFI)",
         title_es: "Inclusión de Archivos Locales (LFI)",
+        cwe: "CWE-98",
+        severity: "High",
+        cvss: { score: 7.5, vectorString: "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:H/I:N/A:N", attackVector: "N", attackComplexity: "L", privilegesRequired: "N", userInteraction: "N", scope: "U", confidentiality: "H", integrity: "N", availability: "N" },
+        references: ["https://owasp.org/www-project-web-security-testing-guide/latest/4-Web_Application_Security_Testing/07-Input_Validation_Testing/11.1-Testing_for_Local_File_Inclusion"],
+        tags: ["Web"],
         overview_en: `### Overview
 Local File Inclusion (LFI) is a vulnerability where an attacker is able to include a file, usually exploiting a "dynamic file inclusion" mechanisms implemented in the web application.`,
         overview_es: `### Resumen
@@ -515,11 +520,6 @@ Validar la entrada del usuario contra una lista blanca estricta de nombres y rut
 Evitar pasar la entrada proporcionada por el usuario a las API del sistema de archivos. Si es inevitable, usar un mapeo a rutas de archivo seguras y predefinidas.
 #### Recomendaciones a Largo Plazo
 Ejecutar la aplicación en un entorno aislado o chroot para limitar el impacto de un posible LFI.`,
-        cwe: "CWE-98",
-        severity: "High",
-        cvss: { score: 7.5, vectorString: "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:H/I:N/A:N", attackVector: "N", attackComplexity: "L", privilegesRequired: "N", userInteraction: "N", scope: "U", confidentiality: "H", integrity: "N", availability: "N" },
-        references: ["https://owasp.org/www-project-web-security-testing-guide/latest/4-Web_Application_Security_Testing/07-Input_Validation_Testing/11.1-Testing_for_Local_File_Inclusion"],
-        tags: ["Web"],
         affectedComponents_en: `### Affected Components
 - [TODO: Specify the parameter and URL vulnerable to LFI.]`,
         details_en: `### Proof of Concept
@@ -535,6 +535,11 @@ Ejecutar la aplicación en un entorno aislado o chroot para limitar el impacto d
         id: "vuln-web-013",
         title_en: "SSRF to Local File Read",
         title_es: "SSRF para Lectura de Archivos Locales",
+        cwe: "CWE-918",
+        severity: "High",
+        cvss: { score: 7.5, vectorString: "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:H/I:N/A:N", attackVector: "N", attackComplexity: "L", privilegesRequired: "N", userInteraction: "N", scope: "U", confidentiality: "H", integrity: "N", availability: "N" },
+        references: ["https://owasp.org/Top10/A10_2021-Server-Side_Request_Forgery_(SSRF)/"],
+        tags: ["Web", "SSRF"],
         overview_en: `### Overview
 A specific type of SSRF attack where the vulnerability can be leveraged to read arbitrary local files on the server by using the \`file://\` URI scheme.`,
         overview_es: `### Resumen
@@ -559,11 +564,6 @@ Desautorizar estrictamente el esquema URI \`file://\` en todas las funciones que
 Implementar un analizador de URI robusto que valide y restrinja los protocolos a una lista de permitidos (p. ej., solo HTTP y HTTPS).
 #### Recomendaciones a Largo Plazo
 Ejecutar la aplicación con los permisos mínimos necesarios del sistema de archivos para limitar los archivos a los que puede acceder.`,
-        cwe: "CWE-918",
-        severity: "High",
-        cvss: { score: 7.5, vectorString: "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:H/I:N/A:N", attackVector: "N", attackComplexity: "L", privilegesRequired: "N", userInteraction: "N", scope: "U", confidentiality: "H", integrity: "N", availability: "N" },
-        references: ["https://owasp.org/Top10/A10_2021-Server-Side_Request_Forgery_(SSRF)/"],
-        tags: ["Web", "SSRF"],
         affectedComponents_en: `### Affected Components
 - [TODO: Specify the functionality vulnerable to SSRF with file:// scheme.]`,
         details_en: `### Proof of Concept
@@ -580,6 +580,11 @@ Ejecutar la aplicación con los permisos mínimos necesarios del sistema de arch
         id: "vuln-mobile-001",
         title_en: "Insecure Data Storage",
         title_es: "Almacenamiento Inseguro de Datos",
+        cwe: "CWE-922",
+        severity: "High",
+        cvss: { score: 7.5, vectorString: "CVSS:3.1/AV:L/AC:L/PR:L/UI:N/S:U/C:H/I:N/A:N", attackVector: "L", attackComplexity: "L", privilegesRequired: "L", userInteraction: "N", scope: "U", confidentiality: "H", integrity: "N", availability: "N" },
+        references: ["https://owasp.org/www-project-mobile-top-10/2016-risks/m2-insecure-data-storage/"],
+        tags: ["Mobile"],
         overview_en: `### Overview
 This vulnerability occurs when sensitive data is stored on the mobile device without adequate protection, making it accessible to other applications or to an attacker with physical access to the device.`,
         overview_es: `### Resumen
@@ -599,16 +604,11 @@ Develop a data classification policy for the mobile app to identify what data is
 #### Long-Term Recommendations
 Implement a secure data management lifecycle for the mobile app, including secure storage, transmission, and deletion of data. Conduct regular security audits of the app's data storage practices.`,
         recommendations_es: `#### Recomendaciones a Corto Plazo
-Cifrar inmediatamente todos los datos sensibles antes de almacenarlos en el dispositivo. Utilizar los mecanismos de almacenamiento seguro proporcionados por la plataforma, como EncryptedSharedPreferences de Android o el Llavero (Keychain) de iOS.
+Cifrar todos los datos sensibles antes de almacenarlos en el dispositivo. Utilizar los mecanismos de almacenamiento seguro proporcionados por la plataforma, como EncryptedSharedPreferences de Android o el Llavero (Keychain) de iOS.
 #### Recomendaciones a Medio Plazo
 Desarrollar una política de clasificación de datos para la aplicación móvil para identificar qué datos son sensibles y requieren cifrado. Evitar almacenar datos sensibles en el dispositivo siempre que sea posible.
 #### Recomendaciones a Largo Plazo
 Implementar un ciclo de vida de gestión de datos seguro para la aplicación móvil, que incluya almacenamiento, transmisión y eliminación seguros de los datos. Realizar auditorías de seguridad periódicas de las prácticas de almacenamiento de datos de la aplicación.`,
-        cwe: "CWE-922",
-        severity: "High",
-        cvss: { score: 7.5, vectorString: "CVSS:3.1/AV:L/AC:L/PR:L/UI:N/S:U/C:H/I:N/A:N", attackVector: "L", attackComplexity: "L", privilegesRequired: "L", userInteraction: "N", scope: "U", confidentiality: "H", integrity: "N", availability: "N" },
-        references: ["https://owasp.org/www-project-mobile-top-10/2016-risks/m2-insecure-data-storage/"],
-        tags: ["Mobile"],
         affectedComponents_en: `### Affected Components
 - [TODO: List the files or databases where data is stored insecurely (e.g., SharedPreferences file, SQLite DB).]`,
         details_en: `### Proof of Concept
@@ -624,6 +624,11 @@ Implementar un ciclo de vida de gestión de datos seguro para la aplicación mó
         id: "vuln-mobile-002",
         title_en: "Weak Server-Side Controls",
         title_es: "Controles Débiles en el Servidor",
+        cwe: "CWE-602",
+        severity: "High",
+        cvss: { score: 8.8, vectorString: "CVSS:3.1/AV:N/AC:L/PR:L/UI:N/S:U/C:H/I:H/A:H", attackVector: "N", attackComplexity: "L", privilegesRequired: "L", userInteraction: "N", scope: "U", confidentiality: "H", integrity: "H", availability: "H" },
+        references: ["https://owasp.org/www-project-mobile-top-10/2016-risks/m10-extraneous-functionality/"],
+        tags: ["Mobile", "API"],
         overview_en: `### Overview
 This category covers security issues that result from a mobile app's reliance on server-side components. These are not flaws in the mobile app itself but in the backend APIs it communicates with.`,
         overview_es: `### Resumen
@@ -643,16 +648,11 @@ Implement API-specific security measures, such as rate limiting, request throttl
 #### Long-Term Recommendations
 Design the backend API with a 'zero trust' model, assuming that any request from a mobile client could be malicious. Do not rely on client-side controls for security.`,
         recommendations_es: `#### Recomendaciones a Corto Plazo
-Aplicar las mesmas melhores práticas de segurança às APIs de backend móvel que se aplicariam a uma aplicação web padrão. Isso inclui validação de entradas, consultas parametrizadas e um forte controle de acesso.
+Aplicar las mismas mejores prácticas de seguridad a las API de backend móvil que se aplicarían a una aplicación web estándar. Esto incluye validación de entradas, consultas parametrizadas y un fuerte control de acceso.
 #### Recomendaciones a Medio Plazo
-Implementar medidas de segurança específicas para a API, como limitação de velocidade, regulação de solicitações e autenticação/autorização robustas para todos os pontos de conexão.
+Implementar medidas de seguridad específicas para la API, como limitación de velocidad, regulación de solicitudes y autenticación/autorización robustas para todos los puntos de conexión.
 #### Recomendaciones a Largo Plazo
-Projetar a API de backend com um modelo de 'confiança zero', assumindo que qualquer solicitação de um cliente móvel pode ser maliciosa. Não depender dos controles do lado do cliente para a segurança.`,
-        cwe: "CWE-602",
-        severity: "High",
-        cvss: { score: 8.8, vectorString: "CVSS:3.1/AV:N/AC:L/PR:L/UI:N/S:U/C:H/I:H/A:H", attackVector: "N", attackComplexity: "L", privilegesRequired: "L", userInteraction: "N", scope: "U", confidentiality: "H", integrity: "H", availability: "H" },
-        references: ["https://owasp.org/www-project-mobile-top-10/2016-risks/m10-extraneous-functionality/"],
-        tags: ["Mobile", "API"],
+Diseñar la API de backend con un modelo de 'confianza cero', asumiendo que cualquier solicitud de un cliente móvil puede ser maliciosa. No depender de los controles del lado del cliente para la seguridad.`,
         affectedComponents_en: `### Affected Components
 - [TODO: List the vulnerable backend API endpoints.]`,
         details_en: `### Proof of Concept
@@ -668,6 +668,11 @@ Projetar a API de backend com um modelo de 'confiança zero', assumindo que qual
         id: "vuln-mobile-003",
         title_en: "Insufficient Transport Layer Protection",
         title_es: "Protección Insuficiente de la Capa de Transporte",
+        cwe: "CWE-319",
+        severity: "High",
+        cvss: { score: 7.4, vectorString: "CVSS:3.1/AV:A/AC:L/PR:N/UI:N/S:U/C:H/I:L/A:N", attackVector: "A", attackComplexity: "L", privilegesRequired: "N", userInteraction: "N", scope: "U", confidentiality: "H", integrity: "L", availability: "N" },
+        references: ["https://owasp.org/www-project-mobile-top-10/2016-risks/m3-insecure-communication/"],
+        tags: ["Mobile", "Network"],
         overview_en: `### Overview
 This vulnerability arises when a mobile application fails to properly implement SSL/TLS for network communications, exposing user data to interception.`,
         overview_es: `### Resumen
@@ -692,11 +697,6 @@ Asegurarse de que se utilice TLS para todas las comunicaciones de red. Configura
 Implementar el anclaje de certificados SSL/TLS (certificate pinning) para prevenir ataques MitM incluso si el almacén de confianza del dispositivo está comprometido. No permitir el uso de certificados autofirmados en las compilaciones de producción.
 #### Recomendaciones a Largo Plazo
 Revisar y actualizar regularmente la lista de certificados y conjuntos de cifrado de confianza. Utilizar herramientas automatizadas para escanear la aplicación en busca de configuraciones de red inseguras durante el ciclo de desarrollo.`,
-        cwe: "CWE-319",
-        severity: "High",
-        cvss: { score: 7.4, vectorString: "CVSS:3.1/AV:A/AC:L/PR:N/UI:N/S:U/C:H/I:L/A:N", attackVector: "A", attackComplexity: "L", privilegesRequired: "N", userInteraction: "N", scope: "U", confidentiality: "H", integrity: "L", availability: "N" },
-        references: ["https://owasp.org/www-project-mobile-top-10/2016-risks/m3-insecure-communication/"],
-        tags: ["Mobile", "Network"],
         affectedComponents_en: `### Affected Components
 - [TODO: List the network requests or API endpoints using insecure communication.]`,
         details_en: `### Proof of Concept
@@ -712,6 +712,11 @@ Revisar y actualizar regularmente la lista de certificados y conjuntos de cifrad
         id: "vuln-mobile-004",
         title_en: "Unintended Data Leakage",
         title_es: "Filtración de Datos no Intencionada",
+        cwe: "CWE-532",
+        severity: "Medium",
+        cvss: { score: 5.7, vectorString: "CVSS:3.1/AV:N/AC:L/PR:L/UI:N/S:U/C:H/I:N/A:N", attackVector: "N", attackComplexity: "L", privilegesRequired: "L", userInteraction: "N", scope: "U", confidentiality: "H", integrity: "N", availability: "N" },
+        references: ["https://owasp.org/www-project-mobile-top-10/2016-risks/m4-unintended-data-leakage/"],
+        tags: ["Mobile"],
         overview_en: `### Overview
 Unintended data leakage occurs when sensitive data is unintentionally exposed or written to an insecure location on the mobile device or sent to third parties.`,
         overview_es: `### Resumen
@@ -736,11 +741,6 @@ Eliminar todo el registro de datos sensibles. Deshabilitar el almacenamiento en 
 Revisar y minimizar los datos enviados a servicios de terceros. Implementar enmascaramiento de datos o tokenización para cualquier dato sensible que deba compartirse.
 #### Recomendaciones a Largo Plazo
 Establecer un diagrama de flujo de datos claro para la aplicación y realizar una evaluación de impacto en la privacidad. Revisar regularmente los SDK de terceros por sus prácticas de manejo de datos.`,
-        cwe: "CWE-532",
-        severity: "Medium",
-        cvss: { score: 5.7, vectorString: "CVSS:3.1/AV:N/AC:L/PR:L/UI:N/S:U/C:H/I:N/A:N", attackVector: "N", attackComplexity: "L", privilegesRequired: "L", userInteraction: "N", scope: "U", confidentiality: "H", integrity: "N", availability: "N" },
-        references: ["https://owasp.org/www-project-mobile-top-10/2016-risks/m4-unintended-data-leakage/"],
-        tags: ["Mobile"],
         affectedComponents_en: `### Affected Components
 - [TODO: Specify where data leakage occurs (e.g., Logcat output, clipboard, analytics data).]`,
         details_en: `### Proof of Concept
@@ -756,10 +756,15 @@ Establecer un diagrama de flujo de datos claro para la aplicación y realizar un
         id: "vuln-mobile-005",
         title_en: "Poor Authorization",
         title_es: "Autorización Deficiente",
+        cwe: "CWE-863",
+        severity: "High",
+        cvss: { score: 8.1, vectorString: "CVSS:3.1/AV:N/AC:L/PR:L/UI:N/S:U/C:H/I:H/A:N", attackVector: "N", attackComplexity: "L", privilegesRequired: "L", userInteraction: "N", scope: "U", confidentiality: "H", integrity: "H", availability: "N" },
+        references: ["https://owasp.org/www-project-mobile-top-10/2016-risks/m5-poor-authorization-and-authentication/"],
+        tags: ["Mobile", "API"],
         overview_en: `### Overview
 Poor authorization vulnerabilities occur when a user is able to access resources or perform actions that they should not be permitted to. This is a server-side flaw, but it is tested and exploited via the mobile app.`,
         overview_es: `### Resumen
-Las vulnerabilidades de autorización deficiente ocurren when un usuario puede acceder a recursos o realizar acciones que no debería tener permitidas. Esta es una falla del lado del servidor, pero se prueba y explota a través de la aplicación móvil.`,
+Las vulnerabilidades de autorización deficiente ocurren cuando un usuario puede acceder a recursos o realizar acciones que no debería tener permitidas. Esta es una falla del lado del servidor, pero se prueba y explota a través de la aplicación móvil.`,
         technicalDescription_en: `### Technical Description
 This is similar to Broken Access Control in web applications. An attacker, authenticated as a low-privilege user, can manipulate API requests to access data or functionality belonging to another user or a higher-privilege role. For example, changing a user ID in an API call from \`/api/users/123/profile\` to \`/api/users/456/profile\` to view another user's data.`,
         technicalDescription_es: `### Descripción Técnica
@@ -780,11 +785,6 @@ Hacer cumplir las comprobaciones de autorización en el lado del servidor para c
 Implementar un sistema de control de acceso basado en roles (RBAC) robusto y centralizado para la API de backend. Asegurarse de que se compruebe la propiedad para todas las solicitudes de acceso a datos.
 #### Recomendaciones a Largo Plazo
 Realizar una revisión de seguridad exhaustiva de toda la superficie de la API. Se deben crear pruebas unitarias y de integración para verificar que las reglas de autorización se apliquen correctamente.`,
-        cwe: "CWE-863",
-        severity: "High",
-        cvss: { score: 8.1, vectorString: "CVSS:3.1/AV:N/AC:L/PR:L/UI:N/S:U/C:H/I:H/A:N", attackVector: "N", attackComplexity: "L", privilegesRequired: "L", userInteraction: "N", scope: "U", confidentiality: "H", integrity: "H", availability: "N" },
-        references: ["https://owasp.org/www-project-mobile-top-10/2016-risks/m5-poor-authorization-and-authentication/"],
-        tags: ["Mobile", "API"],
         affectedComponents_en: `### Affected Components
 - [TODO: List the API endpoints that fail to enforce proper authorization.]`,
         details_en: `### Proof of Concept
@@ -800,6 +800,11 @@ Realizar una revisión de seguridad exhaustiva de toda la superficie de la API. 
         id: "vuln-mobile-006",
         title_en: "Broken Cryptography",
         title_es: "Criptografía Rota",
+        cwe: "CWE-327",
+        severity: "High",
+        cvss: { score: 7.5, vectorString: "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:H/I:N/A:N", attackVector: "N", attackComplexity: "L", privilegesRequired: "N", userInteraction: "N", scope: "U", confidentiality: "H", integrity: "N", availability: "N" },
+        references: ["https://owasp.org/www-project-mobile-top-10/2016-risks/m6-insecure-authorization/"],
+        tags: ["Mobile", "Cryptography"],
         overview_en: `### Overview
 This vulnerability arises from the incorrect use of cryptography in a mobile app, such as using weak or outdated algorithms, or implementing custom, insecure cryptographic protocols.`,
         overview_es: `### Resumen
@@ -824,11 +829,6 @@ Reemplazar todos los algoritmos criptográficos débiles o personalizados con al
 No implementar la criptografía desde cero. Utilizar bibliotecas y API criptográficas bien examinadas y proporcionadas por la plataforma.
 #### Recomendaciones a Largo Plazo
 Establecer una política para los estándares criptográficos y revisar regularmente la aplicación para asegurar el cumplimiento. Esto incluye la gestión de claves, la elección de algoritmos y el uso de protocolos.`,
-        cwe: "CWE-327",
-        severity: "High",
-        cvss: { score: 7.5, vectorString: "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:H/I:N/A:N", attackVector: "N", attackComplexity: "L", privilegesRequired: "N", userInteraction: "N", scope: "U", confidentiality: "H", integrity: "N", availability: "N" },
-        references: ["https://owasp.org/www-project-mobile-top-10/2016-risks/m6-insecure-authorization/"],
-        tags: ["Mobile", "Cryptography"],
         affectedComponents_en: `### Affected Components
 - [TODO: Specify the part of the code where broken cryptography is used.]`,
         details_en: `### Proof of Concept
@@ -844,6 +844,11 @@ Establecer una política para los estándares criptográficos y revisar regularm
         id: "vuln-mobile-007",
         title_en: "Client-Side Injection",
         title_es: "Inyección en el Lado del Cliente",
+        cwe: "CWE-74",
+        severity: "Medium",
+        cvss: { score: 6.5, vectorString: "CVSS:3.1/AV:L/AC:L/PR:N/UI:R/S:U/C:H/I:L/A:N", attackVector: "L", attackComplexity: "L", privilegesRequired: "N", userInteraction: "R", scope: "U", confidentiality: "H", integrity: "L", availability: "N" },
+        references: ["https://owasp.org/www-project-mobile-top-10/2016-risks/m7-client-side-injection/"],
+        tags: ["Mobile"],
         overview_en: `### Overview
 Client-side injection vulnerabilities in mobile apps occur when untrusted data is processed by a data interpreter on the client side, such as a SQLite database or a web view.`,
         overview_es: `### Resumen
@@ -868,11 +873,6 @@ Usar consultas parametrizadas (prepared statements) para todas las interacciones
 Evitar el procesamiento de datos no confiables en el lado del cliente siempre que sea posible. Realizar la validación y el saneamiento en el lado del servidor antes de enviar los datos al cliente.
 #### Recomendaciones a Largo Plazo
 Implementar un estándar de codificación segura para la aplicación móvil que incluya pautas para el manejo de datos no confiables en el lado del cliente. Usar herramientas de escaneo automatizadas para detectar fallas de inyección en el lado del cliente.`,
-        cwe: "CWE-74",
-        severity: "Medium",
-        cvss: { score: 6.5, vectorString: "CVSS:3.1/AV:L/AC:L/PR:N/UI:R/S:U/C:H/I:L/A:N", attackVector: "L", attackComplexity: "L", privilegesRequired: "N", userInteraction: "R", scope: "U", confidentiality: "H", integrity: "L", availability: "N" },
-        references: ["https://owasp.org/www-project-mobile-top-10/2016-risks/m7-client-side-injection/"],
-        tags: ["Mobile"],
         affectedComponents_en: `### Affected Components
 - [TODO: Specify the local database query or WebView that is vulnerable.]`,
         details_en: `### Proof of Concept
@@ -888,6 +888,11 @@ Implementar un estándar de codificación segura para la aplicación móvil que 
         id: "vuln-mobile-008",
         title_en: "Security Decisions Via Untrusted Inputs",
         title_es: "Decisiones de Seguridad a Través de Entradas no Confiables",
+        cwe: "CWE-807",
+        severity: "High",
+        cvss: { score: 8.1, vectorString: "CVSS:3.1/AV:N/AC:H/PR:N/UI:N/S:U/C:H/I:H/A:H", attackVector: "N", attackComplexity: "H", privilegesRequired: "N", userInteraction: "N", scope: "U", confidentiality: "H", integrity: "H", availability: "H" },
+        references: ["https://owasp.org/www-project-mobile-top-10/2016-risks/m8-security-decisions-via-untrusted-inputs/"],
+        tags: ["Mobile"],
         overview_en: `### Overview
 This vulnerability occurs when the mobile application makes security-related decisions based on data that comes from an untrusted source, such as user input or IPC messages.`,
         overview_es: `### Resumen
@@ -912,11 +917,6 @@ Nunca tomar decisiones de seguridad basadas en entradas controladas por el usuar
 Para cualquier configuración sensible a la seguridad, obtenerla de un punto de conexión de confianza del lado del servidor en lugar de almacenarla en un archivo modificable por el cliente.
 #### Recomendaciones a Largo Plazo
 Diseñar la aplicación de modo que el cliente sea tratado como un entorno completamente no confiable. Todas las comprobaciones y decisiones de seguridad significativas deben realizarse en el servidor.`,
-        cwe: "CWE-807",
-        severity: "High",
-        cvss: { score: 8.1, vectorString: "CVSS:3.1/AV:N/AC:H/PR:N/UI:N/S:U/C:H/I:H/A:H", attackVector: "N", attackComplexity: "H", privilegesRequired: "N", userInteraction: "N", scope: "U", confidentiality: "H", integrity: "H", availability: "H" },
-        references: ["https://owasp.org/www-project-mobile-top-10/2016-risks/m8-security-decisions-via-untrusted-inputs/"],
-        tags: ["Mobile"],
         affectedComponents_en: `### Affected Components
 - [TODO: Specify the security decision and the untrusted input that influences it.]`,
         details_en: `### Proof of Concept
@@ -932,6 +932,11 @@ Diseñar la aplicación de modo que el cliente sea tratado como un entorno compl
         id: "vuln-mobile-009",
         title_en: "Improper Session Handling",
         title_es: "Manejo Inapropiado de Sesiones",
+        cwe: "CWE-613",
+        severity: "High",
+        cvss: { score: 8.8, vectorString: "CVSS:3.1/AV:N/AC:L/PR:L/UI:N/S:U/C:H/I:H/A:H", attackVector: "N", attackComplexity: "L", privilegesRequired: "L", userInteraction: "N", scope: "U", confidentiality: "H", integrity: "H", availability: "H" },
+        references: ["https://owasp.org/www-project-mobile-top-10/2016-risks/m9-improper-session-handling/"],
+        tags: ["Mobile", "Authentication"],
         overview_en: `### Overview
 This vulnerability occurs when a mobile application does not properly manage user sessions, particularly session timeouts and token invalidation.`,
         overview_es: `### Resumen
@@ -956,11 +961,6 @@ Implementar tiempos de espera de sesión del lado del servidor. Los tokens de se
 Usar tokens de actualización y tokens de acceso de corta duración. El token de acceso proporciona acceso a los recursos, y el token de actualización se utiliza para obtener un nuevo token de acceso sin requerir que el usuario se vuelva a autenticar.
 #### Recomendaciones a Largo Plazo
 Implementar un mecanismo para detectar y alertar sobre actividades de sesión sospechosas, como una sesión que se utiliza desde múltiples direcciones IP o dispositivos simultáneamente.`,
-        cwe: "CWE-613",
-        severity: "High",
-        cvss: { score: 8.8, vectorString: "CVSS:3.1/AV:N/AC:L/PR:L/UI:N/S:U/C:H/I:H/A:H", attackVector: "N", attackComplexity: "L", privilegesRequired: "L", userInteraction: "N", scope: "U", confidentiality: "H", integrity: "H", availability: "H" },
-        references: ["https://owasp.org/www-project-mobile-top-10/2016-risks/m9-improper-session-handling/"],
-        tags: ["Mobile", "Authentication"],
         affectedComponents_en: `### Affected Components
 - [TODO: Specify the session management mechanism of the application.]`,
         details_en: `### Proof of Concept
@@ -976,6 +976,11 @@ Implementar un mecanismo para detectar y alertar sobre actividades de sesión so
         id: "vuln-mobile-010",
         title_en: "Lack of Binary Protections",
         title_es: "Falta de Protecciones del Binario",
+        cwe: "CWE-657",
+        severity: "Medium",
+        cvss: { score: 5.9, vectorString: "CVSS:3.1/AV:L/AC:L/PR:N/UI:N/S:U/C:L/I:L/A:L", attackVector: "L", attackComplexity: "L", privilegesRequired: "N", userInteraction: "N", scope: "U", confidentiality: "L", integrity: "L", availability: "L" },
+        references: ["https://owasp.org/www-project-mobile-top-10/2016-risks/m1-improper-platform-usage/"],
+        tags: ["Mobile"],
         overview_en: `### Overview
 This issue occurs when the mobile application's binary is not adequately protected against reverse engineering, tampering, and analysis.`,
         overview_es: `### Resumen
@@ -1000,11 +1005,6 @@ Aplicar la ofuscación de código para dificultar la comprensión del código de
 Implementar una detección de root/jailbreak más robusta y técnicas anti-depuración. Utilizar herramientas que proporcionen una protección binaria completa, incluido el cifrado de cadenas y la ofuscación del flujo de control.
 #### Recomendaciones a Largo Plazo
 Adoptar una estrategia de defensa en profundidad para la seguridad móvil. Asumir que un atacante determinado puede eludir los controles del lado del cliente y, por lo tanto, la lógica de seguridad crítica siempre debe aplicarse en el lado del servidor.`,
-        cwe: "CWE-657",
-        severity: "Medium",
-        cvss: { score: 5.9, vectorString: "CVSS:3.1/AV:L/AC:L/PR:N/UI:N/S:U/C:L/I:L/A:L", attackVector: "L", attackComplexity: "L", privilegesRequired: "N", userInteraction: "N", scope: "U", confidentiality: "L", integrity: "L", availability: "L" },
-        references: ["https://owasp.org/www-project-mobile-top-10/2016-risks/m1-improper-platform-usage/"],
-        tags: ["Mobile"],
         affectedComponents_en: `### Affected Components
 - The application binary itself (APK/IPA).`,
         details_en: `### Proof of Concept
@@ -1021,6 +1021,11 @@ Adoptar una estrategia de defensa en profundidad para la seguridad móvil. Asumi
         id: "vuln-net-001",
         title_en: "Man-in-the-Middle (MitM)",
         title_es: "Ataque de Intermediario (MitM)",
+        cwe: "CWE-295",
+        severity: "High",
+        cvss: { score: 8.1, vectorString: "CVSS:3.1/AV:A/AC:L/PR:N/UI:N/S:U/C:H/I:H/A:N", attackVector: "A", attackComplexity: "L", privilegesRequired: "N", userInteraction: "N", scope: "U", confidentiality: "H", integrity: "H", availability: "N" },
+        references: ["https://owasp.org/www-community/attacks/Man-in-the-middle_attack"],
+        tags: ["Network"],
         overview_en: `### Overview
 A Man-in-the-Middle (MitM) attack occurs when an attacker secretly relays and possibly alters the communication between two parties who believe they are directly communicating with each other.`,
         overview_es: `### Resumen
@@ -1045,11 +1050,6 @@ Hacer cumplir TLS 1.2 o superior en todos los puntos de conexión. Implementar e
 Usar HTTP Strict Transport Security (HSTS) para garantizar que los navegadores solo se conecten a su servidor a través de HTTPS.
 #### Recomendaciones a Largo Plazo
 Realizar auditorías de seguridad de red periódicas. Desplegar sistemas de detección de intrusiones (IDS) para monitorear actividades de red sospechosas como el envenenamiento ARP.`,
-        cwe: "CWE-295",
-        severity: "High",
-        cvss: { score: 8.1, vectorString: "CVSS:3.1/AV:A/AC:L/PR:N/UI:N/S:U/C:H/I:H/A:N", attackVector: "A", attackComplexity: "L", privilegesRequired: "N", userInteraction: "N", scope: "U", confidentiality: "H", integrity: "H", availability: "N" },
-        references: ["https://owasp.org/www-community/attacks/Man-in-the-middle_attack"],
-        tags: ["Network"],
         affectedComponents_en: `### Affected Components
 - [TODO: Specify the network communication channels that are vulnerable.]`,
         details_en: `### Proof of Concept
@@ -1065,6 +1065,11 @@ Realizar auditorías de seguridad de red periódicas. Desplegar sistemas de dete
         id: "vuln-net-002", 
         title_en: "DNS Spoofing", 
         title_es: "Suplantación de DNS", 
+        cwe: "CWE-290", 
+        severity: "High", 
+        cvss: { score: 8.1, vectorString: "CVSS:3.1/AV:N/AC:H/PR:N/UI:N/S:C/C:H/I:L/A:N", attackVector: "N", attackComplexity: "H", privilegesRequired: "N", userInteraction: "N", scope: "C", confidentiality: "H", integrity: "L", availability: "N" }, 
+        references: ["https://www.cloudflare.com/learning/dns/dns-cache-poisoning/"], 
+        tags: ["Network"],
         overview_en: "### Overview\nDNS spoofing or DNS cache poisoning is an attack where corrupted DNS data is introduced into the DNS resolver's cache, causing the name server to return an incorrect IP address.", 
         overview_es: "### Resumen\nLa suplantación de DNS o envenenamiento de caché de DNS es un ataque en el que se introducen datos DNS corruptos en la caché del resolutor de DNS, lo que hace que el servidor de nombres devuelva una dirección IP incorrecta.", 
         technicalDescription_en: "### Technical Description\nAn attacker can exploit vulnerabilities in the DNS protocol to redirect traffic intended for a legitimate server to a malicious server controlled by the attacker. This is often done by sending forged DNS responses to a DNS resolver.", 
@@ -1083,11 +1088,6 @@ Implementar DNSSEC (Extensiones de Seguridad del Sistema de Nombres de Dominio) 
 Usar cifrado de extremo a extremo (TLS) para todas las comunicaciones. Esto asegura que incluso si se suplanta el DNS, el atacante no puede descifrar el tráfico sin la clave privada del servidor.
 #### Recomendaciones a Largo Plazo
 Monitorear el tráfico DNS en busca de anomalías. Auditar regularmente las configuraciones del servidor DNS para seguir las mejores prácticas de seguridad.`, 
-        cwe: "CWE-290", 
-        severity: "High", 
-        cvss: { score: 8.1, vectorString: "CVSS:3.1/AV:N/AC:H/PR:N/UI:N/S:C/C:H/I:L/A:N", attackVector: "N", attackComplexity: "H", privilegesRequired: "N", userInteraction: "N", scope: "C", confidentiality: "H", integrity: "L", availability: "N" }, 
-        references: ["https://www.cloudflare.com/learning/dns/dns-cache-poisoning/"], 
-        tags: ["Network"], 
         affectedComponents_en: "### Affected Components\n- DNS resolvers and clients within the network.", 
         details_en: "### Proof of Concept\n[TODO: Show evidence of a successful DNS spoofing attack, such as a client being redirected to a malicious IP address.]", 
         affectedComponents_es: "### Componentes Afectados\n- Resolutores y clientes DNS dentro de la red.", 
@@ -1099,6 +1099,11 @@ Monitorear el tráfico DNS en busca de anomalías. Auditar regularmente las conf
         id: "vuln-net-003",
         title_en: "ARP Poisoning",
         title_es: "Envenenamiento ARP",
+        cwe: "CWE-942",
+        severity: "Medium",
+        cvss: { score: 6.8, vectorString: "CVSS:3.1/AV:A/AC:H/PR:N/UI:N/S:U/C:H/I:L/A:L", attackVector: "A", attackComplexity: "H", privilegesRequired: "N", userInteraction: "N", scope: "U", confidentiality: "H", integrity: "L", availability: "L" },
+        references: ["https://www.veracode.com/security/arp-poisoning"],
+        tags: ["Network"],
         overview_en: `### Overview
 ARP poisoning is a technique whereby an attacker sends falsified ARP (Address Resolution Protocol) messages over a local area network. This results in the linking of an attacker's MAC address with the IP address of a legitimate computer or server on the network.`,
         overview_es: `### Resumen
@@ -1123,11 +1128,6 @@ Utilizar la Inspección Dinámica de ARP (DAI) en los switches de red para valid
 Segmentar la red utilizando VLAN para limitar el dominio de difusión y reducir el alcance de un posible ataque de envenenamiento ARP.
 #### Recomendaciones a Largo Plazo
 Cifrar todo el tráfico de red utilizando protocolos como TLS y SSH. Esto no previene el envenenamiento de ARP, pero mitiga el impacto al evitar que el atacante lea o modifique el tráfico interceptado.`,
-        cwe: "CWE-942",
-        severity: "Medium",
-        cvss: { score: 6.8, vectorString: "CVSS:3.1/AV:A/AC:H/PR:N/UI:N/S:U/C:H/I:L/A:L", attackVector: "A", attackComplexity: "H", privilegesRequired: "N", userInteraction: "N", scope: "U", confidentiality: "H", integrity: "L", availability: "L" },
-        references: ["https://www.veracode.com/security/arp-poisoning"],
-        tags: ["Network"],
         affectedComponents_en: "### Affected Components\n- All devices on the local network segment.",
         details_en: "### Proof of Concept\n[TODO: Provide output from a tool like `arpspoof` and show intercepted traffic in a network analyzer like Wireshark.]",
         affectedComponents_es: "### Componentes Afectados\n- Todos los dispositivos en el segmento de red local.",
@@ -1139,6 +1139,11 @@ Cifrar todo el tráfico de red utilizando protocolos como TLS y SSH. Esto no pre
         id: "vuln-net-004",
         title_en: "IP Spoofing",
         title_es: "Suplantación de IP",
+        cwe: "CWE-290",
+        severity: "Medium",
+        cvss: { score: 6.5, vectorString: "CVSS:3.1/AV:N/AC:L/PR:L/UI:N/S:U/C:L/I:L/A:N", attackVector: "N", attackComplexity: "L", privilegesRequired: "L", userInteraction: "N", scope: "U", confidentiality: "L", integrity: "L", availability: "N" },
+        references: ["https://www.cloudflare.com/learning/ddos/ip-spoofing/"],
+        tags: ["Network"],
         overview_en: "### Overview\nIP spoofing is the creation of Internet Protocol (IP) packets with a forged source IP address, for the purpose of concealing the identity of the sender or impersonating another computing system.",
         overview_es: "### Resumen\nLa suplantación de IP es la creación de paquetes de Protocolo de Internet (IP) con una dirección IP de origen falsificada, con el fin de ocultar la identidad del remitente o hacerse pasar por otro sistema informático.",
         technicalDescription_en: "### Technical Description\nThe attacker crafts IP packets with a modified source address. This technique can be used to bypass IP-based access controls or to conduct reflection and amplification attacks in DoS scenarios, where the response from a server is sent to the spoofed (victim's) IP address.",
@@ -1157,11 +1162,6 @@ Usar filtrado de entrada (BCP38) en el borde de la red para descartar paquetes c
 Habilitar el Reenvío de Ruta Inversa (RPF) en los enrutadores, lo que asegura que la dirección de origen de un paquete sea alcanzable a través de la interfaz por la que llegó el paquete.
 #### Recomendaciones a Largo Plazo
 Utilizar protocolos de autenticación criptográfica como IPsec, que proporcionan integridad de datos y autenticación de origen para los paquetes IP, lo que dificulta significativamente la suplantación.`,
-        cwe: "CWE-290",
-        severity: "Medium",
-        cvss: { score: 6.5, vectorString: "CVSS:3.1/AV:N/AC:L/PR:L/UI:N/S:U/C:L/I:L/A:N", attackVector: "N", attackComplexity: "L", privilegesRequired: "L", userInteraction: "N", scope: "U", confidentiality: "L", integrity: "L", availability: "N" },
-        references: ["https://www.cloudflare.com/learning/ddos/ip-spoofing/"],
-        tags: ["Network"],
         affectedComponents_en: "### Affected Components\n- Network routers, firewalls, and systems that use IP-based access controls.",
         details_en: "### Proof of Concept\n[TODO: Provide evidence of spoofed packets being accepted by a target system, using a tool like hping3 or Scapy.]",
         affectedComponents_es: "### Componentes Afectados\n- Enrutadores de red, cortafuegos y sistemas que utilizan controles de acceso basados en IP.",
@@ -1173,6 +1173,11 @@ Utilizar protocolos de autenticación criptográfica como IPsec, que proporciona
         id: "vuln-net-005",
         title_en: "Denial of Service (DoS)",
         title_es: "Denegación de Servicio (DoS)",
+        cwe: "CWE-400",
+        severity: "High",
+        cvss: { score: 7.5, vectorString: "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:N/I:N/A:H", attackVector: "N", attackComplexity: "L", privilegesRequired: "N", userInteraction: "N", scope: "U", confidentiality: "N", integrity: "N", availability: "H" },
+        references: ["https://www.cisa.gov/news-events/news/understanding-denial-service-attacks"],
+        tags: ["Network", "Infrastructure"],
         overview_en: `### Overview
 A Denial-of-Service (DoS) attack is an attempt to make a machine or network resource unavailable to its intended users, such as to temporarily or indefinitely interrupt or suspend services of a host connected to the Internet.`,
         overview_es: `### Resumen
@@ -1197,11 +1202,6 @@ Utilizar un servicio de mitigación de DDoS basado en la nube que pueda absorber
 Configurar el hardware de red (enrutadores, cortafuegos) con ajustes anti-DoS, como la protección de cookies SYN y el filtrado de entrada. Balancear la carga de los servicios críticos en varios servidores.
 #### Recomendaciones a Largo Plazo
 Diseñar aplicaciones para que sean resistentes al agotamiento de recursos. Implementar cachés y redes de entrega de contenido (CDN) para reducir la carga en los servidores de origen.`,
-        cwe: "CWE-400",
-        severity: "High",
-        cvss: { score: 7.5, vectorString: "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:N/I:N/A:H", attackVector: "N", attackComplexity: "L", privilegesRequired: "N", userInteraction: "N", scope: "U", confidentiality: "N", integrity: "N", availability: "H" },
-        references: ["https://www.cisa.gov/news-events/news/understanding-denial-service-attacks"],
-        tags: ["Network", "Infrastructure"],
         affectedComponents_en: `### Affected Components
 - [TODO: Specify the targeted servers, services, or network resources.]`,
         details_en: "### Proof of Concept\n[TODO: Provide data showing the spike in traffic and corresponding resource exhaustion on the target system. Use tools like hping3 or Slowloris for demonstration.]",
@@ -1214,6 +1214,11 @@ Diseñar aplicaciones para que sean resistentes al agotamiento de recursos. Impl
         id: "vuln-net-006",
         title_en: "VLAN Hopping",
         title_es: "Salto entre VLAN",
+        cwe: "CWE-693",
+        severity: "Medium",
+        cvss: { score: 6.8, vectorString: "CVSS:3.1/AV:A/AC:H/PR:N/UI:N/S:U/C:H/I:L/A:L", attackVector: "A", attackComplexity: "H", privilegesRequired: "N", userInteraction: "N", scope: "U", confidentiality: "H", integrity: "L", availability: "L" },
+        references: ["https://www.cisco.com/c/en/us/support/docs/lan-switching/vlan/10560-14.html"],
+        tags: ["Network", "Infrastructure"],
         overview_en: "### Overview\nVLAN hopping is a computer security attack, which consists of sending packets to a port that is not normally accessible from an end system.",
         overview_es: "### Resumen\nEl salto de VLAN es un ataque de seguridad informática que consiste en enviar paquetes a un puerto que normalmente no es accesible desde un sistema final.",
         technicalDescription_en: "### Technical Description\nThere are two main methods: switch spoofing and double tagging. In switch spoofing, an attacker's machine emulates a switch and uses a trunking protocol like DTP (Dynamic Trunking Protocol) to create a trunk link, giving them access to all VLANs. In double tagging, the attacker adds two VLAN tags to a packet, allowing it to traverse the native VLAN of a trunk and be delivered to a target on a different VLAN.",
@@ -1232,11 +1237,6 @@ Deshabilitar el Protocolo de Enlace Troncal Dinámico (DTP) en todos los puertos
 Establecer la VLAN nativa en los puertos troncales a un ID de VLAN no utilizado. Esto evita que los ataques de doble etiquetado lleguen a cualquier dispositivo activo.
 #### Recomendaciones a Largo Plazo
 Implementar la autenticación basada en puertos 802.1X para controlar qué dispositivos pueden conectarse a la red, evitando que dispositivos no autorizados intenten estos ataques.`,
-        cwe: "CWE-693",
-        severity: "Medium",
-        cvss: { score: 6.8, vectorString: "CVSS:3.1/AV:A/AC:H/PR:N/UI:N/S:U/C:H/I:L/A:L", attackVector: "A", attackComplexity: "H", privilegesRequired: "N", userInteraction: "N", scope: "U", confidentiality: "H", integrity: "L", availability: "L" },
-        references: ["https://www.cisco.com/c/en/us/support/docs/lan-switching/vlan/10560-14.html"],
-        tags: ["Network", "Infrastructure"],
         affectedComponents_en: "### Affected Components\n- Network switches with misconfigured ports.",
         details_en: "### Proof of Concept\n[TODO: Provide steps to perform a VLAN hopping attack using a tool like Yersinia and show access to a resource on a different VLAN.]",
         affectedComponents_es: "### Componentes Afectados\n- Switches de red con puertos mal configurados.",
@@ -1248,6 +1248,11 @@ Implementar la autenticación basada en puertos 802.1X para controlar qué dispo
         id: "vuln-net-007",
         title_en: "Weak Network Encryption",
         title_es: "Cifrado Débil de Red",
+        cwe: "CWE-326",
+        severity: "High",
+        cvss: { score: 7.4, vectorString: "CVSS:3.1/AV:N/AC:H/PR:N/UI:N/S:U/C:H/I:H/A:N", attackVector: "N", attackComplexity: "H", privilegesRequired: "N", userInteraction: "N", scope: "U", confidentiality: "H", integrity: "H", availability: "N" },
+        references: ["https://www.ssllabs.com/projects/best-practices/"],
+        tags: ["Network", "Cryptography"],
         overview_en: `### Overview
 Weak network encryption refers to the use of outdated or insecure protocols and cipher suites for protecting data in transit, making it susceptible to eavesdropping and decryption.`,
         overview_es: `### Resumen
@@ -1272,11 +1277,6 @@ Configurar los servidores para que solo admitan TLS 1.2 y TLS 1.3 con un conjunt
 Implementar HTTP Strict Transport Security (HSTS) para garantizar que los navegadores siempre se conecten al servidor a través de una conexión segura.
 #### Recomendaciones a Largo Plazo
 Establecer una política corporativa para los estándares criptográficos para la comunicación de red. Auditar regularmente todos los servicios externos e internos para verificar el cumplimiento utilizando herramientas como la prueba SSL de SSL Labs.`,
-        cwe: "CWE-326",
-        severity: "High",
-        cvss: { score: 7.4, vectorString: "CVSS:3.1/AV:N/AC:H/PR:N/UI:N/S:U/C:H/I:H/A:N", attackVector: "N", attackComplexity: "H", privilegesRequired: "N", userInteraction: "N", scope: "U", confidentiality: "H", integrity: "H", availability: "N" },
-        references: ["https://www.ssllabs.com/projects/best-practices/"],
-        tags: ["Network", "Cryptography"],
         affectedComponents_en: `### Affected Components
 - [TODO: List the servers or services that support weak encryption protocols or ciphers.]`,
         details_en: "### Proof of Concept\n[TODO: Provide a report from a tool like `nmap --script ssl-enum-ciphers` or a report from SSL Labs showing the support for weak protocols or ciphers.]",
@@ -1290,6 +1290,11 @@ Establecer una política corporativa para los estándares criptográficos para l
         id: "vuln-net-008",
         title_en: "Firewall Misconfiguration",
         title_es: "Configuración Incorrecta del Firewall",
+        cwe: "CWE-552",
+        severity: "High",
+        cvss: { score: 8.6, vectorString: "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:C/C:H/I:N/A:L", attackVector: "N", attackComplexity: "L", privilegesRequired: "N", userInteraction: "N", scope: "C", confidentiality: "H", integrity: "N", availability: "L" },
+        references: ["https://www.cisa.gov/uscert/bsi/articles/best-practices/firewalls/securing-your-web-server"],
+        tags: ["Network", "Infrastructure"],
         overview_en: "### Overview\nFirewall misconfigurations, such as overly permissive rules, can expose internal services to the internet or fail to block malicious traffic, undermining the network's perimeter defense.",
         overview_es: "### Resumen\nLas configuraciones incorrectas del firewall, como reglas demasiado permisivas, pueden exponer servicios internos a Internet o no bloquear el tráfico malicioso, socavando la defensa del perímetro de la red.",
         technicalDescription_en: "### Technical Description\nThis can include 'allow any/any' rules, failing to apply egress filtering to prevent data exfiltration, leaving unnecessary ports open to the internet, or not properly logging traffic. Such misconfigurations can render the firewall ineffective.",
@@ -1308,11 +1313,6 @@ Implementar una política de firewall de 'denegar por defecto'. Revisar y simpli
 Implementar tanto el filtrado de entrada como el de salida. Habilitar y monitorear los registros del firewall para detectar actividades sospechosas y violaciones de políticas.
 #### Recomendaciones a Largo Plazo
 Automatizar el proceso de revisión y validación de reglas de firewall. Usar una herramienta de gestión de políticas de seguridad de red para mantener la coherencia y el cumplimiento.`,
-        cwe: "CWE-552",
-        severity: "High",
-        cvss: { score: 8.6, vectorString: "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:C/C:H/I:N/A:L", attackVector: "N", attackComplexity: "L", privilegesRequired: "N", userInteraction: "N", scope: "C", confidentiality: "H", integrity: "N", availability: "L" },
-        references: ["https://www.cisa.gov/uscert/bsi/articles/best-practices/firewalls/securing-your-web-server"],
-        tags: ["Network", "Infrastructure"],
         affectedComponents_en: `### Affected Components
 - The corporate firewall(s).`,
         details_en: `### Proof of Concept
@@ -1328,6 +1328,11 @@ Automatizar el proceso de revisión y validación de reglas de firewall. Usar un
         id: "vuln-net-009",
         title_en: "Unsecured Wi-Fi",
         title_es: "Wi-Fi no Segura",
+        cwe: "CWE-311",
+        severity: "High",
+        cvss: { score: 8.8, vectorString: "CVSS:3.1/AV:A/AC:L/PR:N/UI:N/S:U/C:H/I:H/A:H", attackVector: "A", attackComplexity: "L", privilegesRequired: "N", userInteraction: "N", scope: "U", confidentiality: "H", integrity: "H", availability: "H" },
+        references: ["https://www.cisa.gov/news-events/news/securing-wireless-networks"],
+        tags: ["Network"],
         overview_en: "### Overview\nUnsecured or weakly secured Wi-Fi networks allow unauthorized users to connect to the network and can enable attackers to eavesdrop on all network traffic.",
         overview_es: "### Resumen\nLas redes Wi-Fi no seguras o débilmente seguras permiten a usuarios no autorizados conectarse a la red y pueden permitir a los atacantes escuchar todo el tráfico de la red.",
         technicalDescription_en: "### Technical Description\nThis includes open Wi-Fi networks with no password, or networks using outdated and broken encryption protocols like WEP or WPA. Even WPA2 networks with weak, easily guessable pre-shared keys are vulnerable to offline dictionary attacks.",
@@ -1346,11 +1351,6 @@ Utilizar cifrado WPA3 para todas las redes Wi-Fi. Si WPA3 no está disponible, u
 Implementar una red de invitados que esté completamente segregada de la red corporativa interna para visitantes y dispositivos no corporativos.
 #### Recomendaciones a Largo Plazo
 Implementar seguridad Wi-Fi de nivel empresarial utilizando 802.1X, que autentica a cada usuario individualmente (p. ej., con un nombre de usuario y contraseña) en lugar de usar una clave compartida.`,
-        cwe: "CWE-311",
-        severity: "High",
-        cvss: { score: 8.8, vectorString: "CVSS:3.1/AV:A/AC:L/PR:N/UI:N/S:U/C:H/I:H/A:H", attackVector: "A", attackComplexity: "L", privilegesRequired: "N", userInteraction: "N", scope: "U", confidentiality: "H", integrity: "H", availability: "H" },
-        references: ["https://www.cisa.gov/news-events/news/securing-wireless-networks"],
-        tags: ["Network"],
         affectedComponents_en: `### Affected Components
 - [TODO: Specify the SSID of the insecure Wi-Fi network.]`,
         details_en: `### Proof of Concept
@@ -1366,6 +1366,11 @@ Implementar seguridad Wi-Fi de nivel empresarial utilizando 802.1X, que autentic
         id: "vuln-net-010",
         title_en: "Packet Sniffing",
         title_es: "Análisis de Paquetes",
+        cwe: "CWE-311",
+        severity: "Medium",
+        cvss: { score: 6.8, vectorString: "CVSS:3.1/AV:A/AC:L/PR:N/UI:N/S:U/C:H/I:L/A:N", attackVector: "A", attackComplexity: "L", privilegesRequired: "N", userInteraction: "N", scope: "U", confidentiality: "H", integrity: "L", availability: "N" },
+        references: ["https://www.wireshark.org/"],
+        tags: ["Network"],
         overview_en: "### Overview\nPacket sniffing is the act of capturing and inspecting data packets as they travel across a network. When traffic is unencrypted, an attacker can read sensitive information.",
         overview_es: "### Resumen\nEl análisis de paquetes es el acto de capturar e inspeccionar paquetes de datos mientras viajan a través de una red. Cuando el tráfico no está cifrado, un atacante puede leer información sensible.",
         technicalDescription_en: "### Technical Description\nAn attacker in a privileged network position (e.g., on the same LAN or Wi-Fi, or having compromised a network device) can use a network protocol analyzer (like Wireshark) to capture all traffic. If applications use unencrypted protocols like HTTP, FTP, or Telnet, any transmitted data, including usernames and passwords, is visible in cleartext.",
@@ -1384,11 +1389,6 @@ Hacer cumplir el uso de un cifrado fuerte de extremo a extremo (p. ej., TLS 1.2+
 Deshabilitar y dar de baja todos los protocolos heredados y no cifrados dentro del entorno.
 #### Recomendaciones a Largo Plazo
 Implementar la segmentación de la red y un modelo de red de 'confianza cero', donde el tráfico entre diferentes segmentos de red también se cifra e inspecciona.`,
-        cwe: "CWE-311",
-        severity: "Medium",
-        cvss: { score: 6.8, vectorString: "CVSS:3.1/AV:A/AC:L/PR:N/UI:N/S:U/C:H/I:L/A:N", attackVector: "A", attackComplexity: "L", privilegesRequired: "N", userInteraction: "N", scope: "U", confidentiality: "H", integrity: "L", availability: "N" },
-        references: ["https://www.wireshark.org/"],
-        tags: ["Network"],
         affectedComponents_en: `### Affected Components
 - [TODO: List the applications or services that use unencrypted protocols.]`,
         details_en: `### Proof of Concept
@@ -1405,6 +1405,11 @@ Implementar la segmentación de la red y un modelo de red de 'confianza cero', d
         id: "vuln-infra-001",
         title_en: "Unpatched Software",
         title_es: "Software sin Parches",
+        cwe: "CWE-937",
+        severity: "Critical",
+        cvss: { score: 9.8, vectorString: "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:H/I:H/A:H", attackVector: "N", attackComplexity: "L", privilegesRequired: "N", userInteraction: "N", scope: "U", confidentiality: "H", integrity: "H", availability: "H" },
+        references: ["https://owasp.org/Top10/A06_2021-Vulnerable_and_Outdated_Components/"],
+        tags: ["Infrastructure"],
         overview_en: `### Overview
 Running outdated software with known vulnerabilities is one of the most common and critical security risks. Attackers can exploit these known flaws to compromise systems.`,
         overview_es: `### Resumen
@@ -1429,11 +1434,6 @@ Establecer una política y un proceso de gestión de parches sólidos. Suscribir
 Implementar un sistema de gestión de parches automatizado para garantizar que los parches se apliquen de manera oportuna. Usar un escáner de vulnerabilidades para escanear regularmente la infraestructura en busca de software sin parches.
 #### Recomendaciones a Largo Plazo
 Integrar el escaneo de vulnerabilidades en el pipeline de CI/CD. Usar herramientas de análisis de composición de software (SCA) para identificar y gestionar las vulnerabilidades en las bibliotecas de terceros.`,
-        cwe: "CWE-937",
-        severity: "Critical",
-        cvss: { score: 9.8, vectorString: "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:H/I:H/A:H", attackVector: "N", attackComplexity: "L", privilegesRequired: "N", userInteraction: "N", scope: "U", confidentiality: "H", integrity: "H", availability: "H" },
-        references: ["https://owasp.org/Top10/A06_2021-Vulnerable_and_Outdated_Components/"],
-        tags: ["Infrastructure"],
         affectedComponents_en: `### Affected Components
 - [TODO: List the unpatched software, its version, and the server(s) it is running on.]`,
         details_en: `### Proof of Concept
@@ -1449,6 +1449,11 @@ Integrar el escaneo de vulnerabilidades en el pipeline de CI/CD. Usar herramient
         id: "vuln-infra-002",
         title_en: "Default Credentials",
         title_es: "Credenciales por Defecto",
+        cwe: "CWE-1393",
+        severity: "Critical",
+        cvss: { score: 9.8, vectorString: "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:H/I:H/A:H", attackVector: "N", attackComplexity: "L", privilegesRequired: "N", userInteraction: "N", scope: "U", confidentiality: "H", integrity: "H", availability: "H" },
+        references: ["https://cwe.mitre.org/data/definitions/1393.html"],
+        tags: ["Infrastructure", "Authentication"],
         overview_en: `### Overview
 Many systems, devices, and applications are shipped with default usernames and passwords. Failure to change these credentials leaves an easy entry point for attackers.`,
         overview_es: `### Resumen
@@ -1473,11 +1478,6 @@ Auditar toda la infraestructura en busca de cualquier uso de credenciales predet
 Incorporar comprobaciones de credenciales predeterminadas en el proceso de compilación e implementación estándar para todos los sistemas nuevos.
 #### Recomendaciones a Largo Plazo
 Automatizar el escaneo en busca de credenciales predeterminadas en todo el entorno. Implementar una política que prohíba la implementación de cualquier sistema con credenciales predeterminadas activas.`,
-        cwe: "CWE-1393",
-        severity: "Critical",
-        cvss: { score: 9.8, vectorString: "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:H/I:H/A:H", attackVector: "N", attackComplexity: "L", privilegesRequired: "N", userInteraction: "N", scope: "U", confidentiality: "H", integrity: "H", availability: "H" },
-        references: ["https://cwe.mitre.org/data/definitions/1393.html"],
-        tags: ["Infrastructure", "Authentication"],
         affectedComponents_en: `### Affected Components
 - [TODO: List the systems or devices using default credentials.]`,
         details_en: `### Proof of Concept
@@ -1493,6 +1493,11 @@ Automatizar el escaneo en busca de credenciales predeterminadas en todo el entor
         id: "vuln-infra-003",
         title_en: "Directory Traversal",
         title_es: "Salto de Directorio",
+        cwe: "CWE-22",
+        severity: "High",
+        cvss: { score: 7.5, vectorString: "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:H/I:N/A:N", attackVector: "N", attackComplexity: "L", privilegesRequired: "N", userInteraction: "N", scope: "U", confidentiality: "H", integrity: "N", availability: "N" },
+        references: ["https://owasp.org/www-community/attacks/Path_Traversal"],
+        tags: ["Infrastructure", "Web"],
         overview_en: `### Overview
 Directory traversal (or path traversal) is a web security vulnerability that allows an attacker to read arbitrary files on the server that is running an application. This might include application code and data, credentials for back-end systems, and sensitive operating system files.`,
         overview_es: `### Resumen
@@ -1517,11 +1522,6 @@ Validar la entrada del usuario contra una lista blanca estricta de caracteres o 
 Usar un mecanismo de mapeo donde la entrada del usuario corresponda a una ruta de archivo predefinida y segura en el servidor.
 #### Recomendaciones a Largo Plazo
 Ejecutar la aplicación con los permisos mínimos necesarios del sistema de archivos en un entorno chroot o sandbox para limitar el alcance de un posible ataque de salto.`,
-        cwe: "CWE-22",
-        severity: "High",
-        cvss: { score: 7.5, vectorString: "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:H/I:N/A:N", attackVector: "N", attackComplexity: "L", privilegesRequired: "N", userInteraction: "N", scope: "U", confidentiality: "H", integrity: "N", availability: "N" },
-        references: ["https://owasp.org/www-community/attacks/Path_Traversal"],
-        tags: ["Infrastructure", "Web"],
         affectedComponents_en: `### Affected Components
 - [TODO: List the vulnerable URL and parameter.]`,
         details_en: `### Proof of Concept
@@ -1537,6 +1537,11 @@ Ejecutar la aplicación con los permisos mínimos necesarios del sistema de arch
         id: "vuln-infra-004",
         title_en: "Remote Code Execution (RCE)",
         title_es: "Ejecución Remota de Código (RCE)",
+        cwe: "CWE-94",
+        severity: "Critical",
+        cvss: { score: 9.8, vectorString: "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:H/I:H/A:H", attackVector: "N", attackComplexity: "L", privilegesRequired: "N", userInteraction: "N", scope: "U", confidentiality: "H", integrity: "H", availability: "H" },
+        references: ["https://owasp.org/www-community/attacks/Code_Injection"],
+        tags: ["Infrastructure", "Web"],
         overview_en: `### Overview
 Remote Code Execution (RCE) is a class of vulnerability that allows an attacker to execute arbitrary commands or code on a target machine or in a target process. It is one of the most critical vulnerabilities.`,
         overview_es: `### Resumen
@@ -1561,11 +1566,6 @@ Parchear la vulnerabilidad subyacente que condujo a la RCE. Esto podría implica
 Implementar el principio de privilegio mínimo. Ejecutar los procesos de la aplicación con los permisos mínimos necesarios para limitar el impacto de una posible RCE.
 #### Recomendaciones a Largo Plazo
 Usar un Web Application Firewall (WAF) con rules para detectar y bloquear los patrones de ataque comunes. Implementar el filtrado de salida para evitar que los sistemas comprometidos se comuniquen con los servidores controlados por el atacante.`,
-        cwe: "CWE-94",
-        severity: "Critical",
-        cvss: { score: 9.8, vectorString: "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:H/I:H/A:H", attackVector: "N", attackComplexity: "L", privilegesRequired: "N", userInteraction: "N", scope: "U", confidentiality: "H", integrity: "H", availability: "H" },
-        references: ["https://owasp.org/www-community/attacks/Code_Injection"],
-        tags: ["Infrastructure", "Web"],
         affectedComponents_en: `### Affected Components
 - [TODO: Specify the system and vulnerability that allows RCE.]`,
         details_en: "### Proof of Concept\n[TODO: Provide the steps taken to achieve remote code execution and show the output of a command (e.g., `whoami`, `id`) running on the target server.]",
@@ -1579,6 +1579,11 @@ Usar un Web Application Firewall (WAF) con rules para detectar y bloquear los pa
         id: "vuln-infra-005",
         title_en: "Privilege Escalation",
         title_es: "Escalación de Privilegios",
+        cwe: "CWE-269",
+        severity: "High",
+        cvss: { score: 8.8, vectorString: "CVSS:3.1/AV:L/AC:L/PR:L/UI:N/S:U/C:H/I:H/A:H", attackVector: "L", attackComplexity: "L", privilegesRequired: "L", userInteraction: "N", scope: "U", confidentiality: "H", integrity: "H", availability: "H" },
+        references: ["https://attack.mitre.org/tactics/TA0004/"],
+        tags: ["Infrastructure"],
         overview_en: `### Overview
 Privilege escalation is the act of exploiting a bug, design flaw, or configuration oversight in an operating system or software application to gain elevated access to resources that are normally protected from an application or user.`,
         overview_es: `### Resumen
@@ -1603,11 +1608,6 @@ Aplicar el principio de privilegio mínimo a todos los usuarios, procesos y arch
 Mantener el sistema operativo y todo el software completamente parcheados para protegerse contra exploits del kernel y de software.
 #### Recomendaciones a Largo Plazo
 Utilizar sistemas de control de acceso obligatorio como SELinux o AppArmor para imponer límites estrictos sobre lo que pueden hacer los procesos, incluso si están comprometidos.`,
-        cwe: "CWE-269",
-        severity: "High",
-        cvss: { score: 8.8, vectorString: "CVSS:3.1/AV:L/AC:L/PR:L/UI:N/S:U/C:H/I:H/A:H", attackVector: "L", attackComplexity: "L", privilegesRequired: "L", userInteraction: "N", scope: "U", confidentiality: "H", integrity: "H", availability: "H" },
-        references: ["https://attack.mitre.org/tactics/TA0004/"],
-        tags: ["Infrastructure"],
         affectedComponents_en: `### Affected Components
 - [TODO: Specify the operating system or application and the specific misconfiguration or vulnerability that allows privilege escalation.]`,
         details_en: "### Proof of Concept\n[TODO: Provide the sequence of commands used to escalate privileges and show the output of `whoami` or `id` as the high-privilege user.]",
@@ -1621,6 +1621,11 @@ Utilizar sistemas de control de acceso obligatorio como SELinux o AppArmor para 
         id: "vuln-infra-006",
         title_en: "Information Disclosure",
         title_es: "Divulgación de Información",
+        cwe: "CWE-200",
+        severity: "Medium",
+        cvss: { score: 5.3, vectorString: "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:L/I:N/A:N", attackVector: "N", attackComplexity: "L", privilegesRequired: "N", userInteraction: "N", scope: "U", confidentiality: "L", integrity: "N", availability: "N" },
+        references: ["https://owasp.org/Top10/A01_2021-Broken_Access_Control/"],
+        tags: ["Infrastructure", "Web"],
         overview_en: `### Overview
 Information disclosure vulnerabilities allow an attacker to gain sensitive information about a system, its configuration, or its users, which can be used to facilitate other attacks.`,
         overview_es: `### Resumen
@@ -1645,11 +1650,6 @@ Deshabilitar los informes de errores detallados en los entornos de producción. 
 Asegurarse de que los archivos sensibles, los archivos de configuración y los repositorios de código fuente no sean accesibles desde la raíz web.
 #### Recomendaciones a Largo Plazo
 Implementar un mecanismo de registro estandarizado que capture errores detallados para el análisis interno pero no los exponga a los usuarios. Escanear regularmente en busca de vulnerabilidades de divulgación de información.`,
-        cwe: "CWE-200",
-        severity: "Medium",
-        cvss: { score: 5.3, vectorString: "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:L/I:N/A:N", attackVector: "N", attackComplexity: "L", privilegesRequired: "N", userInteraction: "N", scope: "U", confidentiality: "L", integrity: "N", availability: "N" },
-        references: ["https://owasp.org/Top10/A01_2021-Broken_Access_Control/"],
-        tags: ["Infrastructure", "Web"],
         affectedComponents_en: `### Affected Components
 - [TODO: Specify what information is being disclosed and where (e.g., error page, server header, .git directory).]`,
         details_en: `### Proof of Concept
@@ -1665,6 +1665,11 @@ Implementar un mecanismo de registro estandarizado que capture errores detallado
         id: "vuln-infra-007",
         title_en: "Command Injection",
         title_es: "Inyección de Comandos",
+        cwe: "CWE-77",
+        severity: "Critical",
+        cvss: { score: 9.8, vectorString: "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:H/I:H/A:H", attackVector: "N", attackComplexity: "L", privilegesRequired: "N", userInteraction: "N", scope: "U", confidentiality: "H", integrity: "H", availability: "H" },
+        references: ["https://owasp.org/www-community/attacks/Code_Injection"],
+        tags: ["Infrastructure", "Web"],
         overview_en: "### Overview\nCommand injection is an attack in which the goal is the execution of arbitrary commands on the host operating system via a vulnerable application. Command injection attacks are possible when an application passes unsafe user-supplied data (forms, cookies, HTTP headers, etc.) to a system shell.",
         overview_es: "### Resumen\nLa inyección de comandos es un ataque en el que el objetivo es la ejecución de comandos arbitrarios en el sistema operativo anfitrión a través de una aplicación vulnerable. Los ataques de inyección de comandos son posibles cuando una aplicación pasa datos no seguros suministrados por el usuario (formularios, cookies, encabezados HTTP, etc.) a una shell del sistema.",
         technicalDescription_en: "### Technical Description\nThe application code contains a call to a system command and incorporates user-supplied data into the command string without proper sanitization. An attacker can use shell metacharacters like `;`, `|`, `&&`, or `||` to append new commands to the original one.",
@@ -1683,11 +1688,6 @@ Nunca llamar a comandos de la shell del sistema con datos suministrados por el u
 Si es inevitable llamar a un comando del sistema, usar API estructuradas que acepten una lista de argumentos en lugar de una sola cadena de comando. Esto evita que la shell interprete los metacaracteres.
 #### Recomendaciones a Largo Plazo
 Ejecutar la aplicación con los privilegios mínimos necesarios. Implementar un Web Application Firewall (WAF) con reglas para detectar y bloquear los patrones de ataque comunes. `,
-        cwe: "CWE-77",
-        severity: "Critical",
-        cvss: { score: 9.8, vectorString: "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:H/I:H/A:H", attackVector: "N", attackComplexity: "L", privilegesRequired: "N", userInteraction: "N", scope: "U", confidentiality: "H", integrity: "H", availability: "H" },
-        references: ["https://owasp.org/www-community/attacks/Code_Injection"],
-        tags: ["Infrastructure", "Web"],
         affectedComponents_en: `### Affected Components
 - [TODO: Specify the vulnerable function, parameter, and URL.]`,
         details_en: `### Proof of Concept
@@ -1703,6 +1703,11 @@ Ejecutar la aplicación con los privilegios mínimos necesarios. Implementar un 
         id: "vuln-infra-008",
         title_en: "Path Traversal",
         title_es: "Salto de Ruta",
+        cwe: "CWE-22",
+        severity: "High",
+        cvss: { score: 7.5, vectorString: "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:H/I:N/A:N", attackVector: "N", attackComplexity: "L", privilegesRequired: "N", userInteraction: "N", scope: "U", confidentiality: "H", integrity: "N", availability: "N" },
+        references: ["https://owasp.org/www-community/attacks/Path_Traversal"],
+        tags: ["Infrastructure", "Web"],
         overview_en: "### Overview\nPath Traversal (also known as Directory Traversal) is a web security vulnerability that allows an attacker to read arbitrary files on the server that is running an application.",
         overview_es: "### Resumen\nEl Salto de Ruta (o Salto de Directorio) es una vulnerabilidad de seguridad web que permite a un atacante leer archivos arbitrarios en el servidor que ejecuta una aplicación.",
         technicalDescription_en: "### Technical Description\nThe vulnerability occurs when an application uses user-supplied input to construct a file path for reading or writing without proper sanitization. By using `../` sequences and other special characters, an attacker can navigate out of the intended directory and access sensitive files elsewhere on the filesystem.",
@@ -1721,11 +1726,6 @@ Evitar por completo pasar la entrada proporcionada por el usuario a las API del 
 Si la entrada del usuario en las rutas de archivo es inevitable, asegurarse de que la aplicación canonicalice la ruta y verifique que comienza con el directorio base esperado antes de usarla.
 #### Recomendaciones a Largo Plazo
 Ejecutar la aplicación en una jaula (jail) chroot o sandbox con acceso mínimo al sistema de archivos para limitar el impacto de un ataque de salto exitoso.`,
-        cwe: "CWE-22",
-        severity: "High",
-        cvss: { score: 7.5, vectorString: "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:H/I:N/A:N", attackVector: "N", attackComplexity: "L", privilegesRequired: "N", userInteraction: "N", scope: "U", confidentiality: "H", integrity: "N", availability: "N" },
-        references: ["https://owasp.org/www-community/attacks/Path_Traversal"],
-        tags: ["Infrastructure", "Web"],
         affectedComponents_en: `### Affected Components
 - [TODO: List the vulnerable URL and parameter.]`,
         details_en: `### Proof of Concept
@@ -1741,6 +1741,11 @@ Ejecutar la aplicación en una jaula (jail) chroot o sandbox con acceso mínimo 
         id: "vuln-infra-009",
         title_en: "Open Redirects",
         title_es: "Redirecciones Abiertas",
+        cwe: "CWE-601",
+        severity: "Medium",
+        cvss: { score: 5.4, vectorString: "CVSS:3.1/AV:N/AC:L/PR:N/UI:R/S:U/C:L/I:L/A:N", attackVector: "N", attackComplexity: "L", privilegesRequired: "N", userInteraction: "R", scope: "U", confidentiality: "L", integrity: "L", availability: "N" },
+        references: ["https://owasp.org/www-community/vulnerabilities/Unvalidated_Redirects_and_Forwards_Cheat_Sheet"],
+        tags: ["Infrastructure", "Web"],
         overview_en: "### Overview\nAn open redirect is an application that takes a parameter and redirects a user to that parameter value without any validation. This vulnerability is used in phishing attacks to get users to trust a link that appears to be from a legitimate domain.",
         overview_es: "### Resumen\nUna redirección abierta es una aplicación que toma un parámetro y redirige a un usuario al valor de ese parámetro sin ninguna validación. Esta vulnerabilidad se utiliza en ataques de phishing para que los usuarios confíen en un enlace que parece ser de un dominio legítimo.",
         technicalDescription_en: "### Technical Description\nThe application uses a parameter, often `redirect`, `url`, or `next`, to specify the destination after an action (like login). If this parameter is not validated, an attacker can craft a URL like `http://trusted-site.com/login?redirect=http://malicious-site.com`. A user, seeing the trusted domain, may click the link and be redirected to the malicious site after logging in.",
@@ -1759,11 +1764,6 @@ No utilizar la entrada proporcionada por el usuario para determinar el destino d
 Si las redirecciones dinámicas son necesarias, mantener una lista blanca de dominios de confianza y validar el parámetro de redirección contra esta lista. Asegurarse de que también se valide el esquema de la URL (p. ej., solo permitir \`http\` y \`https\` ).
 #### Recomendaciones a Largo Plazo
 Mostrar una página intermedia que informe claramente al usuario que está siendo redirigido a otro sitio web, y requerir que haga clic en un enlace para continuar.`,
-        cwe: "CWE-601",
-        severity: "Medium",
-        cvss: { score: 5.4, vectorString: "CVSS:3.1/AV:N/AC:L/PR:N/UI:R/S:U/C:L/I:L/A:N", attackVector: "N", attackComplexity: "L", privilegesRequired: "N", userInteraction: "R", scope: "U", confidentiality: "L", integrity: "L", availability: "N" },
-        references: ["https://owasp.org/www-community/vulnerabilities/Unvalidated_Redirects_and_Forwards_Cheat_Sheet"],
-        tags: ["Infrastructure", "Web"],
         affectedComponents_en: `### Affected Components
 - [TODO: List the vulnerable URL and the ID parameter.]`,
         details_en: `### Proof of Concept
@@ -1779,6 +1779,11 @@ Mostrar una página intermedia que informe claramente al usuario que está siend
         id: "vuln-infra-010",
         title_en: "Insecure File Shares",
         title_es: "Recursos Compartidos de Archivos Inseguros",
+        cwe: "CWE-732",
+        severity: "High",
+        cvss: { score: 8.8, vectorString: "CVSS:3.1/AV:A/AC:L/PR:N/UI:N/S:U/C:H/I:H/A:H", attackVector: "A", attackComplexity: "L", privilegesRequired: "N", userInteraction: "N", scope: "U", confidentiality: "H", integrity: "H", availability: "H" },
+        references: ["https://www.cisa.gov/news-events/news/understanding-file-and-print-sharing"],
+        tags: ["Infrastructure", "Network"],
         overview_en: "### Overview\nInsecure file shares, such as SMB or NFS shares with weak or no access controls, can expose sensitive data and provide an entry point for attackers into the network.",
         overview_es: "### Resumen\nLos recursos compartidos de archivos inseguros, como los recursos compartidos de SMB o NFS con controles de acceso débiles o nulos, pueden exponer datos sensibles y proporcionar un punto de entrada para los atacantes en la red.",
         technicalDescription_en: "### Technical Description\nFile shares are configured with overly permissive permissions, such as 'Everyone' or 'Anonymous' access with read/write privileges. This allows any user on the network to access, modify, or delete files on the share, or upload malicious files.",
@@ -1797,11 +1802,6 @@ Aplicar el principio de privilegio mínimo. Otorgar acceso solo a los grupos de 
 Implementar un proceso de auditoría regular para los permisos de los recursos compartidos de archivos para identificar y remediar configuraciones demasiado permisivas.
 #### Recomendaciones a Largo Plazo
 Considerar la migración de los recursos compartidos de archivos tradicionales a plataformas de colaboración más modernas y seguras que ofrezcan controles de acceso más granulares y mejores capacidades de auditoría.`,
-        cwe: "CWE-732",
-        severity: "High",
-        cvss: { score: 8.8, vectorString: "CVSS:3.1/AV:A/AC:L/PR:N/UI:N/S:U/C:H/I:H/A:H", attackVector: "A", attackComplexity: "L", privilegesRequired: "N", userInteraction: "N", scope: "U", confidentiality: "H", integrity: "H", availability: "H" },
-        references: ["https://www.cisa.gov/news-events/news/understanding-file-and-print-sharing"],
-        tags: ["Infrastructure", "Network"],
         affectedComponents_en: `### Affected Components
 - [TODO: List the server name and share name (e.g., \\\\SERVER\\share).]`,
         details_en: `### Proof of Concept
@@ -1817,6 +1817,11 @@ Considerar la migración de los recursos compartidos de archivos tradicionales a
         id: "vuln-infra-011",
         title_en: "Sensitive Data on File Shares",
         title_es: "Datos Sensibles en Recursos Compartidos",
+        cwe: "CWE-200",
+        severity: "High",
+        cvss: { score: 8.8, vectorString: "CVSS:3.1/AV:A/AC:L/PR:L/UI:N/S:U/C:H/I:H/A:H", attackVector: "A", attackComplexity: "L", privilegesRequired: "L", userInteraction: "N", scope: "U", confidentiality: "H", integrity: "H", availability: "H" },
+        references: ["https://www.cisa.gov/news-events/news/understanding-file-and-print-sharing"],
+        tags: ["Infrastructure", "Network"],
         overview_en: "### Overview\nSensitive data, such as documents containing passwords, connection strings, or personal information, is found on a network file share that is accessible to a wide range of users.",
         overview_es: "### Resumen\nSe encuentran datos sensibles, como documentos que contienen contraseñas, cadenas de conexión o información personal, en un recurso compartido de archivos de red que es accesible para una amplia gama de usuarios.",
         technicalDescription_en: "### Technical Description\nDuring a review of accessible network shares, files containing sensitive information were discovered. Even if the share itself is not open to 'Everyone', the data may be accessible to a larger group of employees than necessary, violating the principle of least privilege.",
@@ -1835,11 +1840,6 @@ Eliminar los datos sensibles del recurso compartido de archivos. Implementar una
 Implementar una solución de prevención de pérdida de datos (DLP) para escanear automáticamente los recursos compartidos de archivos en busca de información sensible.
 #### Recomendaciones a Largo Plazo
 Realizar capacitaciones periódicas de concienciación sobre seguridad para todos los empleados sobre el manejo y almacenamiento adecuados de datos sensibles. Establecer una política clara de clasificación de datos.`,
-        cwe: "CWE-200",
-        severity: "High",
-        cvss: { score: 8.8, vectorString: "CVSS:3.1/AV:A/AC:L/PR:L/UI:N/S:U/C:H/I:H/A:H", attackVector: "A", attackComplexity: "L", privilegesRequired: "L", userInteraction: "N", scope: "U", confidentiality: "H", integrity: "H", availability: "H" },
-        references: ["https://www.cisa.gov/news-events/news/understanding-file-and-print-sharing"],
-        tags: ["Infrastructure", "Network"],
         affectedComponents_en: `### Affected Components
 - [TODO: List the server, share, and full path to the file containing sensitive data.]`,
         details_en: `### Proof of Concept
@@ -1855,6 +1855,11 @@ Realizar capacitaciones periódicas de concienciación sobre seguridad para todo
         id: "vuln-infra-012",
         title_en: "Unnecessary Exposed Services",
         title_es: "Servicios Expuestos Innecesariamente",
+        cwe: "CWE-489",
+        severity: "High",
+        cvss: { score: 8.6, vectorString: "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:C/C:H/I:N/A:L", attackVector: "N", attackComplexity: "L", privilegesRequired: "N", userInteraction: "N", scope: "C", confidentiality: "H", integrity: "N", availability: "L" },
+        references: ["https://www.shodan.io/"],
+        tags: ["Infrastructure", "Network"],
         overview_en: `### Overview
 Services that are not intended for public access, such as databases, remote management interfaces (RDP, SSH), or internal applications, are exposed to the internet.`,
         overview_es: `### Resumen
@@ -1879,11 +1884,6 @@ Implementar una política de firewall de 'denegar por defecto'. Solo permitir el
 Realizar escaneos de red externos regulares para identificar cualquier servicio expuesto involuntariamente. Usar una VPN con autenticación multifactor para todo el acceso de gestión remota.
 #### Recomendaciones a Largo Plazo
 Implementar un proceso de gestión de cambios robusto para todos los cambios de configuración de firewall y red para evitar la exposición accidental.`,
-        cwe: "CWE-489",
-        severity: "High",
-        cvss: { score: 8.6, vectorString: "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:C/C:H/I:N/A:L", attackVector: "N", attackComplexity: "L", privilegesRequired: "N", userInteraction: "N", scope: "C", confidentiality: "H", integrity: "N", availability: "L" },
-        references: ["https://www.shodan.io/"],
-        tags: ["Infrastructure", "Network"],
         affectedComponents_en: `### Affected Components
 - [TODO: Specify the IP addresses and ports of the unnecessarily exposed services.]`,
         details_en: `### Proof of Concept
@@ -1899,6 +1899,11 @@ Implementar un proceso de gestión de cambios robusto para todos los cambios de 
         id: "vuln-infra-013",
         title_en: "Misconfigured <APPLICATION> Instance",
         title_es: "Instancia de <APPLICATION> Mal Configurada",
+        cwe: "CWE-16",
+        severity: "High",
+        cvss: { score: 8.8, vectorString: "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:H/I:H/A:H", attackVector: "N", attackComplexity: "L", privilegesRequired: "N", userInteraction: "N", scope: "U", confidentiality: "H", integrity: "H", availability: "H" },
+        references: ["https://www.cisecurity.org/cis-benchmarks/"],
+        tags: ["Infrastructure"],
         overview_en: "### Overview\nA specific application or service (e.g., Jenkins, Elasticsearch, Docker) is misconfigured, leading to a security vulnerability.",
         overview_es: "### Resumen\nUna aplicación o servicio específico (p. ej., Jenkins, Elasticsearch, Docker) está mal configurado, lo que conduce a una vulnerabilidad de seguridad.",
         technicalDescription_en: "### Technical Description\nThis is a general category for misconfigurations specific to a particular technology. Examples include an Elasticsearch instance open to the public, a Jenkins server allowing unauthenticated access to script consoles, or a Docker daemon socket exposed to the network.",
@@ -1917,11 +1922,6 @@ Aplicar la remediación específica para la configuración incorrecta identifica
 Desarrollar una configuración de línea de base segura (guía de fortalecimiento) para todas las aplicaciones críticas implementadas en el entorno.
 #### Recomendaciones a Largo Plazo
 Automatizar la implementación y configuración de aplicaciones utilizando herramientas de infraestructura como código para garantizar la coherencia y hacer cumplir las líneas de base seguras.`,
-        cwe: "CWE-16",
-        severity: "High",
-        cvss: { score: 8.8, vectorString: "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:H/I:H/A:H", attackVector: "N", attackComplexity: "L", privilegesRequired: "N", userInteraction: "N", scope: "U", confidentiality: "H", integrity: "H", availability: "H" },
-        references: ["https://www.cisecurity.org/cis-benchmarks/"],
-        tags: ["Infrastructure"],
         affectedComponents_en: `### Affected Components
 - [TODO: Specify the application (e.g., Elasticsearch) and the location (IP address/URL) of the misconfigured instance.]`,
         details_en: `### Proof of Concept
@@ -1937,6 +1937,11 @@ Automatizar la implementación y configuración de aplicaciones utilizando herra
         id: "vuln-auth-001",
         title_en: "Weak Passwords",
         title_es: "Contraseñas Débiles",
+        cwe: "CWE-521",
+        severity: "High",
+        cvss: { score: 7.5, vectorString: "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:H/I:H/A:N", attackVector: "N", attackComplexity: "L", privilegesRequired: "N", userInteraction: "N", scope: "U", confidentiality: "H", integrity: "H", availability: "N" },
+        references: ["https://owasp.org/www-project-top-ten/2017/A2_2017-Broken_Authentication"],
+        tags: ["Authentication"],
         overview_en: `### Overview
 Weak passwords are easy for attackers to guess or crack, often using automated tools. This vulnerability arises when the application fails to enforce a strong password policy.`,
         overview_es: `### Resumen
@@ -1961,11 +1966,6 @@ Forzar un restablecimiento de contraseña para todos los usuarios y hacer cumpli
 Implementar la Autenticación Multifactor (MFA) como el control más efectivo para mitigar el riesgo de contraseñas débiles.
 #### Recomendaciones a Largo Plazo
 Educar a los usuarios sobre la importancia de usar contraseñas seguras y únicas y proporcionar herramientas como gestores de contraseñas para ayudarles a gestionar sus credenciales de forma segura.`,
-        cwe: "CWE-521",
-        severity: "High",
-        cvss: { score: 7.5, vectorString: "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:H/I:H/A:N", attackVector: "N", attackComplexity: "L", privilegesRequired: "N", userInteraction: "N", scope: "U", confidentiality: "H", integrity: "H", availability: "N" },
-        references: ["https://owasp.org/www-project-top-ten/2017/A2_2017-Broken_Authentication"],
-        tags: ["Authentication"],
         affectedComponents_en: `### Affected Components
 - User registration and password change functionality.`,
         details_en: `### Proof of Concept
@@ -1981,6 +1981,11 @@ Educar a los usuarios sobre la importancia de usar contraseñas seguras y única
         id: "vuln-auth-002",
         title_en: "Password Reuse",
         title_es: "Reutilización de Contraseñas",
+        cwe: "CWE-693", 
+        severity: "High", 
+        cvss: { score: 8.1, vectorString: "CVSS:3.1/AV:N/AC:H/PR:N/UI:N/S:U/C:H/I:H/A:N", attackVector: "N", attackComplexity: "H", privilegesRequired: "N", userInteraction: "N", scope: "U", confidentiality: "H", integrity: "H", availability: "N" }, 
+        references: ["https://haveibeenpwned.com/Passwords"], 
+        tags: ["Authentication"],
         overview_en: "### Overview\nPassword reuse involves an attacker using a password that was compromised from one system to gain unauthorized access to another system where the user has used the same password.",
         overview_es: "### Resumen\nLa reutilización de contraseñas implica que un atacante utilice una contraseña que fue comprometida en un sistema para obtener acceso no autorizado a otro sistema donde el usuario ha utilizado la misma contraseña.",
         technicalDescription_en: "### Technical Description\nUsers often reuse the same password across multiple services. If one of those services suffers a data breach and credentials are leaked, an attacker can try those same credentials (an attack known as credential stuffing) on other services, including the target application.",
@@ -1999,11 +2004,6 @@ Implementar limitación de velocidad y mecanismos de bloqueo de cuentas para ral
 Implementar la Autenticación Multifactor (MFA). Este es el control más efectivo contra la reutilización de contraseñas y el credential stuffing.
 #### Recomendaciones a Largo Plazo
 Educar a los usuarios sobre la importancia de usar contraseñas únicas para cada servicio. Proporcionar un gestor de contraseñas como herramienta corporativa para facilitar esto.`, 
-        cwe: "CWE-693", 
-        severity: "High", 
-        cvss: { score: 8.1, vectorString: "CVSS:3.1/AV:N/AC:H/PR:N/UI:N/S:U/C:H/I:H/A:N", attackVector: "N", attackComplexity: "H", privilegesRequired: "N", userInteraction: "N", scope: "U", confidentiality: "H", integrity: "H", availability: "N" }, 
-        references: ["https://haveibeenpwned.com/Passwords"], 
-        tags: ["Authentication"], 
         affectedComponents_en: `### Affected Components
 - All user accounts within the application.`, 
         details_en: `### Proof of Concept
@@ -2019,6 +2019,11 @@ Educar a los usuarios sobre la importancia de usar contraseñas únicas para cad
         id: "vuln-auth-003",
         title_en: "Missing Multi-Factor Authentication (MFA)",
         title_es: "Falta de Autenticación Multifactor (MFA)",
+        cwe: "CWE-308",
+        severity: "High",
+        cvss: { score: 7.4, vectorString: "CVSS:3.1/AV:N/AC:L/PR:N/UI:R/S:U/C:H/I:H/A:N", attackVector: "N", attackComplexity: "L", privilegesRequired: "N", userInteraction: "R", scope: "U", confidentiality: "H", integrity: "H", availability: "N" },
+        references: ["https://owasp.org/Top10/A02_2021-Cryptographic_Failures/"],
+        tags: ["Authentication"],
         overview_en: `### Overview
 The application does not provide the option for multi-factor authentication, which is a critical security layer that helps protect user accounts even if passwords are stolen.`,
         overview_es: `### Resumen
@@ -2043,11 +2048,6 @@ Implementar soporte para aplicaciones de autenticación de contraseña de un sol
 Hacer que la MFA sea obligatoria para todos los usuarios administrativos y con privilegios. Proporcionar opciones para que los usuarios habiliten la MFA para sus propias cuentas.
 #### Recomendaciones a Largo Plazo
 Explorar e implementar métodos de MFA más fuertes y resistentes al phishing, como FIDO2/WebAuthn.`,
-        cwe: "CWE-308",
-        severity: "High",
-        cvss: { score: 7.4, vectorString: "CVSS:3.1/AV:N/AC:L/PR:N/UI:R/S:U/C:H/I:H/A:N", attackVector: "N", attackComplexity: "L", privilegesRequired: "N", userInteraction: "R", scope: "U", confidentiality: "H", integrity: "H", availability: "N" },
-        references: ["https://owasp.org/Top10/A02_2021-Cryptographic_Failures/"],
-        tags: ["Authentication"],
         affectedComponents_en: `### Affected Components
 - The entire user authentication flow.`,
         details_en: `### Proof of Concept
@@ -2063,6 +2063,11 @@ Explorar e implementar métodos de MFA más fuertes y resistentes al phishing, c
         id: "vuln-auth-004",
         title_en: "Session Hijacking",
         title_es: "Secuestro de Sesión",
+        cwe: "CWE-384",
+        severity: "High",
+        cvss: { score: 8.8, vectorString: "CVSS:3.1/AV:N/AC:L/PR:N/UI:R/S:U/C:H/I:H/A:H", attackVector: "N", attackComplexity: "L", privilegesRequired: "N", userInteraction: "R", scope: "U", confidentiality: "H", integrity: "H", availability: "H" },
+        references: ["https://owasp.org/www-community/attacks/Session_hijacking_attack"],
+        tags: ["Authentication"],
         overview_en: `### Overview
 Session hijacking is an attack where an attacker takes over a valid user session to gain unauthorized access to an application.`,
         overview_es: `### Resumen
@@ -2087,11 +2092,6 @@ Establecer las banderas \`HttpOnly\` y \`Secure\` en todas las cookies de sesió
 Implementar un mecanismo para regenerar el ID de sesión después de cualquier cambio de nivel de privilegio, como el inicio de sesión. Vincular el token de sesión a otras propiedades del usuario, como su dirección IP o User-Agent, para dificultar el secuestro.
 #### Recomendaciones a Largo Plazo
 Utilizar un framework de gestión de sesiones robusto y centralizado que maneje la generación, validación y expiración de tokens de forma segura.`,
-        cwe: "CWE-384",
-        severity: "High",
-        cvss: { score: 8.8, vectorString: "CVSS:3.1/AV:N/AC:L/PR:N/UI:R/S:U/C:H/I:H/A:H", attackVector: "N", attackComplexity: "L", privilegesRequired: "N", userInteraction: "R", scope: "U", confidentiality: "H", integrity: "H", availability: "H" },
-        references: ["https://owasp.org/www-community/attacks/Session_hijacking_attack"],
-        tags: ["Authentication"],
         affectedComponents_en: `### Affected Components
 - The application's session management mechanism.`,
         details_en: `### Proof of Concept
@@ -2107,6 +2107,11 @@ Utilizar un framework de gestión de sesiones robusto y centralizado que maneje 
         id: "vuln-auth-005",
         title_en: "Session Fixation",
         title_es: "Fijación de Sesión",
+        cwe: "CWE-384",
+        severity: "High",
+        cvss: { score: 8.1, vectorString: "CVSS:3.1/AV:N/AC:H/PR:N/UI:R/S:U/C:H/I:H/A:H", attackVector: "N", attackComplexity: "H", privilegesRequired: "N", userInteraction: "R", scope: "U", confidentiality: "H", integrity: "H", availability: "H" },
+        references: ["https://owasp.org/www-community/attacks/Session_fixation"],
+        tags: ["Authentication"],
         overview_en: "### Overview\nSession fixation is an attack that permits an attacker to hijack a valid user session by fixing the session identifier (SID) before the user logs in.",
         overview_es: "### Resumen\nLa fijación de sesión es un ataque que permite a un atacante secuestrar una sesión de usuario válida fijando el identificador de sesión (SID) antes de que el usuario inicie sesión.",
         technicalDescription_en: "### Technical Description\nThe attacker visits the website to obtain a valid session ID. They then trick the victim into authenticating with that same session ID (e.g., by sending them a link with the session ID in the URL: `http://example.com/login?SID=...`). Once the victim logs in, the session becomes authenticated, and the attacker can use the fixed session ID to access the victim's session.",
@@ -2125,11 +2130,6 @@ Regenerar el ID de sesión inmediatamente después de que un usuario se autentiq
 Asegurarse de que el sistema de gestión de sesiones cree un objeto de sesión completamente nuevo, con un nuevo ID, al iniciar sesión.
 #### Recomendaciones a Largo Plazo
 Revisar todo el ciclo de vida de la sesión para garantizar que los identificadores de sesión nunca se acepten de fuentes no confiables y se renueven correctamente en los cambios de nivel de privilegio.`,
-        cwe: "CWE-384",
-        severity: "High",
-        cvss: { score: 8.1, vectorString: "CVSS:3.1/AV:N/AC:H/PR:N/UI:R/S:U/C:H/I:H/A:H", attackVector: "N", attackComplexity: "H", privilegesRequired: "N", userInteraction: "R", scope: "U", confidentiality: "H", integrity: "H", availability: "H" },
-        references: ["https://owasp.org/www-community/attacks/Session_fixation"],
-        tags: ["Authentication"],
         affectedComponents_en: `### Affected Components
 - The login process and session initialization logic.`,
         details_en: `### Proof of Concept
@@ -2151,6 +2151,11 @@ Revisar todo el ciclo de vida de la sesión para garantizar que los identificado
         id: "vuln-auth-006",
         title_en: "Credential Stuffing",
         title_es: "Relleno de Credenciales",
+        cwe: "CWE-307", 
+        severity: "High", 
+        cvss: { score: 8.1, vectorString: "CVSS:3.1/AV:N/AC:H/PR:N/UI:N/S:U/C:H/I:H/A:N", attackVector: "N", attackComplexity: "H", privilegesRequired: "N", userInteraction: "N", scope: "U", confidentiality: "H", integrity: "H", availability: "N" }, 
+        references: ["https://owasp.org/www-community/attacks/Credential_stuffing"], 
+        tags: ["Authentication"],
         overview_en: "### Overview\nCredential stuffing is an attack where an attacker uses lists of compromised user credentials (typically username/password pairs) from data breaches to gain unauthorized access to other systems.",
         overview_es: "### Resumen\nEl relleno de credenciales es un ataque en el que un atacante utiliza listas de credenciales de usuario comprometidas (generalmente pares de nombre de usuario/contraseña) de brechas de datos para obtener acceso no autorizado a otros sistemas.",
         technicalDescription_en: "### Technical Description\nAttackers use automated bots to try large numbers of stolen credentials against the application's login page. The attack's success relies on the high probability that users reuse the same password across multiple online services.",
@@ -2169,11 +2174,6 @@ Implementar limitación de velocidad y mecanismos de bloqueo de cuentas para ral
 Implementar la Autenticación Multifactor (MFA). Este es el control más efectivo contra la reutilización de contraseñas y el credential stuffing.
 #### Recomendaciones a Largo Plazo
 Educar a los usuarios sobre la importancia de usar contraseñas únicas para cada servicio. Proporcionar un gestor de contraseñas como herramienta corporativa para facilitar esto.`, 
-        cwe: "CWE-307", 
-        severity: "High", 
-        cvss: { score: 8.1, vectorString: "CVSS:3.1/AV:N/AC:H/PR:N/UI:N/S:U/C:H/I:H/A:N", attackVector: "N", attackComplexity: "H", privilegesRequired: "N", userInteraction: "N", scope: "U", confidentiality: "H", integrity: "H", availability: "N" }, 
-        references: ["https://owasp.org/www-community/attacks/Credential_stuffing"], 
-        tags: ["Authentication"], 
         affectedComponents_en: `### Affected Components
 - The application's login endpoint.`, 
         details_en: `### Proof of Concept
@@ -2189,6 +2189,11 @@ Educar a los usuarios sobre la importancia de usar contraseñas únicas para cad
         id: "vuln-auth-007",
         title_en: "Insecure Password Recovery",
         title_es: "Recuperación Insegura de Contraseñas",
+        cwe: "CWE-640",
+        severity: "Medium",
+        cvss: { score: 6.8, vectorString: "CVSS:3.1/AV:N/AC:H/PR:N/UI:R/S:U/C:H/I:H/A:N", attackVector: "N", attackComplexity: "H", privilegesRequired: "N", userInteraction: "R", scope: "U", confidentiality: "H", integrity: "H", availability: "N" },
+        references: ["https://owasp.org/www-project-top-ten/2017/A2_2017-Broken_Authentication"],
+        tags: ["Authentication"],
         overview_en: `### Overview
 The password recovery mechanism is weak, allowing an attacker to gain unauthorized access to a user's account by subverting the recovery process.`,
         overview_es: `### Resumen
@@ -2213,11 +2218,6 @@ Asegurarse de que los tokens de recuperación de contraseña sean largos, aleato
 Evitar el uso de la autenticación basada en conocimientos (preguntas secretas) como único mecanismo de recuperación. Requerir que los usuarios verifiquen su identidad a través de un segundo factor (como un código a su teléfono) antes de permitir un restablecimiento de contraseña.
 #### Recomendaciones a Largo Plazo
 Implementar un flujo de trabajo de recuperación de contraseña robusto que registre todos los intentos y notifique al usuario de cualquier actividad de restablecimiento de contraseña en su cuenta.`,
-        cwe: "CWE-640",
-        severity: "Medium",
-        cvss: { score: 6.8, vectorString: "CVSS:3.1/AV:N/AC:H/PR:N/UI:R/S:U/C:H/I:H/A:N", attackVector: "N", attackComplexity: "H", privilegesRequired: "N", userInteraction: "R", scope: "U", confidentiality: "H", integrity: "H", availability: "N" },
-        references: ["https://owasp.org/www-project-top-ten/2017/A2_2017-Broken_Authentication"],
-        tags: ["Authentication"],
         affectedComponents_en: `### Affected Components
 - The password recovery/reset functionality.`,
         details_en: `### Proof of Concept
@@ -2233,6 +2233,11 @@ Implementar un flujo de trabajo de recuperación de contraseña robusto que regi
         id: "vuln-auth-008",
         title_en: "User Enumeration",
         title_es: "Enumeración de Usuarios",
+        cwe: "CWE-203",
+        severity: "Low",
+        cvss: { score: 5.3, vectorString: "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:L/I:N/A:N", attackVector: "N", attackComplexity: "L", privilegesRequired: "N", userInteraction: "N", scope: "U", confidentiality: "L", integrity: "N", availability: "N" },
+        references: ["https://owasp.org/www-project-web-security-testing-guide/latest/4-Web_Application_Security_Testing/03-Identity_Management_Testing/04-Testing_for_Account_Enumeration_and_Guessable_User_Account"],
+        tags: ["Authentication"],
         overview_en: `### Overview
 User enumeration is a vulnerability where an attacker can use the application's responses to determine whether a given username is valid or not.`,
         overview_es: `### Resumen
@@ -2257,11 +2262,6 @@ Asegurarse de que todas las responses para los intentos de inicio de sesión, re
 Revisar todos los puntos de conexión de la aplicación para identificar y remediar cualquier otro posible vector de enumeración de usuarios.
 #### Recomendaciones a Largo Plazo
 Implementar limitación de velocidad y monitoreo para detectar y bloquear los intentos automatizados de enumeración de usuarios.`,
-        cwe: "CWE-203",
-        severity: "Low",
-        cvss: { score: 5.3, vectorString: "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:L/I:N/A:N", attackVector: "N", attackComplexity: "L", privilegesRequired: "N", userInteraction: "N", scope: "U", confidentiality: "L", integrity: "N", availability: "N" },
-        references: ["https://owasp.org/www-project-web-security-testing-guide/latest/4-Web_Application_Security_Testing/03-Identity_Management_Testing/04-Testing_for_Account_Enumeration_and_Guessable_User_Account"],
-        tags: ["Authentication"],
         affectedComponents_en: `### Affected Components
 - Login, password reset, and user registration pages.`,
         details_en: `### Proof of Concept
@@ -2277,6 +2277,11 @@ Implementar limitación de velocidad y monitoreo para detectar y bloquear los in
         id: "vuln-auth-009",
         title_en: "Weak Session Management",
         title_es: "Gestión Débil de Sesiones",
+        cwe: "CWE-613",
+        severity: "High",
+        cvss: { score: 8.8, vectorString: "CVSS:3.1/AV:N/AC:L/PR:L/UI:N/S:U/C:H/I:H/A:H", attackVector: "N", attackComplexity: "L", privilegesRequired: "L", userInteraction: "N", scope: "U", confidentiality: "H", integrity: "H", availability: "H" },
+        references: ["https://owasp.org/www-project-top-ten/2017/A2_2017-Broken_Authentication"],
+        tags: ["Authentication"],
         overview_en: `### Overview
 The application's session management is weak, leading to vulnerabilities such as predictable session tokens or tokens that are not properly invalidated.`,
         overview_es: `### Resumen
@@ -2301,11 +2306,6 @@ Usar identificadores de sesión largos, aleatorios e impredecibles. Asegurarse d
 Implementar períodos de tiempo de espera de sesión razonables (tanto para inactividad como para duración absoluta). Regenerar los tokens de sesión ante cualquier cambio en el nivel de privilegio (p. ej., autenticación).
 #### Recomendaciones a Largo Plazo
 Utilizar una biblioteca o un framework probado y estándar de la industria para la gestión de sesiones en lugar de construir una solución personalizada.`,
-        cwe: "CWE-613",
-        severity: "High",
-        cvss: { score: 8.8, vectorString: "CVSS:3.1/AV:N/AC:L/PR:L/UI:N/S:U/C:H/I:H/A:H", attackVector: "N", attackComplexity: "L", privilegesRequired: "L", userInteraction: "N", scope: "U", confidentiality: "H", integrity: "H", availability: "H" },
-        references: ["https://owasp.org/www-project-top-ten/2017/A2_2017-Broken_Authentication"],
-        tags: ["Authentication"],
         affectedComponents_en: `### Affected Components
 - The entire session management lifecycle of the application.`,
         details_en: `### Proof of Concept
@@ -2321,6 +2321,11 @@ Utilizar una biblioteca o un framework probado y estándar de la industria para 
         id: "vuln-auth-010",
         title_en: "Brute Force Attacks",
         title_es: "Ataques de Fuerza Bruta",
+        cwe: "CWE-307",
+        severity: "High",
+        cvss: { score: 7.5, vectorString: "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:H/I:H/A:N", attackVector: "N", attackComplexity: "L", privilegesRequired: "N", userInteraction: "N", scope: "U", confidentiality: "H", integrity: "H", availability: "N" },
+        references: ["https://owasp.org/www-community/attacks/Brute_force_attack"],
+        tags: ["Authentication"],
         overview_en: `### Overview
 The application is vulnerable to brute-force attacks, where an attacker can make an unlimited number of attempts to guess a user's password.`,
         overview_es: `### Resumen
@@ -2345,11 +2350,6 @@ Implementar una estricta limitación de velocidad en los intentos de inicio de s
 Implementar una política de bloqueo de cuenta que deshabilite temporalmente una cuenta después de un pequeño número de intentos de inicio de sesión fallidos consecutivos (p. ej., 5-10 intentos).
 #### Recomendaciones a Largo Plazo
 Usar CAPTCHA u otros mecanismos de detección de bots después de algunos intentos fallidos para prevenir ataques automatizados. Monitorear y alertar sobre altos volúmenes de inicios de sesión fallidos.`,
-        cwe: "CWE-307",
-        severity: "High",
-        cvss: { score: 7.5, vectorString: "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:H/I:H/A:N", attackVector: "N", attackComplexity: "L", privilegesRequired: "N", userInteraction: "N", scope: "U", confidentiality: "H", integrity: "H", availability: "N" },
-        references: ["https://owasp.org/www-community/attacks/Brute_force_attack"],
-        tags: ["Authentication"],
         affectedComponents_en: `### Affected Components
 - The login functionality.`,
         details_en: `### Proof of Concept
@@ -2365,12 +2365,23 @@ Usar CAPTCHA u otros mecanismos de detección de bots después de algunos intent
         id: "vuln-auth-011",
         title_en: "Weak <APPLICATION> Admin Credentials",
         title_es: "Credenciales Débiles de Administrador en <APPLICATION>",
-        overview_en: "### Overview\nThe administrative interface of a specific application (e.g., Jenkins, Grafana, a CMS) is protected by weak or default credentials.",
-        overview_es: "### Resumen\nLa interfaz administrativa de una aplicación específica (p. ej., Jenkins, Grafana, un CMS) está protegida por credenciales débiles o predeterminadas.",
-        technicalDescription_en: "### Technical Description\nThe administrative account for <APPLICATION> is using a default, common, or easily guessable password (e.g., 'admin', 'password', 'root'). This allows an attacker who discovers the administrative interface to easily gain full control of the application.",
-        technicalDescription_es: "### Descripción Técnica\nLa cuenta administrativa para <APPLICATION> está utilizando una contraseña predeterminada, común o fácil de adivinar (p. ej., 'admin', 'password', 'root'). Esto permite a un atacante que descubre la interfaz administrativa obtener fácilmente el control total de la aplicación.",
-        impact_en: "### Impact\nFull compromise of the <APPLICATION> instance, which could lead to code execution on the server, data theft, or a pivot point into the internal network.",
-        impact_es: "### Impacto\nCompromiso total de la instancia de <APPLICATION>, lo que podría conducir a la ejecución de código en el servidor, robo de datos o un punto de pivote hacia la red interna.",
+        cwe: "CWE-1393",
+        severity: "Critical",
+        cvss: { score: 9.8, vectorString: "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:H/I:H/A:H", attackVector: "N", attackComplexity: "L", privilegesRequired: "N", userInteraction: "N", scope: "U", confidentiality: "H", integrity: "H", availability: "H" },
+        references: ["https://cwe.mitre.org/data/definitions/1393.html"],
+        tags: ["Authentication", "Infrastructure"],
+        overview_en: `### Overview
+The administrative interface of a specific application (e.g., Jenkins, Grafana, a CMS) is protected by weak or default credentials.`,
+        overview_es: `### Resumen
+La interfaz administrativa de una aplicación específica (p. ej., Jenkins, Grafana, un CMS) está protegida por credenciales débiles o predeterminadas.`,
+        technicalDescription_en: `### Technical Description
+The administrative account for <APPLICATION> is using a default, common, or easily guessable password (e.g., 'admin', 'password', 'root'). This allows an attacker who discovers the administrative interface to easily gain full control of the application.`,
+        technicalDescription_es: `### Descripción Técnica
+La cuenta administrativa para <APPLICATION> está utilizando una contraseña predeterminada, común o fácil de adivinar (p. ej., 'admin', 'password', 'root'). Esto permite a un atacante que descubre la interfaz administrativa obtener fácilmente el control total de la aplicación.`,
+        impact_en: `### Impact
+Full compromise of the <APPLICATION> instance, which could lead to code execution on the server, data theft, or a pivot point into the internal network.`,
+        impact_es: `### Impacto
+Compromiso total de la instancia de <APPLICATION>, lo que podría conducir a la ejecución de código en el servidor, robo de datos o un punto de pivote hacia la red interna.`,
         recommendations_en: `#### Short-Term Recommendations
 Change the default administrative password to a strong, randomly generated password.
 #### Medium-Term Recommendations
@@ -2383,11 +2394,6 @@ Cambiar la contraseña administrativa predeterminada por una contraseña segura 
 Restringir el acceso a la interfaz administrativa a direcciones IP de confianza o una VPN. Implementar la Autenticación Multifactor (MFA) para la cuenta administrativa si es compatible.
 #### Recomendaciones a Largo Plazo
 Establecer una política que requiera cambiar todas las credenciales predeterminadas durante el proceso de implementación de cualquier nuevo software o hardware.`,
-        cwe: "CWE-1393",
-        severity: "Critical",
-        cvss: { score: 9.8, vectorString: "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:H/I:H/A:H", attackVector: "N", attackComplexity: "L", privilegesRequired: "N", userInteraction: "N", scope: "U", confidentiality: "H", integrity: "H", availability: "H" },
-        references: ["https://cwe.mitre.org/data/definitions/1393.html"],
-        tags: ["Authentication", "Infrastructure"],
         affectedComponents_en: `### Affected Components
 - The administrative login page for <APPLICATION>.`,
         details_en: `### Proof of Concept
@@ -2403,6 +2409,11 @@ Establecer una política que requiera cambiar todas las credenciales predetermin
         id: "vuln-auth-012",
         title_en: "Excessive Active Directory Group Privileges",
         title_es: "Privilegios Excesivos en Grupos de Active Directory",
+        cwe: "CWE-266",
+        severity: "Critical",
+        cvss: { score: 9.8, vectorString: "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:H/I:H/A:H", attackVector: "N", attackComplexity: "L", privilegesRequired: "N", userInteraction: "N", scope: "U", confidentiality: "H", integrity: "H", availability: "H" },
+        references: ["https://adsecurity.org/?p=3658"],
+        tags: ["Authentication", "Infrastructure"],
         overview_en: `### Overview
 User or service accounts in Active Directory are members of groups that grant them more privileges than necessary to perform their intended function.`,
         overview_es: `### Resumen
@@ -2427,11 +2438,6 @@ Revisar la membresía de todos los grupos de altos privilegios de Active Directo
 Implementar el principio de privilegio mínimo para todas las cuentas de usuario y de servicio. Otorgar permisos basados en roles y responsabilidades específicas.
 #### Recomendaciones a Largo Plazo
 Implementar una solución de Gestión de Acceso Privilegiado (PAM) para controlar y monitorear el acceso a cuentas privilegiadas. Auditar regularmente las membresías de grupo y los permisos.`,
-        cwe: "CWE-266",
-        severity: "Critical",
-        cvss: { score: 9.8, vectorString: "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:H/I:H/A:H", attackVector: "N", attackComplexity: "L", privilegesRequired: "N", userInteraction: "N", scope: "U", confidentiality: "H", integrity: "H", availability: "H" },
-        references: ["https://adsecurity.org/?p=3658"],
-        tags: ["Authentication", "Infrastructure"],
         affectedComponents_en: `### Affected Components
 - [TODO: Specify the user/service account and the high-privilege AD group.]`,
         details_en: `### Proof of Concept
@@ -2447,6 +2453,11 @@ Implementar una solución de Gestión de Acceso Privilegiado (PAM) para controla
         id: "vuln-auth-013",
         title_en: "Passwords in AD User Description Field",
         title_es: "Contraseñas en Campo de Descripción de Usuario de AD",
+        cwe: "CWE-312",
+        severity: "High",
+        cvss: { score: 8.8, vectorString: "CVSS:3.1/AV:N/AC:L/PR:L/UI:N/S:U/C:H/I:H/A:H", attackVector: "N", attackComplexity: "L", privilegesRequired: "L", userInteraction: "N", scope: "U", confidentiality: "H", integrity: "H", availability: "H" },
+        references: ["https://adsecurity.org/?p=268"],
+        tags: ["Authentication", "Infrastructure"],
         overview_en: "### Overview\nPasswords or sensitive information are stored in cleartext in the 'Description' field of user or computer accounts in Active Directory.",
         overview_es: "### Resumen\nLas contraseñas o información sensible se almacenan en texto claro en el campo 'Descripción' de las cuentas de usuario o de equipo en Active Directory.",
         technicalDescription_en: "### Technical Description\nAdministrators sometimes store passwords or notes in the Description field for convenience. This field is readable by any authenticated user in the domain, making it a common place for attackers to look for credentials during post-exploitation.",
@@ -2465,11 +2476,6 @@ Escanear todos los campos de Descripción de las cuentas de usuario y equipo en 
 Implementar una solución segura de gestión de secretos (como una bóveda de contraseñas) para almacenar contraseñas de cuentas de servicio y otras credenciales.
 #### Recomendaciones a Largo Plazo
 Educar a todo el personal de TI y a los administradores sobre los peligros de almacenar información sensible en ubicaciones inseguras. Implementar auditorías regulares para escanear en busca de este problema.`,
-        cwe: "CWE-312",
-        severity: "High",
-        cvss: { score: 8.8, vectorString: "CVSS:3.1/AV:N/AC:L/PR:L/UI:N/S:U/C:H/I:H/A:H", attackVector: "N", attackComplexity: "L", privilegesRequired: "L", userInteraction: "N", scope: "U", confidentiality: "H", integrity: "H", availability: "H" },
-        references: ["https://adsecurity.org/?p=268"],
-        tags: ["Authentication", "Infrastructure"],
         affectedComponents_en: `### Affected Components
 - [TODO: Specify the Active Directory user/computer account.]`,
         details_en: `### Proof of Concept
@@ -2486,6 +2492,11 @@ Educar a todo el personal de TI y a los administradores sobre los peligros de al
         id: "vuln-crypto-001",
         title_en: "Weak Encryption Algorithms",
         title_es: "Algoritmos de Cifrado Débiles",
+        cwe: "CWE-327",
+        severity: "High",
+        cvss: { score: 7.5, vectorString: "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:H/I:H/A:N", attackVector: "N", attackComplexity: "L", privilegesRequired: "N", userInteraction: "N", scope: "U", confidentiality: "H", integrity: "H", availability: "N" },
+        references: ["https://www.nist.gov/itl/applied-cryptography"],
+        tags: ["Cryptography"],
         overview_en: `### Overview
 The application uses weak or outdated cryptographic algorithms that are known to be vulnerable to attack.`,
         overview_es: `### Resumen
@@ -2510,11 +2521,6 @@ Reemplazar los algoritmos débiles con alternativas fuertes y estándar de la in
 Establecer una política corporativa que defina los estándares y algoritmos criptográficos aprobados. Crear una biblioteca de criptografía centralizada para que la usen los desarrolladores.
 #### Recomendaciones a Largo Plazo
 Implementar un proceso para revisar y actualizar regularmente los estándares criptográficos a medida que surja nueva investigación. Usar herramientas de escaneo de código para detectar el uso de funciones criptográficas obsoletas.`,
-        cwe: "CWE-327",
-        severity: "High",
-        cvss: { score: 7.5, vectorString: "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:H/I:N/A:N", attackVector: "N", attackComplexity: "L", privilegesRequired: "N", userInteraction: "N", scope: "U", confidentiality: "H", integrity: "H", availability: "N" },
-        references: ["https://www.nist.gov/itl/applied-cryptography"],
-        tags: ["Cryptography"],
         affectedComponents_en: `### Affected Components
 - [TODO: Specify the component or code section using the weak algorithm.]`,
         details_en: `### Proof of Concept
@@ -2530,6 +2536,11 @@ Implementar un proceso para revisar y actualizar regularmente los estándares cr
         id: "vuln-crypto-002",
         title_en: "Insecure Key Management",
         title_es: "Gestión Insegura de Claves",
+        cwe: "CWE-320",
+        severity: "Critical",
+        cvss: { score: 9.1, vectorString: "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:H/I:H/A:N", attackVector: "N", attackComplexity: "L", privilegesRequired: "N", userInteraction: "N", scope: "U", confidentiality: "H", integrity: "H", availability: "N" },
+        references: ["https://nvlpubs.nist.gov/nistpubs/SpecialPublications/NIST.SP.800-57pt1r5.pdf"],
+        tags: ["Cryptography"],
         overview_en: `### Overview
 The application's process for generating, storing, distributing, and rotating cryptographic keys is insecure.`,
         overview_es: `### Resumen
@@ -2554,11 +2565,6 @@ Almacenar todas las claves criptográficas en un sistema de gestión de secretos
 Establecer una política de gestión de claves que defina los estándares de generación de claves, los períodos de rotación y los procedimientos de control de acceso.
 #### Recomendaciones a Largo Plazo
 Automatizar el proceso de rotación de claves. Implementar monitoreo y alertas para cualquier intento de acceso no autorizado al sistema de gestión de claves.`,
-        cwe: "CWE-320",
-        severity: "Critical",
-        cvss: { score: 9.1, vectorString: "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:H/I:H/A:N", attackVector: "N", attackComplexity: "L", privilegesRequired: "N", userInteraction: "N", scope: "U", confidentiality: "H", integrity: "H", availability: "N" },
-        references: ["https://nvlpubs.nist.gov/nistpubs/SpecialPublications/NIST.SP.800-57pt1r5.pdf"],
-        tags: ["Cryptography"],
         affectedComponents_en: `### Affected Components
 - [TODO: Specify where the key is insecurely stored or managed.]`,
         details_en: `### Proof of Concept
@@ -2574,6 +2580,11 @@ Automatizar el proceso de rotación de claves. Implementar monitoreo y alertas p
         id: "vuln-crypto-003",
         title_en: "Use of Hardcoded Secrets",
         title_es: "Uso de Secretos Embebidos",
+        cwe: "CWE-798",
+        severity: "High",
+        cvss: { score: 8.8, vectorString: "CVSS:3.1/AV:N/AC:L/PR:L/UI:N/S:U/C:H/I:H/A:H", attackVector: "N", attackComplexity: "L", privilegesRequired: "L", userInteraction: "N", scope: "U", confidentiality: "H", integrity: "H", availability: "H" },
+        references: ["https://owasp.org/www-project-top-ten/2017/A3_2017-Sensitive_Data_Exposure"],
+        tags: ["Cryptography", "Infrastructure"],
         overview_en: `### Overview
 The application source code or configuration files contain hardcoded secrets, such as passwords, API keys, or encryption keys.`,
         overview_es: `### Resumen
@@ -2598,11 +2609,6 @@ Eliminar todos los secretos codificados del código y los archivos de configurac
 Usar variables de entorno o un servicio de configuración seguro para inyectar secretos en la aplicación en tiempo de ejecución. Nunca cometer secretos en el control de fuentes.
 #### Recomendaciones a Largo Plazo
 Implementar ganchos pre-commit y comprobaciones en el pipeline de CI/CD para escanear y bloquear automáticamente cualquier commit que contenga secretos codificados.`,
-        cwe: "CWE-798",
-        severity: "High",
-        cvss: { score: 8.8, vectorString: "CVSS:3.1/AV:N/AC:L/PR:L/UI:N/S:U/C:H/I:H/A:H", attackVector: "N", attackComplexity: "L", privilegesRequired: "L", userInteraction: "N", scope: "U", confidentiality: "H", integrity: "H", availability: "H" },
-        references: ["https://owasp.org/www-project-top-ten/2017/A3_2017-Sensitive_Data_Exposure"],
-        tags: ["Cryptography", "Infrastructure"],
         affectedComponents_en: `### Affected Components
 - [TODO: Specify the file and line number where the secret is hardcoded.]`,
         details_en: `### Proof of Concept
@@ -2618,6 +2624,11 @@ Implementar ganchos pre-commit y comprobaciones en el pipeline de CI/CD para esc
         id: "vuln-crypto-004",
         title_en: "Insufficient Entropy",
         title_es: "Entropía Insuficiente",
+        cwe: "CWE-331",
+        severity: "Medium",
+        cvss: { score: 6.5, vectorString: "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:L/I:L/A:N", attackVector: "N", attackComplexity: "L", privilegesRequired: "N", userInteraction: "N", scope: "U", confidentiality: "L", integrity: "L", availability: "N" },
+        references: ["https://cwe.mitre.org/data/definitions/331.html"],
+        tags: ["Cryptography"],
         overview_en: `### Overview
 The application uses values that are intended to be random (e.g., for session tokens, CSRF tokens, or cryptographic keys) but have insufficient entropy, making them predictable.`,
         overview_es: `### Resumen
@@ -2642,11 +2653,6 @@ Utilizar un generador de números pseudoaleatorios criptográficamente seguro (C
 Revisar todo el código para asegurarse de que no se utilicen PRNG débiles (como \`Math.random()\` o \`rand()\`) para generar tokens de sesión, claves, sales o IVs.
 #### Recomendaciones a Largo Plazo
 Establecer un estándar de codificación que exija el uso de CSPRNG aprobados para todos los contextos de seguridad.`,
-        cwe: "CWE-331",
-        severity: "Medium",
-        cvss: { score: 6.5, vectorString: "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:L/I:L/A:N", attackVector: "N", attackComplexity: "L", privilegesRequired: "N", userInteraction: "N", scope: "U", confidentiality: "L", integrity: "L", availability: "N" },
-        references: ["https://cwe.mitre.org/data/definitions/331.html"],
-        tags: ["Cryptography"],
         affectedComponents_en: `### Affected Components
 - [TODO: Specify the functionality that uses a weak random number generator.]`,
         details_en: `### Proof of Concept
@@ -2662,6 +2668,11 @@ Establecer un estándar de codificación que exija el uso de CSPRNG aprobados pa
         id: "vuln-crypto-005",
         title_en: "Padding Oracle Attacks",
         title_es: "Ataques de Oráculo de Relleno",
+        cwe: "CWE-209",
+        severity: "High",
+        cvss: { score: 7.5, vectorString: "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:H/I:N/A:N", attackVector: "N", attackComplexity: "L", privilegesRequired: "N", userInteraction: "N", scope: "U", confidentiality: "H", integrity: "N", availability: "N" },
+        references: ["https://owasp.org/www-community/attacks/Padding_Oracle_Attack"],
+        tags: ["Cryptography"],
         overview_en: `### Overview
 A padding oracle attack is an attack which uses the padding validation of a cryptographic message to decrypt the ciphertext.`,
         overview_es: `### Resumen
@@ -2686,11 +2697,6 @@ Asegurarse de que la aplicación devuelva un mensaje de error genérico independ
 Utilizar un modo de cifrado autenticado (AEAD) como AES-GCM o ChaCha20-Poly1305. Estos modos combinan cifrado y autenticación, lo que protege inherentemente contra los ataques de oráculo de relleno.
 #### Recomendaciones a Largo Plazo
 Revisar todas las implementaciones criptográficas para asegurarse de que no sean vulnerables a ataques de canal lateral basados en mensajes de error o diferencias de tiempo.`,
-        cwe: "CWE-209",
-        severity: "High",
-        cvss: { score: 7.5, vectorString: "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:H/I:N/A:N", attackVector: "N", attackComplexity: "L", privilegesRequired: "N", userInteraction: "N", scope: "U", confidentiality: "H", integrity: "N", availability: "N" },
-        references: ["https://owasp.org/www-community/attacks/Padding_Oracle_Attack"],
-        tags: ["Cryptography"],
         affectedComponents_en: `### Affected Components
 - [TODO: Specify the functionality that decrypts user-supplied data.]`,
         details_en: `### Proof of Concept
@@ -2706,6 +2712,11 @@ Revisar todas las implementaciones criptográficas para asegurarse de que no sea
         id: "vuln-crypto-006",
         title_en: "Weak Random Number Generation",
         title_es: "Generación Débil de Números Aleatorios",
+        cwe: "CWE-338",
+        severity: "Medium",
+        cvss: { score: 6.5, vectorString: "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:L/I:L/A:N", attackVector: "N", attackComplexity: "L", privilegesRequired: "N", userInteraction: "N", scope: "U", confidentiality: "L", integrity: "L", availability: "N" },
+        references: ["https://cwe.mitre.org/data/definitions/338.html"],
+        tags: ["Cryptography"],
         overview_en: `### Overview
 The application uses a weak or predictable random number generator for security-sensitive purposes.`,
         overview_es: `### Resumen
@@ -2730,11 +2741,6 @@ Utilizar un generador de números pseudoaleatorios criptográficamente seguro (C
 Revisar todo el código para asegurarse de que no se utilicen PRNG débiles (como \`Math.random()\` o \`rand()\`) para generar tokens de sesión, claves, sales o IVs.
 #### Recomendaciones a Largo Plazo
 Establecer un estándar de codificación que exija el uso de CSPRNG aprobados para todos los contextos de seguridad.`,
-        cwe: "CWE-338",
-        severity: "Medium",
-        cvss: { score: 6.5, vectorString: "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:L/I:L/A:N", attackVector: "N", attackComplexity: "L", privilegesRequired: "N", userInteraction: "N", scope: "U", confidentiality: "L", integrity: "L", availability: "N" },
-        references: ["https://cwe.mitre.org/data/definitions/338.html"],
-        tags: ["Cryptography"],
         affectedComponents_en: `### Affected Components
 - [TODO: Specify the functionality that uses a weak random number generator.]`,
         details_en: `### Proof of Concept
@@ -2750,6 +2756,11 @@ Establecer un estándar de codificación que exija el uso de CSPRNG aprobados pa
         id: "vuln-crypto-007",
         title_en: "Cryptographic Flaws in Design",
         title_es: "Defectos Criptográficos en el Diseño",
+        cwe: "CWE-311",
+        severity: "Critical",
+        cvss: { score: 9.8, vectorString: "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:H/I:H/A:H", attackVector: "N", attackComplexity: "L", privilegesRequired: "N", userInteraction: "N", scope: "U", confidentiality: "H", integrity: "H", availability: "H" },
+        references: ["https://www.schneier.com/blog/archives/2011/04/schneiers_law.html"],
+        tags: ["Cryptography"],
         overview_en: `### Overview
 The application uses cryptography correctly in terms of algorithms, but the overall design of the security feature is flawed, rendering it insecure.`,
         overview_es: `### Resumen
@@ -2774,11 +2785,6 @@ Rediseñar la característica de seguridad defectuosa basándose en patrones de 
 Evitar el diseño de protocolos criptográficos personalizados. Confiar en estándares establecidos como TLS, JWT y SAML.
 #### Recomendaciones a Largo Plazo
 Incorporar el modelado de amenazas y las revisiones de diseño de seguridad en el ciclo de vida del desarrollo de software para identificar y eliminar los defectos de diseño antes de la implementación.`,
-        cwe: "CWE-311",
-        severity: "Critical",
-        cvss: { score: 9.8, vectorString: "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:H/I:H/A:H", attackVector: "N", attackComplexity: "L", privilegesRequired: "N", userInteraction: "N", scope: "U", confidentiality: "H", integrity: "H", availability: "H" },
-        references: ["https://www.schneier.com/blog/archives/2011/04/schneiers_law.html"],
-        tags: ["Cryptography"],
         affectedComponents_en: `### Affected Components
 - [TODO: Describe the security feature with the design flaw.]`,
         details_en: `### Proof of Concept
@@ -2794,6 +2800,11 @@ Incorporar el modelado de amenazas y las revisiones de diseño de seguridad en e
         id: "vuln-crypto-008",
         title_en: "Side-Channel Attacks",
         title_es: "Ataques de Canal Lateral",
+        cwe: "CWE-208",
+        severity: "Medium",
+        cvss: { score: 5.9, vectorString: "CVSS:3.1/AV:P/AC:H/PR:N/UI:N/S:U/C:H/I:N/A:N", attackVector: "P", attackComplexity: "H", privilegesRequired: "N", userInteraction: "N", scope: "U", confidentiality: "H", integrity: "N", availability: "N" },
+        references: ["https://en.wikipedia.org/wiki/Side-channel_attack"],
+        tags: ["Cryptography"],
         overview_en: `### Overview
 A side-channel attack is any attack based on information gained from the physical implementation of a cryptosystem, rather than brute force or theoretical weaknesses in the algorithms.`,
         overview_es: `### Resumen
@@ -2818,11 +2829,6 @@ Asegurarse de que todas las operaciones criptográficas se realicen en tiempo co
 Utilizar bibliotecas criptográficas que estén diseñadas específicamente para ser resistentes a los ataques de canal lateral.
 #### Recomendaciones a Largo Plazo
 Para aplicaciones altamente sensibles, considerar medidas de seguridad física para proteger contra el análisis de energía y los ataques de fuga electromagnética.`,
-        cwe: "CWE-208",
-        severity: "Medium",
-        cvss: { score: 5.9, vectorString: "CVSS:3.1/AV:P/AC:H/PR:N/UI:N/S:U/C:H/I:N/A:N", attackVector: "P", attackComplexity: "H", privilegesRequired: "N", userInteraction: "N", scope: "U", confidentiality: "H", integrity: "N", availability: "N" },
-        references: ["https://en.wikipedia.org/wiki/Side-channel_attack"],
-        tags: ["Cryptography"],
         affectedComponents_en: `### Affected Components
 - [TODO: Specify the cryptographic operation that is vulnerable to a side-channel attack.]`,
         details_en: `### Proof of Concept
@@ -2838,6 +2844,11 @@ Para aplicaciones altamente sensibles, considerar medidas de seguridad física p
         id: "vuln-crypto-009",
         title_en: "Certificate Validation Bypass",
         title_es: "Omisión de Validación de Certificados",
+        cwe: "CWE-295",
+        severity: "High",
+        cvss: { score: 8.1, vectorString: "CVSS:3.1/AV:A/AC:H/PR:N/UI:N/S:U/C:H/I:H/A:N", attackVector: "A", attackComplexity: "H", privilegesRequired: "N", userInteraction: "N", scope: "U", confidentiality: "H", integrity: "H", availability: "N" },
+        references: ["https://owasp.org/www-project-mobile-top-10/2016-risks/m3-insecure-communication/"],
+        tags: ["Cryptography", "Mobile", "Network"],
         overview_en: `### Overview
 The application fails to properly validate SSL/TLS certificates, allowing an attacker to perform a Man-in-the-Middle (MitM) attack.`,
         overview_es: `### Resumen
@@ -2862,11 +2873,6 @@ Asegurarse de que la aplicación cliente siempre valide el certificado del servi
 Implementar el anclaje de certificados SSL/TLS (certificate pinning), donde la aplicación está codificada para confiar únicamente en un certificado de servidor o clave pública específicos. Esto proporciona protección incluso si el almacén de confianza del dispositivo está comprometido.
 #### Recomendaciones a Largo Plazo
 Utilizar una biblioteca de red centralizada y segura para todas las comunicaciones de red que aplique estos controles de seguridad por defecto.`,
-        cwe: "CWE-295",
-        severity: "High",
-        cvss: { score: 8.1, vectorString: "CVSS:3.1/AV:A/AC:H/PR:N/UI:N/S:U/C:H/I:H/A:N", attackVector: "A", attackComplexity: "H", privilegesRequired: "N", userInteraction: "N", scope: "U", confidentiality: "H", integrity: "H", availability: "N" },
-        references: ["https://owasp.org/www-project-mobile-top-10/2016-risks/m3-insecure-communication/"],
-        tags: ["Cryptography", "Mobile", "Network"],
         affectedComponents_en: `### Affected Components
 - The client application's TLS/SSL handling code.`,
         details_en: `### Proof of Concept
@@ -2882,6 +2888,11 @@ Utilizar una biblioteca de red centralizada y segura para todas las comunicacion
         id: "vuln-crypto-010",
         title_en: "Insecure SSL/TLS Configuration",
         title_es: "Configuración Insegura de SSL/TLS",
+        cwe: "CWE-326",
+        severity: "High",
+        cvss: { score: 7.4, vectorString: "CVSS:3.1/AV:N/AC:H/PR:N/UI:N/S:U/C:H/I:H/A:N", attackVector: "N", attackComplexity: "H", privilegesRequired: "N", userInteraction: "N", scope: "U", confidentiality: "H", integrity: "H", availability: "N" },
+        references: ["https://www.ssllabs.com/projects/best-practices/"],
+        tags: ["Cryptography", "Network", "Infrastructure"],
         overview_en: `### Overview
 The server is configured to use weak or outdated SSL/TLS protocols and cipher suites, making encrypted communication vulnerable to decryption.`,
         overview_es: `### Resumen
@@ -2906,11 +2917,6 @@ Configurar los servidores para que solo admitan TLS 1.2 y TLS 1.3 con un conjunt
 Implementar HTTP Strict Transport Security (HSTS) para garantizar que los navegadores siempre se conecten al servidor a través de una conexión segura.
 #### Recomendaciones a Largo Plazo
 Auditar regularmente la configuración SSL/TLS del servidor utilizando herramientas automatizadas como la prueba SSL de SSL Labs y mantener la configuración actualizada con las mejores prácticas actuales.`,
-        cwe: "CWE-326",
-        severity: "High",
-        cvss: { score: 7.4, vectorString: "CVSS:3.1/AV:N/AC:H/PR:N/UI:N/S:U/C:H/I:H/A:N", attackVector: "N", attackComplexity: "H", privilegesRequired: "N", userInteraction: "N", scope: "U", confidentiality: "H", integrity: "H", availability: "N" },
-        references: ["https://www.ssllabs.com/projects/best-practices/"],
-        tags: ["Cryptography", "Network", "Infrastructure"],
         affectedComponents_en: `### Affected Components
 - The SSL/TLS configuration of the web server or other network services.`,
         details_en: "### Proof of Concept\n[TODO: Provide a report from a tool like `nmap --script ssl-enum-ciphers` or a report from SSL Labs showing the support for weak protocols or ciphers.]",
@@ -2924,6 +2930,11 @@ Auditar regularmente la configuración SSL/TLS del servidor utilizando herramien
         id: 'vuln-add-001',
         title_en: 'Buffer Overflow',
         title_es: 'Desbordamiento de Búfer',
+        cwe: 'CWE-120',
+        severity: 'Critical',
+        cvss: { score: 9.8, vectorString: 'CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:H/I:H/A:H', attackVector: 'N', attackComplexity: 'L', privilegesRequired: 'N', userInteraction: 'N', scope: 'U', confidentiality: 'H', integrity: 'H', availability: 'H' },
+        references: ['https://owasp.org/www-community/vulnerabilities/Buffer_Overflow'],
+        tags: ['Additional'],
         overview_en: '### Overview\nA buffer overflow is an anomaly where a program, while writing data to a buffer, overruns the buffer\'s boundary and overwrites adjacent memory locations.',
         overview_es: '### Resumen\nUn desbordamiento de búfer es una anomalía en la que un programa, al escribir datos en un búfer, sobrepasa el límite del búfer y sobrescribe las ubicaciones de memoria adyacentes.',
         technicalDescription_en: '### Technical Description\nThis vulnerability is caused by functions that do not perform bounds checking, such as `gets()`, `strcpy()`, and `sprintf()`. An attacker can provide an input string that is larger than the buffer, overwriting the stack. This can be used to overwrite the return address of a function, allowing the attacker to redirect execution to their own malicious code (shellcode).',
@@ -2942,11 +2953,6 @@ Reemplazar todas las funciones inseguras (como \`strcpy\`) por sus contrapartes 
 Realizar una revisión completa del código fuente para identificar y eliminar todas las posibles vulnerabilidades de desbordamiento de búfer.
 #### Recomendaciones a Largo Plazo
 Capacitar a los desarrolladores en prácticas de codificación segura, centrándose específicamente en la gestión de la memoria y la validación de entradas. Usar herramientas de análisis estático (SAST) para detectar automáticamente estos fallos durante el desarrollo.`,
-        cwe: 'CWE-120',
-        severity: 'Critical',
-        cvss: { score: 9.8, vectorString: 'CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:H/I:H/A:H', attackVector: 'N', attackComplexity: 'L', privilegesRequired: 'N', userInteraction: 'N', scope: 'U', confidentiality: 'H', integrity: 'H', availability: 'H' },
-        references: ['https://owasp.org/www-community/vulnerabilities/Buffer_Overflow'],
-        tags: ['Additional'],
         affectedComponents_en: '### Affected Components\n- [TODO: Specify the vulnerable function and the input parameter that can be overflowed.]',
         details_en: '### Proof of Concept\n[TODO: Provide a script or payload that causes the buffer overflow and demonstrates code execution or a crash.]',
         affectedComponents_es: '### Componentes Afectados\n- [TODO: Especificar la función vulnerable y el parámetro de entrada que se puede desbordar.]',
@@ -2958,6 +2964,11 @@ Capacitar a los desarrolladores en prácticas de codificación segura, centránd
         id: 'vuln-add-002',
         title_en: 'Format String Vulnerabilities',
         title_es: 'Vulnerabilidades de Cadena de Formato',
+        cwe: 'CWE-134',
+        severity: 'High',
+        cvss: { score: 8.8, vectorString: 'CVSS:3.1/AV:N/AC:L/PR:L/UI:N/S:U/C:H/I:H/A:H', attackVector: 'N', attackComplexity: 'L', privilegesRequired: 'L', userInteraction: 'N', scope: 'U', confidentiality: 'H', integrity: 'H', availability: 'H' },
+        references: ['https://owasp.org/www-community/vulnerabilities/Format_string_attack'],
+        tags: ['Additional'],
         overview_en: '### Overview\nFormat string vulnerabilities occur when user-supplied input is evaluated as a command by the formatting function of a programming language.',
         overview_es: '### Resumen\nLas vulnerabilidades de cadena de formato ocurren cuando la entrada proporcionada por el usuario es evaluada como un comando por la función de formato de un lenguaje de programación.',
         technicalDescription_en: '### Technical Description\nIn languages like C, functions like `printf()` can interpret format specifiers (e.g., `%x`, `%s`, `%n`) from user input. An attacker can use these specifiers to read from the stack, write to arbitrary memory locations, and potentially execute arbitrary code.',
@@ -2976,11 +2987,6 @@ Siempre especificar una cadena de formato como una constante en funciones como \
 Usar banderas de compilador que adviertan sobre posiblesulnerabilidades de cadena de formato (p. ej., \`-Wformat\` en GCC).
 #### Recomendaciones a Largo Plazo
 Usar herramientas de análisis estático para detectar automáticamente errores de cadena de formato en el código base.`,
-        cwe: 'CWE-134',
-        severity: 'High',
-        cvss: { score: 8.8, vectorString: 'CVSS:3.1/AV:N/AC:L/PR:L/UI:N/S:U/C:H/I:H/A:H', attackVector: 'N', attackComplexity: 'L', privilegesRequired: 'L', userInteraction: 'N', scope: 'U', confidentiality: 'H', integrity: 'H', availability: 'H' },
-        references: ['https://owasp.org/www-community/vulnerabilities/Format_string_attack'],
-        tags: ['Additional'],
         affectedComponents_en: '### Affected Components\n- [TODO: Specify the function and user input that is vulnerable.]',
         details_en: '### Proof of Concept\n[TODO: Provide an input string with format specifiers that demonstrates reading from the stack or writing to memory.]',
         affectedComponents_es: '### Componentes Afectados\n- [TODO: Especificar la función y la entrada de usuario que es vulnerable.]',
@@ -2992,6 +2998,11 @@ Usar herramientas de análisis estático para detectar automáticamente errores 
         id: 'vuln-add-003',
         title_en: 'Race Conditions',
         title_es: 'Condiciones de Carrera',
+        cwe: 'CWE-362',
+        severity: 'High',
+        cvss: { score: 8.1, vectorString: 'CVSS:3.1/AV:N/AC:H/PR:N/UI:N/S:U/C:H/I:H/A:H', attackVector: 'N', attackComplexity: 'H', privilegesRequired: 'N', userInteraction: 'N', scope: 'U', confidentiality: 'H', integrity: 'H', availability: 'H' },
+        references: ['https://owasp.org/www-community/vulnerabilities/Race_Conditions'],
+        tags: ['Additional'],
         overview_en: '### Overview\nA race condition is a flaw where the output of an event depends on the sequence or timing of other uncontrollable events.',
         overview_es: '### Resumen\nUna condición de carrera es una falla donde el resultado de un evento depende de la secuencia o el tiempo de otros eventos incontrolables.',
         technicalDescription_en: '### Technical Description\nThis vulnerability occurs in multi-threaded applications where shared resources are not properly synchronized. A common example is a "Time-of-check to time-of-use" (TOCTOU) bug, where an application checks for a security condition (e.g., file permissions) and then performs an action, but an attacker can change the condition between the check and the action.',
@@ -3010,11 +3021,6 @@ Implementar mecanismos de sincronización adecuados como mutex, semáforos o blo
 Diseñar operaciones atómicas para secciones críticas del código. Evitar fallas TOCTOU realizando la acción inmediatamente después de la verificación dentro de una sección bloqueada.
 #### Recomendaciones a Largo Plazo
 Usar bibliotecas y frameworks seguros para hilos. Realizar revisiones de código exhaustivas y usar herramientas de análisis estático/dinámico para identificar posibles condiciones de carrera.`,
-        cwe: 'CWE-362',
-        severity: 'High',
-        cvss: { score: 8.1, vectorString: 'CVSS:3.1/AV:N/AC:H/PR:N/UI:N/S:U/C:H/I:H/A:H', attackVector: 'N', attackComplexity: 'H', privilegesRequired: 'N', userInteraction: 'N', scope: 'U', confidentiality: 'H', integrity: 'H', availability: 'H' },
-        references: ['https://owasp.org/www-community/vulnerabilities/Race_Conditions'],
-        tags: ['Additional'],
         affectedComponents_en: '### Affected Components\n- [TODO: Specify the multi-threaded functionality and the shared resource.]',
         details_en: '### Proof of Concept\n[TODO: Provide a PoC that demonstrates the race condition, for example, by rapidly sending concurrent requests that lead to an inconsistent state.]',
         affectedComponents_es: '### Componentes Afectados\n- [TODO: Especificar la funcionalidad multihilo y el recurso compartido.]',
@@ -3026,6 +3032,11 @@ Usar bibliotecas y frameworks seguros para hilos. Realizar revisiones de código
         id: 'vuln-add-004',
         title_en: 'LDAP Injection',
         title_es: 'Inyección LDAP',
+        cwe: 'CWE-90',
+        severity: 'High',
+        cvss: { score: 8.8, vectorString: 'CVSS:3.1/AV:N/AC:L/PR:L/UI:N/S:U/C:H/I:H/A:H', attackVector: 'N', attackComplexity: 'L', privilegesRequired: 'L', userInteraction: 'N', scope: 'U', confidentiality: 'H', integrity: 'H', availability: 'H' },
+        references: ['https://owasp.org/www-community/attacks/Ldap_Injection'],
+        tags: ['Additional'],
         overview_en: '### Overview\nLDAP injection is an attack technique used to exploit web applications that construct LDAP statements from user-supplied input.',
         overview_es: '### Resumen\nLa inyección LDAP es una técnica de ataque utilizada para explotar aplicaciones web que construyen sentencias LDAP a partir de la entrada proporcionada por el usuario.',
         technicalDescription_en: '### Technical Description\nWhen an application fails to properly sanitize user input before placing it into an LDAP query, an attacker can inject LDAP metacharacters (like `*`, `(`, `)`, `&`, `|`) to modify the query. This can be used to bypass authentication or view/modify information in the LDAP directory.',
@@ -3044,11 +3055,6 @@ Utilizar una función de codificación LDAP proporcionada por el framework para 
 Evitar la construcción de consultas LDAP a partir de la entrada del usuario. Usar un mapeo a consultas predefinidas cuando sea posible.
 #### Recomendaciones a Largo Plazo
 Implementar el principio de privilegio mínimo para la cuenta de usuario LDAP, de modo que solo pueda acceder a las partes necesarias del directorio.`,
-        cwe: 'CWE-90',
-        severity: 'High',
-        cvss: { score: 8.8, vectorString: 'CVSS:3.1/AV:N/AC:L/PR:L/UI:N/S:U/C:H/I:H/A:H', attackVector: 'N', attackComplexity: 'L', privilegesRequired: 'L', userInteraction: 'N', scope: 'U', confidentiality: 'H', integrity: 'H', availability: 'H' },
-        references: ['https://owasp.org/www-community/attacks/Ldap_Injection'],
-        tags: ['Additional'],
         affectedComponents_en: '### Affected Components\n- [TODO: Specify the function and parameter vulnerable to LDAP injection.]',
         details_en: '### Proof of Concept\n[TODO: Provide a payload with LDAP metacharacters that bypasses authentication or extracts information.]',
         affectedComponents_es: '### Componentes Afectados\n- [TODO: Especificar la función y el parámetro vulnerables a la inyección LDAP.]',
@@ -3060,6 +3066,11 @@ Implementar el principio de privilegio mínimo para la cuenta de usuario LDAP, d
         id: 'vuln-add-005',
         title_en: 'XPath Injection',
         title_es: 'Inyección XPath',
+        cwe: 'CWE-643',
+        severity: 'High',
+        cvss: { score: 8.8, vectorString: 'CVSS:3.1/AV:N/AC:L/PR:L/UI:N/S:U/C:H/I:H/A:H', attackVector: 'N', attackComplexity: 'L', privilegesRequired: 'L', userInteraction: 'N', scope: 'U', confidentiality: 'H', integrity: 'H', availability: 'H' },
+        references: ['https://owasp.org/www-community/attacks/XPATH_Injection'],
+        tags: ['Additional'],
         overview_en: '### Overview\nXPath Injection is an attack technique used to exploit applications that construct XPath queries from user-supplied input.',
         overview_es: '### Resumen\nLa inyección de XPath es una técnica de ataque utilizada para explotar aplicaciones que construyen consultas XPath a partir de la entrada proporcionada por el usuario.',
         technicalDescription_en: '### Technical Description\nSimilar to SQL injection, an attacker can manipulate an XPath query by injecting malicious characters. This can allow them to bypass authentication, or access or modify parts of the XML document they should not have access to.',
@@ -3078,11 +3089,6 @@ Utilizar consultas XPath parametrizadas o bibliotecas que manejen automáticamen
 Validar toda la entrada del usuario con una lista blanca estricta de valores esperados.
 #### Recomendaciones a Largo Plazo
 Evitar construir consultas XPath a partir de la entrada del usuario. Usar consultas predefinidas cuando sea posible.`,
-        cwe: 'CWE-643',
-        severity: 'High',
-        cvss: { score: 8.8, vectorString: 'CVSS:3.1/AV:N/AC:L/PR:L/UI:N/S:U/C:H/I:H/A:H', attackVector: 'N', attackComplexity: 'L', privilegesRequired: 'L', userInteraction: 'N', scope: 'U', confidentiality: 'H', integrity: 'H', availability: 'H' },
-        references: ['https://owasp.org/www-community/attacks/XPATH_Injection'],
-        tags: ['Additional'],
         affectedComponents_en: '### Affected Components\n- [TODO: Specify the function and parameter vulnerable to XPath injection.]',
         details_en: '### Proof of Concept\n[TODO: Provide a payload with XPath syntax that bypasses authentication or extracts sensitive information from the XML document.]',
         affectedComponents_es: '### Componentes Afectados\n- [TODO: Especificar la función y el parámetro vulnerables a la inyección XPath.]',
@@ -3094,6 +3100,11 @@ Evitar construir consultas XPath a partir de la entrada del usuario. Usar consul
         id: 'vuln-add-006',
         title_en: 'Server-Side Template Injection',
         title_es: 'Inyección de Plantillas del Servidor',
+        cwe: 'CWE-94',
+        severity: 'Critical',
+        cvss: { score: 9.8, vectorString: 'CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:H/I:H/A:H', attackVector: 'N', attackComplexity: 'L', privilegesRequired: 'N', userInteraction: 'N', scope: 'U', confidentiality: 'H', integrity: 'H', availability: 'H' },
+        references: ['https://portswigger.net/web-security/server-side-template-injection'],
+        tags: ['Additional', 'Web'],
         overview_en: '### Overview\nServer-Side Template Injection (SSTI) occurs when user input is unsafely embedded into a template on the server side, allowing an attacker to execute commands on the server.',
         overview_es: '### Resumen\nLa inyección de plantillas del servidor (SSTI) ocurre cuando la entrada del usuario se incrusta de forma no segura en una plantilla en el lado del servidor, lo que permite a un atacante ejecutar comandos en el servidor.',
         technicalDescription_en: '### Technical Description\nMany web frameworks use templates to generate dynamic HTML. If user input is concatenated directly into a template rather than being passed as data, an attacker can inject template syntax. This can often be escalated to execute arbitrary commands on the underlying server.',
@@ -3112,11 +3123,6 @@ Siempre pasar la entrada del usuario como datos al motor de plantillas, nunca co
 Usar plantillas sin lógica cuando sea posible para reducir la superficie de ataque.
 #### Recomendaciones a Largo Plazo
 Ejecutar la aplicación en un entorno sandbox para limitar el impacto de una posible RCE.`,
-        cwe: 'CWE-94',
-        severity: 'Critical',
-        cvss: { score: 9.8, vectorString: 'CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:H/I:H/A:H', attackVector: 'N', attackComplexity: 'L', privilegesRequired: 'N', userInteraction: 'N', scope: 'U', confidentiality: 'H', integrity: 'H', availability: 'H' },
-        references: ['https://portswigger.net/web-security/server-side-template-injection'],
-        tags: ['Additional', 'Web'],
         affectedComponents_en: '### Affected Components\n- [TODO: Specify the template and input vulnerable to SSTI.]',
         details_en: '### Proof of Concept\n[TODO: Provide a payload (e.g., `{{7*7}}`) that demonstrates template syntax is being evaluated, and escalate it to RCE if possible.]',
         affectedComponents_es: '### Componentes Afectados\n- [TODO: Especificar la plantilla y la entrada vulnerables a SSTI.]',
@@ -3128,6 +3134,11 @@ Ejecutar la aplicación en un entorno sandbox para limitar el impacto de una pos
         id: 'vuln-add-007',
         title_en: 'Open-Source Vulnerabilities',
         title_es: 'Vulnerabilidades en Código Abierto',
+        cwe: 'CWE-1104',
+        severity: 'High',
+        cvss: { score: 8.8, vectorString: 'CVSS:3.1/AV:N/AC:L/PR:L/UI:N/S:U/C:H/I:H/A:H', attackVector: 'N', attackComplexity: 'L', privilegesRequired: 'L', userInteraction: 'N', scope: 'U', confidentiality: 'H', integrity: 'H', availability: 'H' },
+        references: ['https://owasp.org/Top10/A06_2021-Vulnerable_and_Outdated_Components/'],
+        tags: ['Additional'],
         overview_en: '### Overview\nThe application uses open-source libraries or components with known, publicly disclosed vulnerabilities.',
         overview_es: '### Resumen\nLa aplicación utiliza bibliotecas o componentes de código abierto con vulnerabilidades conocidas y divulgadas públicamente.',
         technicalDescription_en: '### Technical Description\nModern applications are built using a large number of third-party dependencies. If these dependencies are not regularly updated, the application can inherit their vulnerabilities. An attacker can exploit these known vulnerabilities to compromise the application.',
@@ -3146,11 +3157,6 @@ Actualizar todas las dependencias vulnerables a la última versión segura.
 Implementar una herramienta de Análisis de Composición de Software (SCA) (como \`npm audit\`, Snyk, o Dependabot) para escanear y alertar automáticamente sobre dependencias vulnerables.
 #### Recomendaciones a Largo Plazo
 Establecer un proceso para revisar y actualizar regularmente todas las bibliotecas de terceros. Tener un plan para responder a las vulnerabilidades recién divulgadas en sus dependencias.`,
-        cwe: 'CWE-1104',
-        severity: 'High',
-        cvss: { score: 8.8, vectorString: 'CVSS:3.1/AV:N/AC:L/PR:L/UI:N/S:U/C:H/I:H/A:H', attackVector: 'N', attackComplexity: 'L', privilegesRequired: 'L', userInteraction: 'N', scope: 'U', confidentiality: 'H', integrity: 'H', availability: 'H' },
-        references: ['https://owasp.org/Top10/A06_2021-Vulnerable_and_Outdated_Components/'],
-        tags: ['Additional'],
         affectedComponents_en: '### Affected Components\n- [TODO: List the vulnerable library and its version.]',
         details_en: '### Proof of Concept\n[TODO: Provide a link to the public CVE and, if possible, demonstrate the exploit.]',
         affectedComponents_es: '### Componentes Afectados\n- [TODO: Listar la biblioteca vulnerable y su versión.]',
@@ -3162,6 +3168,11 @@ Establecer un proceso para revisar y actualizar regularmente todas las bibliotec
         id: 'vuln-add-008',
         title_en: 'Insecure Direct Object References (IDOR)',
         title_es: 'Referencias Directas a Objetos Inseguras (IDOR)',
+        cwe: 'CWE-639',
+        severity: 'High',
+        cvss: { score: 8.1, vectorString: 'CVSS:3.1/AV:N/AC:L/PR:L/UI:N/S:U/C:H/I:H/A:N', attackVector: 'N', attackComplexity: 'L', privilegesRequired: 'L', userInteraction: 'N', scope: 'U', confidentiality: 'H', integrity: 'H', availability: 'N' },
+        references: ['https://owasp.org/Top10/A01_2021-Broken_Access_Control/'],
+        tags: ['Additional'],
         overview_en: '### Overview\nIDOR is a type of access control vulnerability where an attacker can simply change a parameter value that directly refers to a system object (like a database key) to access unauthorized data.',
         overview_es: '### Resumen\nIDOR es un tipo de vulnerabilidad de control de acceso donde un atacante puede simplemente cambiar el valor de un parámetro que se refiere directamente a un objeto del sistema (como una clave de base de datos) para acceder a datos no autorizados.',
         technicalDescription_en: '### Technical Description\nThe application uses a user-supplied identifier to retrieve an object (e.g., `.../invoices?id=123`). The application fails to verify that the logged-in user is authorized to access object `123`. An attacker can change the `id` parameter to `124` to access another user\'s invoice.',
@@ -3180,15 +3191,14 @@ Para cada solicitud que acceda a un objeto privado, verificar que el usuario que
 Evitar el uso de referencias directas a objetos en las URL. Usar referencias indirectas por usuario o sesión, o usar identificadores impredecibles y aleatorios (GUID).
 #### Recomendaciones a Largo Plazo
 Implementar un mecanismo de control de acceso centralizado que realice estas comprobaciones automáticamente.`,
-        cwe: 'CWE-639',
-        severity: 'High',
-        cvss: { score: 8.1, vectorString: 'CVSS:3.1/AV:N/AC:L/PR:L/UI:N/S:U/C:H/I:H/A:N', attackVector: 'N', attackComplexity: 'L', privilegesRequired: 'L', userInteraction: 'N', scope: 'U', confidentiality: 'H', integrity: 'H', availability: 'N' },
-        references: ['https://owasp.org/Top10/A01_2021-Broken_Access_Control/'],
-        tags: ['Additional'],
-        affectedComponents_en: '### Affected Components\n- [TODO: Specify the vulnerable URL and the ID parameter.]',
-        details_en: '### Proof of Concept\n[TODO: Provide two sets of credentials. Log in as user A, access their resource, then change the ID in the URL to one belonging to user B and show that access is granted.]',
-        affectedComponents_es: '### Componentes Afectados\n- [TODO: Especificar la URL vulnerable y el parámetro de ID.]',
-        details_es: '### Prueba de Concepto\n[TODO: Proporcionar dos conjuntos de credenciales. Iniciar sesión como usuario A, acceder a su recurso, luego cambiar el ID en la URL por uno que pertenezca al usuario B y mostrar que se concede el acceso.]',
+        affectedComponents_en: `### Affected Components
+- [TODO: Specify the vulnerable URL and the ID parameter.]`,
+        details_en: `### Proof of Concept
+[TODO: Provide two sets of credentials. Log in as user A, access their resource, then change the ID in the URL to one belonging to user B and show that access is granted.]`,
+        affectedComponents_es: `### Componentes Afectados
+- [TODO: Especificar la URL vulnerable y el parámetro de ID.]`,
+        details_es: `### Prueba de Concepto
+[TODO: Proporcionar dos conjuntos de credenciales. Iniciar sesión como usuario A, acceder a su recurso, luego cambiar el ID en la URL por uno que pertenezca al usuario B y mostrar que se concede el acceso.]`,
         immediateActions_en: "### Immediate Actions\nImplement server-side authorization checks for all functions that access objects based on user input.",
         immediateActions_es: "### Acciones Inmediatas\nImplementar comprobaciones de autorización del lado del servidor para todas las funciones que acceden a objetos basados en la entrada del usuario.",
     },
@@ -3196,6 +3206,11 @@ Implementar un mecanismo de control de acceso centralizado que realice estas com
         id: 'vuln-add-009',
         title_en: 'Missing Security Headers',
         title_es: 'Cabeceras de Seguridad Faltantes',
+        cwe: 'CWE-693',
+        severity: 'Medium',
+        cvss: { score: 6.1, vectorString: 'CVSS:3.1/AV:N/AC:L/PR:N/UI:R/S:C/C:L/I:L/A:N', attackVector: 'N', attackComplexity: 'L', privilegesRequired: 'N', userInteraction: 'R', scope: 'C', confidentiality: 'L', integrity: 'L', availability: 'N' },
+        references: ['https://owasp.org/www-project-secure-headers/'],
+        tags: ['Additional'],
         overview_en: '### Overview\nThe application is missing key HTTP security headers, which leaves it vulnerable to a variety of attacks, such as clickjacking and cross-site scripting.',
         overview_es: '### Resumen\nLa aplicación carece de encabezados de seguridad HTTP clave, lo que la deja vulnerable a una variedad de ataques, como el secuestro de clics y el cross-site scripting.',
         technicalDescription_en: '### Technical Description\nThe server\'s HTTP responses do not include important security headers like `Content-Security-Policy`, `Strict-Transport-Security`, `X-Content-Type-Options`, `X-Frame-Options`, or `Referrer-Policy`.',
@@ -3214,11 +3229,6 @@ Establecer el encabezado HTTP \`X-Frame-Options\` en \`DENY\` o \`SAMEORIGIN\`.
 Implementar una política de seguridad de contenido (CSP) sólida con la directiva \`frame-ancestors\` (p. ej., \`frame-ancestors 'self';\`).
 #### Recomendaciones a Largo Plazo
 Además de los encabezados, usar scripts "frame-busting" como una medida de defensa en profundidad, aunque esto es menos fiable que los encabezados.`,
-        cwe: 'CWE-693',
-        severity: 'Medium',
-        cvss: { score: 6.1, vectorString: 'CVSS:3.1/AV:N/AC:L/PR:N/UI:R/S:C/C:L/I:L/A:N', attackVector: 'N', attackComplexity: 'L', privilegesRequired: 'N', userInteraction: 'R', scope: 'C', confidentiality: 'L', integrity: 'L', availability: 'N' },
-        references: ['https://owasp.org/www-project-secure-headers/'],
-        tags: ['Additional'],
         affectedComponents_en: '### Affected Components\n- All HTTP responses from the application server.',
         details_en: '### Proof of Concept\n[TODO: Provide a screenshot of the HTTP response headers showing the absence of recommended security headers.]',
         affectedComponents_es: '### Componentes Afectados\n- Todas las responses HTTP del servidor de aplicaciones.]',
@@ -3230,6 +3240,11 @@ Además de los encabezados, usar scripts "frame-busting" como una medida de defe
         id: 'vuln-add-010',
         title_en: 'Clickjacking',
         title_es: 'Secuestro de Clics',
+        cwe: 'CWE-1021',
+        severity: 'Medium',
+        cvss: { score: 5.4, vectorString: 'CVSS:3.1/AV:N/AC:L/PR:N/UI:R/S:U/C:L/I:L/A:N', attackVector: 'N', attackComplexity: 'L', privilegesRequired: 'N', userInteraction: 'R', scope: 'U', confidentiality: 'L', integrity: 'L', availability: 'N' },
+        references: ['https://owasp.org/www-community/attacks/Clickjacking'],
+        tags: ['Additional'],
         overview_en: '### Overview\nClickjacking is an attack where an attacker tricks a user into clicking on something different from what the user perceives, potentially revealing confidential information or taking control of their computer while clicking on seemingly innocuous web pages.',
         overview_es: '### Resumen\nEl secuestro de clics es un ataque en el que un atacante engaña a un usuario para que haga clic en algo diferente de lo que el usuario percibe, revelando potencialmente información confidencial o tomando el control de su computadora mientras hace clic en páginas web aparentemente inocuas.',
         technicalDescription_en: '### Technical Description\nThe attacker uses a transparent `<iframe>` to overlay a legitimate, invisible webpage on top of a visible, decoy webpage. When the user clicks on the decoy page (e.g., a "Win a prize" button), they are actually clicking on a button on the invisible page (e.g., a "Delete account" button).',
@@ -3248,18 +3263,61 @@ Establecer el encabezado HTTP \`X-Frame-Options\` en \`DENY\` o \`SAMEORIGIN\`.
 Implementar una política de seguridad de contenido (CSP) sólida con la directiva \`frame-ancestors\` (p. ej., \`frame-ancestors 'self';\`).
 #### Recomendaciones a Largo Plazo
 Además de los encabezados, usar scripts "frame-busting" como una medida de defensa en profundidad, aunque esto es menos fiable que los encabezados.`,
-        cwe: 'CWE-1021',
-        severity: 'Medium',
-        cvss: { score: 5.4, vectorString: 'CVSS:3.1/AV:N/AC:L/PR:N/UI:R/S:U/C:L/I:L/A:N', attackVector: 'N', attackComplexity: 'L', privilegesRequired: 'N', userInteraction: 'R', scope: 'U', confidentiality: 'L', integrity: 'L', availability: 'N' },
-        references: ['https://owasp.org/www-community/attacks/Clickjacking'],
-        tags: ['Additional'],
         affectedComponents_en: '### Affected Components\n- All pages on the web application that do not have framing protection.',
         details_en: '### Proof of Concept\n[TODO: Provide an HTML page with an `<iframe>` that loads the vulnerable application and demonstrates a clickjacking attack.]',
         affectedComponents_es: '### Componentes Afectados\n- Todas las páginas de la aplicación web que no tienen protección contra enmarcado.]',
         details_es: '### Prueba de Concepto\n[TODO: Proporcionar una página HTML con un `<iframe>` que cargue la aplicación vulnerable y demuestre un ataque de secuestro de clics.]',
         immediateActions_en: "### Immediate Actions\nImplement the `X-Frame-Options` or `Content-Security-Policy: frame-ancestors` header to prevent the site from being framed.",
         immediateActions_es: "### Acciones Inmediatas\nImplementar el encabezado `X-Frame-Options` o `Content-Security-Policy: frame-ancestors` para evitar que el sitio sea enmarcado.",
-    }
+    },
+    {
+        "id": "vuln-add-011",
+        "title_en": "DOM-based XSS",
+        "title_es": "XSS basado en DOM",
+        "cwe": "CWE-79",
+        "severity": "Medium",
+        "cvss": { "score": 6.1, "vectorString": "CVSS:3.1/AV:N/AC:L/PR:N/UI:R/S:C/C:L/I:L/A:N", "attackVector": "N", "attackComplexity": "L", "privilegesRequired": "N", "userInteraction": "R", "scope": "C", "confidentiality": "L", "integrity": "L", "availability": "N" },
+        "references": ["https://owasp.org/www-community/attacks/DOM_Based_XSS"],
+        "tags": ["Additional", "Web"],
+        "overview_en": "### Overview\nDOM-based XSS is an XSS attack wherein the attack payload is executed as a result of modifying the DOM 'environment' in the victim's browser used by the original client-side script, so that the client-side code runs in an 'unexpected' manner.",
+        "overview_es": "### Resumen\nEl XSS basado en DOM es un ataque de XSS en el que la carga útil del ataque se ejecuta como resultado de la modificación del 'entorno' DOM en el navegador de la víctima utilizado por el script original del lado del cliente, de modo que el código del lado del cliente se ejecuta de una manera 'inesperada'.",
+        "technicalDescription_en": "### Technical Description\nThe vulnerability occurs when client-side JavaScript reads data from an untrusted source (like the URL fragment) and writes it directly to the DOM without proper sanitization. For example, a script might take a name from a URL parameter (`#name=...`) and write it into the page using `innerHTML`, allowing an attacker to inject script tags.",
+        "technicalDescription_es": "### Descripción Técnica\nLa vulnerabilidad ocurre cuando el JavaScript del lado del cliente lee datos de una fuente no confiable (como el fragmento de la URL) y los escribe directamente en el DOM sin una sanitización adecuada. Por ejemplo, un script podría tomar un nombre de un parámetro de URL (`#nombre=...`) y escribirlo en la página usando `innerHTML`, permitiendo a un atacante inyectar etiquetas de script.",
+        "impact_en": "### Impact\nCan lead to session hijacking, defacement of the website, or redirection to malicious sites, similar to other forms of XSS.",
+        "impact_es": "### Impacto\nPuede conducir al secuestro de sesiones, la desfiguración del sitio web o la redirección a sitios maliciosos, de forma similar a otras formas de XSS.",
+        "recommendations_en": "#### Short-Term Recommendations\nAvoid writing user-controllable data directly to the DOM. Use safe functions like `textContent` instead of `innerHTML`. When dynamic HTML is necessary, use a sanitization library. #### Medium-Term Recommendations\nUse modern frontend frameworks like React or Angular that automatically sanitize data bindings, reducing the risk of DOM-based XSS. #### Long-Term Recommendations\nImplement a strong Content Security Policy (CSP) to restrict the sources from which scripts can be loaded, mitigating the impact of any potential XSS flaw.",
+        "recommendations_es": "#### Recomendaciones a Corto Plazo\nEvitar escribir datos controlables por el usuario directamente en el DOM. Usar funciones seguras como `textContent` en lugar de `innerHTML`. Cuando el HTML dinámico es necesario, usar una biblioteca de sanitización. #### Recomendaciones a Medio Plazo\nUtilizar frameworks de frontend modernos como React o Angular que sanitizan automáticamente los enlaces de datos, reduciendo el riesgo de XSS basado en DOM. #### Recomendaciones a Largo Plazo\nImplementar una Política de Seguridad de Contenido (CSP) sólida para restringir las fuentes desde las que se pueden cargar los scripts, mitigando el impacto de cualquier posible falla de XSS.",
+        "affectedComponents_en": "### Affected Components\n- [TODO: Specify the client-side script and the DOM sink (e.g., `innerHTML`, `document.write`) that is vulnerable.]",
+        "details_en": "### Proof of Concept\n[TODO: Provide a URL with a payload in the fragment that, when visited, executes JavaScript in the browser.]",
+        "affectedComponents_es": "### Componentes Afectados\n- [TODO: Especificar el script del lado del cliente y el 'sink' del DOM (p. ej., `innerHTML`, `document.write`) que es vulnerable.]",
+        "details_es": "### Prueba de Concepto\n[TODO: Proporcionar una URL con una carga útil en el fragmento que, al ser visitada, ejecuta JavaScript en el navegador.]",
+        "immediateActions_en": "### Immediate Actions\nSanitize all user-controlled data that is written to the DOM. Prefer using 'safe' sinks like `.textContent` over dangerous ones like `.innerHTML`.",
+        "immediateActions_es": "### Acciones Inmediatas\nSanear todos los datos controlados por el usuario que se escriben en el DOM. Preferir el uso de 'sinks' seguros como `.textContent` sobre los peligrosos como `.innerHTML`."
+      },
+      {
+        "id": "vuln-add-012",
+        "title_en": "Unrestricted File Upload",
+        "title_es": "Subida de Archivos sin Restricciones",
+        "cwe": "CWE-434",
+        "severity": "Critical",
+        "cvss": { "score": 9.8, "vectorString": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:H/I:H/A:H", "attackVector": "N", "attackComplexity": "L", "privilegesRequired": "N", "userInteraction": "N", "scope": "U", "confidentiality": "H", "integrity": "H", "availability": "H" },
+        "references": ["https://owasp.org/www-community/vulnerabilities/Unrestricted_File_Upload"],
+        "tags": ["Additional", "Web"],
+        "overview_en": "### Overview\nThis vulnerability allows an attacker to upload a file with malicious content, such as a web shell, which can then be executed on the server.",
+        "overview_es": "### Resumen\nEsta vulnerabilidad permite a un atacante subir un archivo con contenido malicioso, como una shell web, que luego puede ser ejecutada en el servidor.",
+        "technicalDescription_en": "### Technical Description\nThe application fails to properly validate uploaded files. This can include not checking the file type, content, or file name. An attacker can upload a file with an executable extension (e.g., `.php`, `.jsp`, `.aspx`) and then access the uploaded file via a URL to execute it.",
+        "technicalDescription_es": "### Descripción Técnica\nLa aplicación no valida correctamente los archivos subidos. Esto puede incluir no verificar el tipo de archivo, el contenido o el nombre del archivo. Un atacante puede subir un archivo con una extensión ejecutable (p. ej., `.php`, `.jsp`, `.aspx`) y luego acceder al archivo subido a través de una URL para ejecutarlo.",
+        "impact_en": "### Impact\nCan lead to full Remote Code Execution (RCE) on the server, providing the attacker with complete control.",
+        "impact_es": "### Impacto\nPuede conducir a la Ejecución Remota de Código (RCE) completa en el servidor, proporcionando al atacante un control total.",
+        "recommendations_en": "#### Short-Term Recommendations\nImplement a strict allow-list of permitted file extensions and MIME types. Rename uploaded files to a random, non-executable name. #### Medium-Term Recommendations\nStore uploaded files in a directory outside of the web root, and serve them through a script that performs authorization checks. Scan uploaded files for malware. #### Long-Term Recommendations\nUse a dedicated, isolated file storage service (like Amazon S3) with strict permissions instead of storing uploads on the application server.",
+        "recommendations_es": "#### Recomendaciones a Corto Plazo\nImplementar una lista blanca estricta de extensiones de archivo y tipos MIME permitidos. Renombrar los archivos subidos a un nombre aleatorio y no ejecutable. #### Recomendaciones a Medio Plazo\nAlmacenar los archivos subidos en un directorio fuera de la raíz web y servirlos a través de un script que realice comprobaciones de autorización. Escanear los archivos subidos en busca de malware. #### Recomendaciones a Largo Plazo\nUtilizar un servicio de almacenamiento de archivos dedicado y aislado (como Amazon S3) con permisos estrictos en lugar de almacenar las subidas en el servidor de la aplicación.",
+        "affectedComponents_en": "### Affected Components\n- [TODO: Specify the file upload functionality and URL.]",
+        "details_en": "### Proof of Concept\n[TODO: Upload a simple web shell (e.g., `<?php system($_GET['cmd']); ?>`) and then access it via URL to execute a command like `id`.]",
+        "affectedComponents_es": "### Componentes Afectados\n- [TODO: Especificar la funcionalidad de subida de archivos y la URL.]",
+        "details_es": "### Prueba de Concepto\n[TODO: Subir una shell web simple (p. ej., `<?php system($_GET['cmd']); ?>`) y luego acceder a ella a través de la URL para ejecutar un comando como `id`.]",
+        "immediateActions_en": "### Immediate Actions\nImplement a strict allow-list for file extensions and MIME types on the server side. Do not rely on client-side validation.",
+        "immediateActions_es": "### Acciones Inmediatas\nImplementar una lista blanca estricta para las extensiones de archivo y los tipos MIME en el lado del servidor. No confiar en la validación del lado del cliente."
+      }
 ]
     
 
@@ -3267,3 +3325,6 @@ Además de los encabezados, usar scripts "frame-busting" como una medida de defe
 
     
 
+
+
+    
