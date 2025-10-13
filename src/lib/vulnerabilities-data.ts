@@ -938,7 +938,7 @@ Este problema ocurre cuando el binario de la aplicación móvil no está adecuad
         technicalDescription_en: `### Technical Description
 Mobile app binaries can be decompiled to reveal source code, hardcoded secrets, and business logic. An attacker can analyze this code to find other vulnerabilities, tamper with the app's logic (e.g., bypass security controls), or repackage the app with malicious code. Lack of protections includes no code obfuscation, no anti-tampering checks, and no root/jailbreak detection.`,
         technicalDescription_es: `### Descripción Técnica
-Los binarios de las aplicaciones móviles pueden ser descompilados para revelar el código fuente, los secretos codificados de forma rígida y la lógica de negocio. Un atacante puede analizar este código para encontrar otras vulnerabilidades, manipular la lógica de la aplicación (p. ej., eludir los controles de seguridad) o reempaquetar la aplicación con código malicioso. La falta de protecciones incluye la no ofuscación del código, la falta de comprobaciones anti-manipulación y la no detección de root/jailbreak.`,
+Los binarios de las aplicaciones móviles pueden ser descompilados para revelar el código fuente, los secretos codificados de forma rígida y la lógica de negocio. Un atacante puede analizar este código para encontrar otras vulnerabilities, manipular la lógica de la aplicación (p. ej., eludir los controles de seguridad) o reempaquetar la aplicación con código malicioso. La falta de protecciones incluye la no ofuscación del código, la falta de comprobaciones anti-manipulación y la no detección de root/jailbreak.`,
         impact_en: `### Impact
 Reverse engineering can lead to the discovery of other severe vulnerabilities, theft of intellectual property, and reputational damage. Tampering can lead to fraud, security control bypasses, and the distribution of malicious versions of the app.`,
         impact_es: `### Impacto
@@ -1468,10 +1468,10 @@ Un ataque RCE exitoso proporciona a un atacante el control total sobre el sistem
         tags: ["Infrastructure", "Web"],
         affectedComponents_en: `### Affected Components
 - [TODO: Specify the system and vulnerability that allows RCE.]`,
-        details_en: "### Proof of Concept\n[TODO: Provide the steps taken to achieve remote code execution and show the output of a command (e.g., `whoami`, `id`) running on the target server.]",
+        details_en: "### Proof of Concept\n[TODO: Provide the steps taken to achieve remote code execution and show the output of a command (e.g., \\`whoami\\`, \\`id\\`) running on the target server.]",
         affectedComponents_es: `### Componentes Afectados
 - [TODO: Especificar el sistema y la vulnerabilidad que permite la RCE.]`,
-        details_es: "### Prueba de Concepto\n[TODO: Proporcionar los pasos seguidos para lograr la ejecución remota de código y mostrar la salida de un comando (p. ej., `whoami`, `id`) ejecutándose en el servidor objetivo.]"
+        details_es: "### Prueba de Concepto\n[TODO: Proporcionar los pasos seguidos para lograr la ejecución remota de código y mostrar la salida de un comando (p. ej., \\`whoami\\`, \\`id\\`) ejecutándose en el servidor objetivo.]"
     },
     {
         id: "vuln-infra-005",
@@ -1871,4 +1871,3 @@ Un ataque RCE exitoso proporciona a un atacante el control total sobre el sistem
 [TODO: Proporcionar evidencia de un inicio de sesión exitoso utilizando credenciales que se sabe que provienen de una brecha de datos pública.]`
     }
 ]
-
