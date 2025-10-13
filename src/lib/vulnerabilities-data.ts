@@ -938,7 +938,7 @@ Este problema ocurre cuando el binario de la aplicación móvil no está adecuad
         technicalDescription_en: `### Technical Description
 Mobile app binaries can be decompiled to reveal source code, hardcoded secrets, and business logic. An attacker can analyze this code to find other vulnerabilities, tamper with the app's logic (e.g., bypass security controls), or repackage the app with malicious code. Lack of protections includes no code obfuscation, no anti-tampering checks, and no root/jailbreak detection.`,
         technicalDescription_es: `### Descripción Técnica
-Los binarios de las aplicaciones móviles pueden ser descompilados para revelar el código fuente, los secretos codificados de forma rígida y la lógica de negocio. Un atacante puede analizar este código para encontrar otras vulnerabilidades, manipular la lógica de la aplicación (p. ej., eludir los controles de seguridad) o reempaquetar la aplicación con código malicioso. La falta de protecciones incluye la no ofuscación del código, la falta de comprobaciones anti-manipulación y la no detección de root/jailbreak.`,
+Los binarios de las aplicaciones móviles pueden ser descompilados para revelar el código fuente, los secretos codificados de forma rígida y la lógica de negocio. Un atacante puede analizar este código para encontrar otras vulnerabilities, manipular la lógica de la aplicación (p. ej., eludir los controles de seguridad) o reempaquetar la aplicación con código malicioso. La falta de protecciones incluye la no ofuscación del código, la falta de comprobaciones anti-manipulación y la no detección de root/jailbreak.`,
         impact_en: `### Impact
 Reverse engineering can lead to the discovery of other severe vulnerabilities, theft of intellectual property, and reputational damage. Tampering can lead to fraud, security control bypasses, and the distribution of malicious versions of the app.`,
         impact_es: `### Impacto
@@ -1472,10 +1472,12 @@ Un ataque RCE exitoso proporciona a un atacante el control total sobre el sistem
         tags: ["Infrastructure", "Web"],
         affectedComponents_en: `### Affected Components
 - [TODO: Specify the system and vulnerability that allows RCE.]`,
-        details_en: "### Proof of Concept\n[TODO: Provide the steps taken to achieve remote code execution and show the output of a command (e.g., \\`whoami\\`, \\`id\\`) running on the target server.]",
+        details_en: `### Proof of Concept
+[TODO: Provide the steps taken to achieve remote code execution and show the output of a command (e.g., \`whoami\`, \`id\`) running on the target server.]`,
         affectedComponents_es: `### Componentes Afectados
 - [TODO: Especificar el sistema y la vulnerabilidad que permite la RCE.]`,
-        details_es: "### Prueba de Concepto\n[TODO: Proporcionar los pasos seguidos para lograr la ejecución remota de código y mostrar la salida de un comando (p. ej., \\`whoami\\`, \\`id\\`) ejecutándose en el servidor objetivo.]",
+        details_es: `### Prueba de Concepto
+[TODO: Proporcionar los pasos seguidos para lograr la ejecución remota de código y mostrar la salida de un comando (p. ej., \`whoami\`, \`id\`) ejecutándose en el servidor objetivo.]`,
         immediateActions_en: "### Immediate Actions\n[TODO: Add immediate actions in English]",
         immediateActions_es: "### Acciones Inmediatas\n[TODO: Añadir acciones inmediatas en español]",
     },
@@ -1803,7 +1805,6 @@ Un ataque RCE exitoso proporciona a un atacante el control total sobre el sistem
         immediateActions_en: "### Immediate Actions\n[TODO: Add immediate actions in English]",
         immediateActions_es: "### Acciones Inmediatas\n[TODO: Añadir acciones inmediatas en español]",
     },
-    // --- AUTHENTICATION VULNERABILITIES ---
     {
         id: "vuln-auth-001",
         title_en: "Weak Passwords",
@@ -1820,8 +1821,6 @@ La aplicación permite a los usuarios establecer contraseñas que son cortas, co
 Account takeover, leading to unauthorized access to sensitive data and functionality. If an administrative account is compromised, it could lead to full application control.`,
         impact_es: `### Impacto
 Toma de control de la cuenta, lo que conduce a un acceso no autorizado a datos y funcionalidades sensibles. Si se compromete una cuenta administrativa, podría llevar al control total de la aplicación.`,
-        immediateActions_en: "### Immediate Actions\nForce a password reset for all users and enforce a new, strong password policy upon their next login.",
-        immediateActions_es: "### Acciones Inmediatas\nForzar un restablecimiento de contraseña para todos los usuarios y hacer cumplir una nueva política de contraseñas seguras en su próximo inicio de sesión.",
         remediation_en: {
             shortTerm: "Enforce a strong password policy (e.g., minimum length of 12 characters, complexity requirements). Implement account lockout mechanisms after a certain number of failed login attempts.",
             mediumTerm: "Implement Multi-Factor Authentication (MFA) as the most effective control to mitigate the risk of weak passwords.",
@@ -1844,7 +1843,9 @@ Toma de control de la cuenta, lo que conduce a un acceso no autorizado a datos y
         affectedComponents_es: `### Componentes Afectados
 - Funcionalidad de registro de usuarios y cambio de contraseña.`,
         details_es: `### Prueba de Concepto
-[TODO: Proporcionar evidencia de poder establecer una contraseña débil (p. ej., 'password123') y autenticarse con éxito con ella.]`
+[TODO: Proporcionar evidencia de poder establecer una contraseña débil (p. ej., 'password123') y autenticarse con éxito con ella.]`,
+        immediateActions_en: "### Immediate Actions\nForce a password reset for all users and enforce a new, strong password policy upon their next login.",
+        immediateActions_es: "### Acciones Inmediatas\nForzar un restablecimiento de contraseña para todos los usuarios y hacer cumplir una nueva política de contraseñas seguras en su próximo inicio de sesión.",
     },
     {
         id: "vuln-auth-002",
@@ -1856,8 +1857,6 @@ Toma de control de la cuenta, lo que conduce a un acceso no autorizado a datos y
         technicalDescription_es: "### Descripción Técnica\nLos usuarios a menudo reutilizan la misma contraseña en múltiples servicios. Si uno de esos servicios sufre una brecha de datos y se filtran las credenciales, un atacante puede probar esas mismas credenciales (un ataque conocido como credential stuffing) en otros servicios, incluida la aplicación objetivo.",
         impact_en: "### Impact\nAn attacker can gain unauthorized access to user accounts without directly attacking the target application, leveraging breaches from entirely separate services.",
         impact_es: "### Impacto\nUn atacante puede obtener acceso no autorizado a las cuentas de los usuarios sin atacar directamente la aplicación objetivo, aprovechando las brechas de servicios completamente separados.",
-        immediateActions_en: "### Immediate Actions\nForce a password reset for any identified compromised accounts. Communicate to users the risk of password reuse.",
-        immediateActions_es: "### Acciones Inmediatas\nForzar un restablecimiento de contraseña para cualquier cuenta comprometida identificada. Comunicar a los usuarios el riesgo de la reutilización de contraseñas.",
         remediation_en: {
             shortTerm: "Implement rate limiting and account lockout mechanisms to slow down credential stuffing attacks. Check new passwords against a database of known breached passwords.",
             mediumTerm: "Implement Multi-Factor Authentication (MFA). This is the single most effective control against password reuse and credential stuffing.",
@@ -1880,7 +1879,9 @@ Toma de control de la cuenta, lo que conduce a un acceso no autorizado a datos y
         affectedComponents_es: `### Componentes Afectados
 - Todas las cuentas de usuario dentro de la aplicación.`,
         details_es: `### Prueba de Concepto
-[TODO: Proporcionar evidencia de un inicio de sesión exitoso utilizando credenciales que se sabe que provienen de una brecha de datos pública.]`
+[TODO: Proporcionar evidencia de un inicio de sesión exitoso utilizando credenciales que se sabe que provienen de una brecha de datos pública.]`,
+        immediateActions_en: "### Immediate Actions\nForce a password reset for any identified compromised accounts. Communicate to users the risk of password reuse.",
+        immediateActions_es: "### Acciones Inmediatas\nForzar un restablecimiento de contraseña para cualquier cuenta comprometida identificada. Comunicar a los usuarios el riesgo de la reutilización de contraseñas.",
     },
     {
         id: "vuln-auth-003",
@@ -1898,8 +1899,6 @@ El proceso de autenticación se basa únicamente en un solo factor (algo que el 
 Without MFA, compromised credentials (e.g., from phishing, password reuse, or brute-force attacks) directly lead to unauthorized account access.`,
         impact_es: `### Impacto
 Sin MFA, las credenciales comprometidas (p. ej., por phishing, reutilización de contraseñas o ataques de fuerza bruta) conducen directamente a un acceso no autorizado a la cuenta.`,
-        immediateActions_en: "### Immediate Actions\nPrioritize the implementation of MFA, especially for administrative or privileged accounts.",
-        immediateActions_es: "### Acciones Inmediatas\nPriorizar la implementación de MFA, especialmente para cuentas administrativas o con privilegios.",
         remediation_en: {
             shortTerm: "Implement support for Time-Based One-Time Password (TOTP) authenticator apps (like Google Authenticator or Authy) as a second factor.",
             mediumTerm: "Make MFA mandatory for all administrative and privileged users. Provide options for users to enable MFA for their own accounts.",
@@ -1922,7 +1921,9 @@ Sin MFA, las credenciales comprometidas (p. ej., por phishing, reutilización de
         affectedComponents_es: `### Componentes Afectados
 - Todo el flujo de autenticación de usuarios.`,
         details_es: `### Prueba de Concepto
-[TODO: Documentar que después de un inicio de sesión exitoso solo con contraseña, no se solicita un segundo factor, otorgando acceso completo.]`
+[TODO: Documentar que después de un inicio de sesión exitoso solo con contraseña, no se solicita un segundo factor, otorgando acceso completo.]`,
+        immediateActions_en: "### Immediate Actions\nPrioritize the implementation of MFA, especially for administrative or privileged accounts.",
+        immediateActions_es: "### Acciones Inmediatas\nPriorizar la implementación de MFA, especialmente para cuentas administrativas o con privilegios.",
     },
     {
         id: "vuln-auth-004",
@@ -1934,8 +1935,6 @@ Sin MFA, las credenciales comprometidas (p. ej., por phishing, reutilización de
         technicalDescription_es: "### Descripción Técnica\nEsto se puede lograr robando o prediciendo un token de sesión válido (cookie). Los vectores comunes incluyen la interceptación de tráfico no cifrado, vulnerabilidades XSS que permiten a un atacante robar cookies a través de JavaScript, o tokens de sesión expuestos en las URL. Luego, el atacante usa este token para hacerse pasar por el usuario legítimo.",
         impact_en: "### Impact\nThe attacker gains full access to the compromised user's account and can perform any action that the user is authorized to perform.",
         impact_es: "### Impacto\nEl atacante obtiene acceso completo a la cuenta del usuario comprometido y puede realizar cualquier acción que el usuario esté autorizado a realizar.",
-        immediateActions_en: "### Immediate Actions\nForce logout of all active sessions to invalidate existing session tokens.",
-        immediateActions_es: "### Acciones Inmediatas\nForzar el cierre de sesión de todas las sesiones activas para invalidar los tokens de sesión existentes.",
         remediation_en: {
             shortTerm: "Set the `HttpOnly` and `Secure` flags on all session cookies to prevent them from being accessed by client-side scripts or transmitted over unencrypted connections.",
             mediumTerm: "Implement a mechanism to regenerate the session ID after any privilege level change, such as login. Bind the session token to other user properties, like their IP address or User-Agent, to make hijacking more difficult.",
@@ -1958,7 +1957,9 @@ Sin MFA, las credenciales comprometidas (p. ej., por phishing, reutilización de
         affectedComponents_es: `### Componentes Afectados
 - El mecanismo de gestión de sesiones de la aplicación.`,
         details_es: `### Prueba de Concepto
-[TODO: Proporcionar una PoC que demuestre el robo de una cookie de sesión (p. ej., a través de XSS o sniffing de red) y su reutilización en un navegador diferente para acceder a la aplicación como el usuario víctima.]`
+[TODO: Proporcionar una PoC que demuestre el robo de una cookie de sesión (p. ej., a través de XSS o sniffing de red) y su reutilización en un navegador diferente para acceder a la aplicación como el usuario víctima.]`,
+        immediateActions_en: "### Immediate Actions\nForce logout of all active sessions to invalidate existing session tokens.",
+        immediateActions_es: "### Acciones Inmediatas\nForzar el cierre de sesión de todas las sesiones activas para invalidar los tokens de sesión existentes.",
     },
     {
         id: "vuln-auth-005",
@@ -1970,8 +1971,6 @@ Sin MFA, las credenciales comprometidas (p. ej., por phishing, reutilización de
         technicalDescription_es: "### Descripción Técnica\nEl atacante visita el sitio web para obtener un ID de sesión válido. Luego, engaña a la víctima para que se autentique con ese mismo ID de sesión (p. ej., enviándole un enlace con el ID de sesión en la URL: `http://ejemplo.com/login?SID=...`). Una vez que la víctima inicia sesión, la sesión se autentica y el atacante puede usar el ID de sesión fijado para acceder a la sesión de la víctima.",
         impact_en: "### Impact\nAllows an attacker to take over the victim's authenticated session, leading to unauthorized access and actions.",
         impact_es: "### Impacto\nPermite a un atacante apoderarse de la sesión autenticada de la víctima, lo que conduce a accesos y acciones no autorizadas.",
-        immediateActions_en: "### Immediate Actions\nForce logout of all active sessions to invalidate all current session tokens.",
-        immediateActions_es: "### Acciones Inmediatas\nForzar el cierre de sesión de todas las sesiones activas para invalidar todos los tokens de sesión actuales.",
         remediation_en: {
             shortTerm: "Regenerate the session ID immediately after a user successfully authenticates. Do not accept session identifiers from URL parameters.",
             mediumTerm: "Ensure the session management system creates a completely new session object, with a new ID, upon login.",
@@ -2000,26 +1999,20 @@ Sin MFA, las credenciales comprometidas (p. ej., por phishing, reutilización de
 1. El atacante visita el sitio y obtiene un ID de sesión.
 2. El atacante engaña a la víctima para que haga clic en un enlace con ese ID de sesión.
 3. La víctima inicia sesión.
-4. El atacante usa el mismo ID de sesión para acceder a la sesión autenticada de la víctima.`
+4. El atacante usa el mismo ID de sesión para acceder a la sesión autenticada de la víctima.`,
+        immediateActions_en: "### Immediate Actions\nForce logout of all active sessions to invalidate all current session tokens.",
+        immediateActions_es: "### Acciones Inmediatas\nForzar el cierre de sesión de todas las sesiones activas para invalidar todos los tokens de sesión actuales.",
     },
     {
         id: "vuln-auth-006",
         title_en: "Credential Stuffing",
         title_es: "Relleno de Credenciales",
-        overview_en: `### Overview
-Credential stuffing is an attack where an attacker uses lists of compromised user credentials (typically username/password pairs) from data breaches to gain unauthorized access to other systems.`,
-        overview_es: `### Resumen
-El relleno de credenciales es un ataque en el que un atacante utiliza listas de credenciales de usuario comprometidas (generalmente pares de nombre de usuario/contraseña) de brechas de datos para obtener acceso no autorizado a otros sistemas.`,
-        technicalDescription_en: `### Technical Description
-Attackers use automated bots to try large numbers of stolen credentials against the application's login page. The attack's success relies on the high probability that users reuse the same password across multiple online services.`,
-        technicalDescription_es: `### Descripción Técnica
-Los atacantes utilizan bots automatizados para probar una gran cantidad de credenciales robadas contra la página de inicio de sesión de la aplicación. El éxito del ataque se basa en la alta probabilidad de que los usuarios reutilicen la misma contraseña en múltiples servicios en línea.`,
-        impact_en: `### Impact
-Successful attacks lead to account takeovers, potentially on a massive scale, resulting in data breaches and fraudulent activity.`,
-        impact_es: `### Impacto
-Los ataques exitosos conducen a la toma de control de cuentas, potencialmente a gran escala, lo que resulta en brechas de datos y actividad fraudulenta.`,
-        immediateActions_en: "### Immediate Actions\nTemporarily block IP addresses with a high rate of failed login attempts. Force a password reset for any accounts that were successfully compromised.",
-        immediateActions_es: "### Acciones Inmediatas\nBloquear temporalmente las direcciones IP con una alta tasa de intentos de inicio de sesión fallidos. Forzar un restablecimiento de contraseña para cualquier cuenta que haya sido comprometida con éxito.",
+        overview_en: "### Overview\nCredential stuffing is an attack where an attacker uses lists of compromised user credentials (typically username/password pairs) from data breaches to gain unauthorized access to other systems.",
+        overview_es: "### Resumen\nEl relleno de credenciales es un ataque en el que un atacante utiliza listas de credenciales de usuario comprometidas (generalmente pares de nombre de usuario/contraseña) de brechas de datos para obtener acceso no autorizado a otros sistemas.",
+        technicalDescription_en: "### Technical Description\nAttackers use automated bots to try large numbers of stolen credentials against the application's login page. The attack's success relies on the high probability that users reuse the same password across multiple online services.",
+        technicalDescription_es: "### Descripción Técnica\nLos atacantes utilizan bots automatizados para probar una gran cantidad de credenciales robadas contra la página de inicio de sesión de la aplicación. El éxito del ataque se basa en la alta probabilidad de que los usuarios reutilicen la misma contraseña en múltiples servicios en línea.",
+        impact_en: "### Impact\nSuccessful attacks lead to account takeovers, potentially on a massive scale, resulting in data breaches and fraudulent activity.",
+        impact_es: "### Impacto\nLos ataques exitosos conducen a la toma de control de cuentas, potencialmente a gran escala, lo que resulta en brechas de datos y actividad fraudulenta.",
         remediation_en: {
             shortTerm: "Implement strong rate limiting and account lockout policies for login attempts. Use CAPTCHA to differentiate between human users and automated bots.",
             mediumTerm: "Implement Multi-Factor Authentication (MFA), which is the most effective defense against this type of attack.",
@@ -2042,7 +2035,9 @@ Los ataques exitosos conducen a la toma de control de cuentas, potencialmente a 
         affectedComponents_es: `### Componentes Afectados
 - El punto de conexión de inicio de sesión de la aplicación.`,
         details_es: `### Prueba de Concepto
-[TODO: Proporcionar registros o métricas que muestren un alto volumen de intentos de inicio de sesión fallidos desde direcciones IP específicas, lo que indica un ataque de relleno de credenciales.]`
+[TODO: Proporcionar registros o métricas que muestren un alto volumen de intentos de inicio de sesión fallidos desde direcciones IP específicas, lo que indica un ataque de relleno de credenciales.]`,
+        immediateActions_en: "### Immediate Actions\nTemporarily block IP addresses with a high rate of failed login attempts. Force a password reset for any accounts that were successfully compromised.",
+        immediateActions_es: "### Acciones Inmediatas\nBloquear temporalmente las direcciones IP con una alta tasa de intentos de inicio de sesión fallidos. Forzar un restablecimiento de contraseña para cualquier cuenta que haya sido comprometida con éxito.",
     },
     {
         id: "vuln-auth-007",
@@ -2058,8 +2053,6 @@ El mecanismo de recuperación de contraseña es débil, lo que permite a un atac
 An attacker can reset a victim's password and take over their account.`,
         impact_es: `### Impacto
 Un atacante puede restablecer la contraseña de una víctima y tomar el control de su cuenta.`,
-        immediateActions_en: "### Immediate Actions\nDisable the password recovery feature until it can be secured. Manually assist users who need to recover their accounts.",
-        immediateActions_es: "### Acciones Inmediatas\nDeshabilitar la función de recuperación de contraseña hasta que pueda ser asegurada. Ayudar manualmente a los usuarios que necesiten recuperar sus cuentas.",
         remediation_en: {
             shortTerm: "Ensure that password recovery tokens are long, random, single-use, and have a short expiration time. Send tokens via a secure channel (e.g., email) and do not leak them in URLs or headers.",
             mediumTerm: "Avoid using knowledge-based authentication (secret questions) as the sole recovery mechanism. Require users to verify their identity through a second factor (like a code to their phone) before allowing a password reset.",
@@ -2082,7 +2075,9 @@ Un atacante puede restablecer la contraseña de una víctima y tomar el control 
         affectedComponents_es: `### Componentes Afectados
 - La funcionalidad de recuperación/restablecimiento de contraseña.`,
         details_es: `### Prueba de Concepto
-[TODO: Proporcionar una PoC que demuestre la debilidad, como adivinar un token de recuperación, responder preguntas secretas débiles o mostrar una fuga de token.]`
+[TODO: Proporcionar una PoC que demuestre la debilidad, como adivinar un token de recuperación, responder preguntas secretas débiles o mostrar una fuga de token.]`,
+        immediateActions_en: "### Immediate Actions\nDisable the password recovery feature until it can be secured. Manually assist users who need to recover their accounts.",
+        immediateActions_es: "### Acciones Inmediatas\nDeshabilitar la función de recuperación de contraseña hasta que pueda ser asegurada. Ayudar manualmente a los usuarios que necesiten recuperar sus cuentas.",
     },
     {
         id: "vuln-auth-008",
@@ -2095,13 +2090,11 @@ La enumeración de usuarios es una vulnerabilidad en la que un atacante puede us
         technicalDescription_en: `### Technical Description
 The application provides different responses for valid and invalid usernames on pages like login, password reset, or registration. For example, a login page might respond with "Invalid password" for a valid user and "User not found" for an invalid one. This allows an attacker to build a list of valid usernames.`,
         technicalDescription_es: `### Descripción Técnica
-La aplicación proporciona diferentes respuestas para nombres de usuario válidos e inválidos en páginas como inicio de sesión, restablecimiento de contraseña o registro. Por ejemplo, una página de inicio de sesión podría responder con "Contraseña inválida" para un usuario válido y "Usuario no encontrado" para uno inválido. Esto permite a un atacante construir una lista de nombres de usuario válidos.`,
+La aplicación proporciona diferentes responses para nombres de usuario válidos e inválidos en páginas como inicio de sesión, restablecimiento de contraseña o registro. Por ejemplo, una página de inicio de sesión podría responder con "Contraseña inválida" para un usuario válido y "Usuario no encontrado" para uno inválido. Esto permite a un atacante construir una lista de nombres de usuario válidos.`,
         impact_en: `### Impact
 This information leak aids attackers by providing them with a list of valid targets for brute-force, phishing, or other account takeover attacks.`,
         impact_es: `### Impacto
 Esta fuga de información ayuda a los atacantes al proporcionarles una lista de objetivos válidos para ataques de fuerza bruta, phishing u otros ataques de toma de control de cuentas.`,
-        immediateActions_en: "### Immediate Actions\nImmediately change the response messages to be generic for all relevant functionalities.",
-        immediateActions_es: "### Acciones Inmediatas\nCambiar inmediatamente los mensajes de respuesta para que sean genéricos para todas las funcionalidades relevantes.",
         remediation_en: {
             shortTerm: "Ensure that all responses for login, password reset, and registration attempts are generic and identical, regardless of whether the username is valid or invalid (e.g., 'Invalid username or password').",
             mediumTerm: "Review all application endpoints to identify and remediate any other potential user enumeration vectors.",
@@ -2124,7 +2117,9 @@ Esta fuga de información ayuda a los atacantes al proporcionarles una lista de 
         affectedComponents_es: `### Componentes Afectados
 - Páginas de inicio de sesión, restablecimiento de contraseña y registro de usuarios.`,
         details_es: `### Prueba de Concepto
-[TODO: Proporcionar capturas de pantalla que muestren las diferentes respuestas de la aplicación para un nombre de usuario válido frente a un nombre de usuario inválido.]`
+[TODO: Proporcionar capturas de pantalla que muestren las diferentes respuestas de la aplicación para un nombre de usuario válido frente a un nombre de usuario inválido.]`,
+        immediateActions_en: "### Immediate Actions\nImmediately change the response messages to be generic for all relevant functionalities.",
+        immediateActions_es: "### Acciones Inmediatas\nCambiar inmediatamente los mensajes de respuesta para que sean genéricos para todas las funcionalidades relevantes.",
     },
     {
         id: "vuln-auth-009",
@@ -2142,8 +2137,6 @@ La aplicación puede generar tokens de sesión utilizando algoritmos no aleatori
 Weak session management can lead to session hijacking, allowing an attacker to impersonate a legitimate user and gain unauthorized access.`,
         impact_es: `### Impacto
 Una gestión de sesiones débil puede conducir al secuestro de sesiones, permitiendo a un atacante hacerse pasar por un usuario legítimo y obtener acceso no autorizado.`,
-        immediateActions_en: "### Immediate Actions\nForce a logout of all users to invalidate all existing session tokens. Immediately implement server-side session invalidation upon logout.",
-        immediateActions_es: "### Acciones Inmediatas\nForzar el cierre de sesión de todos los usuarios para invalidar todos los tokens de sesión existentes. Implementar inmediatamente la invalidación de sesión del lado del servidor al cerrar la sesión.",
         remediation_en: {
             shortTerm: "Use long, random, and unpredictable session identifiers. Ensure all session tokens are invalidated on the server upon logout and password reset.",
             mediumTerm: "Implement reasonable session timeout periods (both for inactivity and absolute duration). Regenerate session tokens upon any change in privilege level (e.g., authentication).",
@@ -2166,7 +2159,9 @@ Una gestión de sesiones débil puede conducir al secuestro de sesiones, permiti
         affectedComponents_es: `### Componentes Afectados
 - Todo el ciclo de vida de la gestión de sesiones de la aplicación.`,
         details_es: `### Prueba de Concepto
-[TODO: Proporcionar una PoC, como demostrar que un token de sesión es predecible, o que sigue siendo válido después de cerrar la sesión y puede ser reutilizado.]`
+[TODO: Proporcionar una PoC, como demostrar que un token de sesión es predecible, o que sigue siendo válido después de cerrar la sesión y puede ser reutilizado.]`,
+        immediateActions_en: "### Immediate Actions\nForce a logout of all users to invalidate all existing session tokens.",
+        immediateActions_es: "### Acciones Inmediatas\nForzar el cierre de sesión de todos los usuarios para invalidar todos los tokens de sesión existentes.",
     },
     {
         id: "vuln-auth-010",
@@ -2184,8 +2179,6 @@ La funcionalidad de inicio de sesión carece de mecanismos para prevenir intento
 A successful brute-force attack results in account takeover. Even if unsuccessful, it can lead to a denial of service by locking out legitimate users.`,
         impact_es: `### Impacto
 Un ataque de fuerza bruta exitoso resulta en la toma de control de la cuenta. Incluso si no tiene éxito, puede provocar una denegación de servicio al bloquear a los usuarios legítimos.`,
-        immediateActions_en: "### Immediate Actions\nImplement temporary IP-based blocking for addresses that generate a high rate of failed login attempts.",
-        immediateActions_es: "### Acciones Inmediatas\nImplementar un bloqueo temporal basado en IP para las direcciones que generan una alta tasa de intentos de inicio de sesión fallidos.",
         remediation_en: {
             shortTerm: "Implement strict rate limiting on login attempts per IP address and per user account.",
             mediumTerm: "Implement an account lockout policy that temporarily disables an account after a small number of consecutive failed login attempts (e.g., 5-10 attempts).",
@@ -2208,7 +2201,9 @@ Un ataque de fuerza bruta exitoso resulta en la toma de control de la cuenta. In
         affectedComponents_es: `### Componentes Afectados
 - La funcionalidad de inicio de sesión.`,
         details_es: `### Prueba de Concepto
-[TODO: Proporcionar evidencia de un ataque de fuerza bruta utilizando una herramienta como Hydra o Burp Intruder, demostrando que se puede intentar un gran número de contraseñas sin ser bloqueado.]`
+[TODO: Proporcionar evidencia de un ataque de fuerza bruta utilizando una herramienta como Hydra o Burp Intruder, demostrando que se puede intentar un gran número de contraseñas sin ser bloqueado.]`,
+        immediateActions_en: "### Immediate Actions\nImplement temporary IP-based blocking for addresses that generate a high rate of failed login attempts.",
+        immediateActions_es: "### Acciones Inmediatas\nImplementar un bloqueo temporal basado en IP para las direcciones que generan una alta tasa de intentos de inicio de sesión fallidos.",
     },
     {
         id: "vuln-auth-011",
@@ -2226,8 +2221,6 @@ La cuenta administrativa para <APPLICATION> está utilizando una contraseña pre
 Full compromise of the <APPLICATION> instance, which could lead to code execution on the server, data theft, or a pivot point into the internal network.`,
         impact_es: `### Impacto
 Compromiso total de la instancia de <APPLICATION>, lo que podría conducir a la ejecución de código en el servidor, robo de datos o un punto de pivote hacia la red interna.`,
-        immediateActions_en: "### Immediate Actions\nImmediately change the default or weak password for the administrative account of <APPLICATION> to a strong, unique password.",
-        immediateActions_es: "### Acciones Inmediatas\nCambiar inmediatamente la contraseña predeterminada o débil de la cuenta administrativa de <APPLICATION> por una contraseña segura y única.",
         remediation_en: {
             shortTerm: "Change the default administrative password to a strong, randomly generated password.",
             mediumTerm: "Restrict access to the administrative interface to trusted IP addresses or a VPN. Implement Multi-Factor Authentication (MFA) for the administrative account if supported.",
@@ -2250,7 +2243,9 @@ Compromiso total de la instancia de <APPLICATION>, lo que podría conducir a la 
         affectedComponents_es: `### Componentes Afectados
 - La página de inicio de sesión administrativa para <APPLICATION>.`,
         details_es: `### Prueba de Concepto
-[TODO: Proporcionar una captura de pantalla que muestre un inicio de sesión exitoso en el panel de administración de <APPLICATION> utilizando las credenciales débiles o predeterminadas.]`
+[TODO: Proporcionar una captura de pantalla que muestre un inicio de sesión exitoso en el panel de administración de <APPLICATION> utilizando las credenciales débiles o predeterminadas.]`,
+        immediateActions_en: "### Immediate Actions\nImmediately change the default or weak password for the administrative account of <APPLICATION>.",
+        immediateActions_es: "### Acciones Inmediatas\nCambiar inmediatamente la contraseña predeterminada o débil de la cuenta administrativa de <APPLICATION>.",
     },
     {
         id: "vuln-auth-012",
@@ -2268,8 +2263,6 @@ Una cuenta (p. ej., una cuenta de servicio para una aplicación web) es miembro 
 The compromise of a single over-privileged account can lead to the full compromise of the entire Active Directory domain.`,
         impact_es: `### Impacto
 El compromiso de una única cuenta con privilegios excesivos puede llevar al compromiso total de todo el dominio de Active Directory.`,
-        immediateActions_en: "### Immediate Actions\nImmediately remove the compromised or over-privileged account from the high-privilege group.",
-        immediateActions_es: "### Acciones Inmediatas\nEliminar inmediatamente la cuenta comprometida o con privilegios excesivos del grupo de altos privilegios.",
         remediation_en: {
             shortTerm: "Review the membership of all high-privilege Active Directory groups (e.g., Domain Admins, Enterprise Admins, Schema Admins) and remove any accounts that do not strictly require those privileges.",
             mediumTerm: "Implement the principle of least privilege for all user and service accounts. Grant permissions based on specific roles and responsibilities.",
@@ -2292,7 +2285,9 @@ El compromiso de una única cuenta con privilegios excesivos puede llevar al com
         affectedComponents_es: `### Componentes Afectados
 - La cuenta de usuario/servicio especificada y el grupo de AD de altos privilegios.`,
         details_es: `### Prueba de Concepto
-[TODO: Proporcionar una captura de pantalla de una herramienta como BloodHound o Usuarios y equipos de Active Directory que muestre la membresía de grupo con privilegios excesivos.]`
+[TODO: Proporcionar una captura de pantalla de una herramienta como BloodHound o Usuarios y equipos de Active Directory que muestre la membresía de grupo con privilegios excesivos.]`,
+        immediateActions_en: "### Immediate Actions\nImmediately remove the compromised or over-privileged account from the high-privilege group.",
+        immediateActions_es: "### Acciones Inmediatas\nEliminar inmediatamente la cuenta comprometida o con privilegios excesivos del grupo de altos privilegios.",
     },
     {
         id: "vuln-auth-013",
@@ -2310,8 +2305,6 @@ Los administradores a veces almacenan contraseñas o notas en el campo Descripci
 This leads to the direct compromise of credentials, which can be used to escalate privileges or move laterally within the network.`,
         impact_es: `### Impacto
 Esto conduce al compromiso directo de credenciales, que pueden ser utilizadas para escalar privilegios o moverse lateralmente dentro de la red.`,
-        immediateActions_en: "### Immediate Actions\nImmediately remove the password from the Description field and reset the password for the associated account.",
-        immediateActions_es: "### Acciones Inmediatas\nEliminar inmediatamente la contraseña del campo Descripción y restablecer la contraseña de la cuenta asociada.",
         remediation_en: {
             shortTerm: "Scan all user and computer account Description fields in Active Directory for passwords and other sensitive information and remove them.",
             mediumTerm: "Implement a secure secrets management solution (like a password vault) for storing service account passwords and other credentials.",
@@ -2334,7 +2327,9 @@ Esto conduce al compromiso directo de credenciales, que pueden ser utilizadas pa
         affectedComponents_es: `### Componentes Afectados
 - La cuenta de usuario/equipo de Active Directory especificada.`,
         details_es: `### Prueba de Concepto
-[TODO: Proporcionar una captura de pantalla de la ventana de propiedades del usuario/equipo de Active Directory que muestra la contraseña en el campo Descripción.]`
+[TODO: Proporcionar una captura de pantalla de la ventana de propiedades del usuario/equipo de Active Directory que muestra la contraseña en el campo Descripción.]`,
+        immediateActions_en: "### Immediate Actions\nImmediately remove the password from the Description field and reset the password for the associated account.",
+        immediateActions_es: "### Acciones Inmediatas\nEliminar inmediatamente la contraseña del campo Descripción y restablecer la contraseña de la cuenta asociada.",
     },
     // --- CRYPTOGRAPHY VULNERABILITIES ---
     {
@@ -2353,8 +2348,6 @@ La aplicación se basa en algoritmos como DES, 3DES, RC4, o algoritmos de hash c
 An attacker can decrypt sensitive data, forge digital signatures, or crack password hashes, leading to a loss of confidentiality and integrity.`,
         impact_es: `### Impacto
 Un atacante puede descifrar datos sensibles, falsificar firmas digitales o descifrar hashes de contraseñas, lo que conduce a una pérdida de confidencialidad e integridad.`,
-        immediateActions_en: "### Immediate Actions\nPrioritize the replacement of the weak cryptographic algorithms with modern, strong alternatives.",
-        immediateActions_es: "### Acciones Inmediatas\nPriorizar la sustitución de los algoritmos criptográficos débiles por alternativas modernas y fuertes.",
         remediation_en: {
             shortTerm: "Replace weak algorithms with strong, industry-standard alternatives. For symmetric encryption, use AES-256 (GCM mode is recommended). For hashing, use SHA-256 or stronger.",
             mediumTerm: "Establish a corporate policy defining approved cryptographic standards and algorithms. Create a centralized crypto library for developers to use.",
@@ -2377,7 +2370,9 @@ Un atacante puede descifrar datos sensibles, falsificar firmas digitales o desci
         affectedComponents_es: `### Componentes Afectados
 - [TODO: Especificar el componente o la sección de código que utiliza el algoritmo débil.]`,
         details_es: `### Prueba de Concepto
-[TODO: Proporcionar fragmentos de código o archivos de configuración que muestren el uso de un algoritmo débil (p. ej., 'Cipher.getInstance("DES")').]`
+[TODO: Proporcionar fragmentos de código o archivos de configuración que muestren el uso de un algoritmo débil (p. ej., 'Cipher.getInstance("DES")').]`,
+        immediateActions_en: "### Immediate Actions\nPrioritize the replacement of the weak cryptographic algorithms with modern, strong alternatives.",
+        immediateActions_es: "### Acciones Inmediatas\nPriorizar la sustitución de los algoritmos criptográficos débiles por alternativas modernas y fuertes.",
     },
     {
         id: "vuln-crypto-002",
@@ -2395,8 +2390,6 @@ Esto incluye problemas como codificar claves de cifrado en el código fuente, al
 If an attacker can obtain the cryptographic keys, they can decrypt all data protected by those keys, defeating the purpose of encryption entirely.`,
         impact_es: `### Impacto
 Si un atacante puede obtener las claves criptográficas, puede descifrar todos los datos protegidos por esas claves, anulando por completo el propósito del cifrado.`,
-        immediateActions_en: "### Immediate Actions\nImmediately rotate any compromised or insecurely stored keys. Remove keys from source code or configuration files.",
-        immediateActions_es: "### Acciones Inmediatas\nRotar inmediatamente cualquier clave comprometida o almacenada de forma insegura. Eliminar las claves del código fuente o de los archivos de configuración.",
         remediation_en: {
             shortTerm: "Store all cryptographic keys in a secure secrets management system, such as a hardware security module (HSM) or a cloud-based key vault (e.g., AWS KMS, Azure Key Vault, Google Cloud KMS).",
             mediumTerm: "Establish a key management policy that defines key generation standards, rotation periods, and access control procedures.",
@@ -2419,7 +2412,9 @@ Si un atacante puede obtener las claves criptográficas, puede descifrar todos l
         affectedComponents_es: `### Componentes Afectados
 - [TODO: Especificar dónde se almacena o gestiona la clave de forma insegura.]`,
         details_es: `### Prueba de Concepto
-[TODO: Proporcionar un fragmento de código que muestre una clave codificada, o una captura de pantalla de un archivo de configuración que contenga una clave.]`
+[TODO: Proporcionar un fragmento de código que muestre una clave codificada, o una captura de pantalla de un archivo de configuración que contenga una clave.]`,
+        immediateActions_en: "### Immediate Actions\nImmediately rotate any compromised or insecurely stored keys. Remove keys from source code or configuration files.",
+        immediateActions_es: "### Acciones Inmediatas\nRotar inmediatamente cualquier clave comprometida o almacenada de forma insegura. Eliminar las claves del código fuente o de los archivos de configuración.",
     },
     {
         id: "vuln-crypto-003",
@@ -2437,8 +2432,6 @@ Los secretos se incrustan directamente como literales de cadena en el código fu
 Leads to the compromise of the hardcoded secret, which can grant an attacker access to databases, third-party services, or other sensitive systems.`,
         impact_es: `### Impacto
 Conduce al compromiso del secreto codificado, lo que puede otorgar a un atacante acceso a bases de datos, servicios de terceros u otros sistemas sensibles.`,
-        immediateActions_en: "### Immediate Actions\nImmediately revoke the hardcoded secret and generate a new one. Remove the secret from the source code and commit history.",
-        immediateActions_es: "### Acciones Inmediatas\nRevocar inmediatamente el secreto codificado y generar uno nuevo. Eliminar el secreto del código fuente y del historial de commits.",
         remediation_en: {
             shortTerm: "Remove all hardcoded secrets from the code and configuration files. Store them securely in a secrets management system (e.g., HashiCorp Vault, AWS Secrets Manager).",
             mediumTerm: "Use environment variables or a secure configuration service to inject secrets into the application at runtime. Never commit secrets to source control.",
@@ -2461,7 +2454,9 @@ Conduce al compromiso del secreto codificado, lo que puede otorgar a un atacante
         affectedComponents_es: `### Componentes Afectados
 - [TODO: Especificar el archivo y el número de línea donde está codificado el secreto.]`,
         details_es: `### Prueba de Concepto
-[TODO: Proporcionar una captura de pantalla o un fragmento de código que muestre el secreto codificado.]`
+[TODO: Proporcionar una captura de pantalla o un fragmento de código que muestre el secreto codificado.]`,
+        immediateActions_en: "### Immediate Actions\nImmediately revoke the hardcoded secret and generate a new one. Remove the secret from the source code and commit history.",
+        immediateActions_es: "### Acciones Inmediatas\nRevocar inmediatamente el secreto codificado y generar uno nuevo. Eliminar el secreto del código fuente y del historial de commits.",
     },
     {
         id: "vuln-crypto-004",
@@ -2479,8 +2474,6 @@ El generador de números aleatorios utilizado por la aplicación no es criptogr�
 Allows an attacker to predict supposedly random values, which can lead to session hijacking, CSRF token bypass, or the compromise of cryptographic keys.`,
         impact_es: `### Impacto
 Permite a un atacante predecir valores supuestamente aleatorios, lo que puede conducir al secuestro de sesiones, la omisión de tokens CSRF o el compromiso de claves criptográficas.`,
-        immediateActions_en: "### Immediate Actions\nReplace all uses of weak random number generators with cryptographically secure ones.",
-        immediateActions_es: "### Acciones Inmediatas\nReemplazar todos los usos de generadores de números aleatorios débiles por otros criptográficamente seguros.",
         remediation_en: {
             shortTerm: "Use a cryptographically secure pseudo-random number generator (CSPRNG) provided by the operating system or a trusted library for all security-sensitive values (e.g., `/dev/urandom` on Linux, `crypto.randomBytes` in Node.js).",
             mediumTerm: "Review all code to ensure that no weak PRNGs (like `Math.random()` or `rand()`) are used for generating session tokens, keys, salts, or other cryptographic material.",
@@ -2503,7 +2496,9 @@ Permite a un atacante predecir valores supuestamente aleatorios, lo que puede co
         affectedComponents_es: `### Componentes Afectados
 - [TODO: Especificar la funcionalidad que utiliza un generador de números aleatorios débil.]`,
         details_es: `### Prueba de Concepto
-[TODO: Proporcionar una secuencia de tokens generados y demostrar su previsibilidad, o mostrar el código que utiliza una función PRNG débil.]`
+[TODO: Proporcionar una secuencia de tokens generados y demostrar su previsibilidad, o mostrar el código que utiliza una función PRNG débil.]`,
+        immediateActions_en: "### Immediate Actions\nReplace all uses of weak random number generators with cryptographically secure ones.",
+        immediateActions_es: "### Acciones Inmediatas\nReemplazar todos los usos de generadores de números aleatorios débiles por otros criptográficamente seguros.",
     },
     {
         id: "vuln-crypto-005",
@@ -2516,13 +2511,11 @@ Un ataque de oráculo de relleno es un ataque que utiliza la validación del rel
         technicalDescription_en: `### Technical Description
 When a server decrypts ciphertext, it first checks the padding. If the padding is invalid, it often returns a specific error message. An attacker can repeatedly send modified ciphertext to the server and observe whether the server's response indicates a padding error. By analyzing these responses, the attacker can decrypt the message byte by byte without knowing the encryption key.`,
         technicalDescription_es: `### Descripción Técnica
-Cuando un servidor descifra un texto cifrado, primero comprueba el relleno. Si el relleno no es válido, a menudo devuelve un mensaje de error específico. Un atacante puede enviar repetidamente texto cifrado modificado al servidor y observar si la respuesta del servidor indica un error de relleno. Al analizar estas respuestas, el atacante puede descifrar el mensaje byte por byte sin conocer la clave de cifrado.`,
+Cuando un servidor descifra un texto cifrado, primero comprueba el relleno. Si el relleno no es válido, a menudo devuelve un mensaje de error específico. Un atacante puede enviar repetidamente texto cifrado modificado al servidor y observar si la respuesta del servidor indica un error de relleno. Al analizar estas responses, el atacante puede descifrar el mensaje byte por byte sin conocer la clave de cifrado.`,
         impact_en: `### Impact
 Allows an attacker to decrypt sensitive data that was encrypted, such as session cookies or other confidential information.`,
         impact_es: `### Impacto
 Permite a un atacante descifrar datos sensibles que fueron cifrados, como cookies de sesión u otra información confidencial.`,
-        immediateActions_en: "### Immediate Actions\nSwitch from a vulnerable cipher mode like CBC to an authenticated encryption mode like GCM or CCM.",
-        immediateActions_es: "### Acciones Inmediatas\nCambiar de un modo de cifrado vulnerable como CBC a un modo de cifrado autenticado como GCM o CCM.",
         remediation_en: {
             shortTerm: "Ensure that the application returns a generic error message regardless of whether the failure was due to invalid padding, incorrect MAC, or other decryption errors. Do not leak information through error messages.",
             mediumTerm: "Use an authenticated encryption mode (AEAD) such as AES-GCM or ChaCha20-Poly1305. These modes combine encryption and authentication, which inherently protects against padding oracle attacks.",
@@ -2545,7 +2538,9 @@ Permite a un atacante descifrar datos sensibles que fueron cifrados, como cookie
         affectedComponents_es: `### Componentes Afectados
 - [TODO: Especificar la funcionalidad que descifra los datos proporcionados por el usuario.]`,
         details_es: `### Prueba de Concepto
-[TODO: Proporcionar una demostración utilizando una herramienta como PadBuster para descifrar una cookie o un parámetro cifrado.]`
+[TODO: Proporcionar una demostración utilizando una herramienta como PadBuster para descifrar una cookie o un parámetro cifrado.]`,
+        immediateActions_en: "### Immediate Actions\nSwitch from a vulnerable cipher mode like CBC to an authenticated encryption mode like GCM or CCM.",
+        immediateActions_es: "### Acciones Inmediatas\nCambiar de un modo de cifrado vulnerable como CBC a un modo de cifrado autenticado como GCM o CCM.",
     },
     // Add all other vulnerabilities here in the same format
     {
@@ -2564,8 +2559,6 @@ La aplicación utiliza generadores de números pseudoaleatorios (PRNG) no cripto
 Allows an attacker to predict supposedly random values, which can lead to session hijacking, CSRF token bypass, or the compromise of cryptographic keys.`,
         impact_es: `### Impacto
 Permite a un atacante predecir valores supuestamente aleatorios, lo que puede conducir al secuestro de sesiones, la omisión de tokens CSRF o el compromiso de claves criptográficas.`,
-        immediateActions_en: "### Immediate Actions\nReplace all instances of weak random number generators with their cryptographically secure counterparts.",
-        immediateActions_es: "### Acciones Inmediatas\nReemplazar todas las instancias de generadores de números aleatorios débiles por sus contrapartes criptográficamente seguras.",
         remediation_en: {
             shortTerm: "Use a cryptographically secure pseudo-random number generator (CSPRNG) for all security-sensitive contexts. Most modern languages and platforms provide one (e.g., `crypto.randomBytes()` in Node.js, `secrets` module in Python).",
             mediumTerm: "Review all code to identify and replace any use of weak PRNGs for generating keys, tokens, salts, or IVs.",
@@ -2588,7 +2581,9 @@ Permite a un atacante predecir valores supuestamente aleatorios, lo que puede co
         affectedComponents_es: `### Componentes Afectados
 - [TODO: Especificar la funcionalidad que utiliza un generador de números aleatorios débil.]`,
         details_es: `### Prueba de Concepto
-[TODO: Mostrar el código que utiliza una función PRNG débil (p. ej., Math.random()) para un propósito sensible a la seguridad.]`
+[TODO: Mostrar el código que utiliza una función PRNG débil (p. ej., Math.random()) para un propósito sensible a la seguridad.]`,
+        immediateActions_en: "### Immediate Actions\nReplace all instances of weak random number generators with their cryptographically secure counterparts.",
+        immediateActions_es: "### Acciones Inmediatas\nReemplazar todas las instancias de generadores de números aleatorios débiles por sus contrapartes criptográficamente seguras.",
     },
     {
         id: "vuln-crypto-007",
@@ -2606,8 +2601,6 @@ Esta es una categoría amplia que incluye problemas como usar cifrado sin autent
 The entire security feature can be bypassed, leading to the same impact as if no cryptography was used at all. This can result in data compromise, authentication bypass, and other critical failures.`,
         impact_es: `### Impacto
 La característica de seguridad completa puede ser eludida, lo que conduce al mismo impacto que si no se hubiera utilizado criptografía en absoluto. Esto puede resultar en el compromiso de datos, la omisión de la autenticación y otros fallos críticos.`,
-        immediateActions_en: "### Immediate Actions\nConduct a thorough design review of the flawed security feature with a cryptography expert.",
-        immediateActions_es: "### Acciones Inmediatas\nRealizar una revisión de diseño exhaustiva de la característica de seguridad defectuosa con un experto en criptografía.",
         remediation_en: {
             shortTerm: "Redesign the flawed security feature based on well-vetted, standard security patterns. For example, use HMAC to add authentication to encrypted data.",
             mediumTerm: "Avoid designing custom cryptographic protocols. Rely on established standards like TLS, JWT, and SAML.",
@@ -2630,7 +2623,9 @@ La característica de seguridad completa puede ser eludida, lo que conduce al mi
         affectedComponents_es: `### Componentes Afectados
 - [TODO: Describir la característica de seguridad con el defecto de diseño.]`,
         details_es: `### Prueba de Concepto
-[TODO: Proporcionar una demostración paso a paso de cómo eludir la característica de seguridad defectuosa.]`
+[TODO: Proporcionar una demostración paso a paso de cómo eludir la característica de seguridad defectuosa.]`,
+        immediateActions_en: "### Immediate Actions\nConduct a thorough design review of the flawed security feature with a cryptography expert.",
+        immediateActions_es: "### Acciones Inmediatas\nRealizar una revisión de diseño exhaustiva de la característica de seguridad defectuosa con un experto en criptografía.",
     },
     {
         id: "vuln-crypto-008",
@@ -2648,8 +2643,6 @@ La información puede filtrarse a través de la información de tiempo, el consu
 Side-channel attacks can be used to extract cryptographic keys or decrypt data, completely undermining the security of the cryptographic system.`,
         impact_es: `### Impacto
 Los ataques de canal lateral se pueden utilizar para extraer claves criptográficas o descifrar datos, socavando por completo la seguridad del sistema criptográfico.`,
-        immediateActions_en: "### Immediate Actions\nImplement constant-time operations for all cryptographic comparisons and processing to prevent timing-based side channels.",
-        immediateActions_es: "### Acciones Inmediatas\nImplementar operaciones de tiempo constante para todas las comparaciones y procesamientos criptográficos para prevenir los canales laterales basados en el tiempo.",
         remediation_en: {
             shortTerm: "Ensure that all cryptographic operations are performed in constant time, meaning they take the same amount of time regardless of the input data. Use safe string comparison functions instead of `==` for secrets.",
             mediumTerm: "Use cryptographic libraries that are specifically designed to be resistant to side-channel attacks.",
@@ -2672,7 +2665,9 @@ Los ataques de canal lateral se pueden utilizar para extraer claves criptográfi
         affectedComponents_es: `### Componentes Afectados
 - [TODO: Especificar la operación criptográfica que es vulnerable a un ataque de canal lateral.]`,
         details_es: `### Prueba de Concepto
-[TODO: Proporcionar datos que muestren las diferencias de tiempo u otra información filtrada que permita a un atacante inferir datos secretos.]`
+[TODO: Proporcionar datos que muestren las diferencias de tiempo u otra información filtrada que permita a un atacante inferir datos secretos.]`,
+        immediateActions_en: "### Immediate Actions\nImplement constant-time operations for all cryptographic comparisons and processing to prevent timing-based side channels.",
+        immediateActions_es: "### Acciones Inmediatas\nImplementar operaciones de tiempo constante para todas las comparaciones y procesamientos criptográficos para prevenir los canales laterales basados en el tiempo.",
     },
     {
         id: "vuln-crypto-009",
@@ -2690,8 +2685,6 @@ La aplicación cliente está configurada para confiar en cualquier certificado S
 An attacker can intercept, read, and modify all data transmitted between the client and the server, including credentials and sensitive information.`,
         impact_es: `### Impacto
 Un atacante puede interceptar, leer y modificar todos los datos transmitidos entre el cliente y el servidor, incluidas las credenciales y la información sensible.`,
-        immediateActions_en: "### Immediate Actions\nEnforce strict TLS certificate validation in the client application immediately.",
-        immediateActions_es: "### Acciones Inmediatas\nHacer cumplir inmediatamente la validación estricta de certificados TLS en la aplicación cliente.",
         remediation_en: {
             shortTerm: "Ensure that the client application always validates the server's certificate against the device's trusted root CAs and checks that the certificate's hostname matches the server's domain.",
             mediumTerm: "Implement certificate pinning, where the application is hardcoded to only trust a specific server certificate or public key. This provides protection even if the device's trust store is compromised.",
@@ -2714,7 +2707,9 @@ Un atacante puede interceptar, leer y modificar todos los datos transmitidos ent
         affectedComponents_es: `### Componentes Afectados
 - El código de manejo de TLS/SSL de la aplicación cliente.`,
         details_es: `### Prueba de Concepto
-[TODO: Proporcionar una PoC utilizando una herramienta de proxy como Burp o mitmproxy para interceptar el tráfico de la aplicación presentando un certificado autofirmado.]`
+[TODO: Proporcionar una PoC utilizando una herramienta de proxy como Burp o mitmproxy para interceptar el tráfico de la aplicación presentando un certificado autofirmado.]`,
+        immediateActions_en: "### Immediate Actions\nEnforce strict TLS certificate validation in the client application immediately.",
+        immediateActions_es: "### Acciones Inmediatas\nHacer cumplir inmediatamente la validación estricta de certificados TLS en la aplicación cliente.",
     },
     {
         id: "vuln-crypto-010",
@@ -2732,8 +2727,6 @@ El servidor admite protocolos débiles como SSLv2, SSLv3 o TLS temprano (1.0, 1.
 An attacker can perform a man-in-the-middle attack to downgrade the connection to a weak protocol/cipher and then decrypt the intercepted traffic, compromising sensitive data.`,
         impact_es: `### Impacto
 Un atacante puede realizar un ataque de intermediario (man-in-the-middle) para degradar la conexión a un protocolo/cifrado débil y luego descifrar el tráfico interceptado, comprometiendo datos sensibles.`,
-        immediateActions_en: "### Immediate Actions\nImmediately disable support for all SSL versions and TLS 1.0/1.1 on the server. Disable all known weak cipher suites.",
-        immediateActions_es: "### Acciones Inmediatas\nDeshabilitar inmediatamente el soporte para todas las versiones de SSL y TLS 1.0/1.1 en el servidor. Deshabilitar todos los conjuntos de cifrado débiles conocidos.",
         remediation_en: {
             shortTerm: "Configure the server to only support TLS 1.2 and TLS 1.3 with a strong, modern set of cipher suites that provide forward secrecy.",
             mediumTerm: "Implement HTTP Strict Transport Security (HSTS) to ensure browsers only connect to the server over a secure connection.",
@@ -2751,55 +2744,45 @@ Un atacante puede realizar un ataque de intermediario (man-in-the-middle) para d
         tags: ["Cryptography", "Network", "Infrastructure"],
         affectedComponents_en: `### Affected Components
 - The SSL/TLS configuration of the web server or other network services.`,
-        details_en: `### Proof of Concept
-[TODO: Provide a report from a tool like SSL Labs or nmap's ssl-enum-ciphers script showing the support for weak protocols or ciphers.]`,
+        details_en: "### Proof of Concept\n[TODO: Provide a report from a tool like SSL Labs or nmap's ssl-enum-ciphers script showing the support for weak protocols or ciphers.]",
         affectedComponents_es: `### Componentes Afectados
 - La configuración SSL/TLS del servidor web u otros servicios de red.`,
         details_es: `### Prueba de Concepto
-[TODO: Proporcionar un informe de una herramienta como SSL Labs o el script ssl-enum-ciphers de nmap que muestre el soporte para protocolos o cifrados débiles.]`
+[TODO: Proporcionar un informe de una herramienta como SSL Labs o el script ssl-enum-ciphers de nmap que muestre el soporte para protocolos o cifrados débiles.]`,
+        immediateActions_en: "### Immediate Actions\nImmediately disable support for all SSL versions and TLS 1.0/1.1 on the server. Disable all known weak cipher suites.",
+        immediateActions_es: "### Acciones Inmediatas\nDeshabilitar inmediatamente el soporte para todas las versiones de SSL y TLS 1.0/1.1 en el servidor. Deshabilitar todos los conjuntos de cifrado débiles conocidos.",
     },
-    // --- ADDITIONAL VULNERABILITIES ---
     {
-        id: "vuln-add-001",
-        title_en: "Buffer Overflow",
-        title_es: "Desbordamiento de Búfer",
-        overview_en: `### Overview
-A buffer overflow is an anomaly where a program, while writing data to a buffer, overruns the buffer's boundary and overwrites adjacent memory locations.`,
-        overview_es: `### Resumen
-Un desbordamiento de búfer es una anomalía en la que un programa, al escribir datos en un búfer, sobrepasa el límite del búfer y sobrescribe las ubicaciones de memoria adyacentes.`,
-        technicalDescription_en: `### Technical Description
-This vulnerability is caused by functions that do not perform bounds checking, such as \`gets()\`, \`strcpy()\`, and \`sprintf()\`. An attacker can provide an input string that is larger than the buffer, overwriting the stack. This can be used to overwrite the return address of a function, allowing the attacker to redirect execution to their own malicious code (shellcode).`,
-        technicalDescription_es: `### Descripción Técnica
-Esta vulnerabilidad es causada por funciones que no realizan comprobación de límites, como \`gets()\`, \`strcpy()\` y \`sprintf()\`. Un atacante puede proporcionar una cadena de entrada que es más grande que el búfer, sobrescribiendo la pila. Esto se puede utilizar para sobrescribir la dirección de retorno de una función, permitiendo al atacante redirigir la ejecución a su propio código malicioso (shellcode).`,
-        impact_en: `### Impact
-A successful buffer overflow attack can lead to arbitrary code execution with the privileges of the vulnerable program, or a denial-of-service by crashing the application.`,
-        impact_es: `### Impacto
-Un ataque de desbordamiento de búfer exitoso puede conducir a la ejecución de código arbitrario con los privilegios del programa vulnerable, o a una denegación de servicio al hacer que la aplicación se bloquee.`,
-        immediateActions_en: "### Immediate Actions\nIf possible, immediately disable the vulnerable functionality or apply a temporary filter to block overly long inputs.",
-        immediateActions_es: "### Acciones Inmediatas\nSi es posible, deshabilitar inmediatamente la funcionalidad vulnerable o aplicar un filtro temporal para bloquear las entradas demasiado largas.",
+        id: 'vuln-add-001',
+        title_en: 'Buffer Overflow',
+        title_es: 'Desbordamiento de Búfer',
+        overview_en: '### Overview\nA buffer overflow is an anomaly where a program, while writing data to a buffer, overruns the buffer\'s boundary and overwrites adjacent memory locations.',
+        overview_es: '### Resumen\nUn desbordamiento de búfer es una anomalía en la que un programa, al escribir datos en un búfer, sobrepasa el límite del búfer y sobrescribe las ubicaciones de memoria adyacentes.',
+        technicalDescription_en: '### Technical Description\nThis vulnerability is caused by functions that do not perform bounds checking, such as `gets()`, `strcpy()`, and `sprintf()`. An attacker can provide an input string that is larger than the buffer, overwriting the stack. This can be used to overwrite the return address of a function, allowing the attacker to redirect execution to their own malicious code (shellcode).',
+        technicalDescription_es: '### Descripción Técnica\nEsta vulnerabilidad es causada por funciones que no realizan comprobación de límites, como `gets()`, `strcpy()` y `sprintf()`. Un atacante puede proporcionar una cadena de entrada que es más grande que el búfer, sobrescribiendo la pila. Esto se puede utilizar para sobrescribir la dirección de retorno de una función, permitiendo al atacante redirigir la ejecución a su propio código malicioso (shellcode).',
+        impact_en: '### Impact\nA successful buffer overflow attack can lead to arbitrary code execution with the privileges of the vulnerable program, or a denial-of-service by crashing the application.',
+        impact_es: '### Impacto\nUn ataque de desbordamiento de búfer exitoso puede conducir a la ejecución de código arbitrario con los privilegios del programa vulnerable, o a una denegación de servicio al hacer que la aplicación se bloquee.',
         remediation_en: {
-            shortTerm: "Replace all unsafe functions (like `strcpy`) with their safer, bounds-checking counterparts (like `strncpy`). Recompile the application with modern compiler protections like Stack Canaries, ASLR, and DEP/NX.",
-            mediumTerm: "Conduct a full source code review to identify and eliminate all potential buffer overflow vulnerabilities.",
-            longTerm: "Train developers in secure coding practices, specifically focusing on memory management and input validation. Use static analysis (SAST) tools to automatically detect these flaws during development."
+            shortTerm: 'Replace all unsafe functions (like `strcpy`) with their safer, bounds-checking counterparts (like `strncpy`). Recompile the application with modern compiler protections like Stack Canaries, ASLR, and DEP/NX.',
+            mediumTerm: 'Conduct a full source code review to identify and eliminate all potential buffer overflow vulnerabilities.',
+            longTerm: 'Train developers in secure coding practices, specifically focusing on memory management and input validation. Use static analysis (SAST) tools to automatically detect these flaws during development.'
         },
         remediation_es: {
-            shortTerm: "Reemplazar todas las funciones inseguras (como `strcpy`) por sus contrapartes más seguras que comprueban los límites (como `strncpy`). Recompilar la aplicación con protecciones de compilador modernas como Stack Canaries, ASLR y DEP/NX.",
-            mediumTerm: "Realizar una revisión completa del código fuente para identificar y eliminar todas las posibles vulnerabilidades de desbordamiento de búfer.",
-            longTerm: "Capacitar a los desarrolladores en prácticas de codificación segura, centrándose específicamente en la gestión de la memoria y la validación de entradas. Usar herramientas de análisis estático (SAST) para detectar automáticamente estos fallos durante el desarrollo."
+            shortTerm: 'Reemplazar todas las funciones inseguras (como `strcpy`) por sus contrapartes más seguras que comprueban los límites (como `strncpy`). Recompilar la aplicación con protecciones de compilador modernas como Stack Canaries, ASLR y DEP/NX.',
+            mediumTerm: 'Realizar una revisión completa del código fuente para identificar y eliminar todas las posibles vulnerabilidades de desbordamiento de búfer.',
+            longTerm: 'Capacitar a los desarrolladores en prácticas de codificación segura, centrándose específicamente en la gestión de la memoria y la validación de entradas. Usar herramientas de análisis estático (SAST) para detectar automáticamente estos fallos durante el desarrollo.'
         },
-        cwe: "CWE-120",
-        severity: "Critical",
-        cvss: { score: 9.8, vectorString: "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:H/I:H/A:H", attackVector: "N", attackComplexity: "L", privilegesRequired: "N", userInteraction: "N", scope: "U", confidentiality: "H", integrity: "H", availability: "H" },
-        references: ["https://owasp.org/www-community/vulnerabilities/Buffer_Overflow"],
-        tags: ["Additional"],
-        affectedComponents_en: `### Affected Components
-- [TODO: Specify the vulnerable function and the input parameter that can be overflowed.]`,
-        details_en: `### Proof of Concept
-[TODO: Provide a script or payload that causes the buffer overflow and demonstrates code execution or a crash.]`,
-        affectedComponents_es: `### Componentes Afectados
-- [TODO: Especificar la función vulnerable y el parámetro de entrada que se puede desbordar.]`,
-        details_es: `### Prueba de Concepto
-[TODO: Proporcionar un script o una carga útil que cause el desbordamiento del búfer y demuestre la ejecución de código o un bloqueo.]`
+        cwe: 'CWE-120',
+        severity: 'Critical',
+        cvss: { score: 9.8, vectorString: 'CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:H/I:H/A:H', attackVector: 'N', attackComplexity: 'L', privilegesRequired: 'N', userInteraction: 'N', scope: 'U', confidentiality: 'H', integrity: 'H', availability: 'H' },
+        references: ['https://owasp.org/www-community/vulnerabilities/Buffer_Overflow'],
+        tags: ['Additional'],
+        affectedComponents_en: '### Affected Components\n- [TODO: Specify the vulnerable function and the input parameter that can be overflowed.]',
+        details_en: '### Proof of Concept\n[TODO: Provide a script or payload that causes the buffer overflow and demonstrates code execution or a crash.]',
+        affectedComponents_es: '### Componentes Afectados\n- [TODO: Especificar la función vulnerable y el parámetro de entrada que se puede desbordar.]',
+        details_es: '### Prueba de Concepto\n[TODO: Proporcionar un script o una carga útil que cause el desbordamiento del búfer y demuestre la ejecución de código o un bloqueo.]',
+        immediateActions_en: '### Immediate Actions\nIf possible, immediately disable the vulnerable functionality or apply a temporary filter to block overly long inputs.',
+        immediateActions_es: '### Acciones Inmediatas\nSi es posible, deshabilitar inmediatamente la funcionalidad vulnerable o aplicar un filtro temporal para bloquear las entradas demasiado largas.',
     },
     {
         id: 'vuln-add-002',
@@ -2811,8 +2794,6 @@ Un ataque de desbordamiento de búfer exitoso puede conducir a la ejecución de 
         technicalDescription_es: '### Descripción Técnica\nEn lenguajes como C, funciones como `printf()` pueden interpretar especificadores de formato (p. ej., `%x`, `%s`, `%n`) de la entrada del usuario. Un atacante puede usar estos especificadores para leer de la pila, escribir en ubicaciones de memoria arbitrarias y potencialmente ejecutar código arbitrario.',
         impact_en: '### Impact\nCan lead to information disclosure, denial-of-service, or arbitrary code execution.',
         impact_es: '### Impacto\nPuede conducir a la divulgación de información, denegación de servicio o ejecución de código arbitrario.',
-        immediateActions_en: '### Immediate Actions\nReview and fix all instances where user input is passed directly to formatting functions.',
-        immediateActions_es: '### Acciones Inmediatas\nRevisar y corregir todas las instancias donde la entrada del usuario se pasa directamente a las funciones de formato.',
         remediation_en: {
             shortTerm: 'Always specify a format string as a constant in functions like `printf`. For example, use `printf("%s", userInput)` instead of `printf(userInput)`.',
             mediumTerm: 'Use compiler flags that warn about potential format string vulnerabilities (e.g., `-Wformat` in GCC).',
@@ -2831,7 +2812,9 @@ Un ataque de desbordamiento de búfer exitoso puede conducir a la ejecución de 
         affectedComponents_en: '### Affected Components\n- [TODO: Specify the function and user input that is vulnerable.]',
         details_en: '### Proof of Concept\n[TODO: Provide an input string with format specifiers that demonstrates reading from the stack or writing to memory.]',
         affectedComponents_es: '### Componentes Afectados\n- [TODO: Especificar la función y la entrada de usuario que es vulnerable.]',
-        details_es: '### Prueba de Concepto\n[TODO: Proporcionar una cadena de entrada con especificadores de formato que demuestre la lectura de la pila o la escritura en la memoria.]'
+        details_es: '### Prueba de Concepto\n[TODO: Proporcionar una cadena de entrada con especificadores de formato que demuestre la lectura de la pila o la escritura en la memoria.]',
+        immediateActions_en: '### Immediate Actions\nReview and fix all instances where user input is passed directly to formatting functions.',
+        immediateActions_es: '### Acciones Inmediatas\nRevisar y corregir todas las instancias donde la entrada del usuario se pasa directamente a las funciones de formato.',
     },
     {
         id: 'vuln-add-003',
@@ -2843,8 +2826,6 @@ Un ataque de desbordamiento de búfer exitoso puede conducir a la ejecución de 
         technicalDescription_es: '### Descripción Técnica\nEsta vulnerabilidad ocurre en aplicaciones multihilo donde los recursos compartidos no se sincronizan correctamente. Un ejemplo común es un error de "Time-of-check to time-of-use" (TOCTOU), donde una aplicación comprueba una condición de seguridad (p. ej., permisos de archivo) y luego realiza una acción, pero un atacante puede cambiar la condición entre la comprobación y la acción.',
         impact_en: '### Impact\nCan lead to privilege escalation, denial-of-service, or data corruption.',
         impact_es: '### Impacto\nPuede conducir a la escalada de privilegios, denegación de servicio o corrupción de datos.',
-        immediateActions_en: '### Immediate Actions\nReview the logic for handling shared resources and implement proper locking mechanisms.',
-        immediateActions_es: '### Acciones Inmediatas\nRevisar la lógica para manejar recursos compartidos e implementar mecanismos de bloqueo adecuados.',
         remediation_en: {
             shortTerm: 'Implement proper synchronization mechanisms like mutexes, semaphores, or locks when accessing shared resources.',
             mediumTerm: 'Design atomic operations for critical sections of code. Avoid TOCTOU flaws by performing the action immediately after the check within a locked section.',
@@ -2863,7 +2844,9 @@ Un ataque de desbordamiento de búfer exitoso puede conducir a la ejecución de 
         affectedComponents_en: '### Affected Components\n- [TODO: Specify the multi-threaded functionality and the shared resource.]',
         details_en: '### Proof of Concept\n[TODO: Provide a PoC that demonstrates the race condition, for example, by rapidly sending concurrent requests that lead to an inconsistent state.]',
         affectedComponents_es: '### Componentes Afectados\n- [TODO: Especificar la funcionalidad multihilo y el recurso compartido.]',
-        details_es: '### Prueba de Concepto\n[TODO: Proporcionar una PoC que demuestre la condición de carrera, por ejemplo, enviando rápidamente solicitudes concurrentes que conduzcan a un estado inconsistente.]'
+        details_es: '### Prueba de Concepto\n[TODO: Proporcionar una PoC que demuestre la condición de carrera, por ejemplo, enviando rápidamente solicitudes concurrentes que conduzcan a un estado inconsistente.]',
+        immediateActions_en: '### Immediate Actions\nReview the logic for handling shared resources and implement proper locking mechanisms.',
+        immediateActions_es: '### Acciones Inmediatas\nRevisar la lógica para manejar recursos compartidos e implementar mecanismos de bloqueo adecuados.',
     },
     {
         id: 'vuln-add-004',
@@ -2875,8 +2858,6 @@ Un ataque de desbordamiento de búfer exitoso puede conducir a la ejecución de 
         technicalDescription_es: '### Descripción Técnica\nCuando una aplicación no sanea correctamente la entrada del usuario antes de colocarla en una consulta LDAP, un atacante puede inyectar metacaracteres LDAP (como `*`, `(`, `)`, `&`, `|`) para modificar la consulta. Esto se puede utilizar para eludir la autenticación o ver/modificar información en el directorio LDAP.',
         impact_en: '### Impact\nCan lead to authentication bypass, privilege escalation, and disclosure of sensitive information stored in the LDAP directory.',
         impact_es: '### Impacto\nPuede conducir a la omisión de la autenticación, la escalada de privilegios y la divulgación de información sensible almacenada en el directorio LDAP.',
-        immediateActions_en: '### Immediate Actions\nImplement input sanitization on all parameters used in LDAP queries.',
-        immediateActions_es: '### Acciones Inmediatas\nImplementar la sanitización de entradas en todos los parámetros utilizados en las consultas LDAP.',
         remediation_en: {
             shortTerm: 'Use a framework-provided LDAP encoding function to sanitize all user-supplied input before it is placed in an LDAP query.',
             mediumTerm: 'Avoid constructing LDAP queries from user input. Use a mapping to predefined queries where possible.',
@@ -2895,7 +2876,9 @@ Un ataque de desbordamiento de búfer exitoso puede conducir a la ejecución de 
         affectedComponents_en: '### Affected Components\n- [TODO: Specify the function and parameter vulnerable to LDAP injection.]',
         details_en: '### Proof of Concept\n[TODO: Provide a payload with LDAP metacharacters that bypasses authentication or extracts information.]',
         affectedComponents_es: '### Componentes Afectados\n- [TODO: Especificar la función y el parámetro vulnerables a la inyección LDAP.]',
-        details_es: '### Prueba de Concepto\n[TODO: Proporcionar una carga útil con metacaracteres LDAP que eluda la autenticación o extraiga información.]'
+        details_es: '### Prueba de Concepto\n[TODO: Proporcionar una carga útil con metacaracteres LDAP que eluda la autenticación o extraiga información.]',
+        immediateActions_en: '### Immediate Actions\nImplement input sanitization on all parameters used in LDAP queries.',
+        immediateActions_es: '### Acciones Inmediatas\nImplementar la sanitización de entradas en todos los parámetros utilizados en las consultas LDAP.',
     },
     {
         id: 'vuln-add-005',
@@ -2907,8 +2890,6 @@ Un ataque de desbordamiento de búfer exitoso puede conducir a la ejecución de 
         technicalDescription_es: '### Descripción Técnica\nDe forma similar a la inyección SQL, un atacante puede manipular una consulta XPath inyectando caracteres maliciosos. Esto puede permitirles eludir la autenticación, o acceder o modificar partes del documento XML a las que no deberían tener acceso.',
         impact_en: '### Impact\nCan lead to authentication bypass, information disclosure, and data corruption within the XML data store.',
         impact_es: '### Impacto\nPuede conducir a la omisión de la autenticación, la divulgación de información y la corrupción de datos dentro del almacén de datos XML.',
-        immediateActions_en: '### Immediate Actions\nImplement input sanitization on all parameters used in XPath queries.',
-        immediateActions_es: '### Acciones Inmediatas\nImplementar la sanitización de entradas en todos los parámetros utilizados en las consultas XPath.',
         remediation_en: {
             shortTerm: 'Use parameterized XPath queries or libraries that automatically handle the escaping of special characters.',
             mediumTerm: 'Validate all user input against a strict allow-list of expected values.',
@@ -2927,7 +2908,9 @@ Un ataque de desbordamiento de búfer exitoso puede conducir a la ejecución de 
         affectedComponents_en: '### Affected Components\n- [TODO: Specify the function and parameter vulnerable to XPath injection.]',
         details_en: '### Proof of Concept\n[TODO: Provide a payload with XPath syntax that bypasses authentication or extracts sensitive information from the XML document.]',
         affectedComponents_es: '### Componentes Afectados\n- [TODO: Especificar la función y el parámetro vulnerables a la inyección XPath.]',
-        details_es: '### Prueba de Concepto\n[TODO: Proporcionar una carga útil con sintaxis XPath que eluda la autenticación o extraiga información sensible del documento XML.]'
+        details_es: '### Prueba de Concepto\n[TODO: Proporcionar una carga útil con sintaxis XPath que eluda la autenticación o extraiga información sensible del documento XML.]',
+        immediateActions_en: '### Immediate Actions\nImplement input sanitization on all parameters used in XPath queries.',
+        immediateActions_es: '### Acciones Inmediatas\nImplementar la sanitización de entradas en todos los parámetros utilizados en las consultas XPath.',
     },
     {
         id: 'vuln-add-006',
@@ -2939,8 +2922,6 @@ Un ataque de desbordamiento de búfer exitoso puede conducir a la ejecución de 
         technicalDescription_es: '### Descripción Técnica\nMuchos frameworks web utilizan plantillas para generar HTML dinámico. Si la entrada del usuario se concatena directamente en una plantilla en lugar de pasarse como datos, un atacante puede inyectar sintaxis de plantilla. Esto a menudo se puede escalar para ejecutar comandos arbitrarios en el servidor subyacente.',
         impact_en: '### Impact\nCan lead to full Remote Code Execution (RCE) on the server.',
         impact_es: '### Impacto\nPuede conducir a la Ejecución Remota de Código (RCE) completa en el servidor.',
-        immediateActions_en: '### Immediate Actions\nIdentify and sanitize all user inputs that are used within server-side templates.',
-        immediateActions_es: '### Acciones Inmediatas\nIdentificar y sanear todas las entradas de usuario que se utilizan dentro de las plantillas del lado del servidor.',
         remediation_en: {
             shortTerm: 'Always pass user input as data to the template engine, never concatenate it into the template string itself.',
             mediumTerm: 'Use logic-less templates where possible to reduce the attack surface.',
@@ -2959,7 +2940,9 @@ Un ataque de desbordamiento de búfer exitoso puede conducir a la ejecución de 
         affectedComponents_en: '### Affected Components\n- [TODO: Specify the template and input vulnerable to SSTI.]',
         details_en: '### Proof of Concept\n[TODO: Provide a payload (e.g., `{{7*7}}`) that demonstrates template syntax is being evaluated, and escalate it to RCE if possible.]',
         affectedComponents_es: '### Componentes Afectados\n- [TODO: Especificar la plantilla y la entrada vulnerables a SSTI.]',
-        details_es: '### Prueba de Concepto\n[TODO: Proporcionar una carga útil (p. ej., `{{7*7}}`) que demuestre que se está evaluando la sintaxis de la plantilla, y escalarla a RCE si es posible.]'
+        details_es: '### Prueba de Concepto\n[TODO: Proporcionar una carga útil (p. ej., `{{7*7}}`) que demuestre que se está evaluando la sintaxis de la plantilla, y escalarla a RCE si es posible.]',
+        immediateActions_en: '### Immediate Actions\nIdentify and sanitize all user inputs that are used within server-side templates.',
+        immediateActions_es: '### Acciones Inmediatas\nIdentificar y sanear todas las entradas de usuario que se utilizan dentro de las plantillas del lado del servidor.',
     },
     {
         id: 'vuln-add-007',
@@ -2971,8 +2954,6 @@ Un ataque de desbordamiento de búfer exitoso puede conducir a la ejecución de 
         technicalDescription_es: '### Descripción Técnica\nLas aplicaciones modernas se construyen utilizando una gran cantidad de dependencias de terceros. Si estas dependencias no se actualizan regularmente, la aplicación puede heredar sus vulnerabilidades. Un atacante puede explotar estas vulnerabilidades conocidas para comprometer la aplicación.',
         impact_en: '### Impact\nThe impact depends on the specific vulnerability in the open-source component, but it can range from information disclosure to full Remote Code Execution.',
         impact_es: '### Impacto\nEl impacto depende de la vulnerabilidad específica en el componente de código abierto, pero puede variar desde la divulgación de información hasta la Ejecución Remota de Código completa.',
-        immediateActions_en: '### Immediate Actions\nUpdate the vulnerable components to a patched version immediately.',
-        immediateActions_es: '### Acciones Inmediatas\nActualizar inmediatamente los componentes vulnerables a una versión parcheada.',
         remediation_en: {
             shortTerm: 'Update all vulnerable dependencies to the latest secure version.',
             mediumTerm: 'Implement a Software Composition Analysis (SCA) tool (like `npm audit`, Snyk, or Dependabot) to automatically scan for and alert on vulnerable dependencies.',
@@ -2991,7 +2972,9 @@ Un ataque de desbordamiento de búfer exitoso puede conducir a la ejecución de 
         affectedComponents_en: '### Affected Components\n- [TODO: List the vulnerable library and its version.]',
         details_en: '### Proof of Concept\n[TODO: Provide a link to the public CVE and, if possible, demonstrate the exploit.]',
         affectedComponents_es: '### Componentes Afectados\n- [TODO: Listar la biblioteca vulnerable y su versión.]',
-        details_es: '### Prueba de Concepto\n[TODO: Proporcionar un enlace al CVE público y, si es posible, demostrar el exploit.]'
+        details_es: '### Prueba de Concepto\n[TODO: Proporcionar un enlace al CVE público y, si es posible, demostrar el exploit.]',
+        immediateActions_en: '### Immediate Actions\nUpdate the vulnerable components to a patched version immediately.',
+        immediateActions_es: '### Acciones Inmediatas\nActualizar inmediatamente los componentes vulnerables a una versión parcheada.',
     },
     {
         id: 'vuln-add-008',
@@ -3003,8 +2986,6 @@ Un ataque de desbordamiento de búfer exitoso puede conducir a la ejecución de 
         technicalDescription_es: '### Descripción Técnica\nLa aplicación utiliza un identificador proporcionado por el usuario para recuperar un objeto (p. ej., `.../facturas?id=123`). La aplicación no verifica que el usuario que ha iniciado sesión esté autorizado para acceder al objeto `123`. Un atacante puede cambiar el parámetro `id` a `124` para acceder a la factura de otro usuario.',
         impact_en: '### Impact\nAllows attackers to bypass authorization and access or modify data belonging to other users.',
         impact_es: '### Impacto\nPermite a los atacantes eludir la autorización y acceder o modificar datos pertenecientes a otros usuarios.',
-        immediateActions_en: '### Immediate Actions\nImplement server-side authorization checks for all functions that access objects based on user input.',
-        immediateActions_es: '### Acciones Inmediatas\nImplementar comprobaciones de autorización del lado del servidor para todas las funciones que acceden a objetos basados en la entrada del usuario.',
         remediation_en: {
             shortTerm: 'For every request that accesses a private object, verify that the logged-in user is authorized to access that specific object.',
             mediumTerm: 'Avoid using direct object references in URLs. Use indirect references per user or session, or use unpredictable, random identifiers (GUIDs).',
@@ -3023,7 +3004,9 @@ Un ataque de desbordamiento de búfer exitoso puede conducir a la ejecución de 
         affectedComponents_en: '### Affected Components\n- [TODO: Specify the vulnerable URL and the ID parameter.]',
         details_en: '### Proof of Concept\n[TODO: Provide two sets of credentials. Log in as user A, access their resource, then change the ID in the URL to one belonging to user B and show that access is granted.]',
         affectedComponents_es: '### Componentes Afectados\n- [TODO: Especificar la URL vulnerable y el parámetro de ID.]',
-        details_es: '### Prueba de Concepto\n[TODO: Proporcionar dos conjuntos de credenciales. Iniciar sesión como usuario A, acceder a su recurso, luego cambiar el ID en la URL por uno que pertenezca al usuario B y mostrar que se concede el acceso.]'
+        details_es: '### Prueba de Concepto\n[TODO: Proporcionar dos conjuntos de credenciales. Iniciar sesión como usuario A, acceder a su recurso, luego cambiar el ID en la URL por uno que pertenezca al usuario B y mostrar que se concede el acceso.]',
+        immediateActions_en: '### Immediate Actions\nImplement server-side authorization checks for all functions that access objects based on user input.',
+        immediateActions_es: '### Acciones Inmediatas\nImplementar comprobaciones de autorización del lado del servidor para todas las funciones que acceden a objetos basados en la entrada del usuario.',
     },
     {
         id: 'vuln-add-009',
@@ -3035,8 +3018,6 @@ Un ataque de desbordamiento de búfer exitoso puede conducir a la ejecución de 
         technicalDescription_es: '### Descripción Técnica\nLas respuestas HTTP del servidor no incluyen encabezados de seguridad importantes como `Content-Security-Policy`, `Strict-Transport-Security`, `X-Content-Type-Options`, `X-Frame-Options` o `Referrer-Policy`.',
         impact_en: '### Impact\nThe absence of these headers makes the application more susceptible to various client-side attacks, reduces the overall security posture, and may fail compliance checks.',
         impact_es: '### Impacto\nLa ausencia de estos encabezados hace que la aplicación sea más susceptible a varios ataques del lado del cliente, reduce la postura de seguridad general y puede no pasar las comprobaciones de cumplimiento.',
-        immediateActions_en: '### Immediate Actions\nAdd the recommended security headers to all HTTP responses from the server.',
-        immediateActions_es: '### Acciones Inmediatas\nAñadir los encabezados de seguridad recomendados a todas las respuestas HTTP del servidor.',
         remediation_en: {
             shortTerm: 'Implement essential headers like `X-Frame-Options: DENY` (to prevent clickjacking) and `X-Content-Type-Options: nosniff`.',
             mediumTerm: 'Implement `Strict-Transport-Security` (HSTS) to enforce HTTPS. Develop and implement a strong `Content-Security-Policy` (CSP) to mitigate XSS.',
@@ -3055,7 +3036,9 @@ Un ataque de desbordamiento de búfer exitoso puede conducir a la ejecución de 
         affectedComponents_en: '### Affected Components\n- All HTTP responses from the application server.',
         details_en: '### Proof of Concept\n[TODO: Provide a screenshot of the HTTP response headers showing the absence of recommended security headers.]',
         affectedComponents_es: '### Componentes Afectados\n- Todas las respuestas HTTP del servidor de aplicaciones.',
-        details_es: '### Prueba de Concepto\n[TODO: Proporcionar una captura de pantalla de los encabezados de respuesta HTTP que muestre la ausencia de los encabezados de seguridad recomendados.]'
+        details_es: '### Prueba de Concepto\n[TODO: Proporcionar una captura de pantalla de los encabezados de respuesta HTTP que muestre la ausencia de los encabezados de seguridad recomendados.]',
+        immediateActions_en: '### Immediate Actions\nAdd the recommended security headers to all HTTP responses from the server.',
+        immediateActions_es: '### Acciones Inmediatas\nAñadir los encabezados de seguridad recomendados a todas las respuestas HTTP del servidor.',
     },
     {
         id: 'vuln-add-010',
@@ -3067,8 +3050,6 @@ Un ataque de desbordamiento de búfer exitoso puede conducir a la ejecución de 
         technicalDescription_es: '### Descripción Técnica\nEl atacante utiliza un `<iframe>` transparente para superponer una página web legítima e invisible sobre una página web visible de señuelo. Cuando el usuario hace clic en la página de señuelo (p. ej., un botón de "Gana un premio"), en realidad está haciendo clic en un botón de la página invisible (p. ej., un botón de "Eliminar cuenta").',
         impact_en: '### Impact\nCan be used to perform unauthorized actions on behalf of the user, such as changing permissions, deleting data, or making purchases.',
         impact_es: '### Impacto\nPuede ser utilizado para realizar acciones no autorizadas en nombre del usuario, como cambiar permisos, eliminar datos o realizar compras.',
-        immediateActions_en: '### Immediate Actions\nImplement the `X-Frame-Options` or `Content-Security-Policy: frame-ancestors` header to prevent the site from being framed.',
-        immediateActions_es: '### Acciones Inmediatas\nImplementar el encabezado `X-Frame-Options` o `Content-Security-Policy: frame-ancestors` para evitar que el sitio sea enmarcado.',
         remediation_en: {
             shortTerm: 'Set the `X-Frame-Options` HTTP header to `DENY` or `SAMEORIGIN`.',
             mediumTerm: 'Implement a strong `Content-Security-Policy` (CSP) with the `frame-ancestors` directive (e.g., `frame-ancestors \'self\';`).',
@@ -3087,6 +3068,8 @@ Un ataque de desbordamiento de búfer exitoso puede conducir a la ejecución de 
         affectedComponents_en: '### Affected Components\n- All pages on the web application that do not have framing protection.',
         details_en: '### Proof of Concept\n[TODO: Provide an HTML page with an `<iframe>` that loads the vulnerable application and demonstrates a clickjacking attack.]',
         affectedComponents_es: '### Componentes Afectados\n- Todas las páginas de la aplicación web que no tienen protección contra enmarcado.',
-        details_es: '### Prueba de Concepto\n[TODO: Proporcionar una página HTML con un `<iframe>` que cargue la aplicación vulnerable y demuestre un ataque de secuestro de clics.]'
+        details_es: '### Prueba de Concepto\n[TODO: Proporcionar una página HTML con un `<iframe>` que cargue la aplicación vulnerable y demuestre un ataque de secuestro de clics.]',
+        immediateActions_en: '### Immediate Actions\nImplement the `X-Frame-Options` or `Content-Security-Policy: frame-ancestors` header to prevent the site from being framed.',
+        immediateActions_es: '### Acciones Inmediatas\nImplementar el encabezado `X-Frame-Options` o `Content-Security-Policy: frame-ancestors` para evitar que el sitio sea enmarcado.',
     },
 ]
