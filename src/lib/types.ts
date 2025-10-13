@@ -76,13 +76,13 @@ export interface Vulnerability {
   immediateActions_es: string;
   details_en: string;
   details_es: string;
+  recommendations_en: string;
+  recommendations_es: string;
   cwe: string;
   cvss: CVSS;
   severity: Severity;
   references: string[];
   tags: string[];
-  remediation_en: Remediation;
-  remediation_es: Remediation;
 }
 
 export interface Report {
@@ -104,5 +104,5 @@ export interface ProjectTemplate {
   scope_es: string;
   appendix_en: string;
   appendix_es: string;
-e: string;
+  icon: string;
 }

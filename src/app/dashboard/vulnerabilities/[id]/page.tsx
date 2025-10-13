@@ -13,7 +13,7 @@ import Link from 'next/link';
 import { ChevronDown, ChevronLeft, Save, GripVertical, Plus, Trash2, Rows, Bold, Italic, Code, List, ListOrdered, FileCode, ChevronUp } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import { useLanguage } from '@/context/language-context';
-import type { Vulnerability, CVSS, Remediation, ImageAsset, Severity } from '@/lib/types';
+import type { Vulnerability, CVSS, ImageAsset, Severity } from '@/lib/types';
 import {
   Accordion,
   AccordionContent,
@@ -476,17 +476,18 @@ export default function VulnerabilityEditorPage() {
     }
   };
 
-  const getFullContent = (vuln: Vulnerability, lang: 'en' | 'es'): string => {
+  const getFullContent = useCallback((vuln: Vulnerability, lang: 'en' | 'es'): string => {
     const sections = [
         vuln[`overview_${lang}`],
         vuln[`technicalDescription_${lang}`],
         vuln[`affectedComponents_${lang}`],
         vuln[`impact_${lang}`],
         vuln[`immediateActions_${lang}`],
-        vuln[`details_${lang}`]
+        vuln[`details_${lang}`],
+        vuln[`recommendations_${lang}`]
     ];
     return sections.filter(Boolean).join('\n\n---\n\n');
-  };
+  }, []);
 
   const parseMarkdownToSections = useCallback((markdown: string): FindingSection[] => {
     if (!markdown || typeof markdown !== 'string') return [];
@@ -518,7 +519,7 @@ export default function VulnerabilityEditorPage() {
     } else {
       router.push('/dashboard/vulnerabilities');
     }
-  }, [id, vulnerabilities, router, parseMarkdownToSections]);
+  }, [id, vulnerabilities, router, parseMarkdownToSections, getFullContent]);
 
   const handleInputChange = useCallback(<T extends keyof Vulnerability>(field: T, value: Vulnerability[T]) => {
     setVuln(prev => prev ? { ...prev, [field]: value } : null);
@@ -553,15 +554,17 @@ export default function VulnerabilityEditorPage() {
             affectedComponents_en: enSections.find(s => s.content.includes('### Affected Components'))?.content || '',
             impact_en: enSections.find(s => s.content.includes('### Impact'))?.content || '',
             immediateActions_en: enSections.find(s => s.content.includes('### Immediate Actions'))?.content || '',
-            details_en: enSections.find(s => s.content.includes('### Details'))?.content || '',
+            details_en: enSections.find(s => s.content.includes('### Proof of Concept'))?.content || '',
+            recommendations_en: enSections.find(s => s.content.includes('### Recommendations'))?.content || '',
 
             overview_es: esSections.find(s => s.content.includes('### Resumen'))?.content || '',
             technicalDescription_es: esSections.find(s => s.content.includes('### Descripción Técnica'))?.content || '',
             affectedComponents_es: esSections.find(s => s.content.includes('### Componentes Afectados'))?.content || '',
             impact_es: esSections.find(s => s.content.includes('### Impacto'))?.content || '',
             immediateActions_es: esSections.find(s => s.content.includes('### Acciones Inmediatas'))?.content || '',
-            details_es: esSections.find(s => s.content.includes('### Detalles'))?.content || '',
-            
+            details_es: esSections.find(s => s.content.includes('### Prueba de Concepto'))?.content || '',
+            recommendations_es: esSections.find(s => s.content.includes('### Recomendaciones'))?.content || '',
+
             references: references.filter(ref => ref.trim() !== ''),
         };
         

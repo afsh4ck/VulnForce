@@ -1,4 +1,5 @@
 
+
 'use client';
 
 import { useState, useMemo, useCallback, useRef, useEffect } from 'react';
@@ -12,7 +13,7 @@ import Link from 'next/link';
 import { ChevronDown, ChevronLeft, Save, GripVertical, Plus, Trash2, Rows, Bold, Italic, Code, List, ListOrdered, FileCode, ChevronUp } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import { useLanguage } from '@/context/language-context';
-import type { Vulnerability, CVSS, Remediation, ImageAsset, Severity } from '@/lib/types';
+import type { Vulnerability, CVSS, ImageAsset, Severity } from '@/lib/types';
 import { useRouter } from 'next/navigation';
 import {
   Accordion,
@@ -171,7 +172,7 @@ const SectionEditor = ({ section, onContentChange, onDelete, view, onViewChange,
                     const dataUrl = event.target?.result as string;
                     if (dataUrl) {
                         const newImage = addImage(dataUrl);
-                        const markdownImage = `![Pasted Image](image://${'\'\'\''}{newImage.id})`
+                        const markdownImage = `![Pasted Image](image://${newImage.id})`;
                         const textarea = e.target as HTMLTextAreaElement;
                         const start = textarea.selectionStart;
                         const end = textarea.selectionEnd;
@@ -354,51 +355,23 @@ const SectionEditor = ({ section, onContentChange, onDelete, view, onViewChange,
   )
 }
 
-const emptyVulnerability: Omit<Vulnerability, 'id' | 'remediation_en' | 'remediation_es'> = {
+const emptyVulnerability: Omit<Vulnerability, 'id'> = {
   title_en: '',
   title_es: '',
-  overview_en: `### Summary
-
-[TODO: Add summary in English]
-
----
-
-### Technical Description
-
-[TODO: Add technical description in English]
-
----
-
-### Impact
-
-[TODO: Add impact in English]
-
----
-
-### Recommendations
-
-[TODO: Add recommendations in English]`,
-  overview_es: `### Resumen
-
-[TODO: Añadir resumen en español]
-
----
-
-### Descripción Técnica
-
-[TODO: Añadir descripción técnica en español]
-
----
-
-### Impacto
-
-[TODO: Añadir impacto en español]
-
----
-
-### Recomendaciones
-
-[TODO: Añadir recomendaciones en español]`,
+  overview_en: '### Overview\n\n[TODO: Add summary in English]',
+  overview_es: '### Resumen\n\n[TODO: Añadir resumen en español]',
+  technicalDescription_en: '### Technical Description\n\n[TODO: Add technical description in English]',
+  technicalDescription_es: '### Descripción Técnica\n\n[TODO: Añadir descripción técnica en español]',
+  affectedComponents_en: '### Affected Components\n\n- [TODO: List affected components]',
+  affectedComponents_es: '### Componentes Afectados\n\n- [TODO: Listar componentes afectados]',
+  impact_en: '### Impact\n\n[TODO: Describe impact in English]',
+  impact_es: '### Impacto\n\n[TODO: Describir impacto en español]',
+  immediateActions_en: '### Immediate Actions\n\n[TODO: Add immediate actions in English]',
+  immediateActions_es: '### Acciones Inmediatas\n\n[TODO: Añadir acciones inmediatas en español]',
+  details_en: '### Proof of Concept\n\n[TODO: Add PoC in English]',
+  details_es: '### Prueba de Concepto\n\n[TODO: Añadir PoC en español]',
+  recommendations_en: '### Recommendations\n\n#### Short-Term Recommendations\n[TODO]\n\n#### Medium-Term Recommendations\n[TODO]\n\n#### Long-Term Recommendations\n[TODO]',
+  recommendations_es: '### Recomendaciones\n\n#### Recomendaciones a Corto Plazo\n[TODO]\n\n#### Recomendaciones a Medio Plazo\n[TODO]\n\n#### Recomendaciones a Largo Plazo\n[TODO]',
   cwe: '',
   cvss: {
     score: 0,
@@ -443,7 +416,7 @@ export default function NewVulnerabilityPage() {
   const { language } = useLanguage();
   const router = useRouter();
   const { addVulnerability, getImage } = useData();
-  const [vuln, setVuln] = useState<Omit<Vulnerability, 'id' | 'remediation_en' | 'remediation_es'>>(emptyVulnerability);
+  const [vuln, setVuln] = useState<Omit<Vulnerability, 'id'>>(emptyVulnerability);
   const [references, setReferences] = useState<string[]>([]);
   const sensors = useSensors( useSensor(PointerSensor), useSensor(KeyboardSensor, { coordinateGetter: sortableKeyboardCoordinates }) );
   
@@ -554,7 +527,7 @@ export default function NewVulnerabilityPage() {
     })).filter(p => p.content.trim() !== '');
   }, []);
   
-  const handleInputChange = useCallback(<T extends keyof Omit<Vulnerability, 'id' | 'remediation_en' | 'remediation_es'>>(field: T, value: Omit<Vulnerability, 'id' | 'remediation_en' | 'remediation_es'>[T]) => {
+  const handleInputChange = useCallback(<T extends keyof Omit<Vulnerability, 'id'>>(field: T, value: Omit<Vulnerability, 'id'>[T]) => {
     setVuln(prev => ({ ...prev, [field]: value }));
   }, []);
   
@@ -603,11 +576,9 @@ export default function NewVulnerabilityPage() {
         overview_en: fullEnContent,
         overview_es: fullEsContent,
         references: references.filter(ref => ref.trim() !== ''),
-        remediation_en: { shortTerm: '[TODO]', mediumTerm: '[TODO]', longTerm: '[TODO]' },
-        remediation_es: { shortTerm: '[TODO]', mediumTerm: '[TODO]' ,longTerm: '[TODO]' },
     };
 
-    addVulnerability(newVuln);
+    addVulnerability(newVuln as Omit<Vulnerability, 'id'>);
     toast({
       title: t[language].saveSuccessTitle,
       description: t[language].saveSuccessDescription,
