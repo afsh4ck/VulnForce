@@ -855,7 +855,7 @@ Esta categoría incluye vulnerabilidades como la inyección de SQL en bases de d
         impact_en: `### Impact
 The impact can range from data corruption and denial-of-service on the local app, to the execution of arbitrary code within a sandboxed web view, which could lead to session token theft if the token is exposed to the web view.`,
         impact_es: `### Impacto
-El impacto puede variar desde la corrupción de datos y la denegación de servicio en la aplicación local, hasta la ejecución de código arbitrario dentro de una vista web aislada, lo que podría llevar al robo de tokens de sesión si el token está expuesto a la vista web.`,
+El impacto puede variar desde la corrupción de datos y la denegación de servicio en la aplicación local, hasta la ejecución de código arbitrario dentro de una vista web aislada, lo que podría llevar al robo de tokens de sesión si el token está exposed a la vista web.`,
         recommendations_en: `#### Short-Term Recommendations
 Use parameterized queries (prepared statements) for all local SQLite database interactions. For WebViews, ensure JavaScript is disabled if not needed, and properly encode any data displayed in them.
 #### Medium-Term Recommendations
@@ -1221,17 +1221,17 @@ Diseñar aplicaciones para que sean resistentes al agotamiento de recursos. Impl
         impact_en: "### Impact\nSuccessful VLAN hopping allows an attacker on one VLAN to gain unauthorized access to resources on another VLAN, bypassing network segmentation controls.",
         impact_es: "### Impacto\nUn salto de VLAN exitoso permite a un atacante en una VLAN obtener acceso no autorizado a los recursos de otra VLAN, eludiendo los controles de segmentación de la red.",
         recommendations_en: `#### Short-Term Recommendations
-Use Dynamic ARP Inspection (DAI) on network switches to validate ARP packets.
+Disable Dynamic Trunking Protocol (DTP) on all end-user facing switch ports. Statically configure ports as either access or trunk ports.
 #### Medium-Term Recommendations
-Segment the network using VLANs to limit the broadcast domain and reduce the scope of a potential ARP poisoning attack.
+Set the native VLAN on trunk ports to an unused VLAN ID. This prevents double-tagging attacks from reaching any active devices.
 #### Long-Term Recommendations
-Encrypt all network traffic using protocols like TLS and SSH. This does not prevent ARP poisoning but mitigates the impact by preventing the attacker from reading or modifying the intercepted traffic.`,
+Implement 802.1X port-based authentication to control which devices can connect to the network, preventing unauthorized devices from attempting these attacks.`,
         recommendations_es: `#### Recomendaciones a Corto Plazo
-Utilizar la Inspección Dinámica de ARP (DAI) en los switches de red para validar los paquetes ARP.
+Deshabilitar el Protocolo de Enlace Troncal Dinámico (DTP) en todos los puertos de switch que dan al usuario final. Configurar estáticamente los puertos como puertos de acceso o troncales.
 #### Recomendaciones a Medio Plazo
-Segmentar la red utilizando VLAN para limitar el dominio de difusión y reducir el alcance de un posible ataque de envenenamiento ARP.
+Establecer la VLAN nativa en los puertos troncales a un ID de VLAN no utilizado. Esto evita que los ataques de doble etiquetado lleguen a cualquier dispositivo activo.
 #### Recomendaciones a Largo Plazo
-Cifrar todo el tráfico de red utilizando protocolos como TLS y SSH. Esto no previene el envenenamiento de ARP, pero mitiga el impacto al evitar que el atacante lea o modifique el tráfico interceptado.`,
+Implementar la autenticación basada en puertos 802.1X para controlar qué dispositivos pueden conectarse a la red, evitando que dispositivos no autorizados intenten estos ataques.`,
         cwe: "CWE-693",
         severity: "Medium",
         cvss: { score: 6.8, vectorString: "CVSS:3.1/AV:A/AC:H/PR:N/UI:N/S:U/C:H/I:L/A:L", attackVector: "A", attackComplexity: "H", privilegesRequired: "N", userInteraction: "N", scope: "U", confidentiality: "H", integrity: "L", availability: "L" },
@@ -1279,7 +1279,7 @@ Establecer una política corporativa para los estándares criptográficos para l
         tags: ["Network", "Cryptography"],
         affectedComponents_en: `### Affected Components
 - [TODO: List the servers or services that support weak encryption protocols or ciphers.]`,
-        details_en: "### Proof of Concept\n[TODO: Provide the output of a tool like `nmap --script ssl-enum-ciphers` or a report from SSL Labs showing the weak configurations.]",
+        details_en: "### Proof of Concept\n[TODO: Provide a report from a tool like `nmap --script ssl-enum-ciphers` or a report from SSL Labs showing the support for weak protocols or ciphers.]",
         affectedComponents_es: `### Componentes Afectados
 - [TODO: Listar los servidores o servicios que admiten protocolos o conjuntos de cifrado débiles.]`,
         details_es: "### Prueba de Concepto\n[TODO: Proporcionar un informe de una herramienta como `nmap --script ssl-enum-ciphers` o un informe de SSL Labs que muestre el soporte para protocolos o cifrados débiles.]",
@@ -1571,7 +1571,7 @@ Usar un Web Application Firewall (WAF) con rules para detectar y bloquear los pa
         details_en: "### Proof of Concept\n[TODO: Provide the steps taken to achieve remote code execution and show the output of a command (e.g., `whoami`, `id`) running on the target server.]",
         affectedComponents_es: `### Componentes Afectados
 - [TODO: Especificar el sistema y la vulnerabilidad que permite la RCE.]`,
-        details_es: "### Prueba de Concepto\n[TODO: Proporcionar los pasos seguidos para lograr la ejecución remota de código y mostrar la salida de un comando (p. ej., `whoami`, `id`) ejecutándose en el servidor objetivo.]`,
+        details_es: "### Prueba de Concepto\n[TODO: Proporcionar los pasos seguidos para lograr la ejecución remota de código y mostrar la salida de un comando (p. ej., `whoami`, `id`) ejecutándose en el servidor objetivo.]",
         immediateActions_en: "### Immediate Actions\nIsolate the compromised system from the network. Patch the underlying vulnerability (e.g., update software, fix injection flaw) immediately.",
         immediateActions_es: "### Acciones Inmediatas\nAislar el sistema comprometido de la red. Parchear inmediatamente la vulnerabilidad subyacente (p. ej., actualizar el software, corregir la falla de inyección).",
     },
@@ -2074,7 +2074,7 @@ Esto se puede lograr robando o prediciendo un token de sesión válido (cookie).
         impact_en: `### Impact
 The attacker gains full access to the compromised user's account and can perform any action that the user is authorized to perform.`,
         impact_es: `### Impacto
-El atacante obtiene acceso completo a la cuenta del usuario comprometido y puede realizar cualquier acción que el usuario esté autorizado a realizar.`,
+El atacante obtiene acceso completo a la cuenta del usuario comprometido y puede realizar any acción que el usuario esté autorizado a realizar.`,
         recommendations_en: `#### Short-Term Recommendations
 Set the \`HttpOnly\` and \`Secure\` flags on all session cookies to prevent them from being accessed by client-side scripts or transmitted over unencrypted connections.
 #### Medium-Term Recommendations
@@ -3266,3 +3266,4 @@ Además de los encabezados, usar scripts "frame-busting" como una medida de defe
     
 
     
+
