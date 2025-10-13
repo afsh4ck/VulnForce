@@ -62,7 +62,7 @@ XSS can lead to session hijacking, account takeover, redirection to malicious si
 El XSS puede conducir al secuestro de sesiones, la toma de control de cuentas, la redirección a sitios maliciosos o la realización de acciones no autorizadas en nombre del usuario. En el contexto de un administrador, podría llevar al control total de la aplicación web.`,
         remediation_en: {
             shortTerm: "### Short-Term Recommendations\nApply context-aware output encoding to all user-supplied data before it is rendered in the browser. For example, use HTML entity encoding for data placed in HTML context, and JavaScript encoding for data in script contexts.",
-            mediumTerm: "### Medium-Term Recommendations\nUse modern web frameworks (like React, Angular, Vue) that have built-in protections against XSS. Avoid using dangerous functions like \`innerHTML\`.",
+            mediumTerm: "### Medium-Term Recommendations\nUse modern web frameworks (like React, Angular, Vue) that have built-in protections against XSS. Avoid using dangerous functions like `innerHTML`.",
             longTerm: "### Long-Term Recommendations\nImplement a security-focused design pattern where untrusted data is never mixed with executable code. Train developers to understand the different contexts of XSS and how to mitigate them."
         },
         remediation_es: {
@@ -528,7 +528,7 @@ Esto conduce a la divulgación de archivos sensibles en el servidor, incluidos a
             longTerm: "### Long-Term Recommendations\nRun the application with the minimum necessary file system permissions to limit the files it can access."
         },
         remediation_es: {
-            shortTerm: "### Recomendaciones a Corto Plazo\nDesautorizar estrictamente el esquema URI `file://` en todas las funciones que realizan solicitudes del lado del servidor.",
+            shortTerm: "### Recomendaciones a Corto Plazo\nDesautorizar estrictamente el esquema URI \`file://\` en todas las funciones que realizan solicitudes del lado del servidor.",
             mediumTerm: "### Recomendaciones a Medio Plazo\nImplementar un analizador de URI robusto que valide y restrinja los protocolos a una lista de permitidos (p. ej., solo HTTP y HTTPS).",
             longTerm: "### Recomendaciones a Largo Plazo\nEjecutar la aplicación con los permisos mínimos necesarios del sistema de archivos para limitar los archivos a los que puede acceder."
         },
@@ -1148,8 +1148,7 @@ El impacto principal es la falta de disponibilidad del servicio, lo que conduce 
         affectedComponents_en: `### Affected Components
 - [TODO: Specify the targeted servers, services, or network resources.]`,
         details_en: "### Proof of Concept\n[TODO: Provide data showing the spike in traffic and corresponding resource exhaustion on the target system. Use tools like hping3 or Slowloris for demonstration.]",
-        affectedComponents_es: `### Componentes Afectados
-- [TODO: Especificar los servidores, servicios o recursos de red objetivo.]`,
+        affectedComponents_es: "### Componentes Afectados\n- [TODO: Especificar los servidores, servicios o recursos de red objetivo.]",
         details_es: "### Prueba de Concepto\n[TODO: Proporcionar datos que muestren el pico de tráfico y el agotamiento de recursos correspondiente en el sistema objetivo. Usar herramientas como hping3 o Slowloris para la demostración.]",
         immediateActions_en: "### Immediate Actions\n[TODO: Add immediate actions in English]",
         immediateActions_es: "### Acciones Inmediatas\n[TODO: Añadir acciones inmediatas en español]",
@@ -2681,12 +2680,12 @@ Side-channel attacks can be used to extract cryptographic keys or decrypt data, 
         impact_es: `### Impacto
 Los ataques de canal lateral se pueden utilizar para extraer claves criptográficas o descifrar datos, socavando por completo la seguridad del sistema criptográfico.`,
         remediation_en: {
-            shortTerm: "### Short-Term Recommendations\nEnsure that all cryptographic operations are performed in constant time, meaning they take the same amount of time regardless of the input data. Use safe string comparison functions instead of `==` for secrets.",
+            shortTerm: "### Short-Term Recommendations\nEnsure that all cryptographic operations are performed in constant time, meaning they take the same amount of time regardless of the input data. Use safe string comparison functions instead of \`==\` for secrets.",
             mediumTerm: "### Medium-Term Recommendations\nUse cryptographic libraries that are specifically designed to be resistant to side-channel attacks.",
             longTerm: "### Long-Term Recommendations\nFor highly sensitive applications, consider physical security measures to protect against power analysis and electromagnetic leak attacks."
         },
         remediation_es: {
-            shortTerm: "### Recomendaciones a Corto Plazo\nAsegurarse de que todas las operaciones criptográficas se realicen en tiempo constante, lo que significa que tardan la misma cantidad de tiempo independientemente de los datos de entrada. Usar funciones de comparación de cadenas seguras en lugar de `==` para los secretos.",
+            shortTerm: "### Recomendaciones a Corto Plazo\nAsegurarse de que todas las operaciones criptográficas se realicen en tiempo constante, lo que significa que tardan la misma cantidad de tiempo independientemente de los datos de entrada. Usar funciones de comparación de cadenas seguras en lugar de \`==\` para los secretos.",
             mediumTerm: "### Recomendaciones a Medio Plazo\nUtilizar bibliotecas criptográficas que estén diseñadas específicamente para ser resistentes a los ataques de canal lateral.",
             longTerm: "### Recomendaciones a Largo Plazo\nPara aplicaciones altamente sensibles, considerar medidas de seguridad física para proteger contra el análisis de energía y los ataques de fuga electromagnética."
         },
@@ -2766,7 +2765,7 @@ An attacker can perform a man-in-the-middle attack to downgrade the connection t
 Un atacante puede realizar un ataque de intermediario (man-in-the-middle) para degradar la conexión a un protocolo/cifrado débil y luego descifrar el tráfico interceptado, comprometiendo datos sensibles.`,
         remediation_en: {
             shortTerm: "### Short-Term Recommendations\nConfigure the server to only support TLS 1.2 and TLS 1.3 with a strong, modern set of cipher suites that provide forward secrecy.",
-            mediumTerm: "### Medium-Term Recommendations\nImplement HTTP Strict Transport Security (HSTS) to ensure browsers only connect to the server over a secure connection.",
+            mediumTerm: "### Medium-Term Recommendations\nImplement HTTP Strict Transport Security (HSTS) to ensure that browsers always connect to the server over a secure connection.",
             longTerm: "### Long-Term Recommendations\nRegularly audit the server's SSL/TLS configuration using automated tools like SSL Labs' SSL Test and keep the configuration updated with current best practices."
         },
         remediation_es: {
@@ -2985,7 +2984,7 @@ Un atacante puede realizar un ataque de intermediario (man-in-the-middle) para d
         title_en: 'Open-Source Vulnerabilities',
         title_es: 'Vulnerabilidades en Código Abierto',
         overview_en: '### Overview\nThe application uses open-source libraries or components with known, publicly disclosed vulnerabilities.',
-        overview_es: '### Resumen\nLa aplicación utiliza bibliotecas o componentes de código abierto con vulnerabilidades conocidas y divulgadas públicamente.',
+        overview_es: '### Resumen\nLa aplicación utiliza bibliotecas o componentes de código abierto conulnerabilidades conocidas y divulgadas públicamente.',
         technicalDescription_en: '### Technical Description\nModern applications are built using a large number of third-party dependencies. If these dependencies are not regularly updated, the application can inherit their vulnerabilities. An attacker can exploit these known vulnerabilities to compromise the application.',
         technicalDescription_es: '### Descripción Técnica\nLas aplicaciones modernas se construyen utilizando una gran cantidad de dependencias de terceros. Si estas dependencias no se actualizan regularmente, la aplicación puede heredar sus vulnerabilidades. Un atacante puede explotar estas vulnerabilidades conocidas para comprometer la aplicación.',
         impact_en: '### Impact\nThe impact depends on the specific vulnerability in the open-source component, but it can range from information disclosure to full Remote Code Execution.',
@@ -3176,31 +3175,47 @@ Un atacante puede realizar un ataque de intermediario (man-in-the-middle) para d
         id: "vuln-add-013",
         title_en: "Business Logic Flaws",
         title_es: "Fallos en la Lógica de Negocio",
-        overview_en: "### Overview\nBusiness logic flaws are ways of using the legitimate processing flow of an application in a way that results in a negative consequence to the organization.",
-        overview_es: "### Resumen\nLos fallos en la lógica de negocio son formas de utilizar el flujo de procesamiento legítimo de una aplicación de una manera que resulta en una consecuencia negativa para la organización.",
-        technicalDescription_en: "### Technical Description\nThese vulnerabilities are specific to the application's purpose. For example, a flaw in an e-commerce site might allow an attacker to purchase an item for a negative price, or a voting application might allow a user to vote multiple times. These are not typically found by automated scanners.",
-        technicalDescription_es: "### Descripción Técnica\nEstas vulnerabilidades son específicas del propósito de la aplicación. Por ejemplo, un fallo en un sitio de comercio electrónico podría permitir a un atacante comprar un artículo por un precio negativo, o una aplicación de votación podría permitir a un usuario votar varias veces. Estos no suelen ser encontrados por escáneres automatizados.",
-        impact_en: "### Impact\nThe impact is highly variable and depends on the specific flaw, but it can include financial loss, reputational damage, or data compromise.",
-        impact_es: "### Impacto\nEl impacto es muy variable y depende del fallo específico, pero puede incluir pérdidas financieras, daño a la reputación o compromiso de datos.",
+        overview_en: `### Overview
+Business logic flaws are ways of using the legitimate processing flow of an application in a way that results in a negative consequence to the organization.`,
+        overview_es: `### Resumen
+Los fallos en la lógica de negocio son formas de utilizar el flujo de procesamiento legítimo de una aplicación de una manera que resulta en una consecuencia negativa para la organización.`,
+        technicalDescription_en: `### Technical Description
+These vulnerabilities are specific to the application's purpose. For example, a flaw in an e-commerce site might allow an attacker to purchase an item for a negative price, or a voting application might allow a user to vote multiple times. These are not typically found by automated scanners.`,
+        technicalDescription_es: `### Descripción Técnica
+Estas vulnerabilidades son específicas del propósito de la aplicación. Por ejemplo, un fallo en un sitio de comercio electrónico podría permitir a un atacante comprar un artículo por un precio negativo, o una aplicación de votación podría permitir a un usuario votar varias veces. Estos no suelen ser encontrados por escáneres automatizados.`,
+        impact_en: `### Impact
+The impact is highly variable and depends on the specific flaw, but it can include financial loss, reputational damage, or data compromise.`,
+        impact_es: `### Impacto
+El impacto es muy variable y depende del fallo específico, pero puede incluir pérdidas financieras, daño a la reputación o compromiso de datos.`,
         remediation_en: {
-            shortTerm: "### Short-Term Recommendations\nReview and correct the specific business logic flaw that was identified.",
-            mediumTerm: "### Medium-Term Recommendations\nPerform a thorough manual review of the application's business logic with a focus on identifying and testing for potential abuses of functionality.",
-            longTerm: "### Long-Term Recommendations\nIncorporate threat modeling into the design phase to consider how legitimate functions could be abused. Create unit and integration tests that specifically cover business logic rules."
+            shortTerm: `### Short-Term Recommendations
+Review and correct the specific business logic flaw that was identified.`,
+            mediumTerm: `### Medium-Term Recommendations
+Perform a thorough manual review of the application's business logic with a focus on identifying and testing for potential abuses of functionality.`,
+            longTerm: `### Long-Term Recommendations
+Incorporate threat modeling into the design phase to consider how legitimate functions could be abused. Create unit and integration tests that specifically cover business logic rules.`
         },
         remediation_es: {
-            shortTerm: "### Recomendaciones a Corto Plazo\nRevisar y corregir el fallo específico de la lógica de negocio que se identificó.",
-            mediumTerm: "### Recomendaciones a Medio Plazo\nRealizar una revisión manual exhaustiva de la lógica de negocio de la aplicación con un enfoque en la identificación y prueba de posibles abusos de la funcionalidad.",
-            longTerm: "### Recomendaciones a Largo Plazo\nIncorporar el modelado de amenazas en la fase de diseño para considerar cómo se podrían abusar de las funciones legítimas. Crear pruebas unitarias y de integración que cubran específicamente las reglas de la lógica de negocio."
+            shortTerm: `### Recomendaciones a Corto Plazo
+Revisar y corregir el fallo específico de la lógica de negocio que se identificó.`,
+            mediumTerm: `### Recomendaciones a Medio Plazo
+Realizar una revisión manual exhaustiva de la lógica de negocio de la aplicación con un enfoque en la identificación y prueba de posibles abusos de la funcionalidad.`,
+            longTerm: `### Recomendaciones a Largo Plazo
+Incorporar el modelado de amenazas en la fase de diseño para considerar cómo se podrían abusar de las funciones legítimas. Crear pruebas unitarias y de integración que cubran específicamente las reglas de la lógica de negocio.`
         },
         cwe: "CWE-840",
         severity: "Medium",
-        cvss: { score: 6.5, vectorString: "CVSS:3.1/AV:N/AC:L/PR:L/UI:N/S:U/C:L/I:L/A:N", attackVector: "N", attackComplexity: "L", privilegesRequired: "L", userInteraction: "N", scope: "U", confidentiality: "L", integrity: "L", availability: "N" },
+        cvss: { score: 6.5, vectorString: "CVSS:3.1/AV:N/AC:L/PR:L/UI:N/S:U/C:L/I:L/A:N", "attackVector": "N", "attackComplexity": "L", "privilegesRequired": "L", "userInteraction": "N", "scope": "U", "confidentiality": "L", "integrity": "L", "availability": "N" },
         references: ["https://owasp.org/www-project-web-security-testing-guide/latest/4-Web_Application_Security_Testing/10-Business_Logic_Testing/README.md"],
         tags: ["Additional"],
-        affectedComponents_en: "### Affected Components\n- [TODO: Describe the business process that is vulnerable.]",
-        details_en: "### Proof of Concept\n[TODO: Provide the step-by-step process for exploiting the business logic flaw.]",
-        affectedComponents_es: "### Componentes Afectados\n- [TODO: Describir el proceso de negocio que es vulnerable.]",
-        details_es: "### Prueba de Concepto\n[TODO: Proporcionar el proceso paso a paso para explotar el fallo de la lógica de negocio.]",
+        affectedComponents_en: `### Affected Components
+- [TODO: Describe the business process that is vulnerable.]`,
+        details_en: `### Proof of Concept
+[TODO: Provide the step-by-step process for exploiting the business logic flaw.]`,
+        affectedComponents_es: `### Componentes Afectados
+- [TODO: Describir el proceso de negocio que es vulnerable.]`,
+        details_es: `### Prueba de Concepto
+[TODO: Proporcionar el proceso paso a paso para explotar el fallo de la lógica de negocio.]`,
         immediateActions_en: "### Immediate Actions\nReview the specific business logic and implement server-side validation to prevent the abuse.",
         immediateActions_es: "### Acciones Inmediatas\nRevisar la lógica de negocio específica e implementar la validación del lado del servidor para prevenir el abuso.",
     },
@@ -3208,31 +3223,47 @@ Un atacante puede realizar un ataque de intermediario (man-in-the-middle) para d
         id: "vuln-add-014",
         title_en: "API Security Misconfiguration",
         title_es: "Configuración Insegura de API",
-        overview_en: "### Overview\nAPIs are often misconfigured, leading to vulnerabilities such as missing authentication, excessive data exposure, or rate limiting issues.",
-        overview_es: "### Resumen\nLas API a menudo están mal configuradas, lo que conduce a vulnerabilidades como la falta de autenticación, la exposición excesiva de datos o problemas de limitación de velocidad.",
-        technicalDescription_en: "### Technical Description\nThis is a broad category covering many API-specific issues. Examples include an API endpoint that returns too much data (e.g., a user object containing a password hash), an endpoint that is missing authentication entirely, or an API that lacks rate limiting, allowing for brute-force attacks.",
-        technicalDescription_es: "### Descripción Técnica\nEsta es una categoría amplia que cubre muchos problemas específicos de la API. Los ejemplos incluyen un punto final de API que devuelve demasiados datos (p. ej., un objeto de usuario que contiene un hash de contraseña), un punto final al que le falta la autenticación por completo, o una API que carece de limitación de velocidad, lo que permite ataques de fuerza bruta.",
-        impact_en: "### Impact\nCan lead to data breaches, account takeovers, and denial-of-service.",
-        impact_es: "### Impacto\nPuede conducir a brechas de datos, tomas de control de cuentas y denegación de servicio.",
+        overview_en: `### Overview
+APIs are often misconfigured, leading to vulnerabilities such as missing authentication, excessive data exposure, or rate limiting issues.`,
+        overview_es: `### Resumen
+Las API a menudo están mal configuradas, lo que conduce a vulnerabilidades como la falta de autenticación, la exposición excesiva de datos o problemas de limitación de velocidad.`,
+        technicalDescription_en: `### Technical Description
+This is a broad category covering many API-specific issues. Examples include an API endpoint that returns too much data (e.g., a user object containing a password hash), an endpoint that is missing authentication entirely, or an API that lacks rate limiting, allowing for brute-force attacks.`,
+        technicalDescription_es: `### Descripción Técnica
+Esta es una categoría amplia que cubre muchos problemas específicos de la API. Los ejemplos incluyen un punto final de API que devuelve demasiados datos (p. ej., un objeto de usuario que contiene un hash de contraseña), un punto final al que le falta la autenticación por completo, o una API que carece de limitación de velocidad, lo que permite ataques de fuerza bruta.`,
+        impact_en: `### Impact
+Can lead to data breaches, account takeovers, and denial-of-service.`,
+        impact_es: `### Impacto
+Puede conducir a brechas de datos, tomas de control de cuentas y denegación de servicio.`,
         remediation_en: {
-            shortTerm: "### Short-Term Recommendations\nApply authentication and authorization to all API endpoints. Ensure that API responses only return the minimum necessary data.",
-            mediumTerm: "### Medium-Term Recommendations\nImplement rate limiting for all API endpoints. Use an API gateway to centralize security controls.",
-            longTerm: "### Long-Term Recommendations\nFollow the OWASP API Security Top 10 best practices. Regularly perform security testing specifically targeting the API."
+            shortTerm: `### Short-Term Recommendations
+Apply authentication and authorization to all API endpoints. Ensure that API responses only return the minimum necessary data.`,
+            mediumTerm: `### Medium-Term Recommendations
+Implement rate limiting for all API endpoints. Use an API gateway to centralize security controls.`,
+            longTerm: `### Long-Term Recommendations
+Follow the OWASP API Security Top 10 best practices. Regularly perform security testing specifically targeting the API.`
         },
         remediation_es: {
-            shortTerm: "### Recomendaciones a Corto Plazo\nAplicar autenticación y autorización a todos los puntos finales de la API. Asegurarse de que las respuestas de la API solo devuelvan los datos mínimos necesarios.",
-            mediumTerm: "### Recomendaciones a Medio Plazo\nImplementar la limitación de velocidad para todos los puntos finales de la API. Usar una puerta de enlace de API para centralizar los controles de seguridad.",
-            longTerm: "### Recomendaciones a Largo Plazo\nSeguir las mejores prácticas del Top 10 de Seguridad de API de OWASP. Realizar regularmente pruebas de seguridad dirigidas específicamente a la API."
+            shortTerm: `### Recomendaciones a Corto Plazo
+Aplicar autenticación y autorización a todos los puntos finales de la API. Asegurarse de que las respuestas de la API solo devuelvan los datos mínimos necesarios.`,
+            mediumTerm: `### Recomendaciones a Medio Plazo
+Implementar la limitación de velocidad para todos los puntos finales de la API. Usar una puerta de enlace de API para centralizar los controles de seguridad.`,
+            longTerm: `### Recomendaciones a Largo Plazo
+Seguir las mejores prácticas del Top 10 de Seguridad de API de OWASP. Realizar regularmente pruebas de seguridad dirigidas específicamente a la API.`
         },
         cwe: "CWE-16",
         severity: "High",
-        cvss: { score: 8.8, vectorString: "CVSS:3.1/AV:N/AC:L/PR:L/UI:N/S:U/C:H/I:H/A:H", attackVector: "N", attackComplexity: "L", privilegesRequired: "L", userInteraction: "N", scope: "U", confidentiality: "H", integrity: "H", availability: "H" },
+        cvss: { score: 8.8, vectorString: "CVSS:3.1/AV:N/AC:L/PR:L/UI:N/S:U/C:H/I:H/A:H", "attackVector": "N", "attackComplexity": "L", "privilegesRequired": "L", "userInteraction": "N", "scope": "U", "confidentiality": "H", "integrity": "H", "availability": "H" },
         references: ["https://owasp.org/www-project-api-security/"],
         tags: ["Additional", "API"],
-        affectedComponents_en: "### Affected Components\n- [TODO: Specify the vulnerable API endpoint and the nature of the misconfiguration.]",
-        details_en: "### Proof of Concept\n[TODO: Provide an API request and response that demonstrates the vulnerability.]",
-        affectedComponents_es: "### Componentes Afectados\n- [TODO: Especificar el punto final de la API vulnerable y la naturaleza de la configuración incorrecta.]",
-        details_es: "### Prueba de Concepto\n[TODO: Proporcionar una solicitud y respuesta de API que demuestre la vulnerabilidad.]",
+        affectedComponents_en: `### Affected Components
+- [TODO: Specify the vulnerable API endpoint and the nature of the misconfiguration.]`,
+        details_en: `### Proof of Concept
+[TODO: Provide an API request and response that demonstrates the vulnerability.]`,
+        affectedComponents_es: `### Componentes Afectados
+- [TODO: Especificar el punto final de la API vulnerable y la naturaleza de la configuración incorrecta.]`,
+        details_es: `### Prueba de Concepto
+[TODO: Proporcionar una solicitud y respuesta de API que demuestre la vulnerabilidad.]`,
         immediateActions_en: "### Immediate Actions\nReview and correct the specific API misconfiguration.",
         immediateActions_es: "### Acciones Inmediatas\nRevisar y corregir la configuración incorrecta específica de la API.",
     },
@@ -3240,31 +3271,47 @@ Un atacante puede realizar un ataque de intermediario (man-in-the-middle) para d
         id: "vuln-add-015",
         title_en: "Insecure Cookies",
         title_es: "Cookies Inseguras",
-        overview_en: "### Overview\nSession cookies are not configured with security attributes, making them vulnerable to interception and hijacking.",
-        overview_es: "### Resumen\nLas cookies de sesión no están configuradas con atributos de seguridad, lo que las hace vulnerables a la interceptación y el secuestro.",
-        technicalDescription_en: "### Technical Description\nThe application fails to set the `Secure` flag on cookies, allowing them to be transmitted over unencrypted HTTP. It may also fail to set the `HttpOnly` flag, allowing them to be accessed by client-side JavaScript (e.g., in an XSS attack), or the `SameSite` attribute, making them vulnerable to CSRF.",
-        technicalDescription_es: "### Descripción Técnica\nLa aplicación no establece la bandera `Secure` en las cookies, lo que permite que se transmitan a través de HTTP no cifrado. También puede no establecer la bandera `HttpOnly`, lo que permite que se acceda a ellas mediante JavaScript del lado del cliente (p. ej., en un ataque XSS), o el atributo `SameSite`, lo que las hace vulnerables a CSRF.",
-        impact_en: "### Impact\nCan lead to session hijacking and account takeover.",
-        impact_es: "### Impacto\nPuede conducir al secuestro de sesiones y a la toma de control de cuentas.",
+        overview_en: `### Overview
+Session cookies are not configured with security attributes, making them vulnerable to interception and hijacking.`,
+        overview_es: `### Resumen
+Las cookies de sesión no están configuradas con atributos de seguridad, lo que las hace vulnerables a la interceptación y el secuestro.`,
+        technicalDescription_en: `### Technical Description
+The application fails to set the \`Secure\` flag on cookies, allowing them to be transmitted over unencrypted HTTP. It may also fail to set the \`HttpOnly\` flag, allowing them to be accessed by client-side JavaScript (e.g., in an XSS attack), or the \`SameSite\` attribute, making them vulnerable to CSRF.`,
+        technicalDescription_es: `### Descripción Técnica
+La aplicación no establece la bandera \`Secure\` en las cookies, lo que permite que se transmitan a través de HTTP no cifrado. También puede no establecer la bandera \`HttpOnly\`, lo que permite que se acceda a ellas mediante JavaScript del lado del cliente (p. ej., en un ataque XSS), o el atributo \`SameSite\`, lo que las hace vulnerables a CSRF.`,
+        impact_en: `### Impact
+Can lead to session hijacking and account takeover.`,
+        impact_es: `### Impacto
+Puede conducir al secuestro de sesiones y a la toma de control de cuentas.`,
         remediation_en: {
-            shortTerm: "### Short-Term Recommendations\nSet the `Secure` and `HttpOnly` flags on all session cookies.",
-            mediumTerm: "### Medium-Term Recommendations\nSet the `SameSite` attribute to `Strict` or `Lax` to protect against CSRF attacks.",
-            longTerm: "### Long-Term Recommendations\nReview the entire application to ensure that all cookies are configured with the appropriate security attributes according to their purpose."
+            shortTerm: `### Short-Term Recommendations
+Set the \`Secure\` and \`HttpOnly\` flags on all session cookies.`,
+            mediumTerm: `### Medium-Term Recommendations
+Set the \`SameSite\` attribute to \`Strict\` or \`Lax\` to protect against CSRF attacks.`,
+            longTerm: `### Long-Term Recommendations
+Review the entire application to ensure that all cookies are configured with the appropriate security attributes according to their purpose.`
         },
         remediation_es: {
-            shortTerm: "### Recomendaciones a Corto Plazo\nEstablecer las banderas `Secure` y `HttpOnly` en todas las cookies de sesión.",
-            mediumTerm: "### Recomendaciones a Medio Plazo\nEstablecer el atributo `SameSite` en `Strict` o `Lax` para protegerse contra los ataques CSRF.",
-            longTerm: "### Recomendaciones a Largo Plazo\nRevisar toda la aplicación para asegurarse de que todas las cookies estén configuradas con los atributos de seguridad adecuados según su propósito."
+            shortTerm: `### Recomendaciones a Corto Plazo
+Establecer las banderas \`Secure\` y \`HttpOnly\` en todas las cookies de sesión.`,
+            mediumTerm: `### Recomendaciones a Medio Plazo
+Establecer el atributo \`SameSite\` en \`Strict\` o \`Lax\` para protegerse contra los ataques CSRF.`,
+            longTerm: `### Recomendaciones a Largo Plazo
+Revisar toda la aplicación para asegurarse de que todas las cookies estén configuradas con los atributos de seguridad adecuados según su propósito.`
         },
         cwe: "CWE-1004",
         severity: "Medium",
-        cvss: { score: 6.5, vectorString: "CVSS:3.1/AV:N/AC:L/PR:N/UI:R/S:U/C:L/I:L/A:N", attackVector: "N", attackComplexity: "L", privilegesRequired: "N", userInteraction: "R", scope: "U", confidentiality: "L", integrity: "L", availability: "N" },
+        cvss: { score: 6.5, vectorString: "CVSS:3.1/AV:N/AC:L/PR:N/UI:R/S:U/C:L/I:L/A:N", "attackVector": "N", "attackComplexity": "L", "privilegesRequired": "N", "userInteraction": "R", "scope": "U", "confidentiality": "L", "integrity": "L", "availability": "N" },
         references: ["https://owasp.org/www-project-web-security-testing-guide/latest/4-Web_Application_Security_Testing/06-Session_Management_Testing/02-Testing_for_Cookies_Attributes"],
         tags: ["Additional", "Web"],
-        affectedComponents_en: "### Affected Components\n- The session cookies issued by the application.",
-        details_en: "### Proof of Concept\n[TODO: Provide a screenshot of the browser's developer tools showing the cookie attributes, or lack thereof.]",
-        affectedComponents_es: "### Componentes Afectados\n- Las cookies de sesión emitidas por la aplicación.",
-        details_es: "### Prueba de Concepto\n[TODO: Proporcionar una captura de pantalla de las herramientas de desarrollador del navegador que muestre los atributos de la cookie, o la falta de ellos.]",
+        affectedComponents_en: `### Affected Components
+- The session cookies issued by the application.`,
+        details_en: `### Proof of Concept
+[TODO: Provide a screenshot of the browser's developer tools showing the cookie attributes, or lack thereof.]`,
+        affectedComponents_es: `### Componentes Afectados
+- Las cookies de sesión emitidas por la aplicación.`,
+        details_es: `### Prueba de Concepto
+[TODO: Proporcionar una captura de pantalla de las herramientas de desarrollador del navegador que muestre los atributos de la cookie, o la falta de ellos.]`,
         immediateActions_en: "### Immediate Actions\nAdd the `Secure` and `HttpOnly` flags to all session cookies.",
         immediateActions_es: "### Acciones Inmediatas\nAñadir las banderas `Secure` y `HttpOnly` a todas las cookies de sesión.",
     },
@@ -3272,31 +3319,47 @@ Un atacante puede realizar un ataque de intermediario (man-in-the-middle) para d
         id: "vuln-add-016",
         title_en: "HTTP Response Splitting",
         title_es: "División de Respuestas HTTP",
-        overview_en: "### Overview\nHTTP response splitting is a vulnerability where an attacker can inject newline characters into the HTTP response headers to craft a malicious response.",
-        overview_es: "### Resumen\nLa división de respuestas HTTP es una vulnerabilidad en la que un atacante puede inyectar caracteres de nueva línea en los encabezados de respuesta HTTP para crear una respuesta maliciosa.",
-        technicalDescription_en: "### Technical Description\nIf an application includes user-supplied input in response headers without proper sanitization (e.g., in a redirect URL), an attacker can inject `CRLF` characters (`%0d%0a`). This allows them to terminate the intended headers and inject their own, such as a second HTTP response with malicious content.",
-        technicalDescription_es: "### Descripción Técnica\nSi una aplicación incluye la entrada proporcionada por el usuario en los encabezados de respuesta sin una sanitización adecuada (p. ej., en una URL de redirección), un atacante puede inyectar caracteres `CRLF` (`%0d%0a`). Esto les permite terminar los encabezados previstos e inyectar los suyos propios, como una segunda respuesta HTTP con contenido malicioso.",
-        impact_en: "### Impact\nCan lead to cross-site scripting (XSS), cross-user defacement, web cache poisoning, and similar attacks.",
-        impact_es: "### Impacto\nPuede conducir a cross-site scripting (XSS), desfiguración entre usuarios, envenenamiento de caché web y ataques similares.",
+        overview_en: `### Overview
+HTTP response splitting is a vulnerability where an attacker can inject newline characters into the HTTP response headers to craft a malicious response.`,
+        overview_es: `### Resumen
+La división de respuestas HTTP es una vulnerabilidad en la que un atacante puede inyectar caracteres de nueva línea en los encabezados de respuesta HTTP para crear una respuesta maliciosa.`,
+        technicalDescription_en: `### Technical Description
+If an application includes user-supplied input in response headers without proper sanitization (e.g., in a redirect URL), an attacker can inject \`CRLF\` characters (\`%0d%0a\`). This allows them to terminate the intended headers and inject their own, such as a second HTTP response with malicious content.`,
+        technicalDescription_es: `### Descripción Técnica
+Si una aplicación incluye la entrada proporcionada por el usuario en los encabezados de respuesta sin una sanitización adecuada (p. ej., en una URL de redirección), un atacante puede inyectar caracteres \`CRLF\` (\`%0d%0a\`). Esto les permite terminar los encabezados previstos e inyectar los suyos propios, como una segunda respuesta HTTP con contenido malicioso.`,
+        impact_en: `### Impact
+Can lead to cross-site scripting (XSS), cross-user defacement, web cache poisoning, and similar attacks.`,
+        impact_es: `### Impacto
+Puede conducir a cross-site scripting (XSS), desfiguración entre usuarios, envenenamiento de caché web y ataques similares.`,
         remediation_en: {
-            shortTerm: "### Short-Term Recommendations\nSanitize all user-supplied input before including it in HTTP response headers by removing or encoding newline characters.",
-            mediumTerm: "### Medium-Term Recommendations\nUse a library or framework function that automatically handles the encoding of header values.",
-            longTerm: "### Long-Term Recommendations\nAvoid including user input in response headers whenever possible."
+            shortTerm: `### Short-Term Recommendations
+Sanitize all user-supplied input before including it in HTTP response headers by removing or encoding newline characters.`,
+            mediumTerm: `### Medium-Term Recommendations
+Use a library or framework function that automatically handles the encoding of header values.`,
+            longTerm: `### Long-Term Recommendations
+Avoid including user input in response headers whenever possible.`
         },
         remediation_es: {
-            shortTerm: "### Recomendaciones a Corto Plazo\nSanear toda la entrada proporcionada por el usuario antes de incluirla en los encabezados de respuesta HTTP eliminando o codificando los caracteres de nueva línea.",
-            mediumTerm: "### Recomendaciones a Medio Plazo\nUsar una biblioteca o función de framework que maneje automáticamente la codificación de los valores de los encabezados.",
-            longTerm: "### Recomendaciones a Largo Plazo\nEvitar incluir la entrada del usuario en los encabezados de respuesta siempre que sea posible."
+            shortTerm: `### Recomendaciones a Corto Plazo
+Sanear toda la entrada proporcionada por el usuario antes de incluirla en los encabezados de respuesta HTTP eliminando o codificando los caracteres de nueva línea.`,
+            mediumTerm: `### Recomendaciones a Medio Plazo
+Usar una biblioteca o función de framework que maneje automáticamente la codificación de los valores de los encabezados.`,
+            longTerm: `### Recomendaciones a Largo Plazo
+Evitar incluir la entrada del usuario en los encabezados de respuesta siempre que sea posible.`
         },
         cwe: "CWE-113",
         severity: "Medium",
-        cvss: { score: 6.1, vectorString: "CVSS:3.1/AV:N/AC:L/PR:N/UI:R/S:C/C:L/I:L/A:N", attackVector: "N", attackComplexity: "L", privilegesRequired: "N", userInteraction: "R", scope: "C", confidentiality: "L", integrity: "L", availability: "N" },
+        cvss: { score: 6.1, vectorString: "CVSS:3.1/AV:N/AC:L/PR:N/UI:R/S:C/C:L/I:L/A:N", "attackVector": "N", "attackComplexity": "L", "privilegesRequired": "N", "userInteraction": "R", "scope": "C", "confidentiality": "L", "integrity": "L", "availability": "N" },
         references: ["https://owasp.org/www-community/attacks/HTTP_Response_Splitting"],
         tags: ["Additional", "Web"],
-        affectedComponents_en: "### Affected Components\n- [TODO: Specify the function and parameter that is vulnerable.]",
-        details_en: "### Proof of Concept\n[TODO: Provide a request with a CRLF injection payload and show the resulting split response.]",
-        affectedComponents_es: "### Componentes Afectados\n- [TODO: Especificar la función y el parámetro que es vulnerable.]",
-        details_es: "### Prueba de Concepto\n[TODO: Proporcionar una solicitud con una carga útil de inyección CRLF y mostrar la respuesta dividida resultante.]",
+        affectedComponents_en: `### Affected Components
+- [TODO: Specify the function and parameter that is vulnerable.]`,
+        details_en: `### Proof of Concept
+[TODO: Provide a request with a CRLF injection payload and show the resulting split response.]`,
+        affectedComponents_es: `### Componentes Afectados
+- [TODO: Especificar la función y el parámetro que es vulnerable.]`,
+        details_es: `### Prueba de Concepto
+[TODO: Proporcionar una solicitud con una carga útil de inyección CRLF y mostrar la respuesta dividida resultante.]`,
         immediateActions_en: "### Immediate Actions\nImplement input sanitization for all parameters reflected in HTTP headers.",
         immediateActions_es: "### Acciones Inmediatas\nImplementar la sanitización de entradas para todos los parámetros reflejados en los encabezados HTTP.",
     },
@@ -3304,31 +3367,47 @@ Un atacante puede realizar un ataque de intermediario (man-in-the-middle) para d
         id: "vuln-add-017",
         title_en: "Web Cache Poisoning",
         title_es: "Envenenamiento de Caché Web",
-        overview_en: "### Overview\nWeb cache poisoning is an attack where an attacker exploits the behavior of a web cache to serve a malicious HTTP response to other users.",
-        overview_es: "### Resumen\nEl envenenamiento de caché web es un ataque en el que un atacante explota el comportamiento de una caché web para servir una respuesta HTTP maliciosa a otros usuarios.",
-        technicalDescription_en: "### Technical Description\nThe attacker sends a request with a specially crafted, unkeyed header (a header not included in the cache key). The server's response, which may reflect the header's content, is then stored in the cache. When other users request the same URL, they receive the poisoned, malicious response from the cache.",
-        technicalDescription_es: "### Descripción Técnica\nEl atacante envía una solicitud con un encabezado especialmente diseñado y no clave (un encabezado no incluido en la clave de caché). La respuesta del servidor, que puede reflejar el contenido del encabezado, se almacena en la caché. Cuando otros usuarios solicitan la misma URL, reciben la respuesta maliciosa envenenada de la caché.",
-        impact_en: "### Impact\nCan be used to deliver XSS payloads to a wide range of users, hijack sessions, or deface the website.",
-        impact_es: "### Impacto\nPuede ser utilizado para entregar cargas útiles de XSS a una amplia gama de usuarios, secuestrar sesiones o desfigurar el sitio web.",
+        overview_en: `### Overview
+Web cache poisoning is an attack where an attacker exploits the behavior of a web cache to serve a malicious HTTP response to other users.`,
+        overview_es: `### Resumen
+El envenenamiento de caché web es un ataque en el que un atacante explota el comportamiento de una caché web para servir una respuesta HTTP maliciosa a otros usuarios.`,
+        technicalDescription_en: `### Technical Description
+The attacker sends a request with a specially crafted, unkeyed header (a header not included in the cache key). The server's response, which may reflect the header's content, is then stored in the cache. When other users request the same URL, they receive the poisoned, malicious response from the cache.`,
+        technicalDescription_es: `### Descripción Técnica
+El atacante envía una solicitud con un encabezado especialmente diseñado y no clave (un encabezado no incluido en la clave de caché). La respuesta del servidor, que puede reflejar el contenido del encabezado, se almacena en la caché. Cuando otros usuarios solicitan la misma URL, reciben la respuesta maliciosa envenenada de la caché.`,
+        impact_en: `### Impact
+Can be used to deliver XSS payloads to a wide range of users, hijack sessions, or deface the website.`,
+        impact_es: `### Impacto
+Puede ser utilizado para entregar cargas útiles de XSS a una amplia gama de usuarios, secuestrar sesiones o desfigurar el sitio web.`,
         remediation_en: {
-            shortTerm: "### Short-Term Recommendations\nConfigure the web cache to only include a specific, allow-listed set of headers in the cache key.",
-            mediumTerm: "### Medium-Term Recommendations\nDisable the use of unkeyed headers in the application logic entirely.",
-            longTerm: "### Long-Term Recommendations\nRegularly audit and test the caching configuration for vulnerabilities."
+            shortTerm: `### Short-Term Recommendations
+Configure the web cache to only include a specific, allow-listed set of headers in the cache key.`,
+            mediumTerm: `### Medium-Term Recommendations
+Disable the use of unkeyed headers in the application logic entirely.`,
+            longTerm: `### Long-Term Recommendations
+Regularly audit and test the caching configuration for vulnerabilities.`
         },
         remediation_es: {
-            shortTerm: "### Recomendaciones a Corto Plazo\nConfigurar la caché web para incluir solo un conjunto específico de encabezados permitidos en la clave de caché.",
-            mediumTerm: "### Recomendaciones a Medio Plazo\nDeshabilitar por completo el uso de encabezados no clave en la lógica de la aplicación.",
-            longTerm: "### Recomendaciones a Largo Plazo\nAuditar y probar regularmente la configuración de almacenamiento en caché para detectar vulnerabilidades."
+            shortTerm: `### Recomendaciones a Corto Plazo
+Configurar la caché web para incluir solo un conjunto específico de encabezados permitidos en la clave de caché.`,
+            mediumTerm: `### Recomendaciones a Medio Plazo
+Deshabilitar por completo el uso de encabezados no clave en la lógica de la aplicación.`,
+            longTerm: `### Recomendaciones a Largo Plazo
+Auditar y probar regularmente la configuración de almacenamiento en caché para detectar vulnerabilidades.`
         },
         cwe: "CWE-444",
         severity: "High",
-        cvss: { score: 8.8, vectorString: "CVSS:3.1/AV:N/AC:L/PR:N/UI:R/S:U/C:H/I:H/A:H", attackVector: "N", attackComplexity: "L", privilegesRequired: "N", userInteraction: "R", scope: "U", confidentiality: "H", integrity: "H", availability: "H" },
+        cvss: { score: 8.8, vectorString: "CVSS:3.1/AV:N/AC:L/PR:N/UI:R/S:U/C:H/I:H/A:H", "attackVector": "N", "attackComplexity": "L", "privilegesRequired": "N", "userInteraction": "R", "scope": "U", "confidentiality": "H", "integrity": "H", "availability": "H" },
         references: ["https://portswigger.net/web-security/web-cache-poisoning"],
         tags: ["Additional", "Web"],
-        affectedComponents_en: "### Affected Components\n- The web cache and the application logic that handles request headers.",
-        details_en: "### Proof of Concept\n[TODO: Provide a sequence of requests to poison the cache and then a request that retrieves the poisoned content.]",
-        affectedComponents_es: "### Componentes Afectados\n- La caché web y la lógica de la aplicación que maneja los encabezados de las solicitudes.",
-        details_es: "### Prueba de Concepto\n[TODO: Proporcionar una secuencia de solicitudes para envenenar la caché y luego una solicitud que recupere el contenido envenenado.]",
+        affectedComponents_en: `### Affected Components
+- The web cache and the application logic that handles request headers.`,
+        details_en: `### Proof of Concept
+[TODO: Provide a sequence of requests to poison the cache and then a request that retrieves the poisoned content.]`,
+        affectedComponents_es: `### Componentes Afectados
+- La caché web y la lógica de la aplicación que maneja los encabezados de las solicitudes.`,
+        details_es: `### Prueba de Concepto
+[TODO: Proporcionar una secuencia de solicitudes para envenenar la caché y luego una solicitud que recupere el contenido envenenado.]`,
         immediateActions_en: "### Immediate Actions\nPurge the web cache. Review the cache configuration to restrict which headers are keyed.",
         immediateActions_es: "### Acciones Inmediatas\nPurgar la caché web. Revisar la configuración de la caché para restringir qué encabezados se utilizan como clave.",
     },
@@ -3336,31 +3415,47 @@ Un atacante puede realizar un ataque de intermediario (man-in-the-middle) para d
         id: "vuln-add-018",
         title_en: "Host Header Injection",
         title_es: "Inyección en Cabecera Host",
-        overview_en: "### Overview\nHost header injection vulnerabilities arise when an application trusts the HTTP Host header to generate links, import scripts, or even perform redirects.",
-        overview_es: "### Resumen\nLas vulnerabilidades de inyección en la cabecera Host surgen cuando una aplicación confía en la cabecera Host HTTP para generar enlaces, importar scripts o incluso realizar redirecciones.",
-        technicalDescription_en: "### Technical Description\nAn attacker can manipulate the Host header in an HTTP request. If the server uses this header to construct URLs without validation, the attacker can cause the application to generate links pointing to a malicious domain. This is often used to facilitate password reset poisoning.",
-        technicalDescription_es: "### Descripción Técnica\nUn atacante puede manipular la cabecera Host en una solicitud HTTP. Si el servidor usa esta cabecera para construir URL sin validación, el atacante puede hacer que la aplicación genere enlaces que apunten a un dominio malicioso. Esto se utiliza a menudo para facilitar el envenenamiento del restablecimiento de contraseña.",
-        impact_en: "### Impact\nCan be used to perform web cache poisoning, bypass security controls, and, most notably, poison password reset emails to steal user accounts.",
-        impact_es: "### Impacto\nPuede ser utilizado para realizar envenenamiento de caché web, eludir controles de seguridad y, sobre todo, envenenar los correos electrónicos de restablecimiento de contraseña para robar cuentas de usuario.",
+        overview_en: `### Overview
+Host header injection vulnerabilities arise when an application trusts the HTTP Host header to generate links, import scripts, or even perform redirects.`,
+        overview_es: `### Resumen
+Las vulnerabilidades de inyección en la cabecera Host surgen cuando una aplicación confía en la cabecera Host HTTP para generar enlaces, importar scripts o incluso realizar redirecciones.`,
+        technicalDescription_en: `### Technical Description
+An attacker can manipulate the Host header in an HTTP request. If the server uses this header to construct URLs without validation, the attacker can cause the application to generate links pointing to a malicious domain. This is often used to facilitate password reset poisoning.`,
+        technicalDescription_es: `### Descripción Técnica
+Un atacante puede manipular la cabecera Host en una solicitud HTTP. Si el servidor usa esta cabecera para construir URL sin validación, el atacante puede hacer que la aplicación genere enlaces que apunten a un dominio malicioso. Esto se utiliza a menudo para facilitar el envenenamiento del restablecimiento de contraseña.`,
+        impact_en: `### Impact
+Can be used to perform web cache poisoning, bypass security controls, and, most notably, poison password reset emails to steal user accounts.`,
+        impact_es: `### Impacto
+Puede ser utilizado para realizar envenenamiento de caché web, eludir controles de seguridad y, sobre todo, envenenar los correos electrónicos de restablecimiento de contraseña para robar cuentas de usuario.`,
         remediation_en: {
-            shortTerm: "### Short-Term Recommendations\nDo not use the Host header to generate URLs or for routing. Use a hardcoded, server-side configuration value for the domain name.",
-            mediumTerm: "### Medium-Term Recommendations\nIf the Host header must be used, validate it against a strict allow-list of known, trusted hostnames.",
-            longTerm: "### Long-Term Recommendations\nReview all code to ensure the Host header is never used in security-sensitive contexts."
+            shortTerm: `### Short-Term Recommendations
+Do not use the Host header to generate URLs or for routing. Use a hardcoded, server-side configuration value for the domain name.`,
+            mediumTerm: `### Medium-Term Recommendations
+If the Host header must be used, validate it against a strict allow-list of known, trusted hostnames.`,
+            longTerm: `### Long-Term Recommendations
+Review all code to ensure the Host header is never used in security-sensitive contexts.`
         },
         remediation_es: {
-            shortTerm: "### Recomendaciones a Corto Plazo\nNo utilizar la cabecera Host para generar URL o para el enrutamiento. Usar un valor de configuración codificado en el lado del servidor para el nombre de dominio.",
-            mediumTerm: "### Recomendaciones a Medio Plazo\nSi se debe usar la cabecera Host, validarla contra una lista blanca estricta de nombres de host conocidos y de confianza.",
-            longTerm: "### Recomendaciones a Largo Plazo\nRevisar todo el código para asegurarse de que la cabecera Host nunca se utilice en contextos sensibles a la seguridad."
+            shortTerm: `### Recomendaciones a Corto Plazo
+No utilizar la cabecera Host para generar URL o para el enrutamiento. Usar un valor de configuración codificado en el lado del servidor para el nombre de dominio.`,
+            mediumTerm: `### Recomendaciones a Medio Plazo
+Si se debe usar la cabecera Host, validarla contra una lista blanca estricta de nombres de host conocidos y de confianza.`,
+            longTerm: `### Recomendaciones a Largo Plazo
+Revisar todo el código para asegurarse de que la cabecera Host nunca se utilice en contextos sensibles a la seguridad.`
         },
         cwe: "CWE-74",
         severity: "Medium",
-        cvss: { score: 6.1, vectorString: "CVSS:3.1/AV:N/AC:L/PR:N/UI:R/S:C/C:L/I:L/A:N", attackVector: "N", attackComplexity: "L", privilegesRequired: "N", userInteraction: "R", scope: "C", confidentiality: "L", integrity: "L", availability: "N" },
+        cvss: { score: 6.1, vectorString: "CVSS:3.1/AV:N/AC:L/PR:N/UI:R/S:C/C:L/I:L/A:N", "attackVector": "N", "attackComplexity": "L", "privilegesRequired": "N", "userInteraction": "R", "scope": "C", "confidentiality": "L", "integrity": "L", "availability": "N" },
         references: ["https://portswigger.net/web-security/host-header"],
         tags: ["Additional", "Web"],
-        affectedComponents_en: "### Affected Components\n- Any functionality that uses the Host header to generate absolute URLs, particularly password reset links.",
-        details_en: "### Proof of Concept\n[TODO: Send a password reset request with a modified Host header and show that the generated reset link points to an attacker-controlled domain.]",
-        affectedComponents_es: "### Componentes Afectados\n- Cualquier funcionalidad que utilice la cabecera Host para generar URL absolutas, en particular los enlaces de restablecimiento de contraseña.",
-        details_es: "### Prueba de Concepto\n[TODO: Enviar una solicitud de restablecimiento de contraseña con una cabecera Host modificada y mostrar que el enlace de restablecimiento generado apunta a un dominio controlado por el atacante.]",
+        affectedComponents_en: `### Affected Components
+- Any functionality that uses the Host header to generate absolute URLs, particularly password reset links.`,
+        details_en: `### Proof of Concept
+[TODO: Send a password reset request with a modified Host header and show that the generated reset link points to an attacker-controlled domain.]`,
+        affectedComponents_es: `### Componentes Afectados
+- Cualquier funcionalidad que utilice la cabecera Host para generar URL absolutas, en particular los enlaces de restablecimiento de contraseña.`,
+        details_es: `### Prueba de Concepto
+[TODO: Enviar una solicitud de restablecimiento de contraseña con una cabecera Host modificada y mostrar que el enlace de restablecimiento generado apunta a un dominio controlado por el atacante.]`,
         immediateActions_en: "### Immediate Actions\nConfigure the web server to use a fixed domain name for URL generation and ignore the Host header.",
         immediateActions_es: "### Acciones Inmediatas\nConfigurar el servidor web para que utilice un nombre de dominio fijo para la generación de URL e ignore la cabecera Host.",
     },
@@ -3368,31 +3463,47 @@ Un atacante puede realizar un ataque de intermediario (man-in-the-middle) para d
         id: "vuln-add-019",
         title_en: "SQLi Blind",
         title_es: "Inyección SQL ciega",
-        overview_en: "### Overview\nBlind SQL injection is a type of SQL injection attack that asks the database true or false questions and determines the answer based on the application's response.",
-        overview_es: "### Resumen\nLa inyección SQL ciega es un tipo de ataque de inyección SQL que hace preguntas de verdadero o falso a la base de datos y determina la respuesta en función de la respuesta de la aplicación.",
-        technicalDescription_en: "### Technical Description\nThis attack is used when the application does not return data from the database in its responses. The attacker can use boolean-based techniques (observing whether the page content changes) or time-based techniques (injecting a `WAITFOR DELAY` or `SLEEP` command and observing the response time) to exfiltrate data character by character.",
-        technicalDescription_es: "### Descripción Técnica\nEste ataque se utiliza cuando la aplicación no devuelve datos de la base de datos en sus respuestas. El atacante puede utilizar técnicas basadas en booleanos (observando si el contenido de la página cambia) o técnicas basadas en el tiempo (inyectando un comando `WAITFOR DELAY` o `SLEEP` y observando el tiempo de respuesta) para exfiltrar datos carácter por carácter.",
-        impact_en: "### Impact\nAlthough slower to exploit, blind SQL injection can lead to the full compromise of the database, allowing an attacker to exfiltrate all data.",
-        impact_es: "### Impacto\nAunque es más lento de explotar, la inyección SQL ciega puede llevar al compromiso total de la base de datos, permitiendo a un atacante exfiltrar todos los datos.",
+        overview_en: `### Overview
+Blind SQL injection is a type of SQL injection attack that asks the database true or false questions and determines the answer based on the application's response.`,
+        overview_es: `### Resumen
+La inyección SQL ciega es un tipo de ataque de inyección SQL que hace preguntas de verdadero o falso a la base de datos y determina la respuesta en función de la respuesta de la aplicación.`,
+        technicalDescription_en: `### Technical Description
+This attack is used when the application does not return data from the database in its responses. The attacker can use boolean-based techniques (observing whether the page content changes) or time-based techniques (injecting a \`WAITFOR DELAY\` or \`SLEEP\` command and observing the response time) to exfiltrate data character by character.`,
+        technicalDescription_es: `### Descripción Técnica
+Este ataque se utiliza cuando la aplicación no devuelve datos de la base de datos en sus respuestas. El atacante puede utilizar técnicas basadas en booleanos (observando si el contenido de la página cambia) o técnicas basadas en el tiempo (inyectando un comando \`WAITFOR DELAY\` o \`SLEEP\` y observando el tiempo de respuesta) para exfiltrar datos carácter por carácter.`,
+        impact_en: `### Impact
+Although slower to exploit, blind SQL injection can lead to the full compromise of the database, allowing an attacker to exfiltrate all data.`,
+        impact_es: `### Impacto
+Aunque es más lento de explotar, la inyección SQL ciega puede llevar al compromiso total de la base de datos, permitiendo a un atacante exfiltrar todos los datos.`,
         remediation_en: {
-            shortTerm: "### Short-Term Recommendations\nUse parameterized queries (prepared statements) for all database interactions. This is the most effective defense.",
-            mediumTerm: "### Medium-Term Recommendations\nImplement least-privilege access for the application's database user.",
-            longTerm: "### Long-Term Recommendations\nUse static analysis tools to find and fix all SQL injection flaws in the codebase."
+            shortTerm: `### Short-Term Recommendations
+Use parameterized queries (prepared statements) for all database interactions. This is the most effective defense.`,
+            mediumTerm: `### Medium-Term Recommendations
+Implement least-privilege access for the application's database user.`,
+            longTerm: `### Long-Term Recommendations
+Use static analysis tools to find and fix all SQL injection flaws in the codebase.`
         },
         remediation_es: {
-            shortTerm: "### Recomendaciones a Corto Plazo\nUtilizar consultas parametrizadas (prepared statements) para todas las interacciones con la base de datos. Esta es la defensa más efectiva.",
-            mediumTerm: "### Recomendaciones a Medio Plazo\nImplementar el acceso de mínimo privilegio para el usuario de la base de datos de la aplicación.",
-            longTerm: "### Recomendaciones a Largo Plazo\nUtilizar herramientas de análisis estático para encontrar y corregir todas las fallas de inyección SQL en el código base."
+            shortTerm: `### Recomendaciones a Corto Plazo
+Utilizar consultas parametrizadas (prepared statements) para todas las interacciones con la base de datos. Esta es la defensa más efectiva.`,
+            mediumTerm: `### Recomendaciones a Medio Plazo
+Implementar el acceso de mínimo privilegio para el usuario de la base de datos de la aplicación.`,
+            longTerm: `### Recomendaciones a Largo Plazo
+Utilizar herramientas de análisis estático para encontrar y corregir todas las fallas de inyección SQL en el código base.`
         },
         cwe: "CWE-89",
         severity: "High",
-        cvss: { score: 8.8, vectorString: "CVSS:3.1/AV:N/AC:L/PR:L/UI:N/S:U/C:H/I:H/A:H", attackVector: "N", attackComplexity: "L", privilegesRequired: "L", userInteraction: "N", scope: "U", confidentiality: "H", integrity: "H", availability: "H" },
+        cvss: { score: 8.8, vectorString: "CVSS:3.1/AV:N/AC:L/PR:L/UI:N/S:U/C:H/I:H/A:H", "attackVector": "N", "attackComplexity": "L", "privilegesRequired": "L", "userInteraction": "N", "scope": "U", "confidentiality": "H", "integrity": "H", "availability": "H" },
         references: ["https://owasp.org/www-community/attacks/Blind_SQL_Injection"],
         tags: ["Additional", "Web"],
-        affectedComponents_en: "### Affected Components\n- [TODO: Specify the vulnerable parameter and URL.]",
-        details_en: "### Proof of Concept\n[TODO: Provide a time-based or boolean-based payload and show how it can be used to exfiltrate a piece of data (e.g., the first character of the database name).]",
-        affectedComponents_es: "### Componentes Afectados\n- [TODO: Especificar el parámetro y la URL vulnerables.]",
-        details_es: "### Prueba de Concepto\n[TODO: Proporcionar una carga útil basada en tiempo o booleana y mostrar cómo se puede usar para exfiltrar una pieza de datos (p. ej., el primer carácter del nombre de la base de datos).]",
+        affectedComponents_en: `### Affected Components
+- [TODO: Specify the vulnerable parameter and URL.]`,
+        details_en: `### Proof of Concept
+[TODO: Provide a time-based or boolean-based payload and show how it can be used to exfiltrate a piece of data (e.g., the first character of the database name).]`,
+        affectedComponents_es: `### Componentes Afectados
+- [TODO: Especificar el parámetro y la URL vulnerables.]`,
+        details_es: `### Prueba de Concepto
+[TODO: Proporcionar una carga útil basada en tiempo o booleana y mostrar cómo se puede usar para exfiltrar una pieza de datos (p. ej., el primer carácter del nombre de la base de datos).}]`,
         immediateActions_en: "### Immediate Actions\nImplement parameterized queries for the vulnerable part of the application.",
         immediateActions_es: "### Acciones Inmediatas\nImplementar consultas parametrizadas para la parte vulnerable de la aplicación.",
     },
@@ -3400,69 +3511,403 @@ Un atacante puede realizar un ataque de intermediario (man-in-the-middle) para d
         id: "vuln-add-020",
         title_en: "OS Command Injection",
         title_es: "Inyección de Comandos del SO",
-        overview_en: "### Overview\nOS command injection is a web security vulnerability that allows an attacker to execute arbitrary operating system commands on the server that is running an application, and typically fully compromise the application and all its data.",
-        overview_es: "### Resumen\nLa inyección de comandos del SO es una vulnerabilidad de seguridad web que permite a un atacante ejecutar comandos arbitrarios del sistema operativo en el servidor que ejecuta una aplicación y, por lo general, comprometer por completo la aplicación y todos sus datos.",
-        technicalDescription_en: "### Technical Description\nThe vulnerability arises when an application passes unsanitized user-supplied input to a system shell. An attacker can use shell metacharacters like `&`, `|`, `;` to append their own commands to the one intended by the developer.",
-        technicalDescription_es: "### Descripción Técnica\nLa vulnerabilidad surge cuando una aplicación pasa la entrada proporcionada por el usuario sin sanear a una shell del sistema. Un atacante puede usar metacaracteres de la shell como `&`, `|`, `;` para agregar sus propios comandos al que pretendía el desarrollador.",
-        impact_en: "### Impact\nCan lead to full remote code execution on the server, giving the attacker complete control.",
-        impact_es: "### Impacto\nPuede conducir a la ejecución remota de código completa en el servidor, otorgando al atacante un control completo.",
+        overview_en: `### Overview
+OS command injection is a web security vulnerability that allows an attacker to execute arbitrary operating system commands on the server that is running an application, and typically fully compromise the application and all its data.`,
+        overview_es: `### Resumen
+La inyección de comandos del SO es una vulnerabilidad de seguridad web que permite a un atacante ejecutar comandos arbitrarios del sistema operativo en el servidor que ejecuta una aplicación y, por lo general, comprometer por completo la aplicación y todos sus datos.`,
+        technicalDescription_en: `### Technical Description
+The vulnerability arises when an application passes unsanitized user-supplied input to a system shell. An attacker can use shell metacharacters like \`&\`, \`|\`, \`;\` to append their own commands to the one intended by the developer.`,
+        technicalDescription_es: `### Descripción Técnica
+La vulnerabilidad surge cuando una aplicación pasa la entrada proporcionada por el usuario sin sanear a una shell del sistema. Un atacante puede usar metacaracteres de la shell como \`&\`, \`|\`, \`;\` para agregar sus propios comandos al que pretendía el desarrollador.`,
+        impact_en: `### Impact
+Can lead to full remote code execution on the server, giving the attacker complete control.`,
+        impact_es: `### Impacto
+Puede conducir a la ejecución remota de código completa en el servidor, otorgando al atacante un control completo.`,
         remediation_en: {
-            shortTerm: "### Short-Term Recommendations\nAvoid calling OS commands directly. Use built-in language APIs to achieve the same functionality where possible.",
-            mediumTerm: "### Medium-Term Recommendations\nIf calling an OS command is unavoidable, use structured APIs that accept a list of arguments rather than a single command string. This prevents shell metacharacter interpretation.",
-            longTerm: "### Long-Term Recommendations\nRun the application with the minimum privileges necessary. Implement a Web Application Firewall (WAF) with rules to detect and block command injection attempts."
+            shortTerm: `### Short-Term Recommendations
+Avoid calling OS commands directly. Use built-in language APIs to achieve the same functionality where possible.`,
+            mediumTerm: `### Medium-Term Recommendations
+If calling an OS command is unavoidable, use structured APIs that accept a list of arguments rather than a single command string. This prevents shell metacharacter interpretation.`,
+            longTerm: `### Long-Term Recommendations
+Run the application with the minimum privileges necessary. Implement a Web Application Firewall (WAF) with rules to detect and block command injection attempts.`
         },
         remediation_es: {
-            shortTerm: "### Recomendaciones a Corto Plazo\nEvitar llamar directamente a los comandos del SO. Usar las API integradas del lenguaje para lograr la misma funcionalidad siempre que sea posible.",
-            mediumTerm: "### Recomendaciones a Medio Plazo\nSi es inevitable llamar a un comando del SO, usar API estructuradas que acepten una lista de argumentos en lugar de una sola cadena de comando. Esto evita la interpretación de metacaracteres de la shell.",
-            longTerm: "### Recomendaciones a Largo Plazo\nEjecutar la aplicación con los privilegios mínimos necesarios. Implementar un Web Application Firewall (WAF) con reglas para detectar y bloquear los patrones de ataque comunes."
+            shortTerm: `### Recomendaciones a Corto Plazo
+Evitar llamar directamente a los comandos del SO. Usar las API integradas del lenguaje para lograr la misma funcionalidad siempre que sea posible.`,
+            mediumTerm: `### Recomendaciones a Medio Plazo
+Si es inevitable llamar a un comando del SO, usar API estructuradas que acepten una lista de argumentos en lugar de una sola cadena de comando. Esto evita la interpretación de metacaracteres de la shell.`,
+            longTerm: `### Recomendaciones a Largo Plazo
+Ejecutar la aplicación con los privilegios mínimos necesarios. Implementar un Web Application Firewall (WAF) con reglas para detectar y bloquear los patrones de ataque comunes.`
         },
         cwe: "CWE-78",
         severity: "Critical",
-        cvss: { score: 9.8, vectorString: "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:H/I:H/A:H", attackVector: "N", attackComplexity: "L", privilegesRequired: "N", userInteraction: "N", scope: "U", confidentiality: "H", integrity: "H", availability: "H" },
+        cvss: { score: 9.8, vectorString: "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:H/I:H/A:H", "attackVector": "N", "attackComplexity": "L", "privilegesRequired": "N", "userInteraction": "N", "scope": "U", "confidentiality": "H", "integrity": "H", "availability": "H" },
         references: ["https://owasp.org/www-community/attacks/Command_Injection"],
         tags: ["Additional", "Web"],
-        affectedComponents_en: "### Affected Components\n- [TODO: Specify the vulnerable function, parameter, and URL.]",
-        details_en: "### Proof of Concept\n[TODO: Provide a request with a command injection payload (e.g., `; id`) and show the output of the executed command.]",
-        affectedComponents_es: "### Componentes Afectados\n- [TODO: Especificar la función, el parámetro y la URL vulnerables.]",
-        details_es: "### Prueba de Concepto\n[TODO: Proporcionar una solicitud con una carga útil de inyección de comandos (p. ej., `; id`) y mostrar la salida del comando ejecutado.]",
+        affectedComponents_en: `### Affected Components
+- [TODO: Specify the vulnerable function, parameter, and URL.]`,
+        details_en: `### Proof of Concept
+[TODO: Provide a request with a command injection payload (e.g., \`; id\`) and show the output of the executed command.]`,
+        affectedComponents_es: `### Componentes Afectados
+- [TODO: Especificar la función, el parámetro y la URL vulnerables.]`,
+        details_es: `### Prueba de Concepto
+[TODO: Proporcionar una solicitud con una carga útil de inyección de comandos (p. ej., \`; id\`) y mostrar la salida del comando ejecutado.]`,
         immediateActions_en: "### Immediate Actions\n[TODO: Add immediate actions in English]",
         immediateActions_es: "### Acciones Inmediatas\n[TODO: Añadir acciones inmediatas en español]",
     },
     {
-        id: "vuln-add-021",
-        title_en: "XSS Persistent",
-        title_es: "XSS persistente",
-        overview_en: "### Overview\nPersistent or Stored Cross-Site Scripting (XSS) occurs when an application stores unsanitized user input, which is then viewed by other users.",
-        overview_es: "### Resumen\nEl Cross-Site Scripting (XSS) persistente o almacenado ocurre cuando una aplicación almacena la entrada del usuario sin sanear, que luego es vista por otros usuarios.",
-        technicalDescription_en: "### Technical Description\nAn attacker injects a malicious script into a field that is stored in a database, such as a comment, user profile, or forum post. When other users view the page containing this stored data, the script executes in their browser.",
-        technicalDescription_es: "### Descripción Técnica\nUn atacante inyecta un script malicioso en un campo que se almacena en una base de datos, como un comentario, un perfil de usuario o una publicación en un foro. Cuando otros usuarios ven la página que contiene estos datos almacenados, el script se ejecuta en su navegador.",
-        impact_en: "### Impact\nAllows the attacker to hijack user sessions, deface the website, or redirect users to malicious sites, affecting a large number of users who view the malicious content.",
-        impact_es: "### Impacto\nPermite al atacante secuestrar sesiones de usuario, desfigurar el sitio web o redirigir a los usuarios a sitios maliciosos, afectando a un gran número de usuarios que ven el contenido malicioso.",
+        id: 'vuln-add-021',
+        title_en: 'XSS Persistent',
+        title_es: 'XSS persistente',
+        overview_en: '### Overview\nPersistent or Stored Cross-Site Scripting (XSS) occurs when an application stores unsanitized user input, which is then viewed by other users.',
+        overview_es: '### Resumen\nEl Cross-Site Scripting (XSS) persistente o almacenado ocurre cuando una aplicación almacena la entrada del usuario sin sanear, que luego es vista por otros usuarios.',
+        technicalDescription_en: '### Technical Description\nAn attacker injects a malicious script into a field that is stored in a database, such as a comment, user profile, or forum post. When other users view the page containing this stored data, the script executes in their browser.',
+        technicalDescription_es: '### Descripción Técnica\nUn atacante inyecta un script malicioso en un campo que se almacena en una base de datos, como un comentario, un perfil de usuario o una publicación en un foro. Cuando otros usuarios ven la página que contiene estos datos almacenados, el script se ejecuta en su navegador.',
+        impact_en: '### Impact\nAllows the attacker to hijack user sessions, deface the website, or redirect users to malicious sites, affecting a large number of users who view the malicious content.',
+        impact_es: '### Impacto\nPermite al atacante secuestrar sesiones de usuario, desfigurar el sitio web o redirigir a los usuarios a sitios maliciosos, afectando a un gran número de usuarios que ven el contenido malicioso.',
         remediation_en: {
-            shortTerm: "### Short-Term Recommendations\nImplement strong, context-aware output encoding on all user-supplied data before it is rendered in a page.",
-            mediumTerm: "### Medium-Term Recommendations\nUse a strong Content Security Policy (CSP) to restrict the sources from which scripts can be loaded.",
-            longTerm: "### Long-Term Recommendations\nUse modern web frameworks that have built-in protections against XSS and avoid manually constructing HTML from user data."
+            shortTerm: '### Short-Term Recommendations\nImplement strong, context-aware output encoding on all user-supplied data before it is rendered in a page.',
+            mediumTerm: '### Medium-Term Recommendations\nUse a strong Content Security Policy (CSP) to restrict the sources from which scripts can be loaded.',
+            longTerm: '### Long-Term Recommendations\nUse modern web frameworks that have built-in protections against XSS and avoid manually constructing HTML from user data.'
         },
         remediation_es: {
-            shortTerm: "### Recomendaciones a Corto Plazo\nImplementar una codificación de salida sólida y sensible al contexto en todos los datos proporcionados por el usuario antes de que se representen en una página.",
-            mediumTerm: "### Recomendaciones a Medio Plazo\nUsar una Política de Seguridad de Contenido (CSP) sólida para restringir las fuentes desde las cuales se pueden ejecutar scripts.",
-            longTerm: "### Recomendaciones a Largo Plazo\nUsar frameworks web modernos que tengan protecciones incorporadas contra XSS y evitar la construcción manual de HTML a partir de datos del usuario."
+            shortTerm: '### Recomendaciones a Corto Plazo\nImplementar una codificación de salida sólida y sensible al contexto en todos los datos proporcionados por el usuario antes de que se representen en una página.',
+            mediumTerm: '### Recomendaciones a Medio Plazo\nUsar una Política de Seguridad de Contenido (CSP) sólida para restringir las fuentes desde las cuales se pueden ejecutar scripts.',
+            longTerm: '### Recomendaciones a Largo Plazo\nUsar frameworks web modernos que tengan protecciones incorporadas contra XSS y evitar la construcción manual de HTML a partir de datos del usuario.'
         },
-        cwe: "CWE-79",
-        severity: "High",
-        cvss: { score: 8.8, vectorString: "CVSS:3.1/AV:N/AC:L/PR:L/UI:R/S:C/C:H/I:H/A:N", attackVector: "N", attackComplexity: "L", privilegesRequired: "L", userInteraction: "R", scope: "C", confidentiality: "H", integrity: "H", availability: "N" },
-        references: ["https://owasp.org/www-community/attacks/xss/"],
+        cwe: 'CWE-79',
+        severity: 'High',
+        cvss: { score: 8.8, vectorString: 'CVSS:3.1/AV:N/AC:L/PR:L/UI:R/S:C/C:H/I:H/A:N', attackVector: 'N', attackComplexity: 'L', privilegesRequired: 'L', userInteraction: 'R', scope: 'C', confidentiality: 'H', integrity: 'H', availability: 'N' },
+        references: ['https://owasp.org/www-community/attacks/xss/'],
+        tags: ['Additional', 'Web'],
+        affectedComponents_en: '### Affected Components\n- [TODO: Specify the input field and the page where the stored script is executed.]',
+        details_en: '### Proof of Concept\n[TODO: Provide the steps to inject a persistent XSS payload and a screenshot of it executing for another user.]',
+        affectedComponents_es: '### Componentes Afectados\n- [TODO: Especificar el campo de entrada y la página donde se ejecuta el script almacenado.]',
+        details_es: '### Prueba de Concepto\n[TODO: Proporcionar los pasos para inyectar una carga útil de XSS persistente y una captura de pantalla de su ejecución para otro usuario.]',
+        immediateActions_en: '### Immediate Actions\nSanitize the vulnerable database fields to remove any existing malicious scripts. Implement output encoding for the affected pages.',
+        immediateActions_es: '### Acciones Inmediatas\nSanear los campos vulnerables de la base de datos para eliminar cualquier script malicioso existente. Implementar la codificación de salida para las páginas afectadas.',
+    },
+    {
+        id: "vuln-add-022",
+        title_en: "CSRF Token Leakage",
+        title_es: "Filtración de tokens CSRF",
+        overview_en: "### Overview\nCSRF tokens, designed to prevent Cross-Site Request Forgery, are leaked to an unauthorized third party.",
+        overview_es: "### Resumen\nLos tokens CSRF, diseñados para prevenir la Falsificación de Solicitudes en Sitios Cruzados, se filtran a un tercero no autorizado.",
+        technicalDescription_en: "### Technical Description\nThe application leaks the CSRF token in a location accessible to an attacker, such as in the 'Referer' header when a user clicks an external link, or in a GET request URL that is logged in proxy or browser history.",
+        technicalDescription_es: "### Descripción Técnica\nLa aplicación filtra el token CSRF en una ubicación accesible para un atacante, como en el encabezado 'Referer' cuando un usuario hace clic en un enlace externo, o en una URL de solicitud GET que se registra en el historial del proxy o del navegador.",
+        impact_en: "### Impact\nIf an attacker can obtain a user's CSRF token, they can bypass the CSRF protection and successfully carry out a CSRF attack.",
+        impact_es: "### Impacto\nSi un atacante puede obtener el token CSRF de un usuario, puede eludir la protección CSRF y llevar a cabo con éxito un ataque CSRF.",
+        remediation_en: {
+            shortTerm: "### Short-Term Recommendations\nDo not include CSRF tokens in GET request URLs. Use POST requests for any state-changing action.",
+            mediumTerm: "### Medium-Term Recommendations\nSet a 'Referrer-Policy: strict-origin-when-cross-origin' header to prevent leaking sensitive information in Referer headers.",
+            longTerm: "### Long-Term Recommendations\nUse a CSRF protection mechanism that ties the token to the user's session and regenerates it frequently."
+        },
+        remediation_es: {
+            shortTerm: "### Recomendaciones a Corto Plazo\nNo incluir tokens CSRF en las URL de solicitud GET. Usar solicitudes POST para cualquier acción que cambie el estado.",
+            mediumTerm: "### Recomendaciones a Medio Plazo\nEstablecer un encabezado 'Referrer-Policy: strict-origin-when-cross-origin' para evitar filtrar información sensible en los encabezados Referer.",
+            longTerm: "### Recomendaciones a Largo Plazo\nUsar un mecanismo de protección CSRF que vincule el token a la sesión del usuario y lo regenere con frecuencia."
+        },
+        cwe: "CWE-352",
+        severity: "Medium",
+        cvss: { score: 6.5, vectorString: "CVSS:3.1/AV:N/AC:L/PR:N/UI:R/S:U/C:L/I:L/A:N", "attackVector": "N", "attackComplexity": "L", "privilegesRequired": "N", "userInteraction": "R", "scope": "U", "confidentiality": "L", "integrity": "L", "availability": "N" },
+        references: ["https://owasp.org/www-community/attacks/csrf"],
         tags: ["Additional", "Web"],
-        affectedComponents_en: "### Affected Components\n- [TODO: Specify the input field and the page where the stored script is executed.]",
-        details_en: "### Proof of Concept\n[TODO: Provide the steps to inject a persistent XSS payload and a screenshot of it executing for another user.]",
-        affectedComponents_es: "### Componentes Afectados\n- [TODO: Especificar el campo de entrada y la página donde se ejecuta el script almacenado.]",
-        details_es: "### Prueba de Concepto\n[TODO: Proporcionar los pasos para inyectar una carga útil de XSS persistente y una captura de pantalla de su ejecución para otro usuario.]",
-        immediateActions_en: "### Immediate Actions\nSanitize the vulnerable database fields to remove any existing malicious scripts. Implement output encoding for the affected pages.",
-        immediateActions_es: "### Acciones Inmediatas\nSanear los campos vulnerables de la base de datos para eliminar cualquier script malicioso existente. Implementar la codificación de salida para las páginas afectadas.",
+        affectedComponents_en: "### Affected Components\n- [TODO: Specify where the CSRF token is being leaked.]",
+        details_en: "### Proof of Concept\n[TODO: Provide a screenshot or log showing the CSRF token being sent to a third party (e.g., in a Referer header).]",
+        affectedComponents_es: "### Componentes Afectados\n- [TODO: Especificar dónde se está filtrando el token CSRF.]",
+        details_es: "### Prueba de Concepto\n[TODO: Proporcionar una captura de pantalla o un registro que muestre el token CSRF siendo enviado a un tercero (p. ej., en un encabezado Referer).]",
+        immediateActions_en: "### Immediate Actions\nReview how CSRF tokens are handled and ensure they are not transmitted in URLs or leaked to third parties.",
+        immediateActions_es: "### Acciones Inmediatas\nRevisar cómo se manejan los tokens CSRF y asegurarse de que no se transmitan en las URL ni se filtren a terceros.",
+    },
+    {
+        id: "vuln-add-023",
+        title_en: "JWT Vulnerabilities",
+        title_es: "Vulnerabilidades en JWT",
+        overview_en: "### Overview\nJSON Web Tokens (JWTs) are used for authentication, but improper implementation can lead to vulnerabilities.",
+        overview_es: "### Resumen\nLos JSON Web Tokens (JWT) se utilizan para la autenticación, pero una implementación incorrecta puede dar lugar a vulnerabilidades.",
+        technicalDescription_en: "### Technical Description\nCommon JWT vulnerabilities include using the 'none' algorithm (disabling the signature), weak secret keys for signing, or not validating the signature at all. An attacker could forge a JWT to impersonate other users or escalate privileges.",
+        technicalDescription_es: "### Descripción Técnica\nLas vulnerabilidades comunes de JWT incluyen el uso del algoritmo 'none' (deshabilitando la firma), claves secretas débiles para la firma o no validar la firma en absoluto. Un atacante podría falsificar un JWT para hacerse pasar por otros usuarios o escalar privilegios.",
+        impact_en: "### Impact\nAllows an attacker to bypass authentication and gain unauthorized access to the application, potentially with administrative privileges.",
+        impact_es: "### Impacto\nPermite a un atacante eludir la autenticación y obtener acceso no autorizado a la aplicación, potencialmente con privilegios administrativos.",
+        remediation_en: {
+            shortTerm: "### Short-Term Recommendations\nAlways validate the JWT signature. Use a strong, randomly generated secret key. Reject any JWTs that specify the 'none' algorithm.",
+            mediumTerm: "### Medium-Term Recommendations\nUse a well-vetted, standard library for JWT creation and validation. Keep the library updated.",
+            longTerm: "### Long-Term Recommendations\nImplement key rotation for JWT signing keys. Log and monitor for any JWTs with invalid signatures or suspicious claims."
+        },
+        remediation_es: {
+            shortTerm: "### Recomendaciones a Corto Plazo\nValidar siempre la firma del JWT. Usar una clave secreta fuerte y generada aleatoriamente. Rechazar cualquier JWT que especifique el algoritmo 'none'.",
+            mediumTerm: "### Recomendaciones a Medio Plazo\nUsar una biblioteca estándar y bien examinada para la creación y validación de JWT. Mantener la biblioteca actualizada.",
+            longTerm: "### Recomendaciones a Largo Plazo\nImplementar la rotación de claves para las claves de firma de JWT. Registrar y monitorear cualquier JWT con firmas inválidas o reclamaciones sospechosas."
+        },
+        cwe: "CWE-347",
+        severity: "High",
+        cvss: { score: 8.8, vectorString: "CVSS:3.1/AV:N/AC:L/PR:N/UI:R/S:U/C:H/I:H/A:H", "attackVector": "N", "attackComplexity": "L", "privilegesRequired": "N", "userInteraction": "R", "scope": "U", "confidentiality": "H", "integrity": "H", "availability": "H" },
+        references: ["https://jwt.io/introduction/"],
+        tags: ["Additional", "Authentication"],
+        affectedComponents_en: "### Affected Components\n- The JWT validation logic.",
+        details_en: "### Proof of Concept\n[TODO: Provide a forged JWT (e.g., with 'alg': 'none' or a different user ID) and show that the server accepts it.]",
+        affectedComponents_es: "### Componentes Afectados\n- La lógica de validación de JWT.",
+        details_es: "### Prueba de Concepto\n[TODO: Proporcionar un JWT falsificado (p. ej., con 'alg': 'none' o un ID de usuario diferente) y mostrar que el servidor lo acepta.]",
+        immediateActions_en: "### Immediate Actions\nEnforce strict signature validation for all incoming JWTs.",
+        immediateActions_es: "### Acciones Inmediatas\nHacer cumplir una validación estricta de la firma para todos los JWT entrantes.",
+    },
+    {
+        id: "vuln-add-024",
+        title_en: "OAuth Misconfiguration",
+        title_es: "Configuración Incorrecta de OAuth",
+        overview_en: "### Overview\nOAuth is a complex protocol, and misconfigurations in its implementation can lead to serious security vulnerabilities.",
+        overview_es: "### Resumen\nOAuth es un protocolo complejo, y las configuraciones incorrectas en su implementación pueden conducir a graves vulnerabilidades de seguridad.",
+        technicalDescription_en: "### Technical Description\nCommon issues include improper validation of the 'redirect_uri', leading to authorization code theft; leaking client secrets in mobile apps; or failing to use the 'state' parameter to prevent CSRF attacks on the OAuth flow.",
+        technicalDescription_es: "### Descripción Técnica\nLos problemas comunes incluyen la validación incorrecta de la 'redirect_uri', lo que lleva al robo del código de autorización; la filtración de secretos de cliente en aplicaciones móviles; o no usar el parámetro 'state' para prevenir ataques CSRF en el flujo de OAuth.",
+        impact_en: "### Impact\nCan lead to account takeover, where an attacker can link their account to a victim's profile and gain full access.",
+        impact_es: "### Impacto\nPuede conducir a la toma de control de cuentas, donde un atacante puede vincular su cuenta al perfil de una víctima y obtener acceso completo.",
+        remediation_en: {
+            shortTerm: "### Short-Term Recommendations\nStrictly validate the 'redirect_uri' against a pre-registered allow-list. Always use and validate the 'state' parameter.",
+            mediumTerm: "### Medium-Term Recommendations\nFor mobile apps, use the 'PKCE' (Proof Key for Code Exchange) flow to avoid the need for a client secret.",
+            longTerm: "### Long-Term Recommendations\nFollow the latest OAuth 2.0 Security Best Current Practice guidelines. Regularly review your OAuth implementation for flaws."
+        },
+        remediation_es: {
+            shortTerm: "### Recomendaciones a Corto Plazo\nValidar estrictamente la 'redirect_uri' contra una lista blanca pre-registrada. Siempre usar y validar el parámetro 'state'.",
+            mediumTerm: "### Recomendaciones a Medio Plazo\nPara aplicaciones móviles, usar el flujo 'PKCE' (Proof Key for Code Exchange) para evitar la necesidad de un secreto de cliente.",
+            longTerm: "### Recomendaciones a Largo Plazo\nSeguir las últimas directrices de Mejores Prácticas de Seguridad de OAuth 2.0. Revisar regularmente su implementación de OAuth en busca de fallas."
+        },
+        cwe: "CWE-306",
+        severity: "High",
+        cvss: { score: 8.8, vectorString: "CVSS:3.1/AV:N/AC:L/PR:N/UI:R/S:U/C:H/I:H/A:H", "attackVector": "N", "attackComplexity": "L", "privilegesRequired": "N", "userInteraction": "R", "scope": "U", "confidentiality": "H", "integrity": "H", "availability": "H" },
+        references: ["https://oauth.net/2/"],
+        tags: ["Additional", "Authentication"],
+        affectedComponents_en: "### Affected Components\n- The OAuth 2.0 implementation logic.",
+        details_en: "### Proof of Concept\n[TODO: Provide a PoC demonstrating the specific OAuth flaw, such as redirecting an authorization code to an attacker-controlled domain.]",
+        affectedComponents_es: "### Componentes Afectados\n- La lógica de implementación de OAuth 2.0.",
+        details_es: "### Prueba de Concepto\n[TODO: Proporcionar una PoC que demuestre el fallo específico de OAuth, como redirigir un código de autorización a un dominio controlado por el atacante.]",
+        immediateActions_en: "### Immediate Actions\nReview and fix the specific OAuth misconfiguration, such as implementing strict 'redirect_uri' validation.",
+        immediateActions_es: "### Acciones Inmediatas\nRevisar y corregir la configuración incorrecta específica de OAuth, como implementar una validación estricta de 'redirect_uri'.",
+    },
+    {
+        id: "vuln-add-025",
+        title_en: "GraphQL Injection",
+        title_es: "Inyección GraphQL",
+        overview_en: "### Overview\nGraphQL injection vulnerabilities allow an attacker to craft malicious queries to extract sensitive information or cause a denial of service.",
+        overview_es: "### Resumen\nLas vulnerabilidades de inyección de GraphQL permiten a un atacante crear consultas maliciosas para extraer información sensible o causar una denegación de servicio.",
+        technicalDescription_en: "### Technical Description\nUnlike REST APIs, GraphQL allows clients to request exactly what they need. If not properly secured, attackers can craft deeply nested queries that exhaust server resources (DoS) or use introspection to map out the entire API schema and find sensitive data types.",
+        technicalDescription_es: "### Descripción Técnica\nA diferencia de las API REST, GraphQL permite a los clientes solicitar exactamente lo que necesitan. Si no se asegura adecuadamente, los atacantes pueden crear consultas profundamente anidadas que agotan los recursos del servidor (DoS) o usar la introspección para mapear todo el esquema de la API y encontrar tipos de datos sensibles.",
+        impact_en: "### Impact\nCan lead to denial-of-service, information disclosure, and bypass of access controls.",
+        impact_es: "### Impacto\nPuede conducir a la denegación de servicio, la divulgación de información y la omisión de los controles de acceso.",
+        remediation_en: {
+            shortTerm: "### Short-Term Recommendations\nDisable introspection in production environments. Implement query depth and complexity limits to prevent resource exhaustion attacks.",
+            mediumTerm: "### Medium-Term Recommendations\nImplement proper authentication and authorization on all GraphQL types and fields.",
+            longTerm: "### Long-Term Recommendations\nUse a GraphQL-aware Web Application Firewall (WAF) to detect and block malicious queries."
+        },
+        remediation_es: {
+            shortTerm: "### Recomendaciones a Corto Plazo\nDeshabilitar la introspección en entornos de producción. Implementar límites de profundidad y complejidad de consulta para prevenir ataques de agotamiento de recursos.",
+            mediumTerm: "### Recomendaciones a Medio Plazo\nImplementar autenticación y autorización adecuadas en todos los tipos y campos de GraphQL.",
+            longTerm: "### Recomendaciones a Largo Plazo\nUsar un Web Application Firewall (WAF) consciente de GraphQL para detectar y bloquear consultas maliciosas."
+        },
+        cwe: "CWE-20",
+        severity: "High",
+        cvss: { score: 8.8, vectorString: "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:H/I:N/A:H", "attackVector": "N", "attackComplexity": "L", "privilegesRequired": "N", "userInteraction": "N", "scope": "U", "confidentiality": "H", "integrity": "N", "availability": "H" },
+        references: ["https://graphql.org/learn/security/"],
+        tags: ["Additional", "API"],
+        affectedComponents_en: "### Affected Components\n- The GraphQL API endpoint.",
+        details_en: "### Proof of Concept\n[TODO: Provide a malicious GraphQL query that demonstrates resource exhaustion or unauthorized data access.]",
+        affectedComponents_es: "### Componentes Afectados\n- El punto final de la API de GraphQL.",
+        details_es: "### Prueba de Concepto\n[TODO: Proporcionar una consulta de GraphQL maliciosa que demuestre el agotamiento de recursos o el acceso no autorizado a los datos.]",
+        immediateActions_en: "### Immediate Actions\nDisable introspection and implement query depth limiting.",
+        immediateActions_es: "### Acciones Inmediatas\nDeshabilitar la introspección e implementar la limitación de la profundidad de las consultas.",
+    },
+    {
+        id: "vuln-add-026",
+        title_en: "WebSocket Security Issues",
+        title_es: "Problemas de Seguridad en WebSocket",
+        overview_en: "### Overview\nWebSockets provide a persistent, two-way communication channel, but they can introduce new security risks if not properly implemented.",
+        overview_es: "### Resumen\nLos WebSockets proporcionan un canal de comunicación persistente y bidireccional, pero pueden introducir nuevos riesgos de seguridad si no se implementan correctamente.",
+        technicalDescription_en: "### Technical Description\nVulnerabilities include Cross-Site WebSocket Hijacking (CSWSH), where an attacker can establish a WebSocket connection on behalf of a victim; unencrypted communication (using 'ws://' instead of 'wss://'); and lack of input validation on messages sent over the WebSocket.",
+        technicalDescription_es: "### Descripción Técnica\nLas vulnerabilidades incluyen el secuestro de WebSocket entre sitios (CSWSH), donde un atacante puede establecer una conexión WebSocket en nombre de una víctima; la comunicación no cifrada (usando 'ws://' en lugar de 'wss://'); y la falta de validación de entradas en los mensajes enviados a través del WebSocket.",
+        impact_en: "### Impact\nCan lead to session hijacking, sensitive data exposure, and the execution of unauthorized actions.",
+        impact_es: "### Impacto\nPuede conducir al secuestro de sesiones, la exposición de datos sensibles y la ejecución de acciones no autorizadas.",
+        remediation_en: {
+            shortTerm: "### Short-Term Recommendations\nAlways use secure WebSockets ('wss://'). Validate the 'Origin' header on the server during the WebSocket handshake to prevent CSWSH.",
+            mediumTerm: "### Medium-Term Recommendations\nImplement proper authentication and session management for WebSocket connections, just as you would for HTTP.",
+            longTerm: "### Long-Term Recommendations\nTreat all data received over a WebSocket as untrusted and perform thorough input validation and output encoding."
+        },
+        remediation_es: {
+            shortTerm: "### Recomendaciones a Corto Plazo\nUsar siempre WebSockets seguros ('wss://'). Validar el encabezado 'Origin' en el servidor durante el handshake de WebSocket para prevenir CSWSH.",
+            mediumTerm: "### Recomendaciones a Medio Plazo\nImplementar una autenticación y gestión de sesiones adecuadas para las conexiones WebSocket, al igual que se haría para HTTP.",
+            longTerm: "### Recomendaciones a Largo Plazo\nTratar todos los datos recibidos a través de un WebSocket como no confiables y realizar una validación de entrada y codificación de salida exhaustivas."
+        },
+        cwe: "CWE-295",
+        severity: "Medium",
+        cvss: { score: 6.8, vectorString: "CVSS:3.1/AV:N/AC:L/PR:N/UI:R/S:U/C:L/I:L/A:L", "attackVector": "N", "attackComplexity": "L", "privilegesRequired": "N", "userInteraction": "R", "scope": "U", "confidentiality": "L", "integrity": "L", "availability": "L" },
+        references: ["https://portswigger.net/web-security/websockets"],
+        tags: ["Additional", "Web"],
+        affectedComponents_en: "### Affected Components\n- The WebSocket implementation.",
+        details_en: "### Proof of Concept\n[TODO: Provide a PoC demonstrating a CSWSH attack or the transmission of sensitive data over an unencrypted WebSocket.]",
+        affectedComponents_es: "### Componentes Afectados\n- La implementación de WebSocket.",
+        details_es: "### Prueba de Concepto\n[TODO: Proporcionar una PoC que demuestre un ataque CSWSH o la transmisión de datos sensibles a través de un WebSocket no cifrado.]",
+        immediateActions_en: "### Immediate Actions\nEnforce 'wss://' and validate the Origin header.",
+        immediateActions_es: "### Acciones Inmediatas\nHacer cumplir 'wss://' y validar el encabezado Origin.",
+    },
+    {
+        id: "vuln-add-027",
+        title_en: "Mobile Root/Jailbreak Detection Bypass",
+        title_es: "Omisión de Detección de Root/Jailbreak",
+        overview_en: "### Overview\nThe mobile application attempts to detect if it is running on a rooted or jailbroken device, but this detection mechanism can be bypassed.",
+        overview_es: "### Resumen\nLa aplicación móvil intenta detectar si se está ejecutando en un dispositivo rooteado o con jailbreak, pero este mecanismo de detección puede ser eludido.",
+        technicalDescription_en: "### Technical Description\nRoot detection often relies on checking for the existence of certain files (e.g., `/system/bin/su`) or packages. An attacker can use hooking frameworks (like Frida or Substrate) to intercept these checks and force them to return a 'false' result, tricking the app into thinking it's on a non-rooted device.",
+        technicalDescription_es: "### Descripción Técnica\nLa detección de root a menudo se basa en la comprobación de la existencia de ciertos archivos (p. ej., `/system/bin/su`) o paquetes. Un atacante puede usar frameworks de hooking (como Frida o Substrate) para interceptar estas comprobaciones y forzarlas a devolver un resultado 'falso', engañando a la aplicación para que piense que está en un dispositivo no rooteado.",
+        impact_en: "### Impact\nBypassing root detection allows an attacker to use powerful analysis and tampering tools (like Frida, debuggers, and file system explorers) against the application, which can lead to the discovery of other vulnerabilities.",
+        impact_es: "### Impacto\nEludir la detección de root permite a un atacante utilizar potentes herramientas de análisis y manipulación (como Frida, depuradores y exploradores de sistemas de archivos) contra la aplicación, lo que puede conducir al descubrimiento de otras vulnerabilidades.",
+        remediation_en: {
+            shortTerm: "### Short-Term Recommendations\nImplement multiple, varied root detection checks. Check for common hooking frameworks and debuggers attached to the process.",
+            mediumTerm: "### Medium-Term Recommendations\nUse a commercial-grade binary protection or RASP (Runtime Application Self-Protection) solution that provides robust root detection.",
+            longTerm: "### Long-Term Recommendations\nDo not rely on client-side root detection as a primary security control. Critical security logic should always be enforced on the server-side, assuming the client is a hostile environment."
+        },
+        remediation_es: {
+            shortTerm: "### Recomendaciones a Corto Plazo\nImplementar múltiples y variadas comprobaciones de detección de root. Comprobar si hay frameworks de hooking comunes y depuradores adjuntos al proceso.",
+            mediumTerm: "### Recomendaciones a Medio Plazo\nUsar una protección binaria de grado comercial o una solución RASP (Runtime Application Self-Protection) que proporcione una detección de root robusta.",
+            longTerm: "### Recomendaciones a Largo Plazo\nNo depender de la detección de root del lado del cliente como control de seguridad primario. La lógica de seguridad crítica siempre debe aplicarse en el lado del servidor, asumiendo que el cliente es un entorno hostil."
+        },
+        cwe: "CWE-603",
+        severity: "Medium",
+        cvss: { score: 5.9, vectorString: "CVSS:3.1/AV:L/AC:H/PR:N/UI:N/S:U/C:H/I:N/A:N", "attackVector": "L", "attackComplexity": "H", "privilegesRequired": "N", "userInteraction": "N", "scope": "U", "confidentiality": "H", "integrity": "N", "availability": "N" },
+        references: ["https://owasp.org/www-project-mobile-top-10/2016-risks/m1-improper-platform-usage/"],
+        tags: ["Additional", "Mobile"],
+        affectedComponents_en: "### Affected Components\n- The root/jailbreak detection logic.",
+        details_en: "### Proof of Concept\n[TODO: Provide a Frida script or similar tool that hooks the detection method and allows the app to run on a rooted device.]",
+        affectedComponents_es: "### Componentes Afectados\n- La lógica de detección de root/jailbreak.",
+        details_es: "### Prueba de Concepto\n[TODO: Proporcionar un script de Frida o una herramienta similar que enganche el método de detección y permita que la aplicación se ejecute en un dispositivo rooteado.]",
+        immediateActions_en: "### Immediate Actions\nAdd additional layers of detection, such as checking for running hooking frameworks.",
+        immediateActions_es: "### Acciones Inmediatas\nAñadir capas adicionales de detección, como comprobar si se están ejecutando frameworks de hooking.",
+    },
+    {
+        id: "vuln-add-028",
+        title_en: "Insecure Deep Links",
+        title_es: "Enlaces Profundos Inseguros",
+        overview_en: "### Overview\nDeep links (custom URL schemes) are used to launch a mobile app and navigate to specific content. If not properly validated, they can be a vector for attack.",
+        overview_es: "### Resumen\nLos enlaces profundos (esquemas de URL personalizados) se utilizan para lanzar una aplicación móvil y navegar a contenido específico. Si no se validan correctamente, pueden ser un vector de ataque.",
+        technicalDescription_en: "### Technical Description\nThe app registers a custom URL scheme (e.g., `myapp://`). If the app does not properly validate parameters passed through this scheme, an attacker could craft a malicious link (`myapp://vulnerable_action?parameter=malicious_value`) that, when opened by the user, performs an unauthorized action or leads to information disclosure.",
+        technicalDescription_es: "### Descripción Técnica\nLa aplicación registra un esquema de URL personalizado (p. ej., `myapp://`). Si la aplicación no valida correctamente los parámetros pasados a través de este esquema, un atacante podría crear un enlace malicioso (`myapp://accion_vulnerable?parametro=valor_malicioso`) que, cuando lo abre el usuario, realiza una acción no autorizada o conduce a la divulgación de información.",
+        impact_en: "### Impact\nCan lead to unauthorized actions, XSS if parameters are rendered in a WebView, or information disclosure.",
+        impact_es: "### Impacto\nPuede conducir a acciones no autorizadas, XSS si los parámetros se representan en una WebView, o divulgación de información.",
+        remediation_en: {
+            shortTerm: "### Short-Term Recommendations\nStrictly validate all parameters received through a deep link. Use an allow-list for expected actions and values.",
+            mediumTerm: "### Medium-Term Recommendations\nIn Android, use App Links, and in iOS, use Universal Links. These are standard HTTP links that are more secure and prevent other apps from intercepting them.",
+            longTerm: "### Long-Term Recommendations\nDesign a secure handling mechanism for all incoming intents and URL schemes. Treat all data from deep links as untrusted."
+        },
+        remediation_es: {
+            shortTerm: "### Recomendaciones a Corto Plazo\nValidar estrictamente todos los parámetros recibidos a través de un enlace profundo. Usar una lista blanca para las acciones y valores esperados.",
+            mediumTerm: "### Recomendaciones a Medio Plazo\nEn Android, usar App Links, y en iOS, usar Universal Links. Estos son enlaces HTTP estándar que son más seguros e impiden que otras aplicaciones los intercepten.",
+            longTerm: "### Recomendaciones a Largo Plazo\nDiseñar un mecanismo de manejo seguro para todos los intents y esquemas de URL entrantes. Tratar todos los datos de los enlaces profundos como no confiables."
+        },
+        cwe: "CWE-939",
+        severity: "Medium",
+        cvss: { score: 6.1, vectorString: "CVSS:3.1/AV:N/AC:L/PR:N/UI:R/S:C/C:L/I:L/A:N", "attackVector": "N", "attackComplexity": "L", "privilegesRequired": "N", "userInteraction": "R", "scope": "C", "confidentiality": "L", "integrity": "L", "availability": "N" },
+        references: ["https://developer.android.com/training/app-links"],
+        tags: ["Additional", "Mobile"],
+        affectedComponents_en: "### Affected Components\n- The deep link handler/receiver.",
+        details_en: "### Proof of Concept\n[TODO: Provide a malicious deep link URL and demonstrate how it can be used to perform an unauthorized action in the app.]",
+        affectedComponents_es: "### Componentes Afectados\n- El manejador/receptor de enlaces profundos.",
+        details_es: "### Prueba de Concepto\n[TODO: Proporcionar una URL de enlace profundo maliciosa y demostrar cómo se puede utilizar para realizar una acción no autorizada en la aplicación.]",
+        immediateActions_en: "### Immediate Actions\nImplement strict validation on all parameters passed through deep links.",
+        immediateActions_es: "### Acciones Inmediatas\nImplementar una validación estricta en todos los parámetros pasados a través de enlaces profundos.",
+    },
+    {
+        id: "vuln-add-029",
+        title_en: "Mobile App Cloning",
+        title_es: "Clonación de Aplicaciones Móviles",
+        overview_en: "### Overview\nAn attacker can clone the mobile application and repackage it with malicious code. This cloned app can then be distributed to trick users into installing it.",
+        overview_es: "### Resumen\nUn atacante puede clonar la aplicación móvil y reempaquetarla con código malicioso. Esta aplicación clonada puede luego ser distribuida para engañar a los usuarios para que la instalen.",
+        technicalDescription_en: "### Technical Description\nWithout anti-tampering controls, an attacker can decompile the app, inject malicious code (e.g., code to steal credentials or log keystrokes), and then recompile and re-sign it. This malicious version can be distributed through unofficial app stores or phishing campaigns.",
+        technicalDescription_es: "### Descripción Técnica\nSin controles anti-manipulación, un atacante puede descompilar la aplicación, inyectar código malicioso (p. ej., código para robar credenciales o registrar pulsaciones de teclas) y luego volver a compilarla y firmarla. Esta versión maliciosa se puede distribuir a través de tiendas de aplicaciones no oficiales o campañas de phishing.",
+        impact_en: "### Impact\nCan lead to widespread compromise of user accounts, data theft, and significant reputational damage to the organization.",
+        impact_es: "### Impacto\nPuede conducir a un compromiso generalizado de las cuentas de usuario, el robo de datos y un daño significativo a la reputación de la organización.",
+        remediation_en: {
+            shortTerm: "### Short-Term Recommendations\nImplement integrity checks (e.g., checksum or signature validation) at runtime to verify that the app's code has not been modified.",
+            mediumTerm: "### Medium-Term Recommendations\nUse commercial binary protection tools that provide robust anti-tampering and anti-cloning features.",
+            longTerm: "### Long-Term Recommendations\nImplement server-side checks to validate the integrity of the client app. This can involve an attestation service to verify that the app is the genuine version from the official app store."
+        },
+        remediation_es: {
+            shortTerm: "### Recomendaciones a Corto Plazo\nImplementar comprobaciones de integridad (p. ej., validación de checksum o firma) en tiempo de ejecución para verificar que el código de la aplicación no ha sido modificado.",
+            mediumTerm: "### Recomendaciones a Medio Plazo\nUsar herramientas comerciales de protección binaria que proporcionen características robustas anti-manipulación y anti-clonación.",
+            longTerm: "### Recomendaciones a Largo Plazo\nImplementar comprobaciones del lado del servidor para validar la integridad de la aplicación cliente. Esto puede implicar un servicio de atestación para verificar que la aplicación es la versión genuina de la tienda de aplicaciones oficial."
+        },
+        cwe: "CWE-494",
+        severity: "Medium",
+        cvss: { score: 6.8, vectorString: "CVSS:3.1/AV:N/AC:L/PR:N/UI:R/S:U/C:L/I:L/A:L", "attackVector": "N", "attackComplexity": "L", "privilegesRequired": "N", "userInteraction": "R", "scope": "U", "confidentiality": "L", "integrity": "L", "availability": "L" },
+        references: ["https://owasp.org/www-project-mobile-top-10/2016-risks/m1-improper-platform-usage/"],
+        tags: ["Additional", "Mobile"],
+        affectedComponents_en: "### Affected Components\n- The application binary.",
+        details_en: "### Proof of Concept\n[TODO: Demonstrate patching the application binary to bypass a security control and re-signing it.]",
+        affectedComponents_es: "### Componentes Afectados\n- El binario de la aplicación.",
+        details_es: "### Prueba de Concepto\n[TODO: Demostrar cómo parchear el binario de la aplicación para eludir un control de seguridad y volver a firmarlo.]",
+        immediateActions_en: "### Immediate Actions\nImplement basic checksum validation to detect tampering.",
+        immediateActions_es: "### Acciones Inmediatas\nImplementar una validación básica de checksum para detectar la manipulación.",
+    },
+    {
+        id: "vuln-add-030",
+        title_en: "TCP/IP Vulnerabilities",
+        title_es: "Vulnerabilidades TCP/IP",
+        overview_en: "### Overview\nThis category covers a range of vulnerabilities inherent in the TCP/IP protocol suite itself, such as SYN floods, sequence number prediction, and IP fragmentation attacks.",
+        overview_es: "### Resumen\nEsta categoría cubre una gama de vulnerabilidades inherentes al propio conjunto de protocolos TCP/IP, como las inundaciones SYN, la predicción de números de secuencia y los ataques de fragmentación de IP.",
+        technicalDescription_en: "### Technical Description\nAttackers can exploit fundamental aspects of how TCP/IP works. For example, in a SYN flood, an attacker sends a rapid succession of SYN requests to a target's system in an attempt to consume enough server resources to make the system unresponsive to legitimate traffic.",
+        technicalDescription_es: "### Descripción Técnica\nLos atacantes pueden explotar aspectos fundamentales de cómo funciona TCP/IP. Por ejemplo, en una inundación SYN, un atacante envía una rápida sucesión de solicitudes SYN al sistema de un objetivo en un intento de consumir suficientes recursos del servidor para que el sistema no responda al tráfico legítimo.",
+        impact_en: "### Impact\nCan lead to denial-of-service, session hijacking, or data injection.",
+        impact_es: "### Impacto\nPuede conducir a la denegación de servicio, el secuestro de sesiones o la inyección de datos.",
+        remediation_en: {
+            shortTerm: "### Short-Term Recommendations\nConfigure firewalls and operating system network stacks with protections against common TCP/IP attacks, such as enabling SYN cookies.",
+            mediumTerm: "### Medium-Term Recommendations\nUse an Intrusion Detection/Prevention System (IDS/IPS) to monitor for and block network-level attacks.",
+            longTerm: "### Long-Term Recommendations\nKeep all network hardware and operating systems fully patched. Use a DDoS mitigation service for critical, internet-facing infrastructure."
+        },
+        remediation_es: {
+            shortTerm: "### Recomendaciones a Corto Plazo\nConfigurar los cortafuegos y las pilas de red del sistema operativo con protecciones contra los ataques TCP/IP comunes, como la habilitación de cookies SYN.",
+            mediumTerm: "### Recomendaciones a Medio Plazo\nUsar un Sistema de Detección/Prevención de Intrusiones (IDS/IPS) para monitorear y bloquear los ataques a nivel de red.",
+            longTerm: "### Recomendaciones a Largo Plazo\nMantener todo el hardware de red y los sistemas operativos completamente parcheados. Usar un servicio de mitigación de DDoS para la infraestructura crítica expuesta a Internet."
+        },
+        cwe: "CWE-400",
+        severity: "High",
+        cvss: { score: 7.5, vectorString: "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:N/I:N/A:H", "attackVector": "N", "attackComplexity": "L", "privilegesRequired": "N", "userInteraction": "N", "scope": "U", "confidentiality": "N", "integrity": "N", "availability": "H" },
+        references: ["https://www.cisa.gov/uscert/bsi/articles/knowledge/attacks/denial-of-service"],
+        tags: ["Additional", "Network"],
+        affectedComponents_en: "### Affected Components\n- The host's TCP/IP stack.",
+        details_en: "### Proof of Concept\n[TODO: Demonstrate a SYN flood attack using a tool like hping3 and show the impact on the target's resource consumption.]",
+        affectedComponents_es: "### Componentes Afectados\n- La pila TCP/IP del host.",
+        details_es: "### Prueba de Concepto\n[TODO: Demostrar un ataque de inundación SYN utilizando una herramienta como hping3 y mostrar el impacto en el consumo de recursos del objetivo.]",
+        immediateActions_en: "### Immediate Actions\nEnable SYN cookie protection on the server.",
+        immediateActions_es: "### Acciones Inmediatas\nHabilitar la protección de cookies SYN en el servidor.",
+    },
+    {
+        id: "vuln-add-031",
+        title_en: "Zero-Day Exploits",
+        title_es: "Exploits de Día Cero",
+        overview_en: "### Overview\nA zero-day vulnerability is a flaw in software, hardware, or firmware that is unknown to the party or parties responsible for patching or otherwise fixing the flaw. Until the vulnerability is mitigated, hackers can exploit it to adversely affect computer programs, data, additional computers or a network.",
+        overview_es: "### Resumen\nUna vulnerabilidad de día cero es una falla en el software, hardware o firmware que es desconocida para la parte o partes responsables de parchear o corregir la falla. Hasta que la vulnerabilidad se mitigue, los hackers pueden explotarla para afectar negativamente a los programas informáticos, los datos, las computadoras adicionales o una red.",
+        technicalDescription_en: "### Technical Description\nThis represents the exploitation of a previously unknown vulnerability for which no patch is currently available. The attack occurs on 'day zero' of awareness of the vulnerability.",
+        technicalDescription_es: "### Descripción Técnica\nEsto representa la explotación de una vulnerabilidad previamente desconocida para la cual no hay un parche disponible actualmente. El ataque ocurre en el 'día cero' de la conciencia de la vulnerabilidad.",
+        impact_en: "### Impact\nThe impact is potentially catastrophic, as no specific defense exists. It can lead to full system compromise, massive data breaches, and widespread disruption.",
+        impact_es: "### Impacto\nEl impacto es potencialmente catastrófico, ya que no existe una defensa específica. Puede conducir al compromiso total del sistema, brechas de datos masivas y una interrupción generalizada.",
+        remediation_en: {
+            shortTerm: "### Short-Term Recommendations\nApply compensating controls, such as restricting access to the vulnerable system or temporarily disabling the affected service. Closely monitor the system for indicators of compromise.",
+            mediumTerm: "### Medium-Term Recommendations\nImplement a defense-in-depth strategy with multiple layers of security (e.g., network segmentation, IDS/IPS, application whitelisting). This can help contain an exploit even if one layer is breached.",
+            longTerm: "### Long-Term Recommendations\nMaintain a rapid response and incident handling capability to quickly analyze and respond to new threats. Foster a relationship with security researchers and subscribe to threat intelligence feeds."
+        },
+        remediation_es: {
+            shortTerm: "### Recomendaciones a Corto Plazo\nAplicar controles compensatorios, como restringir el acceso al sistema vulnerable o deshabilitar temporalmente el servicio afectado. Monitorear de cerca el sistema en busca de indicadores de compromiso.",
+            mediumTerm: "### Recomendaciones a Medio Plazo\nImplementar una estrategia de defensa en profundidad con múltiples capas de seguridad (p. ej., segmentación de red, IDS/IPS, listas blancas de aplicaciones). Esto puede ayudar a contener un exploit incluso si se rompe una capa.",
+            longTerm: "### Recomendaciones a Largo Plazo\nMantener una capacidad de respuesta rápida y de manejo de incidentes para analizar y responder rápidamente a nuevas amenazas. Fomentar una relación con los investigadores de seguridad y suscribirse a fuentes de inteligencia de amenazas."
+        },
+        cwe: "CWE-937",
+        severity: "Critical",
+        cvss: { score: 10.0, vectorString: "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:C/C:H/I:H/A:H", "attackVector": "N", "attackComplexity": "L", "privilegesRequired": "N", "userInteraction": "N", "scope": "C", "confidentiality": "H", "integrity": "H", "availability": "H" },
+        references: ["https://www.cisa.gov/uscert/ncas/current-activity"],
+        tags: ["Additional"],
+        affectedComponents_en: "### Affected Components\n- [TODO: Specify the software or hardware with the zero-day vulnerability.]",
+        details_en: "### Proof of Concept\n[TODO: This is highly dependent on the specific zero-day. Provide the exploit details if publicly available and safe to do so.]",
+        affectedComponents_es: "### Componentes Afectados\n- [TODO: Especificar el software o hardware con la vulnerabilidad de día cero.]",
+        details_es: "### Prueba de Concepto\n[TODO: Esto depende en gran medida del día cero específico. Proporcionar los detalles del exploit si están disponibles públicamente y es seguro hacerlo.]",
+        immediateActions_en: "### Immediate Actions\nFollow the guidance from the vendor or security researchers. Isolate the affected system from the network if possible.",
+        immediateActions_es: "### Acciones Inmediatas\nSeguir las indicaciones del proveedor o de los investigadores de seguridad. Aislar el sistema afectado de la red si es posible.",
     }
 ]
-    
-
     
 
     
