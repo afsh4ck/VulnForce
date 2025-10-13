@@ -41,8 +41,8 @@ La explotación exitosa puede conducir al acceso no autorizado a datos sensibles
 - [TODO: Listar componentes afectados, URLs, parámetros, etc.]`,
         details_es: `### Prueba de Concepto
 [TODO: Proporcionar una PoC detallada, incluyendo pasos, fragmentos de código y capturas de pantalla en español]`,
-        immediateActions_en: "### Immediate Actions\n[TODO: Add immediate actions in English]",
-        immediateActions_es: "### Acciones Inmediatas\n[TODO: Añadir acciones inmediatas en español]",
+        immediateActions_en: "### Immediate Actions\nImplement parameterized queries (prepared statements) in the vulnerable forms to prevent SQL injection. Review logs for signs of past exploitation.",
+        immediateActions_es: "### Acciones Inmediatas\nImplementar inmediatamente consultas parametrizadas (prepared statements) en los formularios vulnerables para prevenir la inyección de SQL. Revisar los registros en busca de signos de explotación pasada.",
     },
     {
         id: "vuln-web-002",
@@ -83,8 +83,8 @@ El XSS puede conducir al secuestro de sesiones, la toma de control de cuentas, l
 - [TODO: Listar componentes afectados, URLs, parámetros, etc.]`,
         details_es: `### Prueba de Concepto
 [TODO: Proporcionar una PoC detallada, incluyendo pasos, fragmentos de código y capturas de pantalla en español]`,
-        immediateActions_en: "### Immediate Actions\n[TODO: Add immediate actions in English]",
-        immediateActions_es: "### Acciones Inmediatas\n[TODO: Añadir acciones inmediatas en español]",
+        immediateActions_en: "### Immediate Actions\nImmediately apply context-aware output encoding on the vulnerable fields to prevent script execution. Sanitize existing data to remove any stored malicious payloads.",
+        immediateActions_es: "### Acciones Inmediatas\nAplicar inmediatamente codificación de salida sensible al contexto en los campos vulnerables para prevenir la ejecución de scripts. Sanear los datos existentes para eliminar cualquier carga maliciosa almacenada.",
     },
     {
         id: "vuln-web-003",
@@ -125,8 +125,8 @@ Los atacantes pueden tomar el control de las cuentas de los usuarios, obteniendo
 - [TODO: Especificar los formularios de inicio de sesión, endpoints de API o componentes de gestión de sesión afectados.]`,
         details_es: `### Prueba de Concepto
 [TODO: Proporcionar una PoC detallada, demostrando el relleno de credenciales, el secuestro de sesión o el bypass de la recuperación de contraseña.]`,
-        immediateActions_en: "### Immediate Actions\n[TODO: Add immediate actions in English]",
-        immediateActions_es: "### Acciones Inmediatas\n[TODO: Añadir acciones inmediatas en español]",
+        immediateActions_en: "### Immediate Actions\nForce a logout of all users to invalidate all existing session tokens. Implement rate limiting on the login page.",
+        immediateActions_es: "### Acciones Inmediatas\nForzar el cierre de sesión de todos los usuarios para invalidar todos los tokens de sesión existentes. Implementar limitación de velocidad en la página de inicio de sesión.",
     },
     {
         id: "vuln-web-004",
@@ -167,8 +167,8 @@ El impacto de la exposición de datos sensibles puede ser severo, lo que lleva a
 - [TODO: Especificar dónde se almacenan o transmiten los datos sensibles de forma insegura.]`,
         details_es: `### Prueba de Concepto
 [TODO: Proporcionar evidencia de los datos expuestos, p. ej., capturas de pantalla de contraseñas en texto plano en la base de datos o tráfico sin cifrar.]`,
-        immediateActions_en: "### Immediate Actions\n[TODO: Add immediate actions in English]",
-        immediateActions_es: "### Acciones Inmediatas\n[TODO: Añadir acciones inmediatas en español]",
+        immediateActions_en: "### Immediate Actions\nImmediately remove or encrypt the exposed sensitive data. Force password resets if credentials were exposed.",
+        immediateActions_es: "### Acciones Inmediatas\nEliminar o cifrar inmediatamente los datos sensibles expuestos. Forzar el restablecimiento de contraseñas si se expusieron credenciales.",
     },
     {
         id: "vuln-web-005",
@@ -209,8 +209,8 @@ XXE puede llevar a la divulgación de datos confidenciales, denegación de servi
 - [TODO: Especificar la funcionalidad que procesa entradas XML, p. ej., funciones de carga de archivos.]`,
         details_es: `### Prueba de Concepto
 [TODO: Proporcionar un archivo XML malicioso y mostrar la divulgación de información o el DoS resultante.]`,
-        immediateActions_en: "### Immediate Actions\n[TODO: Add immediate actions in English]",
-        immediateActions_es: "### Acciones Inmediatas\n[TODO: Añadir acciones inmediatas en español]",
+        immediateActions_en: "### Immediate Actions\nImmediately disable DTDs and external entity processing in all XML parsers.",
+        immediateActions_es: "### Acciones Inmediatas\nDeshabilitar inmediatamente los DTDs y el procesamiento de entidades externas en todos los analizadores XML.",
     },
     {
         id: "vuln-web-006",
@@ -231,7 +231,7 @@ El control de acceso roto puede conducir al acceso no autorizado a datos y funci
         remediation_en: {
             shortTerm: "### Short-Term Recommendations\nReview and enforce access control on the server-side for every request. Use role-based access control (RBAC) mechanisms. Deny by default.",
             mediumTerm: "### Medium-Term Recommendations\nImplement a centralized access control mechanism that is used by all components of the application. Log access control failures and alert administrators.",
-            longTerm: "### Long-Term Recommendations\nConduct a full review of access control logic. Implement the principle of least privilege, where users are only granted the minimum permissions necessary."
+            longTerm: "### Long-Term Recommendations\nConduct a full review of the access control logic. Implement the principle of least privilege, where users are only granted the minimum permissions necessary."
         },
         remediation_es: {
             shortTerm: "### Recomendaciones a Corto Plazo\nRevisar y aplicar el control de acceso en el lado del servidor para cada solicitud. Utilizar mecanismos de control de acceso basados en roles (RBAC). Denegar por defecto.",
@@ -251,8 +251,8 @@ El control de acceso roto puede conducir al acceso no autorizado a datos y funci
 - [TODO: Especificar las funciones o endpoints de API con control de acceso roto.]`,
         details_es: `### Prueba de Concepto
 [TODO: Proporcionar los pasos para reproducir, mostrando cómo un usuario con pocos privilegios puede acceder a recursos de altos privilegios.]`,
-        immediateActions_en: "### Immediate Actions\n[TODO: Add immediate actions in English]",
-        immediateActions_es: "### Acciones Inmediatas\n[TODO: Añadir acciones inmediatas en español]",
+        immediateActions_en: "### Immediate Actions\nReview and implement server-side authorization checks on all vulnerable endpoints.",
+        immediateActions_es: "### Acciones Inmediatas\nRevisar e implementar comprobaciones de autorización del lado del servidor en todos los puntos finales vulnerables.",
     },
     {
         id: "vuln-web-007",
@@ -293,8 +293,8 @@ La configuración de seguridad incorrecta puede tener una amplia gama de impacto
 - [TODO: Listar los componentes, servicios o servidores mal configurados.]`,
         details_es: `### Prueba de Concepto
 [TODO: Proporcionar evidencia de la configuración incorrecta, p. ej., captura de pantalla del listado de directorios, página de administración predeterminada o mensaje de error detallado.]`,
-        immediateActions_en: "### Immediate Actions\n[TODO: Add immediate actions in English]",
-        immediateActions_es: "### Acciones Inmediatas\n[TODO: Añadir acciones inmediatas en español]",
+        immediateActions_en: "### Immediate Actions\nImmediately correct the specific misconfiguration, such as disabling directory listing, changing default passwords, or restricting permissions.",
+        immediateActions_es: "### Acciones Inmediatas\nCorregir inmediatamente la configuración incorrecta específica, como deshabilitar el listado de directorios, cambiar las contraseñas predeterminadas o restringir los permisos.",
     },
     {
         id: "vuln-web-008",
@@ -335,8 +335,8 @@ Un ataque CSRF exitoso puede obligar al usuario a realizar solicitudes que cambi
 - [TODO: Listar los formularios o acciones vulnerables a CSRF.]`,
         details_es: `### Prueba de Concepto
 [TODO: Proporcionar un archivo HTML de PoC de CSRF y demostrar que se realiza la acción no autorizada.]`,
-        immediateActions_en: "### Immediate Actions\n[TODO: Add immediate actions in English]",
-        immediateActions_es: "### Acciones Inmediatas\n[TODO: Añadir acciones inmediatas en español]",
+        immediateActions_en: "### Immediate Actions\nImplement anti-CSRF tokens on all state-changing forms and API endpoints.",
+        immediateActions_es: "### Acciones Inmediatas\nImplementar tokens anti-CSRF en todos los formularios y puntos finales de API que cambian el estado.",
     },
     {
         id: "vuln-web-009",
@@ -377,8 +377,8 @@ El impacto puede variar desde la denegación de servicio hasta la ejecución de 
 - [TODO: Especificar la función o el parámetro que acepta datos serializados.]`,
         details_es: `### Prueba de Concepto
 [TODO: Proporcionar una carga útil serializada que, cuando se procesa, conduce a la ejecución de código u otro resultado malicioso.]`,
-        immediateActions_en: "### Immediate Actions\n[TODO: Add immediate actions in English]",
-        immediateActions_es: "### Acciones Inmediatas\n[TODO: Añadir acciones inmediatas en español]",
+        immediateActions_en: "### Immediate Actions\nDisable or restrict the functionality that deserializes user-supplied data. If that's not possible, implement strict validation of the incoming data.",
+        immediateActions_es: "### Acciones Inmediatas\nDeshabilitar o restringir la funcionalidad que deserializa los datos proporcionados por el usuario. Si no es posible, implementar una validación estricta de los datos entrantes.",
     },
     {
         id: "vuln-web-010",
@@ -419,8 +419,8 @@ Un ataque SSRF exitoso puede llevar al escaneo de redes internas, acceso no auto
 - [TODO: Especificar la funcionalidad que realiza solicitudes del lado del servidor basadas en la entrada del usuario, p. ej., un generador de vista previa de URL.]`,
         details_es: `### Prueba de Concepto
 [TODO: Proporcionar una carga útil que demuestre cómo realizar una solicitud a un recurso interno o restringido y mostrar la respuesta del servidor.]`,
-        immediateActions_en: "### Immediate Actions\n[TODO: Add immediate actions in English]",
-        immediateActions_es: "### Acciones Inmediatas\n[TODO: Añadir acciones inmediatas en español]",
+        immediateActions_en: "### Immediate Actions\nImplement a strict allow-list for domains that can be requested by the server. Block all internal and metadata IP addresses.",
+        immediateActions_es: "### Acciones Inmediatas\nImplementar una lista blanca estricta para los dominios que el servidor puede solicitar. Bloquear todas las direcciones IP internas y de metadatos.",
     },
     {
         id: "vuln-web-011",
@@ -461,8 +461,8 @@ Esto puede conducir a la omisión de la autenticación, la escalada de privilegi
 - [TODO: Listar los puntos de conexión vulnerables a la manipulación de verbos.]`,
         details_es: `### Prueba de Concepto
 [TODO: Mostrar una solicitud con un verbo manipulado (p. ej., GET en lugar de POST) que elude con éxito los controles de acceso.]`,
-        immediateActions_en: "### Immediate Actions\n[TODO: Add immediate actions in English]",
-        immediateActions_es: "### Acciones Inmediatas\n[TODO: Añadir acciones inmediatas en español]",
+        immediateActions_en: "### Immediate Actions\nReview the server-side code to ensure authorization checks are applied consistently across all HTTP verbs for a given endpoint.",
+        immediateActions_es: "### Acciones Inmediatas\nRevisar el código del lado del servidor para garantizar que las comprobaciones de autorización se apliquen de manera consistente a todos los verbos HTTP para un punto final determinado.",
     },
     {
         id: "vuln-web-012",
@@ -503,8 +503,8 @@ LFI puede conducir a la divulgación de información, ejecución remota de códi
 - [TODO: Especificar el parámetro y la URL vulnerables a LFI.]`,
         details_es: `### Prueba de Concepto
 [TODO: Mostrar una solicitud con una carga útil como \`../../../../etc/passwd\` y el contenido del archivo resultante que se muestra.]`,
-        immediateActions_en: "### Immediate Actions\n[TODO: Add immediate actions in English]",
-        immediateActions_es: "### Acciones Inmediatas\n[TODO: Añadir acciones inmediatas en español]",
+        immediateActions_en: "### Immediate Actions\nImplement strict input validation on the vulnerable parameter to prevent directory traversal characters.",
+        immediateActions_es: "### Acciones Inmediatas\nImplementar una validación de entrada estricta en el parámetro vulnerable para prevenir los caracteres de salto de directorio.",
     },
     {
         id: "vuln-web-013",
@@ -545,8 +545,8 @@ Esto conduce a la divulgación de archivos sensibles en el servidor, incluidos a
 - [TODO: Especificar la funcionalidad vulnerable a SSRF con el esquema file://.]`,
         details_es: `### Prueba de Concepto
 [TODO: Proporcionar una solicitud utilizando una carga útil \`file://\` y mostrar el contenido de un archivo local en la respuesta.]`,
-        immediateActions_en: "### Immediate Actions\n[TODO: Add immediate actions in English]",
-        immediateActions_es: "### Acciones Inmediatas\n[TODO: Añadir acciones inmediatas en español]",
+        immediateActions_en: "### Immediate Actions\nImmediately block the `file://` scheme in the application's request handler.",
+        immediateActions_es: "### Acciones Inmediatas\nBloquear inmediatamente el esquema `file://` en el manejador de solicitudes de la aplicación.",
     },
     // --- MOBILE VULNERABILITIES ---
     {
@@ -588,8 +588,8 @@ Conduce al compromiso de credenciales de usuario, tokens de sesión y otros dato
 - [TODO: Listar los archivos o bases de datos donde los datos se almacenan de forma insegura (p. ej., archivo SharedPreferences, BD SQLite).]`,
         details_es: `### Prueba de Concepto
 [TODO: Proporcionar los pasos para extraer los datos almacenados de forma insegura de un dispositivo de prueba (p. ej., usando ADB o exploradores de sistema de archivos).]`,
-        immediateActions_en: "### Immediate Actions\n[TODO: Add immediate actions in English]",
-        immediateActions_es: "### Acciones Inmediatas\n[TODO: Añadir acciones inmediatas en español]",
+        immediateActions_en: "### Immediate Actions\nImmediately remove sensitive data from insecure storage. If the data must persist, re-implement storage using secure mechanisms like Android's EncryptedSharedPreferences or iOS's Keychain.",
+        immediateActions_es: "### Acciones Inmediatas\nEliminar inmediatamente los datos sensibles del almacenamiento inseguro. Si los datos deben persistir, volver a implementar el almacenamiento utilizando mecanismos seguros como EncryptedSharedPreferences de Android o el Keychain de iOS.",
     },
     {
         id: "vuln-mobile-002",
@@ -630,8 +630,8 @@ El impacto es equivalente a la explotación de la vulnerabilidad web correspondi
 - [TODO: Listar los endpoints de la API de backend vulnerables.]`,
         details_es: `### Prueba de Concepto
 [TODO: Proporcionar la solicitud y respuesta de la API que demuestra la vulnerabilidad del lado del servidor.]`,
-        immediateActions_en: "### Immediate Actions\n[TODO: Add immediate actions in English]",
-        immediateActions_es: "### Acciones Inmediatas\n[TODO: Añadir acciones inmediatas en español]",
+        immediateActions_en: "### Immediate Actions\nApply server-side validation and authorization checks to all API endpoints, treating all client-side input as untrusted.",
+        immediateActions_es: "### Acciones Inmediatas\nAplicar validación y comprobaciones de autorización del lado del servidor a todos los puntos finales de la API, tratando todas las entradas del lado del cliente como no confiables.",
     },
     {
         id: "vuln-mobile-003",
@@ -672,8 +672,8 @@ Un atacante puede interceptar, ver y modificar todo el tráfico entre la aplicac
 - [TODO: Listar las solicitudes de red o puntos de conexión de API que utilizan comunicación insegura.]`,
         details_es: `### Prueba de Concepto
 [TODO: Proporcionar capturas de pantalla de una herramienta de proxy (p. ej., Burp Suite) que muestren tráfico en texto plano interceptado o un ataque de degradación de TLS exitoso.]`,
-        immediateActions_en: "### Immediate Actions\n[TODO: Add immediate actions in English]",
-        immediateActions_es: "### Acciones Inmediatas\n[TODO: Añadir acciones inmediatas en español]",
+        immediateActions_en: "### Immediate Actions\nEnforce TLS for all application communications. Disable cleartext traffic in the app's configuration (e.g., Android's `network_security_config.xml`).",
+        immediateActions_es: "### Acciones Inmediatas\nForzar el uso de TLS para todas las comunicaciones de la aplicación. Deshabilitar el tráfico de texto claro en la configuración de la aplicación (p. ej., `network_security_config.xml` en Android).",
     },
     {
         id: "vuln-mobile-004",
@@ -714,8 +714,8 @@ El impacto depende de la sensibilidad de los datos filtrados. Puede variar desde
 - [TODO: Especificar dónde ocurre la filtración de datos (p. ej., salida de Logcat, portapapeles, datos de análisis).]`,
         details_es: `### Prueba de Concepto
 [TODO: Proporcionar capturas de pantalla o extractos de registros que muestren la filtración de datos sensibles.]`,
-        immediateActions_en: "### Immediate Actions\n[TODO: Add immediate actions in English]",
-        immediateActions_es: "### Acciones Inmediatas\n[TODO: Añadir acciones inmediatas en español]",
+        immediateActions_en: "### Immediate Actions\nImmediately remove all logging of sensitive data from the application code. Disable keyboard caching for sensitive input fields.",
+        immediateActions_es: "### Acciones Inmediatas\nEliminar inmediatamente todo el registro de datos sensibles del código de la aplicación. Deshabilitar el almacenamiento en caché del teclado para los campos de entrada sensibles.",
     },
     {
         id: "vuln-mobile-005",
@@ -756,8 +756,8 @@ El impacto puede ser severo, permitiendo a los atacantes ver, modificar o elimin
 - [TODO: Listar los endpoints de la API de backend vulnerables.]`,
         details_es: `### Prueba de Concepto
 [TODO: Proporcionar una secuencia de solicitudes de API (p. ej., desde Burp Suite) que muestre cómo un usuario con pocos privilegios puede acceder o modificar datos a los que no debería tener acceso.]`,
-        immediateActions_en: "### Immediate Actions\n[TODO: Add immediate actions in English]",
-        immediateActions_es: "### Acciones Inmediatas\n[TODO: Añadir acciones inmediatas en español]",
+        immediateActions_en: "### Immediate Actions\nImmediately implement server-side checks on the vulnerable API endpoints to verify that the authenticated user is authorized to access the requested resource.",
+        immediateActions_es: "### Acciones Inmediatas\nImplementar inmediatamente comprobaciones del lado del servidor en los puntos finales de la API vulnerables para verificar que el usuario autenticado está autorizado para acceder al recurso solicitado.",
     },
     {
         id: "vuln-mobile-006",
@@ -798,8 +798,8 @@ La criptografía rota puede llevar al compromiso de datos sensibles almacenados 
 - [TODO: Especificar la parte del código donde se utiliza la criptografía rota.]`,
         details_es: `### Prueba de Concepto
 [TODO: Proporcionar evidencia de la criptografía débil, como el descifrado de datos cifrados con una clave estática o el craqueo de un hash de contraseña.]`,
-        immediateActions_en: "### Immediate Actions\n[TODO: Add immediate actions in English]",
-        immediateActions_es: "### Acciones Inmediatas\n[TODO: Añadir acciones inmediatas en español]",
+        immediateActions_en: "### Immediate Actions\nReplace any hardcoded keys with securely generated and stored keys. Upgrade all cryptographic functions to use modern, recommended algorithms (e.g., AES-256-GCM).",
+        immediateActions_es: "### Acciones Inmediatas\nReemplazar cualquier clave codificada de forma rígida con claves generadas y almacenadas de forma segura. Actualizar todas las funciones criptográficas para usar algoritmos modernos y recomendados (p. ej., AES-256-GCM).",
     },
     {
         id: "vuln-mobile-007",
@@ -840,8 +840,8 @@ El impacto puede variar desde la corrupción de datos y la denegación de servic
 - [TODO: Especificar la consulta de la base de datos local o la WebView que es vulnerable.]`,
         details_es: `### Prueba de Concepto
 [TODO: Proporcionar una PoC, como una consulta SQL maliciosa que corrompe la BD local, o una carga útil de XSS que se ejecuta en una WebView.]`,
-        immediateActions_en: "### Immediate Actions\n[TODO: Add immediate actions in English]",
-        immediateActions_es: "### Acciones Inmediatas\n[TODO: Añadir acciones inmediatas en español]",
+        immediateActions_en: "### Immediate Actions\nImplement parameterized queries for local database interactions. Apply proper encoding for data rendered in WebViews.",
+        immediateActions_es: "### Acciones Inmediatas\nImplementar consultas parametrizadas para las interacciones con la base de datos local. Aplicar la codificación adecuada para los datos renderizados en WebViews.",
     },
     {
         id: "vuln-mobile-008",
@@ -882,8 +882,8 @@ Esto puede conducir a una omisión completa de los controles de seguridad. Por e
 - [TODO: Especificar la decisión de seguridad y la entrada no confiable que la influye.]`,
         details_es: `### Prueba de Concepto
 [TODO: Proporcionar una PoC que demuestre cómo manipular la entrada no confiable para eludir un control de seguridad.]`,
-        immediateActions_en: "### Immediate Actions\n[TODO: Add immediate actions in English]",
-        immediateActions_es: "### Acciones Inmediatas\n[TODO: Añadir acciones inmediatas en español]",
+        immediateActions_en: "### Immediate Actions\nRefactor the code to remove any security decisions based on untrusted inputs. Move security logic to the server-side where possible.",
+        immediateActions_es: "### Acciones Inmediatas\nRefactorizar el código para eliminar cualquier decisión de seguridad basada en entradas no confiables. Mover la lógica de seguridad al lado del servidor siempre que sea posible.",
     },
     {
         id: "vuln-mobile-009",
@@ -938,7 +938,7 @@ Este problema ocurre cuando el binario de la aplicación móvil no está adecuad
         technicalDescription_en: `### Technical Description
 Mobile app binaries can be decompiled to reveal source code, hardcoded secrets, and business logic. An attacker can analyze this code to find other vulnerabilities, tamper with the app's logic (e.g., bypass security controls), or repackage the app with malicious code. Lack of protections includes no code obfuscation, no anti-tampering checks, and no root/jailbreak detection.`,
         technicalDescription_es: `### Descripción Técnica
-Los binarios de las aplicaciones móviles pueden ser descompilados para revelar el código fuente, los secretos codificados de forma rígida y la lógica de negocio. Un atacante puede analizar este código para encontrar otrasulnerabilidades, manipular la lógica de la aplicación (p. ej., eludir los controles de seguridad) o reempaquetar la aplicación con código malicioso. La falta de protecciones incluye la no ofuscación del código, la falta de comprobaciones anti-manipulación y la no detección de root/jailbreak.`,
+Los binarios de las aplicaciones móviles pueden ser descompilados para revelar el código fuente, los secretos codificados de forma rígida y la lógica de negocio. Un atacante puede analizar este código para encontrar otras vulnerabilidades, manipular la lógica de la aplicación (p. ej., eludir los controles de seguridad) o reempaquetar la aplicación con código malicioso. La falta de protecciones incluye la no ofuscación del código, la falta de comprobaciones anti-manipulación y la no detección de root/jailbreak.`,
         impact_en: `### Impact
 Reverse engineering can lead to the discovery of other severe vulnerabilities, theft of intellectual property, and reputational damage. Tampering can lead to fraud, security control bypasses, and the distribution of malicious versions of the app.`,
         impact_es: `### Impacto
@@ -961,13 +961,13 @@ La ingeniería inversa puede conducir al descubrimiento de otras vulnerabilidade
         affectedComponents_en: `### Affected Components
 - The application binary itself (APK/IPA).`,
         details_en: `### Proof of Concept
-[TODO: Provide screenshots of decompiled code, or demonstrate bypassing a security control after patching the binary.]`,
+[TODO: Demonstrate patching the application binary to bypass a security control and re-signing it.]`,
         affectedComponents_es: `### Componentes Afectados
 - El propio binario de la aplicación (APK/IPA).`,
         details_es: `### Prueba de Concepto
-[TODO: Proporcionar capturas de pantalla del código descompilado, o demostrar cómo se elude un control de seguridad después de parchear el binario.]`,
-        immediateActions_en: "### Immediate Actions\n[TODO: Add immediate actions in English]",
-        immediateActions_es: "### Acciones Inmediatas\n[TODO: Añadir acciones inmediatas en español]",
+[TODO: Demostrar cómo parchear el binario de la aplicación para eludir un control de seguridad y volver a firmarlo.]`,
+        immediateActions_en: "### Immediate Actions\nImplement basic code obfuscation and integrity checks (checksums) in the build process.",
+        immediateActions_es: "### Acciones Inmediatas\nImplementar ofuscación de código básica y comprobaciones de integridad (checksums) en el proceso de compilación.",
     },
     // --- NETWORK VULNERABILITIES ---
     {
@@ -1009,8 +1009,8 @@ El atacante puede robar información sensible como credenciales y tokens de sesi
 - [TODO: Especificar los canales de comunicación de red que son vulnerables.]`,
         details_es: `### Prueba de Concepto
 [TODO: Proporcionar evidencia de un ataque MitM, como capturas de pantalla de una herramienta de proxy que muestren tráfico interceptado o modificado.]`,
-        immediateActions_en: "### Immediate Actions\n[TODO: Add immediate actions in English]",
-        immediateActions_es: "### Acciones Inmediatas\n[TODO: Añadir acciones inmediatas en español]",
+        immediateActions_en: "### Immediate Actions\nEnforce TLS for all communications. In mobile applications, implement certificate pinning to prevent interception.",
+        immediateActions_es: "### Acciones Inmediatas\nForzar el uso de TLS para todas las comunicaciones. En aplicaciones móviles, implementar anclaje de certificados (certificate pinning) para prevenir la interceptación.",
     },
     { 
         id: "vuln-net-002", 
@@ -1041,8 +1041,8 @@ El atacante puede robar información sensible como credenciales y tokens de sesi
         details_en: "### Proof of Concept\n[TODO: Show evidence of a successful DNS spoofing attack, such as a client being redirected to a malicious IP address.]", 
         affectedComponents_es: "### Componentes Afectados\n- Resolutores y clientes DNS dentro de la red.", 
         details_es: "### Prueba de Concepto\n[TODO: Mostrar evidencia de un ataque de suplantación de DNS exitoso, como un cliente siendo redirigido a una dirección IP maliciosa.]",
-        immediateActions_en: "### Immediate Actions\n[TODO: Add immediate actions in English]",
-        immediateActions_es: "### Acciones Inmediatas\n[TODO: Añadir acciones inmediatas en español]",
+        immediateActions_en: "### Immediate Actions\nFlush the DNS cache on affected resolvers and clients. Implement DNSSEC to prevent future spoofing.",
+        immediateActions_es: "### Acciones Inmediatas\nLimpiar la caché de DNS en los resolutores y clientes afectados. Implementar DNSSEC para prevenir futuras suplantaciones.",
     },
     {
         id: "vuln-net-003",
@@ -1079,8 +1079,8 @@ El envenenamiento de ARP puede conducir a ataques de intermediario (man-in-the-m
         details_en: "### Proof of Concept\n[TODO: Provide output from a tool like `arpspoof` and show intercepted traffic in a network analyzer like Wireshark.]",
         affectedComponents_es: "### Componentes Afectados\n- Todos los dispositivos en el segmento de red local.",
         details_es: "### Prueba de Concepto\n[TODO: Proporcionar la salida de una herramienta como `arpspoof` y mostrar el tráfico interceptado en un analizador de red como Wireshark.]",
-        immediateActions_en: "### Immediate Actions\n[TODO: Add immediate actions in English]",
-        immediateActions_es: "### Acciones Inmediatas\n[TODO: Añadir acciones inmediatas en español]",
+        immediateActions_en: "### Immediate Actions\nEnable Dynamic ARP Inspection (DAI) on network switches to validate ARP packets and prevent spoofing.",
+        immediateActions_es: "### Acciones Inmediatas\nHabilitar la Inspección Dinámica de ARP (DAI) en los conmutadores de red para validar los paquetes ARP y prevenir la suplantación.",
     },
     {
         id: "vuln-net-004",
@@ -1111,8 +1111,8 @@ El envenenamiento de ARP puede conducir a ataques de intermediario (man-in-the-m
         details_en: "### Proof of Concept\n[TODO: Provide evidence of spoofed packets being accepted by a target system, using a tool like hping3 or Scapy.]",
         affectedComponents_es: "### Componentes Afectados\n- Enrutadores de red, cortafuegos y sistemas que utilizan controles de acceso basados en IP.",
         details_es: "### Prueba de Concepto\n[TODO: Proporcionar evidencia de que los paquetes suplantados son aceptados por un sistema objetivo, utilizando una herramienta como hping3 o Scapy.]",
-        immediateActions_en: "### Immediate Actions\n[TODO: Add immediate actions in English]",
-        immediateActions_es: "### Acciones Inmediatas\n[TODO: Añadir acciones inmediatas en español]",
+        immediateActions_en: "### Immediate Actions\nImplement ingress filtering (BCP38/RFC 2827) at the network border to drop packets with forged source IP addresses.",
+        immediateActions_es: "### Acciones Inmediatas\nImplementar el filtrado de entrada (BCP38/RFC 2827) en el borde de la red para descartar paquetes con direcciones IP de origen falsificadas.",
     },
     {
         id: "vuln-net-005",
@@ -1150,8 +1150,8 @@ El impacto principal es la falta de disponibilidad del servicio, lo que conduce 
         details_en: "### Proof of Concept\n[TODO: Provide data showing the spike in traffic and corresponding resource exhaustion on the target system. Use tools like hping3 or Slowloris for demonstration.]",
         affectedComponents_es: "### Componentes Afectados\n- [TODO: Especificar los servidores, servicios o recursos de red objetivo.]",
         details_es: "### Prueba de Concepto\n[TODO: Proporcionar datos que muestren el pico de tráfico y el agotamiento de recursos correspondiente en el sistema objetivo. Usar herramientas como hping3 o Slowloris para la demostración.]",
-        immediateActions_en: "### Immediate Actions\n[TODO: Add immediate actions in English]",
-        immediateActions_es: "### Acciones Inmediatas\n[TODO: Añadir acciones inmediatas en español]",
+        immediateActions_en: "### Immediate Actions\nEngage a DDoS mitigation service. Implement rate limiting and connection limits on edge devices and servers.",
+        immediateActions_es: "### Acciones Inmediatas\nContratar un servicio de mitigación de DDoS. Implementar limitación de velocidad y límites de conexión en los dispositivos de borde y servidores.",
     },
     {
         id: "vuln-net-006",
@@ -1182,8 +1182,8 @@ El impacto principal es la falta de disponibilidad del servicio, lo que conduce 
         details_en: "### Proof of Concept\n[TODO: Provide steps to perform a VLAN hopping attack using a tool like Yersinia and show access to a resource on a different VLAN.]",
         affectedComponents_es: "### Componentes Afectados\n- Switches de red con puertos mal configurados.",
         details_es: "### Prueba de Concepto\n[TODO: Proporcionar los pasos para realizar un ataque de salto de VLAN utilizando una herramienta como Yersinia y mostrar el acceso a un recurso en una VLAN diferente.]",
-        immediateActions_en: "### Immediate Actions\n[TODO: Add immediate actions in English]",
-        immediateActions_es: "### Acciones Inmediatas\n[TODO: Añadir acciones inmediatas en español]",
+        immediateActions_en: "### Immediate Actions\nDisable Dynamic Trunking Protocol (DTP) on all user-facing switch ports and configure them as static access ports.",
+        immediateActions_es: "### Acciones Inmediatas\nDeshabilitar el Protocolo de Enlace Troncal Dinámico (DTP) en todos los puertos de conmutador orientados al usuario y configurarlos como puertos de acceso estáticos.",
     },
     {
         id: "vuln-net-007",
@@ -1236,7 +1236,7 @@ Un atacante puede descifrar datos sensibles transmitidos por la red, incluidas c
         impact_en: "### Impact\nAn attacker can bypass the firewall to access internal network resources, exfiltrate data, or launch attacks against other systems. It effectively removes a critical layer of network security.",
         impact_es: "### Impacto\nUn atacante puede eludir el firewall para acceder a los recursos de la red interna, exfiltrar datos o lanzar ataques contra otros sistemas. Elimina eficazmente una capa crítica de seguridad de la red.",
         remediation_en: {
-            shortTerm: "### Short-Term Recommendations\nImplement a 'deny-by-default' firewall policy. Regularly review and simplify the firewall rulebase to remove unused or redundant rules.",
+            shortTerm: "### Short-Term Recommendations\nReview and simplify the firewall rulebase to remove unused or redundant rules. Implement a 'deny-by-default' firewall policy.",
             mediumTerm: "### Medium-Term Recommendations\nImplement both ingress and egress filtering. Enable and monitor firewall logs to detect suspicious activity and policy violations.",
             longTerm: "### Long-Term Recommendations\nAutomate the process of firewall rule review and validation. Use a network security policy management tool to maintain consistency and compliance."
         },
@@ -1258,8 +1258,8 @@ Un atacante puede descifrar datos sensibles transmitidos por la red, incluidas c
 - El/los firewall(s) corporativo(s).`,
         details_es: `### Prueba de Concepto
 [TODO: Proporcionar una captura de pantalla de la base de reglas del firewall que muestre la regla permisiva, o demostrar el acceso a un puerto/servicio supuestamente bloqueado.]`,
-        immediateActions_en: "### Immediate Actions\n[TODO: Add immediate actions in English]",
-        immediateActions_es: "### Acciones Inmediatas\n[TODO: Añadir acciones inmediatas en español]",
+        immediateActions_en: "### Immediate Actions\nReview the firewall rulebase and immediately remove or restrict any overly permissive 'any/any' rules. Apply a 'deny-by-default' policy.",
+        immediateActions_es: "### Acciones Inmediatas\nRevisar la base de reglas del firewall y eliminar o restringir inmediatamente cualquier regla 'cualquiera/cualquiera' demasiado permisiva. Aplicar una política de 'denegar por defecto'.",
     },
     {
         id: "vuln-net-009",
@@ -1294,8 +1294,8 @@ Un atacante puede descifrar datos sensibles transmitidos por la red, incluidas c
 - [TODO: Especificar el SSID de la red Wi-Fi insegura.]`,
         details_es: `### Prueba de Concepto
 [TODO: Proporcionar evidencia de la conexión a la red no segura o del descifrado de una contraseña WPA2 débil utilizando una herramienta como Aircrack-ng.]`,
-        immediateActions_en: "### Immediate Actions\n[TODO: Add immediate actions in English]",
-        immediateActions_es: "### Acciones Inmediatas\n[TODO: Añadir acciones inmediatas en español]",
+        immediateActions_en: "### Immediate Actions\nImmediately disable any open Wi-Fi networks. Change weak WPA2 passwords to strong, complex phrases and enable WPA3 if available.",
+        immediateActions_es: "### Acciones Inmediatas\nDeshabilitar inmediatamente cualquier red Wi-Fi abierta. Cambiar las contraseñas WPA2 débiles por frases complejas y seguras, y habilitar WPA3 si está disponible.",
     },
     {
         id: "vuln-net-010",
@@ -1330,8 +1330,8 @@ Un atacante puede descifrar datos sensibles transmitidos por la red, incluidas c
 - [TODO: Listar las aplicaciones o servicios que utilizan protocolos no cifrados.]`,
         details_es: `### Prueba de Concepto
 [TODO: Proporcionar una captura de pantalla de Wireshark o una herramienta similar que muestre datos sensibles capturados en texto claro.]`,
-        immediateActions_en: "### Immediate Actions\n[TODO: Add immediate actions in English]",
-        immediateActions_es: "### Acciones Inmediatas\n[TODO: Añadir acciones inmediatas en español]",
+        immediateActions_en: "### Immediate Actions\nImmediately disable any services that transmit sensitive data over unencrypted protocols. Enforce TLS across all applications.",
+        immediateActions_es: "### Acciones Inmediatas\nDeshabilitar inmediatamente cualquier servicio que transmita datos sensibles a través de protocolos no cifrados. Forzar el uso de TLS en todas las aplicaciones.",
     },
     // --- INFRASTRUCTURE VULNERABILITIES ---
     {
@@ -1358,7 +1358,7 @@ El impacto puede variar desde la denegación de servicio hasta la ejecución rem
         remediation_es: {
             shortTerm: "### Recomendaciones a Corto Plazo\nEstablecer una política y un proceso de gestión de parches sólidos. Suscribirse a los avisos de seguridad de todo el software utilizado en el entorno.",
             mediumTerm: "### Recomendaciones a Medio Plazo\nImplementar un sistema de gestión de parches automatizado para garantizar que los parches se apliquen de manera oportuna. Usar un escáner de vulnerabilidades para escanear regularmente la infraestructura en busca de software sin parches.",
-            longTerm: "### Recomendaciones a Largo Plazo\nIntegrar el escaneo de vulnerabilidades en el pipeline de CI/CD. Usar herramientas de análisis de composición de software (SCA) para identificar y gestionar lasulnerabilidades en las bibliotecas de terceros."
+            longTerm: "### Recomendaciones a Largo Plazo\nIntegrar el escaneo de vulnerabilidades en el pipeline de CI/CD. Usar herramientas de análisis de composición de software (SCA) para identificar y gestionar las vulnerabilidades en las bibliotecas de terceros."
         },
         cwe: "CWE-937",
         severity: "Critical",
@@ -1373,8 +1373,8 @@ El impacto puede variar desde la denegación de servicio hasta la ejecución rem
 - [TODO: Listar el software sin parches, su versión y el/los servidor(es) en el/los que se está ejecutando.]`,
         details_es: `### Prueba de Concepto
 [TODO: Proporcionar los pasos para explotar la vulnerabilidad, incluido cualquier código de explotación público utilizado y capturas de pantalla que muestren el compromiso.]`,
-        immediateActions_en: "### Immediate Actions\n[TODO: Add immediate actions in English]",
-        immediateActions_es: "### Acciones Inmediatas\n[TODO: Añadir acciones inmediatas en español]",
+        immediateActions_en: "### Immediate Actions\nApply security patches to the vulnerable software immediately. If a patch is not available, isolate the system from the network or disable the service.",
+        immediateActions_es: "### Acciones Inmediatas\nAplicar inmediatamente los parches de seguridad al software vulnerable. Si no hay un parche disponible, aislar el sistema de la red o deshabilitar el servicio.",
     },
     {
         id: "vuln-infra-002",
@@ -1415,8 +1415,8 @@ Un atacante puede obtener el control administrativo total del sistema afectado, 
 - [TODO: Listar los sistemas o dispositivos que utilizan credenciales predeterminadas.]`,
         details_es: `### Prueba de Concepto
 [TODO: Proporcionar una captura de pantalla de un inicio de sesión exitoso utilizando las credenciales predeterminadas.]`,
-        immediateActions_en: "### Immediate Actions\n[TODO: Add immediate actions in English]",
-        immediateActions_es: "### Acciones Inmediatas\n[TODO: Añadir acciones inmediatas en español]",
+        immediateActions_en: "### Immediate Actions\nImmediately change all default passwords on affected systems to strong, unique values. Disable the default accounts if they are not needed.",
+        immediateActions_es: "### Acciones Inmediatas\nCambiar inmediatamente todas las contraseñas predeterminadas en los sistemas afectados por valores fuertes y únicos. Deshabilitar las cuentas predeterminadas si no son necesarias.",
     },
     {
         id: "vuln-infra-003",
@@ -1427,9 +1427,9 @@ Directory traversal (or path traversal) is a web security vulnerability that all
         overview_es: `### Resumen
 El salto de directorio (o path traversal) es una vulnerabilidad de seguridad web que permite a un atacante leer archivos arbitrarios en el servidor que ejecuta una aplicación. Esto puede incluir código y datos de la aplicación, credenciales para sistemas de backend y archivos sensibles del sistema operativo.`,
         technicalDescription_en: `### Technical Description
-The vulnerability occurs when the application uses user-supplied input to construct a file path without properly sanitizing it. By using \`../\` sequences, an attacker can navigate outside of the intended directory and access files elsewhere on the filesystem.`,
+The vulnerability occurs when the application uses user-supplied input to construct a file path for reading or writing without properly sanitizing it. By using \`../\` sequences, an attacker can navigate outside of the intended directory and access files elsewhere on the filesystem.`,
         technicalDescription_es: `### Descripción Técnica
-Laulnerabilidad ocurre cuando la aplicación utiliza la entrada proporcionada por el usuario para construir una ruta de archivo sin sanearla adecuadamente. Al usar secuencias \`../\`, un atacante puede navegar fuera del directorio previsto y acceder a archivos en otras partes del sistema de archivos.`,
+La vulnerabilidad ocurre cuando la aplicación utiliza la entrada proporcionada por el usuario para construir una ruta de archivo para leer o escribir sin sanearla adecuadamente. Al usar secuencias \`../\`, un atacante puede navegar fuera del directorio previsto y acceder a archivos en otras partes del sistema de archivos.`,
         impact_en: `### Impact
 Allows an attacker to read sensitive information from the server's filesystem, including application source code, configuration files with credentials, and OS files like \`/etc/passwd\`.`,
         impact_es: `### Impacto
@@ -1457,8 +1457,8 @@ Permite a un atacante leer información sensible del sistema de archivos del ser
 - [TODO: Listar la URL y el parámetro vulnerables.]`,
         details_es: `### Prueba de Concepto
 [TODO: Proporcionar una solicitud con una carga útil de salto de ruta y mostrar el contenido de un archivo sensible en la respuesta.]`,
-        immediateActions_en: "### Immediate Actions\n[TODO: Add immediate actions in English]",
-        immediateActions_es: "### Acciones Inmediatas\n[TODO: Añadir acciones inmediatas en español]",
+        immediateActions_en: "### Immediate Actions\nImplement strict input validation and sanitization on the affected parameters to filter out directory traversal characters like `../`.",
+        immediateActions_es: "### Acciones Inmediatas\nImplementar una validación y saneamiento de entrada estrictos en los parámetros afectados para filtrar los caracteres de salto de directorio como `../`.",
     },
     {
         id: "vuln-infra-004",
@@ -1484,7 +1484,7 @@ Un ataque RCE exitoso proporciona a un atacante el control total sobre el sistem
         remediation_es: {
             shortTerm: "### Recomendaciones a Corto Plazo\nParchear la vulnerabilidad subyacente que condujo a la RCE. Esto podría implicar la actualización del software, la corrección de una falla de inyección o la desactivación de la función vulnerable.",
             mediumTerm: "### Recomendaciones a Medio Plazo\nImplementar el principio de privilegio mínimo. Ejecutar los procesos de la aplicación con los permisos mínimos necesarios para limitar el impacto de una posible RCE.",
-            longTerm: "### Recomendaciones a Largo Plazo\nUsar un Web Application Firewall (WAF) con reglas para detectar y bloquear los patrones de ataque comunes. Implementar el filtrado de salida para evitar que los sistemas comprometidos se comuniquen con los servidores controlados por el atacante."
+            longTerm: "### Recomendaciones a Largo Plazo\nUsar un Web Application Firewall (WAF) con rules para detectar y bloquear los patrones de ataque comunes. Implementar el filtrado de salida para evitar que los sistemas comprometidos se comuniquen con los servidores controlados por el atacante."
         },
         cwe: "CWE-94",
         severity: "Critical",
@@ -1497,8 +1497,8 @@ Un ataque RCE exitoso proporciona a un atacante el control total sobre el sistem
         affectedComponents_es: `### Componentes Afectados
 - [TODO: Especificar el sistema y la vulnerabilidad que permite la RCE.]`,
         details_es: "### Prueba de Concepto\n[TODO: Proporcionar los pasos seguidos para lograr la ejecución remota de código y mostrar la salida de un comando (p. ej., `whoami`, `id`) ejecutándose en el servidor objetivo.]",
-        immediateActions_en: "### Immediate Actions\n[TODO: Add immediate actions in English]",
-        immediateActions_es: "### Acciones Inmediatas\n[TODO: Añadir acciones inmediatas en español]",
+        immediateActions_en: "### Immediate Actions\nIsolate the compromised system from the network. Patch the underlying vulnerability (e.g., update software, fix injection flaw) immediately.",
+        immediateActions_es: "### Acciones Inmediatas\nAislar el sistema comprometido de la red. Parchear inmediatamente la vulnerabilidad subyacente (p. ej., actualizar el software, corregir la falla de inyección).",
     },
     {
         id: "vuln-infra-005",
@@ -1537,8 +1537,8 @@ Una escalada de privilegios exitosa puede resultar en que un atacante obtenga el
         affectedComponents_es: `### Componentes Afectados
 - [TODO: Especificar el sistema operativo o la aplicación y la configuración incorrecta o vulnerabilidad específica que permite la escalada de privilegios.]`,
         details_es: "### Prueba de Concepto\n[TODO: Proporcionar la secuencia de comandos utilizados para escalar privilegios y mostrar la salida de `whoami` o `id` como el usuario de altos privilegios.]",
-        immediateActions_en: "### Immediate Actions\n[TODO: Add immediate actions in English]",
-        immediateActions_es: "### Acciones Inmediatas\n[TODO: Añadir acciones inmediatas en español]",
+        immediateActions_en: "### Immediate Actions\nImmediately patch the vulnerable component or correct the misconfiguration (e.g., remove SUID bit, fix permissions).",
+        immediateActions_es: "### Acciones Inmediatas\nParchear inmediatamente el componente vulnerable o corregir la configuración incorrecta (p. ej., eliminar el bit SUID, corregir los permisos).",
     },
     {
         id: "vuln-infra-006",
@@ -1579,8 +1579,8 @@ Aunque a menudo es un hallazgo de menor gravedad por sí solo, la divulgación d
 - [TODO: Especificar qué información se está divulgando y dónde (p. ej., página de error, encabezado del servidor, directorio .git).]`,
         details_es: `### Prueba de Concepto
 [TODO: Proporcionar una captura de pantalla o respuesta del servidor que muestre la información divulgada.]`,
-        immediateActions_en: "### Immediate Actions\n[TODO: Add immediate actions in English]",
-        immediateActions_es: "### Acciones Inmediatas\n[TODO: Añadir acciones inmediatas en español]",
+        immediateActions_en: "### Immediate Actions\nImmediately disable verbose error messages in the production environment. Remove any exposed sensitive files or directories from the web root.",
+        immediateActions_es: "### Acciones Inmediatas\nDeshabilitar inmediatamente los mensajes de error detallados en el entorno de producción. Eliminar cualquier archivo o directorio sensible expuesto de la raíz web.",
     },
     {
         id: "vuln-infra-007",
@@ -1615,8 +1615,8 @@ Aunque a menudo es un hallazgo de menor gravedad por sí solo, la divulgación d
 - [TODO: Especificar la función, el parámetro y la URL vulnerables.]`,
         details_es: `### Prueba de Concepto
 [TODO: Proporcionar una solicitud con una carga útil de inyección de comandos (p. ej., \`; id\`) y mostrar la salida del comando ejecutado.]`,
-        immediateActions_en: "### Immediate Actions\n[TODO: Add immediate actions in English]",
-        immediateActions_es: "### Acciones Inmediatas\n[TODO: Añadir acciones inmediatas en español]",
+        immediateActions_en: "### Immediate Actions\nImmediately implement input sanitization to filter or escape shell metacharacters from user-supplied data in the vulnerable function.",
+        immediateActions_es: "### Acciones Inmediatas\nImplementar inmediatamente el saneamiento de entradas para filtrar o escapar los metacaracteres de la shell de los datos proporcionados por el usuario en la función vulnerable.",
     },
     {
         id: "vuln-infra-008",
@@ -1651,8 +1651,8 @@ Aunque a menudo es un hallazgo de menor gravedad por sí solo, la divulgación d
 - [TODO: Listar la URL y el parámetro vulnerables.]`,
         details_es: `### Prueba de Concepto
 [TODO: Proporcionar una solicitud con una carga útil de salto de ruta y mostrar el contenido de un archivo sensible (p. ej., /etc/passwd) en la respuesta.]`,
-        immediateActions_en: "### Immediate Actions\n[TODO: Add immediate actions in English]",
-        immediateActions_es: "### Acciones Inmediatas\n[TODO: Añadir acciones inmediatas en español]",
+        immediateActions_en: "### Immediate Actions\nImplement strict input validation on the vulnerable parameter to filter directory traversal characters. Canonicalize all file paths before use.",
+        immediateActions_es: "### Acciones Inmediatas\nImplementar una validación de entrada estricta en el parámetro vulnerable para filtrar los caracteres de salto de directorio. Canonicalizar todas las rutas de archivo antes de su uso.",
     },
     {
         id: "vuln-infra-009",
@@ -1687,8 +1687,8 @@ Aunque a menudo es un hallazgo de menor gravedad por sí solo, la divulgación d
 - [TODO: Listar la URL vulnerable y el parámetro de ID.]`,
         details_es: `### Prueba de Concepto
 [TODO: Proporcionar una URL que, al hacer clic, redirija al usuario a un dominio externo controlado por el atacante.]`,
-        immediateActions_en: "### Immediate Actions\n[TODO: Add immediate actions in English]",
-        immediateActions_es: "### Acciones Inmediatas\n[TODO: Añadir acciones inmediatas en español]",
+        immediateActions_en: "### Immediate Actions\nImplement a server-side allow-list for all redirect URLs. Disallow any redirection to external domains.",
+        immediateActions_es: "### Acciones Inmediatas\nImplementar una lista blanca del lado del servidor para todas las URL de redirección. No permitir ninguna redirección a dominios externos.",
     },
     {
         id: "vuln-infra-010",
@@ -1723,8 +1723,8 @@ Aunque a menudo es un hallazgo de menor gravedad por sí solo, la divulgación d
 - [TODO: Listar el nombre del servidor y el nombre del recurso compartido (p. ej., \\\\SERVIDOR\\recurso).]`,
         details_es: `### Prueba de Concepto
 [TODO: Proporcionar una captura de pantalla que muestre el acceso al recurso compartido inseguro y una lista de su contenido.]`,
-        immediateActions_en: "### Immediate Actions\n[TODO: Add immediate actions in English]",
-        immediateActions_es: "### Acciones Inmediatas\n[TODO: Añadir acciones inmediatas en español]",
+        immediateActions_en: "### Immediate Actions\nImmediately remove 'Everyone' or 'Anonymous' permissions from the file share. Apply access controls based on the principle of least privilege.",
+        immediateActions_es: "### Acciones Inmediatas\nEliminar inmediatamente los permisos de 'Todos' o 'Anónimo' del recurso compartido de archivos. Aplicar controles de acceso basados en el principio de privilegio mínimo.",
     },
     {
         id: "vuln-infra-011",
@@ -1759,8 +1759,8 @@ Aunque a menudo es un hallazgo de menor gravedad por sí solo, la divulgación d
 - [TODO: Listar el servidor, el recurso compartido y la ruta completa al archivo que contiene datos sensibles.]`,
         details_es: `### Prueba de Concepto
 [TODO: Proporcionar una captura de pantalla del contenido del archivo, redactando cualquier información altamente sensible.]`,
-        immediateActions_en: "### Immediate Actions\n[TODO: Add immediate actions in English]",
-        immediateActions_es: "### Acciones Inmediatas\n[TODO: Añadir acciones inmediatas en español]",
+        immediateActions_en: "### Immediate Actions\nImmediately remove the sensitive files from the share. Revoke and rotate any credentials found in the files.",
+        immediateActions_es: "### Acciones Inmediatas\nEliminar inmediatamente los archivos sensibles del recurso compartido. Revocar y rotar cualquier credencial encontrada en los archivos.",
     },
     {
         id: "vuln-infra-012",
@@ -1801,8 +1801,8 @@ Los servicios expuestos pueden ser objeto de ataques de fuerza bruta, denegació
 - [TODO: Listar las direcciones IP y los puertos de los servicios expuestos innecesariamente.]`,
         details_es: `### Prueba de Concepto
 [TODO: Proporcionar una captura de pantalla de una herramienta como nmap o Shodan que muestre el puerto expuesto y el banner del servicio.]`,
-        immediateActions_en: "### Immediate Actions\n[TODO: Add immediate actions in English]",
-        immediateActions_es: "### Acciones Inmediatas\n[TODO: Añadir acciones inmediatas en español]",
+        immediateActions_en: "### Immediate Actions\nImmediately block public access to the exposed services at the network firewall or cloud security group level.",
+        immediateActions_es: "### Acciones Inmediatas\nBloquear inmediatamente el acceso público a los servicios expuestos a nivel de firewall de red o grupo de seguridad en la nube.",
     },
     {
         id: "vuln-infra-013",
@@ -1837,8 +1837,8 @@ Los servicios expuestos pueden ser objeto de ataques de fuerza bruta, denegació
 - [TODO: Especificar la aplicación (p. ej., Elasticsearch) y la ubicación (dirección IP/URL) de la instancia mal configurada.]`,
         details_es: `### Prueba de Concepto
 [TODO: Proporcionar evidencia de la configuración incorrecta, como una captura de pantalla que muestre el acceso no autenticado a un panel o datos sensibles.]`,
-        immediateActions_en: "### Immediate Actions\n[TODO: Add immediate actions in English]",
-        immediateActions_es: "### Acciones Inmediatas\n[TODO: Añadir acciones inmediatas en español]",
+        immediateActions_en: "### Immediate Actions\nImmediately apply the correct security configuration, such as enabling authentication or restricting network access to the service.",
+        immediateActions_es: "### Acciones Inmediatas\nAplicar inmediatamente la configuración de seguridad correcta, como habilitar la autenticación o restringir el acceso de red al servicio.",
     },
     {
         id: "vuln-auth-001",
@@ -1982,7 +1982,7 @@ El atacante obtiene acceso completo a la cuenta del usuario comprometido y puede
             longTerm: "### Long-Term Recommendations\nUse a robust, centralized session management framework that handles token generation, validation, and expiration securely."
         },
         remediation_es: {
-            shortTerm: "### Recomendaciones a Corto Plazo\nEstablecer las banderas \`HttpOnly\` y \`Secure\` en todas las cookies de sesión para evitar que sean accedidas por scripts del lado del cliente o transmitidas a través de conexiones no cifradas.",
+            shortTerm: "### Recomendaciones a Corto Plazo\nEstablecer las banderas `HttpOnly` y `Secure` en todas las cookies de sesión para evitar que sean accedidas por scripts del lado del cliente o transmitidas a través de conexiones no cifradas.",
             mediumTerm: "### Recomendaciones a Medio Plazo\nImplementar un mecanismo para regenerar el ID de sesión después de cualquier cambio de nivel de privilegio, como el inicio de sesión. Vincular el token de sesión a otras propiedades del usuario, como su dirección IP o User-Agent, para dificultar el secuestro.",
             longTerm: "### Recomendaciones a Largo Plazo\nUtilizar un framework de gestión de sesiones robusto y centralizado que maneje la generación, validación y expiración de tokens de forma segura."
         },
@@ -2054,30 +2054,30 @@ El atacante obtiene acceso completo a la cuenta del usuario comprometido y puede
         technicalDescription_es: "### Descripción Técnica\nLos atacantes utilizan bots automatizados para probar una gran cantidad de credenciales robadas contra la página de inicio de sesión de la aplicación. El éxito del ataque se basa en la alta probabilidad de que los usuarios reutilicen la misma contraseña en múltiples servicios en línea.",
         impact_en: "### Impact\nSuccessful attacks lead to account takeovers, potentially on a massive scale, resulting in data breaches and fraudulent activity.",
         impact_es: "### Impacto\nLos ataques exitosos conducen a la toma de control de cuentas, potencialmente a gran escala, lo que resulta en brechas de datos y actividad fraudulenta.",
-        remediation_en: {
-            shortTerm: "### Short-Term Recommendations\nImplement rate limiting and account lockout policies for login attempts. Use CAPTCHA to differentiate between human users and automated bots.",
-            mediumTerm: "### Medium-Term Recommendations\nImplement Multi-Factor Authentication (MFA), which is the most effective defense against this type of attack.",
-            longTerm: "### Long-Term Recommendations\nMonitor login activity for patterns indicative of credential stuffing, such as a high volume of login attempts from a single IP or a high failure rate across many accounts."
-        },
-        remediation_es: {
-            shortTerm: "### Recomendaciones a Corto Plazo\nImplementar limitación de velocidad y mecanismos de bloqueo de cuentas para ralentizar los ataques de credential stuffing. Comprobar las nuevas contraseñas con una base de datos de contraseñas filtradas conocidas.",
-            mediumTerm: "### Recomendaciones a Medio Plazo\nImplementar la Autenticación Multifactor (MFA). Este es el control más efectivo contra la reutilización de contraseñas y el credential stuffing.",
-            longTerm: "### Recomendaciones a Largo Plazo\nEducar a los usuarios sobre la importancia de usar contraseñas únicas para cada servicio. Proporcionar un gestor de contraseñas como herramienta corporativa para facilitar esto."
-        },
-        cwe: "CWE-307",
-        severity: "High",
-        cvss: { score: 8.1, vectorString: "CVSS:3.1/AV:N/AC:H/PR:N/UI:N/S:U/C:H/I:H/A:N", attackVector: "N", attackComplexity: "H", privilegesRequired: "N", userInteraction: "N", scope: "U", confidentiality: "H", integrity: "H", availability: "N" },
-        references: ["https://owasp.org/www-community/attacks/Credential_stuffing"],
-        tags: ["Authentication"],
+        remediation_en: { 
+            shortTerm: "### Short-Term Recommendations\nImplement rate limiting and account lockout mechanisms to slow down credential stuffing attacks. Check new passwords against a database of known breached passwords.", 
+            mediumTerm: "### Medium-Term Recommendations\nImplement Multi-Factor Authentication (MFA). This is the single most effective control against password reuse and credential stuffing.", 
+            longTerm: "### Long-Term Recommendations\nEducate users about the importance of using unique passwords for every service. Provide a password manager as a corporate tool to facilitate this." 
+        }, 
+        remediation_es: { 
+            shortTerm: "### Recomendaciones a Corto Plazo\nImplementar limitación de velocidad y mecanismos de bloqueo de cuentas para ralentizar los ataques de credential stuffing. Comprobar las nuevas contraseñas con una base de datos de contraseñas filtradas conocidas.", 
+            mediumTerm: "### Recomendaciones a Medio Plazo\nImplementar la Autenticación Multifactor (MFA). Este es el control más efectivo contra la reutilización de contraseñas y el credential stuffing.", 
+            longTerm: "### Recomendaciones a Largo Plazo\nEducar a los usuarios sobre la importancia de usar contraseñas únicas para cada servicio. Proporcionar un gestor de contraseñas como herramienta corporativa para facilitar esto." 
+        }, 
+        cwe: "CWE-307", 
+        severity: "High", 
+        cvss: { score: 8.1, vectorString: "CVSS:3.1/AV:N/AC:H/PR:N/UI:N/S:U/C:H/I:H/A:N", attackVector: "N", attackComplexity: "H", privilegesRequired: "N", userInteraction: "N", scope: "U", confidentiality: "H", integrity: "H", availability: "N" }, 
+        references: ["https://owasp.org/www-community/attacks/Credential_stuffing"], 
+        tags: ["Authentication"], 
         affectedComponents_en: `### Affected Components
-- The application's login endpoint.`,
+- The application's login endpoint.`, 
         details_en: `### Proof of Concept
-[TODO: Provide logs or metrics showing a high volume of failed login attempts from specific IP addresses, indicating a credential stuffing attack.]`,
+[TODO: Provide logs or metrics showing a high volume of failed login attempts from specific IP addresses, indicating a credential stuffing attack.]`, 
         affectedComponents_es: `### Componentes Afectados
-- El punto de conexión de inicio de sesión de la aplicación.`,
+- El punto de conexión de inicio de sesión de la aplicación.`, 
         details_es: `### Prueba de Concepto
 [TODO: Proporcionar registros o métricas que muestren un alto volumen de intentos de inicio de sesión fallidos desde direcciones IP específicas, lo que indica un ataque de relleno de credenciales.]`,
-        immediateActions_en: "### Immediate Actions\nTemporarily block IP addresses with a high rate of failed login attempts. Force a password reset for any accounts that were successfully compromised.",
+        immediateActions_en: "### Immediate Actions\nImplement temporary IP-based blocking for addresses that generate a high rate of failed login attempts. Force a password reset for any accounts that were successfully compromised.",
         immediateActions_es: "### Acciones Inmediatas\nBloquear temporalmente las direcciones IP con una alta tasa de intentos de inicio de sesión fallidos. Forzar un restablecimiento de contraseña para cualquier cuenta comprometida identificada.",
     },
     {
@@ -2171,7 +2171,7 @@ Esta fuga de información ayuda a los atacantes al proporcionarles una lista de 
         overview_en: `### Overview
 The application's session management is weak, leading to vulnerabilities such as predictable session tokens or tokens that are not properly invalidated.`,
         overview_es: `### Resumen
-La gestión de sesiones de la aplicación es débil, lo que conduce a vulnerabilidades como tokens de sesión predecibles o tokens que no se invalidan correctamente.`,
+La gestión de sesiones de la aplicación es débil, lo que conduce aulnerabilidades como tokens de sesión predecibles o tokens que no se invalidan correctamente.`,
         technicalDescription_en: `### Technical Description
 The application may generate session tokens using non-random or easily predictable algorithms. It might also fail to invalidate session tokens on the server-side after logout or a password change, or allow tokens to persist for an excessively long time.`,
         technicalDescription_es: `### Descripción Técnica
@@ -2252,18 +2252,12 @@ Un ataque de fuerza bruta exitoso resulta en la toma de control de la cuenta. In
         id: "vuln-auth-011",
         title_en: "Weak <APPLICATION> Admin Credentials",
         title_es: "Credenciales Débiles de Administrador en <APPLICATION>",
-        overview_en: `### Overview
-The administrative interface of a specific application (e.g., Jenkins, Grafana, a CMS) is protected by weak or default credentials.`,
-        overview_es: `### Resumen
-La interfaz administrativa de una aplicación específica (p. ej., Jenkins, Grafana, un CMS) está protegida por credenciales débiles o predeterminadas.`,
-        technicalDescription_en: `### Technical Description
-The administrative account for <APPLICATION> is using a default, common, or easily guessable password (e.g., 'admin', 'password', 'root'). This allows an attacker who discovers the administrative interface to easily gain full control of the application.`,
-        technicalDescription_es: `### Descripción Técnica
-La cuenta administrativa para <APPLICATION> está utilizando una contraseña predeterminada, común o fácil de adivinar (p. ej., 'admin', 'password', 'root'). Esto permite a un atacante que descubre la interfaz administrativa obtener fácilmente el control total de la aplicación.`,
-        impact_en: `### Impact
-Full compromise of the <APPLICATION> instance, which could lead to code execution on the server, data theft, or a pivot point into the internal network.`,
-        impact_es: `### Impacto
-Compromiso total de la instancia de <APPLICATION>, lo que podría conducir a la ejecución de código en el servidor, robo de datos o un punto de pivote hacia la red interna.`,
+        overview_en: "### Overview\nThe administrative interface of a specific application (e.g., Jenkins, Grafana, a CMS) is protected by weak or default credentials.",
+        overview_es: "### Resumen\nLa interfaz administrativa de una aplicación específica (p. ej., Jenkins, Grafana, un CMS) está protegida por credenciales débiles o predeterminadas.",
+        technicalDescription_en: "### Technical Description\nThe administrative account for <APPLICATION> is using a default, common, or easily guessable password (e.g., 'admin', 'password', 'root'). This allows an attacker who discovers the administrative interface to easily gain full control of the application.",
+        technicalDescription_es: "### Descripción Técnica\nLa cuenta administrativa para <APPLICATION> está utilizando una contraseña predeterminada, común o fácil de adivinar (p. ej., 'admin', 'password', 'root'). Esto permite a un atacante que descubre la interfaz administrativa obtener fácilmente el control total de la aplicación.",
+        impact_en: "### Impact\nFull compromise of the <APPLICATION> instance, which could lead to code execution on the server, data theft, or a pivot point into the internal network.",
+        impact_es: "### Impacto\nCompromiso total de la instancia de <APPLICATION>, lo que podría conducir a la ejecución de código en el servidor, robo de datos o un punto de pivote hacia la red interna.",
         remediation_en: {
             shortTerm: "### Short-Term Recommendations\nChange the default administrative password to a strong, randomly generated password.",
             mediumTerm: "### Medium-Term Recommendations\nRestrict access to the administrative interface to trusted IP addresses or a VPN. Implement Multi-Factor Authentication (MFA) for the administrative account if supported.",
@@ -2770,7 +2764,7 @@ Un atacante puede realizar un ataque de intermediario (man-in-the-middle) para d
         },
         remediation_es: {
             shortTerm: "### Recomendaciones a Corto Plazo\nConfigurar los servidores para que solo admitan TLS 1.2 y TLS 1.3 con un conjunto de cifrado fuerte y moderno que proporcione secreto hacia adelante (forward secrecy).",
-            mediumTerm: "### Recomendaciones a Medio Plazo\nImplementar HTTP Strict Transport Security (HSTS) para garantizar que los navegadores solo se conecten al servidor a través de una conexión segura.",
+            mediumTerm: "### Recomendaciones a Medio Plazo\nImplementar HTTP Strict Transport Security (HSTS) para garantizar que los navegadores siempre se conecten al servidor a través de una conexión segura.",
             longTerm: "### Recomendaciones a Largo Plazo\nAuditar regularmente la configuración SSL/TLS del servidor utilizando herramientas automatizadas como la prueba SSL de SSL Labs y mantener la configuración actualizada con las mejores prácticas actuales."
         },
         cwe: "CWE-326",
@@ -2816,15 +2810,15 @@ Un atacante puede realizar un ataque de intermediario (man-in-the-middle) para d
         details_en: '### Proof of Concept\n[TODO: Provide a script or payload that causes the buffer overflow and demonstrates code execution or a crash.]',
         affectedComponents_es: '### Componentes Afectados\n- [TODO: Especificar la función vulnerable y el parámetro de entrada que se puede desbordar.]',
         details_es: '### Prueba de Concepto\n[TODO: Proporcionar un script o una carga útil que cause el desbordamiento del búfer y demuestre la ejecución de código o un bloqueo.]',
-        immediateActions_en: '### Immediate Actions\nIf possible, immediately disable the vulnerable functionality or apply a temporary filter to block overly long inputs.',
-        immediateActions_es: '### Acciones Inmediatas\nSi es posible, deshabilitar inmediatamente la funcionalidad vulnerable o aplicar un filtro temporal para bloquear las entradas demasiado largas.',
+        immediateActions_en: "### Immediate Actions\nIf possible, immediately disable the vulnerable functionality or apply a temporary filter to block overly long inputs.",
+        immediateActions_es: "### Acciones Inmediatas\nSi es posible, deshabilitar inmediatamente la funcionalidad vulnerable o aplicar un filtro temporal para bloquear las entradas demasiado largas.",
     },
     {
         id: 'vuln-add-002',
         title_en: 'Format String Vulnerabilities',
         title_es: 'Vulnerabilidades de Cadena de Formato',
         overview_en: '### Overview\nFormat string vulnerabilities occur when user-supplied input is evaluated as a command by the formatting function of a programming language.',
-        overview_es: '### Resumen\nLasulnerabilidades de cadena de formato ocurren cuando la entrada proporcionada por el usuario es evaluada como un comando por la función de formato de un lenguaje de programación.',
+        overview_es: '### Resumen\nLas vulnerabilidades de cadena de formato ocurren cuando la entrada proporcionada por el usuario es evaluada como un comando por la función de formato de un lenguaje de programación.',
         technicalDescription_en: '### Technical Description\nIn languages like C, functions like `printf()` can interpret format specifiers (e.g., `%x`, `%s`, `%n`) from user input. An attacker can use these specifiers to read from the stack, write to arbitrary memory locations, and potentially execute arbitrary code.',
         technicalDescription_es: '### Descripción Técnica\nEn lenguajes como C, funciones como `printf()` pueden interpretar especificadores de formato (p. ej., `%x`, `%s`, `%n`) de la entrada del usuario. Un atacante puede usar estos especificadores para leer de la pila, escribir en ubicaciones de memoria arbitrarias y potencialmente ejecutar código arbitrario.',
         impact_en: '### Impact\nCan lead to information disclosure, denial-of-service, or arbitrary code execution.',
@@ -2836,7 +2830,7 @@ Un atacante puede realizar un ataque de intermediario (man-in-the-middle) para d
         },
         remediation_es: {
             shortTerm: '### Recomendaciones a Corto Plazo\nSiempre especificar una cadena de formato como una constante en funciones como `printf`. Por ejemplo, usar `printf("%s", userInput)` en lugar de `printf(userInput)`.',
-            mediumTerm: '### Recomendaciones a Medio Plazo\nUsar banderas de compilador que adviertan sobre posiblesulnerabilidades de cadena de formato (p. ej., `-Wformat` en GCC).',
+            mediumTerm: '### Recomendaciones a Medio Plazo\nUsar banderas de compilador que adviertan sobre posibles vulnerabilidades de cadena de formato (p. ej., `-Wformat` en GCC).',
             longTerm: '### Recomendaciones a Largo Plazo\nUsar herramientas de análisis estático para detectar automáticamente errores de cadena de formato en el código base.'
         },
         cwe: 'CWE-134',
@@ -2848,8 +2842,8 @@ Un atacante puede realizar un ataque de intermediario (man-in-the-middle) para d
         details_en: '### Proof of Concept\n[TODO: Provide an input string with format specifiers that demonstrates reading from the stack or writing to memory.]',
         affectedComponents_es: '### Componentes Afectados\n- [TODO: Especificar la función y la entrada de usuario que es vulnerable.]',
         details_es: '### Prueba de Concepto\n[TODO: Proporcionar una cadena de entrada con especificadores de formato que demuestre la lectura de la pila o la escritura en la memoria.]',
-        immediateActions_en: '### Immediate Actions\nReview and fix all instances where user input is passed directly to formatting functions.',
-        immediateActions_es: '### Acciones Inmediatas\nRevisar y corregir todas las instancias donde la entrada del usuario se pasa directamente a las funciones de formato.',
+        immediateActions_en: "### Immediate Actions\nReview and fix all instances where user input is passed directly to formatting functions.",
+        immediateActions_es: "### Acciones Inmediatas\nRevisar y corregir todas las instancias donde la entrada del usuario se pasa directamente a las funciones de formato.",
     },
     {
         id: 'vuln-add-003',
@@ -2880,8 +2874,8 @@ Un atacante puede realizar un ataque de intermediario (man-in-the-middle) para d
         details_en: '### Proof of Concept\n[TODO: Provide a PoC that demonstrates the race condition, for example, by rapidly sending concurrent requests that lead to an inconsistent state.]',
         affectedComponents_es: '### Componentes Afectados\n- [TODO: Especificar la funcionalidad multihilo y el recurso compartido.]',
         details_es: '### Prueba de Concepto\n[TODO: Proporcionar una PoC que demuestre la condición de carrera, por ejemplo, enviando rápidamente solicitudes concurrentes que conduzcan a un estado inconsistente.]',
-        immediateActions_en: '### Immediate Actions\nReview the logic for handling shared resources and implement proper locking mechanisms.',
-        immediateActions_es: '### Acciones Inmediatas\nRevisar la lógica para manejar recursos compartidos e implementar mecanismos de bloqueo adecuados.',
+        immediateActions_en: "### Immediate Actions\nReview the logic for handling shared resources and implement proper locking mechanisms.",
+        immediateActions_es: "### Acciones Inmediatas\nRevisar la lógica para manejar recursos compartidos e implementar mecanismos de bloqueo adecuados.",
     },
     {
         id: 'vuln-add-004',
@@ -2912,8 +2906,8 @@ Un atacante puede realizar un ataque de intermediario (man-in-the-middle) para d
         details_en: '### Proof of Concept\n[TODO: Provide a payload with LDAP metacharacters that bypasses authentication or extracts information.]',
         affectedComponents_es: '### Componentes Afectados\n- [TODO: Especificar la función y el parámetro vulnerables a la inyección LDAP.]',
         details_es: '### Prueba de Concepto\n[TODO: Proporcionar una carga útil con metacaracteres LDAP que eluda la autenticación o extraiga información.]',
-        immediateActions_en: '### Immediate Actions\nImplement input sanitization on all parameters used in LDAP queries.',
-        immediateActions_es: '### Acciones Inmediatas\nImplementar la sanitización de entradas en todos los parámetros utilizados en las consultas LDAP.',
+        immediateActions_en: "### Immediate Actions\nImplement input sanitization on all parameters used in LDAP queries.",
+        immediateActions_es: "### Acciones Inmediatas\nImplementar la sanitización de entradas en todos los parámetros utilizados en las consultas LDAP.",
     },
     {
         id: 'vuln-add-005',
@@ -2944,8 +2938,8 @@ Un atacante puede realizar un ataque de intermediario (man-in-the-middle) para d
         details_en: '### Proof of Concept\n[TODO: Provide a payload with XPath syntax that bypasses authentication or extracts sensitive information from the XML document.]',
         affectedComponents_es: '### Componentes Afectados\n- [TODO: Especificar la función y el parámetro vulnerables a la inyección XPath.]',
         details_es: '### Prueba de Concepto\n[TODO: Proporcionar una carga útil con sintaxis XPath que eluda la autenticación o extraiga información sensible del documento XML.]',
-        immediateActions_en: '### Immediate Actions\nImplement input sanitization on all parameters used in XPath queries.',
-        immediateActions_es: '### Acciones Inmediatas\nImplementar la sanitización de entradas en todos los parámetros utilizados en las consultas XPath.',
+        immediateActions_en: "### Immediate Actions\nImplement input sanitization on all parameters used in XPath queries.",
+        immediateActions_es: "### Acciones Inmediatas\nImplementar la sanitización de entradas en todos los parámetros utilizados en las consultas XPath.",
     },
     {
         id: 'vuln-add-006',
@@ -2976,17 +2970,17 @@ Un atacante puede realizar un ataque de intermediario (man-in-the-middle) para d
         details_en: '### Proof of Concept\n[TODO: Provide a payload (e.g., `{{7*7}}`) that demonstrates template syntax is being evaluated, and escalate it to RCE if possible.]',
         affectedComponents_es: '### Componentes Afectados\n- [TODO: Especificar la plantilla y la entrada vulnerables a SSTI.]',
         details_es: '### Prueba de Concepto\n[TODO: Proporcionar una carga útil (p. ej., `{{7*7}}`) que demuestre que se está evaluando la sintaxis de la plantilla, y escalarla a RCE si es posible.]',
-        immediateActions_en: '### Immediate Actions\nIdentify and sanitize all user inputs that are used within server-side templates.',
-        immediateActions_es: '### Acciones Inmediatas\nIdentificar y sanear todas las entradas de usuario que se utilizan dentro de las plantillas del lado del servidor.',
+        immediateActions_en: "### Immediate Actions\nIdentify and sanitize all user inputs that are used within server-side templates.",
+        immediateActions_es: "### Acciones Inmediatas\nIdentificar y sanear todas las entradas de usuario que se utilizan dentro de las plantillas del lado del servidor.",
     },
     {
         id: 'vuln-add-007',
         title_en: 'Open-Source Vulnerabilities',
         title_es: 'Vulnerabilidades en Código Abierto',
         overview_en: '### Overview\nThe application uses open-source libraries or components with known, publicly disclosed vulnerabilities.',
-        overview_es: '### Resumen\nLa aplicación utiliza bibliotecas o componentes de código abierto conulnerabilidades conocidas y divulgadas públicamente.',
+        overview_es: '### Resumen\nLa aplicación utiliza bibliotecas o componentes de código abierto con vulnerabilidades conocidas y divulgadas públicamente.',
         technicalDescription_en: '### Technical Description\nModern applications are built using a large number of third-party dependencies. If these dependencies are not regularly updated, the application can inherit their vulnerabilities. An attacker can exploit these known vulnerabilities to compromise the application.',
-        technicalDescription_es: '### Descripción Técnica\nLas aplicaciones modernas se construyen utilizando una gran cantidad de dependencias de terceros. Si estas dependencias no se actualizan regularmente, la aplicación puede heredar sus vulnerabilidades. Un atacante puede explotar estas vulnerabilidades conocidas para comprometer la aplicación.',
+        technicalDescription_es: '### Descripción Técnica\nLas aplicaciones modernas se construyen utilizando una gran cantidad de dependencias de terceros. Si estas dependencias no se actualizan regularmente, la aplicación puede heredar sus vulnerabilidades. Un atacante puede explotar estasulnerabilidades conocidas para comprometer la aplicación.',
         impact_en: '### Impact\nThe impact depends on the specific vulnerability in the open-source component, but it can range from information disclosure to full Remote Code Execution.',
         impact_es: '### Impacto\nEl impacto depende de la vulnerabilidad específica en el componente de código abierto, pero puede variar desde la divulgación de información hasta la Ejecución Remota de Código completa.',
         remediation_en: {
@@ -3008,8 +3002,8 @@ Un atacante puede realizar un ataque de intermediario (man-in-the-middle) para d
         details_en: '### Proof of Concept\n[TODO: Provide a link to the public CVE and, if possible, demonstrate the exploit.]',
         affectedComponents_es: '### Componentes Afectados\n- [TODO: Listar la biblioteca vulnerable y su versión.]',
         details_es: '### Prueba de Concepto\n[TODO: Proporcionar un enlace al CVE público y, si es posible, demostrar el exploit.]',
-        immediateActions_en: '### Immediate Actions\nUpdate the vulnerable components to a patched version immediately.',
-        immediateActions_es: '### Acciones Inmediatas\nActualizar inmediatamente los componentes vulnerables a una versión parcheada.',
+        immediateActions_en: "### Immediate Actions\nUpdate the vulnerable components to a patched version immediately.",
+        immediateActions_es: "### Acciones Inmediatas\nActualizar inmediatamente los componentes vulnerables a una versión parcheada.",
     },
     {
         id: 'vuln-add-008',
@@ -3040,8 +3034,8 @@ Un atacante puede realizar un ataque de intermediario (man-in-the-middle) para d
         details_en: '### Proof of Concept\n[TODO: Provide two sets of credentials. Log in as user A, access their resource, then change the ID in the URL to one belonging to user B and show that access is granted.]',
         affectedComponents_es: '### Componentes Afectados\n- [TODO: Especificar la URL vulnerable y el parámetro de ID.]',
         details_es: '### Prueba de Concepto\n[TODO: Proporcionar dos conjuntos de credenciales. Iniciar sesión como usuario A, acceder a su recurso, luego cambiar el ID en la URL por uno que pertenezca al usuario B y mostrar que se concede el acceso.]',
-        immediateActions_en: '### Immediate Actions\nImplement server-side authorization checks for all functions that access objects based on user input.',
-        immediateActions_es: '### Acciones Inmediatas\nImplementar comprobaciones de autorización del lado del servidor para todas las funciones que acceden a objetos basados en la entrada del usuario.',
+        immediateActions_en: "### Immediate Actions\nImplement server-side authorization checks for all functions that access objects based on user input.",
+        immediateActions_es: "### Acciones Inmediatas\nImplementar comprobaciones de autorización del lado del servidor para todas las funciones que acceden a objetos basados en la entrada del usuario.",
     },
     {
         id: 'vuln-add-009',
@@ -3072,8 +3066,8 @@ Un atacante puede realizar un ataque de intermediario (man-in-the-middle) para d
         details_en: '### Proof of Concept\n[TODO: Provide a screenshot of the HTTP response headers showing the absence of recommended security headers.]',
         affectedComponents_es: '### Componentes Afectados\n- Todas las responses HTTP del servidor de aplicaciones.',
         details_es: '### Prueba de Concepto\n[TODO: Proporcionar una captura de pantalla de las herramientas de desarrollador del navegador que muestre los atributos de la cookie, o la falta de ellos.]',
-        immediateActions_en: '### Immediate Actions\nAdd the recommended security headers to all HTTP responses from the server.',
-        immediateActions_es: '### Acciones Inmediatas\nAñadir los encabezados de seguridad recomendados a todas las responses HTTP del servidor.',
+        immediateActions_en: "### Immediate Actions\nAdd the recommended security headers to all HTTP responses from the server.",
+        immediateActions_es: "### Acciones Inmediatas\nAñadir los encabezados de seguridad recomendados a todas las responses HTTP del servidor.",
     },
     {
         id: 'vuln-add-010',
@@ -3104,8 +3098,8 @@ Un atacante puede realizar un ataque de intermediario (man-in-the-middle) para d
         details_en: '### Proof of Concept\n[TODO: Provide an HTML page with an `<iframe>` that loads the vulnerable application and demonstrates a clickjacking attack.]',
         affectedComponents_es: '### Componentes Afectados\n- Todas las páginas de la aplicación web que no tienen protección contra enmarcado.',
         details_es: '### Prueba de Concepto\n[TODO: Proporcionar una página HTML con un `<iframe>` que cargue la aplicación vulnerable y demuestre un ataque de secuestro de clics.]',
-        immediateActions_en: '### Immediate Actions\nImplement the `X-Frame-Options` or `Content-Security-Policy: frame-ancestors` header to prevent the site from being framed.',
-        immediateActions_es: '### Acciones Inmediatas\nImplementar el encabezado `X-Frame-Options` o `Content-Security-Policy: frame-ancestors` para evitar que el sitio sea enmarcado.',
+        immediateActions_en: "### Immediate Actions\nImplement the `X-Frame-Options` or `Content-Security-Policy: frame-ancestors` header to prevent the site from being framed.",
+        immediateActions_es: "### Acciones Inmediatas\nImplementar el encabezado `X-Frame-Options` o `Content-Security-Policy: frame-ancestors` para evitar que el sitio sea enmarcado.",
     },
     {
         id: 'vuln-add-011',
@@ -3136,8 +3130,8 @@ Un atacante puede realizar un ataque de intermediario (man-in-the-middle) para d
         details_en: '### Proof of Concept\n[TODO: Provide a URL with a malicious payload in the fragment that demonstrates script execution in the browser.]',
         affectedComponents_es: '### Componentes Afectados\n- [TODO: Especificar el script del lado del cliente y la fuente del DOM (p. ej., fragmento de URL) que es vulnerable.]',
         details_es: '### Prueba de Concepto\n[TODO: Proporcionar una URL con una carga útil maliciosa en el fragmento que demuestre la ejecución de scripts en el navegador.]',
-        immediateActions_en: '### Immediate Actions\nReview and sanitize all client-side scripts that read from the DOM.',
-        immediateActions_es: '### Acciones Inmediatas\nRevisar y sanear todos los scripts del lado del cliente que leen del DOM.',
+        immediateActions_en: "### Immediate Actions\nReview and sanitize all client-side scripts that read from the DOM.",
+        immediateActions_es: "### Acciones Inmediatas\nRevisar y sanear todos los scripts del lado del cliente que leen del DOM.",
     },
     {
         id: 'vuln-add-012',
@@ -3168,8 +3162,8 @@ Un atacante puede realizar un ataque de intermediario (man-in-the-middle) para d
         details_en: '### Proof of Concept\n[TODO: Provide the steps to upload a web shell and then access it to execute a command on the server.]',
         affectedComponents_es: '### Componentes Afectados\n- La funcionalidad de carga de archivos.',
         details_es: '### Prueba de Concepto\n[TODO: Proporcionar los pasos para subir una shell web y luego acceder a ella para ejecutar un comando en el servidor.]',
-        immediateActions_en: '### Immediate Actions\nDisable the file upload functionality until it can be properly secured. Scan the server for any already uploaded malicious files.',
-        immediateActions_es: '### Acciones Inmediatas\nDeshabilitar la funcionalidad de carga de archivos hasta que pueda ser asegurada correctamente. Escanear el servidor en busca de cualquier archivo malicioso ya subido.',
+        immediateActions_en: "### Immediate Actions\nDisable the file upload functionality until it can be properly secured. Scan the server for any already uploaded malicious files.",
+        immediateActions_es: "### Acciones Inmediatas\nDeshabilitar la funcionalidad de carga de archivos hasta que pueda ser asegurada correctamente. Escanear el servidor en busca de cualquier archivo malicioso ya subido.",
     },
     {
         id: "vuln-add-013",
@@ -3418,7 +3412,7 @@ Auditar y probar regularmente la configuración de almacenamiento en caché para
         overview_en: `### Overview
 Host header injection vulnerabilities arise when an application trusts the HTTP Host header to generate links, import scripts, or even perform redirects.`,
         overview_es: `### Resumen
-Las vulnerabilidades de inyección en la cabecera Host surgen cuando una aplicación confía en la cabecera Host HTTP para generar enlaces, importar scripts o incluso realizar redirecciones.`,
+Lasulnerabilidades de inyección en la cabecera Host surgen cuando una aplicación confía en la cabecera Host HTTP para generar enlaces, importar scripts o incluso realizar redirecciones.`,
         technicalDescription_en: `### Technical Description
 An attacker can manipulate the Host header in an HTTP request. If the server uses this header to construct URLs without validation, the attacker can cause the application to generate links pointing to a malicious domain. This is often used to facilitate password reset poisoning.`,
         technicalDescription_es: `### Descripción Técnica
@@ -3503,7 +3497,7 @@ Utilizar herramientas de análisis estático para encontrar y corregir todas las
         affectedComponents_es: `### Componentes Afectados
 - [TODO: Especificar el parámetro y la URL vulnerables.]`,
         details_es: `### Prueba de Concepto
-[TODO: Proporcionar una carga útil basada en tiempo o booleana y mostrar cómo se puede usar para exfiltrar una pieza de datos (p. ej., el primer carácter del nombre de la base de datos).}]`,
+[TODO: Proporcionar una carga útil basada en tiempo o booleana y mostrar cómo se puede usar para exfiltrar una pieza de datos (p. ej., el primer carácter del nombre de la base de datos).]`,
         immediateActions_en: "### Immediate Actions\nImplement parameterized queries for the vulnerable part of the application.",
         immediateActions_es: "### Acciones Inmediatas\nImplementar consultas parametrizadas para la parte vulnerable de la aplicación.",
     },
@@ -3552,8 +3546,8 @@ Ejecutar la aplicación con los privilegios mínimos necesarios. Implementar un 
 - [TODO: Especificar la función, el parámetro y la URL vulnerables.]`,
         details_es: `### Prueba de Concepto
 [TODO: Proporcionar una solicitud con una carga útil de inyección de comandos (p. ej., \`; id\`) y mostrar la salida del comando ejecutado.]`,
-        immediateActions_en: "### Immediate Actions\n[TODO: Add immediate actions in English]",
-        immediateActions_es: "### Acciones Inmediatas\n[TODO: Añadir acciones inmediatas en español]",
+        immediateActions_en: "### Immediate Actions\nImmediately implement input sanitization to filter or escape shell metacharacters from user-supplied data in the vulnerable function.",
+        immediateActions_es: "### Acciones Inmediatas\nImplementar inmediatamente el saneamiento de entradas para filtrar o escapar los metacaracteres de la shell de los datos proporcionados por el usuario en la función vulnerable.",
     },
     {
         id: 'vuln-add-021',
@@ -3584,8 +3578,8 @@ Ejecutar la aplicación con los privilegios mínimos necesarios. Implementar un 
         details_en: '### Proof of Concept\n[TODO: Provide the steps to inject a persistent XSS payload and a screenshot of it executing for another user.]',
         affectedComponents_es: '### Componentes Afectados\n- [TODO: Especificar el campo de entrada y la página donde se ejecuta el script almacenado.]',
         details_es: '### Prueba de Concepto\n[TODO: Proporcionar los pasos para inyectar una carga útil de XSS persistente y una captura de pantalla de su ejecución para otro usuario.]',
-        immediateActions_en: '### Immediate Actions\nSanitize the vulnerable database fields to remove any existing malicious scripts. Implement output encoding for the affected pages.',
-        immediateActions_es: '### Acciones Inmediatas\nSanear los campos vulnerables de la base de datos para eliminar cualquier script malicioso existente. Implementar la codificación de salida para las páginas afectadas.',
+        immediateActions_en: "### Immediate Actions\nSanitize the vulnerable database fields to remove any existing malicious scripts. Implement output encoding for the affected pages.",
+        immediateActions_es: "### Acciones Inmediatas\nSanear los campos vulnerables de la base de datos para eliminar cualquier script malicioso existente. Implementar la codificación de salida para las páginas afectadas.",
     },
     {
         id: "vuln-add-022",
