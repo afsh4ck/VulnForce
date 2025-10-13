@@ -938,7 +938,7 @@ Este problema ocurre cuando el binario de la aplicación móvil no está adecuad
         technicalDescription_en: `### Technical Description
 Mobile app binaries can be decompiled to reveal source code, hardcoded secrets, and business logic. An attacker can analyze this code to find other vulnerabilities, tamper with the app's logic (e.g., bypass security controls), or repackage the app with malicious code. Lack of protections includes no code obfuscation, no anti-tampering checks, and no root/jailbreak detection.`,
         technicalDescription_es: `### Descripción Técnica
-Los binarios de las aplicaciones móviles pueden ser descompilados para revelar el código fuente, los secretos codificados de forma rígida y la lógica de negocio. Un atacante puede analizar este código para encontrar otras vulnerabilities, manipular la lógica de la aplicación (p. ej., eludir los controles de seguridad) o reempaquetar la aplicación con código malicioso. La falta de protecciones incluye la no ofuscación del código, la falta de comprobaciones anti-manipulación y la no detección de root/jailbreak.`,
+Los binarios de las aplicaciones móviles pueden ser descompilados para revelar el código fuente, los secretos codificados de forma rígida y la lógica de negocio. Un atacante puede analizar este código para encontrar otras vulnerabilidades, manipular la lógica de la aplicación (p. ej., eludir los controles de seguridad) o reempaquetar la aplicación con código malicioso. La falta de protecciones incluye la no ofuscación del código, la falta de comprobaciones anti-manipulación y la no detección de root/jailbreak.`,
         impact_en: `### Impact
 Reverse engineering can lead to the discovery of other severe vulnerabilities, theft of intellectual property, and reputational damage. Tampering can lead to fraud, security control bypasses, and the distribution of malicious versions of the app.`,
         impact_es: `### Impacto
@@ -1339,7 +1339,7 @@ El impacto puede variar desde la denegación de servicio hasta la ejecución rem
         remediation_es: {
             shortTerm: "Establecer una política y un proceso de gestión de parches sólidos. Suscribirse a los avisos de seguridad de todo el software utilizado en el entorno.",
             mediumTerm: "Implementar un sistema de gestión de parches automatizado para garantizar que los parches se apliquen de manera oportuna. Usar un escáner de vulnerabilidades para escanear regularmente la infraestructura en busca de software sin parches.",
-            longTerm: "Integrar el escaneo de vulnerabilidades en el pipeline de CI/CD. Usar herramientas de análisis de composición de software (SCA) para identificar y gestionar las vulnerabilidades en las bibliotecas de terceros."
+            longTerm: "Integrar el escaneo deulnerabilidades en el pipeline de CI/CD. Usar herramientas de análisis de composición de software (SCA) para identificar y gestionar las vulnerabilidades en las bibliotecas de terceros."
         },
         cwe: "CWE-937",
         severity: "Critical",
@@ -1802,12 +1802,18 @@ Un ataque RCE exitoso proporciona a un atacante el control total sobre el sistem
         id: "vuln-auth-001",
         title_en: "Weak Passwords",
         title_es: "Contraseñas Débiles",
-        overview_en: "### Overview\nWeak passwords are easy for attackers to guess or crack, often using automated tools. This allows unauthorized access to user accounts and systems.",
-        overview_es: "### Resumen\nLas contraseñas débiles son fáciles de adivinar o descifrar para los atacantes, a menudo utilizando herramientas automatizadas. Esto permite el acceso no autorizado a las cuentas y sistemas de los usuarios.",
-        technicalDescription_en: "### Technical Description\nThe application fails to enforce a strong password policy, allowing users to set short, simple, or common passwords (e.g., \"password123\", \"123456\"). Attackers can use brute-force or dictionary attacks to quickly compromise these accounts.",
-        technicalDescription_es: "### Descripción Técnica\nLa aplicación no impone una política de contraseñas segura, lo que permite a los usuarios establecer contraseñas cortas, simples o comunes (p. ej., \"password123\", \"123456\"). Los atacantes pueden usar ataques de fuerza bruta o de diccionario para comprometer rápidamente estas cuentas.",
-        impact_en: "### Impact\nAccount takeover, leading to unauthorized access to sensitive data and functionality. If an administrator account is compromised, it can lead to a full system compromise.",
-        impact_es: "### Impacto\nToma de control de la cuenta, lo que conduce a un acceso no autorizado a datos y funcionalidades sensibles. Si se compromete una cuenta de administrador, puede llevar a un compromiso total del sistema.",
+        overview_en: `### Overview
+Weak passwords are easy for attackers to guess or crack, often using automated tools. This allows unauthorized access to user accounts and systems.`,
+        overview_es: `### Resumen
+Las contraseñas débiles son fáciles de adivinar o descifrar para los atacantes, a menudo utilizando herramientas automatizadas. Esto permite el acceso no autorizado a las cuentas y sistemas de los usuarios.`,
+        technicalDescription_en: `### Technical Description
+The application fails to enforce a strong password policy, allowing users to set short, simple, or common passwords (e.g., "password123", "123456"). Attackers can use brute-force or dictionary attacks to quickly compromise these accounts.`,
+        technicalDescription_es: `### Descripción Técnica
+La aplicación no impone una política de contraseñas segura, lo que permite a los usuarios establecer contraseñas cortas, simples o comunes (p. ej., "password123", "123456"). Los atacantes pueden usar ataques de fuerza bruta o de diccionario para comprometer rápidamente estas cuentas.`,
+        impact_en: `### Impact
+Account takeover, leading to unauthorized access to sensitive data and functionality. If an administrator account is compromised, it can lead to a full system compromise.`,
+        impact_es: `### Impacto
+Toma de control de la cuenta, lo que conduce a un acceso no autorizado a datos y funcionalidades sensibles. Si se compromete una cuenta de administrador, puede llevar a un compromiso total del sistema.`,
         immediateActions_en: "### Immediate Actions\nForce a password reset for all users. Temporarily implement account lockout measures after a small number of failed login attempts.",
         immediateActions_es: "### Acciones Inmediatas\nForzar un restablecimiento de contraseña para todos los usuarios. Implementar temporalmente medidas de bloqueo de cuenta después de un pequeño número de intentos de inicio de sesión fallidos.",
         remediation_en: {
@@ -1871,3 +1877,5 @@ Un ataque RCE exitoso proporciona a un atacante el control total sobre el sistem
 [TODO: Proporcionar evidencia de un inicio de sesión exitoso utilizando credenciales que se sabe que provienen de una brecha de datos pública.]`
     }
 ]
+
+    
