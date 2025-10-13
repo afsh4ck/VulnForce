@@ -1,4 +1,5 @@
 
+
 import type { Vulnerability } from './types';
 
 export const initialVulnerabilities: Vulnerability[] = [
@@ -18,16 +19,18 @@ La vulnerabilidad ocurre cuando la entrada proporcionada por el usuario no se sa
 Successful exploitation can lead to unauthorized access to sensitive data, such as passwords, credit card details, or personal user information. In many cases, an attacker can modify or delete this data, causing data integrity issues. Depending on the database privileges, it could also allow the attacker to execute commands on the underlying operating system, leading to a full system compromise.`,
         impact_es: `### Impacto
 La explotación exitosa puede conducir al acceso no autorizado a datos sensibles, como contraseñas, detalles de tarjetas de crédito o información personal de los usuarios. En muchos casos, un atacante puede modificar o eliminar estos datos, causando problemas de integridad. Dependiendo de los privilegios de la base de datos, también podría permitir al atacante ejecutar comandos en el sistema operativo subyacente, lo que llevaría a un compromiso total del sistema.`,
-        remediation_en: {
-            shortTerm: "### Short-Term Recommendations\nRefactor all database queries to use parameterized queries (also known as prepared statements). This is the most effective defense against SQLi as it separates the query logic from the data.",
-            mediumTerm: "### Medium-Term Recommendations\nImplement least privilege access for database users. The application's database user should only have the minimum necessary permissions.",
-            longTerm: "### Long-Term Recommendations\nConduct regular security training for developers on secure coding practices. Implement static (SAST) and dynamic (DAST) application security testing into the CI/CD pipeline to proactively identify and fix vulnerabilities."
-        },
-        remediation_es: {
-            shortTerm: "### Recomendaciones a Corto Plazo\nRefactorizar todas las consultas a la base de datos para usar consultas parametrizadas (también conocidas como prepared statements). Esta es la defensa más efectiva contra SQLi ya que separa la lógica de la consulta de los datos.",
-            mediumTerm: "### Recomendaciones a Medio Plazo\nImplementar el principio de privilegio mínimo para los usuarios de la base de datos. El usuario de la base de datos de la aplicación solo debe tener los permisos mínimos necesarios.",
-            longTerm: "### Recomendaciones a Largo Plazo\nRealizar capacitaciones de seguridad periódicas para los desarrolladores sobre prácticas de codificación segura. Implementar pruebas de seguridad de aplicaciones estáticas (SAST) y dinámicas (DAST) en el pipeline de CI/CD para identificar y corregir vulnerabilidades de forma proactiva."
-        },
+        recommendations_en: `#### Short-Term Recommendations
+Refactor all database queries to use parameterized queries (also known as prepared statements). This is the most effective defense against SQLi as it separates the query logic from the data.
+#### Medium-Term Recommendations
+Implement least privilege access for database users. The application's database user should only have the minimum necessary permissions.
+#### Long-Term Recommendations
+Conduct regular security training for developers on secure coding practices. Implement static (SAST) and dynamic (DAST) application security testing into the CI/CD pipeline to proactively identify and fix vulnerabilities.`,
+        recommendations_es: `#### Recomendaciones a Corto Plazo
+Refactorizar todas las consultas a la base de datos para usar consultas parametrizadas (también conocidas como prepared statements). Esta es la defensa más efectiva contra SQLi ya que separa la lógica de la consulta de los datos.
+#### Recomendaciones a Medio Plazo
+Implementar el principio de privilegio mínimo para los usuarios de la base de datos. El usuario de la base de datos de la aplicación solo debe tener los permisos mínimos necesarios.
+#### Recomendaciones a Largo Plazo
+Realizar capacitaciones de seguridad periódicas para los desarrolladores sobre prácticas de codificación segura. Implementar pruebas de seguridad de aplicaciones estáticas (SAST) y dinámicas (DAST) en el pipeline de CI/CD para identificar y corregir vulnerabilidades de forma proactiva.`,
         cwe: "CWE-89",
         severity: "Critical",
         cvss: { score: 9.8, vectorString: "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:H/I:H/A:H", attackVector: "N", attackComplexity: "L", privilegesRequired: "N", userInteraction: "N", scope: "U", confidentiality: "H", integrity: "H", availability: "H" },
@@ -60,16 +63,18 @@ La aplicación no sanea correctamente los datos proporcionados por el usuario an
 XSS can lead to session hijacking, account takeover, redirection to malicious sites, or unauthorized actions on behalf of the user. In the context of an administrator, it could lead to full control of the web application.`,
         impact_es: `### Impacto
 El XSS puede conducir al secuestro de sesiones, la toma de control de cuentas, la redirección a sitios maliciosos o la realización de acciones no autorizadas en nombre del usuario. En el contexto de un administrador, podría llevar al control total de la aplicación web.`,
-        remediation_en: {
-            shortTerm: "### Short-Term Recommendations\nApply context-aware output encoding to all user-supplied data before it is rendered in the browser. For example, use HTML entity encoding for data placed in HTML context, and JavaScript encoding for data in script contexts.",
-            mediumTerm: "### Medium-Term Recommendations\nUse modern web frameworks (like React, Angular, Vue) that have built-in protections against XSS. Avoid using dangerous functions like `innerHTML`.",
-            longTerm: "### Long-Term Recommendations\nImplement a security-focused design pattern where untrusted data is never mixed with executable code. Train developers to understand the different contexts of XSS and how to mitigate them."
-        },
-        remediation_es: {
-            shortTerm: "### Recomendaciones a Corto Plazo\nAplicar codificación de salida sensible al contexto a todos los datos proporcionados por el usuario antes de que se rendericen en el navegador. Por ejemplo, usar codificación de entidades HTML para datos en contexto HTML, y codificación de JavaScript para datos en contextos de script.",
-            mediumTerm: "### Recomendaciones a Medio Plazo\nUtilizar frameworks web modernos (como React, Angular, Vue) que tengan protecciones incorporadas contra XSS. Evitar el uso de funciones peligrosas como `innerHTML`.",
-            longTerm: "### Recomendaciones a Largo Plazo\nImplementar un patrón de diseño centrado en la seguridad donde los datos no confiables nunca se mezclen con código ejecutable. Capacitar a los desarrolladores para que comprendan los diferentes contextos de XSS y cómo mitigarlos."
-        },
+        recommendations_en: `#### Short-Term Recommendations
+Apply context-aware output encoding to all user-supplied data before it is rendered in the browser. For example, use HTML entity encoding for data placed in HTML context, and JavaScript encoding for data in script contexts.
+#### Medium-Term Recommendations
+Use modern web frameworks (like React, Angular, Vue) that have built-in protections against XSS. Avoid using dangerous functions like \`innerHTML\`.
+#### Long-Term Recommendations
+Implement a security-focused design pattern where untrusted data is never mixed with executable code. Train developers to understand the different contexts of XSS and how to mitigate them.`,
+        recommendations_es: `#### Recomendaciones a Corto Plazo
+Aplicar codificación de salida sensible al contexto a todos los datos proporcionados por el usuario antes de que se rendericen en el navegador. Por ejemplo, usar codificación de entidades HTML para datos en contexto HTML, y codificación de JavaScript para datos en contextos de script.
+#### Recomendaciones a Medio Plazo
+Utilizar frameworks web modernos (como React, Angular, Vue) que tengan protecciones incorporadas contra XSS. Evitar el uso de funciones peligrosas como \`innerHTML\`.
+#### Recomendaciones a Largo Plazo
+Implementar un patrón de diseño centrado en la seguridad donde los datos no confiables nunca se mezclen con código ejecutable. Capacitar a los desarrolladores para que comprendan los diferentes contextos de XSS y cómo mitigarlos.`,
         cwe: "CWE-79",
         severity: "High",
         cvss: { score: 7.5, vectorString: "CVSS:3.1/AV:N/AC:L/PR:N/UI:R/S:C/C:H/I:N/A:N", attackVector: "N", attackComplexity: "L", privilegesRequired: "N", userInteraction: "R", scope: "C", confidentiality: "H", integrity: "N", availability: "N" },
@@ -102,16 +107,18 @@ La autenticación rota puede manifestarse de varias maneras, como permitir el re
 Attackers can take over user accounts, potentially gaining access to sensitive data or functionality. If an administrative account is compromised, the attacker could gain full control over the application.`,
         impact_es: `### Impacto
 Los atacantes pueden tomar el control de las cuentas de los usuarios, obteniendo potencialmente acceso a datos o funcionalidades sensibles. Si se compromete una cuenta administrativa, el atacante podría obtener el control total de la aplicación.`,
-        remediation_en: {
-            shortTerm: "### Short-Term Recommendations\nEnforce strong password policies and implement rate limiting and account lockout mechanisms on login attempts. Ensure session tokens are invalidated on the server-side upon logout.",
-            mediumTerm: "### Medium-Term Recommendations\nImplement Multi-Factor Authentication (MFA) for all users, especially for administrative accounts. Use a centralized and standardized session management mechanism.",
-            longTerm: "### Long-Term Recommendations\nConduct a thorough review of the entire authentication and session management lifecycle. Use industry-standard frameworks and avoid creating custom authentication schemes."
-        },
-        remediation_es: {
-            shortTerm: "### Recomendaciones a Corto Plazo\nForzar políticas de contraseñas seguras e implementar limitación de velocidad y mecanismos de bloqueo de cuentas en los intentos de inicio de sesión. Asegurarse de que los tokens de sesión se invaliden en el lado del servidor al cerrar la sesión.",
-            mediumTerm: "### Recomendaciones a Medio Plazo\nImplementar la autenticación multifactor (MFA) para todos los usuarios, especialmente para las cuentas administrativas. Utilizar un mecanismo de gestión de sesiones centralizado y estandarizado.",
-            longTerm: "### Recomendaciones a Largo Plazo\nRealizar una revisión exhaustiva de todo el ciclo de vida de la autenticación y la gestión de sesiones. Utilizar frameworks estándar de la industria y evitar la creación de esquemas de autenticación personalizados."
-        },
+        recommendations_en: `#### Short-Term Recommendations
+Enforce strong password policies and implement rate limiting and account lockout mechanisms on login attempts. Ensure session tokens are invalidated on the server-side upon logout.
+#### Medium-Term Recommendations
+Implement Multi-Factor Authentication (MFA) for all users, especially for administrative accounts. Use a centralized and standardized session management mechanism.
+#### Long-Term Recommendations
+Conduct a thorough review of the entire authentication and session management lifecycle. Use industry-standard frameworks and avoid creating custom authentication schemes.`,
+        recommendations_es: `#### Recomendaciones a Corto Plazo
+Forzar políticas de contraseñas seguras e implementar limitación de velocidad y mecanismos de bloqueo de cuentas en los intentos de inicio de sesión. Asegurarse de que los tokens de sesión se invaliden en el lado del servidor al cerrar la sesión.
+#### Recomendaciones a Medio Plazo
+Implementar la autenticación multifactor (MFA) para todos los usuarios, especialmente para las cuentas administrativas. Utilizar un mecanismo de gestión de sesiones centralizado y estandarizado.
+#### Recomendaciones a Largo Plazo
+Realizar una revisión exhaustiva de todo el ciclo de vida de la autenticación y la gestión de sesiones. Utilizar frameworks estándar de la industria y evitar la creación de esquemas de autenticación personalizados.`,
         cwe: "CWE-287",
         severity: "High",
         cvss: { score: 8.8, vectorString: "CVSS:3.1/AV:N/AC:L/PR:L/UI:N/S:U/C:H/I:H/A:H", attackVector: "N", attackComplexity: "L", privilegesRequired: "L", userInteraction: "N", scope: "U", confidentiality: "H", integrity: "H", availability: "H" },
@@ -144,16 +151,18 @@ Los datos sensibles pueden exponerse en tránsito o en reposo. Esto a menudo suc
 The impact of sensitive data exposure can be severe, leading to significant financial losses, reputational damage, and regulatory fines (e.g., under GDPR, CCPA). It can compromise the privacy of users and expose the organization to legal liability.`,
         impact_es: `### Impacto
 El impacto de la exposición de datos sensibles puede ser severo, lo que lleva a pérdidas financieras significativas, daño a la reputación y multas regulatorias (por ejemplo, bajo GDPR, CCPA). Puede comprometer la privacidad de los usuarios y exponer a la organización a responsabilidad legal.`,
-        remediation_en: {
-            shortTerm: "### Short-Term Recommendations\nIdentify all sensitive data and apply strong encryption both at rest and in transit (e.g., using TLS 1.2+). Disable caching for responses that contain sensitive data.",
-            mediumTerm: "### Medium-Term Recommendations\nImplement a data classification policy. Use strong, industry-standard encryption algorithms and protocols. Ensure proper key management and rotation.",
-            longTerm: "### Long-Term Recommendations\nMinimize the collection and storage of sensitive data. Conduct regular data discovery and classification exercises to ensure no sensitive data is being stored improperly."
-        },
-        remediation_es: {
-            shortTerm: "### Recomendaciones a Corto Plazo\nIdentificar todos los datos sensibles y aplicar un cifrado fuerte tanto en reposo como en tránsito (p. ej., usando TLS 1.2+). Deshabilitar el almacenamiento en caché para las responses que contienen datos sensibles.",
-            mediumTerm: "### Recomendaciones a Medio Plazo\nImplementar una política de clasificación de datos. Utilizar algoritmos y protocolos de cifrado fuertes y estándar de la industria. Asegurar una gestión y rotación de claves adecuadas.",
-            longTerm: "### Recomendaciones a Largo Plazo\nMinimizar la recopilación y el almacenamiento de datos sensibles. Realizar ejercicios regulares de descubrimiento y clasificación de datos para garantizar que no se almacenen datos sensibles de forma incorrecta."
-        },
+        recommendations_en: `#### Short-Term Recommendations
+Identify all sensitive data and apply strong encryption both at rest and in transit (e.g., using TLS 1.2+). Disable caching for responses that contain sensitive data.
+#### Medium-Term Recommendations
+Implement a data classification policy. Use strong, industry-standard encryption algorithms and protocols. Ensure proper key management and rotation.
+#### Long-Term Recommendations
+Minimize the collection and storage of sensitive data. Conduct regular data discovery and classification exercises to ensure no sensitive data is being stored improperly.`,
+        recommendations_es: `#### Recomendaciones a Corto Plazo
+Identificar todos los datos sensibles y aplicar un cifrado fuerte tanto en reposo como en tránsito (p. ej., usando TLS 1.2+). Deshabilitar el almacenamiento en caché para las responses que contienen datos sensibles.
+#### Recomendaciones a Medio Plazo
+Implementar una política de clasificación de datos. Utilizar algoritmos y protocolos de cifrado fuertes y estándar de la industria. Asegurar una gestión y rotación de claves adecuadas.
+#### Recomendaciones a Largo Plazo
+Minimizar la recopilación y el almacenamiento de datos sensibles. Realizar ejercicios regulares de descubrimiento y clasificación de datos para garantizar que no se almacenen datos sensibles de forma incorrecta.`,
         cwe: "CWE-312",
         severity: "High",
         cvss: { score: 7.5, vectorString: "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:H/I:N/A:N", attackVector: "N", attackComplexity: "L", privilegesRequired: "N", userInteraction: "N", scope: "U", confidentiality: "H", integrity: "N", availability: "N" },
@@ -186,16 +195,18 @@ Muchos procesadores XML antiguos permiten la especificación de entidades extern
 XXE can lead to the disclosure of confidential data, denial of service (DoS), server-side request forgery (SSRF), and port scanning from the perspective of the machine where the parser is located.`,
         impact_es: `### Impacto
 XXE puede llevar a la divulgación de datos confidenciales, denegación de servicio (DoS), falsificación de solicitudes del lado del servidor (SSRF) y escaneo de puertos desde la perspectiva de la máquina donde se encuentra el analizador.`,
-        remediation_en: {
-            shortTerm: "### Short-Term Recommendations\nDisable DTDs (Document Type Definitions) and external entities in all XML parsers in the application. This is the most effective and simplest way to prevent XXE.",
-            mediumTerm: "### Medium-Term Recommendations\nUpgrade XML processors and libraries to their latest versions. Use less complex data formats like JSON where possible.",
-            longTerm: "### Long-Term Recommendations\nImplement server-side input validation and filtering to prevent hostile data within XML documents. Use a Web Application Firewall (WAF) with rules to detect and block XXE attacks."
-        },
-        remediation_es: {
-            shortTerm: "### Recomendaciones a Corto Plazo\nDeshabilitar los DTDs (Definiciones de Tipo de Documento) y las entidades externas en todos los analizadores XML de la aplicación. Esta es la forma más efectiva y sencilla de prevenir XXE.",
-            mediumTerm: "### Recomendaciones a Medio Plazo\nActualizar los procesadores y bibliotecas XML a sus últimas versiones. Usar formatos de datos menos complejos como JSON cuando sea posible.",
-            longTerm: "### Recomendaciones a Largo Plazo\nImplementar validación y filtrado de entradas del lado del servidor para evitar datos hostiles dentro de los documentos XML. Usar un Web Application Firewall (WAF) con reglas para detectar y bloquear ataques XXE."
-        },
+        recommendations_en: `#### Short-Term Recommendations
+Disable DTDs (Document Type Definitions) and external entities in all XML parsers in the application. This is the most effective and simplest way to prevent XXE.
+#### Medium-Term Recommendations
+Upgrade XML processors and libraries to their latest versions. Use less complex data formats like JSON where possible.
+#### Long-Term Recommendations
+Implement server-side input validation and filtering to prevent hostile data within XML documents. Use a Web Application Firewall (WAF) with rules to detect and block XXE attacks.`,
+        recommendations_es: `#### Recomendaciones a Corto Plazo
+Deshabilitar los DTDs (Definiciones de Tipo de Documento) y las entidades externas en todos los analizadores XML de la aplicación. Esta es la forma más efectiva y sencilla de prevenir XXE.
+#### Recomendaciones a Medio Plazo
+Actualizar los procesadores y bibliotecas XML a sus últimas versiones. Usar formatos de datos menos complejos como JSON cuando sea posible.
+#### Recomendaciones a Largo Plazo
+Implementar validación y filtrado de entradas del lado del servidor para evitar datos hostiles dentro de los documentos XML. Usar un Web Application Firewall (WAF) con reglas para detectar y bloquear ataques XXE.`,
         cwe: "CWE-611",
         severity: "High",
         cvss: { score: 8.8, vectorString: "CVSS:3.1/AV:N/AC:L/PR:L/UI:N/S:U/C:H/I:H/A:H", attackVector: "N", attackComplexity: "L", privilegesRequired: "L", userInteraction: "N", scope: "U", confidentiality: "H", integrity: "H", availability: "H" },
@@ -228,16 +239,18 @@ Esta vulnerabilidad surge cuando las restricciones sobre lo que los usuarios aut
 Broken access control can lead to unauthorized access to data and functionality, potentially allowing attackers to take over a site, modify critical data, or perform unauthorized actions as other users.`,
         impact_es: `### Impacto
 El control de acceso roto puede conducir al acceso no autorizado a datos y funcionalidades, permitiendo potencialmente a los atacantes tomar el control de un sitio, modificar datos críticos o realizar acciones no autorizadas como otros usuarios.`,
-        remediation_en: {
-            shortTerm: "### Short-Term Recommendations\nReview and enforce access control on the server-side for every request. Use role-based access control (RBAC) mechanisms. Deny by default.",
-            mediumTerm: "### Medium-Term Recommendations\nImplement a centralized access control mechanism that is used by all components of the application. Log access control failures and alert administrators.",
-            longTerm: "### Long-Term Recommendations\nConduct a full review of the access control logic. Implement the principle of least privilege, where users are only granted the minimum permissions necessary."
-        },
-        remediation_es: {
-            shortTerm: "### Recomendaciones a Corto Plazo\nRevisar y aplicar el control de acceso en el lado del servidor para cada solicitud. Utilizar mecanismos de control de acceso basados en roles (RBAC). Denegar por defecto.",
-            mediumTerm: "### Recomendaciones a Medio Plazo\nImplementar un mecanismo de control de acceso centralizado que sea utilizado por todos los componentes de la aplicación. Registrar las fallas de control de acceso y alertar a los administradores.",
-            longTerm: "### Recomendaciones a Largo Plazo\nRealizar una revisión completa de la lógica de control de acceso. Implementar el principio de privilegio mínimo, donde a los usuarios solo se les otorgan los permisos mínimos necesarios."
-        },
+        recommendations_en: `#### Short-Term Recommendations
+Review and enforce access control on the server-side for every request. Use role-based access control (RBAC) mechanisms. Deny by default.
+#### Medium-Term Recommendations
+Implement a centralized access control mechanism that is used by all components of the application. Log access control failures and alert administrators.
+#### Long-Term Recommendations
+Conduct a full review of the access control logic. Implement the principle of least privilege, where users are only granted the minimum permissions necessary.`,
+        recommendations_es: `#### Recomendaciones a Corto Plazo
+Revisar y aplicar el control de acceso en el lado del servidor para cada solicitud. Utilizar mecanismos de control de acceso basados en roles (RBAC). Denegar por defecto.
+#### Recomendaciones a Medio Plazo
+Implementar un mecanismo de control de acceso centralizado que sea utilizado por todos los componentes de la aplicación. Registrar las fallas de control de acceso y alertar a los administradores.
+#### Recomendaciones a Largo Plazo
+Realizar una revisión completa de la lógica de control de acceso. Implementar el principio de privilegio mínimo, donde a los usuarios solo se les otorgan los permisos mínimos necesarios.`,
         cwe: "CWE-284",
         severity: "High",
         cvss: { score: 8.1, vectorString: "CVSS:3.1/AV:N/AC:L/PR:L/UI:N/S:U/C:H/I:H/A:N", attackVector: "N", attackComplexity: "L", privilegesRequired: "L", userInteraction: "N", scope: "U", confidentiality: "H", integrity: "H", availability: "N" },
@@ -270,16 +283,18 @@ Esta vulnerabilidad puede ocurrir en cualquier nivel de la pila de aplicaciones,
 Security misconfiguration can lead to a wide range of impacts, from information disclosure to a full system compromise, depending on the nature of the misconfiguration.`,
         impact_es: `### Impacto
 La configuración de seguridad incorrecta puede tener una amplia gama de impactos, desde la divulgación de información hasta el compromiso total del sistema, dependiendo de la naturaleza de la configuración incorrecta.`,
-        remediation_en: {
-            shortTerm: "### Short-Term Recommendations\nReview and harden configurations for all parts of the application stack. Implement security headers like Content Security Policy (CSP). Disable unnecessary features and services.",
-            mediumTerm: "### Medium-Term Recommendations\nDevelop a repeatable hardening process that is fast and easy to deploy. Automate the process of verifying configurations in different environments.",
-            longTerm: "### Long-Term Recommendations\nImplement a secure configuration lifecycle. Regularly scan and audit configurations for misconfigurations. Use automated tools to enforce secure baselines."
-        },
-        remediation_es: {
-            shortTerm: "### Recomendaciones a Corto Plazo\nRevisar y fortalecer las configuraciones para todas las partes de la pila de aplicaciones. Implementar encabezados de seguridad como la Política de Seguridad de Contenido (CSP). Deshabilitar funciones y servicios innecesarios.",
-            mediumTerm: "### Recomendaciones a Medio Plazo\nDesarrollar un proceso de fortalecimiento repetible que sea rápido y fácil de implementar. Automatizar el proceso de verificación de configuraciones en diferentes entornos.",
-            longTerm: "### Recomendaciones a Largo Plazo\nImplementar un ciclo de vida de configuración seguro. Escanear y auditar regularmente las configuraciones en busca de errores. Usar herramientas automatizadas para hacer cumplir las líneas de base seguras."
-        },
+        recommendations_en: `#### Short-Term Recommendations
+Review and harden configurations for all parts of the application stack. Implement security headers like Content Security Policy (CSP). Disable unnecessary features and services.
+#### Medium-Term Recommendations
+Develop a repeatable hardening process that is fast and easy to deploy. Automate the process of verifying configurations in different environments.
+#### Long-Term Recommendations
+Implement a secure configuration lifecycle. Regularly scan and audit configurations for misconfigurations. Use automated tools to enforce secure baselines.`,
+        recommendations_es: `#### Recomendaciones a Corto Plazo
+Revisar y fortalecer las configuraciones para todas las partes de la pila de aplicaciones. Implementar encabezados de seguridad como la Política de Seguridad de Contenido (CSP). Deshabilitar funciones y servicios innecesarios.
+#### Recomendaciones a Medio Plazo
+Desarrollar un proceso de fortalecimiento repetible que sea rápido y fácil de implementar. Automatizar el proceso de verificación de configuraciones en diferentes entornos.
+#### Recomendaciones a Largo Plazo
+Implementar un ciclo de vida de configuración seguro. Escanear y auditar regularmente las configuraciones en busca de errores. Usar herramientas automatizadas para hacer cumplir las líneas de base seguras.`,
         cwe: "CWE-16",
         severity: "High",
         cvss: { score: 7.5, vectorString: "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:H/I:N/A:N", attackVector: "N", attackComplexity: "L", privilegesRequired: "N", userInteraction: "N", scope: "U", confidentiality: "H", integrity: "N", availability: "N" },
@@ -312,16 +327,18 @@ El ataque funciona incluyendo un enlace o script en una página que accede a un 
 A successful CSRF attack can force the user to perform state-changing requests like transferring funds, changing their email address, or purchasing an item.`,
         impact_es: `### Impacto
 Un ataque CSRF exitoso puede obligar al usuario a realizar solicitudes que cambian el estado, como transferir fondos, cambiar su dirección de correo electrónico o comprar un artículo.`,
-        remediation_en: {
-            shortTerm: "### Short-Term Recommendations\nImplement anti-CSRF tokens (synchronizer token pattern) for all state-changing requests. Verify the `Origin` or `Referer` header.",
-            mediumTerm: "### Medium-Term Recommendations\nUse the SameSite cookie attribute, setting it to `Strict` or `Lax`.",
-            longTerm: "### Long-Term Recommendations\nEnsure the application framework has built-in CSRF protection and that it is enabled and configured correctly. For APIs, consider using token-based authentication (e.g., JWT) instead of cookies."
-        },
-        remediation_es: {
-            shortTerm: "### Recomendaciones a Corto Plazo\nImplementar tokens anti-CSRF (patrón de token sincronizador) para todas las solicitudes que cambian el estado. Verificar el encabezado `Origin` o `Referer`.",
-            mediumTerm: "### Recomendaciones a Medio Plazo\nUsar el atributo de cookie SameSite, configurándolo en `Strict` o `Lax`.",
-            longTerm: "### Recomendaciones a Largo Plazo\nAsegurarse de que el framework de la aplicación tenga protección CSRF incorporada y que esté habilitada y configurada correctamente. Para las API, considerar el uso de autenticación basada en tokens (p. ej., JWT) en lugar de cookies."
-        },
+        recommendations_en: `#### Short-Term Recommendations
+Implement anti-CSRF tokens (synchronizer token pattern) for all state-changing requests. Verify the \`Origin\` or \`Referer\` header.
+#### Medium-Term Recommendations
+Use the SameSite cookie attribute, setting it to \`Strict\` or \`Lax\`.
+#### Long-Term Recommendations
+Ensure the application framework has built-in CSRF protection and that it is enabled and configured correctly. For APIs, consider using token-based authentication (e.g., JWT) instead of cookies.`,
+        recommendations_es: `#### Recomendaciones a Corto Plazo
+Implementar tokens anti-CSRF (patrón de token sincronizador) para todas las solicitudes que cambian el estado. Verificar el encabezado \`Origin\` o \`Referer\`.
+#### Recomendaciones a Medio Plazo
+Usar el atributo de cookie SameSite, configurándolo en \`Strict\` o \`Lax\`.
+#### Recomendaciones a Largo Plazo
+Asegurarse de que el framework de la aplicación tenga protección CSRF incorporada y que esté habilitada y configurada correctamente. Para las API, considerar el uso de autenticación basada en tokens (p. ej., JWT) en lugar de cookies.`,
         cwe: "CWE-352",
         severity: "High",
         cvss: { score: 8.8, vectorString: "CVSS:3.1/AV:N/AC:L/PR:N/UI:R/S:U/C:H/I:H/A:H", attackVector: "N", attackComplexity: "L", privilegesRequired: "N", userInteraction: "R", scope: "U", confidentiality: "H", integrity: "H", availability: "H" },
@@ -354,16 +371,18 @@ La vulnerabilidad ocurre cuando una aplicación deserializa datos de una fuente 
 The impact can range from denial-of-service to arbitrary code execution, which can lead to a full system compromise. It can also be used to bypass authentication and access controls.`,
         impact_es: `### Impacto
 El impacto puede variar desde la denegación de servicio hasta la ejecución de código arbitrario, lo que puede llevar a un compromiso total del sistema. También se puede utilizar para eludir la autenticación y los controles de acceso.`,
-        remediation_en: {
-            shortTerm: "### Short-Term Recommendations\nAvoid deserializing data from untrusted sources. If necessary, implement strict type checking and validation before deserialization.",
-            mediumTerm: "### Medium-Term Recommendations\nUse data formats that are not vulnerable to deserialization attacks, such as JSON, and avoid using complex native serialization formats.",
-            longTerm: "### Long-Term Recommendations\nIntegrate integrity checks like digital signatures on any serialized data to prevent tampering. Isolate the deserialization code in a low-privilege environment."
-        },
-        remediation_es: {
-            shortTerm: "### Recomendaciones a Corto Plazo\nEvitar deserializar datos de fuentes no confiables. Si es necesario, implementar una comprobación y validación de tipos estricta antes de la deserialización.",
-            mediumTerm: "### Recomendaciones a Medio Plazo\nUtilizar formatos de datos que no sean vulnerables a ataques de deserialización, como JSON, y evitar el uso de formatos de serialización nativos complejos.",
-            longTerm: "### Recomendaciones a Largo Plazo\nIntegrar comprobaciones de integridad como firmas digitales en cualquier dato serializado para evitar la manipulación. Aislar el código de deserialización en un entorno de bajos privilegios."
-        },
+        recommendations_en: `#### Short-Term Recommendations
+Avoid deserializing data from untrusted sources. If necessary, implement strict type checking and validation before deserialization.
+#### Medium-Term Recommendations
+Use data formats that are not vulnerable to deserialization attacks, such as JSON, and avoid using complex native serialization formats.
+#### Long-Term Recommendations
+Integrate integrity checks like digital signatures on any serialized data to prevent tampering. Isolate the deserialization code in a low-privilege environment.`,
+        recommendations_es: `#### Recomendaciones a Corto Plazo
+Evitar deserializar datos de fuentes no confiables. Si es necesario, implementar una comprobación y validación de tipos estricta antes de la deserialización.
+#### Recomendaciones a Medio Plazo
+Utilizar formatos de datos que no sean vulnerables a ataques de deserialización, como JSON, y evitar el uso de formatos de serialización nativos complejos.
+#### Recomendaciones a Largo Plazo
+Integrar comprobaciones de integridad como firmas digitales en cualquier dato serializado para evitar la manipulación. Aislar el código de deserialización en un entorno de bajos privilegios.`,
         cwe: "CWE-502",
         severity: "Critical",
         cvss: { score: 9.8, vectorString: "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:H/I:H/A:H", attackVector: "N", attackComplexity: "L", privilegesRequired: "N", userInteraction: "N", scope: "U", confidentiality: "H", integrity: "H", availability: "H" },
@@ -396,16 +415,18 @@ La vulnerabilidad ocurre cuando una aplicación obtiene un recurso remoto basado
 A successful SSRF attack can lead to the scanning of internal networks, unauthorized access to internal services, information disclosure, and remote code execution on internal systems.`,
         impact_es: `### Impacto
 Un ataque SSRF exitoso puede llevar al escaneo de redes internas, acceso no autorizado a servicios internos, divulgación de información y ejecución remota de código en sistemas internos.`,
-        remediation_en: {
-            shortTerm: "### Short-Term Recommendations\nImplement a strict allow-list of domains and protocols that the application is allowed to request. Deny all other requests.",
-            mediumTerm: "### Medium-Term Recommendations\nValidate all user-supplied input to ensure it conforms to the expected format and values. Do not send raw responses from the server back to the client.",
-            longTerm: "### Long-Term Recommendations\nIsolate the functionality that makes external requests in a separate, low-privilege network environment. This limits the impact of a potential SSRF vulnerability."
-        },
-        remediation_es: {
-            shortTerm: "### Recomendaciones a Corto Plazo\nImplementar una lista blanca estricta de dominios y protocolos que la aplicación tiene permitido solicitar. Denegar todas las demás solicitudes.",
-            mediumTerm: "### Recomendaciones a Medio Plazo\nValidar todas las entradas proporcionadas por el usuario para asegurarse de que se ajustan al formato y los valores esperados. No enviar responses sin procesar del servidor al cliente.",
-            longTerm: "### Recomendaciones a Largo Plazo\nAislar la funcionalidad que realiza solicitudes externas en un entorno de red separado y de bajos privilegios. Esto limita el impacto de una posible vulnerabilidad SSRF."
-        },
+        recommendations_en: `#### Short-Term Recommendations
+Implement a strict allow-list of domains and protocols that the application is allowed to request. Deny all other requests.
+#### Medium-Term Recommendations
+Validate all user-supplied input to ensure it conforms to the expected format and values. Do not send raw responses from the server back to the client.
+#### Long-Term Recommendations
+Isolate the functionality that makes external requests in a separate, low-privilege network environment. This limits the impact of a potential SSRF vulnerability.`,
+        recommendations_es: `#### Recomendaciones a Corto Plazo
+Implementar una lista blanca estricta de dominios y protocolos que la aplicación tiene permitido solicitar. Denegar todas las demás solicitudes.
+#### Recomendaciones a Medio Plazo
+Validar todas las entradas proporcionadas por el usuario para asegurarse de que se ajustan al formato y los valores esperados. No enviar responses sin procesar del servidor al cliente.
+#### Recomendaciones a Largo Plazo
+Aislar la funcionalidad que realiza solicitudes externas en un entorno de red separado y de bajos privilegios. Esto limita el impacto de una posible vulnerabilidad SSRF.`,
         cwe: "CWE-918",
         severity: "High",
         cvss: { score: 9.0, vectorString: "CVSS:3.1/AV:N/AC:L/PR:L/UI:N/S:C/C:H/I:L/A:N", attackVector: "N", attackComplexity: "L", privilegesRequired: "L", userInteraction: "N", scope: "C", confidentiality: "H", integrity: "L", availability: "N" },
@@ -438,16 +459,18 @@ Un atacante puede cambiar el método HTTP (p. ej., de POST a GET) para acceder a
 This can lead to bypassing authentication, privilege escalation, or unauthorized execution of sensitive operations.`,
         impact_es: `### Impacto
 Esto puede conducir a la omisión de la autenticación, la escalada de privilegios o la ejecución no autorizada de operaciones sensibles.`,
-        remediation_en: {
-            shortTerm: "### Short-Term Recommendations\nEnforce strict, default-deny access control for all endpoints, regardless of the HTTP verb used.",
-            mediumTerm: "### Medium-Term Recommendations\nUse a framework that correctly maps actions to specific HTTP verbs and enforces this mapping.",
-            longTerm: "### Long-Term Recommendations\nImplement a centralized and robust access control mechanism that is verb-agnostic."
-        },
-        remediation_es: {
-            shortTerm: "### Recomendaciones a Corto Plazo\nAplicar un control de acceso estricto y de denegación por defecto para todos los puntos de conexión, independientemente del verbo HTTP utilizado.",
-            mediumTerm: "### Recomendaciones a Medio Plazo\nUsar un framework que mapee correctamente las acciones a verbos HTTP específicos y haga cumplir este mapeo.",
-            longTerm: "### Recomendaciones a Largo Plazo\nImplementar un mecanismo de control de acceso centralizado y robusto que sea independiente del verbo."
-        },
+        recommendations_en: `#### Short-Term Recommendations
+Enforce strict, default-deny access control for all endpoints, regardless of the HTTP verb used.
+#### Medium-Term Recommendations
+Use a framework that correctly maps actions to specific HTTP verbs and enforces this mapping.
+#### Long-Term Recommendations
+Implement a centralized and robust access control mechanism that is verb-agnostic.`,
+        recommendations_es: `#### Recomendaciones a Corto Plazo
+Aplicar un control de acceso estricto y de denegación por defecto para todos los puntos de conexión, independientemente del verbo HTTP utilizado.
+#### Recomendaciones a Medio Plazo
+Usar un framework que mapee correctamente las acciones a verbos HTTP específicos y haga cumplir este mapeo.
+#### Recomendaciones a Largo Plazo
+Implementar un mecanismo de control de acceso centralizado y robusto que sea independiente del verbo.`,
         cwe: "CWE-346",
         severity: "Medium",
         cvss: { score: 6.5, vectorString: "CVSS:3.1/AV:N/AC:L/PR:L/UI:N/S:U/C:L/I:L/A:N", attackVector: "N", attackComplexity: "L", privilegesRequired: "L", userInteraction: "N", scope: "U", confidentiality: "L", integrity: "L", availability: "N" },
@@ -480,16 +503,18 @@ La vulnerabilidad ocurre cuando una página recibe como entrada la ruta del arch
 LFI can lead to information disclosure, remote code execution, and denial of service. Attackers can read sensitive files like \`/etc/passwd\` or application source code.`,
         impact_es: `### Impacto
 LFI puede conducir a la divulgación de información, ejecución remota de código y denegación de servicio. Los atacantes pueden leer archivos sensibles como \`/etc/passwd\` o el código fuente de la aplicación.`,
-        remediation_en: {
-            shortTerm: "### Short-Term Recommendations\nValidate user input against a strict allow-list of acceptable file names and paths.",
-            mediumTerm: "### Medium-Term Recommendations\nAvoid passing user-supplied input to filesystem APIs. If unavoidable, use a mapping to safe, pre-defined file paths.",
-            longTerm: "### Long-Term Recommendations\nRun the application in a sandboxed or chrooted environment to limit the impact of a potential LFI."
-        },
-        remediation_es: {
-            shortTerm: "### Recomendaciones a Corto Plazo\nValidar la entrada del usuario contra una lista blanca estricta de nombres y rutas de archivo aceptables.",
-            mediumTerm: "### Recomendaciones a Medio Plazo\nEvitar pasar la entrada proporcionada por el usuario a las API del sistema de archivos. Si es inevitable, usar un mapeo a rutas de archivo seguras y predefinidas.",
-            longTerm: "### Recomendaciones a Largo Plazo\nEjecutar la aplicación en un entorno aislado o chroot para limitar el impacto de un posible LFI."
-        },
+        recommendations_en: `#### Short-Term Recommendations
+Validate user input against a strict allow-list of acceptable file names and paths.
+#### Medium-Term Recommendations
+Avoid passing user-supplied input to filesystem APIs. If unavoidable, use a mapping to safe, pre-defined file paths.
+#### Long-Term Recommendations
+Run the application in a sandboxed or chrooted environment to limit the impact of a potential LFI.`,
+        recommendations_es: `#### Recomendaciones a Corto Plazo
+Validar la entrada del usuario contra una lista blanca estricta de nombres y rutas de archivo aceptables.
+#### Recomendaciones a Medio Plazo
+Evitar pasar la entrada proporcionada por el usuario a las API del sistema de archivos. Si es inevitable, usar un mapeo a rutas de archivo seguras y predefinidas.
+#### Recomendaciones a Largo Plazo
+Ejecutar la aplicación en un entorno aislado o chroot para limitar el impacto de un posible LFI.`,
         cwe: "CWE-98",
         severity: "High",
         cvss: { score: 7.5, vectorString: "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:H/I:N/A:N", attackVector: "N", attackComplexity: "L", privilegesRequired: "N", userInteraction: "N", scope: "U", confidentiality: "H", integrity: "N", availability: "N" },
@@ -522,16 +547,18 @@ Si una aplicación realiza solicitudes basadas en la entrada del usuario y permi
 This leads to the disclosure of sensitive files on the server, including configuration files, source code, and system files.`,
         impact_es: `### Impacto
 Esto conduce a la divulgación de archivos sensibles en el servidor, incluidos archivos de configuración, código fuente y archivos del sistema.`,
-        remediation_en: {
-            shortTerm: "### Short-Term Recommendations\nStrictly disallow the `file://` URI scheme in all functions that make server-side requests.",
-            mediumTerm: "### Medium-Term Recommendations\nImplement a robust URI parser that validates and restricts protocols to an allow-list (e.g., only HTTP and HTTPS).",
-            longTerm: "### Long-Term Recommendations\nRun the application with the minimum necessary file system permissions to limit the files it can access."
-        },
-        remediation_es: {
-            shortTerm: "### Recomendaciones a Corto Plazo\nDesautorizar estrictamente el esquema URI \`file://\` en todas las funciones que realizan solicitudes del lado del servidor.",
-            mediumTerm: "### Recomendaciones a Medio Plazo\nImplementar un analizador de URI robusto que valide y restrinja los protocolos a una lista de permitidos (p. ej., solo HTTP y HTTPS).",
-            longTerm: "### Recomendaciones a Largo Plazo\nEjecutar la aplicación con los permisos mínimos necesarios del sistema de archivos para limitar los archivos a los que puede acceder."
-        },
+        recommendations_en: `#### Short-Term Recommendations
+Strictly disallow the \`file://\` URI scheme in all functions that make server-side requests.
+#### Medium-Term Recommendations
+Implement a robust URI parser that validates and restricts protocols to an allow-list (e.g., only HTTP and HTTPS).
+#### Long-Term Recommendations
+Run the application with the minimum necessary file system permissions to limit the files it can access.`,
+        recommendations_es: `#### Recomendaciones a Corto Plazo
+Desautorizar estrictamente el esquema URI \`file://\` en todas las funciones que realizan solicitudes del lado del servidor.
+#### Recomendaciones a Medio Plazo
+Implementar un analizador de URI robusto que valide y restrinja los protocolos a una lista de permitidos (p. ej., solo HTTP y HTTPS).
+#### Recomendaciones a Largo Plazo
+Ejecutar la aplicación con los permisos mínimos necesarios del sistema de archivos para limitar los archivos a los que puede acceder.`,
         cwe: "CWE-918",
         severity: "High",
         cvss: { score: 7.5, vectorString: "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:H/I:N/A:N", attackVector: "N", attackComplexity: "L", privilegesRequired: "N", userInteraction: "N", scope: "U", confidentiality: "H", integrity: "N", availability: "N" },
@@ -565,16 +592,18 @@ Información sensible como contraseñas, claves de API o datos personales del us
 Leads to the compromise of user credentials, session tokens, and other sensitive data, which can result in account takeover, identity theft, and other fraudulent activities.`,
         impact_es: `### Impacto
 Conduce al compromiso de credenciales de usuario, tokens de sesión y otros datos sensibles, lo que puede resultar en la toma de control de cuentas, robo de identidad y otras actividades fraudulentas.`,
-        remediation_en: {
-            shortTerm: "### Short-Term Recommendations\nEncrypt all sensitive data before storing it on the device. Use platform-provided secure storage mechanisms like Android's EncryptedSharedPreferences or iOS's Keychain.",
-            mediumTerm: "### Medium-Term Recommendations\nDevelop a data classification policy for the mobile app to identify what data is sensitive and requires encryption. Avoid storing sensitive data on the device whenever possible.",
-            longTerm: "### Long-Term Recommendations\nImplement a secure data management lifecycle for the mobile app, including secure storage, transmission, and deletion of data. Conduct regular security audits of the app's data storage practices."
-        },
-        remediation_es: {
-            shortTerm: "### Recomendaciones a Corto Plazo\nCifrar inmediatamente todos los datos sensibles antes de almacenarlos en el dispositivo. Utilizar los mecanismos de almacenamiento seguro proporcionados por la plataforma, como EncryptedSharedPreferences de Android o el Llavero (Keychain) de iOS.",
-            mediumTerm: "### Recomendaciones a Medio Plazo\nDesarrollar una política de clasificación de datos para la aplicación móvil para identificar qué datos son sensibles y requieren cifrado. Evitar almacenar datos sensibles en el dispositivo siempre que sea posible.",
-            longTerm: "### Recomendaciones a Largo Plazo\nImplementar un ciclo de vida de gestión de datos seguro para la aplicación móvil, que incluya almacenamiento, transmisión y eliminación seguros de los datos. Realizar auditorías de seguridad periódicas de las prácticas de almacenamiento de datos de la aplicación."
-        },
+        recommendations_en: `#### Short-Term Recommendations
+Encrypt all sensitive data before storing it on the device. Use platform-provided secure storage mechanisms like Android's EncryptedSharedPreferences or iOS's Keychain.
+#### Medium-Term Recommendations
+Develop a data classification policy for the mobile app to identify what data is sensitive and requires encryption. Avoid storing sensitive data on the device whenever possible.
+#### Long-Term Recommendations
+Implement a secure data management lifecycle for the mobile app, including secure storage, transmission, and deletion of data. Conduct regular security audits of the app's data storage practices.`,
+        recommendations_es: `#### Recomendaciones a Corto Plazo
+Cifrar inmediatamente todos los datos sensibles antes de almacenarlos en el dispositivo. Utilizar los mecanismos de almacenamiento seguro proporcionados por la plataforma, como EncryptedSharedPreferences de Android o el Llavero (Keychain) de iOS.
+#### Recomendaciones a Medio Plazo
+Desarrollar una política de clasificación de datos para la aplicación móvil para identificar qué datos son sensibles y requieren cifrado. Evitar almacenar datos sensibles en el dispositivo siempre que sea posible.
+#### Recomendaciones a Largo Plazo
+Implementar un ciclo de vida de gestión de datos seguro para la aplicación móvil, que incluya almacenamiento, transmisión y eliminación seguros de los datos. Realizar auditorías de seguridad periódicas de las prácticas de almacenamiento de datos de la aplicación.`,
         cwe: "CWE-922",
         severity: "High",
         cvss: { score: 7.5, vectorString: "CVSS:3.1/AV:L/AC:L/PR:L/UI:N/S:U/C:H/I:N/A:N", attackVector: "L", attackComplexity: "L", privilegesRequired: "L", userInteraction: "N", scope: "U", confidentiality: "H", integrity: "N", availability: "N" },
@@ -607,16 +636,18 @@ Las aplicaciones móviles suelen ser clientes de servicios de backend. Las falla
 The impact is equivalent to the corresponding web vulnerability being exploited. This can range from data disclosure to full system compromise of the backend infrastructure.`,
         impact_es: `### Impacto
 El impacto es equivalente a la explotación de la vulnerabilidad web correspondiente. Esto puede variar desde la divulgación de datos hasta el compromiso total del sistema de la infraestructura de backend.`,
-        remediation_en: {
-            shortTerm: "### Short-Term Recommendations\nApply the same security best practices to mobile backend APIs as you would for a standard web application. This includes input validation, parameterized queries, and strong access control.",
-            mediumTerm: "### Medium-Term Recommendations\nImplement API-specific security measures, such as rate limiting, request throttling, and robust authentication/authorization for all endpoints.",
-            longTerm: "### Long-Term Recommendations\nDesign the backend API with a 'zero trust' model, assuming that any request from a mobile client could be malicious. Do not rely on client-side controls for security."
-        },
-        remediation_es: {
-            shortTerm: "### Recomendaciones a Corto Plazo\nAplicar las mismas mejores prácticas de seguridad a las API de backend móvil que se aplicarían a una aplicación web estándar. Esto incluye validación de entradas, consultas parametrizadas y un fuerte control de acceso.",
-            mediumTerm: "### Recomendaciones a Medio Plazo\nImplementar medidas de seguridad específicas para la API, como limitación de velocidad, regulación de solicitudes y autenticación/autorización robustas para todos los puntos de conexión.",
-            longTerm: "### Recomendaciones a Largo Plazo\nDiseñar la API de backend con un modelo de 'confianza cero', asumiendo que cualquier solicitud de un cliente móvil podría ser maliciosa. No depender de los controles del lado del cliente para la seguridad."
-        },
+        recommendations_en: `#### Short-Term Recommendations
+Apply the same security best practices to mobile backend APIs as you would for a standard web application. This includes input validation, parameterized queries, and strong access control.
+#### Medium-Term Recommendations
+Implement API-specific security measures, such as rate limiting, request throttling, and robust authentication/authorization for all endpoints.
+#### Long-Term Recommendations
+Design the backend API with a 'zero trust' model, assuming that any request from a mobile client could be malicious. Do not rely on client-side controls for security.`,
+        recommendations_es: `#### Recomendaciones a Corto Plazo
+Aplicar las mesmas melhores práticas de segurança às APIs de backend móvel que se aplicariam a uma aplicação web padrão. Isso inclui validação de entradas, consultas parametrizadas e um forte controle de acesso.
+#### Recomendaciones a Medio Plazo
+Implementar medidas de segurança específicas para a API, como limitação de velocidade, regulação de solicitações e autenticação/autorização robustas para todos os pontos de conexão.
+#### Recomendaciones a Largo Plazo
+Projetar a API de backend com um modelo de 'confiança zero', assumindo que qualquer solicitação de um cliente móvel pode ser maliciosa. Não depender dos controles do lado do cliente para a segurança.`,
         cwe: "CWE-602",
         severity: "High",
         cvss: { score: 8.8, vectorString: "CVSS:3.1/AV:N/AC:L/PR:L/UI:N/S:U/C:H/I:H/A:H", attackVector: "N", attackComplexity: "L", privilegesRequired: "L", userInteraction: "N", scope: "U", confidentiality: "H", integrity: "H", availability: "H" },
@@ -649,16 +680,18 @@ La aplicación puede comunicarse a través de HTTP sin cifrar, usar protocolos/c
 An attacker can intercept, view, and modify all traffic between the mobile app and the server, including login credentials, session tokens, and personal data.`,
         impact_es: `### Impacto
 Un atacante puede interceptar, ver y modificar todo el tráfico entre la aplicación móvil y el servidor, incluidas las credenciales de inicio de sesión, los tokens de sesión y los datos personales.`,
-        remediation_en: {
-            shortTerm: "### Short-Term Recommendations\nEnsure that TLS is used for all network communications. Configure the app to only support strong TLS protocols (TLS 1.2, TLS 1.3) and modern cipher suites.",
-            mediumTerm: "### Medium-Term Recommendations\nImplement SSL/TLS certificate pinning to prevent MitM attacks even if the device's trust store is compromised. Disallow the use of self-signed certificates in production builds.",
-            longTerm: "### Long-Term Recommendations\nRegularly review and update the list of trusted certificates and cipher suites. Use automated tools to scan the application for insecure network configurations during the development cycle."
-        },
-        remediation_es: {
-            shortTerm: "### Recomendaciones a Corto Plazo\nAsegurarse de que se utilice TLS para todas las comunicaciones de red. Configurar la aplicación para que solo admita protocolos TLS fuertes (TLS 1.2, TLS 1.3) y conjuntos de cifrado modernos.",
-            mediumTerm: "### Recomendaciones a Medio Plazo\nImplementar el anclaje de certificados SSL/TLS (certificate pinning) para prevenir ataques MitM incluso si el almacén de confianza del dispositivo está comprometido. No permitir el uso de certificados autofirmados en las compilaciones de producción.",
-            longTerm: "### Recomendaciones a Largo Plazo\nRevisar y actualizar regularmente la lista de certificados y conjuntos de cifrado de confianza. Utilizar herramientas automatizadas para escanear la aplicación en busca de configuraciones de red inseguras durante el ciclo de desarrollo."
-        },
+        recommendations_en: `#### Short-Term Recommendations
+Ensure that TLS is used for all network communications. Configure the app to only support strong TLS protocols (TLS 1.2, TLS 1.3) and modern cipher suites.
+#### Medium-Term Recommendations
+Implement SSL/TLS certificate pinning to prevent MitM attacks even if the device's trust store is compromised. Disallow the use of self-signed certificates in production builds.
+#### Long-Term Recommendations
+Regularly review and update the list of trusted certificates and cipher suites. Use automated tools to scan the application for insecure network configurations during the development cycle.`,
+        recommendations_es: `#### Recomendaciones a Corto Plazo
+Asegurarse de que se utilice TLS para todas las comunicaciones de red. Configurar la aplicación para que solo admita protocolos TLS fuertes (TLS 1.2, TLS 1.3) y conjuntos de cifrado modernos.
+#### Recomendaciones a Medio Plazo
+Implementar el anclaje de certificados SSL/TLS (certificate pinning) para prevenir ataques MitM incluso si el almacén de confianza del dispositivo está comprometido. No permitir el uso de certificados autofirmados en las compilaciones de producción.
+#### Recomendaciones a Largo Plazo
+Revisar y actualizar regularmente la lista de certificados y conjuntos de cifrado de confianza. Utilizar herramientas automatizadas para escanear la aplicación en busca de configuraciones de red inseguras durante el ciclo de desarrollo.`,
         cwe: "CWE-319",
         severity: "High",
         cvss: { score: 7.4, vectorString: "CVSS:3.1/AV:A/AC:L/PR:N/UI:N/S:U/C:H/I:L/A:N", attackVector: "A", attackComplexity: "L", privilegesRequired: "N", userInteraction: "N", scope: "U", confidentiality: "H", integrity: "L", availability: "N" },
@@ -691,16 +724,18 @@ Esto puede suceder de varias maneras, como registrar datos sensibles en los regi
 The impact depends on the sensitivity of the leaked data. It can range from privacy violations to the full compromise of user accounts if credentials or session tokens are leaked.`,
         impact_es: `### Impacto
 El impacto depende de la sensibilidad de los datos filtrados. Puede variar desde violaciones de la privacidad hasta el compromiso total de las cuentas de usuario si se filtran credenciales o tokens de sesión.`,
-        remediation_en: {
-            shortTerm: "### Short-Term Recommendations\nRemove all logging of sensitive data. Disable keyboard caching for password fields. Clear the clipboard after a user copies sensitive information from the app.",
-            mediumTerm: "### Medium-Term Recommendations\nReview and minimize the data sent to third-party services. Implement data masking or tokenization for any sensitive data that must be shared.",
-            longTerm: "### Long-Term Recommendations\nEstablish a clear data flow diagram for the application and conduct a privacy impact assessment. Regularly review third-party SDKs for their data handling practices."
-        },
-        remediation_es: {
-            shortTerm: "### Recomendaciones a Corto Plazo\nEliminar todo el registro de datos sensibles. Deshabilitar el almacenamiento en caché del teclado para los campos de contraseña. Limpiar el portapapeles después de que un usuario copie información sensible de la aplicación.",
-            mediumTerm: "### Recomendaciones a Medio Plazo\nRevisar y minimizar los datos enviados a servicios de terceros. Implementar enmascaramiento de datos o tokenización para cualquier dato sensible que deba compartirse.",
-            longTerm: "### Recomendaciones a Largo Plazo\nEstablecer un diagrama de flujo de datos claro para la aplicación y realizar una evaluación de impacto en la privacidad. Revisar regularmente los SDK de terceros por sus prácticas de manejo de datos."
-        },
+        recommendations_en: `#### Short-Term Recommendations
+Remove all logging of sensitive data. Disable keyboard caching for password fields. Clear the clipboard after a user copies sensitive information from the app.
+#### Medium-Term Recommendations
+Review and minimize the data sent to third-party services. Implement data masking or tokenization for any sensitive data that must be shared.
+#### Long-Term Recommendations
+Establish a clear data flow diagram for the application and conduct a privacy impact assessment. Regularly review third-party SDKs for their data handling practices.`,
+        recommendations_es: `#### Recomendaciones a Corto Plazo
+Eliminar todo el registro de datos sensibles. Deshabilitar el almacenamiento en caché del teclado para los campos de contraseña. Limpiar el portapapeles después de que un usuario copie información sensible de la aplicación.
+#### Recomendaciones a Medio Plazo
+Revisar y minimizar los datos enviados a servicios de terceros. Implementar enmascaramiento de datos o tokenización para cualquier dato sensible que deba compartirse.
+#### Recomendaciones a Largo Plazo
+Establecer un diagrama de flujo de datos claro para la aplicación y realizar una evaluación de impacto en la privacidad. Revisar regularmente los SDK de terceros por sus prácticas de manejo de datos.`,
         cwe: "CWE-532",
         severity: "Medium",
         cvss: { score: 5.7, vectorString: "CVSS:3.1/AV:N/AC:L/PR:L/UI:N/S:U/C:H/I:N/A:N", attackVector: "N", attackComplexity: "L", privilegesRequired: "L", userInteraction: "N", scope: "U", confidentiality: "H", integrity: "N", availability: "N" },
@@ -733,16 +768,18 @@ Esto es similar al Control de Acceso Roto en aplicaciones web. Un atacante, aute
 The impact can be severe, allowing attackers to view, modify, or delete any data accessible via the backend API, regardless of ownership or privilege level.`,
         impact_es: `### Impacto
 El impacto puede ser severo, permitiendo a los atacantes ver, modificar o eliminar cualquier dato accesible a través de la API de backend, independientemente de la propiedad o el nivel de privilegio.`,
-        remediation_en: {
-            shortTerm: "### Short-Term Recommendations\nEnforce authorization checks on the server-side for every single API request. Do not rely on the client to control which UI elements are shown to the user.",
-            mediumTerm: "### Medium-Term Recommendations\nImplement a robust, centralized role-based access control (RBAC) system for the backend API. Ensure that ownership is checked for all data access requests.",
-            longTerm: "### Long-Term Recommendations\nConduct a thorough security review of the entire API surface. Unit and integration tests should be created to verify that authorization rules are correctly enforced."
-        },
-        remediation_es: {
-            shortTerm: "### Recomendaciones a Corto Plazo\nHacer cumplir las comprobaciones de autorización en el lado del servidor para cada solicitud de API individual. No depender del cliente para controlar qué elementos de la interfaz de usuario se muestran al usuario.",
-            mediumTerm: "### Recomendaciones a Medio Plazo\nImplementar un sistema de control de acceso basado en roles (RBAC) robusto y centralizado para la API de backend. Asegurarse de que se compruebe la propiedad para todas las solicitudes de acceso a datos.",
-            longTerm: "### Recomendaciones a Largo Plazo\nRealizar una revisión de seguridad exhaustiva de toda la superficie de la API. Se deben crear pruebas unitarias y de integración para verificar que las reglas de autorización se apliquen correctamente."
-        },
+        recommendations_en: `#### Short-Term Recommendations
+Enforce authorization checks on the server-side for every single API request. Do not rely on the client to control which UI elements are shown to the user.
+#### Medium-Term Recommendations
+Implement a robust, centralized role-based access control (RBAC) system for the backend API. Ensure that ownership is checked for all data access requests.
+#### Long-Term Recommendations
+Conduct a thorough security review of the entire API surface. Unit and integration tests should be created to verify that authorization rules are correctly enforced.`,
+        recommendations_es: `#### Recomendaciones a Corto Plazo
+Hacer cumplir las comprobaciones de autorización en el lado del servidor para cada solicitud de API individual. No depender del cliente para controlar qué elementos de la interfaz de usuario se muestran al usuario.
+#### Recomendaciones a Medio Plazo
+Implementar un sistema de control de acceso basado en roles (RBAC) robusto y centralizado para la API de backend. Asegurarse de que se compruebe la propiedad para todas las solicitudes de acceso a datos.
+#### Recomendaciones a Largo Plazo
+Realizar una revisión de seguridad exhaustiva de toda la superficie de la API. Se deben crear pruebas unitarias y de integración para verificar que las reglas de autorización se apliquen correctamente.`,
         cwe: "CWE-863",
         severity: "High",
         cvss: { score: 8.1, vectorString: "CVSS:3.1/AV:N/AC:L/PR:L/UI:N/S:U/C:H/I:H/A:N", attackVector: "N", attackComplexity: "L", privilegesRequired: "L", userInteraction: "N", scope: "U", confidentiality: "H", integrity: "H", availability: "N" },
@@ -775,16 +812,18 @@ La aplicación puede usar algoritmos obsoletos como MD5 o SHA1 para hashear cont
 Broken cryptography can lead to the compromise of sensitive data stored on the device or transmitted over the network. It can completely undermine the security of authentication and data protection mechanisms.`,
         impact_es: `### Impacto
 La criptografía rota puede llevar al compromiso de datos sensibles almacenados en el dispositivo o transmitidos por la red. Puede socavar por completo la seguridad de los mecanismos de autenticación y protección de datos.`,
-        remediation_en: {
-            shortTerm: "### Short-Term Recommendations\nReplace all weak or custom cryptographic algorithms with modern, industry-standard algorithms (e.g., AES-256-GCM for encryption, PBKDF2 or Argon2 for password hashing).",
-            mediumTerm: "### Medium-Term Recommendations\nDo not implement cryptography from scratch. Use well-vetted, platform-provided cryptographic libraries and APIs.",
-            longTerm: "### Long-Term Recommendations\nEstablish a policy for cryptographic standards and regularly review the application to ensure compliance. This includes key management, algorithm choice, and protocol usage."
-        },
-        remediation_es: {
-            shortTerm: "### Recomendaciones a Corto Plazo\nReemplazar todos los algoritmos criptográficos débiles o personalizados con algoritmos modernos y estándar de la industria (p. ej., AES-256-GCM para el cifrado, PBKDF2 o Argon2 para el hasheo de contraseñas).",
-            mediumTerm: "### Recomendaciones a Medio Plazo\nNo implementar la criptografía desde cero. Utilizar bibliotecas y API criptográficas bien examinadas y proporcionadas por la plataforma.",
-            longTerm: "### Recomendaciones a Largo Plazo\nEstablecer una política para los estándares criptográficos y revisar regularmente la aplicación para asegurar el cumplimiento. Esto incluye la gestión de claves, la elección de algoritmos y el uso de protocolos."
-        },
+        recommendations_en: `#### Short-Term Recommendations
+Replace all weak or custom cryptographic algorithms with modern, industry-standard algorithms (e.g., AES-256-GCM for encryption, PBKDF2 or Argon2 for password hashing).
+#### Medium-Term Recommendations
+Do not implement cryptography from scratch. Use well-vetted, platform-provided cryptographic libraries and APIs.
+#### Long-Term Recommendations
+Establish a policy for cryptographic standards and regularly review the application to ensure compliance. This includes key management, algorithm choice, and protocol usage.`,
+        recommendations_es: `#### Recomendaciones a Corto Plazo
+Reemplazar todos los algoritmos criptográficos débiles o personalizados con algoritmos modernos y estándar de la industria (p. ej., AES-256-GCM para el cifrado, PBKDF2 o Argon2 para el hasheo de contraseñas).
+#### Recomendaciones a Medio Plazo
+No implementar la criptografía desde cero. Utilizar bibliotecas y API criptográficas bien examinadas y proporcionadas por la plataforma.
+#### Recomendaciones a Largo Plazo
+Establecer una política para los estándares criptográficos y revisar regularmente la aplicación para asegurar el cumplimiento. Esto incluye la gestión de claves, la elección de algoritmos y el uso de protocolos.`,
         cwe: "CWE-327",
         severity: "High",
         cvss: { score: 7.5, vectorString: "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:H/I:N/A:N", attackVector: "N", attackComplexity: "L", privilegesRequired: "N", userInteraction: "N", scope: "U", confidentiality: "H", integrity: "N", availability: "N" },
@@ -817,16 +856,18 @@ Esta categoría incluye vulnerabilidades como la inyección de SQL en bases de d
 The impact can range from data corruption and denial-of-service on the local app, to the execution of arbitrary code within a sandboxed web view, which could lead to session token theft if the token is exposed to the web view.`,
         impact_es: `### Impacto
 El impacto puede variar desde la corrupción de datos y la denegación de servicio en la aplicación local, hasta la ejecución de código arbitrario dentro de una vista web aislada, lo que podría llevar al robo de tokens de sesión si el token está expuesto a la vista web.`,
-        remediation_en: {
-            shortTerm: "### Short-Term Recommendations\nUse parameterized queries (prepared statements) for all local SQLite database interactions. For WebViews, ensure JavaScript is disabled if not needed, and properly encode any data displayed in them.",
-            mediumTerm: "### Medium-Term Recommendations\nAvoid processing untrusted data on the client side whenever possible. Perform validation and sanitization on the server side before sending data to the client.",
-            longTerm: "### Long-Term Recommendations\nImplement a secure coding standard for the mobile app that includes guidelines for handling untrusted data on the client side. Use automated scanning tools to detect client-side injection flaws."
-        },
-        remediation_es: {
-            shortTerm: "### Recomendaciones a Corto Plazo\nUsar consultas parametrizadas (prepared statements) para todas las interacciones con la base de datos SQLite local. Para las WebViews, asegurarse de que JavaScript esté deshabilitado si no es necesario, y codificar correctamente cualquier dato que se muestre en ellas.",
-            mediumTerm: "### Recomendaciones a Medio Plazo\nEvitar el procesamiento de datos no confiables en el lado del cliente siempre que sea posible. Realizar la validación y el saneamiento en el lado del servidor antes de enviar los datos al cliente.",
-            longTerm: "### Recomendaciones a Largo Plazo\nImplementar un estándar de codificación segura para la aplicación móvil que incluya pautas para el manejo de datos no confiables en el lado del cliente. Usar herramientas de escaneo automatizadas para detectar fallas de inyección en el lado del cliente."
-        },
+        recommendations_en: `#### Short-Term Recommendations
+Use parameterized queries (prepared statements) for all local SQLite database interactions. For WebViews, ensure JavaScript is disabled if not needed, and properly encode any data displayed in them.
+#### Medium-Term Recommendations
+Avoid processing untrusted data on the client side whenever possible. Perform validation and sanitization on the server side before sending data to the client.
+#### Long-Term Recommendations
+Implement a secure coding standard for the mobile app that includes guidelines for handling untrusted data on the client side. Use automated scanning tools to detect client-side injection flaws.`,
+        recommendations_es: `#### Recomendaciones a Corto Plazo
+Usar consultas parametrizadas (prepared statements) para todas las interacciones con la base de datos SQLite local. Para las WebViews, asegurarse de que JavaScript esté deshabilitado si no es necesario, y codificar correctamente cualquier dato que se muestre en ellas.
+#### Recomendaciones a Medio Plazo
+Evitar el procesamiento de datos no confiables en el lado del cliente siempre que sea posible. Realizar la validación y el saneamiento en el lado del servidor antes de enviar los datos al cliente.
+#### Recomendaciones a Largo Plazo
+Implementar un estándar de codificación segura para la aplicación móvil que incluya pautas para el manejo de datos no confiables en el lado del cliente. Usar herramientas de escaneo automatizadas para detectar fallas de inyección en el lado del cliente.`,
         cwe: "CWE-74",
         severity: "Medium",
         cvss: { score: 6.5, vectorString: "CVSS:3.1/AV:L/AC:L/PR:N/UI:R/S:U/C:H/I:L/A:N", attackVector: "L", attackComplexity: "L", privilegesRequired: "N", userInteraction: "R", scope: "U", confidentiality: "H", integrity: "L", availability: "N" },
@@ -859,16 +900,18 @@ La aplicación puede confiar en una URL proporcionada en un mensaje IPC para car
 This can lead to a complete bypass of security controls. For example, an attacker could disable SSL pinning, bypass business logic, or trick the application into loading malicious content.`,
         impact_es: `### Impacto
 Esto puede conducir a una omisión completa de los controles de seguridad. Por ejemplo, un atacante podría deshabilitar el anclaje de SSL, eludir la lógica de negocio o engañar a la aplicación para que cargue contenido malicioso.`,
-        remediation_en: {
-            shortTerm: "### Short-Term Recommendations\nNever make security decisions based on user-controlled or otherwise untrusted input. Security controls should be enforced by server-side logic or hardcoded in the application binary.",
-            mediumTerm: "### Medium-Term Recommendations\nFor any security-sensitive configurations, fetch them from a trusted server-side endpoint rather than storing them in a client-modifiable file.",
-            longTerm: "### Long-Term Recommendations\nDesign the application so that the client is treated as a completely untrusted environment. All significant security checks and decisions must be made on the server."
-        },
-        remediation_es: {
-            shortTerm: "### Recomendaciones a Corto Plazo\nNunca tomar decisiones de seguridad basadas en entradas controladas por el usuario o de otra manera no confiables. Los controles de seguridad deben ser aplicados por la lógica del lado del servidor o codificados de forma rígida en el binario de la aplicación.",
-            mediumTerm: "### Recomendaciones a Medio Plazo\nPara cualquier configuración sensible a la seguridad, obtenerla de un punto de conexión de confianza del lado del servidor en lugar de almacenarla en un archivo modificable por el cliente.",
-            longTerm: "### Recomendaciones a Largo Plazo\nDiseñar la aplicación de modo que el cliente sea tratado como un entorno completamente no confiable. Todas las comprobaciones y decisiones de seguridad significativas deben realizarse en el servidor."
-        },
+        recommendations_en: `#### Short-Term Recommendations
+Never make security decisions based on user-controlled or otherwise untrusted input. Security controls should be enforced by server-side logic or hardcoded in the application binary.
+#### Medium-Term Recommendations
+For any security-sensitive configurations, fetch them from a trusted server-side endpoint rather than storing them in a client-modifiable file.
+#### Long-Term Recommendations
+Design the application so that the client is treated as a completely untrusted environment. All significant security checks and decisions must be made on the server.`,
+        recommendations_es: `#### Recomendaciones a Corto Plazo
+Nunca tomar decisiones de seguridad basadas en entradas controladas por el usuario o de otra manera no confiables. Los controles de seguridad deben ser aplicados por la lógica del lado del servidor o codificados de forma rígida en el binario de la aplicación.
+#### Recomendaciones a Medio Plazo
+Para cualquier configuración sensible a la seguridad, obtenerla de un punto de conexión de confianza del lado del servidor en lugar de almacenarla en un archivo modificable por el cliente.
+#### Recomendaciones a Largo Plazo
+Diseñar la aplicación de modo que el cliente sea tratado como un entorno completamente no confiable. Todas las comprobaciones y decisiones de seguridad significativas deben realizarse en el servidor.`,
         cwe: "CWE-807",
         severity: "High",
         cvss: { score: 8.1, vectorString: "CVSS:3.1/AV:N/AC:H/PR:N/UI:N/S:U/C:H/I:H/A:H", attackVector: "N", attackComplexity: "H", privilegesRequired: "N", userInteraction: "N", scope: "U", confidentiality: "H", integrity: "H", availability: "H" },
@@ -901,16 +944,18 @@ La aplicación puede emitir tokens de sesión que nunca caducan, o no invalidar 
 Leads to session hijacking and account takeover. An attacker with a stolen session token can maintain persistent access to a user's account.`,
         impact_es: `### Impacto
 Conduce al secuestro de sesiones y a la toma de control de cuentas. Un atacante con un token de sesión robado puede mantener un acceso persistente a la cuenta de un usuario.`,
-        remediation_en: {
-            shortTerm: "### Short-Term Recommendations\nImplement server-side session timeouts. Session tokens must be invalidated on the server when a user logs out.",
-            mediumTerm: "### Medium-Term Recommendations\nUse refresh tokens and short-lived access tokens. The access token provides access to resources, and the refresh token is used to obtain a new access token without requiring the user to re-authenticate.",
-            longTerm: "### Long-Term Recommendations\nImplement a mechanism to detect and alert on suspicious session activity, such as a session being used from multiple IP addresses or devices simultaneously."
-        },
-        remediation_es: {
-            shortTerm: "### Recomendaciones a Corto Plazo\nImplementar tiempos de espera de sesión del lado del servidor. Los tokens de sesión deben invalidarse en el servidor cuando un usuario cierra la sesión.",
-            mediumTerm: "### Recomendaciones a Medio Plazo\nUsar tokens de actualización y tokens de acceso de corta duración. El token de acceso proporciona acceso a los recursos, y el token de actualización se utiliza para obtener un nuevo token de acceso sin requerir que el usuario se vuelva a autenticar.",
-            longTerm: "### Recomendaciones a Largo Plazo\nImplementar un mecanismo para detectar y alertar sobre actividades de sesión sospechosas, como una sesión que se utiliza desde múltiples direcciones IP o dispositivos simultáneamente."
-        },
+        recommendations_en: `#### Short-Term Recommendations
+Implement server-side session timeouts. Session tokens must be invalidated on the server when a user logs out.
+#### Medium-Term Recommendations
+Use refresh tokens and short-lived access tokens. The access token provides access to resources, and the refresh token is used to obtain a new access token without requiring the user to re-authenticate.
+#### Long-Term Recommendations
+Implement a mechanism to detect and alert on suspicious session activity, such as a session being used from multiple IP addresses or devices simultaneously.`,
+        recommendations_es: `#### Recomendaciones a Corto Plazo
+Implementar tiempos de espera de sesión del lado del servidor. Los tokens de sesión deben invalidarse en el servidor cuando un usuario cierra la sesión.
+#### Recomendaciones a Medio Plazo
+Usar tokens de actualización y tokens de acceso de corta duración. El token de acceso proporciona acceso a los recursos, y el token de actualización se utiliza para obtener un nuevo token de acceso sin requerir que el usuario se vuelva a autenticar.
+#### Recomendaciones a Largo Plazo
+Implementar un mecanismo para detectar y alertar sobre actividades de sesión sospechosas, como una sesión que se utiliza desde múltiples direcciones IP o dispositivos simultáneamente.`,
         cwe: "CWE-613",
         severity: "High",
         cvss: { score: 8.8, vectorString: "CVSS:3.1/AV:N/AC:L/PR:L/UI:N/S:U/C:H/I:H/A:H", attackVector: "N", attackComplexity: "L", privilegesRequired: "L", userInteraction: "N", scope: "U", confidentiality: "H", integrity: "H", availability: "H" },
@@ -943,16 +988,18 @@ Los binarios de las aplicaciones móviles pueden ser descompilados para revelar 
 Reverse engineering can lead to the discovery of other severe vulnerabilities, theft of intellectual property, and reputational damage. Tampering can lead to fraud, security control bypasses, and the distribution of malicious versions of the app.`,
         impact_es: `### Impacto
 La ingeniería inversa puede conducir al descubrimiento de otras vulnerabilidades graves, el robo de propiedad intelectual y el daño a la reputación. La manipulación puede conducir al fraude, a la omisión de controles de seguridad y a la distribución de versiones maliciosas de la aplicación.`,
-        remediation_en: {
-            shortTerm: "### Short-Term Recommendations\nApply code obfuscation to make the decompiled code harder to understand. Implement anti-tampering checks (e.g., checksum validation) to detect if the app has been modified.",
-            mediumTerm: "### Medium-Term Recommendations\nImplement more robust root/jailbreak detection and anti-debugging techniques. Use tools that provide comprehensive binary protection, including string encryption and control flow obfuscation.",
-            longTerm: "### Long-Term Recommendations\nAdopt a defense-in-depth strategy for mobile security. Assume that a determined attacker can bypass client-side controls, and therefore, critical security logic must always be enforced on the server side."
-        },
-        remediation_es: {
-            shortTerm: "### Recomendaciones a Corto Plazo\nAplicar la ofuscación de código para dificultar la comprensión del código descompilado. Implementar comprobaciones anti-manipulación (p. ej., validación de checksum) para detectar si la aplicación ha sido modificada.",
-            mediumTerm: "### Recomendaciones a Medio Plazo\nImplementar una detección de root/jailbreak más robusta y técnicas anti-depuración. Utilizar herramientas que proporcionen una protección binaria completa, incluido el cifrado de cadenas y la ofuscación del flujo de control.",
-            longTerm: "### Recomendaciones a Largo Plazo\nAdoptar una estrategia de defensa en profundidad para la seguridad móvil. Asumir que un atacante determinado puede eludir los controles del lado del cliente y, por lo tanto, la lógica de seguridad crítica siempre debe aplicarse en el lado del servidor."
-        },
+        recommendations_en: `#### Short-Term Recommendations
+Apply code obfuscation to make the decompiled code harder to understand. Implement anti-tampering checks (e.g., checksum validation) to detect if the app has been modified.
+#### Medium-Term Recommendations
+Implement more robust root/jailbreak detection and anti-debugging techniques. Use tools that provide comprehensive binary protection, including string encryption and control flow obfuscation.
+#### Long-Term Recommendations
+Adopt a defense-in-depth strategy for mobile security. Assume that a determined attacker can bypass client-side controls, and therefore, critical security logic must always be enforced on the server side.`,
+        recommendations_es: `#### Recomendaciones a Corto Plazo
+Aplicar la ofuscación de código para dificultar la comprensión del código descompilado. Implementar comprobaciones anti-manipulación (p. ej., validación de checksum) para detectar si la aplicación ha sido modificada.
+#### Recomendaciones a Medio Plazo
+Implementar una detección de root/jailbreak más robusta y técnicas anti-depuración. Utilizar herramientas que proporcionen una protección binaria completa, incluido el cifrado de cadenas y la ofuscación del flujo de control.
+#### Recomendaciones a Largo Plazo
+Adoptar una estrategia de defensa en profundidad para la seguridad móvil. Asumir que un atacante determinado puede eludir los controles del lado del cliente y, por lo tanto, la lógica de seguridad crítica siempre debe aplicarse en el lado del servidor.`,
         cwe: "CWE-657",
         severity: "Medium",
         cvss: { score: 5.9, vectorString: "CVSS:3.1/AV:L/AC:L/PR:N/UI:N/S:U/C:L/I:L/A:L", attackVector: "L", attackComplexity: "L", privilegesRequired: "N", userInteraction: "N", scope: "U", confidentiality: "L", integrity: "L", availability: "L" },
@@ -986,16 +1033,18 @@ Esto se puede lograr interceptando el tráfico en una red Wi-Fi no segura, a tra
 The attacker can steal sensitive information like credentials and session tokens, inject malicious content into legitimate communications, or hijack user sessions completely.`,
         impact_es: `### Impacto
 El atacante puede robar información sensible como credenciales y tokens de sesión, inyectar contenido malicioso en comunicaciones legítimas o secuestrar sesiones de usuario por completo.`,
-        remediation_en: {
-            shortTerm: "### Short-Term Recommendations\nEnforce TLS 1.2 or higher across all endpoints. Implement certificate pinning in mobile clients to ensure the app only communicates with the trusted server.",
-            mediumTerm: "### Medium-Term Recommendations\nUse HTTP Strict Transport Security (HSTS) to ensure browsers only connect to your server over HTTPS.",
-            longTerm: "### Long-Term Recommendations\nConduct regular network security audits. Deploy intrusion detection systems (IDS) to monitor for suspicious network activity like ARP poisoning."
-        },
-        remediation_es: {
-            shortTerm: "### Recomendaciones a Corto Plazo\nHacer cumplir TLS 1.2 o superior en todos los puntos de conexión. Implementar el anclaje de certificados (certificate pinning) en los clientes móviles para garantizar que la aplicación solo se comunique con el servidor de confianza.",
-            mediumTerm: "### Recomendaciones a Medio Plazo\nUsar HTTP Strict Transport Security (HSTS) para garantizar que los navegadores solo se conecten a su servidor a través de HTTPS.",
-            longTerm: "### Recomendaciones a Largo Plazo\nRealizar auditorías de seguridad de red periódicas. Desplegar sistemas de detección de intrusiones (IDS) para monitorear actividades de red sospechosas como el envenenamiento ARP."
-        },
+        recommendations_en: `#### Short-Term Recommendations
+Enforce TLS 1.2 or higher across all endpoints. Implement certificate pinning in mobile clients to ensure the app only communicates with the trusted server.
+#### Medium-Term Recommendations
+Use HTTP Strict Transport Security (HSTS) to ensure browsers only connect to your server over HTTPS.
+#### Long-Term Recommendations
+Conduct regular network security audits. Deploy intrusion detection systems (IDS) to monitor for suspicious network activity like ARP poisoning.`,
+        recommendations_es: `#### Recomendaciones a Corto Plazo
+Hacer cumplir TLS 1.2 o superior en todos los puntos de conexión. Implementar el anclaje de certificados (certificate pinning) en los clientes móviles para garantizar que la aplicación solo se comunique con el servidor de confianza.
+#### Recomendaciones a Medio Plazo
+Usar HTTP Strict Transport Security (HSTS) para garantizar que los navegadores solo se conecten a su servidor a través de HTTPS.
+#### Recomendaciones a Largo Plazo
+Realizar auditorías de seguridad de red periódicas. Desplegar sistemas de detección de intrusiones (IDS) para monitorear actividades de red sospechosas como el envenenamiento ARP.`,
         cwe: "CWE-295",
         severity: "High",
         cvss: { score: 8.1, vectorString: "CVSS:3.1/AV:A/AC:L/PR:N/UI:N/S:U/C:H/I:H/A:N", attackVector: "A", attackComplexity: "L", privilegesRequired: "N", userInteraction: "N", scope: "U", confidentiality: "H", integrity: "H", availability: "N" },
@@ -1022,16 +1071,18 @@ El atacante puede robar información sensible como credenciales y tokens de sesi
         technicalDescription_es: "### Descripción Técnica\nUn atacante puede explotar vulnerabilidades en el protocolo DNS para redirigir el tráfico destinado a un servidor legítimo a un servidor malicioso controlado por el atacante. Esto se hace a menudo enviando responses DNS falsificadas a un resolutor de DNS.", 
         impact_en: "### Impact\nThis can be used for phishing attacks, where a user is tricked into entering credentials on a fake website, or for distributing malware. It can also facilitate man-in-the-middle attacks.", 
         impact_es: "### Impacto\nEsto puede usarse para ataques de phishing, donde se engaña a un usuario para que ingrese credenciales en un sitio web falso, o para distribuir malware. También puede facilitar ataques de intermediario (man-in-the-middle).", 
-        remediation_en: { 
-            shortTerm: "### Short-Term Recommendations\nImplement DNSSEC (Domain Name System Security Extensions) to validate the authenticity of DNS responses.", 
-            mediumTerm: "### Medium-Term Recommendations\nUse end-to-end encryption (TLS) for all communications. This ensures that even if DNS is spoofed, the attacker cannot decrypt the traffic without the server's private key.", 
-            longTerm: "### Long-Term Recommendations\nMonitor DNS traffic for anomalies. Regularly audit DNS server configurations for security best practices." 
-        }, 
-        remediation_es: { 
-            shortTerm: "### Recomendaciones a Corto Plazo\nImplementar DNSSEC (Extensiones de Seguridad del Sistema de Nombres de Dominio) para validar la autenticidad de las responses DNS.", 
-            mediumTerm: "### Recomendaciones a Medio Plazo\nUsar cifrado de extremo a extremo (TLS) para todas las comunicaciones. Esto asegura que incluso si se suplanta el DNS, el atacante no puede descifrar el tráfico sin la clave privada del servidor.", 
-            longTerm: "### Recomendaciones a Largo Plazo\nMonitorear el tráfico DNS en busca de anomalías. Auditar regularmente las configuraciones del servidor DNS para seguir las mejores prácticas de seguridad." 
-        }, 
+        recommendations_en: `#### Short-Term Recommendations
+Implement DNSSEC (Domain Name System Security Extensions) to validate the authenticity of DNS responses.
+#### Medium-Term Recommendations
+Use end-to-end encryption (TLS) for all communications. This ensures that even if DNS is spoofed, the attacker cannot decrypt the traffic without the server's private key.
+#### Long-Term Recommendations
+Monitor DNS traffic for anomalies. Regularly audit DNS server configurations for security best practices.`, 
+        recommendations_es: `#### Recomendaciones a Corto Plazo
+Implementar DNSSEC (Extensiones de Seguridad del Sistema de Nombres de Dominio) para validar la autenticidad de las responses DNS.
+#### Recomendaciones a Medio Plazo
+Usar cifrado de extremo a extremo (TLS) para todas las comunicaciones. Esto asegura que incluso si se suplanta el DNS, el atacante no puede descifrar el tráfico sin la clave privada del servidor.
+#### Recomendaciones a Largo Plazo
+Monitorear el tráfico DNS en busca de anomalías. Auditar regularmente las configuraciones del servidor DNS para seguir las mejores prácticas de seguridad.`, 
         cwe: "CWE-290", 
         severity: "High", 
         cvss: { score: 8.1, vectorString: "CVSS:3.1/AV:N/AC:H/PR:N/UI:N/S:C/C:H/I:L/A:N", attackVector: "N", attackComplexity: "H", privilegesRequired: "N", userInteraction: "N", scope: "C", confidentiality: "H", integrity: "L", availability: "N" }, 
@@ -1060,16 +1111,18 @@ Dado que ARP es un protocolo sin estado, un atacante puede enviar una respuesta 
 ARP poisoning can lead to man-in-the-middle attacks, denial-of-service attacks, and session hijacking within the local network.`,
         impact_es: `### Impacto
 El envenenamiento de ARP puede conducir a ataques de intermediario (man-in-the-middle), ataques de denegación de servicio y secuestro de sesiones dentro de la red local.`,
-        remediation_en: {
-            shortTerm: "### Short-Term Recommendations\nUse Dynamic ARP Inspection (DAI) on network switches to validate ARP packets.",
-            mediumTerm: "### Medium-Term Recommendations\nSegment the network using VLANs to limit the broadcast domain and reduce the scope of a potential ARP poisoning attack.",
-            longTerm: "### Long-Term Recommendations\nEncrypt all network traffic using protocols like TLS and SSH. This does not prevent ARP poisoning but mitigates the impact by preventing the attacker from reading or modifying the intercepted traffic."
-        },
-        remediation_es: {
-            shortTerm: "### Recomendaciones a Corto Plazo\nUtilizar la Inspección Dinámica de ARP (DAI) en los switches de red para validar los paquetes ARP.",
-            mediumTerm: "### Recomendaciones a Medio Plazo\nSegmentar la red utilizando VLAN para limitar el dominio de difusión y reducir el alcance de un posible ataque de envenenamiento ARP.",
-            longTerm: "### Recomendaciones a Largo Plazo\nCifrar todo el tráfico de red utilizando protocolos como TLS y SSH. Esto no previene el envenenamiento de ARP, pero mitiga el impacto al evitar que el atacante lea o modifique el tráfico interceptado."
-        },
+        recommendations_en: `#### Short-Term Recommendations
+Use Dynamic ARP Inspection (DAI) on network switches to validate ARP packets.
+#### Medium-Term Recommendations
+Segment the network using VLANs to limit the broadcast domain and reduce the scope of a potential ARP poisoning attack.
+#### Long-Term Recommendations
+Encrypt all network traffic using protocols like TLS and SSH. This does not prevent ARP poisoning but mitigates the impact by preventing the attacker from reading or modifying the intercepted traffic.`,
+        recommendations_es: `#### Recomendaciones a Corto Plazo
+Utilizar la Inspección Dinámica de ARP (DAI) en los switches de red para validar los paquetes ARP.
+#### Recomendaciones a Medio Plazo
+Segmentar la red utilizando VLAN para limitar el dominio de difusión y reducir el alcance de un posible ataque de envenenamiento ARP.
+#### Recomendaciones a Largo Plazo
+Cifrar todo el tráfico de red utilizando protocolos como TLS y SSH. Esto no previene el envenenamiento de ARP, pero mitiga el impacto al evitar que el atacante lea o modifique el tráfico interceptado.`,
         cwe: "CWE-942",
         severity: "Medium",
         cvss: { score: 6.8, vectorString: "CVSS:3.1/AV:A/AC:H/PR:N/UI:N/S:U/C:H/I:L/A:L", attackVector: "A", attackComplexity: "H", privilegesRequired: "N", userInteraction: "N", scope: "U", confidentiality: "H", integrity: "L", availability: "L" },
@@ -1092,16 +1145,18 @@ El envenenamiento de ARP puede conducir a ataques de intermediario (man-in-the-m
         technicalDescription_es: "### Descripción Técnica\nEl atacante crea paquetes IP con una dirección de origen modificada. Esta técnica se puede utilizar para eludir los controles de acceso basados en IP o para realizar ataques de reflexión y amplificación en escenarios de DoS, donde la respuesta de un servidor se envía a la dirección IP suplantada (de la víctima).",
         impact_en: "### Impact\nCan lead to bypassing network access controls, session hijacking if combined with other techniques, and participation in Denial-of-Service attacks.",
         impact_es: "### Impacto\nPuede conducir a la omisión de los controles de acceso a la red, el secuestro de sesiones si se combina con otras técnicas y la participación en ataques de denegación de servicio.",
-        remediation_en: {
-            shortTerm: "### Short-Term Recommendations\nUse ingress filtering (BCP38) at the network edge to drop packets with source IPs from outside your network's allocated range.",
-            mediumTerm: "### Medium-Term Recommendations\nEnable Reverse Path Forwarding (RPF) on routers, which ensures that the source address of a packet is reachable via the interface the packet came in on.",
-            longTerm: "### Long-Term Recommendations\nUse cryptographic authentication protocols like IPsec, which provide data integrity and origin authentication for IP packets, making spoofing significantly more difficult."
-        },
-        remediation_es: {
-            shortTerm: "### Recomendaciones a Corto Plazo\nUsar filtrado de entrada (BCP38) en el borde de la red para descartar paquetes con IPs de origen fuera del rango asignado a su red.",
-            mediumTerm: "### Recomendaciones a Medio Plazo\nHabilitar el Reenvío de Ruta Inversa (RPF) en los enrutadores, lo que asegura que la dirección de origen de un paquete sea alcanzable a través de la interfaz por la que llegó el paquete.",
-            longTerm: "### Recomendaciones a Largo Plazo\nUtilizar protocolos de autenticación criptográfica como IPsec, que proporcionan integridad de datos y autenticación de origen para los paquetes IP, lo que dificulta significativamente la suplantación."
-        },
+        recommendations_en: `#### Short-Term Recommendations
+Use ingress filtering (BCP38) at the network edge to drop packets with source IPs from outside your network's allocated range.
+#### Medium-Term Recommendations
+Enable Reverse Path Forwarding (RPF) on routers, which ensures that the source address of a packet is reachable via the interface the packet came in on.
+#### Long-Term Recommendations
+Use cryptographic authentication protocols like IPsec, which provide data integrity and origin authentication for IP packets, making spoofing significantly more difficult.`,
+        recommendations_es: `#### Recomendaciones a Corto Plazo
+Usar filtrado de entrada (BCP38) en el borde de la red para descartar paquetes con IPs de origen fuera del rango asignado a su red.
+#### Recomendaciones a Medio Plazo
+Habilitar el Reenvío de Ruta Inversa (RPF) en los enrutadores, lo que asegura que la dirección de origen de un paquete sea alcanzable a través de la interfaz por la que llegó el paquete.
+#### Recomendaciones a Largo Plazo
+Utilizar protocolos de autenticación criptográfica como IPsec, que proporcionan integridad de datos y autenticación de origen para los paquetes IP, lo que dificulta significativamente la suplantación.`,
         cwe: "CWE-290",
         severity: "Medium",
         cvss: { score: 6.5, vectorString: "CVSS:3.1/AV:N/AC:L/PR:L/UI:N/S:U/C:L/I:L/A:N", attackVector: "N", attackComplexity: "L", privilegesRequired: "L", userInteraction: "N", scope: "U", confidentiality: "L", integrity: "L", availability: "N" },
@@ -1130,16 +1185,18 @@ Los ataques DoS se logran inundando la máquina o el recurso objetivo con solici
 The primary impact is service unavailability, leading to business disruption, financial loss, and reputational damage.`,
         impact_es: `### Impacto
 El impacto principal es la falta de disponibilidad del servicio, lo que conduce a la interrupción del negocio, pérdidas financieras y daño a la reputación.`,
-        remediation_en: {
-            shortTerm: "### Short-Term Recommendations\nUse a cloud-based DDoS mitigation service that can absorb and filter malicious traffic before it reaches your network.",
-            mediumTerm: "### Medium-Term Recommendations\nConfigure network hardware (routers, firewalls) with anti-DoS settings, such as SYN cookie protection and ingress filtering. Load balance critical services across multiple servers.",
-            longTerm: "### Long-Term Recommendations\nDesign applications to be resilient to resource exhaustion. Implement caching and content delivery networks (CDNs) to reduce the load on origin servers."
-        },
-        remediation_es: {
-            shortTerm: "### Recomendaciones a Corto Plazo\nUtilizar un servicio de mitigación de DDoS basado en la nube que pueda absorber y filtrar el tráfico malicioso antes de que llegue a su red.",
-            mediumTerm: "### Recomendaciones a Medio Plazo\nConfigurar el hardware de red (enrutadores, cortafuegos) con ajustes anti-DoS, como la protección de cookies SYN y el filtrado de entrada. Balancear la carga de los servicios críticos en varios servidores.",
-            longTerm: "### Recomendaciones a Largo Plazo\nDiseñar aplicaciones para que sean resistentes al agotamiento de recursos. Implementar cachés y redes de entrega de contenido (CDN) para reducir la carga en los servidores de origen."
-        },
+        recommendations_en: `#### Short-Term Recommendations
+Use a cloud-based DDoS mitigation service that can absorb and filter malicious traffic before it reaches your network.
+#### Medium-Term Recommendations
+Configure network hardware (routers, firewalls) with anti-DoS settings, such as SYN cookie protection and ingress filtering. Load balance critical services across multiple servers.
+#### Long-Term Recommendations
+Design applications to be resilient to resource exhaustion. Implement caching and content delivery networks (CDNs) to reduce the load on origin servers.`,
+        recommendations_es: `#### Recomendaciones a Corto Plazo
+Utilizar un servicio de mitigación de DDoS basado en la nube que pueda absorber y filtrar el tráfico malicioso antes de que llegue a su red.
+#### Recomendaciones a Medio Plazo
+Configurar el hardware de red (enrutadores, cortafuegos) con ajustes anti-DoS, como la protección de cookies SYN y el filtrado de entrada. Balancear la carga de los servicios críticos en varios servidores.
+#### Recomendaciones a Largo Plazo
+Diseñar aplicaciones para que sean resistentes al agotamiento de recursos. Implementar cachés y redes de entrega de contenido (CDN) para reducir la carga en los servidores de origen.`,
         cwe: "CWE-400",
         severity: "High",
         cvss: { score: 7.5, vectorString: "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:N/I:N/A:H", attackVector: "N", attackComplexity: "L", privilegesRequired: "N", userInteraction: "N", scope: "U", confidentiality: "N", integrity: "N", availability: "H" },
@@ -1163,16 +1220,18 @@ El impacto principal es la falta de disponibilidad del servicio, lo que conduce 
         technicalDescription_es: "### Descripción Técnica\nExisten dos métodos principales: suplantación de switch y doble etiquetado. En la suplantación de switch, la máquina de un atacante emula un switch y utiliza un protocolo de enlace troncal como DTP (Protocolo de Enlace Troncal Dinámico) para crear un enlace troncal, lo que le da acceso a todas las VLAN. En el doble etiquetado, el atacante agrega dos etiquetas VLAN a un paquete, lo que le permite atravesar la VLAN nativa de un enlace troncal y ser entregado a un objetivo en una VLAN diferente.",
         impact_en: "### Impact\nSuccessful VLAN hopping allows an attacker on one VLAN to gain unauthorized access to resources on another VLAN, bypassing network segmentation controls.",
         impact_es: "### Impacto\nUn salto de VLAN exitoso permite a un atacante en una VLAN obtener acceso no autorizado a los recursos de otra VLAN, eludiendo los controles de segmentación de la red.",
-        remediation_en: {
-            shortTerm: "### Short-Term Recommendations\nExplicitly configure user-facing ports as access ports (`switchport mode access`). Avoid using the native VLAN (VLAN 1) for any traffic.",
-            mediumTerm: "### Medium-Term Recommendations\nImplement port security on switches to limit the number of MAC addresses allowed per port.",
-            longTerm: "### Long-Term Recommendations\nUse private VLANs to further isolate hosts within the same VLAN. Implement 802.1X network access control to authenticate devices before granting network access."
-        },
-        remediation_es: {
-            shortTerm: "### Recomendaciones a Corto Plazo\nConfigurar explícitamente los puertos orientados al usuario como puertos de acceso (`switchport mode access`). Evitar el uso de la VLAN nativa (VLAN 1) para cualquier tráfico.",
-            mediumTerm: "### Recomendaciones a Medio Plazo\nImplementar seguridad de puertos en los switches para limitar el número de direcciones MAC permitidas por puerto.",
-            longTerm: "### Recomendaciones a Largo Plazo\nUsar VLAN privadas para aislar aún más los hosts dentro de la misma VLAN. Implementar el control de acceso a la red 802.1X para autenticar los dispositivos antes de otorgar acceso a la red."
-        },
+        recommendations_en: `#### Short-Term Recommendations
+Use Dynamic ARP Inspection (DAI) on network switches to validate ARP packets.
+#### Medium-Term Recommendations
+Segment the network using VLANs to limit the broadcast domain and reduce the scope of a potential ARP poisoning attack.
+#### Long-Term Recommendations
+Encrypt all network traffic using protocols like TLS and SSH. This does not prevent ARP poisoning but mitigates the impact by preventing the attacker from reading or modifying the intercepted traffic.`,
+        recommendations_es: `#### Recomendaciones a Corto Plazo
+Utilizar la Inspección Dinámica de ARP (DAI) en los switches de red para validar los paquetes ARP.
+#### Recomendaciones a Medio Plazo
+Segmentar la red utilizando VLAN para limitar el dominio de difusión y reducir el alcance de un posible ataque de envenenamiento ARP.
+#### Recomendaciones a Largo Plazo
+Cifrar todo el tráfico de red utilizando protocolos como TLS y SSH. Esto no previene el envenenamiento de ARP, pero mitiga el impacto al evitar que el atacante lea o modifique el tráfico interceptado.`,
         cwe: "CWE-693",
         severity: "Medium",
         cvss: { score: 6.8, vectorString: "CVSS:3.1/AV:A/AC:H/PR:N/UI:N/S:U/C:H/I:L/A:L", attackVector: "A", attackComplexity: "H", privilegesRequired: "N", userInteraction: "N", scope: "U", confidentiality: "H", integrity: "L", availability: "L" },
@@ -1201,16 +1260,18 @@ Esta vulnerabilidad incluye el soporte de protocolos débiles como SSLv2, SSLv3 
 An attacker can decrypt sensitive data transmitted over the network, including credentials, session tokens, and personal information, leading to a loss of confidentiality and integrity.`,
         impact_es: `### Impacto
 Un atacante puede descifrar datos sensibles transmitidos por la red, incluidas credenciales, tokens de sesión e información personal, lo que lleva a una pérdida de confidencialidad e integridad.`,
-        remediation_en: {
-            shortTerm: "### Short-Term Recommendations\nConfigure servers to only support TLS 1.2 and TLS 1.3 with a strong, modern set of cipher suites that provide forward secrecy.",
-            mediumTerm: "### Medium-Term Recommendations\nImplement HTTP Strict Transport Security (HSTS) to ensure that browsers always connect using a secure connection.",
-            longTerm: "### Long-Term Recommendations\nEstablish a corporate policy for cryptographic standards for network communication. Regularly audit all external and internal services for compliance using tools like SSL Labs' SSL Test."
-        },
-        remediation_es: {
-            shortTerm: "### Recomendaciones a Corto Plazo\nConfigurar los servidores para que solo admitan TLS 1.2 y TLS 1.3 con un conjunto de cifrado fuerte y moderno que proporcione secreto hacia adelante (forward secrecy).",
-            mediumTerm: "### Recomendaciones a Medio Plazo\nImplementar HTTP Strict Transport Security (HSTS) para garantizar que los navegadores siempre se conecten a través de una conexión segura.",
-            longTerm: "### Recomendaciones a Largo Plazo\nEstablecer una política corporativa para los estándares criptográficos para la comunicación de red. Auditar regularmente todos los servicios externos e internos para verificar el cumplimiento utilizando herramientas como la prueba SSL de SSL Labs."
-        },
+        recommendations_en: `#### Short-Term Recommendations
+Configure servers to only support TLS 1.2 and TLS 1.3 with a strong, modern set of cipher suites that provide forward secrecy.
+#### Medium-Term Recommendations
+Implement HTTP Strict Transport Security (HSTS) to ensure that browsers always connect to the server over a secure connection.
+#### Long-Term Recommendations
+Establish a corporate policy for cryptographic standards for network communication. Regularly audit all external and internal services for compliance using tools like SSL Labs' SSL Test.`,
+        recommendations_es: `#### Recomendaciones a Corto Plazo
+Configurar los servidores para que solo admitan TLS 1.2 y TLS 1.3 con un conjunto de cifrado fuerte y moderno que proporcione secreto hacia adelante (forward secrecy).
+#### Recomendaciones a Medio Plazo
+Implementar HTTP Strict Transport Security (HSTS) para garantizar que los navegadores siempre se conecten al servidor a través de una conexión segura.
+#### Recomendaciones a Largo Plazo
+Establecer una política corporativa para los estándares criptográficos para la comunicación de red. Auditar regularmente todos los servicios externos e internos para verificar el cumplimiento utilizando herramientas como la prueba SSL de SSL Labs.`,
         cwe: "CWE-326",
         severity: "High",
         cvss: { score: 7.4, vectorString: "CVSS:3.1/AV:N/AC:H/PR:N/UI:N/S:U/C:H/I:H/A:N", attackVector: "N", attackComplexity: "H", privilegesRequired: "N", userInteraction: "N", scope: "U", confidentiality: "H", integrity: "H", availability: "N" },
@@ -1235,16 +1296,18 @@ Un atacante puede descifrar datos sensibles transmitidos por la red, incluidas c
         technicalDescription_es: "### Descripción Técnica\nEsto puede incluir reglas de 'permitir cualquiera/cualquiera', no aplicar filtrado de salida para prevenir la exfiltración de datos, dejar puertos innecesarios abiertos a Internet o no registrar el tráfico correctamente. Tales configuraciones incorrectas pueden hacer que el firewall sea ineficaz.",
         impact_en: "### Impact\nAn attacker can bypass the firewall to access internal network resources, exfiltrate data, or launch attacks against other systems. It effectively removes a critical layer of network security.",
         impact_es: "### Impacto\nUn atacante puede eludir el firewall para acceder a los recursos de la red interna, exfiltrar datos o lanzar ataques contra otros sistemas. Elimina eficazmente una capa crítica de seguridad de la red.",
-        remediation_en: {
-            shortTerm: "### Short-Term Recommendations\nReview and simplify the firewall rulebase to remove unused or redundant rules. Implement a 'deny-by-default' firewall policy.",
-            mediumTerm: "### Medium-Term Recommendations\nImplement both ingress and egress filtering. Enable and monitor firewall logs to detect suspicious activity and policy violations.",
-            longTerm: "### Long-Term Recommendations\nAutomate the process of firewall rule review and validation. Use a network security policy management tool to maintain consistency and compliance."
-        },
-        remediation_es: {
-            shortTerm: "### Recomendaciones a Corto Plazo\nImplementar una política de firewall de 'denegar por defecto'. Revisar y simplificar regularmente la base de reglas del firewall para eliminar reglas no utilizadas o redundantes.",
-            mediumTerm: "### Recomendaciones a Medio Plazo\nImplementar tanto el filtrado de entrada como el de salida. Habilitar y monitorear los registros del firewall para detectar actividades sospechosas y violaciones de políticas.",
-            longTerm: "### Recomendaciones a Largo Plazo\nAutomatizar el proceso de revisión y validación de reglas de firewall. Usar una herramienta de gestión de políticas de seguridad de red para mantener la coherencia y el cumplimiento."
-        },
+        recommendations_en: `#### Short-Term Recommendations
+Review and simplify the firewall rulebase to remove unused or redundant rules. Implement a 'deny-by-default' firewall policy.
+#### Medium-Term Recommendations
+Implement both ingress and egress filtering. Enable and monitor firewall logs to detect suspicious activity and policy violations.
+#### Long-Term Recommendations
+Automate the process of firewall rule review and validation. Use a network security policy management tool to maintain consistency and compliance.`,
+        recommendations_es: `#### Recomendaciones a Corto Plazo
+Implementar una política de firewall de 'denegar por defecto'. Revisar y simplificar regularmente la base de reglas del firewall para eliminar reglas no utilizadas o redundantes.
+#### Recomendaciones a Medio Plazo
+Implementar tanto el filtrado de entrada como el de salida. Habilitar y monitorear los registros del firewall para detectar actividades sospechosas y violaciones de políticas.
+#### Recomendaciones a Largo Plazo
+Automatizar el proceso de revisión y validación de reglas de firewall. Usar una herramienta de gestión de políticas de seguridad de red para mantener la coherencia y el cumplimiento.`,
         cwe: "CWE-552",
         severity: "High",
         cvss: { score: 8.6, vectorString: "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:C/C:H/I:N/A:L", attackVector: "N", attackComplexity: "L", privilegesRequired: "N", userInteraction: "N", scope: "C", confidentiality: "H", integrity: "N", availability: "L" },
@@ -1271,16 +1334,18 @@ Un atacante puede descifrar datos sensibles transmitidos por la red, incluidas c
         technicalDescription_es: "### Descripción Técnica\nEsto incluye redes Wi-Fi abiertas sin contraseña, o redes que utilizan protocolos de cifrado obsoletos y rotos como WEP o WPA. Incluso las redes WPA2 con claves pre-compartidas débiles y fáciles de adivinar son vulnerables a ataques de diccionario sin conexión.",
         impact_en: "### Impact\nAn attacker can gain unauthorized access to the internal network, intercept sensitive data transmitted by legitimate users, and launch further attacks against internal systems.",
         impact_es: "### Impacto\nUn atacante puede obtener acceso no autorizado a la red interna, interceptar datos sensibles transmitidos por usuarios legítimos y lanzar más ataques contra los sistemas internos.",
-        remediation_en: {
-            shortTerm: "### Short-Term Recommendations\nUse WPA3 encryption for all Wi-Fi networks. If WPA3 is not available, use WPA2 with a strong, long, and complex pre-shared key.",
-            mediumTerm: "### Medium-Term Recommendations\nImplement a guest network that is completely segregated from the internal corporate network for visitors and non-corporate devices.",
-            longTerm: "### Long-Term Recommendations\nImplement enterprise-level Wi-Fi security using 802.1X, which authenticates each user individually (e.g., with a username and password) rather than using a shared key."
-        },
-        remediation_es: {
-            shortTerm: "### Recomendaciones a Corto Plazo\nUtilizar cifrado WPA3 para todas las redes Wi-Fi. Si WPA3 no está disponible, usar WPA2 con una clave pre-compartida fuerte, larga y compleja.",
-            mediumTerm: "### Recomendaciones a Medio Plazo\nImplementar una red de invitados que esté completamente segregada de la red corporativa interna para visitantes y dispositivos no corporativos.",
-            longTerm: "### Recomendaciones a Largo Plazo\nImplementar seguridad Wi-Fi de nivel empresarial utilizando 802.1X, que autentica a cada usuario individualmente (p. ej., con un nombre de usuario y contraseña) en lugar de usar una clave compartida."
-        },
+        recommendations_en: `#### Short-Term Recommendations
+Use WPA3 encryption for all Wi-Fi networks. If WPA3 is not available, use WPA2 with a strong, long, and complex pre-shared key.
+#### Medium-Term Recommendations
+Implement a guest network that is completely segregated from the internal corporate network for visitors and non-corporate devices.
+#### Long-Term Recommendations
+Implement enterprise-level Wi-Fi security using 802.1X, which authenticates each user individually (e.g., with a username and password) rather than using a shared key.`,
+        recommendations_es: `#### Recomendaciones a Corto Plazo
+Utilizar cifrado WPA3 para todas las redes Wi-Fi. Si WPA3 no está disponible, usar WPA2 con una clave pre-compartida fuerte, larga y compleja.
+#### Recomendaciones a Medio Plazo
+Implementar una red de invitados que esté completamente segregada de la red corporativa interna para visitantes y dispositivos no corporativos.
+#### Recomendaciones a Largo Plazo
+Implementar seguridad Wi-Fi de nivel empresarial utilizando 802.1X, que autentica a cada usuario individualmente (p. ej., con un nombre de usuario y contraseña) en lugar de usar una clave compartida.`,
         cwe: "CWE-311",
         severity: "High",
         cvss: { score: 8.8, vectorString: "CVSS:3.1/AV:A/AC:L/PR:N/UI:N/S:U/C:H/I:H/A:H", attackVector: "A", attackComplexity: "L", privilegesRequired: "N", userInteraction: "N", scope: "U", confidentiality: "H", integrity: "H", availability: "H" },
@@ -1307,16 +1372,18 @@ Un atacante puede descifrar datos sensibles transmitidos por la red, incluidas c
         technicalDescription_es: "### Descripción Técnica\nUn atacante en una posición de red privilegiada (p. ej., en la misma LAN o Wi-Fi, o habiendo comprometido un dispositivo de red) puede usar un analizador de protocolos de red (como Wireshark) para capturar todo el tráfico. Si las aplicaciones utilizan protocolos no cifrados como HTTP, FTP o Telnet, cualquier dato transmitido, incluidos los nombres de usuario y las contraseñas, es visible en texto claro.",
         impact_en: "### Impact\nThis leads to a complete loss of confidentiality for any data transmitted over unencrypted channels. It can result in the compromise of credentials, session tokens, and sensitive business or personal information.",
         impact_es: "### Impacto\nEsto conduce a una pérdida total de la confidencialidad de cualquier dato transmitido a través de canales no cifrados. Puede resultar en el compromiso de credenciales, tokens de sesión e información comercial o personal sensible.",
-        remediation_en: {
-            shortTerm: "### Short-Term Recommendations\nEnforce the use of strong, end-to-end encryption (e.g., TLS 1.2+) for all data in transit, both on internal and external networks.",
-            mediumTerm: "### Medium-Term Recommendations\nDisable and decommission all legacy, unencrypted protocols within the environment.",
-            longTerm: "### Long-Term Recommendations\nImplement network segmentation and a 'zero-trust' network model, where traffic between different network segments is also encrypted and inspected."
-        },
-        remediation_es: {
-            shortTerm: "### Recomendaciones a Corto Plazo\nHacer cumplir el uso de un cifrado fuerte de extremo a extremo (p. ej., TLS 1.2+) para todos los datos en tránsito, tanto en redes internas como externas.",
-            mediumTerm: "### Recomendaciones a Medio Plazo\nDeshabilitar y dar de baja todos los protocolos heredados y no cifrados dentro del entorno.",
-            longTerm: "### Recomendaciones a Largo Plazo\nImplementar la segmentación de la red y un modelo de red de 'confianza cero', donde el tráfico entre diferentes segmentos de red también se cifra e inspecciona."
-        },
+        recommendations_en: `#### Short-Term Recommendations
+Enforce the use of strong, end-to-end encryption (e.g., TLS 1.2+) for all data in transit, both on internal and external networks.
+#### Medium-Term Recommendations
+Disable and decommission all legacy, unencrypted protocols within the environment.
+#### Long-Term Recommendations
+Implement network segmentation and a 'zero-trust' network model, where traffic between different network segments is also encrypted and inspected.`,
+        recommendations_es: `#### Recomendaciones a Corto Plazo
+Hacer cumplir el uso de un cifrado fuerte de extremo a extremo (p. ej., TLS 1.2+) para todos los datos en tránsito, tanto en redes internas como externas.
+#### Recomendaciones a Medio Plazo
+Deshabilitar y dar de baja todos los protocolos heredados y no cifrados dentro del entorno.
+#### Recomendaciones a Largo Plazo
+Implementar la segmentación de la red y un modelo de red de 'confianza cero', donde el tráfico entre diferentes segmentos de red también se cifra e inspecciona.`,
         cwe: "CWE-311",
         severity: "Medium",
         cvss: { score: 6.8, vectorString: "CVSS:3.1/AV:A/AC:L/PR:N/UI:N/S:U/C:H/I:L/A:N", attackVector: "A", attackComplexity: "L", privilegesRequired: "N", userInteraction: "N", scope: "U", confidentiality: "H", integrity: "L", availability: "N" },
@@ -1350,16 +1417,18 @@ La infraestructura se basa en una versión de un servicio (p. ej., Apache, OpenS
 The impact can range from denial-of-service to full remote code execution, depending on the nature of the vulnerability in the unpatched software. This can lead to a complete compromise of the affected server and potentially the entire network.`,
         impact_es: `### Impacto
 El impacto puede variar desde la denegación de servicio hasta la ejecución remota de código completa, dependiendo de la naturaleza de la vulnerabilidad en el software sin parches. Esto puede llevar a un compromiso completo del servidor afectado y potencialmente de toda la red.`,
-        remediation_en: {
-            shortTerm: "### Short-Term Recommendations\nEstablish a robust patch management policy and process. Subscribe to security advisories for all software used in the environment.",
-            mediumTerm: "### Medium-Term Recommendations\nImplement an automated patch management system to ensure that patches are applied in a timely manner. Use a vulnerability scanner to regularly scan the infrastructure for unpatched software.",
-            longTerm: "### Long-Term Recommendations\nIntegrate vulnerability scanning into the CI/CD pipeline. Use software composition analysis (SCA) tools to identify and manage vulnerabilities in third-party libraries."
-        },
-        remediation_es: {
-            shortTerm: "### Recomendaciones a Corto Plazo\nEstablecer una política y un proceso de gestión de parches sólidos. Suscribirse a los avisos de seguridad de todo el software utilizado en el entorno.",
-            mediumTerm: "### Recomendaciones a Medio Plazo\nImplementar un sistema de gestión de parches automatizado para garantizar que los parches se apliquen de manera oportuna. Usar un escáner de vulnerabilidades para escanear regularmente la infraestructura en busca de software sin parches.",
-            longTerm: "### Recomendaciones a Largo Plazo\nIntegrar el escaneo de vulnerabilidades en el pipeline de CI/CD. Usar herramientas de análisis de composición de software (SCA) para identificar y gestionar las vulnerabilidades en las bibliotecas de terceros."
-        },
+        recommendations_en: `#### Short-Term Recommendations
+Establish a robust patch management policy and process. Subscribe to security advisories for all software used in the environment.
+#### Medium-Term Recommendations
+Implement an automated patch management system to ensure that patches are applied in a timely manner. Use a vulnerability scanner to regularly scan the infrastructure for unpatched software.
+#### Long-Term Recommendations
+Integrate vulnerability scanning into the CI/CD pipeline. Use software composition analysis (SCA) tools to identify and manage vulnerabilities in third-party libraries.`,
+        recommendations_es: `#### Recomendaciones a Corto Plazo
+Establecer una política y un proceso de gestión de parches sólidos. Suscribirse a los avisos de seguridad de todo el software utilizado en el entorno.
+#### Recomendaciones a Medio Plazo
+Implementar un sistema de gestión de parches automatizado para garantizar que los parches se apliquen de manera oportuna. Usar un escáner de vulnerabilidades para escanear regularmente la infraestructura en busca de software sin parches.
+#### Recomendaciones a Largo Plazo
+Integrar el escaneo de vulnerabilidades en el pipeline de CI/CD. Usar herramientas de análisis de composición de software (SCA) para identificar y gestionar las vulnerabilidades en las bibliotecas de terceros.`,
         cwe: "CWE-937",
         severity: "Critical",
         cvss: { score: 9.8, vectorString: "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:H/I:H/A:H", attackVector: "N", attackComplexity: "L", privilegesRequired: "N", userInteraction: "N", scope: "U", confidentiality: "H", integrity: "H", availability: "H" },
@@ -1392,16 +1461,18 @@ Un administrador o usuario no cambia las credenciales predeterminadas de un soft
 An attacker can gain full administrative control of the affected system, leading to data theft, system compromise, and a pivot point to attack other systems on the network.`,
         impact_es: `### Impacto
 Un atacante puede obtener el control administrativo total del sistema afectado, lo que conduce al robo de datos, el compromiso del sistema y un punto de pivote para atacar otros sistemas en la red.`,
-        remediation_en: {
-            shortTerm: "### Short-Term Recommendations\nAudit the entire infrastructure for any use of default credentials and change them to strong, unique passwords.",
-            mediumTerm: "### Medium-Term Recommendations\nIncorporate checks for default credentials into the standard build and deployment process for all new systems.",
-            longTerm: "### Long-Term Recommendations\nAutomate scanning for default credentials across the environment. Implement a policy that prohibits the deployment of any system with default credentials active."
-        },
-        remediation_es: {
-            shortTerm: "### Recomendaciones a Corto Plazo\nAuditar toda la infraestructura en busca de cualquier uso de credenciales predeterminadas y cambiarlas por contraseñas seguras y únicas.",
-            mediumTerm: "### Recomendaciones a Medio Plazo\nIncorporar comprobaciones de credenciales predeterminadas en el proceso de compilación e implementación estándar para todos los sistemas nuevos.",
-            longTerm: "### Recomendaciones a Largo Plazo\nAutomatizar el escaneo en busca de credenciales predeterminadas en todo el entorno. Implementar una política que prohíba la implementación de cualquier sistema con credenciales predeterminadas activas."
-        },
+        recommendations_en: `#### Short-Term Recommendations
+Audit the entire infrastructure for any use of default credentials and change them to strong, unique passwords.
+#### Medium-Term Recommendations
+Incorporate checks for default credentials into the standard build and deployment process for all new systems.
+#### Long-Term Recommendations
+Automate scanning for default credentials across the environment. Implement a policy that prohibits the deployment of any system with default credentials active.`,
+        recommendations_es: `#### Recomendaciones a Corto Plazo
+Auditar toda la infraestructura en busca de cualquier uso de credenciales predeterminadas y cambiarlas por contraseñas seguras y únicas.
+#### Recomendaciones a Medio Plazo
+Incorporar comprobaciones de credenciales predeterminadas en el proceso de compilación e implementación estándar para todos los sistemas nuevos.
+#### Recomendaciones a Largo Plazo
+Automatizar el escaneo en busca de credenciales predeterminadas en todo el entorno. Implementar una política que prohíba la implementación de cualquier sistema con credenciales predeterminadas activas.`,
         cwe: "CWE-1393",
         severity: "Critical",
         cvss: { score: 9.8, vectorString: "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:H/I:H/A:H", attackVector: "N", attackComplexity: "L", privilegesRequired: "N", userInteraction: "N", scope: "U", confidentiality: "H", integrity: "H", availability: "H" },
@@ -1434,16 +1505,18 @@ La vulnerabilidad ocurre cuando la aplicación utiliza la entrada proporcionada 
 Allows an attacker to read sensitive information from the server's filesystem, including application source code, configuration files with credentials, and OS files like \`/etc/passwd\`.`,
         impact_es: `### Impacto
 Permite a un atacante leer información sensible del sistema de archivos del servidor, incluido el código fuente de la aplicación, archivos de configuración con credenciales y archivos del sistema operativo como \`/etc/passwd\`.`,
-        remediation_en: {
-            shortTerm: "### Short-Term Recommendations\nValidate user input against a strict allow-list of characters or file paths. Ideally, do not pass user input directly to filesystem APIs.",
-            mediumTerm: "### Medium-Term Recommendations\nUse a mapping mechanism where user input corresponds to a predefined, safe file path on the server.",
-            longTerm: "### Long-Term Recommendations\nRun the application with the minimum necessary filesystem permissions in a chrooted or sandboxed environment to limit the scope of a potential traversal attack."
-        },
-        remediation_es: {
-            shortTerm: "### Recomendaciones a Corto Plazo\nValidar la entrada del usuario contra una lista blanca estricta de caracteres o rutas de archivo. Idealmente, no pasar la entrada del usuario directamente a las API del sistema de archivos.",
-            mediumTerm: "### Recomendaciones a Medio Plazo\nUsar un mecanismo de mapeo donde la entrada del usuario corresponda a una ruta de archivo predefinida y segura en el servidor.",
-            longTerm: "### Recomendaciones a Largo Plazo\nEjecutar la aplicación con los permisos mínimos necesarios del sistema de archivos en un entorno chroot o sandbox para limitar el alcance de un posible ataque de salto."
-        },
+        recommendations_en: `#### Short-Term Recommendations
+Validate user input against a strict allow-list of characters or file paths. Ideally, do not pass user input directly to filesystem APIs.
+#### Medium-Term Recommendations
+Use a mapping mechanism where user input corresponds to a predefined, safe file path on the server.
+#### Long-Term Recommendations
+Run the application with the minimum necessary filesystem permissions in a chrooted or sandboxed environment to limit the scope of a potential traversal attack.`,
+        recommendations_es: `#### Recomendaciones a Corto Plazo
+Validar la entrada del usuario contra una lista blanca estricta de caracteres o rutas de archivo. Idealmente, no pasar la entrada del usuario directamente a las API del sistema de archivos.
+#### Recomendaciones a Medio Plazo
+Usar un mecanismo de mapeo donde la entrada del usuario corresponda a una ruta de archivo predefinida y segura en el servidor.
+#### Recomendaciones a Largo Plazo
+Ejecutar la aplicación con los permisos mínimos necesarios del sistema de archivos en un entorno chroot o sandbox para limitar el alcance de un posible ataque de salto.`,
         cwe: "CWE-22",
         severity: "High",
         cvss: { score: 7.5, vectorString: "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:H/I:N/A:N", attackVector: "N", attackComplexity: "L", privilegesRequired: "N", userInteraction: "N", scope: "U", confidentiality: "H", integrity: "N", availability: "N" },
@@ -1476,16 +1549,18 @@ Las vulnerabilidades de RCE pueden surgir de varias fuentes, incluida la inyecci
 A successful RCE attack provides an attacker with complete control over the affected system, allowing them to steal data, install malware, pivot to other systems on the network, or cause a denial of service.`,
         impact_es: `### Impacto
 Un ataque RCE exitoso proporciona a un atacante el control total sobre el sistema afectado, lo que le permite robar datos, instalar malware, pivotar hacia otros sistemas en la red o causar una denegación de servicio.`,
-        remediation_en: {
-            shortTerm: "### Short-Term Recommendations\nPatch the underlying vulnerability that led to RCE. This could involve updating software, fixing an injection flaw, or disabling the vulnerable feature.",
-            mediumTerm: "### Medium-Term Recommendations\nImplement the principle of least privilege. Run application processes with the minimum necessary permissions to limit the impact of a potential RCE.",
-            longTerm: "### Long-Term Recommendations\nUse a Web Application Firewall (WAF) with rules to detect and block command injection attempts. Implement egress filtering to prevent compromised systems from communicating with attacker-controlled servers."
-        },
-        remediation_es: {
-            shortTerm: "### Recomendaciones a Corto Plazo\nParchear la vulnerabilidad subyacente que condujo a la RCE. Esto podría implicar la actualización del software, la corrección de una falla de inyección o la desactivación de la función vulnerable.",
-            mediumTerm: "### Recomendaciones a Medio Plazo\nImplementar el principio de privilegio mínimo. Ejecutar los procesos de la aplicación con los permisos mínimos necesarios para limitar el impacto de una posible RCE.",
-            longTerm: "### Recomendaciones a Largo Plazo\nUsar un Web Application Firewall (WAF) con rules para detectar y bloquear los patrones de ataque comunes. Implementar el filtrado de salida para evitar que los sistemas comprometidos se comuniquen con los servidores controlados por el atacante."
-        },
+        recommendations_en: `#### Short-Term Recommendations
+Patch the underlying vulnerability that led to RCE. This could involve updating software, fixing an injection flaw, or disabling the vulnerable feature.
+#### Medium-Term Recommendations
+Implement the principle of least privilege. Run application processes with the minimum necessary permissions to limit the impact of a potential RCE.
+#### Long-Term Recommendations
+Use a Web Application Firewall (WAF) with rules to detect and block command injection attempts. Implement egress filtering to prevent compromised systems from communicating with attacker-controlled servers.`,
+        recommendations_es: `#### Recomendaciones a Corto Plazo
+Parchear la vulnerabilidad subyacente que condujo a la RCE. Esto podría implicar la actualización del software, la corrección de una falla de inyección o la desactivación de la función vulnerable.
+#### Recomendaciones a Medio Plazo
+Implementar el principio de privilegio mínimo. Ejecutar los procesos de la aplicación con los permisos mínimos necesarios para limitar el impacto de una posible RCE.
+#### Recomendaciones a Largo Plazo
+Usar un Web Application Firewall (WAF) con rules para detectar y bloquear los patrones de ataque comunes. Implementar el filtrado de salida para evitar que los sistemas comprometidos se comuniquen con los servidores controlados por el atacante.`,
         cwe: "CWE-94",
         severity: "Critical",
         cvss: { score: 9.8, vectorString: "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:H/I:H/A:H", attackVector: "N", attackComplexity: "L", privilegesRequired: "N", userInteraction: "N", scope: "U", confidentiality: "H", integrity: "H", availability: "H" },
@@ -1496,7 +1571,7 @@ Un ataque RCE exitoso proporciona a un atacante el control total sobre el sistem
         details_en: "### Proof of Concept\n[TODO: Provide the steps taken to achieve remote code execution and show the output of a command (e.g., `whoami`, `id`) running on the target server.]",
         affectedComponents_es: `### Componentes Afectados
 - [TODO: Especificar el sistema y la vulnerabilidad que permite la RCE.]`,
-        details_es: "### Prueba de Concepto\n[TODO: Proporcionar los pasos seguidos para lograr la ejecución remota de código y mostrar la salida de un comando (p. ej., `whoami`, `id`) ejecutándose en el servidor objetivo.]",
+        details_es: "### Prueba de Concepto\n[TODO: Proporcionar los pasos seguidos para lograr la ejecución remota de código y mostrar la salida de un comando (p. ej., `whoami`, `id`) ejecutándose en el servidor objetivo.]`,
         immediateActions_en: "### Immediate Actions\nIsolate the compromised system from the network. Patch the underlying vulnerability (e.g., update software, fix injection flaw) immediately.",
         immediateActions_es: "### Acciones Inmediatas\nAislar el sistema comprometido de la red. Parchear inmediatamente la vulnerabilidad subyacente (p. ej., actualizar el software, corregir la falla de inyección).",
     },
@@ -1516,16 +1591,18 @@ Esto puede ocurrir de dos formas: escalada de privilegios vertical, donde un usu
 Successful privilege escalation can result in an attacker gaining full administrative control over a system, allowing them to install persistent backdoors, steal all data on the system, and use it as a launchpad for further attacks.`,
         impact_es: `### Impacto
 Una escalada de privilegios exitosa puede resultar en que un atacante obtenga el control administrativo total sobre un sistema, lo que le permite instalar puertas traseras persistentes, robar todos los datos del sistema y usarlo como plataforma de lanzamiento para nuevos ataques.`,
-        remediation_en: {
-            shortTerm: "### Short-Term Recommendations\nApply the principle of least privilege to all users, processes, and files. Regularly audit SUID/GUID binaries and file permissions.",
-            mediumTerm: "### Medium-Term Recommendations\nKeep the operating system and all software fully patched to protect against kernel and software exploits.",
-            longTerm: "### Long-Term Recommendations\nUse mandatory access control systems like SELinux or AppArmor to enforce strict boundaries on what processes can do, even if they are compromised."
-        },
-        remediation_es: {
-            shortTerm: "### Recomendaciones a Corto Plazo\nAplicar el principio de privilegio mínimo a todos los usuarios, procesos y archivos. Auditar regularmente los binarios SUID/GUID y los permisos de los archivos.",
-            mediumTerm: "### Recomendaciones a Medio Plazo\nMantener el sistema operativo y todo el software completamente parcheados para protegerse contra exploits del kernel y de software.",
-            longTerm: "### Recomendaciones a Largo Plazo\nUtilizar sistemas de control de acceso obligatorio como SELinux o AppArmor para imponer límites estrictos sobre lo que pueden hacer los procesos, incluso si están comprometidos."
-        },
+        recommendations_en: `#### Short-Term Recommendations
+Apply the principle of least privilege to all users, processes, and files. Regularly audit SUID/GUID binaries and file permissions.
+#### Medium-Term Recommendations
+Keep the operating system and all software fully patched to protect against kernel and software exploits.
+#### Long-Term Recommendations
+Use mandatory access control systems like SELinux or AppArmor to enforce strict boundaries on what processes can do, even if they are compromised.`,
+        recommendations_es: `#### Recomendaciones a Corto Plazo
+Aplicar el principio de privilegio mínimo a todos los usuarios, procesos y archivos. Auditar regularmente los binarios SUID/GUID y los permisos de los archivos.
+#### Recomendaciones a Medio Plazo
+Mantener el sistema operativo y todo el software completamente parcheados para protegerse contra exploits del kernel y de software.
+#### Recomendaciones a Largo Plazo
+Utilizar sistemas de control de acceso obligatorio como SELinux o AppArmor para imponer límites estrictos sobre lo que pueden hacer los procesos, incluso si están comprometidos.`,
         cwe: "CWE-269",
         severity: "High",
         cvss: { score: 8.8, vectorString: "CVSS:3.1/AV:L/AC:L/PR:L/UI:N/S:U/C:H/I:H/A:H", attackVector: "L", attackComplexity: "L", privilegesRequired: "L", userInteraction: "N", scope: "U", confidentiality: "H", integrity: "H", availability: "H" },
@@ -1556,16 +1633,18 @@ Esto puede suceder a través de mensajes de error detallados que revelan seguimi
 While often a lower-severity finding on its own, information disclosure provides attackers with valuable intelligence for planning more targeted and effective attacks. It can expose software versions, internal paths, and business logic.`,
         impact_es: `### Impacto
 Aunque a menudo es un hallazgo de menor gravedad por sí solo, la divulgación de información proporciona a los atacantes una inteligencia valiosa para planificar ataques más dirigidos y efectivos. Puede exponer versiones de software, rutas internas y lógica de negocio.`,
-        remediation_en: {
-            shortTerm: "### Short-Term Recommendations\nDisable verbose error reporting in production environments. Configure web servers to suppress software version banners.",
-            mediumTerm: "### Medium-Term Recommendations\nEnsure that sensitive files, configuration files, and source code repositories are not accessible from the web root.",
-            longTerm: "### Long-Term Recommendations\nImplement a standardized logging mechanism that captures detailed errors for internal analysis but does not expose them to users. Regularly scan for information disclosure vulnerabilities."
-        },
-        remediation_es: {
-            shortTerm: "### Recomendaciones a Corto Plazo\nDeshabilitar los informes de errores detallados en los entornos de producción. Configurar los servidores web para suprimir los banners de versión de software.",
-            mediumTerm: "### Recomendaciones a Medio Plazo\nAsegurarse de que los archivos sensibles, los archivos de configuración y los repositorios de código fuente no sean accesibles desde la raíz web.",
-            longTerm: "### Recomendaciones a Largo Plazo\nImplementar un mecanismo de registro estandarizado que capture errores detallados para el análisis interno pero no los exponga a los usuarios. Escanear regularmente en busca de vulnerabilidades de divulgación de información."
-        },
+        recommendations_en: `#### Short-Term Recommendations
+Disable verbose error reporting in production environments. Configure web servers to suppress software version banners.
+#### Medium-Term Recommendations
+Ensure that sensitive files, configuration files, and source code repositories are not accessible from the web root.
+#### Long-Term Recommendations
+Implement a standardized logging mechanism that captures detailed errors for internal analysis but does not expose them to users. Regularly scan for information disclosure vulnerabilities.`,
+        recommendations_es: `#### Recomendaciones a Corto Plazo
+Deshabilitar los informes de errores detallados en los entornos de producción. Configurar los servidores web para suprimir los banners de versión de software.
+#### Recomendaciones a Medio Plazo
+Asegurarse de que los archivos sensibles, los archivos de configuración y los repositorios de código fuente no sean accesibles desde la raíz web.
+#### Recomendaciones a Largo Plazo
+Implementar un mecanismo de registro estandarizado que capture errores detallados para el análisis interno pero no los exponga a los usuarios. Escanear regularmente en busca de vulnerabilidades de divulgación de información.`,
         cwe: "CWE-200",
         severity: "Medium",
         cvss: { score: 5.3, vectorString: "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:L/I:N/A:N", attackVector: "N", attackComplexity: "L", privilegesRequired: "N", userInteraction: "N", scope: "U", confidentiality: "L", integrity: "N", availability: "N" },
@@ -1592,20 +1671,22 @@ Aunque a menudo es un hallazgo de menor gravedad por sí solo, la divulgación d
         technicalDescription_es: "### Descripción Técnica\nEl código de la aplicación contiene una llamada a un comando del sistema e incorpora datos suministrados por el usuario en la cadena del comando sin una sanitización adecuada. Un atacante puede usar metacaracteres de la shell como `;`, `|`, `&&` o `||` para agregar nuevos comandos al original.",
         impact_en: "### Impact\nThis vulnerability can lead to full remote code execution on the server, with the privileges of the application process. This allows an attacker to compromise the server, steal data, and pivot to other systems on the network.",
         impact_es: "### Impacto\nEsta vulnerabilidad puede conducir a la ejecución remota completa de código en el servidor, con los privilegios del proceso de la aplicación. Esto permite a un atacante comprometer el servidor, robar datos y pivotar hacia otros sistemas en la red.",
-        remediation_en: {
-            shortTerm: "### Short-Term Recommendations\nNever call system shell commands with user-supplied input. Use built-in language functions or libraries that provide the required functionality without invoking a shell.",
-            mediumTerm: "### Medium-Term Recommendations\nIf calling a system command is unavoidable, use structured APIs that accept a list of arguments rather than a single command string. This prevents the shell from interpreting metacharacters.",
-            longTerm: "### Long-Term Recommendations\nRun the application with the minimum privileges necessary. Implement a Web Application Firewall (WAF) with rules to detect and block command injection attempts."
-        },
-        remediation_es: {
-            shortTerm: "### Recomendaciones a Corto Plazo\nNunca llamar a comandos de la shell del sistema con datos suministrados por el usuario. Usar funciones o bibliotecas integradas del lenguaje que proporcionen la funcionalidad requerida sin invocar una shell.",
-            mediumTerm: "### Recomendaciones a Medio Plazo\nSi es inevitable llamar a un comando del sistema, usar API estructuradas que acepten una lista de argumentos en lugar de una sola cadena de comando. Esto evita que la shell interprete los metacaracteres.",
-            longTerm: "### Recomendaciones a Largo Plazo\nEjecutar la aplicación con los privilegios mínimos necesarios. Implementar un Web Application Firewall (WAF) con reglas para detectar y bloquear los patrones de ataque comunes. "
-        },
+        recommendations_en: `#### Short-Term Recommendations
+Never call system shell commands with user-supplied input. Use built-in language functions or libraries that provide the required functionality without invoking a shell.
+#### Medium-Term Recommendations
+If calling a system command is unavoidable, use structured APIs that accept a list of arguments rather than a single command string. This prevents the shell from interpreting metacharacters.
+#### Long-Term Recommendations
+Run the application with the minimum privileges necessary. Implement a Web Application Firewall (WAF) with rules to detect and block command injection attempts.`,
+        recommendations_es: `#### Recomendaciones a Corto Plazo
+Nunca llamar a comandos de la shell del sistema con datos suministrados por el usuario. Usar funciones o bibliotecas integradas del lenguaje que proporcionen la funcionalidad requerida sin invocar una shell.
+#### Recomendaciones a Medio Plazo
+Si es inevitable llamar a un comando del sistema, usar API estructuradas que acepten una lista de argumentos en lugar de una sola cadena de comando. Esto evita que la shell interprete los metacaracteres.
+#### Recomendaciones a Largo Plazo
+Ejecutar la aplicación con los privilegios mínimos necesarios. Implementar un Web Application Firewall (WAF) con reglas para detectar y bloquear los patrones de ataque comunes. `,
         cwe: "CWE-77",
         severity: "Critical",
         cvss: { score: 9.8, vectorString: "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:H/I:H/A:H", attackVector: "N", attackComplexity: "L", privilegesRequired: "N", userInteraction: "N", scope: "U", confidentiality: "H", integrity: "H", availability: "H" },
-        references: ["https://owasp.org/www-community/attacks/Command_Injection"],
+        references: ["https://owasp.org/www-community/attacks/Code_Injection"],
         tags: ["Infrastructure", "Web"],
         affectedComponents_en: `### Affected Components
 - [TODO: Specify the vulnerable function, parameter, and URL.]`,
@@ -1615,7 +1696,7 @@ Aunque a menudo es un hallazgo de menor gravedad por sí solo, la divulgación d
 - [TODO: Especificar la función, el parámetro y la URL vulnerables.]`,
         details_es: `### Prueba de Concepto
 [TODO: Proporcionar una solicitud con una carga útil de inyección de comandos (p. ej., \`; id\`) y mostrar la salida del comando ejecutado.]`,
-        immediateActions_en: "### Immediate Actions\nImmediately implement input sanitization to filter or escape shell metacharacters from user-supplied data in the vulnerable function.",
+        immediateActions_en: "### Immediate Actions\nImplement input sanitization to filter or escape shell metacharacters from user-supplied data in the vulnerable function.",
         immediateActions_es: "### Acciones Inmediatas\nImplementar inmediatamente el saneamiento de entradas para filtrar o escapar los metacaracteres de la shell de los datos proporcionados por el usuario en la función vulnerable.",
     },
     {
@@ -1628,16 +1709,18 @@ Aunque a menudo es un hallazgo de menor gravedad por sí solo, la divulgación d
         technicalDescription_es: "### Descripción Técnica\nLa vulnerabilidad ocurre cuando una aplicación utiliza la entrada proporcionada por el usuario para construir una ruta de archivo para leer o escribir sin una sanitización adecuada. Al usar secuencias `../` y otros caracteres especiales, un atacante puede navegar fuera del directorio previsto y acceder a archivos sensibles en otras partes del sistema de archivos.",
         impact_en: "### Impact\nAllows an attacker to read sensitive information, such as application source code, configuration files containing credentials, and operating system files. In some cases, it may also allow writing to arbitrary files, leading to remote code execution.",
         impact_es: "### Impacto\nPermite a un atacante leer información sensible, como el código fuente de la aplicación, archivos de configuración que contienen credenciales y archivos del sistema operativo. En algunos casos, también puede permitir escribir en archivos arbitrarios, lo que conduce a la ejecución remota de código.",
-        remediation_en: {
-            shortTerm: "### Short-Term Recommendations\nAvoid passing user-supplied input to filesystem APIs entirely. Use an allow-list of safe, known file identifiers instead.",
-            mediumTerm: "### Medium-Term Recommendations\nIf user input in file paths is unavoidable, ensure the application canonicalizes the path and verifies that it starts with the expected base directory before using it.",
-            longTerm: "### Long-Term Recommendations\nRun the application in a sandboxed or chrooted jail with minimal filesystem access to limit the impact of a successful traversal attack."
-        },
-        remediation_es: {
-            shortTerm: "### Recomendaciones a Corto Plazo\nEvitar por completo pasar la entrada proporcionada por el usuario a las API del sistema de archivos. En su lugar, utilizar una lista blanca de identificadores de archivo seguros y conocidos.",
-            mediumTerm: "### Recomendaciones a Medio Plazo\nSi la entrada del usuario en las rutas de archivo es inevitable, asegurarse de que la aplicación canonicalice la ruta y verifique que comienza con el directorio base esperado antes de usarla.",
-            longTerm: "### Recomendaciones a Largo Plazo\nEjecutar la aplicación en una jaula (jail) chroot o sandbox con acceso mínimo al sistema de archivos para limitar el impacto de un ataque de salto exitoso."
-        },
+        recommendations_en: `#### Short-Term Recommendations
+Avoid passing user-supplied input to filesystem APIs entirely. Use an allow-list of safe, known file identifiers instead.
+#### Medium-Term Recommendations
+If user input in file paths is unavoidable, ensure the application canonicalizes the path and verifies that it starts with the expected base directory before using it.
+#### Long-Term Recommendations
+Run the application in a sandboxed or chrooted jail with minimal filesystem access to limit the impact of a successful traversal attack.`,
+        recommendations_es: `#### Recomendaciones a Corto Plazo
+Evitar por completo pasar la entrada proporcionada por el usuario a las API del sistema de archivos. En su lugar, utilizar una lista blanca de identificadores de archivo seguros y conocidos.
+#### Recomendaciones a Medio Plazo
+Si la entrada del usuario en las rutas de archivo es inevitable, asegurarse de que la aplicación canonicalice la ruta y verifique que comienza con el directorio base esperado antes de usarla.
+#### Recomendaciones a Largo Plazo
+Ejecutar la aplicación en una jaula (jail) chroot o sandbox con acceso mínimo al sistema de archivos para limitar el impacto de un ataque de salto exitoso.`,
         cwe: "CWE-22",
         severity: "High",
         cvss: { score: 7.5, vectorString: "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:H/I:N/A:N", attackVector: "N", attackComplexity: "L", privilegesRequired: "N", userInteraction: "N", scope: "U", confidentiality: "H", integrity: "N", availability: "N" },
@@ -1664,16 +1747,18 @@ Aunque a menudo es un hallazgo de menor gravedad por sí solo, la divulgación d
         technicalDescription_es: "### Descripción Técnica\nLa aplicación utiliza un parámetro, a menudo `redirect`, `url` o `next`, para especificar el destino después de una acción (como iniciar sesión). Si este parámetro no se valida, un atacante puede crear una URL como `http://sitio-confiable.com/login?redirect=http://sitio-malicioso.com`. Un usuario, al ver el dominio de confianza, puede hacer clic en el enlace y ser redirigido al sitio malicioso después de iniciar sesión.",
         impact_en: "### Impact\nFacilitates phishing attacks, increasing their credibility and success rate. It can be used to trick users into disclosing credentials or downloading malware from a site they are redirected to.",
         impact_es: "### Impacto\nFacilita los ataques de phishing, aumentando su credibilidad y tasa de éxito. Se puede utilizar para engañar a los usuarios para que divulguen credenciales o descarguen malware de un sitio al que son redirigidos.",
-        remediation_en: {
-            shortTerm: "### Short-Term Recommendations\nDo not use user-supplied input to determine the redirect destination. Use a server-side mapping of short names or IDs to full target URLs.",
-            mediumTerm: "### Medium-Term Recommendations\nIf dynamic redirects are necessary, maintain an allow-list of trusted domains and validate the redirect parameter against this list. Ensure the URL scheme is also validated (e.g., only allow `http` and `https` ).",
-            longTerm: "### Long-Term Recommendations\nDisplay an intermediate page that clearly informs the user they are being redirected to another website, and require them to click a link to proceed."
-        },
-        remediation_es: {
-            shortTerm: "### Recomendaciones a Corto Plazo\nNo utilizar la entrada proporcionada por el usuario para determinar el destino de la redirección. Utilizar un mapeo del lado del servidor de nombres cortos o ID a las URL de destino completas.",
-            mediumTerm: "### Recomendaciones a Medio Plazo\nSi las redirecciones dinámicas son necesarias, mantener una lista blanca de dominios de confianza y validar el parámetro de redirección contra esta lista. Asegurarse de que también se valide el esquema de la URL (p. ej., solo permitir `http` y `https` ).",
-            longTerm: "### Recomendaciones a Largo Plazo\nMostrar una página intermedia que informe claramente al usuario que está siendo redirigido a otro sitio web, y requerir que haga clic en un enlace para continuar."
-        },
+        recommendations_en: `#### Short-Term Recommendations
+Do not use user-supplied input to determine the redirect destination. Use a server-side mapping of short names or IDs to full target URLs.
+#### Medium-Term Recommendations
+If dynamic redirects are necessary, maintain an allow-list of trusted domains and validate the redirect parameter against this list. Ensure the URL scheme is also validated (e.g., only allow \`http\` and \`https\` ).
+#### Long-Term Recommendations
+Display an intermediate page that clearly informs the user they are being redirected to another website, and require them to click a link to proceed.`,
+        recommendations_es: `#### Recomendaciones a Corto Plazo
+No utilizar la entrada proporcionada por el usuario para determinar el destino de la redirección. Utilizar un mapeo del lado del servidor de nombres cortos o ID a las URL de destino completas.
+#### Recomendaciones a Medio Plazo
+Si las redirecciones dinámicas son necesarias, mantener una lista blanca de dominios de confianza y validar el parámetro de redirección contra esta lista. Asegurarse de que también se valide el esquema de la URL (p. ej., solo permitir \`http\` y \`https\` ).
+#### Recomendaciones a Largo Plazo
+Mostrar una página intermedia que informe claramente al usuario que está siendo redirigido a otro sitio web, y requerir que haga clic en un enlace para continuar.`,
         cwe: "CWE-601",
         severity: "Medium",
         cvss: { score: 5.4, vectorString: "CVSS:3.1/AV:N/AC:L/PR:N/UI:R/S:U/C:L/I:L/A:N", attackVector: "N", attackComplexity: "L", privilegesRequired: "N", userInteraction: "R", scope: "U", confidentiality: "L", integrity: "L", availability: "N" },
@@ -1700,16 +1785,18 @@ Aunque a menudo es un hallazgo de menor gravedad por sí solo, la divulgación d
         technicalDescription_es: "### Descripción Técnica\nLos recursos compartidos de archivos se configuran con permisos demasiado permisivos, como acceso de 'Todos' o 'Anónimo' con privilegios de lectura/escritura. Esto permite a cualquier usuario de la red acceder, modificar o eliminar archivos en el recurso compartido, o cargar archivos maliciosos.",
         impact_en: "### Impact\nThis can lead to sensitive data exposure, data loss, or the spread of malware (like ransomware) throughout the network. An attacker can use a writable share to host malicious tools for lateral movement.",
         impact_es: "### Impacto\nEsto puede conducir a la exposición de datos sensibles, la pérdida de datos o la propagación de malware (como ransomware) por toda la red. Un atacante puede usar un recurso compartido con permisos de escritura para alojar herramientas maliciosas para el movimiento lateral.",
-        remediation_en: {
-            shortTerm: "### Short-Term Recommendations\nApply the principle of least privilege. Grant access only to the specific user groups that require it, with the minimum necessary permissions (e.g., read-only vs. read/write).",
-            mediumTerm: "### Medium-Term Recommendations\nImplement a regular auditing process for file share permissions to identify and remediate overly permissive configurations.",
-            longTerm: "### Long-Term Recommendations\nConsider migrating from traditional file shares to more modern, secure collaboration platforms that offer more granular access controls and better auditing capabilities."
-        },
-        remediation_es: {
-            shortTerm: "### Recomendaciones a Corto Plazo\nAplicar el principio de privilegio mínimo. Otorgar acceso solo a los grupos de usuarios específicos que lo requieran, con los permisos mínimos necesarios (p. ej., solo lectura frente a lectura/escritura).",
-            mediumTerm: "### Recomendaciones a Medio Plazo\nImplementar un proceso de auditoría regular para los permisos de los recursos compartidos de archivos para identificar y remediar configuraciones demasiado permisivas.",
-            longTerm: "### Recomendaciones a Largo Plazo\nConsiderar la migración de los recursos compartidos de archivos tradicionales a plataformas de colaboración más modernas y seguras que ofrezcan controles de acceso más granulares y mejores capacidades de auditoría."
-        },
+        recommendations_en: `#### Short-Term Recommendations
+Apply the principle of least privilege. Grant access only to the specific user groups that require it, with the minimum necessary permissions (e.g., read-only vs. read/write).
+#### Medium-Term Recommendations
+Implement a regular auditing process for file share permissions to identify and remediate overly permissive configurations.
+#### Long-Term Recommendations
+Consider migrating from traditional file shares to more modern, secure collaboration platforms that offer more granular access controls and better auditing capabilities.`,
+        recommendations_es: `#### Recomendaciones a Corto Plazo
+Aplicar el principio de privilegio mínimo. Otorgar acceso solo a los grupos de usuarios específicos que lo requieran, con los permisos mínimos necesarios (p. ej., solo lectura frente a lectura/escritura).
+#### Recomendaciones a Medio Plazo
+Implementar un proceso de auditoría regular para los permisos de los recursos compartidos de archivos para identificar y remediar configuraciones demasiado permisivas.
+#### Recomendaciones a Largo Plazo
+Considerar la migración de los recursos compartidos de archivos tradicionales a plataformas de colaboración más modernas y seguras que ofrezcan controles de acceso más granulares y mejores capacidades de auditoría.`,
         cwe: "CWE-732",
         severity: "High",
         cvss: { score: 8.8, vectorString: "CVSS:3.1/AV:A/AC:L/PR:N/UI:N/S:U/C:H/I:H/A:H", attackVector: "A", attackComplexity: "L", privilegesRequired: "N", userInteraction: "N", scope: "U", confidentiality: "H", integrity: "H", availability: "H" },
@@ -1736,16 +1823,18 @@ Aunque a menudo es un hallazgo de menor gravedad por sí solo, la divulgación d
         technicalDescription_es: "### Descripción Técnica\nDurante una revisión de los recursos compartidos de red accesibles, se descubrieron archivos que contienen información sensible. Incluso si el recurso compartido en sí no está abierto a 'Todos', los datos pueden ser accesibles para un grupo de empleados más grande de lo necesario, violando el principio de privilegio mínimo.",
         impact_en: "### Impact\nThis can lead to the compromise of credentials, providing attackers with access to other systems. It also constitutes a data breach if personal or customer information is exposed.",
         impact_es: "### Impacto\nEsto puede conducir al compromiso de credenciales, proporcionando a los atacantes acceso a otros sistemas. También constituye una brecha de datos si se expone información personal o de clientes.",
-        remediation_en: {
-            shortTerm: "### Short-Term Recommendations\nRemove the sensitive data from the file share. Implement a secure secrets management solution for storing service account passwords and other credentials.",
-            mediumTerm: "### Medium-Term Recommendations\nImplement a data loss prevention (DLP) solution to automatically scan file shares for sensitive information.",
-            longTerm: "### Long-Term Recommendations\nConduct regular security awareness training for all employees on the proper handling and storage of sensitive data. Establish a clear data classification policy."
-        },
-        remediation_es: {
-            shortTerm: "### Recomendaciones a Corto Plazo\nEliminar los datos sensibles del recurso compartido de archivos. Implementar una solución segura de gestión de secretos para almacenar contraseñas de cuentas de servicio y otras credenciales.",
-            mediumTerm: "### Recomendaciones a Medio Plazo\nImplementar una solución de prevención de pérdida de datos (DLP) para escanear automáticamente los recursos compartidos de archivos en busca de información sensible.",
-            longTerm: "### Recomendaciones a Largo Plazo\nRealizar capacitaciones periódicas de concienciación sobre seguridad para todos los empleados sobre el manejo y almacenamiento adecuados de datos sensibles. Establecer una política clara de clasificación de datos."
-        },
+        recommendations_en: `#### Short-Term Recommendations
+Remove the sensitive data from the file share. Implement a secure secrets management solution for storing service account passwords and other credentials.
+#### Medium-Term Recommendations
+Implement a data loss prevention (DLP) solution to automatically scan file shares for sensitive information.
+#### Long-Term Recommendations
+Conduct regular security awareness training for all employees on the proper handling and storage of sensitive data. Establish a clear data classification policy.`,
+        recommendations_es: `#### Recomendaciones a Corto Plazo
+Eliminar los datos sensibles del recurso compartido de archivos. Implementar una solución segura de gestión de secretos para almacenar contraseñas de cuentas de servicio y otras credenciales.
+#### Recomendaciones a Medio Plazo
+Implementar una solución de prevención de pérdida de datos (DLP) para escanear automáticamente los recursos compartidos de archivos en busca de información sensible.
+#### Recomendaciones a Largo Plazo
+Realizar capacitaciones periódicas de concienciación sobre seguridad para todos los empleados sobre el manejo y almacenamiento adecuados de datos sensibles. Establecer una política clara de clasificación de datos.`,
         cwe: "CWE-200",
         severity: "High",
         cvss: { score: 8.8, vectorString: "CVSS:3.1/AV:A/AC:L/PR:L/UI:N/S:U/C:H/I:H/A:H", attackVector: "A", attackComplexity: "L", privilegesRequired: "L", userInteraction: "N", scope: "U", confidentiality: "H", integrity: "H", availability: "H" },
@@ -1778,16 +1867,18 @@ Debido a una configuración incorrecta en un firewall, un grupo de seguridad en 
 Exposed services can be subjected to brute-force attacks, denial-of-service, or exploitation of known vulnerabilities, potentially leading to a full compromise of the system.`,
         impact_es: `### Impacto
 Los servicios expuestos pueden ser objeto de ataques de fuerza bruta, denegación de servicio o explotación de vulnerabilidades conocidas, lo que puede llevar a un compromiso total del sistema.`,
-        remediation_en: {
-            shortTerm: "### Short-Term Recommendations\nImplement a 'deny-by-default' firewall policy. Only allow access to specific services from trusted IP ranges.",
-            mediumTerm: "### Medium-Term Recommendations\nConduct regular external network scans to identify any unintentionally exposed services. Use a VPN with multi-factor authentication for all remote management access.",
-            longTerm: "### Long-Term Recommendations\nImplement a robust change management process for all firewall and network configuration changes to prevent accidental exposure."
-        },
-        remediation_es: {
-            shortTerm: "### Recomendaciones a Corto Plazo\nImplementar una política de firewall de 'denegar por defecto'. Solo permitir el acceso a servicios específicos desde rangos de IP de confianza.",
-            mediumTerm: "### Recomendaciones a Medio Plazo\nRealizar escaneos de red externos regulares para identificar cualquier servicio expuesto involuntariamente. Usar una VPN con autenticación multifactor para todo el acceso de gestión remota.",
-            longTerm: "### Recomendaciones a Largo Plazo\nImplementar un proceso de gestión de cambios robusto para todos los cambios de configuración de firewall y red para evitar la exposición accidental."
-        },
+        recommendations_en: `#### Short-Term Recommendations
+Implement a 'deny-by-default' firewall policy. Only allow access to specific services from trusted IP ranges.
+#### Medium-Term Recommendations
+Conduct regular external network scans to identify any unintentionally exposed services. Use a VPN with multi-factor authentication for all remote management access.
+#### Long-Term Recommendations
+Implement a robust change management process for all firewall and network configuration changes to prevent accidental exposure.`,
+        recommendations_es: `#### Recomendaciones a Corto Plazo
+Implementar una política de firewall de 'denegar por defecto'. Solo permitir el acceso a servicios específicos desde rangos de IP de confianza.
+#### Recomendaciones a Medio Plazo
+Realizar escaneos de red externos regulares para identificar cualquier servicio expuesto involuntariamente. Usar una VPN con autenticación multifactor para todo el acceso de gestión remota.
+#### Recomendaciones a Largo Plazo
+Implementar un proceso de gestión de cambios robusto para todos los cambios de configuración de firewall y red para evitar la exposición accidental.`,
         cwe: "CWE-489",
         severity: "High",
         cvss: { score: 8.6, vectorString: "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:C/C:H/I:N/A:L", attackVector: "N", attackComplexity: "L", privilegesRequired: "N", userInteraction: "N", scope: "C", confidentiality: "H", integrity: "N", availability: "L" },
@@ -1814,16 +1905,18 @@ Los servicios expuestos pueden ser objeto de ataques de fuerza bruta, denegació
         technicalDescription_es: "### Descripción Técnica\nEsta es una categoría general para configuraciones incorrectas específicas de una tecnología en particular. Los ejemplos incluyen una instancia de Elasticsearch abierta al público, un servidor Jenkins que permite el acceso no autenticado a las consolas de script, o un socket del demonio de Docker expuesto a la red.",
         impact_en: "### Impact\nThe impact is highly dependent on the specific application and misconfiguration, but it often leads to information disclosure, unauthorized access, or remote code execution.",
         impact_es: "### Impacto\nEl impacto depende en gran medida de la aplicación y la configuración incorrecta específicas, pero a menudo conduce a la divulgación de información, el acceso no autorizado o la ejecución remota de código.",
-        remediation_en: {
-            shortTerm: "### Short-Term Recommendations\nApply the specific remediation for the identified misconfiguration, such as enabling authentication, changing default credentials, or implementing proper access controls.",
-            mediumTerm: "### Medium-Term Recommendations\nDevelop a secure baseline configuration (hardening guide) for all critical applications deployed in the environment.",
-            longTerm: "### Long-Term Recommendations\nAutomate the deployment and configuration of applications using infrastructure-as-code tools to ensure consistency and enforce secure baselines."
-        },
-        remediation_es: {
-            shortTerm: "### Recomendaciones a Corto Plazo\nAplicar la remediación específica para la configuración incorrecta identificada, como habilitar la autenticación, cambiar las credenciales predeterminadas o implementar controles de acceso adecuados.",
-            mediumTerm: "### Recomendaciones a Medio Plazo\nDesarrollar una configuración de línea de base segura (guía de fortalecimiento) para todas las aplicaciones críticas implementadas en el entorno.",
-            longTerm: "### Recomendaciones a Largo Plazo\nAutomatizar la implementación y configuración de aplicaciones utilizando herramientas de infraestructura como código para garantizar la coherencia y hacer cumplir las líneas de base seguras."
-        },
+        recommendations_en: `#### Short-Term Recommendations
+Apply the specific remediation for the identified misconfiguration, such as enabling authentication, changing default credentials, or implementing proper access controls.
+#### Medium-Term Recommendations
+Develop a secure baseline configuration (hardening guide) for all critical applications deployed in the environment.
+#### Long-Term Recommendations
+Automate the deployment and configuration of applications using infrastructure-as-code tools to ensure consistency and enforce secure baselines.`,
+        recommendations_es: `#### Recomendaciones a Corto Plazo
+Aplicar la remediación específica para la configuración incorrecta identificada, como habilitar la autenticación, cambiar las credenciales predeterminadas o implementar controles de acceso adecuados.
+#### Recomendaciones a Medio Plazo
+Desarrollar una configuración de línea de base segura (guía de fortalecimiento) para todas las aplicaciones críticas implementadas en el entorno.
+#### Recomendaciones a Largo Plazo
+Automatizar la implementación y configuración de aplicaciones utilizando herramientas de infraestructura como código para garantizar la coherencia y hacer cumplir las líneas de base seguras.`,
         cwe: "CWE-16",
         severity: "High",
         cvss: { score: 8.8, vectorString: "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:H/I:H/A:H", attackVector: "N", attackComplexity: "L", privilegesRequired: "N", userInteraction: "N", scope: "U", confidentiality: "H", integrity: "H", availability: "H" },
@@ -1837,7 +1930,7 @@ Los servicios expuestos pueden ser objeto de ataques de fuerza bruta, denegació
 - [TODO: Especificar la aplicación (p. ej., Elasticsearch) y la ubicación (dirección IP/URL) de la instancia mal configurada.]`,
         details_es: `### Prueba de Concepto
 [TODO: Proporcionar evidencia de la configuración incorrecta, como una captura de pantalla que muestre el acceso no autenticado a un panel o datos sensibles.]`,
-        immediateActions_en: "### Immediate Actions\nImmediately apply the correct security configuration, such as enabling authentication or restricting network access to the service.",
+        immediateActions_en: "### Immediate Actions\nApply the correct security configuration, such as enabling authentication or restricting network access to the service.",
         immediateActions_es: "### Acciones Inmediatas\nAplicar inmediatamente la configuración de seguridad correcta, como habilitar la autenticación o restringir el acceso de red al servicio.",
     },
     {
@@ -1856,16 +1949,18 @@ La aplicación permite a los usuarios establecer contraseñas que son cortas, co
 Account takeover, leading to unauthorized access to sensitive data and functionality. If an administrative account is compromised, it could lead to full application control.`,
         impact_es: `### Impacto
 Toma de control de la cuenta, lo que conduce a un acceso no autorizado a datos y funcionalidades sensibles. Si se compromete una cuenta administrativa, podría llevar al control total de la aplicación.`,
-        remediation_en: {
-            shortTerm: "### Short-Term Recommendations\nForce a password reset for all users and enforce a new, strong password policy upon their next login.",
-            mediumTerm: "### Medium-Term Recommendations\nImplement Multi-Factor Authentication (MFA) as the most effective control to mitigate the risk of weak passwords.",
-            longTerm: "### Long-Term Recommendations\nEducate users on the importance of strong, unique passwords and provide tools like password managers to help them manage their credentials securely."
-        },
-        remediation_es: {
-            shortTerm: "### Recomendaciones a Corto Plazo\nForzar un restablecimiento de contraseña para todos los usuarios y hacer cumplir una nueva política de contraseñas seguras en su próximo inicio de sesión.",
-            mediumTerm: "### Recomendaciones a Medio Plazo\nImplementar la Autenticación Multifactor (MFA) como el control más efectivo para mitigar el riesgo de contraseñas débiles.",
-            longTerm: "### Recomendaciones a Largo Plazo\nEducar a los usuarios sobre la importancia de contraseñas seguras y únicas y proporcionar herramientas como gestores de contraseñas para ayudarles a gestionar sus credenciales de forma segura."
-        },
+        recommendations_en: `#### Short-Term Recommendations
+Force a password reset for all users and enforce a new, strong password policy upon their next login.
+#### Medium-Term Recommendations
+Implement Multi-Factor Authentication (MFA) as the most effective control to mitigate the risk of weak passwords.
+#### Long-Term Recommendations
+Educate users on the importance of strong, unique passwords and provide tools like password managers to help them manage their credentials securely.`,
+        recommendations_es: `#### Recomendaciones a Corto Plazo
+Forzar un restablecimiento de contraseña para todos los usuarios y hacer cumplir una nueva política de contraseñas seguras en su próximo inicio de sesión.
+#### Recomendaciones a Medio Plazo
+Implementar la Autenticación Multifactor (MFA) como el control más efectivo para mitigar el riesgo de contraseñas débiles.
+#### Recomendaciones a Largo Plazo
+Educar a los usuarios sobre la importancia de usar contraseñas seguras y únicas y proporcionar herramientas como gestores de contraseñas para ayudarles a gestionar sus credenciales de forma segura.`,
         cwe: "CWE-521",
         severity: "High",
         cvss: { score: 7.5, vectorString: "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:H/I:H/A:N", attackVector: "N", attackComplexity: "L", privilegesRequired: "N", userInteraction: "N", scope: "U", confidentiality: "H", integrity: "H", availability: "N" },
@@ -1892,16 +1987,18 @@ Toma de control de la cuenta, lo que conduce a un acceso no autorizado a datos y
         technicalDescription_es: "### Descripción Técnica\nLos usuarios a menudo reutilizan la misma contraseña en múltiples servicios. Si uno de esos servicios sufre una brecha de datos y se filtran las credenciales, un atacante puede probar esas mismas credenciales (un ataque conocido como credential stuffing) en otros servicios, incluida la aplicación objetivo.",
         impact_en: "### Impact\nAn attacker can gain unauthorized access to user accounts without directly attacking the target application, leveraging breaches from entirely separate services.",
         impact_es: "### Impacto\nUn atacante puede obtener acceso no autorizado a las cuentas de los usuarios sin atacar directamente la aplicación objetivo, aprovechando las brechas de servicios completamente separados.", 
-        remediation_en: { 
-            shortTerm: "### Short-Term Recommendations\nImplement rate limiting and account lockout mechanisms to slow down credential stuffing attacks. Check new passwords against a database of known breached passwords.", 
-            mediumTerm: "### Medium-Term Recommendations\nImplement Multi-Factor Authentication (MFA). This is the single most effective control against password reuse and credential stuffing.", 
-            longTerm: "### Long-Term Recommendations\nEducate users about the importance of using unique passwords for every service. Provide a password manager as a corporate tool to facilitate this." 
-        }, 
-        remediation_es: { 
-            shortTerm: "### Recomendaciones a Corto Plazo\nImplementar limitación de velocidad y mecanismos de bloqueo de cuentas para ralentizar los ataques de credential stuffing. Comprobar las nuevas contraseñas con una base de datos de contraseñas filtradas conocidas.", 
-            mediumTerm: "### Recomendaciones a Medio Plazo\nImplementar la Autenticación Multifactor (MFA). Este es el control más efectivo contra la reutilización de contraseñas y el credential stuffing.", 
-            longTerm: "### Recomendaciones a Largo Plazo\nEducar a los usuarios sobre la importancia de usar contraseñas únicas para cada servicio. Proporcionar un gestor de contraseñas como herramienta corporativa para facilitar esto." 
-        }, 
+        recommendations_en: `#### Short-Term Recommendations
+Implement rate limiting and account lockout mechanisms to slow down credential stuffing attacks. Check new passwords against a database of known breached passwords.
+#### Medium-Term Recommendations
+Implement Multi-Factor Authentication (MFA). This is the single most effective control against password reuse and credential stuffing.
+#### Long-Term Recommendations
+Educate users about the importance of using unique passwords for every service. Provide a password manager as a corporate tool to facilitate this.`, 
+        recommendations_es: `#### Recomendaciones a Corto Plazo
+Implementar limitación de velocidad y mecanismos de bloqueo de cuentas para ralentizar los ataques de credential stuffing. Comprobar las nuevas contraseñas con una base de datos de contraseñas filtradas conocidas.
+#### Recomendaciones a Medio Plazo
+Implementar la Autenticación Multifactor (MFA). Este es el control más efectivo contra la reutilización de contraseñas y el credential stuffing.
+#### Recomendaciones a Largo Plazo
+Educar a los usuarios sobre la importancia de usar contraseñas únicas para cada servicio. Proporcionar un gestor de contraseñas como herramienta corporativa para facilitar esto.`, 
         cwe: "CWE-693", 
         severity: "High", 
         cvss: { score: 8.1, vectorString: "CVSS:3.1/AV:N/AC:H/PR:N/UI:N/S:U/C:H/I:H/A:N", attackVector: "N", attackComplexity: "H", privilegesRequired: "N", userInteraction: "N", scope: "U", confidentiality: "H", integrity: "H", availability: "N" }, 
@@ -1934,16 +2031,18 @@ El proceso de autenticación se basa únicamente en un solo factor (algo que el 
 Without MFA, compromised credentials (e.g., from phishing, password reuse, or brute-force attacks) directly lead to unauthorized account access.`,
         impact_es: `### Impacto
 Sin MFA, las credenciales comprometidas (p. ej., por phishing, reutilización de contraseñas o ataques de fuerza bruta) conducen directamente a un acceso no autorizado a la cuenta.`,
-        remediation_en: {
-            shortTerm: "### Short-Term Recommendations\nImplement support for Time-Based One-Time Password (TOTP) authenticator apps (like Google Authenticator or Authy) as a second factor.",
-            mediumTerm: "### Medium-Term Recommendations\nMake MFA mandatory for all administrative and privileged users. Provide options for users to enable MFA for their own accounts.",
-            longTerm: "### Long-Term Recommendations\nExplore and implement stronger, phishing-resistant MFA methods such as FIDO2/WebAuthn."
-        },
-        remediation_es: {
-            shortTerm: "### Recomendaciones a Corto Plazo\nImplementar soporte para aplicaciones de autenticación de contraseña de un solo uso basada en tiempo (TOTP) (como Google Authenticator o Authy) como segundo factor.",
-            mediumTerm: "### Recomendaciones a Medio Plazo\nHacer que la MFA sea obligatoria para todos los usuarios administrativos y con privilegios. Proporcionar opciones para que los usuarios habiliten la MFA para sus propias cuentas.",
-            longTerm: "### Recomendaciones a Largo Plazo\nExplorar e implementar métodos de MFA más fuertes y resistentes al phishing, como FIDO2/WebAuthn."
-        },
+        recommendations_en: `#### Short-Term Recommendations
+Implement support for Time-Based One-Time Password (TOTP) authenticator apps (like Google Authenticator or Authy) as a second factor.
+#### Medium-Term Recommendations
+Make MFA mandatory for all administrative and privileged users. Provide options for users to enable MFA for their own accounts.
+#### Long-Term Recommendations
+Explore and implement stronger, phishing-resistant MFA methods such as FIDO2/WebAuthn.`,
+        recommendations_es: `#### Recomendaciones a Corto Plazo
+Implementar soporte para aplicaciones de autenticación de contraseña de un solo uso basada en tiempo (TOTP) (como Google Authenticator o Authy) como segundo factor.
+#### Recomendaciones a Medio Plazo
+Hacer que la MFA sea obligatoria para todos los usuarios administrativos y con privilegios. Proporcionar opciones para que los usuarios habiliten la MFA para sus propias cuentas.
+#### Recomendaciones a Largo Plazo
+Explorar e implementar métodos de MFA más fuertes y resistentes al phishing, como FIDO2/WebAuthn.`,
         cwe: "CWE-308",
         severity: "High",
         cvss: { score: 7.4, vectorString: "CVSS:3.1/AV:N/AC:L/PR:N/UI:R/S:U/C:H/I:H/A:N", attackVector: "N", attackComplexity: "L", privilegesRequired: "N", userInteraction: "R", scope: "U", confidentiality: "H", integrity: "H", availability: "N" },
@@ -1976,16 +2075,18 @@ Esto se puede lograr robando o prediciendo un token de sesión válido (cookie).
 The attacker gains full access to the compromised user's account and can perform any action that the user is authorized to perform.`,
         impact_es: `### Impacto
 El atacante obtiene acceso completo a la cuenta del usuario comprometido y puede realizar cualquier acción que el usuario esté autorizado a realizar.`,
-        remediation_en: {
-            shortTerm: "### Short-Term Recommendations\nSet the `HttpOnly` and `Secure` flags on all session cookies to prevent them from being accessed by client-side scripts or transmitted over unencrypted connections.",
-            mediumTerm: "### Medium-Term Recommendations\nImplement a mechanism to regenerate the session ID after any privilege level change, such as login. Bind the session token to other user properties, like their IP address or User-Agent, to make hijacking more difficult.",
-            longTerm: "### Long-Term Recommendations\nUse a robust, centralized session management framework that handles token generation, validation, and expiration securely."
-        },
-        remediation_es: {
-            shortTerm: "### Recomendaciones a Corto Plazo\nEstablecer las banderas `HttpOnly` y `Secure` en todas las cookies de sesión para evitar que sean accedidas por scripts del lado del cliente o transmitidas a través de conexiones no cifradas.",
-            mediumTerm: "### Recomendaciones a Medio Plazo\nImplementar un mecanismo para regenerar el ID de sesión después de cualquier cambio de nivel de privilegio, como el inicio de sesión. Vincular el token de sesión a otras propiedades del usuario, como su dirección IP o User-Agent, para dificultar el secuestro.",
-            longTerm: "### Recomendaciones a Largo Plazo\nUtilizar un framework de gestión de sesiones robusto y centralizado que maneje la generación, validación y expiración de tokens de forma segura."
-        },
+        recommendations_en: `#### Short-Term Recommendations
+Set the \`HttpOnly\` and \`Secure\` flags on all session cookies to prevent them from being accessed by client-side scripts or transmitted over unencrypted connections.
+#### Medium-Term Recommendations
+Implement a mechanism to regenerate the session ID after any privilege level change, such as login. Bind the session token to other user properties, like their IP address or User-Agent, to make hijacking more difficult.
+#### Long-Term Recommendations
+Use a robust, centralized session management framework that handles token generation, validation, and expiration securely.`,
+        recommendations_es: `#### Recomendaciones a Corto Plazo
+Establecer las banderas \`HttpOnly\` y \`Secure\` en todas las cookies de sesión para evitar que sean accedidas por scripts del lado del cliente o transmitidas a través de conexiones no cifradas.
+#### Recomendaciones a Medio Plazo
+Implementar un mecanismo para regenerar el ID de sesión después de cualquier cambio de nivel de privilegio, como el inicio de sesión. Vincular el token de sesión a otras propiedades del usuario, como su dirección IP o User-Agent, para dificultar el secuestro.
+#### Recomendaciones a Largo Plazo
+Utilizar un framework de gestión de sesiones robusto y centralizado que maneje la generación, validación y expiración de tokens de forma segura.`,
         cwe: "CWE-384",
         severity: "High",
         cvss: { score: 8.8, vectorString: "CVSS:3.1/AV:N/AC:L/PR:N/UI:R/S:U/C:H/I:H/A:H", attackVector: "N", attackComplexity: "L", privilegesRequired: "N", userInteraction: "R", scope: "U", confidentiality: "H", integrity: "H", availability: "H" },
@@ -2012,16 +2113,18 @@ El atacante obtiene acceso completo a la cuenta del usuario comprometido y puede
         technicalDescription_es: "### Descripción Técnica\nEl atacante visita el sitio web para obtener un ID de sesión válido. Luego, engaña a la víctima para que se autentique con ese mismo ID de sesión (p. ej., enviándole un enlace con el ID de sesión en la URL: `http://ejemplo.com/login?SID=...`). Una vez que la víctima inicia sesión, la sesión se autentica y el atacante puede usar el ID de sesión fijado para acceder a la sesión autenticada de la víctima.",
         impact_en: "### Impact\nAllows an attacker to take over the victim's authenticated session, leading to unauthorized access and actions.",
         impact_es: "### Impacto\nPermite a un atacante apoderarse de la sesión autenticada de la víctima, lo que conduce a accesos y acciones no autorizadas.",
-        remediation_en: {
-            shortTerm: "### Short-Term Recommendations\nRegenerate the session ID immediately after a user successfully authenticates. Do not accept session identifiers from URL parameters.",
-            mediumTerm: "### Medium-Term Recommendations\nEnsure the session management system creates a completely new session object, with a new ID, upon login.",
-            longTerm: "### Long-Term Recommendations\nReview the entire session lifecycle to ensure session identifiers are never accepted from untrusted sources and are properly renewed at changes in privilege level."
-        },
-        remediation_es: {
-            shortTerm: "### Recomendaciones a Corto Plazo\nRegenerar el ID de sesión inmediatamente después de que un usuario se autentique con éxito. No aceptar identificadores de sesión de los parámetros de la URL.",
-            mediumTerm: "### Recomendaciones a Medio Plazo\nAsegurarse de que el sistema de gestión de sesiones cree un objeto de sesión completamente nuevo, con un nuevo ID, al iniciar sesión.",
-            longTerm: "### Recomendaciones a Largo Plazo\nRevisar todo el ciclo de vida de la sesión para garantizar que los identificadores de sesión nunca se acepten de fuentes no confiables y se renueven correctamente en los cambios de nivel de privilegio."
-        },
+        recommendations_en: `#### Short-Term Recommendations
+Regenerate the session ID immediately after a user successfully authenticates. Do not accept session identifiers from URL parameters.
+#### Medium-Term Recommendations
+Ensure the session management system creates a completely new session object, with a new ID, upon login.
+#### Long-Term Recommendations
+Review the entire session lifecycle to ensure session identifiers are never accepted from untrusted sources and are properly renewed at changes in privilege level.`,
+        recommendations_es: `#### Recomendaciones a Corto Plazo
+Regenerar el ID de sesión inmediatamente después de que un usuario se autentique con éxito. No aceptar identificadores de sesión de los parámetros de la URL.
+#### Recomendaciones a Medio Plazo
+Asegurarse de que el sistema de gestión de sesiones cree un objeto de sesión completamente nuevo, con un nuevo ID, al iniciar sesión.
+#### Recomendaciones a Largo Plazo
+Revisar todo el ciclo de vida de la sesión para garantizar que los identificadores de sesión nunca se acepten de fuentes no confiables y se renueven correctamente en los cambios de nivel de privilegio.`,
         cwe: "CWE-384",
         severity: "High",
         cvss: { score: 8.1, vectorString: "CVSS:3.1/AV:N/AC:H/PR:N/UI:R/S:U/C:H/I:H/A:H", attackVector: "N", attackComplexity: "H", privilegesRequired: "N", userInteraction: "R", scope: "U", confidentiality: "H", integrity: "H", availability: "H" },
@@ -2041,7 +2144,7 @@ El atacante obtiene acceso completo a la cuenta del usuario comprometido y puede
 2. El atacante engaña a la víctima para que haga clic en un enlace con ese ID de sesión.
 3. La víctima inicia sesión.
 4. El atacante usa el mismo ID de sesión para acceder a la sesión autenticada de la víctima.`,
-        immediateActions_en: "### Immediate Actions\nForce logout of all active sessions to invalidate all current session tokens.",
+        immediateActions_en: "### Immediate Actions\nForce logout of all active sessions to invalidate all existing session tokens.",
         immediateActions_es: "### Acciones Inmediatas\nForzar el cierre de sesión de todas las sesiones activas para invalidar todos los tokens de sesión existentes.",
     },
     {
@@ -2054,16 +2157,18 @@ El atacante obtiene acceso completo a la cuenta del usuario comprometido y puede
         technicalDescription_es: "### Descripción Técnica\nLos atacantes utilizan bots automatizados para probar una gran cantidad de credenciales robadas contra la página de inicio de sesión de la aplicación. El éxito del ataque se basa en la alta probabilidad de que los usuarios reutilicen la misma contraseña en múltiples servicios en línea.",
         impact_en: "### Impact\nSuccessful attacks lead to account takeovers, potentially on a massive scale, resulting in data breaches and fraudulent activity.",
         impact_es: "### Impacto\nLos ataques exitosos conducen a la toma de control de cuentas, potencialmente a gran escala, lo que resulta en brechas de datos y actividad fraudulenta.",
-        remediation_en: { 
-            shortTerm: "### Short-Term Recommendations\nImplement rate limiting and account lockout mechanisms to slow down credential stuffing attacks. Check new passwords against a database of known breached passwords.", 
-            mediumTerm: "### Medium-Term Recommendations\nImplement Multi-Factor Authentication (MFA). This is the single most effective control against password reuse and credential stuffing.", 
-            longTerm: "### Long-Term Recommendations\nEducate users about the importance of using unique passwords for every service. Provide a password manager as a corporate tool to facilitate this." 
-        }, 
-        remediation_es: { 
-            shortTerm: "### Recomendaciones a Corto Plazo\nImplementar limitación de velocidad y mecanismos de bloqueo de cuentas para ralentizar los ataques de credential stuffing. Comprobar las nuevas contraseñas con una base de datos de contraseñas filtradas conocidas.", 
-            mediumTerm: "### Recomendaciones a Medio Plazo\nImplementar la Autenticación Multifactor (MFA). Este es el control más efectivo contra la reutilización de contraseñas y el credential stuffing.", 
-            longTerm: "### Recomendaciones a Largo Plazo\nEducar a los usuarios sobre la importancia de usar contraseñas únicas para cada servicio. Proporcionar un gestor de contraseñas como herramienta corporativa para facilitar esto." 
-        }, 
+        recommendations_en: `#### Short-Term Recommendations
+Implement rate limiting and account lockout mechanisms to slow down credential stuffing attacks. Check new passwords against a database of known breached passwords.
+#### Medium-Term Recommendations
+Implement Multi-Factor Authentication (MFA). This is the single most effective control against password reuse and credential stuffing.
+#### Long-Term Recommendations
+Educate users about the importance of using unique passwords for every service. Provide a password manager as a corporate tool to facilitate this.`, 
+        recommendations_es: `#### Recomendaciones a Corto Plazo
+Implementar limitación de velocidad y mecanismos de bloqueo de cuentas para ralentizar los ataques de credential stuffing. Comprobar las nuevas contraseñas con una base de datos de contraseñas filtradas conocidas.
+#### Recomendaciones a Medio Plazo
+Implementar la Autenticación Multifactor (MFA). Este es el control más efectivo contra la reutilización de contraseñas y el credential stuffing.
+#### Recomendaciones a Largo Plazo
+Educar a los usuarios sobre la importancia de usar contraseñas únicas para cada servicio. Proporcionar un gestor de contraseñas como herramienta corporativa para facilitar esto.`, 
         cwe: "CWE-307", 
         severity: "High", 
         cvss: { score: 8.1, vectorString: "CVSS:3.1/AV:N/AC:H/PR:N/UI:N/S:U/C:H/I:H/A:N", attackVector: "N", attackComplexity: "H", privilegesRequired: "N", userInteraction: "N", scope: "U", confidentiality: "H", integrity: "H", availability: "N" }, 
@@ -2096,16 +2201,18 @@ Esto puede ocurrir de varias maneras: el enlace/token de recuperación enviado a
 An attacker can reset a victim's password and take over their account.`,
         impact_es: `### Impacto
 Un atacante puede restablecer la contraseña de una víctima y tomar el control de su cuenta.`,
-        remediation_en: {
-            shortTerm: "### Short-Term Recommendations\nEnsure that password recovery tokens are long, random, single-use, and have a short expiration time. Send tokens via a secure channel (e.g., email) and do not leak them in URLs or headers.",
-            mediumTerm: "### Medium-Term Recommendations\nAvoid using knowledge-based authentication (secret questions) as the sole recovery mechanism. Require users to verify their identity through a second factor (like a code to their phone) before allowing a password reset.",
-            longTerm: "### Long-Term Recommendations\nImplement a robust password recovery workflow that logs all attempts and notifies the user of any password reset activity on their account."
-        },
-        remediation_es: {
-            shortTerm: "### Recomendaciones a Corto Plazo\nAsegurarse de que los tokens de recuperación de contraseña sean largos, aleatorios, de un solo uso y tengan un tiempo de expiración corto. Enviar tokens a través de un canal seguro (p. ej., correo electrónico) y no filtrarlos en URL o encabezados.",
-            mediumTerm: "### Recomendaciones a Medio Plazo\nEvitar el uso de la autenticación basada en conocimientos (preguntas secretas) como único mecanismo de recuperación. Requerir que los usuarios verifiquen su identidad a través de un segundo factor (como un código a su teléfono) antes de permitir un restablecimiento de contraseña.",
-            longTerm: "### Recomendaciones a Largo Plazo\nImplementar un flujo de trabajo de recuperación de contraseña robusto que registre todos los intentos y notifique al usuario de cualquier actividad de restablecimiento de contraseña en su cuenta."
-        },
+        recommendations_en: `#### Short-Term Recommendations
+Ensure that password recovery tokens are long, random, single-use, and have a short expiration time. Send tokens via a secure channel (e.g., email) and do not leak them in URLs or headers.
+#### Medium-Term Recommendations
+Avoid using knowledge-based authentication (secret questions) as the sole recovery mechanism. Require users to verify their identity through a second factor (like a code to their phone) before allowing a password reset.
+#### Long-Term Recommendations
+Implement a robust password recovery workflow that logs all attempts and notifies the user of any password reset activity on their account.`,
+        recommendations_es: `#### Recomendaciones a Corto Plazo
+Asegurarse de que los tokens de recuperación de contraseña sean largos, aleatorios, de un solo uso y tengan un tiempo de expiración corto. Enviar tokens a través de un canal seguro (p. ej., correo electrónico) y no filtrarlos en URL o encabezados.
+#### Recomendaciones a Medio Plazo
+Evitar el uso de la autenticación basada en conocimientos (preguntas secretas) como único mecanismo de recuperación. Requerir que los usuarios verifiquen su identidad a través de un segundo factor (como un código a su teléfono) antes de permitir un restablecimiento de contraseña.
+#### Recomendaciones a Largo Plazo
+Implementar un flujo de trabajo de recuperación de contraseña robusto que registre todos los intentos y notifique al usuario de cualquier actividad de restablecimiento de contraseña en su cuenta.`,
         cwe: "CWE-640",
         severity: "Medium",
         cvss: { score: 6.8, vectorString: "CVSS:3.1/AV:N/AC:H/PR:N/UI:R/S:U/C:H/I:H/A:N", attackVector: "N", attackComplexity: "H", privilegesRequired: "N", userInteraction: "R", scope: "U", confidentiality: "H", integrity: "H", availability: "N" },
@@ -2138,16 +2245,18 @@ La aplicación proporciona diferentes responses para nombres de usuario válidos
 This information leak aids attackers by providing them with a list of valid targets for brute-force, phishing, or other account takeover attacks.`,
         impact_es: `### Impacto
 Esta fuga de información ayuda a los atacantes al proporcionarles una lista de objetivos válidos para ataques de fuerza bruta, phishing u otros ataques de toma de control de cuentas.`,
-        remediation_en: {
-            shortTerm: "### Short-Term Recommendations\nEnsure that all responses for login, password reset, and registration attempts are generic and identical, regardless of whether the username is valid or invalid (e.g., 'Invalid username or password').",
-            mediumTerm: "### Medium-Term Recommendations\nReview all application endpoints to identify and remediate any other potential user enumeration vectors.",
-            longTerm: "### Long-Term Recommendations\nImplement rate limiting and monitoring to detect and block automated user enumeration attempts."
-        },
-        remediation_es: {
-            shortTerm: "### Recomendaciones a Corto Plazo\nAsegurarse de que todas las responses para los intentos de inicio de sesión, restablecimiento de contraseña y registro sean genéricas e idénticas, independientemente de si el nombre de usuario es válido o no (p. ej., 'Nombre de usuario o contraseña inválidos').",
-            mediumTerm: "### Recomendaciones a Medio Plazo\nRevisar todos los puntos de conexión de la aplicación para identificar y remediar cualquier otro posible vector de enumeración de usuarios.",
-            longTerm: "### Recomendaciones a Largo Plazo\nImplementar limitación de velocidad y monitoreo para detectar y bloquear los intentos automatizados de enumeración de usuarios."
-        },
+        recommendations_en: `#### Short-Term Recommendations
+Ensure that all responses for login, password reset, and registration attempts are generic and identical, regardless of whether the username is valid or invalid (e.g., 'Invalid username or password').
+#### Medium-Term Recommendations
+Review all application endpoints to identify and remediate any other potential user enumeration vectors.
+#### Long-Term Recommendations
+Implement rate limiting and monitoring to detect and block automated user enumeration attempts.`,
+        recommendations_es: `#### Recomendaciones a Corto Plazo
+Asegurarse de que todas las responses para los intentos de inicio de sesión, restablecimiento de contraseña y registro sean genéricas e idénticas, independientemente de si el nombre de usuario es válido o no (p. ej., 'Nombre de usuario o contraseña inválidos').
+#### Recomendaciones a Medio Plazo
+Revisar todos los puntos de conexión de la aplicación para identificar y remediar cualquier otro posible vector de enumeración de usuarios.
+#### Recomendaciones a Largo Plazo
+Implementar limitación de velocidad y monitoreo para detectar y bloquear los intentos automatizados de enumeración de usuarios.`,
         cwe: "CWE-203",
         severity: "Low",
         cvss: { score: 5.3, vectorString: "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:L/I:N/A:N", attackVector: "N", attackComplexity: "L", privilegesRequired: "N", userInteraction: "N", scope: "U", confidentiality: "L", integrity: "N", availability: "N" },
@@ -2180,16 +2289,18 @@ La aplicación puede generar tokens de sesión utilizando algoritmos no aleatori
 Weak session management can lead to session hijacking, allowing an attacker to impersonate a legitimate user and gain unauthorized access.`,
         impact_es: `### Impacto
 Una gestión de sesiones débil puede conducir al secuestro de sesiones, permitiendo a un atacante hacerse pasar por un usuario legítimo y obtener acceso no autorizado.`,
-        remediation_en: {
-            shortTerm: "### Short-Term Recommendations\nUse long, random, and unpredictable session identifiers. Ensure all session tokens are invalidated on the server upon logout and password reset.",
-            mediumTerm: "### Medium-Term Recommendations\nImplement reasonable session timeout periods (both for inactivity and absolute duration). Regenerate session tokens upon any change in privilege level (e.g., authentication).",
-            longTerm: "### Long-Term Recommendations\nUse a proven, industry-standard library or framework for session management rather than building a custom solution."
-        },
-        remediation_es: {
-            shortTerm: "### Recomendaciones a Corto Plazo\nUsar identificadores de sesión largos, aleatorios e impredecibles. Asegurarse de que todos los tokens de sesión se invaliden en el servidor al cerrar la sesión y al restablecer la contraseña.",
-            mediumTerm: "### Recomendaciones a Medio Plazo\nImplementar períodos de tiempo de espera de sesión razonables (tanto para inactividad como para duración absoluta). Regenerar los tokens de sesión ante cualquier cambio en el nivel de privilegio (p. ej., autenticación).",
-            longTerm: "### Recomendaciones a Largo Plazo\nUtilizar una biblioteca o un framework probado y estándar de la industria para la gestión de sesiones en lugar de construir una solución personalizada."
-        },
+        recommendations_en: `#### Short-Term Recommendations
+Use long, random, and unpredictable session identifiers. Ensure all session tokens are invalidated on the server upon logout and password reset.
+#### Medium-Term Recommendations
+Implement reasonable session timeout periods (both for inactivity and absolute duration). Regenerate session tokens upon any change in privilege level (e.g., authentication).
+#### Long-Term Recommendations
+Use a proven, industry-standard library or framework for session management rather than building a custom solution.`,
+        recommendations_es: `#### Recomendaciones a Corto Plazo
+Usar identificadores de sesión largos, aleatorios e impredecibles. Asegurarse de que todos los tokens de sesión se invaliden en el servidor al cerrar la sesión y al restablecer la contraseña.
+#### Recomendaciones a Medio Plazo
+Implementar períodos de tiempo de espera de sesión razonables (tanto para inactividad como para duración absoluta). Regenerar los tokens de sesión ante cualquier cambio en el nivel de privilegio (p. ej., autenticación).
+#### Recomendaciones a Largo Plazo
+Utilizar una biblioteca o un framework probado y estándar de la industria para la gestión de sesiones en lugar de construir una solución personalizada.`,
         cwe: "CWE-613",
         severity: "High",
         cvss: { score: 8.8, vectorString: "CVSS:3.1/AV:N/AC:L/PR:L/UI:N/S:U/C:H/I:H/A:H", attackVector: "N", attackComplexity: "L", privilegesRequired: "L", userInteraction: "N", scope: "U", confidentiality: "H", integrity: "H", availability: "H" },
@@ -2204,7 +2315,7 @@ Una gestión de sesiones débil puede conducir al secuestro de sesiones, permiti
         details_es: `### Prueba de Concepto
 [TODO: Proporcionar una PoC, como demostrar que un token de sesión es predecible, o que sigue siendo válido después de cerrar la sesión y puede ser reutilizado.]`,
         immediateActions_en: "### Immediate Actions\nForce a logout of all users to invalidate all existing session tokens.",
-        immediateActions_es: "### Acciones Inmediatas\nForzar el cierre de sesión de todos los usuarios para invalidar todos los tokens de sesión existentes.",
+        immediateActions_es: "### Acciones Inmediatas\nForzar el cierre de sesión de todas las sesiones activas para invalidar todos los tokens de sesión existentes.",
     },
     {
         id: "vuln-auth-010",
@@ -2222,16 +2333,18 @@ La funcionalidad de inicio de sesión carece de mecanismos para prevenir intento
 A successful brute-force attack results in account takeover. Even if unsuccessful, it can lead to a denial of service by locking out legitimate users.`,
         impact_es: `### Impacto
 Un ataque de fuerza bruta exitoso resulta en la toma de control de la cuenta. Incluso si no tiene éxito, puede provocar una denegación de servicio al bloquear a los usuarios legítimos.`,
-        remediation_en: {
-            shortTerm: "### Short-Term Recommendations\nImplement strong rate limiting on login attempts per IP address and per user account.",
-            mediumTerm: "### Medium-Term Recommendations\nImplement an account lockout policy that temporarily disables an account after a small number of consecutive failed login attempts (e.g., 5-10 attempts).",
-            longTerm: "### Long-Term Recommendations\nUse CAPTCHA or other bot-detection mechanisms after a few failed attempts to prevent automated attacks. Monitor and alert on high volumes of failed logins."
-        },
-        remediation_es: {
-            shortTerm: "### Recomendaciones a Corto Plazo\nImplementar una estricta limitación de velocidad en los intentos de inicio de sesión por dirección IP y por cuenta de usuario.",
-            mediumTerm: "### Recomendaciones a Medio Plazo\nImplementar una política de bloqueo de cuenta que deshabilite temporalmente una cuenta después de un pequeño número de intentos de inicio de sesión fallidos consecutivos (p. ej., 5-10 intentos).",
-            longTerm: "### Recomendaciones a Largo Plazo\nUsar CAPTCHA u otros mecanismos de detección de bots después de algunos intentos fallidos para prevenir ataques automatizados. Monitorear y alertar sobre altos volúmenes de inicios de sesión fallidos."
-        },
+        recommendations_en: `#### Short-Term Recommendations
+Implement strong rate limiting on login attempts per IP address and per user account.
+#### Medium-Term Recommendations
+Implement an account lockout policy that temporarily disables an account after a small number of consecutive failed login attempts (e.g., 5-10 attempts).
+#### Long-Term Recommendations
+Use CAPTCHA or other bot-detection mechanisms after a few failed attempts to prevent automated attacks. Monitor and alert on high volumes of failed logins.`,
+        recommendations_es: `#### Recomendaciones a Corto Plazo
+Implementar una estricta limitación de velocidad en los intentos de inicio de sesión por dirección IP y por cuenta de usuario.
+#### Recomendaciones a Medio Plazo
+Implementar una política de bloqueo de cuenta que deshabilite temporalmente una cuenta después de un pequeño número de intentos de inicio de sesión fallidos consecutivos (p. ej., 5-10 intentos).
+#### Recomendaciones a Largo Plazo
+Usar CAPTCHA u otros mecanismos de detección de bots después de algunos intentos fallidos para prevenir ataques automatizados. Monitorear y alertar sobre altos volúmenes de inicios de sesión fallidos.`,
         cwe: "CWE-307",
         severity: "High",
         cvss: { score: 7.5, vectorString: "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:H/I:H/A:N", attackVector: "N", attackComplexity: "L", privilegesRequired: "N", userInteraction: "N", scope: "U", confidentiality: "H", integrity: "H", availability: "N" },
@@ -2258,16 +2371,18 @@ Un ataque de fuerza bruta exitoso resulta en la toma de control de la cuenta. In
         technicalDescription_es: "### Descripción Técnica\nLa cuenta administrativa para <APPLICATION> está utilizando una contraseña predeterminada, común o fácil de adivinar (p. ej., 'admin', 'password', 'root'). Esto permite a un atacante que descubre la interfaz administrativa obtener fácilmente el control total de la aplicación.",
         impact_en: "### Impact\nFull compromise of the <APPLICATION> instance, which could lead to code execution on the server, data theft, or a pivot point into the internal network.",
         impact_es: "### Impacto\nCompromiso total de la instancia de <APPLICATION>, lo que podría conducir a la ejecución de código en el servidor, robo de datos o un punto de pivote hacia la red interna.",
-        remediation_en: {
-            shortTerm: "### Short-Term Recommendations\nChange the default administrative password to a strong, randomly generated password.",
-            mediumTerm: "### Medium-Term Recommendations\nRestrict access to the administrative interface to trusted IP addresses or a VPN. Implement Multi-Factor Authentication (MFA) for the administrative account if supported.",
-            longTerm: "### Long-Term Recommendations\nEstablish a policy that requires changing all default credentials during the deployment process of any new software or hardware."
-        },
-        remediation_es: {
-            shortTerm: "### Recomendaciones a Corto Plazo\nCambiar la contraseña administrativa predeterminada por una contraseña segura y generada aleatoriamente.",
-            mediumTerm: "### Recomendaciones a Medio Plazo\nRestringir el acceso a la interfaz administrativa a direcciones IP de confianza o una VPN. Implementar la Autenticación Multifactor (MFA) para la cuenta administrativa si es compatible.",
-            longTerm: "### Recomendaciones a Largo Plazo\nEstablecer una política que requiera cambiar todas las credenciales predeterminadas durante el proceso de implementación de cualquier nuevo software o hardware."
-        },
+        recommendations_en: `#### Short-Term Recommendations
+Change the default administrative password to a strong, randomly generated password.
+#### Medium-Term Recommendations
+Restrict access to the administrative interface to trusted IP addresses or a VPN. Implement Multi-Factor Authentication (MFA) for the administrative account if supported.
+#### Long-Term Recommendations
+Establish a policy that requires changing all default credentials during the deployment process of any new software or hardware.`,
+        recommendations_es: `#### Recomendaciones a Corto Plazo
+Cambiar la contraseña administrativa predeterminada por una contraseña segura y generada aleatoriamente.
+#### Recomendaciones a Medio Plazo
+Restringir el acceso a la interfaz administrativa a direcciones IP de confianza o una VPN. Implementar la Autenticación Multifactor (MFA) para la cuenta administrativa si es compatible.
+#### Recomendaciones a Largo Plazo
+Establecer una política que requiera cambiar todas las credenciales predeterminadas durante el proceso de implementación de cualquier nuevo software o hardware.`,
         cwe: "CWE-1393",
         severity: "Critical",
         cvss: { score: 9.8, vectorString: "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:H/I:H/A:H", attackVector: "N", attackComplexity: "L", privilegesRequired: "N", userInteraction: "N", scope: "U", confidentiality: "H", integrity: "H", availability: "H" },
@@ -2300,16 +2415,18 @@ Una cuenta (p. ej., una cuenta de servicio para una aplicación web) es miembro 
 The compromise of a single over-privileged account can lead to the full compromise of the entire Active Directory domain.`,
         impact_es: `### Impacto
 El compromiso de una única cuenta con privilegios excesivos puede llevar al compromiso total de todo el dominio de Active Directory.`,
-        remediation_en: {
-            shortTerm: "### Short-Term Recommendations\nReview the membership of all high-privilege Active Directory groups (e.g., Domain Admins, Enterprise Admins, Schema Admins) and remove any accounts that do not strictly require those privileges.",
-            mediumTerm: "### Medium-Term Recommendations\nImplement the principle of least privilege for all user and service accounts. Grant permissions based on specific roles and responsibilities.",
-            longTerm: "### Long-Term Recommendations\nImplement a Privileged Access Management (PAM) solution to control and monitor access to privileged accounts. Regularly audit group memberships and permissions."
-        },
-        remediation_es: {
-            shortTerm: "### Recomendaciones a Corto Plazo\nRevisar la membresía de todos los grupos de altos privilegios de Active Directory (p. ej., Domain Admins, Enterprise Admins, Schema Admins) y eliminar cualquier cuenta que no requiera estrictamente esos privilegios.",
-            mediumTerm: "### Recomendaciones a Medio Plazo\nImplementar el principio de privilegio mínimo para todas las cuentas de usuario y de servicio. Otorgar permisos basados en roles y responsabilidades específicas.",
-            longTerm: "### Recomendaciones a Largo Plazo\nImplementar una solución de Gestión de Acceso Privilegiado (PAM) para controlar y monitorear el acceso a cuentas privilegiadas. Auditar regularmente las membresías de grupo y los permisos."
-        },
+        recommendations_en: `#### Short-Term Recommendations
+Review the membership of all high-privilege Active Directory groups (e.g., Domain Admins, Enterprise Admins, Schema Admins) and remove any accounts that do not strictly require those privileges.
+#### Medium-Term Recommendations
+Implement the principle of least privilege for all user and service accounts. Grant permissions based on specific roles and responsibilities.
+#### Long-Term Recommendations
+Implement a Privileged Access Management (PAM) solution to control and monitor access to privileged accounts. Regularly audit group memberships and permissions.`,
+        recommendations_es: `#### Recomendaciones a Corto Plazo
+Revisar la membresía de todos los grupos de altos privilegios de Active Directory (p. ej., Domain Admins, Enterprise Admins, Schema Admins) y eliminar cualquier cuenta que no requiera estrictamente esos privilegios.
+#### Recomendaciones a Medio Plazo
+Implementar el principio de privilegio mínimo para todas las cuentas de usuario y de servicio. Otorgar permisos basados en roles y responsabilidades específicas.
+#### Recomendaciones a Largo Plazo
+Implementar una solución de Gestión de Acceso Privilegiado (PAM) para controlar y monitorear el acceso a cuentas privilegiadas. Auditar regularmente las membresías de grupo y los permisos.`,
         cwe: "CWE-266",
         severity: "Critical",
         cvss: { score: 9.8, vectorString: "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:H/I:H/A:H", attackVector: "N", attackComplexity: "L", privilegesRequired: "N", userInteraction: "N", scope: "U", confidentiality: "H", integrity: "H", availability: "H" },
@@ -2336,16 +2453,18 @@ El compromiso de una única cuenta con privilegios excesivos puede llevar al com
         technicalDescription_es: "### Descripción Técnica\nLos administradores a veces almacenan contraseñas o notas en el campo Descripción por conveniencia. Este campo es legible por cualquier usuario autenticado en el dominio, lo que lo convierte en un lugar común para que los atacantes busquen credenciales durante la post-explotación.",
         impact_en: "### Impact\nThis leads to the direct compromise of credentials, which can be used to escalate privileges or move laterally within the network.",
         impact_es: "### Impacto\nEsto conduce al compromiso directo de credenciales, que pueden ser utilizadas para escalar privilegios o moverse lateralmente dentro de la red.",
-        remediation_en: {
-            shortTerm: "### Short-Term Recommendations\nScan all user and computer account Description fields in Active Directory for passwords and other sensitive information and remove them.",
-            mediumTerm: "### Medium-Term Recommendations\nImplement a secure secrets management solution (like a password vault) for storing service account passwords and other credentials.",
-            longTerm: "### Long-Term Recommendations\nEducate all IT staff and administrators on the dangers of storing sensitive information in insecure locations. Implement regular audits to scan for this issue."
-        },
-        remediation_es: {
-            shortTerm: "### Recomendaciones a Corto Plazo\nEscanear todos los campos de Descripción de las cuentas de usuario y equipo en Active Directory en busca de contraseñas y otra información sensible y eliminarlos.",
-            mediumTerm: "### Recomendaciones a Medio Plazo\nImplementar una solución segura de gestión de secretos (como una bóveda de contraseñas) para almacenar contraseñas de cuentas de servicio y otras credenciales.",
-            longTerm: "### Recomendaciones a Largo Plazo\nEducar a todo el personal de TI y a los administradores sobre los peligros de almacenar información sensible en ubicaciones inseguras. Implementar auditorías regulares para escanear en busca de este problema."
-        },
+        recommendations_en: `#### Short-Term Recommendations
+Scan all user and computer account Description fields in Active Directory for passwords and other sensitive information and remove them.
+#### Medium-Term Recommendations
+Implement a secure secrets management solution (like a password vault) for storing service account passwords and other credentials.
+#### Long-Term Recommendations
+Educate all IT staff and administrators on the dangers of storing sensitive information in insecure locations. Implement regular audits to scan for this issue.`,
+        recommendations_es: `#### Recomendaciones a Corto Plazo
+Escanear todos los campos de Descripción de las cuentas de usuario y equipo en Active Directory en busca de contraseñas y otra información sensible y eliminarlos.
+#### Recomendaciones a Medio Plazo
+Implementar una solución segura de gestión de secretos (como una bóveda de contraseñas) para almacenar contraseñas de cuentas de servicio y otras credenciales.
+#### Recomendaciones a Largo Plazo
+Educar a todo el personal de TI y a los administradores sobre los peligros de almacenar información sensible en ubicaciones inseguras. Implementar auditorías regulares para escanear en busca de este problema.`,
         cwe: "CWE-312",
         severity: "High",
         cvss: { score: 8.8, vectorString: "CVSS:3.1/AV:N/AC:L/PR:L/UI:N/S:U/C:H/I:H/A:H", attackVector: "N", attackComplexity: "L", privilegesRequired: "L", userInteraction: "N", scope: "U", confidentiality: "H", integrity: "H", availability: "H" },
@@ -2379,16 +2498,18 @@ La aplicación se basa en algoritmos como DES, 3DES, RC4, o algoritmos de hash c
 An attacker can decrypt sensitive data, forge digital signatures, or crack password hashes, leading to a loss of confidentiality and integrity.`,
         impact_es: `### Impacto
 Un atacante puede descifrar datos sensibles, falsificar firmas digitales o descifrar hashes de contraseñas, lo que conduce a una pérdida de confidencialidad e integridad.`,
-        remediation_en: {
-            shortTerm: "### Short-Term Recommendations\nReplace all weak algorithms with strong, industry-standard alternatives. For symmetric encryption, use AES-256 (GCM mode is recommended). For hashing, use SHA-256 or stronger.",
-            mediumTerm: "### Medium-Term Recommendations\nEstablish a corporate policy defining approved cryptographic standards and algorithms. Create a centralized crypto library for developers to use.",
-            longTerm: "### Long-Term Recommendations\nImplement a process for regularly reviewing and updating cryptographic standards as new research emerges. Use code scanning tools to detect the use of deprecated cryptographic functions."
-        },
-        remediation_es: {
-            shortTerm: "### Recomendaciones a Corto Plazo\nReemplazar los algoritmos débiles con alternativas fuertes y estándar de la industria. Para el cifrado simétrico, usar AES-256 (se recomienda el modo GCM). Para el hashing, usar SHA-256 o más fuerte.",
-            mediumTerm: "### Recomendaciones a Medio Plazo\nEstablecer una política corporativa que defina los estándares y algoritmos criptográficos aprobados. Crear una biblioteca de criptografía centralizada para que la usen los desarrolladores.",
-            longTerm: "### Recomendaciones a Largo Plazo\nImplementar un proceso para revisar y actualizar regularmente los estándares criptográficos a medida que surja nueva investigación. Usar herramientas de escaneo de código para detectar el uso de funciones criptográficas obsoletas."
-        },
+        recommendations_en: `#### Short-Term Recommendations
+Replace all weak algorithms with strong, industry-standard alternatives. For symmetric encryption, use AES-256 (GCM mode is recommended). For hashing, use SHA-256 or stronger.
+#### Medium-Term Recommendations
+Establish a corporate policy defining approved cryptographic standards and algorithms. Create a centralized crypto library for developers to use.
+#### Long-Term Recommendations
+Implement a process for regularly reviewing and updating cryptographic standards as new research emerges. Use code scanning tools to detect the use of deprecated cryptographic functions.`,
+        recommendations_es: `#### Recomendaciones a Corto Plazo
+Reemplazar los algoritmos débiles con alternativas fuertes y estándar de la industria. Para el cifrado simétrico, usar AES-256 (se recomienda el modo GCM). Para el hashing, usar SHA-256 o más fuerte.
+#### Recomendaciones a Medio Plazo
+Establecer una política corporativa que defina los estándares y algoritmos criptográficos aprobados. Crear una biblioteca de criptografía centralizada para que la usen los desarrolladores.
+#### Recomendaciones a Largo Plazo
+Implementar un proceso para revisar y actualizar regularmente los estándares criptográficos a medida que surja nueva investigación. Usar herramientas de escaneo de código para detectar el uso de funciones criptográficas obsoletas.`,
         cwe: "CWE-327",
         severity: "High",
         cvss: { score: 7.5, vectorString: "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:H/I:N/A:N", attackVector: "N", attackComplexity: "L", privilegesRequired: "N", userInteraction: "N", scope: "U", confidentiality: "H", integrity: "H", availability: "N" },
@@ -2421,16 +2542,18 @@ Esto incluye problemas como codificar claves de cifrado en el código fuente, al
 If an attacker can obtain the cryptographic keys, they can decrypt all data protected by those keys, defeating the purpose of encryption entirely.`,
         impact_es: `### Impacto
 Si un atacante puede obtener las claves criptográficas, puede descifrar todos los datos protegidos por esas claves, anulando por completo el propósito del cifrado.`,
-        remediation_en: {
-            shortTerm: "### Short-Term Recommendations\nStore all cryptographic keys in a secure secrets management system, such as a hardware security module (HSM) or a cloud-based key vault (e.g., AWS KMS, Azure Key Vault, Google Cloud KMS).",
-            mediumTerm: "### Medium-Term Recommendations\nEstablish a key management policy that defines key generation standards, rotation periods, and access control procedures.",
-            longTerm: "### Long-Term Recommendations\nAutomate the key rotation process. Implement monitoring and alerting for any unauthorized access attempts to the key management system."
-        },
-        remediation_es: {
-            shortTerm: "### Recomendaciones a Corto Plazo\nAlmacenar todas las claves criptográficas en un sistema de gestión de secretos seguro, como un módulo de seguridad de hardware (HSM) o una bóveda de claves basada en la nube (p. ej., AWS KMS, Azure Key Vault, Google Cloud KMS).",
-            mediumTerm: "### Recomendaciones a Medio Plazo\nEstablecer una política de gestión de claves que defina los estándares de generación de claves, los períodos de rotación y los procedimientos de control de acceso.",
-            longTerm: "### Recomendaciones a Largo Plazo\nAutomatizar el proceso de rotación de claves. Implementar monitoreo y alertas para cualquier intento de acceso no autorizado al sistema de gestión de claves."
-        },
+        recommendations_en: `#### Short-Term Recommendations
+Store all cryptographic keys in a secure secrets management system, such as a hardware security module (HSM) or a cloud-based key vault (e.g., AWS KMS, Azure Key Vault, Google Cloud KMS).
+#### Medium-Term Recommendations
+Establish a key management policy that defines key generation standards, rotation periods, and access control procedures.
+#### Long-Term Recommendations
+Automate the key rotation process. Implement monitoring and alerting for any unauthorized access attempts to the key management system.`,
+        recommendations_es: `#### Recomendaciones a Corto Plazo
+Almacenar todas las claves criptográficas en un sistema de gestión de secretos seguro, como un módulo de seguridad de hardware (HSM) o una bóveda de claves basada en la nube (p. ej., AWS KMS, Azure Key Vault, Google Cloud KMS).
+#### Recomendaciones a Medio Plazo
+Establecer una política de gestión de claves que defina los estándares de generación de claves, los períodos de rotación y los procedimientos de control de acceso.
+#### Recomendaciones a Largo Plazo
+Automatizar el proceso de rotación de claves. Implementar monitoreo y alertas para cualquier intento de acceso no autorizado al sistema de gestión de claves.`,
         cwe: "CWE-320",
         severity: "Critical",
         cvss: { score: 9.1, vectorString: "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:H/I:H/A:N", attackVector: "N", attackComplexity: "L", privilegesRequired: "N", userInteraction: "N", scope: "U", confidentiality: "H", integrity: "H", availability: "N" },
@@ -2463,16 +2586,18 @@ Los secretos se incrustan directamente como literales de cadena en el código fu
 Leads to the compromise of the hardcoded secret, which can grant an attacker access to databases, third-party services, or other sensitive systems.`,
         impact_es: `### Impacto
 Conduce al compromiso del secreto codificado, lo que puede otorgar a un atacante acceso a bases de datos, servicios de terceros u otros sistemas sensibles.`,
-        remediation_en: {
-            shortTerm: "### Short-Term Recommendations\nRemove all hardcoded secrets from the code and configuration files. Store them securely in a secrets management system (e.g., HashiCorp Vault, AWS Secrets Manager).",
-            mediumTerm: "### Medium-Term Recommendations\nUse environment variables or a secure configuration service to inject secrets into the application at runtime. Never commit secrets to source control.",
-            longTerm: "### Long-Term Recommendations\nImplement pre-commit hooks and CI/CD pipeline checks to automatically scan for and block any commits that contain hardcoded secrets."
-        },
-        remediation_es: {
-            shortTerm: "### Recomendaciones a Corto Plazo\nEliminar todos los secretos codificados del código y los archivos de configuración. Almacenarlos de forma segura en un sistema de gestión de secretos (p. ej., HashiCorp Vault, AWS Secrets Manager).",
-            mediumTerm: "### Recomendaciones a Medio Plazo\nUsar variables de entorno o un servicio de configuración seguro para inyectar secretos en la aplicación en tiempo de ejecución. Nunca cometer secretos en el control de fuentes.",
-            longTerm: "### Recomendaciones a Largo Plazo\nImplementar ganchos pre-commit y comprobaciones en el pipeline de CI/CD para escanear y bloquear automáticamente cualquier commit que contenga secretos codificados."
-        },
+        recommendations_en: `#### Short-Term Recommendations
+Remove all hardcoded secrets from the code and configuration files. Store them securely in a secrets management system (e.g., HashiCorp Vault, AWS Secrets Manager).
+#### Medium-Term Recommendations
+Use environment variables or a secure configuration service to inject secrets into the application at runtime. Never commit secrets to source control.
+#### Long-Term Recommendations
+Implement pre-commit hooks and CI/CD pipeline checks to automatically scan for and block any commits that contain hardcoded secrets.`,
+        recommendations_es: `#### Recomendaciones a Corto Plazo
+Eliminar todos los secretos codificados del código y los archivos de configuración. Almacenarlos de forma segura en un sistema de gestión de secretos (p. ej., HashiCorp Vault, AWS Secrets Manager).
+#### Recomendaciones a Medio Plazo
+Usar variables de entorno o un servicio de configuración seguro para inyectar secretos en la aplicación en tiempo de ejecución. Nunca cometer secretos en el control de fuentes.
+#### Recomendaciones a Largo Plazo
+Implementar ganchos pre-commit y comprobaciones en el pipeline de CI/CD para escanear y bloquear automáticamente cualquier commit que contenga secretos codificados.`,
         cwe: "CWE-798",
         severity: "High",
         cvss: { score: 8.8, vectorString: "CVSS:3.1/AV:N/AC:L/PR:L/UI:N/S:U/C:H/I:H/A:H", attackVector: "N", attackComplexity: "L", privilegesRequired: "L", userInteraction: "N", scope: "U", confidentiality: "H", integrity: "H", availability: "H" },
@@ -2505,16 +2630,18 @@ El generador de números aleatorios utilizado por la aplicación no es criptogr�
 Allows an attacker to predict supposedly random values, which can lead to session hijacking, CSRF token bypass, or the compromise of cryptographic keys.`,
         impact_es: `### Impacto
 Permite a un atacante predecir valores supuestamente aleatorios, lo que puede conducir al secuestro de sesiones, la omisión de tokens CSRF o el compromiso de claves criptográficas.`,
-        remediation_en: {
-            shortTerm: "### Short-Term Recommendations\nUse a cryptographically secure pseudo-random number generator (CSPRNG) provided by the operating system or a trusted library for all security-sensitive values (e.g., `/dev/urandom` on Linux, `crypto.randomBytes` in Node.js).",
-            mediumTerm: "### Medium-Term Recommendations\nReview all code to ensure that no weak PRNGs (like `Math.random()` or `rand()`) are used for generating session tokens, keys, salts, or other cryptographic material.",
-            longTerm: "### Long-Term Recommendations\nEstablish a coding standard that mandates the use of approved CSPRNGs for all security contexts."
-        },
-        remediation_es: {
-            shortTerm: "### Recomendaciones a Corto Plazo\nUtilizar un generador de números pseudoaleatorios criptográficamente seguro (CSPRNG) proporcionado por el sistema operativo o una biblioteca de confianza para todos los valores sensibles a la seguridad (p. ej., `/dev/urandom` en Linux, `crypto.randomBytes` en Node.js).",
-            mediumTerm: "### Recomendaciones a Medio Plazo\nRevisar todo el código para asegurarse de que no se utilicen PRNG débiles (como `Math.random()` o `rand()`) para generar tokens de sesión, claves, sales o otro material criptográfico.",
-            longTerm: "### Recomendaciones a Largo Plazo\nEstablecer un estándar de codificación que exija el uso de CSPRNG aprobados para todos los contextos de seguridad."
-        },
+        recommendations_en: `#### Short-Term Recommendations
+Use a cryptographically secure pseudo-random number generator (CSPRNG) provided by the operating system or a trusted library for all security-sensitive values (e.g., \`/dev/urandom\` on Linux, \`crypto.randomBytes\` in Node.js).
+#### Medium-Term Recommendations
+Review all code to ensure that no weak PRNGs (like \`Math.random()\` or \`rand()\`) are used for generating session tokens, keys, salts, or other cryptographic material.
+#### Long-Term Recommendations
+Establish a coding standard that mandates the use of approved CSPRNGs for all security contexts.`,
+        recommendations_es: `#### Recomendaciones a Corto Plazo
+Utilizar un generador de números pseudoaleatorios criptográficamente seguro (CSPRNG) proporcionado por el sistema operativo o una biblioteca de confianza para todos los valores sensibles a la seguridad (p. ej., \`/dev/urandom\` en Linux, \`crypto.randomBytes\` en Node.js).
+#### Recomendaciones a Medio Plazo
+Revisar todo el código para asegurarse de que no se utilicen PRNG débiles (como \`Math.random()\` o \`rand()\`) para generar tokens de sesión, claves, sales o IVs.
+#### Recomendaciones a Largo Plazo
+Establecer un estándar de codificación que exija el uso de CSPRNG aprobados para todos los contextos de seguridad.`,
         cwe: "CWE-331",
         severity: "Medium",
         cvss: { score: 6.5, vectorString: "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:L/I:L/A:N", attackVector: "N", attackComplexity: "L", privilegesRequired: "N", userInteraction: "N", scope: "U", confidentiality: "L", integrity: "L", availability: "N" },
@@ -2547,16 +2674,18 @@ Cuando un servidor descifra un texto cifrado, primero comprueba el relleno. Si e
 Allows an attacker to decrypt sensitive data that was encrypted, such as session cookies or other confidential information.`,
         impact_es: `### Impacto
 Permite a un atacante descifrar datos sensibles que fueron cifrados, como cookies de sesión u otra información confidencial.`,
-        remediation_en: {
-            shortTerm: "### Short-Term Recommendations\nEnsure that the application returns a generic error message regardless of whether the failure was due to invalid padding, incorrect MAC, or other decryption errors. Do not leak information through error messages.",
-            mediumTerm: "### Medium-Term Recommendations\nUse an authenticated encryption mode (AEAD) such as AES-GCM or ChaCha20-Poly1305. These modes combine encryption and authentication, which inherently protects against padding oracle attacks.",
-            longTerm: "### Long-Term Recommendations\nReview all cryptographic implementations to ensure that they are not vulnerable to side-channel attacks based on error messages or timing differences."
-        },
-        remediation_es: {
-            shortTerm: "### Recomendaciones a Corto Plazo\nAsegurarse de que la aplicación devuelva un mensaje de error genérico independientemente de si el fallo se debió a un relleno no válido, una MAC incorrecta u otros errores de descifrado. No filtrar información a través de los mensajes de error.",
-            mediumTerm: "### Recomendaciones a Medio Plazo\nUtilizar un modo de cifrado autenticado (AEAD) como AES-GCM o ChaCha20-Poly1305. Estos modos combinan cifrado y autenticación, lo que protege inherentemente contra los ataques de oráculo de relleno.",
-            longTerm: "### Recomendaciones a Largo Plazo\nRevisar todas las implementaciones criptográficas para asegurarse de que no sean vulnerables a ataques de canal lateral basados en mensajes de error o diferencias de tiempo."
-        },
+        recommendations_en: `#### Short-Term Recommendations
+Ensure that the application returns a generic error message regardless of whether the failure was due to invalid padding, incorrect MAC, or other decryption errors. Do not leak information through error messages.
+#### Medium-Term Recommendations
+Use an authenticated encryption mode (AEAD) such as AES-GCM or ChaCha20-Poly1305. These modes combine encryption and authentication, which inherently protects against padding oracle attacks.
+#### Long-Term Recommendations
+Review all cryptographic implementations to ensure that they are not vulnerable to side-channel attacks based on error messages or timing differences.`,
+        recommendations_es: `#### Recomendaciones a Corto Plazo
+Asegurarse de que la aplicación devuelva un mensaje de error genérico independientemente de si el fallo se debió a un relleno no válido, una MAC incorrecta u otros errores de descifrado. No filtrar información a través de los mensajes de error.
+#### Recomendaciones a Medio Plazo
+Utilizar un modo de cifrado autenticado (AEAD) como AES-GCM o ChaCha20-Poly1305. Estos modos combinan cifrado y autenticación, lo que protege inherentemente contra los ataques de oráculo de relleno.
+#### Recomendaciones a Largo Plazo
+Revisar todas las implementaciones criptográficas para asegurarse de que no sean vulnerables a ataques de canal lateral basados en mensajes de error o diferencias de tiempo.`,
         cwe: "CWE-209",
         severity: "High",
         cvss: { score: 7.5, vectorString: "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:H/I:N/A:N", attackVector: "N", attackComplexity: "L", privilegesRequired: "N", userInteraction: "N", scope: "U", confidentiality: "H", integrity: "N", availability: "N" },
@@ -2589,16 +2718,18 @@ La aplicación utiliza generadores de números pseudoaleatorios (PRNG) no cripto
 Allows an attacker to predict supposedly random values, which can lead to session hijacking, CSRF token bypass, or the compromise of cryptographic keys.`,
         impact_es: `### Impacto
 Permite a un atacante predecir valores supuestamente aleatorios, lo que puede conducir al secuestro de sesiones, la omisión de tokens CSRF o el compromiso de claves criptográficas.`,
-        remediation_en: {
-            shortTerm: "### Short-Term Recommendations\nUse a cryptographically secure pseudo-random number generator (CSPRNG) for all security-sensitive contexts. Most modern languages and platforms provide one (e.g., `crypto.randomBytes()` in Node.js, `secrets` module in Python).",
-            mediumTerm: "### Medium-Term Recommendations\nReview all code to identify and replace any use of weak PRNGs for generating keys, tokens, salts, or IVs.",
-            longTerm: "### Long-Term Recommendations\nEstablish a coding standard that explicitly forbids the use of non-CSPRNGs for any security-related functionality."
-        },
-        remediation_es: {
-            shortTerm: "### Recomendaciones a Corto Plazo\nUtilizar un generador de números pseudoaleatorios criptográficamente seguro (CSPRNG) para todos los contextos sensibles a la seguridad. La mayoría de los lenguajes y plataformas modernos proporcionan uno (p. ej., `crypto.randomBytes()` en Node.js, módulo `secrets` en Python).",
-            mediumTerm: "### Recomendaciones a Medio Plazo\nRevisar todo el código para asegurarse de que no se utilicen PRNG débiles (como `Math.random()` o `rand()`) para generar tokens de sesión, claves, sales o IVs.",
-            longTerm: "### Recomendaciones a Largo Plazo\nEstablecer un estándar de codificación seguro que prohíba explícitamente el uso de no CSPRNG para cualquier funcionalidad relacionada con la seguridad."
-        },
+        recommendations_en: `#### Short-Term Recommendations
+Use a cryptographically secure pseudo-random number generator (CSPRNG) provided by the operating system or a trusted library for all security-sensitive values (e.g., \`/dev/urandom\` on Linux, \`crypto.randomBytes\` in Node.js).
+#### Medium-Term Recommendations
+Review all code to ensure that no weak PRNGs (like \`Math.random()\` or \`rand()\`) are used for generating session tokens, keys, salts, or other cryptographic material.
+#### Long-Term Recommendations
+Establish a coding standard that mandates the use of approved CSPRNGs for all security contexts.`,
+        recommendations_es: `#### Recomendaciones a Corto Plazo
+Utilizar un generador de números pseudoaleatorios criptográficamente seguro (CSPRNG) proporcionado por el sistema operativo o una biblioteca de confianza para todos los valores sensibles a la seguridad (p. ej., \`/dev/urandom\` en Linux, \`crypto.randomBytes\` en Node.js).
+#### Recomendaciones a Medio Plazo
+Revisar todo el código para asegurarse de que no se utilicen PRNG débiles (como \`Math.random()\` o \`rand()\`) para generar tokens de sesión, claves, sales o IVs.
+#### Recomendaciones a Largo Plazo
+Establecer un estándar de codificación que exija el uso de CSPRNG aprobados para todos los contextos de seguridad.`,
         cwe: "CWE-338",
         severity: "Medium",
         cvss: { score: 6.5, vectorString: "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:L/I:L/A:N", attackVector: "N", attackComplexity: "L", privilegesRequired: "N", userInteraction: "N", scope: "U", confidentiality: "L", integrity: "L", availability: "N" },
@@ -2631,16 +2762,18 @@ Esta es una categoría amplia que incluye problemas como usar cifrado sin autent
 The entire security feature can be bypassed, leading to the same impact as if no cryptography was used at all. This can result in data compromise, authentication bypass, and other critical failures.`,
         impact_es: `### Impacto
 La característica de seguridad completa puede ser eludida, lo que conduce al mismo impacto que si no se hubiera utilizado criptografía en absoluto. Esto puede resultar en el compromiso de datos, la omisión de la autenticación y otros fallos críticos.`,
-        remediation_en: {
-            shortTerm: "### Short-Term Recommendations\nRedesign the flawed security feature based on well-vetted, standard security patterns. For example, use HMAC to add authentication to encrypted data.",
-            mediumTerm: "### Medium-Term Recommendations\nAvoid designing custom cryptographic protocols. Rely on established standards like TLS, JWT, and SAML.",
-            longTerm: "### Long-Term Recommendations\nIncorporate threat modeling and security design reviews into the software development lifecycle to identify and eliminate design flaws before implementation."
-        },
-        remediation_es: {
-            shortTerm: "### Recomendaciones a Corto Plazo\nRediseñar la característica de seguridad defectuosa basándose en patrones de seguridad estándar y bien examinados. Por ejemplo, usar HMAC para agregar autenticación a los datos cifrados.",
-            mediumTerm: "### Recomendaciones a Medio Plazo\nEvitar el diseño de protocolos criptográficos personalizados. Confiar en estándares establecidos como TLS, JWT y SAML.",
-            longTerm: "### Recomendaciones a Largo Plazo\nIncorporar el modelado de amenazas y las revisiones de diseño de seguridad en el ciclo de vida del desarrollo de software para identificar y eliminar los defectos de diseño antes de la implementación."
-        },
+        recommendations_en: `#### Short-Term Recommendations
+Redesign the flawed security feature based on well-vetted, standard security patterns. For example, use HMAC to add authentication to encrypted data.
+#### Medium-Term Recommendations
+Avoid designing custom cryptographic protocols. Rely on established standards like TLS, JWT, and SAML.
+#### Long-Term Recommendations
+Incorporate threat modeling and security design reviews into the software development lifecycle to identify and eliminate design flaws before implementation.`,
+        recommendations_es: `#### Recomendaciones a Corto Plazo
+Rediseñar la característica de seguridad defectuosa basándose en patrones de seguridad estándar y bien examinados. Por ejemplo, usar HMAC para agregar autenticación a los datos cifrados.
+#### Recomendaciones a Medio Plazo
+Evitar el diseño de protocolos criptográficos personalizados. Confiar en estándares establecidos como TLS, JWT y SAML.
+#### Recomendaciones a Largo Plazo
+Incorporar el modelado de amenazas y las revisiones de diseño de seguridad en el ciclo de vida del desarrollo de software para identificar y eliminar los defectos de diseño antes de la implementación.`,
         cwe: "CWE-311",
         severity: "Critical",
         cvss: { score: 9.8, vectorString: "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:H/I:H/A:H", attackVector: "N", attackComplexity: "L", privilegesRequired: "N", userInteraction: "N", scope: "U", confidentiality: "H", integrity: "H", availability: "H" },
@@ -2673,16 +2806,18 @@ La información puede filtrarse a través de la información de tiempo, el consu
 Side-channel attacks can be used to extract cryptographic keys or decrypt data, completely undermining the security of the cryptographic system.`,
         impact_es: `### Impacto
 Los ataques de canal lateral se pueden utilizar para extraer claves criptográficas o descifrar datos, socavando por completo la seguridad del sistema criptográfico.`,
-        remediation_en: {
-            shortTerm: "### Short-Term Recommendations\nEnsure that all cryptographic operations are performed in constant time, meaning they take the same amount of time regardless of the input data. Use safe string comparison functions instead of \`==\` for secrets.",
-            mediumTerm: "### Medium-Term Recommendations\nUse cryptographic libraries that are specifically designed to be resistant to side-channel attacks.",
-            longTerm: "### Long-Term Recommendations\nFor highly sensitive applications, consider physical security measures to protect against power analysis and electromagnetic leak attacks."
-        },
-        remediation_es: {
-            shortTerm: "### Recomendaciones a Corto Plazo\nAsegurarse de que todas las operaciones criptográficas se realicen en tiempo constante, lo que significa que tardan la misma cantidad de tiempo independientemente de los datos de entrada. Usar funciones de comparación de cadenas seguras en lugar de \`==\` para los secretos.",
-            mediumTerm: "### Recomendaciones a Medio Plazo\nUtilizar bibliotecas criptográficas que estén diseñadas específicamente para ser resistentes a los ataques de canal lateral.",
-            longTerm: "### Recomendaciones a Largo Plazo\nPara aplicaciones altamente sensibles, considerar medidas de seguridad física para proteger contra el análisis de energía y los ataques de fuga electromagnética."
-        },
+        recommendations_en: `#### Short-Term Recommendations
+Ensure that all cryptographic operations are performed in constant time, meaning they take the same amount of time regardless of the input data. Use safe string comparison functions instead of \`==\` for secrets.
+#### Medium-Term Recommendations
+Use cryptographic libraries that are specifically designed to be resistant to side-channel attacks.
+#### Long-Term Recommendations
+For highly sensitive applications, consider physical security measures to protect against power analysis and electromagnetic leak attacks.`,
+        recommendations_es: `#### Recomendaciones a Corto Plazo
+Asegurarse de que todas las operaciones criptográficas se realicen en tiempo constante, lo que significa que tardan la misma cantidad de tiempo independientemente de los datos de entrada. Usar funciones de comparación de cadenas seguras en lugar de \`==\` para los secretos.
+#### Recomendaciones a Medio Plazo
+Utilizar bibliotecas criptográficas que estén diseñadas específicamente para ser resistentes a los ataques de canal lateral.
+#### Recomendaciones a Largo Plazo
+Para aplicaciones altamente sensibles, considerar medidas de seguridad física para proteger contra el análisis de energía y los ataques de fuga electromagnética.`,
         cwe: "CWE-208",
         severity: "Medium",
         cvss: { score: 5.9, vectorString: "CVSS:3.1/AV:P/AC:H/PR:N/UI:N/S:U/C:H/I:N/A:N", attackVector: "P", attackComplexity: "H", privilegesRequired: "N", userInteraction: "N", scope: "U", confidentiality: "H", integrity: "N", availability: "N" },
@@ -2715,16 +2850,18 @@ La aplicación cliente está configurada para confiar en cualquier certificado S
 An attacker can intercept, read, and modify all data transmitted between the client and the server, including credentials and sensitive information.`,
         impact_es: `### Impacto
 Un atacante puede interceptar, leer y modificar todos los datos transmitidos entre el cliente y el servidor, incluidas las credenciales y la información sensible.`,
-        remediation_en: {
-            shortTerm: "### Short-Term Recommendations\nEnsure that the client application always validates the server's certificate against the device's trusted root CAs and checks that the certificate's hostname matches the server's domain.",
-            mediumTerm: "### Medium-Term Recommendations\nImplement SSL/TLS certificate pinning, where the application is hardcoded to only trust a specific server certificate or public key. This provides protection even if the device's trust store is compromised.",
-            longTerm: "### Long-Term Recommendations\nUse a centralized and secure networking library for all network communications that enforces these security controls by default."
-        },
-        remediation_es: {
-            shortTerm: "### Recomendaciones a Corto Plazo\nAsegurarse de que la aplicación cliente siempre valide el certificado del servidor con las CA raíz de confianza del dispositivo y compruebe que el nombre de host del certificado coincida con el servidor al que se está conectando.",
-            mediumTerm: "### Recomendaciones a Medio Plazo\nImplementar el anclaje de certificados SSL/TLS (certificate pinning), donde la aplicación está codificada para confiar únicamente en un certificado de servidor o clave pública específicos. Esto proporciona protección incluso si el almacén de confianza del dispositivo está comprometido.",
-            longTerm: "### Recomendaciones a Largo Plazo\nUtilizar una biblioteca de red centralizada y segura para todas las comunicaciones de red que aplique estos controles de seguridad por defecto."
-        },
+        recommendations_en: `#### Short-Term Recommendations
+Ensure that the client application always validates the server's certificate against the device's trusted root CAs and checks that the certificate's hostname matches the server's domain.
+#### Medium-Term Recommendations
+Implement SSL/TLS certificate pinning, where the application is hardcoded to only trust a specific server certificate or public key. This provides protection even if the device's trust store is compromised.
+#### Long-Term Recommendations
+Use a centralized and secure networking library for all network communications that enforces these security controls by default.`,
+        recommendations_es: `#### Recomendaciones a Corto Plazo
+Asegurarse de que la aplicación cliente siempre valide el certificado del servidor con las CA raíz de confianza del dispositivo y compruebe que el nombre de host del certificado coincida con el servidor al que se está conectando.
+#### Recomendaciones a Medio Plazo
+Implementar el anclaje de certificados SSL/TLS (certificate pinning), donde la aplicación está codificada para confiar únicamente en un certificado de servidor o clave pública específicos. Esto proporciona protección incluso si el almacén de confianza del dispositivo está comprometido.
+#### Recomendaciones a Largo Plazo
+Utilizar una biblioteca de red centralizada y segura para todas las comunicaciones de red que aplique estos controles de seguridad por defecto.`,
         cwe: "CWE-295",
         severity: "High",
         cvss: { score: 8.1, vectorString: "CVSS:3.1/AV:A/AC:H/PR:N/UI:N/S:U/C:H/I:H/A:N", attackVector: "A", attackComplexity: "H", privilegesRequired: "N", userInteraction: "N", scope: "U", confidentiality: "H", integrity: "H", availability: "N" },
@@ -2757,16 +2894,18 @@ El servidor admite protocolos débiles como SSLv2, SSLv3 o TLS temprano (1.0, 1.
 An attacker can perform a man-in-the-middle attack to downgrade the connection to a weak protocol/cipher and then decrypt the intercepted traffic, compromising sensitive data.`,
         impact_es: `### Impacto
 Un atacante puede realizar un ataque de intermediario (man-in-the-middle) para degradar la conexión a un protocolo/cifrado débil y luego descifrar el tráfico interceptado, comprometiendo datos sensibles.`,
-        remediation_en: {
-            shortTerm: "### Short-Term Recommendations\nConfigure the server to only support TLS 1.2 and TLS 1.3 with a strong, modern set of cipher suites that provide forward secrecy.",
-            mediumTerm: "### Medium-Term Recommendations\nImplement HTTP Strict Transport Security (HSTS) to ensure that browsers always connect to the server over a secure connection.",
-            longTerm: "### Long-Term Recommendations\nRegularly audit the server's SSL/TLS configuration using automated tools like SSL Labs' SSL Test and keep the configuration updated with current best practices."
-        },
-        remediation_es: {
-            shortTerm: "### Recomendaciones a Corto Plazo\nConfigurar los servidores para que solo admitan TLS 1.2 y TLS 1.3 con un conjunto de cifrado fuerte y moderno que proporcione secreto hacia adelante (forward secrecy).",
-            mediumTerm: "### Recomendaciones a Medio Plazo\nImplementar HTTP Strict Transport Security (HSTS) para garantizar que los navegadores siempre se conecten al servidor a través de una conexión segura.",
-            longTerm: "### Recomendaciones a Largo Plazo\nAuditar regularmente la configuración SSL/TLS del servidor utilizando herramientas automatizadas como la prueba SSL de SSL Labs y mantener la configuración actualizada con las mejores prácticas actuales."
-        },
+        recommendations_en: `#### Short-Term Recommendations
+Configure the server to only support TLS 1.2 and TLS 1.3 with a strong, modern set of cipher suites that provide forward secrecy.
+#### Medium-Term Recommendations
+Implement HTTP Strict Transport Security (HSTS) to ensure that browsers always connect to the server over a secure connection.
+#### Long-Term Recommendations
+Regularly audit the server's SSL/TLS configuration using automated tools like SSL Labs' SSL Test and keep the configuration updated with current best practices.`,
+        recommendations_es: `#### Recomendaciones a Corto Plazo
+Configurar los servidores para que solo admitan TLS 1.2 y TLS 1.3 con un conjunto de cifrado fuerte y moderno que proporcione secreto hacia adelante (forward secrecy).
+#### Recomendaciones a Medio Plazo
+Implementar HTTP Strict Transport Security (HSTS) para garantizar que los navegadores siempre se conecten al servidor a través de una conexión segura.
+#### Recomendaciones a Largo Plazo
+Auditar regularmente la configuración SSL/TLS del servidor utilizando herramientas automatizadas como la prueba SSL de SSL Labs y mantener la configuración actualizada con las mejores prácticas actuales.`,
         cwe: "CWE-326",
         severity: "High",
         cvss: { score: 7.4, vectorString: "CVSS:3.1/AV:N/AC:H/PR:N/UI:N/S:U/C:H/I:H/A:N", attackVector: "N", attackComplexity: "H", privilegesRequired: "N", userInteraction: "N", scope: "U", confidentiality: "H", integrity: "H", availability: "N" },
@@ -2791,16 +2930,18 @@ Un atacante puede realizar un ataque de intermediario (man-in-the-middle) para d
         technicalDescription_es: '### Descripción Técnica\nEsta vulnerabilidad es causada por funciones que no realizan comprobación de límites, como `gets()`, `strcpy()` y `sprintf()`. Un atacante puede proporcionar una cadena de entrada que es más grande que el búfer, sobrescribiendo la pila. Esto se puede utilizar para sobrescribir la dirección de retorno de una función, permitiendo al atacante redirigir la ejecución a su propio código malicioso (shellcode).',
         impact_en: '### Impact\nA successful buffer overflow attack can lead to arbitrary code execution with the privileges of the vulnerable program, or a denial-of-service by crashing the application.',
         impact_es: '### Impacto\nUn ataque de desbordamiento de búfer exitoso puede conducir a la ejecución de código arbitrario con los privilegios del programa vulnerable, o a una denegación de servicio al hacer que la aplicación se bloquee.',
-        remediation_en: {
-            shortTerm: '### Short-Term Recommendations\nReplace all unsafe functions (like `strcpy`) with their safer, bounds-checking counterparts (like `strncpy`). Recompile the application with modern compiler protections like Stack Canaries, ASLR, and DEP/NX.',
-            mediumTerm: '### Medium-Term Recommendations\nConduct a full source code review to identify and eliminate all potential buffer overflow vulnerabilities.',
-            longTerm: '### Long-Term Recommendations\nTrain developers in secure coding practices, specifically focusing on memory management and input validation. Use static analysis (SAST) tools to automatically detect these flaws during development.'
-        },
-        remediation_es: {
-            shortTerm: '### Recomendaciones a Corto Plazo\nReemplazar todas las funciones inseguras (como `strcpy`) por sus contrapartes más seguras que comprueban los límites (como `strncpy`). Recompilar la aplicación con protecciones de compilador modernas como Stack Canaries, ASLR y DEP/NX.',
-            mediumTerm: '### Recomendaciones a Medio Plazo\nRealizar una revisión completa del código fuente para identificar y eliminar todas las posibles vulnerabilidades de desbordamiento de búfer.',
-            longTerm: '### Recomendaciones a Largo Plazo\nCapacitar a los desarrolladores en prácticas de codificación segura, centrándose específicamente en la gestión de la memoria y la validación de entradas. Usar herramientas de análisis estático (SAST) para detectar automáticamente estos fallos durante el desarrollo.'
-        },
+        recommendations_en: `#### Short-Term Recommendations
+Replace all unsafe functions (like \`strcpy\`) with their safer, bounds-checking counterparts (like \`strncpy\`). Recompile the application with modern compiler protections like Stack Canaries, ASLR, and DEP/NX.
+#### Medium-Term Recommendations
+Conduct a full source code review to identify and eliminate all potential buffer overflow vulnerabilities.
+#### Long-Term Recommendations
+Train developers in secure coding practices, specifically focusing on memory management and input validation. Use static analysis (SAST) tools to automatically detect these flaws during development.`,
+        recommendations_es: `#### Recomendaciones a Corto Plazo
+Reemplazar todas las funciones inseguras (como \`strcpy\`) por sus contrapartes más seguras que comprueban los límites (como \`strncpy\`). Recompilar la aplicación con protecciones de compilador modernas como Stack Canaries, ASLR y DEP/NX.
+#### Recomendaciones a Medio Plazo
+Realizar una revisión completa del código fuente para identificar y eliminar todas las posibles vulnerabilidades de desbordamiento de búfer.
+#### Recomendaciones a Largo Plazo
+Capacitar a los desarrolladores en prácticas de codificación segura, centrándose específicamente en la gestión de la memoria y la validación de entradas. Usar herramientas de análisis estático (SAST) para detectar automáticamente estos fallos durante el desarrollo.`,
         cwe: 'CWE-120',
         severity: 'Critical',
         cvss: { score: 9.8, vectorString: 'CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:H/I:H/A:H', attackVector: 'N', attackComplexity: 'L', privilegesRequired: 'N', userInteraction: 'N', scope: 'U', confidentiality: 'H', integrity: 'H', availability: 'H' },
@@ -2823,16 +2964,18 @@ Un atacante puede realizar un ataque de intermediario (man-in-the-middle) para d
         technicalDescription_es: '### Descripción Técnica\nEn lenguajes como C, funciones como `printf()` pueden interpretar especificadores de formato (p. ej., `%x`, `%s`, `%n`) de la entrada del usuario. Un atacante puede usar estos especificadores para leer de la pila, escribir en ubicaciones de memoria arbitrarias y potencialmente ejecutar código arbitrario.',
         impact_en: '### Impact\nCan lead to information disclosure, denial-of-service, or arbitrary code execution.',
         impact_es: '### Impacto\nPuede conducir a la divulgación de información, denegación de servicio o ejecución de código arbitrario.',
-        remediation_en: {
-            shortTerm: '### Short-Term Recommendations\nAlways specify a format string as a constant in functions like `printf`. For example, use `printf("%s", userInput)` instead of `printf(userInput)`.',
-            mediumTerm: '### Medium-Term Recommendations\nUse compiler flags that warn about potential format string vulnerabilities (e.g., `-Wformat` in GCC).',
-            longTerm: '### Long-Term Recommendations\nUse static analysis tools to automatically detect format string bugs in the codebase.'
-        },
-        remediation_es: {
-            shortTerm: '### Recomendaciones a Corto Plazo\nSiempre especificar una cadena de formato como una constante en funciones como `printf`. Por ejemplo, usar `printf("%s", userInput)` en lugar de `printf(userInput)`.',
-            mediumTerm: '### Recomendaciones a Medio Plazo\nUsar banderas de compilador que adviertan sobre posibles vulnerabilidades de cadena de formato (p. ej., `-Wformat` en GCC).',
-            longTerm: '### Recomendaciones a Largo Plazo\nUsar herramientas de análisis estático para detectar automáticamente errores de cadena de formato en el código base.'
-        },
+        recommendations_en: `#### Short-Term Recommendations
+Always specify a format string as a constant in functions like \`printf\`. For example, use \`printf("%s", userInput)\` instead of \`printf(userInput)\`.
+#### Medium-Term Recommendations
+Use compiler flags that warn about potential format string vulnerabilities (e.g., \`-Wformat\` in GCC).
+#### Long-Term Recommendations
+Use static analysis tools to automatically detect format string bugs in the codebase.`,
+        recommendations_es: `#### Recomendaciones a Corto Plazo
+Siempre especificar una cadena de formato como una constante en funciones como \`printf\`. Por ejemplo, usar \`printf("%s", userInput)\` en lugar de \`printf(userInput)\`.
+#### Recomendaciones a Medio Plazo
+Usar banderas de compilador que adviertan sobre posiblesulnerabilidades de cadena de formato (p. ej., \`-Wformat\` en GCC).
+#### Recomendaciones a Largo Plazo
+Usar herramientas de análisis estático para detectar automáticamente errores de cadena de formato en el código base.`,
         cwe: 'CWE-134',
         severity: 'High',
         cvss: { score: 8.8, vectorString: 'CVSS:3.1/AV:N/AC:L/PR:L/UI:N/S:U/C:H/I:H/A:H', attackVector: 'N', attackComplexity: 'L', privilegesRequired: 'L', userInteraction: 'N', scope: 'U', confidentiality: 'H', integrity: 'H', availability: 'H' },
@@ -2855,16 +2998,18 @@ Un atacante puede realizar un ataque de intermediario (man-in-the-middle) para d
         technicalDescription_es: '### Descripción Técnica\nEsta vulnerabilidad ocurre en aplicaciones multihilo donde los recursos compartidos no se sincronizan correctamente. Un ejemplo común es un error de "Time-of-check to time-of-use" (TOCTOU), donde una aplicación comprueba una condición de seguridad (p. ej., permisos de archivo) y luego realiza una acción, pero un atacante puede cambiar la condición entre la comprobación y la acción.',
         impact_en: '### Impact\nCan lead to privilege escalation, denial-of-service, or data corruption.',
         impact_es: '### Impacto\nPuede conducir a la escalada de privilegios, denegación de servicio o corrupción de datos.',
-        remediation_en: {
-            shortTerm: '### Short-Term Recommendations\nImplement proper synchronization mechanisms like mutexes, semaphores, or locks when accessing shared resources.',
-            mediumTerm: '### Medium-Term Recommendations\nDesign atomic operations for critical sections of code. Avoid TOCTOU flaws by performing the action immediately after the check within a locked section.',
-            longTerm: '### Long-Term Recommendations\nUse thread-safe libraries and frameworks. Conduct thorough code reviews and use static/dynamic analysis tools to identify potential race conditions.'
-        },
-        remediation_es: {
-            shortTerm: '### Recomendaciones a Corto Plazo\nImplementar mecanismos de sincronización adecuados como mutex, semáforos o bloqueos al acceder a recursos compartidos.',
-            mediumTerm: '### Recomendaciones a Medio Plazo\nDiseñar operaciones atómicas para secciones críticas del código. Evitar fallas TOCTOU realizando la acción inmediatamente después de la verificación dentro de una sección bloqueada.',
-            longTerm: '### Recomendaciones a Largo Plazo\nUsar bibliotecas y frameworks seguros para hilos. Realizar revisiones de código exhaustivas y usar herramientas de análisis estático/dinámico para identificar posibles condiciones de carrera.'
-        },
+        recommendations_en: `#### Short-Term Recommendations
+Implement proper synchronization mechanisms like mutexes, semaphores, or locks when accessing shared resources.
+#### Medium-Term Recommendations
+Design atomic operations for critical sections of code. Avoid TOCTOU flaws by performing the action immediately after the check within a locked section.
+#### Long-Term Recommendations
+Use thread-safe libraries and frameworks. Conduct thorough code reviews and use static/dynamic analysis tools to identify potential race conditions.`,
+        recommendations_es: `#### Recomendaciones a Corto Plazo
+Implementar mecanismos de sincronización adecuados como mutex, semáforos o bloqueos al acceder a recursos compartidos.
+#### Recomendaciones a Medio Plazo
+Diseñar operaciones atómicas para secciones críticas del código. Evitar fallas TOCTOU realizando la acción inmediatamente después de la verificación dentro de una sección bloqueada.
+#### Recomendaciones a Largo Plazo
+Usar bibliotecas y frameworks seguros para hilos. Realizar revisiones de código exhaustivas y usar herramientas de análisis estático/dinámico para identificar posibles condiciones de carrera.`,
         cwe: 'CWE-362',
         severity: 'High',
         cvss: { score: 8.1, vectorString: 'CVSS:3.1/AV:N/AC:H/PR:N/UI:N/S:U/C:H/I:H/A:H', attackVector: 'N', attackComplexity: 'H', privilegesRequired: 'N', userInteraction: 'N', scope: 'U', confidentiality: 'H', integrity: 'H', availability: 'H' },
@@ -2887,16 +3032,18 @@ Un atacante puede realizar un ataque de intermediario (man-in-the-middle) para d
         technicalDescription_es: '### Descripción Técnica\nCuando una aplicación no sanea correctamente la entrada del usuario antes de colocarla en una consulta LDAP, un atacante puede inyectar metacaracteres LDAP (como `*`, `(`, `)`, `&`, `|`) para modificar la consulta. Esto se puede utilizar para eludir la autenticación o ver/modificar información en el directorio LDAP.',
         impact_en: '### Impact\nCan lead to authentication bypass, privilege escalation, and disclosure of sensitive information stored in the LDAP directory.',
         impact_es: '### Impacto\nPuede conducir a la omisión de la autenticación, la escalada de privilegios y la divulgación de información sensible almacenada en el directorio LDAP.',
-        remediation_en: {
-            shortTerm: '### Short-Term Recommendations\nUse a framework-provided LDAP encoding function to sanitize all user-supplied input before it is placed in an LDAP query.',
-            mediumTerm: '### Medium-Term Recommendations\nAvoid constructing LDAP queries from user input. Use a mapping to predefined queries where possible.',
-            longTerm: '### Long-Term Recommendations\nImplement the principle of least privilege for the LDAP user account, so it can only access the necessary parts of the directory.'
-        },
-        remediation_es: {
-            shortTerm: '### Recomendaciones a Corto Plazo\nUtilizar una función de codificación LDAP proporcionada por el framework para sanear toda la entrada proporcionada por el usuario antes de que se coloque en una consulta LDAP.',
-            mediumTerm: '### Recomendaciones a Medio Plazo\nEvitar la construcción de consultas LDAP a partir de la entrada del usuario. Usar un mapeo a consultas predefinidas cuando sea posible.',
-            longTerm: '### Recomendaciones a Largo Plazo\nImplementar el principio de privilegio mínimo para la cuenta de usuario LDAP, de modo que solo pueda acceder a las partes necesarias del directorio.'
-        },
+        recommendations_en: `#### Short-Term Recommendations
+Use a framework-provided LDAP encoding function to sanitize all user-supplied input before it is placed in an LDAP query.
+#### Medium-Term Recommendations
+Avoid constructing LDAP queries from user input. Use a mapping to predefined queries where possible.
+#### Long-Term Recommendations
+Implement the principle of least privilege for the LDAP user account, so it can only access the necessary parts of the directory.`,
+        recommendations_es: `#### Recomendaciones a Corto Plazo
+Utilizar una función de codificación LDAP proporcionada por el framework para sanear toda la entrada proporcionada por el usuario antes de que se coloque en una consulta LDAP.
+#### Recomendaciones a Medio Plazo
+Evitar la construcción de consultas LDAP a partir de la entrada del usuario. Usar un mapeo a consultas predefinidas cuando sea posible.
+#### Recomendaciones a Largo Plazo
+Implementar el principio de privilegio mínimo para la cuenta de usuario LDAP, de modo que solo pueda acceder a las partes necesarias del directorio.`,
         cwe: 'CWE-90',
         severity: 'High',
         cvss: { score: 8.8, vectorString: 'CVSS:3.1/AV:N/AC:L/PR:L/UI:N/S:U/C:H/I:H/A:H', attackVector: 'N', attackComplexity: 'L', privilegesRequired: 'L', userInteraction: 'N', scope: 'U', confidentiality: 'H', integrity: 'H', availability: 'H' },
@@ -2919,16 +3066,18 @@ Un atacante puede realizar un ataque de intermediario (man-in-the-middle) para d
         technicalDescription_es: '### Descripción Técnica\nDe forma similar a la inyección SQL, un atacante puede manipular una consulta XPath inyectando caracteres maliciosos. Esto puede permitirles eludir la autenticación, o acceder o modificar partes del documento XML a las que no deberían tener acceso.',
         impact_en: '### Impact\nCan lead to authentication bypass, information disclosure, and data corruption within the XML data store.',
         impact_es: '### Impacto\nPuede conducir a la omisión de la autenticación, la divulgación de información y la corrupción de datos dentro del almacén de datos XML.',
-        remediation_en: {
-            shortTerm: '### Short-Term Recommendations\nUse parameterized XPath queries or libraries that automatically handle the escaping of special characters.',
-            mediumTerm: '### Medium-Term Recommendations\nValidate all user input against a strict allow-list of expected values.',
-            longTerm: '### Long-Term Recommendations\nAvoid building XPath queries from user input. Use predefined queries where possible.'
-        },
-        remediation_es: {
-            shortTerm: '### Recomendaciones a Corto Plazo\nUtilizar consultas XPath parametrizadas o bibliotecas que manejen automáticamente el escape de caracteres especiales.',
-            mediumTerm: '### Recomendaciones a Medio Plazo\nValidar toda la entrada del usuario con una lista blanca estricta de valores esperados.',
-            longTerm: '### Recomendaciones a Largo Plazo\nEvitar construir consultas XPath a partir de la entrada del usuario. Usar consultas predefinidas cuando sea posible.'
-        },
+        recommendations_en: `#### Short-Term Recommendations
+Use parameterized XPath queries or libraries that automatically handle the escaping of special characters.
+#### Medium-Term Recommendations
+Validate all user input against a strict allow-list of expected values.
+#### Long-Term Recommendations
+Avoid building XPath queries from user input. Use predefined queries where possible.`,
+        recommendations_es: `#### Recomendaciones a Corto Plazo
+Utilizar consultas XPath parametrizadas o bibliotecas que manejen automáticamente el escape de caracteres especiales.
+#### Recomendaciones a Medio Plazo
+Validar toda la entrada del usuario con una lista blanca estricta de valores esperados.
+#### Recomendaciones a Largo Plazo
+Evitar construir consultas XPath a partir de la entrada del usuario. Usar consultas predefinidas cuando sea posible.`,
         cwe: 'CWE-643',
         severity: 'High',
         cvss: { score: 8.8, vectorString: 'CVSS:3.1/AV:N/AC:L/PR:L/UI:N/S:U/C:H/I:H/A:H', attackVector: 'N', attackComplexity: 'L', privilegesRequired: 'L', userInteraction: 'N', scope: 'U', confidentiality: 'H', integrity: 'H', availability: 'H' },
@@ -2951,16 +3100,18 @@ Un atacante puede realizar un ataque de intermediario (man-in-the-middle) para d
         technicalDescription_es: '### Descripción Técnica\nMuchos frameworks web utilizan plantillas para generar HTML dinámico. Si la entrada del usuario se concatena directamente en una plantilla en lugar de pasarse como datos, un atacante puede inyectar sintaxis de plantilla. Esto a menudo se puede escalar para ejecutar comandos arbitrarios en el servidor subyacente.',
         impact_en: '### Impact\nCan lead to full Remote Code Execution (RCE) on the server.',
         impact_es: '### Impacto\nPuede conducir a la Ejecución Remota de Código (RCE) completa en el servidor.',
-        remediation_en: {
-            shortTerm: '### Short-Term Recommendations\nAlways pass user input as data to the template engine, never concatenate it into the template string itself.',
-            mediumTerm: '### Medium-Term Recommendations\nUse logic-less templates where possible to reduce the attack surface.',
-            longTerm: '### Long-Term Recommendations\nRun the application in a sandboxed environment to limit the impact of a potential RCE.'
-        },
-        remediation_es: {
-            shortTerm: '### Recomendaciones a Corto Plazo\nSiempre pasar la entrada del usuario como datos al motor de plantillas, nunca concatenarla en la propia cadena de la plantilla.',
-            mediumTerm: '### Recomendaciones a Medio Plazo\nUsar plantillas sin lógica cuando sea posible para reducir la superficie de ataque.',
-            longTerm: '### Recomendaciones a Largo Plazo\nEjecutar la aplicación en un entorno sandbox para limitar el impacto de una posible RCE.'
-        },
+        recommendations_en: `#### Short-Term Recommendations
+Always pass user input as data to the template engine, never concatenate it into the template string itself.
+#### Medium-Term Recommendations
+Use logic-less templates where possible to reduce the attack surface.
+#### Long-Term Recommendations
+Run the application in a sandboxed environment to limit the impact of a potential RCE.`,
+        recommendations_es: `#### Recomendaciones a Corto Plazo
+Siempre pasar la entrada del usuario como datos al motor de plantillas, nunca concatenarla en la propia cadena de la plantilla.
+#### Recomendaciones a Medio Plazo
+Usar plantillas sin lógica cuando sea posible para reducir la superficie de ataque.
+#### Recomendaciones a Largo Plazo
+Ejecutar la aplicación en un entorno sandbox para limitar el impacto de una posible RCE.`,
         cwe: 'CWE-94',
         severity: 'Critical',
         cvss: { score: 9.8, vectorString: 'CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:H/I:H/A:H', attackVector: 'N', attackComplexity: 'L', privilegesRequired: 'N', userInteraction: 'N', scope: 'U', confidentiality: 'H', integrity: 'H', availability: 'H' },
@@ -2983,16 +3134,18 @@ Un atacante puede realizar un ataque de intermediario (man-in-the-middle) para d
         technicalDescription_es: '### Descripción Técnica\nLas aplicaciones modernas se construyen utilizando una gran cantidad de dependencias de terceros. Si estas dependencias no se actualizan regularmente, la aplicación puede heredar sus vulnerabilidades. Un atacante puede explotar estasulnerabilidades conocidas para comprometer la aplicación.',
         impact_en: '### Impact\nThe impact depends on the specific vulnerability in the open-source component, but it can range from information disclosure to full Remote Code Execution.',
         impact_es: '### Impacto\nEl impacto depende de la vulnerabilidad específica en el componente de código abierto, pero puede variar desde la divulgación de información hasta la Ejecución Remota de Código completa.',
-        remediation_en: {
-            shortTerm: '### Short-Term Recommendations\nUpdate all vulnerable dependencies to the latest secure version.',
-            mediumTerm: '### Medium-Term Recommendations\nImplement a Software Composition Analysis (SCA) tool (like `npm audit`, Snyk, or Dependabot) to automatically scan for and alert on vulnerable dependencies.',
-            longTerm: '### Long-Term Recommendations\nEstablish a process for regularly reviewing and updating all third-party libraries. Have a plan in place for responding to newly disclosed vulnerabilities in your dependencies.'
-        },
-        remediation_es: {
-            shortTerm: '### Recomendaciones a Corto Plazo\nActualizar todas las dependencias vulnerables a la última versión segura.',
-            mediumTerm: '### Recomendaciones a Medio Plazo\nImplementar una herramienta de Análisis de Composición de Software (SCA) (como `npm audit`, Snyk, o Dependabot) para escanear y alertar automáticamente sobre dependencias vulnerables.',
-            longTerm: '### Recomendaciones a Largo Plazo\nEstablecer un proceso para revisar y actualizar regularmente todas las bibliotecas de terceros. Tener un plan para responder a las vulnerabilidades recién divulgadas en sus dependencias.'
-        },
+        recommendations_en: `#### Short-Term Recommendations
+Update all vulnerable dependencies to the latest secure version.
+#### Medium-Term Recommendations
+Implement a Software Composition Analysis (SCA) tool (like \`npm audit\`, Snyk, or Dependabot) to automatically scan for and alert on vulnerable dependencies.
+#### Long-Term Recommendations
+Establish a process for regularly reviewing and updating all third-party libraries. Have a plan in place for responding to newly disclosed vulnerabilities in your dependencies.`,
+        recommendations_es: `#### Recomendaciones a Corto Plazo
+Actualizar todas las dependencias vulnerables a la última versión segura.
+#### Recomendaciones a Medio Plazo
+Implementar una herramienta de Análisis de Composición de Software (SCA) (como \`npm audit\`, Snyk, o Dependabot) para escanear y alertar automáticamente sobre dependencias vulnerables.
+#### Recomendaciones a Largo Plazo
+Establecer un proceso para revisar y actualizar regularmente todas las bibliotecas de terceros. Tener un plan para responder a las vulnerabilidades recién divulgadas en sus dependencias.`,
         cwe: 'CWE-1104',
         severity: 'High',
         cvss: { score: 8.8, vectorString: 'CVSS:3.1/AV:N/AC:L/PR:L/UI:N/S:U/C:H/I:H/A:H', attackVector: 'N', attackComplexity: 'L', privilegesRequired: 'L', userInteraction: 'N', scope: 'U', confidentiality: 'H', integrity: 'H', availability: 'H' },
@@ -3015,16 +3168,18 @@ Un atacante puede realizar un ataque de intermediario (man-in-the-middle) para d
         technicalDescription_es: '### Descripción Técnica\nLa aplicación utiliza un identificador proporcionado por el usuario para recuperar un objeto (p. ej., `.../facturas?id=123`). La aplicación no verifica que el usuario que ha iniciado sesión esté autorizado para acceder al objeto `123`. Un atacante puede cambiar el parámetro `id` a `124` para acceder a la factura de otro usuario.',
         impact_en: '### Impact\nAllows attackers to bypass authorization and access or modify data belonging to other users.',
         impact_es: '### Impacto\nPermite a los atacantes eludir la autorización y acceder o modificar datos pertenecientes a otros usuarios.',
-        remediation_en: {
-            shortTerm: '### Short-Term Recommendations\nFor every request that accesses a private object, verify that the logged-in user is authorized to access that specific object.',
-            mediumTerm: '### Medium-Term Recommendations\nAvoid using direct object references in URLs. Use indirect references per user or session, or use unpredictable, random identifiers (GUIDs).',
-            longTerm: '### Long-Term Recommendations\nImplement a centralized access control mechanism that performs these checks automatically.'
-        },
-        remediation_es: {
-            shortTerm: '### Recomendaciones a Corto Plazo\nPara cada solicitud que acceda a un objeto privado, verificar que el usuario que ha iniciado sesión esté autorizado para acceder a ese objeto específico.',
-            mediumTerm: '### Recomendaciones a Medio Plazo\nEvitar el uso de referencias directas a objetos en las URL. Usar referencias indirectas por usuario o sesión, o usar identificadores impredecibles y aleatorios (GUID).',
-            longTerm: '### Recomendaciones a Largo Plazo\nImplementar un mecanismo de control de acceso centralizado que realice estas comprobaciones automáticamente.'
-        },
+        recommendations_en: `#### Short-Term Recommendations
+For every request that accesses a private object, verify that the logged-in user is authorized to access that specific object.
+#### Medium-Term Recommendations
+Avoid using direct object references in URLs. Use indirect references per user or session, or use unpredictable, random identifiers (GUIDs).
+#### Long-Term Recommendations
+Implement a centralized access control mechanism that performs these checks automatically.`,
+        recommendations_es: `#### Recomendaciones a Corto Plazo
+Para cada solicitud que acceda a un objeto privado, verificar que el usuario que ha iniciado sesión esté autorizado para acceder a ese objeto específico.
+#### Recomendaciones a Medio Plazo
+Evitar el uso de referencias directas a objetos en las URL. Usar referencias indirectas por usuario o sesión, o usar identificadores impredecibles y aleatorios (GUID).
+#### Recomendaciones a Largo Plazo
+Implementar un mecanismo de control de acceso centralizado que realice estas comprobaciones automáticamente.`,
         cwe: 'CWE-639',
         severity: 'High',
         cvss: { score: 8.1, vectorString: 'CVSS:3.1/AV:N/AC:L/PR:L/UI:N/S:U/C:H/I:H/A:N', attackVector: 'N', attackComplexity: 'L', privilegesRequired: 'L', userInteraction: 'N', scope: 'U', confidentiality: 'H', integrity: 'H', availability: 'N' },
@@ -3047,16 +3202,18 @@ Un atacante puede realizar un ataque de intermediario (man-in-the-middle) para d
         technicalDescription_es: '### Descripción Técnica\nLas responses HTTP del servidor no incluyen encabezados de seguridad importantes como `Content-Security-Policy`, `Strict-Transport-Security`, `X-Content-Type-Options`, `X-Frame-Options` o `Referrer-Policy`.',
         impact_en: '### Impact\nThe absence of these headers makes the application more susceptible to various client-side attacks, reduces the overall security posture, and may fail compliance checks.',
         impact_es: '### Impacto\nLa ausencia de estos encabezados hace que la aplicación sea más susceptible a varios ataques del lado del cliente, reduce la postura de seguridad general y puede no pasar las comprobaciones de cumplimiento.',
-        remediation_en: {
-            shortTerm: '### Short-Term Recommendations\nImplement essential headers like `X-Frame-Options: DENY` (to prevent clickjacking) and `X-Content-Type-Options: nosniff`.',
-            mediumTerm: '### Medium-Term Recommendations\nImplement `Strict-Transport-Security` (HSTS) to enforce HTTPS. Develop and implement a strong `Content-Security-Policy` (CSP) to mitigate XSS.',
-            longTerm: '### Long-Term Recommendations\nRegularly review and update security headers based on current best practices. Use security scanning tools to automatically check for missing headers.'
-        },
-        remediation_es: {
-            shortTerm: '### Recomendaciones a Corto Plazo\nImplementar encabezados esenciales como `X-Frame-Options: DENY` (para prevenir el clickjacking) y `X-Content-Type-Options: nosniff`.',
-            mediumTerm: '### Recomendaciones a Medio Plazo\nImplementar `Strict-Transport-Security` (HSTS) para forzar HTTPS. Desarrollar e implementar una política de seguridad de contenido (`Content-Security-Policy` o CSP) sólida para mitigar el XSS.',
-            longTerm: '### Recomendaciones a Largo Plazo\nRevisar y actualizar regularmente los encabezados de seguridad basándose en las mejores prácticas actuales. Usar herramientas de escaneo de seguridad para verificar automáticamente la falta de encabezados.'
-        },
+        recommendations_en: `#### Short-Term Recommendations
+Set the \`X-Frame-Options\` HTTP header to \`DENY\` or \`SAMEORIGIN\`.
+#### Medium-Term Recommendations
+Implement a strong \`Content-Security-Policy\` (CSP) with the \`frame-ancestors\` directive (e.g., \`frame-ancestors 'self';\`).
+#### Long-Term Recommendations
+In addition to headers, use "frame-busting" scripts as a defense-in-depth measure, although this is less reliable than headers.`,
+        recommendations_es: `#### Recomendaciones a Corto Plazo
+Establecer el encabezado HTTP \`X-Frame-Options\` en \`DENY\` o \`SAMEORIGIN\`.
+#### Recomendaciones a Medio Plazo
+Implementar una política de seguridad de contenido (CSP) sólida con la directiva \`frame-ancestors\` (p. ej., \`frame-ancestors 'self';\`).
+#### Recomendaciones a Largo Plazo
+Además de los encabezados, usar scripts "frame-busting" como una medida de defensa en profundidad, aunque esto es menos fiable que los encabezados.`,
         cwe: 'CWE-693',
         severity: 'Medium',
         cvss: { score: 6.1, vectorString: 'CVSS:3.1/AV:N/AC:L/PR:N/UI:R/S:C/C:L/I:L/A:N', attackVector: 'N', attackComplexity: 'L', privilegesRequired: 'N', userInteraction: 'R', scope: 'C', confidentiality: 'L', integrity: 'L', availability: 'N' },
@@ -3064,7 +3221,7 @@ Un atacante puede realizar un ataque de intermediario (man-in-the-middle) para d
         tags: ['Additional'],
         affectedComponents_en: '### Affected Components\n- All HTTP responses from the application server.',
         details_en: '### Proof of Concept\n[TODO: Provide a screenshot of the HTTP response headers showing the absence of recommended security headers.]',
-        affectedComponents_es: '### Componentes Afectados\n- Todas las responses HTTP del servidor de aplicaciones.',
+        affectedComponents_es: '### Componentes Afectados\n- Todas las responses HTTP del servidor de aplicaciones.]',
         details_es: '### Prueba de Concepto\n[TODO: Proporcionar una captura de pantalla de las herramientas de desarrollador del navegador que muestre los atributos de la cookie, o la falta de ellos.]',
         immediateActions_en: "### Immediate Actions\nAdd the recommended security headers to all HTTP responses from the server.",
         immediateActions_es: "### Acciones Inmediatas\nAñadir los encabezados de seguridad recomendados a todas las responses HTTP del servidor.",
@@ -3079,16 +3236,18 @@ Un atacante puede realizar un ataque de intermediario (man-in-the-middle) para d
         technicalDescription_es: '### Descripción Técnica\nEl atacante utiliza un `<iframe>` transparente para superponer una página web legítima e invisible sobre una página web visible de señuelo. Cuando el usuario hace clic en la página de señuelo (p. ej., un botón de "Gana un premio"), en realidad está haciendo clic en un botón de la página invisible (p. ej., un botón de "Eliminar cuenta").',
         impact_en: '### Impact\nCan be used to perform unauthorized actions on behalf of the user, such as changing permissions, deleting data, or making purchases.',
         impact_es: '### Impacto\nPuede ser utilizado para realizar acciones no autorizadas en nombre del usuario, como cambiar permisos, eliminar datos o realizar compras.',
-        remediation_en: {
-            shortTerm: '### Short-Term Recommendations\nSet the `X-Frame-Options` HTTP header to `DENY` or `SAMEORIGIN`.',
-            mediumTerm: '### Medium-Term Recommendations\nImplement a strong `Content-Security-Policy` (CSP) with the `frame-ancestors` directive (e.g., `frame-ancestors \'self\';`).',
-            longTerm: '### Long-Term Recommendations\nIn addition to headers, use "frame-busting" scripts as a defense-in-depth measure, although this is less reliable than headers.'
-        },
-        remediation_es: {
-            shortTerm: '### Recomendaciones a Corto Plazo\nEstablecer el encabezado HTTP `X-Frame-Options` en `DENY` o `SAMEORIGIN`.',
-            mediumTerm: '### Recomendaciones a Medio Plazo\nImplementar una política de seguridad de contenido (CSP) sólida con la directiva `frame-ancestors` (p. ej., `frame-ancestors \'self\';`).',
-            longTerm: '### Recomendaciones a Largo Plazo\nAdemás de los encabezados, usar scripts "frame-busting" como una medida de defensa en profundidad, aunque esto es menos fiable que los encabezados.'
-        },
+        recommendations_en: `#### Short-Term Recommendations
+Set the \`X-Frame-Options\` HTTP header to \`DENY\` or \`SAMEORIGIN\`.
+#### Medium-Term Recommendations
+Implement a strong \`Content-Security-Policy\` (CSP) with the \`frame-ancestors\` directive (e.g., \`frame-ancestors 'self';\`).
+#### Long-Term Recommendations
+In addition to headers, use "frame-busting" scripts as a defense-in-depth measure, although this is less reliable than headers.`,
+        recommendations_es: `#### Recomendaciones a Corto Plazo
+Establecer el encabezado HTTP \`X-Frame-Options\` en \`DENY\` o \`SAMEORIGIN\`.
+#### Recomendaciones a Medio Plazo
+Implementar una política de seguridad de contenido (CSP) sólida con la directiva \`frame-ancestors\` (p. ej., \`frame-ancestors 'self';\`).
+#### Recomendaciones a Largo Plazo
+Además de los encabezados, usar scripts "frame-busting" como una medida de defensa en profundidad, aunque esto es menos fiable que los encabezados.`,
         cwe: 'CWE-1021',
         severity: 'Medium',
         cvss: { score: 5.4, vectorString: 'CVSS:3.1/AV:N/AC:L/PR:N/UI:R/S:U/C:L/I:L/A:N', attackVector: 'N', attackComplexity: 'L', privilegesRequired: 'N', userInteraction: 'R', scope: 'U', confidentiality: 'L', integrity: 'L', availability: 'N' },
@@ -3096,810 +3255,10 @@ Un atacante puede realizar un ataque de intermediario (man-in-the-middle) para d
         tags: ['Additional'],
         affectedComponents_en: '### Affected Components\n- All pages on the web application that do not have framing protection.',
         details_en: '### Proof of Concept\n[TODO: Provide an HTML page with an `<iframe>` that loads the vulnerable application and demonstrates a clickjacking attack.]',
-        affectedComponents_es: '### Componentes Afectados\n- Todas las páginas de la aplicación web que no tienen protección contra enmarcado.',
+        affectedComponents_es: '### Componentes Afectados\n- Todas las páginas de la aplicación web que no tienen protección contra enmarcado.]',
         details_es: '### Prueba de Concepto\n[TODO: Proporcionar una página HTML con un `<iframe>` que cargue la aplicación vulnerable y demuestre un ataque de secuestro de clics.]',
         immediateActions_en: "### Immediate Actions\nImplement the `X-Frame-Options` or `Content-Security-Policy: frame-ancestors` header to prevent the site from being framed.",
         immediateActions_es: "### Acciones Inmediatas\nImplementar el encabezado `X-Frame-Options` o `Content-Security-Policy: frame-ancestors` para evitar que el sitio sea enmarcado.",
-    },
-    {
-        id: 'vuln-add-011',
-        title_en: 'DOM-based XSS',
-        title_es: 'XSS basado en DOM',
-        overview_en: '### Overview\nDOM-based XSS is a form of XSS where the attack payload is executed as a result of modifying the DOM "environment" in the victim\'s browser used by the original client-side script, so that the client-side code runs in an "unexpected" manner.',
-        overview_es: '### Resumen\nEl XSS basado en DOM es una forma de XSS donde la carga útil del ataque se ejecuta como resultado de la modificación del "entorno" DOM en el navegador de la víctima utilizado por el script original del lado del cliente, de modo que el código del lado del cliente se ejecuta de una manera "inesperada".',
-        technicalDescription_en: '### Technical Description\nThe vulnerability occurs when a client-side script reads data from a controllable part of the DOM (e.g., the URL fragment) and passes it to a "sink" that supports dynamic code execution, like \'eval()\' or \'innerHTML\'. An attacker can craft a link with a malicious payload in the fragment (#) which, when visited, is executed by the legitimate script.',
-        technicalDescription_es: '### Descripción Técnica\nLa vulnerabilidad ocurre cuando un script del lado del cliente lee datos de una parte controlable del DOM (p. ej., el fragmento de la URL) y los pasa a un "sink" que admite la ejecución dinámica de código, como \'eval()\' o \'innerHTML\'. Un atacante puede crear un enlace con una carga útil maliciosa en el fragmento (#) que, cuando se visita, es ejecutado por el script legítimo.',
-        impact_en: '### Impact\nSame as other forms of XSS, it can lead to session hijacking, account takeover, or performing actions on behalf of the user.',
-        impact_es: '### Impacto\nAl igual que otras formas de XSS, puede conducir al secuestro de sesiones, la toma de control de cuentas o la realización de acciones en nombre del usuario.',
-        remediation_en: {
-            shortTerm: "### Short-Term Recommendations\nAvoid allowing data from any untrusted source to be dynamically written to the HTML document. Sanitize all untrusted data before using it to modify the DOM.",
-            mediumTerm: "### Medium-Term Recommendations\nUse safe JavaScript APIs that do not interpret HTML or JavaScript, such as 'textContent' instead of 'innerHTML', and avoid 'eval()'.",
-            longTerm: "### Long-Term Recommendations\nImplement a strong Content Security Policy (CSP) to restrict the sources from which scripts can be executed, mitigating the impact of any potential DOM-XSS flaws."
-        },
-        remediation_es: {
-            shortTerm: "### Recomendaciones a Corto Plazo\nEvitar permitir que los datos de cualquier fuente no confiable se escriban dinámicamente en el documento HTML. Sanear todos los datos no confiables antes de usarlos para modificar el DOM.",
-            mediumTerm: "### Recomendaciones a Medio Plazo\nUsar API de JavaScript seguras que no interpreten HTML o JavaScript, como 'textContent' en lugar de 'innerHTML', y evitar 'eval()'.",
-            longTerm: "### Recomendaciones a Largo Plazo\nImplementar una Política de Seguridad de Contenido (CSP) sólida para restringir las fuentes desde las cuales se pueden ejecutar scripts, mitigando el impacto de cualquier posible falla de DOM-XSS."
-        },
-        cwe: 'CWE-79',
-        severity: 'High',
-        cvss: { score: 7.5, vectorString: 'CVSS:3.1/AV:N/AC:L/PR:N/UI:R/S:C/C:H/I:N/A:N', attackVector: 'N', attackComplexity: 'L', privilegesRequired: 'N', userInteraction: 'R', scope: 'C', confidentiality: 'H', integrity: 'N', availability: 'N' },
-        references: ['https://owasp.org/www-community/attacks/DOM_Based_XSS'],
-        tags: ['Additional', 'Web'],
-        affectedComponents_en: '### Affected Components\n- [TODO: Specify the client-side script and the DOM source (e.g., URL fragment) that is vulnerable.]',
-        details_en: '### Proof of Concept\n[TODO: Provide a URL with a malicious payload in the fragment that demonstrates script execution in the browser.]',
-        affectedComponents_es: '### Componentes Afectados\n- [TODO: Especificar el script del lado del cliente y la fuente del DOM (p. ej., fragmento de URL) que es vulnerable.]',
-        details_es: '### Prueba de Concepto\n[TODO: Proporcionar una URL con una carga útil maliciosa en el fragmento que demuestre la ejecución de scripts en el navegador.]',
-        immediateActions_en: "### Immediate Actions\nReview and sanitize all client-side scripts that read from the DOM.",
-        immediateActions_es: "### Acciones Inmediatas\nRevisar y sanear todos los scripts del lado del cliente que leen del DOM.",
-    },
-    {
-        id: 'vuln-add-012',
-        title_en: 'Unrestricted File Upload',
-        title_es: 'Subida de Archivos sin Restricciones',
-        overview_en: '### Overview\nThis vulnerability allows an attacker to upload a file with malicious content (e.g., a web shell) to a server, which can then be executed.',
-        overview_es: '### Resumen\nEsta vulnerabilidad permite a un atacante subir un archivo con contenido malicioso (p. ej., una shell web) a un servidor, que luego puede ser ejecutado.',
-        technicalDescription_en: '### Technical Description\nThe application\'s file upload functionality does not properly validate the file type, content, or extension. An attacker can upload a file with an executable extension (like \'.php\', \'.jsp\', \'.aspx\') and then access the uploaded file\'s URL to execute it on the server.',
-        technicalDescription_es: '### Descripción Técnica\nLa funcionalidad de carga de archivos de la aplicación no valida correctamente el tipo, el contenido o la extensión del archivo. Un atacante puede subir un archivo con una extensión ejecutable (como \'.php\', \'.jsp\', \'.aspx\') y luego acceder a la URL del archivo subido para ejecutarlo en el servidor.',
-        impact_en: '### Impact\nLeads to full Remote Code Execution (RCE) on the server, allowing the attacker to take complete control.',
-        impact_es: '### Impacto\nConduce a la Ejecución Remota de Código (RCE) completa en el servidor, permitiendo al atacante tomar el control total.',
-        remediation_en: {
-            shortTerm: '### Short-Term Recommendations\nImplement a strict allow-list of permitted file extensions. Validate the file\'s \'Content-Type\' header and perform magic number analysis to verify the actual file type.',
-            mediumTerm: '### Medium-Term Recommendations\nStore uploaded files in a directory outside of the web root, and serve them through a script that enforces proper access control. Rename uploaded files to a random, non-executable name.',
-            longTerm: '### Long-Term Recommendations\nUse a virus scanner to check all uploaded files for malware. Run the web server with minimal privileges to limit the impact of a potential RCE.'
-        },
-        remediation_es: {
-            shortTerm: '### Recomendaciones a Corto Plazo\nImplementar una lista blanca estricta de extensiones de archivo permitidas. Validar el encabezado \'Content-Type\' del archivo y realizar un análisis de números mágicos para verificar el tipo de archivo real.',
-            mediumTerm: '### Recomendaciones a Medio Plazo\nAlmacenar los archivos subidos en un directorio fuera de la raíz web y servirlos a través de un script que aplique un control de acceso adecuado. Renombrar los archivos subidos a un nombre aleatorio y no ejecutable.',
-            longTerm: '### Recomendaciones a Largo Plazo\nUsar un escáner de virus para comprobar todos los archivos subidos en busca de malware. Ejecutar el servidor web con los privilegios mínimos para limitar el impacto de una posible RCE.'
-        },
-        cwe: 'CWE-434',
-        severity: 'Critical',
-        cvss: { score: 9.8, vectorString: 'CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:H/I:H/A:H', attackVector: 'N', attackComplexity: 'L', privilegesRequired: 'N', userInteraction: 'N', scope: 'U', confidentiality: 'H', integrity: 'H', availability: 'H' },
-        references: ['https://owasp.org/www-community/vulnerabilities/Unrestricted_File_Upload'],
-        tags: ['Additional', 'Web'],
-        affectedComponents_en: '### Affected Components\n- The file upload functionality.',
-        details_en: '### Proof of Concept\n[TODO: Provide the steps to upload a web shell and then access it to execute a command on the server.]',
-        affectedComponents_es: '### Componentes Afectados\n- La funcionalidad de carga de archivos.',
-        details_es: '### Prueba de Concepto\n[TODO: Proporcionar los pasos para subir una shell web y luego acceder a ella para ejecutar un comando en el servidor.]',
-        immediateActions_en: "### Immediate Actions\nDisable the file upload functionality until it can be properly secured. Scan the server for any already uploaded malicious files.",
-        immediateActions_es: "### Acciones Inmediatas\nDeshabilitar la funcionalidad de carga de archivos hasta que pueda ser asegurada correctamente. Escanear el servidor en busca de cualquier archivo malicioso ya subido.",
-    },
-    {
-        id: "vuln-add-013",
-        title_en: "Business Logic Flaws",
-        title_es: "Fallos en la Lógica de Negocio",
-        overview_en: `### Overview
-Business logic flaws are ways of using the legitimate processing flow of an application in a way that results in a negative consequence to the organization.`,
-        overview_es: `### Resumen
-Los fallos en la lógica de negocio son formas de utilizar el flujo de procesamiento legítimo de una aplicación de una manera que resulta en una consecuencia negativa para la organización.`,
-        technicalDescription_en: `### Technical Description
-These vulnerabilities are specific to the application's purpose. For example, a flaw in an e-commerce site might allow an attacker to purchase an item for a negative price, or a voting application might allow a user to vote multiple times. These are not typically found by automated scanners.`,
-        technicalDescription_es: `### Descripción Técnica
-Estas vulnerabilidades son específicas del propósito de la aplicación. Por ejemplo, un fallo en un sitio de comercio electrónico podría permitir a un atacante comprar un artículo por un precio negativo, o una aplicación de votación podría permitir a un usuario votar varias veces. Estos no suelen ser encontrados por escáneres automatizados.`,
-        impact_en: `### Impact
-The impact is highly variable and depends on the specific flaw, but it can include financial loss, reputational damage, or data compromise.`,
-        impact_es: `### Impacto
-El impacto es muy variable y depende del fallo específico, pero puede incluir pérdidas financieras, daño a la reputación o compromiso de datos.`,
-        remediation_en: {
-            shortTerm: `### Short-Term Recommendations
-Review and correct the specific business logic flaw that was identified.`,
-            mediumTerm: `### Medium-Term Recommendations
-Perform a thorough manual review of the application's business logic with a focus on identifying and testing for potential abuses of functionality.`,
-            longTerm: `### Long-Term Recommendations
-Incorporate threat modeling into the design phase to consider how legitimate functions could be abused. Create unit and integration tests that specifically cover business logic rules.`
-        },
-        remediation_es: {
-            shortTerm: `### Recomendaciones a Corto Plazo
-Revisar y corregir el fallo específico de la lógica de negocio que se identificó.`,
-            mediumTerm: `### Recomendaciones a Medio Plazo
-Realizar una revisión manual exhaustiva de la lógica de negocio de la aplicación con un enfoque en la identificación y prueba de posibles abusos de la funcionalidad.`,
-            longTerm: `### Recomendaciones a Largo Plazo
-Incorporar el modelado de amenazas en la fase de diseño para considerar cómo se podrían abusar de las funciones legítimas. Crear pruebas unitarias y de integración que cubran específicamente las reglas de la lógica de negocio.`
-        },
-        cwe: "CWE-840",
-        severity: "Medium",
-        cvss: { score: 6.5, vectorString: "CVSS:3.1/AV:N/AC:L/PR:L/UI:N/S:U/C:L/I:L/A:N", "attackVector": "N", "attackComplexity": "L", "privilegesRequired": "L", "userInteraction": "N", "scope": "U", "confidentiality": "L", "integrity": "L", "availability": "N" },
-        references: ["https://owasp.org/www-project-web-security-testing-guide/latest/4-Web_Application_Security_Testing/10-Business_Logic_Testing/README.md"],
-        tags: ["Additional"],
-        affectedComponents_en: `### Affected Components
-- [TODO: Describe the business process that is vulnerable.]`,
-        details_en: `### Proof of Concept
-[TODO: Provide the step-by-step process for exploiting the business logic flaw.]`,
-        affectedComponents_es: `### Componentes Afectados
-- [TODO: Describir el proceso de negocio que es vulnerable.]`,
-        details_es: `### Prueba de Concepto
-[TODO: Proporcionar el proceso paso a paso para explotar el fallo de la lógica de negocio.]`,
-        immediateActions_en: "### Immediate Actions\nReview the specific business logic and implement server-side validation to prevent the abuse.",
-        immediateActions_es: "### Acciones Inmediatas\nRevisar la lógica de negocio específica e implementar la validación del lado del servidor para prevenir el abuso.",
-    },
-    {
-        id: "vuln-add-014",
-        title_en: "API Security Misconfiguration",
-        title_es: "Configuración Insegura de API",
-        overview_en: `### Overview
-APIs are often misconfigured, leading to vulnerabilities such as missing authentication, excessive data exposure, or rate limiting issues.`,
-        overview_es: `### Resumen
-Las API a menudo están mal configuradas, lo que conduce a vulnerabilidades como la falta de autenticación, la exposición excesiva de datos o problemas de limitación de velocidad.`,
-        technicalDescription_en: `### Technical Description
-This is a broad category covering many API-specific issues. Examples include an API endpoint that returns too much data (e.g., a user object containing a password hash), an endpoint that is missing authentication entirely, or an API that lacks rate limiting, allowing for brute-force attacks.`,
-        technicalDescription_es: `### Descripción Técnica
-Esta es una categoría amplia que cubre muchos problemas específicos de la API. Los ejemplos incluyen un punto final de API que devuelve demasiados datos (p. ej., un objeto de usuario que contiene un hash de contraseña), un punto final al que le falta la autenticación por completo, o una API que carece de limitación de velocidad, lo que permite ataques de fuerza bruta.`,
-        impact_en: `### Impact
-Can lead to data breaches, account takeovers, and denial-of-service.`,
-        impact_es: `### Impacto
-Puede conducir a brechas de datos, tomas de control de cuentas y denegación de servicio.`,
-        remediation_en: {
-            shortTerm: `### Short-Term Recommendations
-Apply authentication and authorization to all API endpoints. Ensure that API responses only return the minimum necessary data.`,
-            mediumTerm: `### Medium-Term Recommendations
-Implement rate limiting for all API endpoints. Use an API gateway to centralize security controls.`,
-            longTerm: `### Long-Term Recommendations
-Follow the OWASP API Security Top 10 best practices. Regularly perform security testing specifically targeting the API.`
-        },
-        remediation_es: {
-            shortTerm: `### Recomendaciones a Corto Plazo
-Aplicar autenticación y autorización a todos los puntos finales de la API. Asegurarse de que las respuestas de la API solo devuelvan los datos mínimos necesarios.`,
-            mediumTerm: `### Recomendaciones a Medio Plazo
-Implementar la limitación de velocidad para todos los puntos finales de la API. Usar una puerta de enlace de API para centralizar los controles de seguridad.`,
-            longTerm: `### Recomendaciones a Largo Plazo
-Seguir las mejores prácticas del Top 10 de Seguridad de API de OWASP. Realizar regularmente pruebas de seguridad dirigidas específicamente a la API.`
-        },
-        cwe: "CWE-16",
-        severity: "High",
-        cvss: { score: 8.8, vectorString: "CVSS:3.1/AV:N/AC:L/PR:L/UI:N/S:U/C:H/I:H/A:H", "attackVector": "N", "attackComplexity": "L", "privilegesRequired": "L", "userInteraction": "N", "scope": "U", "confidentiality": "H", "integrity": "H", "availability": "H" },
-        references: ["https://owasp.org/www-project-api-security/"],
-        tags: ["Additional", "API"],
-        affectedComponents_en: `### Affected Components
-- [TODO: Specify the vulnerable API endpoint and the nature of the misconfiguration.]`,
-        details_en: `### Proof of Concept
-[TODO: Provide an API request and response that demonstrates the vulnerability.]`,
-        affectedComponents_es: `### Componentes Afectados
-- [TODO: Especificar el punto final de la API vulnerable y la naturaleza de la configuración incorrecta.]`,
-        details_es: `### Prueba de Concepto
-[TODO: Proporcionar una solicitud y respuesta de API que demuestre la vulnerabilidad.]`,
-        immediateActions_en: "### Immediate Actions\nReview and correct the specific API misconfiguration.",
-        immediateActions_es: "### Acciones Inmediatas\nRevisar y corregir la configuración incorrecta específica de la API.",
-    },
-    {
-        id: "vuln-add-015",
-        title_en: "Insecure Cookies",
-        title_es: "Cookies Inseguras",
-        overview_en: `### Overview
-Session cookies are not configured with security attributes, making them vulnerable to interception and hijacking.`,
-        overview_es: `### Resumen
-Las cookies de sesión no están configuradas con atributos de seguridad, lo que las hace vulnerables a la interceptación y el secuestro.`,
-        technicalDescription_en: `### Technical Description
-The application fails to set the \`Secure\` flag on cookies, allowing them to be transmitted over unencrypted HTTP. It may also fail to set the \`HttpOnly\` flag, allowing them to be accessed by client-side JavaScript (e.g., in an XSS attack), or the \`SameSite\` attribute, making them vulnerable to CSRF.`,
-        technicalDescription_es: `### Descripción Técnica
-La aplicación no establece la bandera \`Secure\` en las cookies, lo que permite que se transmitan a través de HTTP no cifrado. También puede no establecer la bandera \`HttpOnly\`, lo que permite que se acceda a ellas mediante JavaScript del lado del cliente (p. ej., en un ataque XSS), o el atributo \`SameSite\`, lo que las hace vulnerables a CSRF.`,
-        impact_en: `### Impact
-Can lead to session hijacking and account takeover.`,
-        impact_es: `### Impacto
-Puede conducir al secuestro de sesiones y a la toma de control de cuentas.`,
-        remediation_en: {
-            shortTerm: `### Short-Term Recommendations
-Set the \`Secure\` and \`HttpOnly\` flags on all session cookies.`,
-            mediumTerm: `### Medium-Term Recommendations
-Set the \`SameSite\` attribute to \`Strict\` or \`Lax\` to protect against CSRF attacks.`,
-            longTerm: `### Long-Term Recommendations
-Review the entire application to ensure that all cookies are configured with the appropriate security attributes according to their purpose.`
-        },
-        remediation_es: {
-            shortTerm: `### Recomendaciones a Corto Plazo
-Establecer las banderas \`Secure\` y \`HttpOnly\` en todas las cookies de sesión.`,
-            mediumTerm: `### Recomendaciones a Medio Plazo
-Establecer el atributo \`SameSite\` en \`Strict\` o \`Lax\` para protegerse contra los ataques CSRF.`,
-            longTerm: `### Recomendaciones a Largo Plazo
-Revisar toda la aplicación para asegurarse de que todas las cookies estén configuradas con los atributos de seguridad adecuados según su propósito.`
-        },
-        cwe: "CWE-1004",
-        severity: "Medium",
-        cvss: { score: 6.5, vectorString: "CVSS:3.1/AV:N/AC:L/PR:N/UI:R/S:U/C:L/I:L/A:N", "attackVector": "N", "attackComplexity": "L", "privilegesRequired": "N", "userInteraction": "R", "scope": "U", "confidentiality": "L", "integrity": "L", "availability": "N" },
-        references: ["https://owasp.org/www-project-web-security-testing-guide/latest/4-Web_Application_Security_Testing/06-Session_Management_Testing/02-Testing_for_Cookies_Attributes"],
-        tags: ["Additional", "Web"],
-        affectedComponents_en: `### Affected Components
-- The session cookies issued by the application.`,
-        details_en: `### Proof of Concept
-[TODO: Provide a screenshot of the browser's developer tools showing the cookie attributes, or lack thereof.]`,
-        affectedComponents_es: `### Componentes Afectados
-- Las cookies de sesión emitidas por la aplicación.`,
-        details_es: `### Prueba de Concepto
-[TODO: Proporcionar una captura de pantalla de las herramientas de desarrollador del navegador que muestre los atributos de la cookie, o la falta de ellos.]`,
-        immediateActions_en: "### Immediate Actions\nAdd the `Secure` and `HttpOnly` flags to all session cookies.",
-        immediateActions_es: "### Acciones Inmediatas\nAñadir las banderas `Secure` y `HttpOnly` a todas las cookies de sesión.",
-    },
-    {
-        id: "vuln-add-016",
-        title_en: "HTTP Response Splitting",
-        title_es: "División de Respuestas HTTP",
-        overview_en: `### Overview
-HTTP response splitting is a vulnerability where an attacker can inject newline characters into the HTTP response headers to craft a malicious response.`,
-        overview_es: `### Resumen
-La división de respuestas HTTP es una vulnerabilidad en la que un atacante puede inyectar caracteres de nueva línea en los encabezados de respuesta HTTP para crear una respuesta maliciosa.`,
-        technicalDescription_en: `### Technical Description
-If an application includes user-supplied input in response headers without proper sanitization (e.g., in a redirect URL), an attacker can inject \`CRLF\` characters (\`%0d%0a\`). This allows them to terminate the intended headers and inject their own, such as a second HTTP response with malicious content.`,
-        technicalDescription_es: `### Descripción Técnica
-Si una aplicación incluye la entrada proporcionada por el usuario en los encabezados de respuesta sin una sanitización adecuada (p. ej., en una URL de redirección), un atacante puede inyectar caracteres \`CRLF\` (\`%0d%0a\`). Esto les permite terminar los encabezados previstos e inyectar los suyos propios, como una segunda respuesta HTTP con contenido malicioso.`,
-        impact_en: `### Impact
-Can lead to cross-site scripting (XSS), cross-user defacement, web cache poisoning, and similar attacks.`,
-        impact_es: `### Impacto
-Puede conducir a cross-site scripting (XSS), desfiguración entre usuarios, envenenamiento de caché web y ataques similares.`,
-        remediation_en: {
-            shortTerm: `### Short-Term Recommendations
-Sanitize all user-supplied input before including it in HTTP response headers by removing or encoding newline characters.`,
-            mediumTerm: `### Medium-Term Recommendations
-Use a library or framework function that automatically handles the encoding of header values.`,
-            longTerm: `### Long-Term Recommendations
-Avoid including user input in response headers whenever possible.`
-        },
-        remediation_es: {
-            shortTerm: `### Recomendaciones a Corto Plazo
-Sanear toda la entrada proporcionada por el usuario antes de incluirla en los encabezados de respuesta HTTP eliminando o codificando los caracteres de nueva línea.`,
-            mediumTerm: `### Recomendaciones a Medio Plazo
-Usar una biblioteca o función de framework que maneje automáticamente la codificación de los valores de los encabezados.`,
-            longTerm: `### Recomendaciones a Largo Plazo
-Evitar incluir la entrada del usuario en los encabezados de respuesta siempre que sea posible.`
-        },
-        cwe: "CWE-113",
-        severity: "Medium",
-        cvss: { score: 6.1, vectorString: "CVSS:3.1/AV:N/AC:L/PR:N/UI:R/S:C/C:L/I:L/A:N", "attackVector": "N", "attackComplexity": "L", "privilegesRequired": "N", "userInteraction": "R", "scope": "C", "confidentiality": "L", "integrity": "L", "availability": "N" },
-        references: ["https://owasp.org/www-community/attacks/HTTP_Response_Splitting"],
-        tags: ["Additional", "Web"],
-        affectedComponents_en: `### Affected Components
-- [TODO: Specify the function and parameter that is vulnerable.]`,
-        details_en: `### Proof of Concept
-[TODO: Provide a request with a CRLF injection payload and show the resulting split response.]`,
-        affectedComponents_es: `### Componentes Afectados
-- [TODO: Especificar la función y el parámetro que es vulnerable.]`,
-        details_es: `### Prueba de Concepto
-[TODO: Proporcionar una solicitud con una carga útil de inyección CRLF y mostrar la respuesta dividida resultante.]`,
-        immediateActions_en: "### Immediate Actions\nImplement input sanitization for all parameters reflected in HTTP headers.",
-        immediateActions_es: "### Acciones Inmediatas\nImplementar la sanitización de entradas para todos los parámetros reflejados en los encabezados HTTP.",
-    },
-    {
-        id: "vuln-add-017",
-        title_en: "Web Cache Poisoning",
-        title_es: "Envenenamiento de Caché Web",
-        overview_en: `### Overview
-Web cache poisoning is an attack where an attacker exploits the behavior of a web cache to serve a malicious HTTP response to other users.`,
-        overview_es: `### Resumen
-El envenenamiento de caché web es un ataque en el que un atacante explota el comportamiento de una caché web para servir una respuesta HTTP maliciosa a otros usuarios.`,
-        technicalDescription_en: `### Technical Description
-The attacker sends a request with a specially crafted, unkeyed header (a header not included in the cache key). The server's response, which may reflect the header's content, is then stored in the cache. When other users request the same URL, they receive the poisoned, malicious response from the cache.`,
-        technicalDescription_es: `### Descripción Técnica
-El atacante envía una solicitud con un encabezado especialmente diseñado y no clave (un encabezado no incluido en la clave de caché). La respuesta del servidor, que puede reflejar el contenido del encabezado, se almacena en la caché. Cuando otros usuarios solicitan la misma URL, reciben la respuesta maliciosa envenenada de la caché.`,
-        impact_en: `### Impact
-Can be used to deliver XSS payloads to a wide range of users, hijack sessions, or deface the website.`,
-        impact_es: `### Impacto
-Puede ser utilizado para entregar cargas útiles de XSS a una amplia gama de usuarios, secuestrar sesiones o desfigurar el sitio web.`,
-        remediation_en: {
-            shortTerm: `### Short-Term Recommendations
-Configure the web cache to only include a specific, allow-listed set of headers in the cache key.`,
-            mediumTerm: `### Medium-Term Recommendations
-Disable the use of unkeyed headers in the application logic entirely.`,
-            longTerm: `### Long-Term Recommendations
-Regularly audit and test the caching configuration for vulnerabilities.`
-        },
-        remediation_es: {
-            shortTerm: `### Recomendaciones a Corto Plazo
-Configurar la caché web para incluir solo un conjunto específico de encabezados permitidos en la clave de caché.`,
-            mediumTerm: `### Recomendaciones a Medio Plazo
-Deshabilitar por completo el uso de encabezados no clave en la lógica de la aplicación.`,
-            longTerm: `### Recomendaciones a Largo Plazo
-Auditar y probar regularmente la configuración de almacenamiento en caché para detectar vulnerabilidades.`
-        },
-        cwe: "CWE-444",
-        severity: "High",
-        cvss: { score: 8.8, vectorString: "CVSS:3.1/AV:N/AC:L/PR:N/UI:R/S:U/C:H/I:H/A:H", "attackVector": "N", "attackComplexity": "L", "privilegesRequired": "N", "userInteraction": "R", "scope": "U", "confidentiality": "H", "integrity": "H", "availability": "H" },
-        references: ["https://portswigger.net/web-security/web-cache-poisoning"],
-        tags: ["Additional", "Web"],
-        affectedComponents_en: `### Affected Components
-- The web cache and the application logic that handles request headers.`,
-        details_en: `### Proof of Concept
-[TODO: Provide a sequence of requests to poison the cache and then a request that retrieves the poisoned content.]`,
-        affectedComponents_es: `### Componentes Afectados
-- La caché web y la lógica de la aplicación que maneja los encabezados de las solicitudes.`,
-        details_es: `### Prueba de Concepto
-[TODO: Proporcionar una secuencia de solicitudes para envenenar la caché y luego una solicitud que recupere el contenido envenenado.]`,
-        immediateActions_en: "### Immediate Actions\nPurge the web cache. Review the cache configuration to restrict which headers are keyed.",
-        immediateActions_es: "### Acciones Inmediatas\nPurgar la caché web. Revisar la configuración de la caché para restringir qué encabezados se utilizan como clave.",
-    },
-    {
-        id: "vuln-add-018",
-        title_en: "Host Header Injection",
-        title_es: "Inyección en Cabecera Host",
-        overview_en: `### Overview
-Host header injection vulnerabilities arise when an application trusts the HTTP Host header to generate links, import scripts, or even perform redirects.`,
-        overview_es: `### Resumen
-Lasulnerabilidades de inyección en la cabecera Host surgen cuando una aplicación confía en la cabecera Host HTTP para generar enlaces, importar scripts o incluso realizar redirecciones.`,
-        technicalDescription_en: `### Technical Description
-An attacker can manipulate the Host header in an HTTP request. If the server uses this header to construct URLs without validation, the attacker can cause the application to generate links pointing to a malicious domain. This is often used to facilitate password reset poisoning.`,
-        technicalDescription_es: `### Descripción Técnica
-Un atacante puede manipular la cabecera Host en una solicitud HTTP. Si el servidor usa esta cabecera para construir URL sin validación, el atacante puede hacer que la aplicación genere enlaces que apunten a un dominio malicioso. Esto se utiliza a menudo para facilitar el envenenamiento del restablecimiento de contraseña.`,
-        impact_en: `### Impact
-Can be used to perform web cache poisoning, bypass security controls, and, most notably, poison password reset emails to steal user accounts.`,
-        impact_es: `### Impacto
-Puede ser utilizado para realizar envenenamiento de caché web, eludir controles de seguridad y, sobre todo, envenenar los correos electrónicos de restablecimiento de contraseña para robar cuentas de usuario.`,
-        remediation_en: {
-            shortTerm: `### Short-Term Recommendations
-Do not use the Host header to generate URLs or for routing. Use a hardcoded, server-side configuration value for the domain name.`,
-            mediumTerm: `### Medium-Term Recommendations
-If the Host header must be used, validate it against a strict allow-list of known, trusted hostnames.`,
-            longTerm: `### Long-Term Recommendations
-Review all code to ensure the Host header is never used in security-sensitive contexts.`
-        },
-        remediation_es: {
-            shortTerm: `### Recomendaciones a Corto Plazo
-No utilizar la cabecera Host para generar URL o para el enrutamiento. Usar un valor de configuración codificado en el lado del servidor para el nombre de dominio.`,
-            mediumTerm: `### Recomendaciones a Medio Plazo
-Si se debe usar la cabecera Host, validarla contra una lista blanca estricta de nombres de host conocidos y de confianza.`,
-            longTerm: `### Recomendaciones a Largo Plazo
-Revisar todo el código para asegurarse de que la cabecera Host nunca se utilice en contextos sensibles a la seguridad.`
-        },
-        cwe: "CWE-74",
-        severity: "Medium",
-        cvss: { score: 6.1, vectorString: "CVSS:3.1/AV:N/AC:L/PR:N/UI:R/S:C/C:L/I:L/A:N", "attackVector": "N", "attackComplexity": "L", "privilegesRequired": "N", "userInteraction": "R", "scope": "C", "confidentiality": "L", "integrity": "L", "availability": "N" },
-        references: ["https://portswigger.net/web-security/host-header"],
-        tags: ["Additional", "Web"],
-        affectedComponents_en: `### Affected Components
-- Any functionality that uses the Host header to generate absolute URLs, particularly password reset links.`,
-        details_en: `### Proof of Concept
-[TODO: Send a password reset request with a modified Host header and show that the generated reset link points to an attacker-controlled domain.]`,
-        affectedComponents_es: `### Componentes Afectados
-- Cualquier funcionalidad que utilice la cabecera Host para generar URL absolutas, en particular los enlaces de restablecimiento de contraseña.`,
-        details_es: `### Prueba de Concepto
-[TODO: Enviar una solicitud de restablecimiento de contraseña con una cabecera Host modificada y mostrar que el enlace de restablecimiento generado apunta a un dominio controlado por el atacante.]`,
-        immediateActions_en: "### Immediate Actions\nConfigure the web server to use a fixed domain name for URL generation and ignore the Host header.",
-        immediateActions_es: "### Acciones Inmediatas\nConfigurar el servidor web para que utilice un nombre de dominio fijo para la generación de URL e ignore la cabecera Host.",
-    },
-    {
-        id: "vuln-add-019",
-        title_en: "SQLi Blind",
-        title_es: "Inyección SQL ciega",
-        overview_en: `### Overview
-Blind SQL injection is a type of SQL injection attack that asks the database true or false questions and determines the answer based on the application's response.`,
-        overview_es: `### Resumen
-La inyección SQL ciega es un tipo de ataque de inyección SQL que hace preguntas de verdadero o falso a la base de datos y determina la respuesta en función de la respuesta de la aplicación.`,
-        technicalDescription_en: `### Technical Description
-This attack is used when the application does not return data from the database in its responses. The attacker can use boolean-based techniques (observing whether the page content changes) or time-based techniques (injecting a \`WAITFOR DELAY\` or \`SLEEP\` command and observing the response time) to exfiltrate data character by character.`,
-        technicalDescription_es: `### Descripción Técnica
-Este ataque se utiliza cuando la aplicación no devuelve datos de la base de datos en sus respuestas. El atacante puede utilizar técnicas basadas en booleanos (observando si el contenido de la página cambia) o técnicas basadas en el tiempo (inyectando un comando \`WAITFOR DELAY\` o \`SLEEP\` y observando el tiempo de respuesta) para exfiltrar datos carácter por carácter.`,
-        impact_en: `### Impact
-Although slower to exploit, blind SQL injection can lead to the full compromise of the database, allowing an attacker to exfiltrate all data.`,
-        impact_es: `### Impacto
-Aunque es más lento de explotar, la inyección SQL ciega puede llevar al compromiso total de la base de datos, permitiendo a un atacante exfiltrar todos los datos.`,
-        remediation_en: {
-            shortTerm: `### Short-Term Recommendations
-Use parameterized queries (prepared statements) for all database interactions. This is the most effective defense.`,
-            mediumTerm: `### Medium-Term Recommendations
-Implement least-privilege access for the application's database user.`,
-            longTerm: `### Long-Term Recommendations
-Use static analysis tools to find and fix all SQL injection flaws in the codebase.`
-        },
-        remediation_es: {
-            shortTerm: `### Recomendaciones a Corto Plazo
-Utilizar consultas parametrizadas (prepared statements) para todas las interacciones con la base de datos. Esta es la defensa más efectiva.`,
-            mediumTerm: `### Recomendaciones a Medio Plazo
-Implementar el acceso de mínimo privilegio para el usuario de la base de datos de la aplicación.`,
-            longTerm: `### Recomendaciones a Largo Plazo
-Utilizar herramientas de análisis estático para encontrar y corregir todas las fallas de inyección SQL en el código base.`
-        },
-        cwe: "CWE-89",
-        severity: "High",
-        cvss: { score: 8.8, vectorString: "CVSS:3.1/AV:N/AC:L/PR:L/UI:N/S:U/C:H/I:H/A:H", "attackVector": "N", "attackComplexity": "L", "privilegesRequired": "L", "userInteraction": "N", "scope": "U", "confidentiality": "H", "integrity": "H", "availability": "H" },
-        references: ["https://owasp.org/www-community/attacks/Blind_SQL_Injection"],
-        tags: ["Additional", "Web"],
-        affectedComponents_en: `### Affected Components
-- [TODO: Specify the vulnerable parameter and URL.]`,
-        details_en: `### Proof of Concept
-[TODO: Provide a time-based or boolean-based payload and show how it can be used to exfiltrate a piece of data (e.g., the first character of the database name).]`,
-        affectedComponents_es: `### Componentes Afectados
-- [TODO: Especificar el parámetro y la URL vulnerables.]`,
-        details_es: `### Prueba de Concepto
-[TODO: Proporcionar una carga útil basada en tiempo o booleana y mostrar cómo se puede usar para exfiltrar una pieza de datos (p. ej., el primer carácter del nombre de la base de datos).]`,
-        immediateActions_en: "### Immediate Actions\nImplement parameterized queries for the vulnerable part of the application.",
-        immediateActions_es: "### Acciones Inmediatas\nImplementar consultas parametrizadas para la parte vulnerable de la aplicación.",
-    },
-    {
-        id: "vuln-add-020",
-        title_en: "OS Command Injection",
-        title_es: "Inyección de Comandos del SO",
-        overview_en: `### Overview
-OS command injection is a web security vulnerability that allows an attacker to execute arbitrary operating system commands on the server that is running an application, and typically fully compromise the application and all its data.`,
-        overview_es: `### Resumen
-La inyección de comandos del SO es una vulnerabilidad de seguridad web que permite a un atacante ejecutar comandos arbitrarios del sistema operativo en el servidor que ejecuta una aplicación y, por lo general, comprometer por completo la aplicación y todos sus datos.`,
-        technicalDescription_en: `### Technical Description
-The vulnerability arises when an application passes unsanitized user-supplied input to a system shell. An attacker can use shell metacharacters like \`&\`, \`|\`, \`;\` to append their own commands to the one intended by the developer.`,
-        technicalDescription_es: `### Descripción Técnica
-La vulnerabilidad surge cuando una aplicación pasa la entrada proporcionada por el usuario sin sanear a una shell del sistema. Un atacante puede usar metacaracteres de la shell como \`&\`, \`|\`, \`;\` para agregar sus propios comandos al que pretendía el desarrollador.`,
-        impact_en: `### Impact
-Can lead to full remote code execution on the server, giving the attacker complete control.`,
-        impact_es: `### Impacto
-Puede conducir a la ejecución remota de código completa en el servidor, otorgando al atacante un control completo.`,
-        remediation_en: {
-            shortTerm: `### Short-Term Recommendations
-Avoid calling OS commands directly. Use built-in language APIs to achieve the same functionality where possible.`,
-            mediumTerm: `### Medium-Term Recommendations
-If calling an OS command is unavoidable, use structured APIs that accept a list of arguments rather than a single command string. This prevents shell metacharacter interpretation.`,
-            longTerm: `### Long-Term Recommendations
-Run the application with the minimum privileges necessary. Implement a Web Application Firewall (WAF) with rules to detect and block command injection attempts.`
-        },
-        remediation_es: {
-            shortTerm: `### Recomendaciones a Corto Plazo
-Evitar llamar directamente a los comandos del SO. Usar las API integradas del lenguaje para lograr la misma funcionalidad siempre que sea posible.`,
-            mediumTerm: `### Recomendaciones a Medio Plazo
-Si es inevitable llamar a un comando del SO, usar API estructuradas que acepten una lista de argumentos en lugar de una sola cadena de comando. Esto evita la interpretación de metacaracteres de la shell.`,
-            longTerm: `### Recomendaciones a Largo Plazo
-Ejecutar la aplicación con los privilegios mínimos necesarios. Implementar un Web Application Firewall (WAF) con reglas para detectar y bloquear los patrones de ataque comunes.`
-        },
-        cwe: "CWE-78",
-        severity: "Critical",
-        cvss: { score: 9.8, vectorString: "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:H/I:H/A:H", "attackVector": "N", "attackComplexity": "L", "privilegesRequired": "N", "userInteraction": "N", "scope": "U", "confidentiality": "H", "integrity": "H", "availability": "H" },
-        references: ["https://owasp.org/www-community/attacks/Command_Injection"],
-        tags: ["Additional", "Web"],
-        affectedComponents_en: `### Affected Components
-- [TODO: Specify the vulnerable function, parameter, and URL.]`,
-        details_en: `### Proof of Concept
-[TODO: Provide a request with a command injection payload (e.g., \`; id\`) and show the output of the executed command.]`,
-        affectedComponents_es: `### Componentes Afectados
-- [TODO: Especificar la función, el parámetro y la URL vulnerables.]`,
-        details_es: `### Prueba de Concepto
-[TODO: Proporcionar una solicitud con una carga útil de inyección de comandos (p. ej., \`; id\`) y mostrar la salida del comando ejecutado.]`,
-        immediateActions_en: "### Immediate Actions\nImmediately implement input sanitization to filter or escape shell metacharacters from user-supplied data in the vulnerable function.",
-        immediateActions_es: "### Acciones Inmediatas\nImplementar inmediatamente el saneamiento de entradas para filtrar o escapar los metacaracteres de la shell de los datos proporcionados por el usuario en la función vulnerable.",
-    },
-    {
-        id: 'vuln-add-021',
-        title_en: 'XSS Persistent',
-        title_es: 'XSS persistente',
-        overview_en: '### Overview\nPersistent or Stored Cross-Site Scripting (XSS) occurs when an application stores unsanitized user input, which is then viewed by other users.',
-        overview_es: '### Resumen\nEl Cross-Site Scripting (XSS) persistente o almacenado ocurre cuando una aplicación almacena la entrada del usuario sin sanear, que luego es vista por otros usuarios.',
-        technicalDescription_en: '### Technical Description\nAn attacker injects a malicious script into a field that is stored in a database, such as a comment, user profile, or forum post. When other users view the page containing this stored data, the script executes in their browser.',
-        technicalDescription_es: '### Descripción Técnica\nUn atacante inyecta un script malicioso en un campo que se almacena en una base de datos, como un comentario, un perfil de usuario o una publicación en un foro. Cuando otros usuarios ven la página que contiene estos datos almacenados, el script se ejecuta en su navegador.',
-        impact_en: '### Impact\nAllows the attacker to hijack user sessions, deface the website, or redirect users to malicious sites, affecting a large number of users who view the malicious content.',
-        impact_es: '### Impacto\nPermite al atacante secuestrar sesiones de usuario, desfigurar el sitio web o redirigir a los usuarios a sitios maliciosos, afectando a un gran número de usuarios que ven el contenido malicioso.',
-        remediation_en: {
-            shortTerm: '### Short-Term Recommendations\nImplement strong, context-aware output encoding on all user-supplied data before it is rendered in a page.',
-            mediumTerm: '### Medium-Term Recommendations\nUse a strong Content Security Policy (CSP) to restrict the sources from which scripts can be loaded.',
-            longTerm: '### Long-Term Recommendations\nUse modern web frameworks that have built-in protections against XSS and avoid manually constructing HTML from user data.'
-        },
-        remediation_es: {
-            shortTerm: '### Recomendaciones a Corto Plazo\nImplementar una codificación de salida sólida y sensible al contexto en todos los datos proporcionados por el usuario antes de que se representen en una página.',
-            mediumTerm: '### Recomendaciones a Medio Plazo\nUsar una Política de Seguridad de Contenido (CSP) sólida para restringir las fuentes desde las cuales se pueden ejecutar scripts.',
-            longTerm: '### Recomendaciones a Largo Plazo\nUsar frameworks web modernos que tengan protecciones incorporadas contra XSS y evitar la construcción manual de HTML a partir de datos del usuario.'
-        },
-        cwe: 'CWE-79',
-        severity: 'High',
-        cvss: { score: 8.8, vectorString: 'CVSS:3.1/AV:N/AC:L/PR:L/UI:R/S:C/C:H/I:H/A:N', attackVector: 'N', attackComplexity: 'L', privilegesRequired: 'L', userInteraction: 'R', scope: 'C', confidentiality: 'H', integrity: 'H', availability: 'N' },
-        references: ['https://owasp.org/www-community/attacks/xss/'],
-        tags: ['Additional', 'Web'],
-        affectedComponents_en: '### Affected Components\n- [TODO: Specify the input field and the page where the stored script is executed.]',
-        details_en: '### Proof of Concept\n[TODO: Provide the steps to inject a persistent XSS payload and a screenshot of it executing for another user.]',
-        affectedComponents_es: '### Componentes Afectados\n- [TODO: Especificar el campo de entrada y la página donde se ejecuta el script almacenado.]',
-        details_es: '### Prueba de Concepto\n[TODO: Proporcionar los pasos para inyectar una carga útil de XSS persistente y una captura de pantalla de su ejecución para otro usuario.]',
-        immediateActions_en: "### Immediate Actions\nSanitize the vulnerable database fields to remove any existing malicious scripts. Implement output encoding for the affected pages.",
-        immediateActions_es: "### Acciones Inmediatas\nSanear los campos vulnerables de la base de datos para eliminar cualquier script malicioso existente. Implementar la codificación de salida para las páginas afectadas.",
-    },
-    {
-        id: "vuln-add-022",
-        title_en: "CSRF Token Leakage",
-        title_es: "Filtración de tokens CSRF",
-        overview_en: "### Overview\nCSRF tokens, designed to prevent Cross-Site Request Forgery, are leaked to an unauthorized third party.",
-        overview_es: "### Resumen\nLos tokens CSRF, diseñados para prevenir la Falsificación de Solicitudes en Sitios Cruzados, se filtran a un tercero no autorizado.",
-        technicalDescription_en: "### Technical Description\nThe application leaks the CSRF token in a location accessible to an attacker, such as in the 'Referer' header when a user clicks an external link, or in a GET request URL that is logged in proxy or browser history.",
-        technicalDescription_es: "### Descripción Técnica\nLa aplicación filtra el token CSRF en una ubicación accesible para un atacante, como en el encabezado 'Referer' cuando un usuario hace clic en un enlace externo, o en una URL de solicitud GET que se registra en el historial del proxy o del navegador.",
-        impact_en: "### Impact\nIf an attacker can obtain a user's CSRF token, they can bypass the CSRF protection and successfully carry out a CSRF attack.",
-        impact_es: "### Impacto\nSi un atacante puede obtener el token CSRF de un usuario, puede eludir la protección CSRF y llevar a cabo con éxito un ataque CSRF.",
-        remediation_en: {
-            shortTerm: "### Short-Term Recommendations\nDo not include CSRF tokens in GET request URLs. Use POST requests for any state-changing action.",
-            mediumTerm: "### Medium-Term Recommendations\nSet a 'Referrer-Policy: strict-origin-when-cross-origin' header to prevent leaking sensitive information in Referer headers.",
-            longTerm: "### Long-Term Recommendations\nUse a CSRF protection mechanism that ties the token to the user's session and regenerates it frequently."
-        },
-        remediation_es: {
-            shortTerm: "### Recomendaciones a Corto Plazo\nNo incluir tokens CSRF en las URL de solicitud GET. Usar solicitudes POST para cualquier acción que cambie el estado.",
-            mediumTerm: "### Recomendaciones a Medio Plazo\nEstablecer un encabezado 'Referrer-Policy: strict-origin-when-cross-origin' para evitar filtrar información sensible en los encabezados Referer.",
-            longTerm: "### Recomendaciones a Largo Plazo\nUsar un mecanismo de protección CSRF que vincule el token a la sesión del usuario y lo regenere con frecuencia."
-        },
-        cwe: "CWE-352",
-        severity: "Medium",
-        cvss: { score: 6.5, vectorString: "CVSS:3.1/AV:N/AC:L/PR:N/UI:R/S:U/C:L/I:L/A:N", "attackVector": "N", "attackComplexity": "L", "privilegesRequired": "N", "userInteraction": "R", "scope": "U", "confidentiality": "L", "integrity": "L", "availability": "N" },
-        references: ["https://owasp.org/www-community/attacks/csrf"],
-        tags: ["Additional", "Web"],
-        affectedComponents_en: "### Affected Components\n- [TODO: Specify where the CSRF token is being leaked.]",
-        details_en: "### Proof of Concept\n[TODO: Provide a screenshot or log showing the CSRF token being sent to a third party (e.g., in a Referer header).]",
-        affectedComponents_es: "### Componentes Afectados\n- [TODO: Especificar dónde se está filtrando el token CSRF.]",
-        details_es: "### Prueba de Concepto\n[TODO: Proporcionar una captura de pantalla o un registro que muestre el token CSRF siendo enviado a un tercero (p. ej., en un encabezado Referer).]",
-        immediateActions_en: "### Immediate Actions\nReview how CSRF tokens are handled and ensure they are not transmitted in URLs or leaked to third parties.",
-        immediateActions_es: "### Acciones Inmediatas\nRevisar cómo se manejan los tokens CSRF y asegurarse de que no se transmitan en las URL ni se filtren a terceros.",
-    },
-    {
-        id: "vuln-add-023",
-        title_en: "JWT Vulnerabilities",
-        title_es: "Vulnerabilidades en JWT",
-        overview_en: "### Overview\nJSON Web Tokens (JWTs) are used for authentication, but improper implementation can lead to vulnerabilities.",
-        overview_es: "### Resumen\nLos JSON Web Tokens (JWT) se utilizan para la autenticación, pero una implementación incorrecta puede dar lugar a vulnerabilidades.",
-        technicalDescription_en: "### Technical Description\nCommon JWT vulnerabilities include using the 'none' algorithm (disabling the signature), weak secret keys for signing, or not validating the signature at all. An attacker could forge a JWT to impersonate other users or escalate privileges.",
-        technicalDescription_es: "### Descripción Técnica\nLas vulnerabilidades comunes de JWT incluyen el uso del algoritmo 'none' (deshabilitando la firma), claves secretas débiles para la firma o no validar la firma en absoluto. Un atacante podría falsificar un JWT para hacerse pasar por otros usuarios o escalar privilegios.",
-        impact_en: "### Impact\nAllows an attacker to bypass authentication and gain unauthorized access to the application, potentially with administrative privileges.",
-        impact_es: "### Impacto\nPermite a un atacante eludir la autenticación y obtener acceso no autorizado a la aplicación, potencialmente con privilegios administrativos.",
-        remediation_en: {
-            shortTerm: "### Short-Term Recommendations\nAlways validate the JWT signature. Use a strong, randomly generated secret key. Reject any JWTs that specify the 'none' algorithm.",
-            mediumTerm: "### Medium-Term Recommendations\nUse a well-vetted, standard library for JWT creation and validation. Keep the library updated.",
-            longTerm: "### Long-Term Recommendations\nImplement key rotation for JWT signing keys. Log and monitor for any JWTs with invalid signatures or suspicious claims."
-        },
-        remediation_es: {
-            shortTerm: "### Recomendaciones a Corto Plazo\nValidar siempre la firma del JWT. Usar una clave secreta fuerte y generada aleatoriamente. Rechazar cualquier JWT que especifique el algoritmo 'none'.",
-            mediumTerm: "### Recomendaciones a Medio Plazo\nUsar una biblioteca estándar y bien examinada para la creación y validación de JWT. Mantener la biblioteca actualizada.",
-            longTerm: "### Recomendaciones a Largo Plazo\nImplementar la rotación de claves para las claves de firma de JWT. Registrar y monitorear cualquier JWT con firmas inválidas o reclamaciones sospechosas."
-        },
-        cwe: "CWE-347",
-        severity: "High",
-        cvss: { score: 8.8, vectorString: "CVSS:3.1/AV:N/AC:L/PR:N/UI:R/S:U/C:H/I:H/A:H", "attackVector": "N", "attackComplexity": "L", "privilegesRequired": "N", "userInteraction": "R", "scope": "U", "confidentiality": "H", "integrity": "H", "availability": "H" },
-        references: ["https://jwt.io/introduction/"],
-        tags: ["Additional", "Authentication"],
-        affectedComponents_en: "### Affected Components\n- The JWT validation logic.",
-        details_en: "### Proof of Concept\n[TODO: Provide a forged JWT (e.g., with 'alg': 'none' or a different user ID) and show that the server accepts it.]",
-        affectedComponents_es: "### Componentes Afectados\n- La lógica de validación de JWT.",
-        details_es: "### Prueba de Concepto\n[TODO: Proporcionar un JWT falsificado (p. ej., con 'alg': 'none' o un ID de usuario diferente) y mostrar que el servidor lo acepta.]",
-        immediateActions_en: "### Immediate Actions\nEnforce strict signature validation for all incoming JWTs.",
-        immediateActions_es: "### Acciones Inmediatas\nHacer cumplir una validación estricta de la firma para todos los JWT entrantes.",
-    },
-    {
-        id: "vuln-add-024",
-        title_en: "OAuth Misconfiguration",
-        title_es: "Configuración Incorrecta de OAuth",
-        overview_en: "### Overview\nOAuth is a complex protocol, and misconfigurations in its implementation can lead to serious security vulnerabilities.",
-        overview_es: "### Resumen\nOAuth es un protocolo complejo, y las configuraciones incorrectas en su implementación pueden conducir a graves vulnerabilidades de seguridad.",
-        technicalDescription_en: "### Technical Description\nCommon issues include improper validation of the 'redirect_uri', leading to authorization code theft; leaking client secrets in mobile apps; or failing to use the 'state' parameter to prevent CSRF attacks on the OAuth flow.",
-        technicalDescription_es: "### Descripción Técnica\nLos problemas comunes incluyen la validación incorrecta de la 'redirect_uri', lo que lleva al robo del código de autorización; la filtración de secretos de cliente en aplicaciones móviles; o no usar el parámetro 'state' para prevenir ataques CSRF en el flujo de OAuth.",
-        impact_en: "### Impact\nCan lead to account takeover, where an attacker can link their account to a victim's profile and gain full access.",
-        impact_es: "### Impacto\nPuede conducir a la toma de control de cuentas, donde un atacante puede vincular su cuenta al perfil de una víctima y obtener acceso completo.",
-        remediation_en: {
-            shortTerm: "### Short-Term Recommendations\nStrictly validate the 'redirect_uri' against a pre-registered allow-list. Always use and validate the 'state' parameter.",
-            mediumTerm: "### Medium-Term Recommendations\nFor mobile apps, use the 'PKCE' (Proof Key for Code Exchange) flow to avoid the need for a client secret.",
-            longTerm: "### Long-Term Recommendations\nFollow the latest OAuth 2.0 Security Best Current Practice guidelines. Regularly review your OAuth implementation for flaws."
-        },
-        remediation_es: {
-            shortTerm: "### Recomendaciones a Corto Plazo\nValidar estrictamente la 'redirect_uri' contra una lista blanca pre-registrada. Siempre usar y validar el parámetro 'state'.",
-            mediumTerm: "### Recomendaciones a Medio Plazo\nPara aplicaciones móviles, usar el flujo 'PKCE' (Proof Key for Code Exchange) para evitar la necesidad de un secreto de cliente.",
-            longTerm: "### Recomendaciones a Largo Plazo\nSeguir las últimas directrices de Mejores Prácticas de Seguridad de OAuth 2.0. Revisar regularmente su implementación de OAuth en busca de fallas."
-        },
-        cwe: "CWE-306",
-        severity: "High",
-        cvss: { score: 8.8, vectorString: "CVSS:3.1/AV:N/AC:L/PR:N/UI:R/S:U/C:H/I:H/A:H", "attackVector": "N", "attackComplexity": "L", "privilegesRequired": "N", "userInteraction": "R", "scope": "U", "confidentiality": "H", "integrity": "H", "availability": "H" },
-        references: ["https://oauth.net/2/"],
-        tags: ["Additional", "Authentication"],
-        affectedComponents_en: "### Affected Components\n- The OAuth 2.0 implementation logic.",
-        details_en: "### Proof of Concept\n[TODO: Provide a PoC demonstrating the specific OAuth flaw, such as redirecting an authorization code to an attacker-controlled domain.]",
-        affectedComponents_es: "### Componentes Afectados\n- La lógica de implementación de OAuth 2.0.",
-        details_es: "### Prueba de Concepto\n[TODO: Proporcionar una PoC que demuestre el fallo específico de OAuth, como redirigir un código de autorización a un dominio controlado por el atacante.]",
-        immediateActions_en: "### Immediate Actions\nReview and fix the specific OAuth misconfiguration, such as implementing strict 'redirect_uri' validation.",
-        immediateActions_es: "### Acciones Inmediatas\nRevisar y corregir la configuración incorrecta específica de OAuth, como implementar una validación estricta de 'redirect_uri'.",
-    },
-    {
-        id: "vuln-add-025",
-        title_en: "GraphQL Injection",
-        title_es: "Inyección GraphQL",
-        overview_en: "### Overview\nGraphQL injection vulnerabilities allow an attacker to craft malicious queries to extract sensitive information or cause a denial of service.",
-        overview_es: "### Resumen\nLas vulnerabilidades de inyección de GraphQL permiten a un atacante crear consultas maliciosas para extraer información sensible o causar una denegación de servicio.",
-        technicalDescription_en: "### Technical Description\nUnlike REST APIs, GraphQL allows clients to request exactly what they need. If not properly secured, attackers can craft deeply nested queries that exhaust server resources (DoS) or use introspection to map out the entire API schema and find sensitive data types.",
-        technicalDescription_es: "### Descripción Técnica\nA diferencia de las API REST, GraphQL permite a los clientes solicitar exactamente lo que necesitan. Si no se asegura adecuadamente, los atacantes pueden crear consultas profundamente anidadas que agotan los recursos del servidor (DoS) o usar la introspección para mapear todo el esquema de la API y encontrar tipos de datos sensibles.",
-        impact_en: "### Impact\nCan lead to denial-of-service, information disclosure, and bypass of access controls.",
-        impact_es: "### Impacto\nPuede conducir a la denegación de servicio, la divulgación de información y la omisión de los controles de acceso.",
-        remediation_en: {
-            shortTerm: "### Short-Term Recommendations\nDisable introspection in production environments. Implement query depth and complexity limits to prevent resource exhaustion attacks.",
-            mediumTerm: "### Medium-Term Recommendations\nImplement proper authentication and authorization on all GraphQL types and fields.",
-            longTerm: "### Long-Term Recommendations\nUse a GraphQL-aware Web Application Firewall (WAF) to detect and block malicious queries."
-        },
-        remediation_es: {
-            shortTerm: "### Recomendaciones a Corto Plazo\nDeshabilitar la introspección en entornos de producción. Implementar límites de profundidad y complejidad de consulta para prevenir ataques de agotamiento de recursos.",
-            mediumTerm: "### Recomendaciones a Medio Plazo\nImplementar autenticación y autorización adecuadas en todos los tipos y campos de GraphQL.",
-            longTerm: "### Recomendaciones a Largo Plazo\nUsar un Web Application Firewall (WAF) consciente de GraphQL para detectar y bloquear consultas maliciosas."
-        },
-        cwe: "CWE-20",
-        severity: "High",
-        cvss: { score: 8.8, vectorString: "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:H/I:N/A:H", "attackVector": "N", "attackComplexity": "L", "privilegesRequired": "N", "userInteraction": "N", "scope": "U", "confidentiality": "H", "integrity": "N", "availability": "H" },
-        references: ["https://graphql.org/learn/security/"],
-        tags: ["Additional", "API"],
-        affectedComponents_en: "### Affected Components\n- The GraphQL API endpoint.",
-        details_en: "### Proof of Concept\n[TODO: Provide a malicious GraphQL query that demonstrates resource exhaustion or unauthorized data access.]",
-        affectedComponents_es: "### Componentes Afectados\n- El punto final de la API de GraphQL.",
-        details_es: "### Prueba de Concepto\n[TODO: Proporcionar una consulta de GraphQL maliciosa que demuestre el agotamiento de recursos o el acceso no autorizado a los datos.]",
-        immediateActions_en: "### Immediate Actions\nDisable introspection and implement query depth limiting.",
-        immediateActions_es: "### Acciones Inmediatas\nDeshabilitar la introspección e implementar la limitación de la profundidad de las consultas.",
-    },
-    {
-        id: "vuln-add-026",
-        title_en: "WebSocket Security Issues",
-        title_es: "Problemas de Seguridad en WebSocket",
-        overview_en: "### Overview\nWebSockets provide a persistent, two-way communication channel, but they can introduce new security risks if not properly implemented.",
-        overview_es: "### Resumen\nLos WebSockets proporcionan un canal de comunicación persistente y bidireccional, pero pueden introducir nuevos riesgos de seguridad si no se implementan correctamente.",
-        technicalDescription_en: "### Technical Description\nVulnerabilities include Cross-Site WebSocket Hijacking (CSWSH), where an attacker can establish a WebSocket connection on behalf of a victim; unencrypted communication (using 'ws://' instead of 'wss://'); and lack of input validation on messages sent over the WebSocket.",
-        technicalDescription_es: "### Descripción Técnica\nLas vulnerabilidades incluyen el secuestro de WebSocket entre sitios (CSWSH), donde un atacante puede establecer una conexión WebSocket en nombre de una víctima; la comunicación no cifrada (usando 'ws://' en lugar de 'wss://'); y la falta de validación de entradas en los mensajes enviados a través del WebSocket.",
-        impact_en: "### Impact\nCan lead to session hijacking, sensitive data exposure, and the execution of unauthorized actions.",
-        impact_es: "### Impacto\nPuede conducir al secuestro de sesiones, la exposición de datos sensibles y la ejecución de acciones no autorizadas.",
-        remediation_en: {
-            shortTerm: "### Short-Term Recommendations\nAlways use secure WebSockets ('wss://'). Validate the 'Origin' header on the server during the WebSocket handshake to prevent CSWSH.",
-            mediumTerm: "### Medium-Term Recommendations\nImplement proper authentication and session management for WebSocket connections, just as you would for HTTP.",
-            longTerm: "### Long-Term Recommendations\nTreat all data received over a WebSocket as untrusted and perform thorough input validation and output encoding."
-        },
-        remediation_es: {
-            shortTerm: "### Recomendaciones a Corto Plazo\nUsar siempre WebSockets seguros ('wss://'). Validar el encabezado 'Origin' en el servidor durante el handshake de WebSocket para prevenir CSWSH.",
-            mediumTerm: "### Recomendaciones a Medio Plazo\nImplementar una autenticación y gestión de sesiones adecuadas para las conexiones WebSocket, al igual que se haría para HTTP.",
-            longTerm: "### Recomendaciones a Largo Plazo\nTratar todos los datos recibidos a través de un WebSocket como no confiables y realizar una validación de entrada y codificación de salida exhaustivas."
-        },
-        cwe: "CWE-295",
-        severity: "Medium",
-        cvss: { score: 6.8, vectorString: "CVSS:3.1/AV:N/AC:L/PR:N/UI:R/S:U/C:L/I:L/A:L", "attackVector": "N", "attackComplexity": "L", "privilegesRequired": "N", "userInteraction": "R", "scope": "U", "confidentiality": "L", "integrity": "L", "availability": "L" },
-        references: ["https://portswigger.net/web-security/websockets"],
-        tags: ["Additional", "Web"],
-        affectedComponents_en: "### Affected Components\n- The WebSocket implementation.",
-        details_en: "### Proof of Concept\n[TODO: Provide a PoC demonstrating a CSWSH attack or the transmission of sensitive data over an unencrypted WebSocket.]",
-        affectedComponents_es: "### Componentes Afectados\n- La implementación de WebSocket.",
-        details_es: "### Prueba de Concepto\n[TODO: Proporcionar una PoC que demuestre un ataque CSWSH o la transmisión de datos sensibles a través de un WebSocket no cifrado.]",
-        immediateActions_en: "### Immediate Actions\nEnforce 'wss://' and validate the Origin header.",
-        immediateActions_es: "### Acciones Inmediatas\nHacer cumplir 'wss://' y validar el encabezado Origin.",
-    },
-    {
-        id: "vuln-add-027",
-        title_en: "Mobile Root/Jailbreak Detection Bypass",
-        title_es: "Omisión de Detección de Root/Jailbreak",
-        overview_en: "### Overview\nThe mobile application attempts to detect if it is running on a rooted or jailbroken device, but this detection mechanism can be bypassed.",
-        overview_es: "### Resumen\nLa aplicación móvil intenta detectar si se está ejecutando en un dispositivo rooteado o con jailbreak, pero este mecanismo de detección puede ser eludido.",
-        technicalDescription_en: "### Technical Description\nRoot detection often relies on checking for the existence of certain files (e.g., `/system/bin/su`) or packages. An attacker can use hooking frameworks (like Frida or Substrate) to intercept these checks and force them to return a 'false' result, tricking the app into thinking it's on a non-rooted device.",
-        technicalDescription_es: "### Descripción Técnica\nLa detección de root a menudo se basa en la comprobación de la existencia de ciertos archivos (p. ej., `/system/bin/su`) o paquetes. Un atacante puede usar frameworks de hooking (como Frida o Substrate) para interceptar estas comprobaciones y forzarlas a devolver un resultado 'falso', engañando a la aplicación para que piense que está en un dispositivo no rooteado.",
-        impact_en: "### Impact\nBypassing root detection allows an attacker to use powerful analysis and tampering tools (like Frida, debuggers, and file system explorers) against the application, which can lead to the discovery of other vulnerabilities.",
-        impact_es: "### Impacto\nEludir la detección de root permite a un atacante utilizar potentes herramientas de análisis y manipulación (como Frida, depuradores y exploradores de sistemas de archivos) contra la aplicación, lo que puede conducir al descubrimiento de otras vulnerabilidades.",
-        remediation_en: {
-            shortTerm: "### Short-Term Recommendations\nImplement multiple, varied root detection checks. Check for common hooking frameworks and debuggers attached to the process.",
-            mediumTerm: "### Medium-Term Recommendations\nUse a commercial-grade binary protection or RASP (Runtime Application Self-Protection) solution that provides robust root detection.",
-            longTerm: "### Long-Term Recommendations\nDo not rely on client-side root detection as a primary security control. Critical security logic should always be enforced on the server-side, assuming the client is a hostile environment."
-        },
-        remediation_es: {
-            shortTerm: "### Recomendaciones a Corto Plazo\nImplementar múltiples y variadas comprobaciones de detección de root. Comprobar si hay frameworks de hooking comunes y depuradores adjuntos al proceso.",
-            mediumTerm: "### Recomendaciones a Medio Plazo\nUsar una protección binaria de grado comercial o una solución RASP (Runtime Application Self-Protection) que proporcione una detección de root robusta.",
-            longTerm: "### Recomendaciones a Largo Plazo\nNo depender de la detección de root del lado del cliente como control de seguridad primario. La lógica de seguridad crítica siempre debe aplicarse en el lado del servidor, asumiendo que el cliente es un entorno hostil."
-        },
-        cwe: "CWE-603",
-        severity: "Medium",
-        cvss: { score: 5.9, vectorString: "CVSS:3.1/AV:L/AC:H/PR:N/UI:N/S:U/C:H/I:N/A:N", "attackVector": "L", "attackComplexity": "H", "privilegesRequired": "N", "userInteraction": "N", "scope": "U", "confidentiality": "H", "integrity": "N", "availability": "N" },
-        references: ["https://owasp.org/www-project-mobile-top-10/2016-risks/m1-improper-platform-usage/"],
-        tags: ["Additional", "Mobile"],
-        affectedComponents_en: "### Affected Components\n- The root/jailbreak detection logic.",
-        details_en: "### Proof of Concept\n[TODO: Provide a Frida script or similar tool that hooks the detection method and allows the app to run on a rooted device.]",
-        affectedComponents_es: "### Componentes Afectados\n- La lógica de detección de root/jailbreak.",
-        details_es: "### Prueba de Concepto\n[TODO: Proporcionar un script de Frida o una herramienta similar que enganche el método de detección y permita que la aplicación se ejecute en un dispositivo rooteado.]",
-        immediateActions_en: "### Immediate Actions\nAdd additional layers of detection, such as checking for running hooking frameworks.",
-        immediateActions_es: "### Acciones Inmediatas\nAñadir capas adicionales de detección, como comprobar si se están ejecutando frameworks de hooking.",
-    },
-    {
-        id: "vuln-add-028",
-        title_en: "Insecure Deep Links",
-        title_es: "Enlaces Profundos Inseguros",
-        overview_en: "### Overview\nDeep links (custom URL schemes) are used to launch a mobile app and navigate to specific content. If not properly validated, they can be a vector for attack.",
-        overview_es: "### Resumen\nLos enlaces profundos (esquemas de URL personalizados) se utilizan para lanzar una aplicación móvil y navegar a contenido específico. Si no se validan correctamente, pueden ser un vector de ataque.",
-        technicalDescription_en: "### Technical Description\nThe app registers a custom URL scheme (e.g., `myapp://`). If the app does not properly validate parameters passed through this scheme, an attacker could craft a malicious link (`myapp://vulnerable_action?parameter=malicious_value`) that, when opened by the user, performs an unauthorized action or leads to information disclosure.",
-        technicalDescription_es: "### Descripción Técnica\nLa aplicación registra un esquema de URL personalizado (p. ej., `myapp://`). Si la aplicación no valida correctamente los parámetros pasados a través de este esquema, un atacante podría crear un enlace malicioso (`myapp://accion_vulnerable?parametro=valor_malicioso`) que, cuando lo abre el usuario, realiza una acción no autorizada o conduce a la divulgación de información.",
-        impact_en: "### Impact\nCan lead to unauthorized actions, XSS if parameters are rendered in a WebView, or information disclosure.",
-        impact_es: "### Impacto\nPuede conducir a acciones no autorizadas, XSS si los parámetros se representan en una WebView, o divulgación de información.",
-        remediation_en: {
-            shortTerm: "### Short-Term Recommendations\nStrictly validate all parameters received through a deep link. Use an allow-list for expected actions and values.",
-            mediumTerm: "### Medium-Term Recommendations\nIn Android, use App Links, and in iOS, use Universal Links. These are standard HTTP links that are more secure and prevent other apps from intercepting them.",
-            longTerm: "### Long-Term Recommendations\nDesign a secure handling mechanism for all incoming intents and URL schemes. Treat all data from deep links as untrusted."
-        },
-        remediation_es: {
-            shortTerm: "### Recomendaciones a Corto Plazo\nValidar estrictamente todos los parámetros recibidos a través de un enlace profundo. Usar una lista blanca para las acciones y valores esperados.",
-            mediumTerm: "### Recomendaciones a Medio Plazo\nEn Android, usar App Links, y en iOS, usar Universal Links. Estos son enlaces HTTP estándar que son más seguros e impiden que otras aplicaciones los intercepten.",
-            longTerm: "### Recomendaciones a Largo Plazo\nDiseñar un mecanismo de manejo seguro para todos los intents y esquemas de URL entrantes. Tratar todos los datos de los enlaces profundos como no confiables."
-        },
-        cwe: "CWE-939",
-        severity: "Medium",
-        cvss: { score: 6.1, vectorString: "CVSS:3.1/AV:N/AC:L/PR:N/UI:R/S:C/C:L/I:L/A:N", "attackVector": "N", "attackComplexity": "L", "privilegesRequired": "N", "userInteraction": "R", "scope": "C", "confidentiality": "L", "integrity": "L", "availability": "N" },
-        references: ["https://developer.android.com/training/app-links"],
-        tags: ["Additional", "Mobile"],
-        affectedComponents_en: "### Affected Components\n- The deep link handler/receiver.",
-        details_en: "### Proof of Concept\n[TODO: Provide a malicious deep link URL and demonstrate how it can be used to perform an unauthorized action in the app.]",
-        affectedComponents_es: "### Componentes Afectados\n- El manejador/receptor de enlaces profundos.",
-        details_es: "### Prueba de Concepto\n[TODO: Proporcionar una URL de enlace profundo maliciosa y demostrar cómo se puede utilizar para realizar una acción no autorizada en la aplicación.]",
-        immediateActions_en: "### Immediate Actions\nImplement strict validation on all parameters passed through deep links.",
-        immediateActions_es: "### Acciones Inmediatas\nImplementar una validación estricta en todos los parámetros pasados a través de enlaces profundos.",
-    },
-    {
-        id: "vuln-add-029",
-        title_en: "Mobile App Cloning",
-        title_es: "Clonación de Aplicaciones Móviles",
-        overview_en: "### Overview\nAn attacker can clone the mobile application and repackage it with malicious code. This cloned app can then be distributed to trick users into installing it.",
-        overview_es: "### Resumen\nUn atacante puede clonar la aplicación móvil y reempaquetarla con código malicioso. Esta aplicación clonada puede luego ser distribuida para engañar a los usuarios para que la instalen.",
-        technicalDescription_en: "### Technical Description\nWithout anti-tampering controls, an attacker can decompile the app, inject malicious code (e.g., code to steal credentials or log keystrokes), and then recompile and re-sign it. This malicious version can be distributed through unofficial app stores or phishing campaigns.",
-        technicalDescription_es: "### Descripción Técnica\nSin controles anti-manipulación, un atacante puede descompilar la aplicación, inyectar código malicioso (p. ej., código para robar credenciales o registrar pulsaciones de teclas) y luego volver a compilarla y firmarla. Esta versión maliciosa se puede distribuir a través de tiendas de aplicaciones no oficiales o campañas de phishing.",
-        impact_en: "### Impact\nCan lead to widespread compromise of user accounts, data theft, and significant reputational damage to the organization.",
-        impact_es: "### Impacto\nPuede conducir a un compromiso generalizado de las cuentas de usuario, el robo de datos y un daño significativo a la reputación de la organización.",
-        remediation_en: {
-            shortTerm: "### Short-Term Recommendations\nImplement integrity checks (e.g., checksum or signature validation) at runtime to verify that the app's code has not been modified.",
-            mediumTerm: "### Medium-Term Recommendations\nUse commercial binary protection tools that provide robust anti-tampering and anti-cloning features.",
-            longTerm: "### Long-Term Recommendations\nImplement server-side checks to validate the integrity of the client app. This can involve an attestation service to verify that the app is the genuine version from the official app store."
-        },
-        remediation_es: {
-            shortTerm: "### Recomendaciones a Corto Plazo\nImplementar comprobaciones de integridad (p. ej., validación de checksum o firma) en tiempo de ejecución para verificar que el código de la aplicación no ha sido modificado.",
-            mediumTerm: "### Recomendaciones a Medio Plazo\nUsar herramientas comerciales de protección binaria que proporcionen características robustas anti-manipulación y anti-clonación.",
-            longTerm: "### Recomendaciones a Largo Plazo\nImplementar comprobaciones del lado del servidor para validar la integridad de la aplicación cliente. Esto puede implicar un servicio de atestación para verificar que la aplicación es la versión genuina de la tienda de aplicaciones oficial."
-        },
-        cwe: "CWE-494",
-        severity: "Medium",
-        cvss: { score: 6.8, vectorString: "CVSS:3.1/AV:N/AC:L/PR:N/UI:R/S:U/C:L/I:L/A:L", "attackVector": "N", "attackComplexity": "L", "privilegesRequired": "N", "userInteraction": "R", "scope": "U", "confidentiality": "L", "integrity": "L", "availability": "L" },
-        references: ["https://owasp.org/www-project-mobile-top-10/2016-risks/m1-improper-platform-usage/"],
-        tags: ["Additional", "Mobile"],
-        affectedComponents_en: "### Affected Components\n- The application binary.",
-        details_en: "### Proof of Concept\n[TODO: Demonstrate patching the application binary to bypass a security control and re-signing it.]",
-        affectedComponents_es: "### Componentes Afectados\n- El binario de la aplicación.",
-        details_es: "### Prueba de Concepto\n[TODO: Demostrar cómo parchear el binario de la aplicación para eludir un control de seguridad y volver a firmarlo.]",
-        immediateActions_en: "### Immediate Actions\nImplement basic checksum validation to detect tampering.",
-        immediateActions_es: "### Acciones Inmediatas\nImplementar una validación básica de checksum para detectar la manipulación.",
-    },
-    {
-        id: "vuln-add-030",
-        title_en: "TCP/IP Vulnerabilities",
-        title_es: "Vulnerabilidades TCP/IP",
-        overview_en: "### Overview\nThis category covers a range of vulnerabilities inherent in the TCP/IP protocol suite itself, such as SYN floods, sequence number prediction, and IP fragmentation attacks.",
-        overview_es: "### Resumen\nEsta categoría cubre una gama de vulnerabilidades inherentes al propio conjunto de protocolos TCP/IP, como las inundaciones SYN, la predicción de números de secuencia y los ataques de fragmentación de IP.",
-        technicalDescription_en: "### Technical Description\nAttackers can exploit fundamental aspects of how TCP/IP works. For example, in a SYN flood, an attacker sends a rapid succession of SYN requests to a target's system in an attempt to consume enough server resources to make the system unresponsive to legitimate traffic.",
-        technicalDescription_es: "### Descripción Técnica\nLos atacantes pueden explotar aspectos fundamentales de cómo funciona TCP/IP. Por ejemplo, en una inundación SYN, un atacante envía una rápida sucesión de solicitudes SYN al sistema de un objetivo en un intento de consumir suficientes recursos del servidor para que el sistema no responda al tráfico legítimo.",
-        impact_en: "### Impact\nCan lead to denial-of-service, session hijacking, or data injection.",
-        impact_es: "### Impacto\nPuede conducir a la denegación de servicio, el secuestro de sesiones o la inyección de datos.",
-        remediation_en: {
-            shortTerm: "### Short-Term Recommendations\nConfigure firewalls and operating system network stacks with protections against common TCP/IP attacks, such as enabling SYN cookies.",
-            mediumTerm: "### Medium-Term Recommendations\nUse an Intrusion Detection/Prevention System (IDS/IPS) to monitor for and block network-level attacks.",
-            longTerm: "### Long-Term Recommendations\nKeep all network hardware and operating systems fully patched. Use a DDoS mitigation service for critical, internet-facing infrastructure."
-        },
-        remediation_es: {
-            shortTerm: "### Recomendaciones a Corto Plazo\nConfigurar los cortafuegos y las pilas de red del sistema operativo con protecciones contra los ataques TCP/IP comunes, como la habilitación de cookies SYN.",
-            mediumTerm: "### Recomendaciones a Medio Plazo\nUsar un Sistema de Detección/Prevención de Intrusiones (IDS/IPS) para monitorear y bloquear los ataques a nivel de red.",
-            longTerm: "### Recomendaciones a Largo Plazo\nMantener todo el hardware de red y los sistemas operativos completamente parcheados. Usar un servicio de mitigación de DDoS para la infraestructura crítica expuesta a Internet."
-        },
-        cwe: "CWE-400",
-        severity: "High",
-        cvss: { score: 7.5, vectorString: "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:N/I:N/A:H", "attackVector": "N", "attackComplexity": "L", "privilegesRequired": "N", "userInteraction": "N", "scope": "U", "confidentiality": "N", "integrity": "N", "availability": "H" },
-        references: ["https://www.cisa.gov/uscert/bsi/articles/knowledge/attacks/denial-of-service"],
-        tags: ["Additional", "Network"],
-        affectedComponents_en: "### Affected Components\n- The host's TCP/IP stack.",
-        details_en: "### Proof of Concept\n[TODO: Demonstrate a SYN flood attack using a tool like hping3 and show the impact on the target's resource consumption.]",
-        affectedComponents_es: "### Componentes Afectados\n- La pila TCP/IP del host.",
-        details_es: "### Prueba de Concepto\n[TODO: Demostrar un ataque de inundación SYN utilizando una herramienta como hping3 y mostrar el impacto en el consumo de recursos del objetivo.]",
-        immediateActions_en: "### Immediate Actions\nEnable SYN cookie protection on the server.",
-        immediateActions_es: "### Acciones Inmediatas\nHabilitar la protección de cookies SYN en el servidor.",
-    },
-    {
-        id: "vuln-add-031",
-        title_en: "Zero-Day Exploits",
-        title_es: "Exploits de Día Cero",
-        overview_en: "### Overview\nA zero-day vulnerability is a flaw in software, hardware, or firmware that is unknown to the party or parties responsible for patching or otherwise fixing the flaw. Until the vulnerability is mitigated, hackers can exploit it to adversely affect computer programs, data, additional computers or a network.",
-        overview_es: "### Resumen\nUna vulnerabilidad de día cero es una falla en el software, hardware o firmware que es desconocida para la parte o partes responsables de parchear o corregir la falla. Hasta que la vulnerabilidad se mitigue, los hackers pueden explotarla para afectar negativamente a los programas informáticos, los datos, las computadoras adicionales o una red.",
-        technicalDescription_en: "### Technical Description\nThis represents the exploitation of a previously unknown vulnerability for which no patch is currently available. The attack occurs on 'day zero' of awareness of the vulnerability.",
-        technicalDescription_es: "### Descripción Técnica\nEsto representa la explotación de una vulnerabilidad previamente desconocida para la cual no hay un parche disponible actualmente. El ataque ocurre en el 'día cero' de la conciencia de la vulnerabilidad.",
-        impact_en: "### Impact\nThe impact is potentially catastrophic, as no specific defense exists. It can lead to full system compromise, massive data breaches, and widespread disruption.",
-        impact_es: "### Impacto\nEl impacto es potencialmente catastrófico, ya que no existe una defensa específica. Puede conducir al compromiso total del sistema, brechas de datos masivas y una interrupción generalizada.",
-        remediation_en: {
-            shortTerm: "### Short-Term Recommendations\nApply compensating controls, such as restricting access to the vulnerable system or temporarily disabling the affected service. Closely monitor the system for indicators of compromise.",
-            mediumTerm: "### Medium-Term Recommendations\nImplement a defense-in-depth strategy with multiple layers of security (e.g., network segmentation, IDS/IPS, application whitelisting). This can help contain an exploit even if one layer is breached.",
-            longTerm: "### Long-Term Recommendations\nMaintain a rapid response and incident handling capability to quickly analyze and respond to new threats. Foster a relationship with security researchers and subscribe to threat intelligence feeds."
-        },
-        remediation_es: {
-            shortTerm: "### Recomendaciones a Corto Plazo\nAplicar controles compensatorios, como restringir el acceso al sistema vulnerable o deshabilitar temporalmente el servicio afectado. Monitorear de cerca el sistema en busca de indicadores de compromiso.",
-            mediumTerm: "### Recomendaciones a Medio Plazo\nImplementar una estrategia de defensa en profundidad con múltiples capas de seguridad (p. ej., segmentación de red, IDS/IPS, listas blancas de aplicaciones). Esto puede ayudar a contener un exploit incluso si se rompe una capa.",
-            longTerm: "### Recomendaciones a Largo Plazo\nMantener una capacidad de respuesta rápida y de manejo de incidentes para analizar y responder rápidamente a nuevas amenazas. Fomentar una relación con los investigadores de seguridad y suscribirse a fuentes de inteligencia de amenazas."
-        },
-        cwe: "CWE-937",
-        severity: "Critical",
-        cvss: { score: 10.0, vectorString: "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:C/C:H/I:H/A:H", "attackVector": "N", "attackComplexity": "L", "privilegesRequired": "N", "userInteraction": "N", "scope": "C", "confidentiality": "H", "integrity": "H", "availability": "H" },
-        references: ["https://www.cisa.gov/uscert/ncas/current-activity"],
-        tags: ["Additional"],
-        affectedComponents_en: "### Affected Components\n- [TODO: Specify the software or hardware with the zero-day vulnerability.]",
-        details_en: "### Proof of Concept\n[TODO: This is highly dependent on the specific zero-day. Provide the exploit details if publicly available and safe to do so.]",
-        affectedComponents_es: "### Componentes Afectados\n- [TODO: Especificar el software o hardware con la vulnerabilidad de día cero.]",
-        details_es: "### Prueba de Concepto\n[TODO: Esto depende en gran medida del día cero específico. Proporcionar los detalles del exploit si están disponibles públicamente y es seguro hacerlo.]",
-        immediateActions_en: "### Immediate Actions\nFollow the guidance from the vendor or security researchers. Isolate the affected system from the network if possible.",
-        immediateActions_es: "### Acciones Inmediatas\nSeguir las indicaciones del proveedor o de los investigadores de seguridad. Aislar el sistema afectado de la red si es posible.",
     }
 ]
     

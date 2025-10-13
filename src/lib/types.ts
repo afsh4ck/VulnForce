@@ -54,12 +54,6 @@ export interface CVSS {
   availability: string;
 }
 
-export interface Remediation {
-  shortTerm: string;
-  mediumTerm: string;
-  longTerm: string;
-}
-
 export interface Vulnerability {
   id: string;
   title_en: string;

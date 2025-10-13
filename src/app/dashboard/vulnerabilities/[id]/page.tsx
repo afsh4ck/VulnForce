@@ -1,4 +1,5 @@
 
+
 'use client';
 
 import { useState, useEffect, useCallback, useMemo, useRef } from 'react';
@@ -434,6 +435,13 @@ export default function VulnerabilityEditorPage() {
       addNewSection: 'Add New Section',
       organizeSections: 'Organize Sections',
       finishOrganizing: 'Finish Organizing',
+      overview: 'Overview',
+      technicalDescription: 'Technical Description',
+      affectedComponents: 'Affected Components',
+      impact: 'Impact',
+      immediateActions: 'Immediate Actions',
+      details: 'Proof of Concept',
+      recommendations: 'Recommendations'
     },
     es: {
       back: 'Volver a Vulnerabilidades',
@@ -473,18 +481,25 @@ export default function VulnerabilityEditorPage() {
       addNewSection: 'Añadir Nueva Sección',
       organizeSections: 'Organizar Secciones',
       finishOrganizing: 'Finalizar Organización',
+      overview: 'Resumen',
+      technicalDescription: 'Descripción Técnica',
+      affectedComponents: 'Componentes Afectados',
+      impact: 'Impacto',
+      immediateActions: 'Acciones Inmediatas',
+      details: 'Prueba de Concepto',
+      recommendations: 'Recomendaciones'
     }
   };
 
   const getFullContent = useCallback((vuln: Vulnerability, lang: 'en' | 'es'): string => {
     const sections = [
-        vuln[`overview_${lang}`],
-        vuln[`technicalDescription_${lang}`],
-        vuln[`affectedComponents_${lang}`],
-        vuln[`impact_${lang}`],
-        vuln[`immediateActions_${lang}`],
-        vuln[`details_${lang}`],
-        vuln[`recommendations_${lang}`]
+      vuln[`overview_${lang}`],
+      vuln[`technicalDescription_${lang}`],
+      vuln[`affectedComponents_${lang}`],
+      vuln[`impact_${lang}`],
+      vuln[`immediateActions_${lang}`],
+      vuln[`details_${lang}`],
+      vuln[`recommendations_${lang}`]
     ];
     return sections.filter(Boolean).join('\n\n---\n\n');
   }, []);
@@ -546,24 +561,35 @@ export default function VulnerabilityEditorPage() {
   
   const handleSave = () => {
     if (vuln) {
-        // This logic needs to be smarter to map back to the correct fields
-        const updatedVuln = {
-            ...vuln,
-            overview_en: enSections.find(s => s.content.includes('### Overview'))?.content || '',
-            technicalDescription_en: enSections.find(s => s.content.includes('### Technical Description'))?.content || '',
-            affectedComponents_en: enSections.find(s => s.content.includes('### Affected Components'))?.content || '',
-            impact_en: enSections.find(s => s.content.includes('### Impact'))?.content || '',
-            immediateActions_en: enSections.find(s => s.content.includes('### Immediate Actions'))?.content || '',
-            details_en: enSections.find(s => s.content.includes('### Proof of Concept'))?.content || '',
-            recommendations_en: enSections.find(s => s.content.includes('### Recommendations'))?.content || '',
+        
+        const extractContent = (sections: FindingSection[], titleKey: string) => {
+            const searchTitleEn = t.en[titleKey as keyof typeof t.en];
+            const searchTitleEs = t.es[titleKey as keyof typeof t.es];
+            const section = sections.find(s => {
+                const headingMatch = s.content.match(/^(#{2,4}) (.*)/);
+                const title = headingMatch ? headingMatch[2].trim() : '';
+                return title === searchTitleEn || title === searchTitleEs;
+            });
+            return section ? section.content : '';
+        }
 
-            overview_es: esSections.find(s => s.content.includes('### Resumen'))?.content || '',
-            technicalDescription_es: esSections.find(s => s.content.includes('### Descripción Técnica'))?.content || '',
-            affectedComponents_es: esSections.find(s => s.content.includes('### Componentes Afectados'))?.content || '',
-            impact_es: esSections.find(s => s.content.includes('### Impacto'))?.content || '',
-            immediateActions_es: esSections.find(s => s.content.includes('### Acciones Inmediatas'))?.content || '',
-            details_es: esSections.find(s => s.content.includes('### Prueba de Concepto'))?.content || '',
-            recommendations_es: esSections.find(s => s.content.includes('### Recomendaciones'))?.content || '',
+        const updatedVuln: Vulnerability = {
+            ...vuln,
+            overview_en: extractContent(enSections, 'overview'),
+            technicalDescription_en: extractContent(enSections, 'technicalDescription'),
+            affectedComponents_en: extractContent(enSections, 'affectedComponents'),
+            impact_en: extractContent(enSections, 'impact'),
+            immediateActions_en: extractContent(enSections, 'immediateActions'),
+            details_en: extractContent(enSections, 'details'),
+            recommendations_en: extractContent(enSections, 'recommendations'),
+
+            overview_es: extractContent(esSections, 'overview'),
+            technicalDescription_es: extractContent(esSections, 'technicalDescription'),
+            affectedComponents_es: extractContent(esSections, 'affectedComponents'),
+            impact_es: extractContent(esSections, 'impact'),
+            immediateActions_es: extractContent(esSections, 'immediateActions'),
+            details_es: extractContent(esSections, 'details'),
+            recommendations_es: extractContent(esSections, 'recommendations'),
 
             references: references.filter(ref => ref.trim() !== ''),
         };

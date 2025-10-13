@@ -366,12 +366,24 @@ const emptyVulnerability: Omit<Vulnerability, 'id'> = {
   affectedComponents_es: '### Componentes Afectados\n\n- [TODO: Listar componentes afectados]',
   impact_en: '### Impact\n\n[TODO: Describe impact in English]',
   impact_es: '### Impacto\n\n[TODO: Describir impacto en español]',
-  immediateActions_en: '### Immediate Actions\n\n[TODO: Add immediate actions in English]',
-  immediateActions_es: '### Acciones Inmediatas\n\n[TODO: Añadir acciones inmediatas en español]',
+  immediateActions_en: "### Immediate Actions\n[TODO: Add immediate actions in English]",
+  immediateActions_es: "### Acciones Inmediatas\n[TODO: Añadir acciones inmediatas en español]",
   details_en: '### Proof of Concept\n\n[TODO: Add PoC in English]',
   details_es: '### Prueba de Concepto\n\n[TODO: Añadir PoC en español]',
-  recommendations_en: '### Recommendations\n\n#### Short-Term Recommendations\n[TODO]\n\n#### Medium-Term Recommendations\n[TODO]\n\n#### Long-Term Recommendations\n[TODO]',
-  recommendations_es: '### Recomendaciones\n\n#### Recomendaciones a Corto Plazo\n[TODO]\n\n#### Recomendaciones a Medio Plazo\n[TODO]\n\n#### Recomendaciones a Largo Plazo\n[TODO]',
+  recommendations_en: `### Recommendations
+#### Short-Term Recommendations
+[TODO]
+#### Medium-Term Recommendations
+[TODO]
+#### Long-Term Recommendations
+[TODO]`,
+  recommendations_es: `### Recomendaciones
+#### Recomendaciones a Corto Plazo
+[TODO]
+#### Recomendaciones a Medio Plazo
+[TODO]
+#### Recomendaciones a Largo Plazo
+[TODO]`,
   cwe: '',
   cvss: {
     score: 0,
@@ -472,6 +484,13 @@ export default function NewVulnerabilityPage() {
       finishOrganizing: 'Finish Organizing',
       validationErrorTitle: 'Required Fields Missing',
       validationErrorDescription: 'Please fill in the English title, Spanish title, and category.',
+      overview: 'Overview',
+      technicalDescription: 'Technical Description',
+      affectedComponents: 'Affected Components',
+      impact: 'Impact',
+      immediateActions: 'Immediate Actions',
+      details: 'Proof of Concept',
+      recommendations: 'Recommendations'
     },
     es: {
       back: 'Volver a Vulnerabilidades',
@@ -515,8 +534,28 @@ export default function NewVulnerabilityPage() {
       finishOrganizing: 'Finalizar Organización',
       validationErrorTitle: 'Faltan Campos Obligatorios',
       validationErrorDescription: 'Por favor, rellena el título en inglés, el título en español y la categoría.',
+      overview: 'Resumen',
+      technicalDescription: 'Descripción Técnica',
+      affectedComponents: 'Componentes Afectados',
+      impact: 'Impacto',
+      immediateActions: 'Acciones Inmediatas',
+      details: 'Prueba de Concepto',
+      recommendations: 'Recomendaciones'
     }
   };
+
+  const getFullContent = useCallback((vuln: Omit<Vulnerability, 'id'>, lang: 'en' | 'es'): string => {
+    const sections = [
+        vuln[`overview_${lang}`],
+        vuln[`technicalDescription_${lang}`],
+        vuln[`affectedComponents_${lang}`],
+        vuln[`impact_${lang}`],
+        vuln[`immediateActions_${lang}`],
+        vuln[`details_${lang}`],
+        vuln[`recommendations_${lang}`]
+    ];
+    return sections.filter(Boolean).join('\n\n---\n\n');
+  }, []);
 
   const parseMarkdownToSections = useCallback((markdown: string): FindingSection[] => {
     if (!markdown) return [];
@@ -568,17 +607,39 @@ export default function NewVulnerabilityPage() {
       return;
     }
 
-    const fullEnContent = enSections.map(s => s.content).join('\n\n---\n\n');
-    const fullEsContent = esSections.map(s => s.content).join('\n\n---\n\n');
-    
-    const newVuln = {
+    const extractContent = (sections: FindingSection[], titleKey: string) => {
+        const searchTitleEn = t.en[titleKey as keyof typeof t.en];
+        const searchTitleEs = t.es[titleKey as keyof typeof t.es];
+        const section = sections.find(s => {
+          const headingMatch = s.content.match(/^(#{2,4}) (.*)/);
+          const title = headingMatch ? headingMatch[2].trim() : '';
+          return title === searchTitleEn || title === searchTitleEs;
+        });
+        return section ? section.content : '';
+    }
+
+    const newVuln: Omit<Vulnerability, 'id'> = {
         ...vuln,
-        overview_en: fullEnContent,
-        overview_es: fullEsContent,
+        overview_en: extractContent(enSections, 'overview'),
+        technicalDescription_en: extractContent(enSections, 'technicalDescription'),
+        affectedComponents_en: extractContent(enSections, 'affectedComponents'),
+        impact_en: extractContent(enSections, 'impact'),
+        immediateActions_en: extractContent(enSections, 'immediateActions'),
+        details_en: extractContent(enSections, 'details'),
+        recommendations_en: extractContent(enSections, 'recommendations'),
+
+        overview_es: extractContent(esSections, 'overview'),
+        technicalDescription_es: extractContent(esSections, 'technicalDescription'),
+        affectedComponents_es: extractContent(esSections, 'affectedComponents'),
+        impact_es: extractContent(esSections, 'impact'),
+        immediateActions_es: extractContent(esSections, 'immediateActions'),
+        details_es: extractContent(esSections, 'details'),
+        recommendations_es: extractContent(esSections, 'recommendations'),
+
         references: references.filter(ref => ref.trim() !== ''),
     };
 
-    addVulnerability(newVuln as Omit<Vulnerability, 'id'>);
+    addVulnerability(newVuln);
     toast({
       title: t[language].saveSuccessTitle,
       description: t[language].saveSuccessDescription,
@@ -675,13 +736,13 @@ export default function NewVulnerabilityPage() {
   };
 
   useEffect(() => {
-    const initialEnSections = parseMarkdownToSections(vuln.overview_en);
-    const initialEsSections = parseMarkdownToSections(vuln.overview_es);
+    const initialEnSections = parseMarkdownToSections(getFullContent(vuln, 'en'));
+    const initialEsSections = parseMarkdownToSections(getFullContent(vuln, 'es'));
     setEnSections(initialEnSections);
     setEsSections(initialEsSections);
     setEnSectionViews(initialEnSections.reduce((acc, sec) => ({ ...acc, [sec.id]: 'split' }), {}));
     setEsSectionViews(initialEsSections.reduce((acc, sec) => ({ ...acc, [sec.id]: 'split' }), {}));
-  }, [vuln.overview_en, vuln.overview_es, parseMarkdownToSections]);
+}, [vuln, parseMarkdownToSections, getFullContent]);
 
   return (
     <div className="space-y-6">
@@ -922,3 +983,4 @@ export default function NewVulnerabilityPage() {
     </div>
   );
 }
+
