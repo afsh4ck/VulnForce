@@ -18,8 +18,6 @@ La vulnerabilidad ocurre cuando la entrada proporcionada por el usuario no se sa
 Successful exploitation can lead to unauthorized access to sensitive data, such as passwords, credit card details, or personal user information. In many cases, an attacker can modify or delete this data, causing data integrity issues. Depending on the database privileges, it could also allow the attacker to execute commands on the underlying operating system, leading to a full system compromise.`,
         impact_es: `### Impacto
 La explotación exitosa puede conducir al acceso no autorizado a datos sensibles, como contraseñas, detalles de tarjetas de crédito o información personal de los usuarios. En muchos casos, un atacante puede modificar o eliminar estos datos, causando problemas de integridad. Dependiendo de los privilegios de la base de datos, también podría permitir al atacante ejecutar comandos en el sistema operativo subyacente, lo que llevaría a un compromiso total del sistema.`,
-        immediateActions_en: "### Immediate Actions\nDeploy a Web Application Firewall (WAF) with rules to block common SQLi patterns. Identify and temporarily disable the vulnerable functionality if possible.",
-        immediateActions_es: "### Acciones Inmediatas\nDesplegar un Web Application Firewall (WAF) con reglas para bloquear patrones comunes de SQLi. Identificar y deshabilitar temporalmente la funcionalidad vulnerable si es posible.",
         remediation_en: {
             shortTerm: "Refactor all database queries to use parameterized queries (also known as prepared statements). This is the most effective defense against SQLi as it separates the query logic from the data.",
             mediumTerm: "Implement least privilege access for database users. The application's database user should only have the minimum necessary permissions.",
@@ -43,6 +41,8 @@ La explotación exitosa puede conducir al acceso no autorizado a datos sensibles
 - [TODO: Listar componentes afectados, URLs, parámetros, etc.]`,
         details_es: `### Prueba de Concepto
 [TODO: Proporcionar una PoC detallada, incluyendo pasos, fragmentos de código y capturas de pantalla en español]`,
+        immediateActions_en: "### Immediate Actions\n[TODO: Add immediate actions in English]",
+        immediateActions_es: "### Acciones Inmediatas\n[TODO: Añadir acciones inmediatas en español]",
     },
     {
         id: "vuln-web-002",
@@ -60,8 +60,6 @@ La aplicación no sanea correctamente los datos proporcionados por el usuario an
 XSS can lead to session hijacking, account takeover, redirection to malicious sites, or unauthorized actions on behalf of the user. In the context of an administrator, it could lead to full control of the web application.`,
         impact_es: `### Impacto
 El XSS puede conducir al secuestro de sesiones, la toma de control de cuentas, la redirección a sitios maliciosos o la realización de acciones no autorizadas en nombre del usuario. En el contexto de un administrador, podría llevar al control total de la aplicación web.`,
-        immediateActions_en: "### Immediate Actions\nImplement a strict Content Security Policy (CSP) as a defense-in-depth measure. Identify the most critical vulnerable inputs and apply immediate hotfixes to encode the output.",
-        immediateActions_es: "### Acciones Inmediatas\nImplementar una Política de Seguridad de Contenido (CSP) estricta como medida de defensa en profundidad. Identificar las entradas vulnerables más críticas y aplicar parches inmediatos para codificar la salida.",
         remediation_en: {
             shortTerm: "Apply context-aware output encoding to all user-supplied data before it is rendered in the browser. For example, use HTML entity encoding for data placed in HTML context, and JavaScript encoding for data in script contexts.",
             mediumTerm: "Use modern web frameworks (like React, Angular, Vue) that have built-in protections against XSS. Avoid using dangerous functions like `innerHTML`.",
@@ -85,6 +83,8 @@ El XSS puede conducir al secuestro de sesiones, la toma de control de cuentas, l
 - [TODO: Listar componentes afectados, URLs, parámetros, etc.]`,
         details_es: `### Prueba de Concepto
 [TODO: Proporcionar una PoC detallada, incluyendo pasos, fragmentos de código y capturas de pantalla en español]`,
+        immediateActions_en: "### Immediate Actions\n[TODO: Add immediate actions in English]",
+        immediateActions_es: "### Acciones Inmediatas\n[TODO: Añadir acciones inmediatas en español]",
     },
     {
         id: "vuln-web-003",
@@ -102,8 +102,6 @@ La autenticación rota puede manifestarse de varias maneras, como permitir el re
 Attackers can take over user accounts, potentially gaining access to sensitive data or functionality. If an administrative account is compromised, the attacker could gain full control over the application.`,
         impact_es: `### Impacto
 Los atacantes pueden tomar el control de las cuentas de los usuarios, obteniendo potencialmente acceso a datos o funcionalidades sensibles. Si se compromete una cuenta administrativa, el atacante podría obtener el control total de la aplicación.`,
-        immediateActions_en: "### Immediate Actions\nImmediately invalidate all active user sessions to force re-authentication. Review logs for any signs of account takeover.",
-        immediateActions_es: "### Acciones Inmediatas\nInvalidar inmediatamente todas las sesiones de usuario activas para forzar la re-autenticación. Revisar los registros en busca de signos de toma de control de cuentas.",
         remediation_en: {
             shortTerm: "Enforce strong password policies and implement rate limiting and account lockout mechanisms on login attempts. Ensure session tokens are invalidated on the server-side upon logout.",
             mediumTerm: "Implement Multi-Factor Authentication (MFA) for all users, especially for administrative accounts. Use a centralized and standardized session management mechanism.",
@@ -127,6 +125,8 @@ Los atacantes pueden tomar el control de las cuentas de los usuarios, obteniendo
 - [TODO: Especificar los formularios de inicio de sesión, endpoints de API o componentes de gestión de sesión afectados.]`,
         details_es: `### Prueba de Concepto
 [TODO: Proporcionar una PoC detallada, demostrando el relleno de credenciales, el secuestro de sesión o el bypass de la recuperación de contraseña.]`,
+        immediateActions_en: "### Immediate Actions\n[TODO: Add immediate actions in English]",
+        immediateActions_es: "### Acciones Inmediatas\n[TODO: Añadir acciones inmediatas en español]",
     },
     {
         id: "vuln-web-004",
@@ -144,8 +144,6 @@ Los datos sensibles pueden exponerse en tránsito o en reposo. Esto a menudo suc
 The impact of sensitive data exposure can be severe, leading to significant financial losses, reputational damage, and regulatory fines (e.g., under GDPR, CCPA). It can compromise the privacy of users and expose the organization to legal liability.`,
         impact_es: `### Impacto
 El impacto de la exposición de datos sensibles puede ser severo, lo que lleva a pérdidas financieras significativas, daño a la reputación y multas regulatorias (por ejemplo, bajo GDPR, CCPA). Puede comprometer la privacidad de los usuarios y exponer a la organización a responsabilidad legal.`,
-        immediateActions_en: "### Immediate Actions\nImmediately identify all locations where sensitive data is exposed and restrict access. Rotate any exposed credentials, API keys, or tokens.",
-        immediateActions_es: "### Acciones Inmediatas\nIdentificar inmediatamente todas las ubicaciones donde se exponen datos sensibles y restringir el acceso. Rotar cualquier credencial, clave de API o token expuesto.",
         remediation_en: {
             shortTerm: "Identify all sensitive data and apply strong encryption both at rest and in transit (e.g., using TLS 1.2+). Disable caching for responses that contain sensitive data.",
             mediumTerm: "Implement a data classification policy. Use strong, industry-standard encryption algorithms and protocols. Ensure proper key management and rotation.",
@@ -169,6 +167,8 @@ El impacto de la exposición de datos sensibles puede ser severo, lo que lleva a
 - [TODO: Especificar dónde se almacenan o transmiten los datos sensibles de forma insegura.]`,
         details_es: `### Prueba de Concepto
 [TODO: Proporcionar evidencia de los datos expuestos, p. ej., capturas de pantalla de contraseñas en texto plano en la base de datos o tráfico sin cifrar.]`,
+        immediateActions_en: "### Immediate Actions\n[TODO: Add immediate actions in English]",
+        immediateActions_es: "### Acciones Inmediatas\n[TODO: Añadir acciones inmediatas en español]",
     },
     {
         id: "vuln-web-005",
@@ -186,8 +186,6 @@ Muchos procesadores XML antiguos permiten la especificación de entidades extern
 XXE can lead to the disclosure of confidential data, denial of service (DoS), server-side request forgery (SSRF), and port scanning from the perspective of the machine where the parser is located.`,
         impact_es: `### Impacto
 XXE puede llevar a la divulgación de datos confidenciales, denegación de servicio (DoS), falsificación de solicitudes del lado del servidor (SSRF) y escaneo de puertos desde la perspectiva de la máquina donde se encuentra el analizador.`,
-        immediateActions_en: "### Immediate Actions\nIdentify all XML parsers in the application. If possible, temporarily disable any functionality that processes XML from untrusted sources.",
-        immediateActions_es: "### Acciones Inmediatas\nIdentificar todos los analizadores XML en la aplicación. Si es posible, deshabilitar temporalmente cualquier funcionalidad que procese XML de fuentes no confiables.",
         remediation_en: {
             shortTerm: "Disable DTDs (Document Type Definitions) and external entities in all XML parsers in the application. This is the most effective and simplest way to prevent XXE.",
             mediumTerm: "Upgrade XML processors and libraries to their latest versions. Use less complex data formats like JSON where possible.",
@@ -211,6 +209,8 @@ XXE puede llevar a la divulgación de datos confidenciales, denegación de servi
 - [TODO: Especificar la funcionalidad que procesa entradas XML, p. ej., funciones de carga de archivos.]`,
         details_es: `### Prueba de Concepto
 [TODO: Proporcionar un archivo XML malicioso y mostrar la divulgación de información o el DoS resultante.]`,
+        immediateActions_en: "### Immediate Actions\n[TODO: Add immediate actions in English]",
+        immediateActions_es: "### Acciones Inmediatas\n[TODO: Añadir acciones inmediatas en español]",
     },
     {
         id: "vuln-web-006",
@@ -228,8 +228,6 @@ Esta vulnerabilidad surge cuando las restricciones sobre lo que los usuarios aut
 Broken access control can lead to unauthorized access to data and functionality, potentially allowing attackers to take over a site, modify critical data, or perform unauthorized actions as other users.`,
         impact_es: `### Impacto
 El control de acceso roto puede conducir al acceso no autorizado a datos y funcionalidades, permitiendo potencialmente a los atacantes tomar el control de un sitio, modificar datos críticos o realizar acciones no autorizadas como otros usuarios.`,
-        immediateActions_en: "### Immediate Actions\nReview and audit access control rules for the most critical functionalities. Log all access control failures and set up alerts for repeated failures.",
-        immediateActions_es: "### Acciones Inmediatas\nRevisar y auditar las reglas de control de acceso para las funcionalidades más críticas. Registrar todas las fallas de control de acceso y configurar alertas para fallas repetidas.",
         remediation_en: {
             shortTerm: "Review and enforce access control on the server-side for every request. Use role-based access control (RBAC) mechanisms. Deny by default.",
             mediumTerm: "Implement a centralized access control mechanism that is used by all components of the application. Log access control failures and alert administrators.",
@@ -253,6 +251,8 @@ El control de acceso roto puede conducir al acceso no autorizado a datos y funci
 - [TODO: Especificar las funciones o endpoints de API con control de acceso roto.]`,
         details_es: `### Prueba de Concepto
 [TODO: Proporcionar los pasos para reproducir, mostrando cómo un usuario con pocos privilegios puede acceder a recursos de altos privilegios.]`,
+        immediateActions_en: "### Immediate Actions\n[TODO: Add immediate actions in English]",
+        immediateActions_es: "### Acciones Inmediatas\n[TODO: Añadir acciones inmediatas en español]",
     },
     {
         id: "vuln-web-007",
@@ -270,8 +270,6 @@ Esta vulnerabilidad puede ocurrir en cualquier nivel de la pila de aplicaciones,
 Security misconfiguration can lead to a wide range of impacts, from information disclosure to a full system compromise, depending on the nature of the misconfiguration.`,
         impact_es: `### Impacto
 La configuración de seguridad incorrecta puede tener una amplia gama de impactos, desde la divulgación de información hasta el compromiso total del sistema, dependiendo de la naturaleza de la configuración incorrecta.`,
-        immediateActions_en: "### Immediate Actions\nReview and disable any unnecessary features (e.g., debug modes, directory listing). Change all default credentials immediately.",
-        immediateActions_es: "### Acciones Inmediatas\nRevisar y deshabilitar cualquier característica innecesaria (p. ej., modos de depuración, listado de directorios). Cambiar todas las credenciales predeterminadas de inmediato.",
         remediation_en: {
             shortTerm: "Review and harden configurations for all parts of the application stack. Implement security headers like Content Security Policy (CSP). Disable unnecessary features and services.",
             mediumTerm: "Develop a repeatable hardening process that is fast and easy to deploy. Automate the process of verifying configurations in different environments.",
@@ -295,6 +293,8 @@ La configuración de seguridad incorrecta puede tener una amplia gama de impacto
 - [TODO: Listar los componentes, servicios o servidores mal configurados.]`,
         details_es: `### Prueba de Concepto
 [TODO: Proporcionar evidencia de la configuración incorrecta, p. ej., captura de pantalla del listado de directorios, página de administración predeterminada o mensaje de error detallado.]`,
+        immediateActions_en: "### Immediate Actions\n[TODO: Add immediate actions in English]",
+        immediateActions_es: "### Acciones Inmediatas\n[TODO: Añadir acciones inmediatas en español]",
     },
     {
         id: "vuln-web-008",
@@ -312,8 +312,6 @@ El ataque funciona incluyendo un enlace o script en una página que accede a un 
 A successful CSRF attack can force the user to perform state-changing requests like transferring funds, changing their email address, or purchasing an item.`,
         impact_es: `### Impacto
 Un ataque CSRF exitoso puede obligar al usuario a realizar solicitudes que cambian el estado, como transferir fondos, cambiar su dirección de correo electrónico o comprar un artículo.`,
-        immediateActions_en: "### Immediate Actions\nReview all state-changing forms and API endpoints to identify which ones lack CSRF protection. Prioritize fixing critical functions like password changes or fund transfers.",
-        immediateActions_es: "### Acciones Inmediatas\nRevisar todos los formularios y puntos de conexión de API que cambian el estado para identificar cuáles carecen de protección CSRF. Priorizar la corrección de funciones críticas como cambios de contraseña o transferencias de fondos.",
         remediation_en: {
             shortTerm: "Implement anti-CSRF tokens (synchronizer token pattern) for all state-changing requests. Verify the `Origin` or `Referer` header.",
             mediumTerm: "Use the SameSite cookie attribute, setting it to `Strict` or `Lax`.",
@@ -337,6 +335,8 @@ Un ataque CSRF exitoso puede obligar al usuario a realizar solicitudes que cambi
 - [TODO: Listar los formularios o acciones vulnerables a CSRF.]`,
         details_es: `### Prueba de Concepto
 [TODO: Proporcionar un archivo HTML de PoC de CSRF y demostrar que se realiza la acción no autorizada.]`,
+        immediateActions_en: "### Immediate Actions\n[TODO: Add immediate actions in English]",
+        immediateActions_es: "### Acciones Inmediatas\n[TODO: Añadir acciones inmediatas en español]",
     },
     {
         id: "vuln-web-009",
@@ -354,8 +354,6 @@ La vulnerabilidad ocurre cuando una aplicación deserializa datos de una fuente 
 The impact can range from denial-of-service to arbitrary code execution, which can lead to a full system compromise. It can also be used to bypass authentication and access controls.`,
         impact_es: `### Impacto
 El impacto puede variar desde la denegación de servicio hasta la ejecución de código arbitrario, lo que puede llevar a un compromiso total del sistema. También se puede utilizar para eludir la autenticación y los controles de acceso.`,
-        immediateActions_en: "### Immediate Actions\nIdentify all endpoints that accept serialized objects. If possible, disable these endpoints until a proper fix can be implemented.",
-        immediateActions_es: "### Acciones Inmediatas\nIdentificar todos los puntos de conexión que aceptan objetos serializados. Si es posible, deshabilitar estos puntos de conexión hasta que se pueda implementar una solución adecuada.",
         remediation_en: {
             shortTerm: "Avoid deserializing data from untrusted sources. If necessary, implement strict type checking and validation before deserialization.",
             mediumTerm: "Use data formats that are not vulnerable to deserialization attacks, such as JSON, and avoid using complex native serialization formats.",
@@ -379,6 +377,8 @@ El impacto puede variar desde la denegación de servicio hasta la ejecución de 
 - [TODO: Especificar la función o el parámetro que acepta datos serializados.]`,
         details_es: `### Prueba de Concepto
 [TODO: Proporcionar una carga útil serializada que, cuando se procesa, conduce a la ejecución de código u otro resultado malicioso.]`,
+        immediateActions_en: "### Immediate Actions\n[TODO: Add immediate actions in English]",
+        immediateActions_es: "### Acciones Inmediatas\n[TODO: Añadir acciones inmediatas en español]",
     },
     {
         id: "vuln-web-010",
@@ -396,8 +396,6 @@ La vulnerabilidad ocurre cuando una aplicación obtiene un recurso remoto basado
 A successful SSRF attack can lead to the scanning of internal networks, unauthorized access to internal services, information disclosure, and remote code execution on internal systems.`,
         impact_es: `### Impacto
 Un ataque SSRF exitoso puede llevar al escaneo de redes internas, acceso no autorizado a servicios internos, divulgación de información y ejecución remota de código en sistemas internos.`,
-        immediateActions_en: "### Immediate Actions\nAdd network-level controls (firewall rules) to block outbound traffic from the application server to internal network ranges.",
-        immediateActions_es: "### Acciones Inmediatas\nAgregar controles a nivel de red (reglas de firewall) para bloquear el tráfico saliente desde el servidor de aplicaciones hacia los rangos de la red interna.",
         remediation_en: {
             shortTerm: "Implement a strict allow-list of domains and protocols that the application is allowed to request. Deny all other requests.",
             mediumTerm: "Validate all user-supplied input to ensure it conforms to the expected format and values. Do not send raw responses from the server back to the client.",
@@ -421,6 +419,8 @@ Un ataque SSRF exitoso puede llevar al escaneo de redes internas, acceso no auto
 - [TODO: Especificar la funcionalidad que realiza solicitudes del lado del servidor basadas en la entrada del usuario, p. ej., un generador de vista previa de URL.]`,
         details_es: `### Prueba de Concepto
 [TODO: Proporcionar una carga útil que demuestre cómo realizar una solicitud a un recurso interno o restringido y mostrar la respuesta del servidor.]`,
+        immediateActions_en: "### Immediate Actions\n[TODO: Add immediate actions in English]",
+        immediateActions_es: "### Acciones Inmediatas\n[TODO: Añadir acciones inmediatas en español]",
     },
     {
         id: "vuln-web-011",
@@ -438,8 +438,6 @@ Un atacante puede cambiar el método HTTP (p. ej., de POST a GET) para acceder a
 This can lead to bypassing authentication, privilege escalation, or unauthorized execution of sensitive operations.`,
         impact_es: `### Impacto
 Esto puede conducir a la omisión de la autenticación, la escalada de privilegios o la ejecución no autorizada de operaciones sensibles.`,
-        immediateActions_en: "### Immediate Actions\nReview the web server configuration to ensure it does not allow unexpected HTTP verbs for sensitive endpoints. Implement logging to detect unusual HTTP method usage.",
-        immediateActions_es: "### Acciones Inmediatas\nRevisar la configuración del servidor web para asegurarse de que no permite verbos HTTP inesperados para puntos de conexión sensibles. Implementar registros para detectar el uso inusual de métodos HTTP.",
         remediation_en: {
             shortTerm: "Enforce strict, default-deny access control for all endpoints, regardless of the HTTP verb used.",
             mediumTerm: "Use a framework that correctly maps actions to specific HTTP verbs and enforces this mapping.",
@@ -463,6 +461,8 @@ Esto puede conducir a la omisión de la autenticación, la escalada de privilegi
 - [TODO: Listar los puntos de conexión vulnerables a la manipulación de verbos.]`,
         details_es: `### Prueba de Concepto
 [TODO: Mostrar una solicitud con un verbo manipulado (p. ej., GET en lugar de POST) que elude con éxito los controles de acceso.]`,
+        immediateActions_en: "### Immediate Actions\n[TODO: Add immediate actions in English]",
+        immediateActions_es: "### Acciones Inmediatas\n[TODO: Añadir acciones inmediatas en español]",
     },
     {
         id: "vuln-web-012",
@@ -480,8 +480,6 @@ La vulnerabilidad ocurre cuando una página recibe como entrada la ruta del arch
 LFI can lead to information disclosure, remote code execution, and denial of service. Attackers can read sensitive files like \`/etc/passwd\` or application source code.`,
         impact_es: `### Impacto
 LFI puede conducir a la divulgación de información, ejecución remota de código y denegación de servicio. Los atacantes pueden leer archivos sensibles como \`/etc/passwd\` o el código fuente de la aplicación.`,
-        immediateActions_en: "### Immediate Actions\nImplement input validation to strip out directory traversal characters (`../`, `..\\`). Disable PHP wrappers like `php://filter` if not explicitly needed.",
-        immediateActions_es: "### Acciones Inmediatas\nImplementar la validación de entradas para eliminar los caracteres de salto de directorio (`../`, `..\\`). Deshabilitar los wrappers de PHP como `php://filter` si no se necesitan explícitamente.",
         remediation_en: {
             shortTerm: "Validate user input against a strict allow-list of acceptable file names and paths.",
             mediumTerm: "Avoid passing user-supplied input to filesystem APIs. If unavoidable, use a mapping to safe, pre-defined file paths.",
@@ -505,6 +503,8 @@ LFI puede conducir a la divulgación de información, ejecución remota de códi
 - [TODO: Especificar el parámetro y la URL vulnerables a LFI.]`,
         details_es: `### Prueba de Concepto
 [TODO: Mostrar una solicitud con una carga útil como \`../../../../etc/passwd\` y el contenido del archivo resultante que se muestra.]`,
+        immediateActions_en: "### Immediate Actions\n[TODO: Add immediate actions in English]",
+        immediateActions_es: "### Acciones Inmediatas\n[TODO: Añadir acciones inmediatas en español]",
     },
     {
         id: "vuln-web-013",
@@ -522,8 +522,6 @@ Si una aplicación realiza solicitudes basadas en la entrada del usuario y permi
 This leads to the disclosure of sensitive files on the server, including configuration files, source code, and system files.`,
         impact_es: `### Impacto
 Esto conduce a la divulgación de archivos sensibles en el servidor, incluidos archivos de configuración, código fuente y archivos del sistema.`,
-        immediateActions_en: "### Immediate Actions\nDeploy a WAF rule or application-level filter to specifically block any user-supplied URLs that contain the `file://` protocol handler.",
-        immediateActions_es: "### Acciones Inmediatas\nImplementar una regla de WAF o un filtro a nivel de aplicación para bloquear específicamente cualquier URL proporcionada por el usuario que contenga el manejador de protocolo `file://`.",
         remediation_en: {
             shortTerm: "Strictly disallow the `file://` URI scheme in all functions that make server-side requests.",
             mediumTerm: "Implement a robust URI parser that validates and restricts protocols to an allow-list (e.g., only HTTP and HTTPS).",
@@ -547,6 +545,8 @@ Esto conduce a la divulgación de archivos sensibles en el servidor, incluidos a
 - [TODO: Especificar la funcionalidad vulnerable a SSRF con el esquema file://.]`,
         details_es: `### Prueba de Concepto
 [TODO: Proporcionar una solicitud utilizando una carga útil \`file://\` y mostrar el contenido de un archivo local en la respuesta.]`,
+        immediateActions_en: "### Immediate Actions\n[TODO: Add immediate actions in English]",
+        immediateActions_es: "### Acciones Inmediatas\n[TODO: Añadir acciones inmediatas en español]",
     },
     // --- MOBILE VULNERABILITIES ---
     {
@@ -565,8 +565,6 @@ Información sensible como contraseñas, claves de API o datos personales del us
 Leads to the compromise of user credentials, session tokens, and other sensitive data, which can result in account takeover, identity theft, and other fraudulent activities.`,
         impact_es: `### Impacto
 Conduce al compromiso de credenciales de usuario, tokens de sesión y otros datos sensibles, lo que puede resultar en la toma de control de cuentas, robo de identidad y otras actividades fraudulentas.`,
-        immediateActions_en: "### Immediate Actions\nPush an immediate update that migrates sensitive data from insecure storage to a secure alternative (e.g., iOS Keychain, Android Keystore). Invalidate any exposed tokens or credentials.",
-        immediateActions_es: "### Acciones Inmediatas\nLanzar una actualización inmediata que migre los datos sensibles del almacenamiento inseguro a una alternativa segura (p. ej., Llavero de iOS, Keystore de Android). Invalidar cualquier token o credencial expuesta.",
         remediation_en: {
             shortTerm: "Encrypt all sensitive data before storing it on the device. Use platform-provided secure storage mechanisms like Android's EncryptedSharedPreferences or iOS's Keychain.",
             mediumTerm: "Develop a data classification policy for the mobile app to identify what data is sensitive and requires encryption. Avoid storing sensitive data on the device whenever possible.",
@@ -590,6 +588,8 @@ Conduce al compromiso de credenciales de usuario, tokens de sesión y otros dato
 - [TODO: Listar los archivos o bases de datos donde los datos se almacenan de forma insegura (p. ej., archivo SharedPreferences, BD SQLite).]`,
         details_es: `### Prueba de Concepto
 [TODO: Proporcionar los pasos para extraer los datos almacenados de forma insegura de un dispositivo de prueba (p. ej., usando ADB o exploradores de sistema de archivos).]`,
+        immediateActions_en: "### Immediate Actions\n[TODO: Add immediate actions in English]",
+        immediateActions_es: "### Acciones Inmediatas\n[TODO: Añadir acciones inmediatas en español]",
     },
     {
         id: "vuln-mobile-002",
@@ -607,8 +607,6 @@ Las aplicaciones móviles suelen ser clientes de servicios de backend. Las falla
 The impact is equivalent to the corresponding web vulnerability being exploited. This can range from data disclosure to full system compromise of the backend infrastructure.`,
         impact_es: `### Impacto
 El impacto es equivalente a la explotación de la vulnerabilidad web correspondiente. Esto puede variar desde la divulgación de datos hasta el compromiso total del sistema de la infraestructura de backend.`,
-        immediateActions_en: "### Immediate Actions\nImplement emergency firewall rules to block malicious requests identified during testing. Invalidate sessions of any users who may have been compromised.",
-        immediateActions_es: "### Acciones Inmediatas\nImplementar reglas de firewall de emergencia para bloquear las solicitudes maliciosas identificadas durante las pruebas. Invalidar las sesiones de los usuarios que puedan haber sido comprometidos.",
         remediation_en: {
             shortTerm: "Apply the same security best practices to mobile backend APIs as you would for a standard web application. This includes input validation, parameterized queries, and strong access control.",
             mediumTerm: "Implement API-specific security measures, such as rate limiting, request throttling, and robust authentication/authorization for all endpoints.",
@@ -632,6 +630,8 @@ El impacto es equivalente a la explotación de la vulnerabilidad web correspondi
 - [TODO: Listar los endpoints de la API de backend vulnerables.]`,
         details_es: `### Prueba de Concepto
 [TODO: Proporcionar la solicitud y respuesta de la API que demuestra la vulnerabilidad del lado del servidor.]`,
+        immediateActions_en: "### Immediate Actions\n[TODO: Add immediate actions in English]",
+        immediateActions_es: "### Acciones Inmediatas\n[TODO: Añadir acciones inmediatas en español]",
     },
     {
         id: "vuln-mobile-003",
@@ -649,8 +649,6 @@ La aplicación puede comunicarse a través de HTTP sin cifrar, usar protocolos/c
 An attacker can intercept, view, and modify all traffic between the mobile app and the server, including login credentials, session tokens, and personal data.`,
         impact_es: `### Impacto
 Un atacante puede interceptar, ver y modificar todo el tráfico entre la aplicación móvil y el servidor, incluidas las credenciales de inicio de sesión, los tokens de sesión y los datos personales.`,
-        immediateActions_en: "### Immediate Actions\nForce all network connections to use HTTPS. Release a patch that enables SSL pinning.",
-        immediateActions_es: "### Acciones Inmediatas\nForzar todas las conexiones de red para que usen HTTPS. Lanzar un parche que habilite el anclaje de SSL (SSL pinning).",
         remediation_en: {
             shortTerm: "Ensure that TLS is used for all network communications. Configure the app to only support strong TLS protocols (TLS 1.2, TLS 1.3) and modern cipher suites.",
             mediumTerm: "Implement SSL/TLS certificate pinning to prevent MitM attacks even if the device's trust store is compromised. Disallow the use of self-signed certificates in production builds.",
@@ -674,6 +672,8 @@ Un atacante puede interceptar, ver y modificar todo el tráfico entre la aplicac
 - [TODO: Listar las solicitudes de red o puntos de conexión de API que utilizan comunicación insegura.]`,
         details_es: `### Prueba de Concepto
 [TODO: Proporcionar capturas de pantalla de una herramienta de proxy (p. ej., Burp Suite) que muestren tráfico en texto plano interceptado o un ataque de degradación de TLS exitoso.]`,
+        immediateActions_en: "### Immediate Actions\n[TODO: Add immediate actions in English]",
+        immediateActions_es: "### Acciones Inmediatas\n[TODO: Añadir acciones inmediatas en español]",
     },
     {
         id: "vuln-mobile-004",
@@ -691,8 +691,6 @@ Esto puede suceder de varias maneras, como registrar datos sensibles en los regi
 The impact depends on the sensitivity of the leaked data. It can range from privacy violations to the full compromise of user accounts if credentials or session tokens are leaked.`,
         impact_es: `### Impacto
 El impacto depende de la sensibilidad de los datos filtrados. Puede variar desde violaciones de la privacidad hasta el compromiso total de las cuentas de usuario si se filtran credenciales o tokens de sesión.`,
-        immediateActions_en: "### Immediate Actions\nReview the application's logging statements and disable any that output sensitive information. Disable keyboard caching on sensitive input fields.",
-        immediateActions_es: "### Acciones Inmediatas\nRevisar las declaraciones de registro de la aplicación y deshabilitar cualquiera que genere información sensible. Deshabilitar el almacenamiento en caché del teclado en los campos de entrada sensibles.",
         remediation_en: {
             shortTerm: "Remove all logging of sensitive data. Disable keyboard caching for password fields. Clear the clipboard after a user copies sensitive information from the app.",
             mediumTerm: "Review and minimize the data sent to third-party services. Implement data masking or tokenization for any sensitive data that must be shared.",
@@ -716,6 +714,8 @@ El impacto depende de la sensibilidad de los datos filtrados. Puede variar desde
 - [TODO: Especificar dónde ocurre la filtración de datos (p. ej., salida de Logcat, portapapeles, datos de análisis).]`,
         details_es: `### Prueba de Concepto
 [TODO: Proporcionar capturas de pantalla o extractos de registros que muestren la filtración de datos sensibles.]`,
+        immediateActions_en: "### Immediate Actions\n[TODO: Add immediate actions in English]",
+        immediateActions_es: "### Acciones Inmediatas\n[TODO: Añadir acciones inmediatas en español]",
     },
     {
         id: "vuln-mobile-005",
@@ -733,8 +733,6 @@ Esto es similar al Control de Acceso Roto en aplicaciones web. Un atacante, aute
 The impact can be severe, allowing attackers to view, modify, or delete any data accessible via the backend API, regardless of ownership or privilege level.`,
         impact_es: `### Impacto
 El impacto puede ser severo, permitiendo a los atacantes ver, modificar o eliminar cualquier dato accesible a través de la API de backend, independientemente de la propiedad o el nivel de privilegio.`,
-        immediateActions_en: "### Immediate Actions\nReview and audit the authorization logic for the most critical API endpoints. Implement temporary blocking rules for any user exhibiting suspicious access patterns.",
-        immediateActions_es: "### Acciones Inmediatas\nRevisar y auditar la lógica de autorización para los puntos de conexión de API más críticos. Implementar reglas de bloqueo temporales para cualquier usuario que exhiba patrones de acceso sospechosos.",
         remediation_en: {
             shortTerm: "Enforce authorization checks on the server-side for every single API request. Do not rely on the client to control which UI elements are shown to the user.",
             mediumTerm: "Implement a robust, centralized role-based access control (RBAC) system for the backend API. Ensure that ownership is checked for all data access requests.",
@@ -758,6 +756,8 @@ El impacto puede ser severo, permitiendo a los atacantes ver, modificar o elimin
 - [TODO: Listar los puntos de conexión de la API que no aplican la autorización adecuada.]`,
         details_es: `### Prueba de Concepto
 [TODO: Proporcionar una secuencia de solicitudes de API (p. ej., desde Burp Suite) que muestre cómo un usuario con pocos privilegios puede acceder o modificar datos a los que no debería tener acceso.]`,
+        immediateActions_en: "### Immediate Actions\n[TODO: Add immediate actions in English]",
+        immediateActions_es: "### Acciones Inmediatas\n[TODO: Añadir acciones inmediatas en español]",
     },
     {
         id: "vuln-mobile-006",
@@ -775,8 +775,6 @@ La aplicación puede usar algoritmos obsoletos como MD5 o SHA1 para hashear cont
 Broken cryptography can lead to the compromise of sensitive data stored on the device or transmitted over the network. It can completely undermine the security of authentication and data protection mechanisms.`,
         impact_es: `### Impacto
 La criptografía rota puede llevar al compromiso de datos sensibles almacenados en el dispositivo o transmitidos por la red. Puede socavar por completo la seguridad de los mecanismos de autenticación y protección de datos.`,
-        immediateActions_en: "### Immediate Actions\nIdentify and immediately cease the use of any custom or known-weak cryptographic algorithms (e.g., MD5, SHA1, DES).",
-        immediateActions_es: "### Acciones Inmediatas\nIdentificar y cesar inmediatamente el uso de cualquier algoritmo criptográfico personalizado o conocido por ser débil (p. ej., MD5, SHA1, DES).",
         remediation_en: {
             shortTerm: "Replace all weak or custom cryptographic algorithms with modern, industry-standard algorithms (e.g., AES-256-GCM for encryption, PBKDF2 or Argon2 for password hashing).",
             mediumTerm: "Do not implement cryptography from scratch. Use well-vetted, platform-provided cryptographic libraries and APIs.",
@@ -800,6 +798,8 @@ La criptografía rota puede llevar al compromiso de datos sensibles almacenados 
 - [TODO: Especificar la parte del código donde se utiliza la criptografía rota.]`,
         details_es: `### Prueba de Concepto
 [TODO: Proporcionar evidencia de la criptografía débil, como el descifrado de datos cifrados con una clave estática o el craqueo de un hash de contraseña.]`,
+        immediateActions_en: "### Immediate Actions\n[TODO: Add immediate actions in English]",
+        immediateActions_es: "### Acciones Inmediatas\n[TODO: Añadir acciones inmediatas en español]",
     },
     {
         id: "vuln-mobile-007",
@@ -817,8 +817,6 @@ Esta categoría incluye vulnerabilidades como la inyección de SQL en bases de d
 The impact can range from data corruption and denial-of-service on the local app, to the execution of arbitrary code within a sandboxed web view, which could lead to session token theft if the token is exposed to the web view.`,
         impact_es: `### Impacto
 El impacto puede variar desde la corrupción de datos y la denegación de servicio en la aplicación local, hasta la ejecución de código arbitrario dentro de una vista web aislada, lo que podría llevar al robo de tokens de sesión si el token está expuesto a la vista web.`,
-        immediateActions_en: "### Immediate Actions\nIdentify all local data interpreters (SQLite, WebViews) and review the code to find where they process untrusted data. Apply input validation as a temporary fix.",
-        immediateActions_es: "### Acciones Inmediatas\nIdentificar todos los intérpretes de datos locales (SQLite, WebViews) y revisar el código para encontrar dónde procesan datos no confiables. Aplicar la validación de entradas como una solución temporal.",
         remediation_en: {
             shortTerm: "Use parameterized queries (prepared statements) for all local SQLite database interactions. For WebViews, ensure JavaScript is disabled if not needed, and properly encode any data displayed in them.",
             mediumTerm: "Avoid processing untrusted data on the client side whenever possible. Perform validation and sanitization on the server side before sending data to the client.",
@@ -842,6 +840,8 @@ El impacto puede variar desde la corrupción de datos y la denegación de servic
 - [TODO: Especificar la consulta de la base de datos local o la WebView que es vulnerable.]`,
         details_es: `### Prueba de Concepto
 [TODO: Proporcionar una PoC, como una consulta SQL maliciosa que corrompe la BD local, o una carga útil de XSS que se ejecuta en una WebView.]`,
+        immediateActions_en: "### Immediate Actions\n[TODO: Add immediate actions in English]",
+        immediateActions_es: "### Acciones Inmediatas\n[TODO: Añadir acciones inmediatas en español]",
     },
     {
         id: "vuln-mobile-008",
@@ -859,8 +859,6 @@ La aplicación puede confiar en una URL proporcionada en un mensaje IPC para car
 This can lead to a complete bypass of security controls. For example, an attacker could disable SSL pinning, bypass business logic, or trick the application into loading malicious content.`,
         impact_es: `### Impacto
 Esto puede conducir a una omisión completa de los controles de seguridad. Por ejemplo, un atacante podría deshabilitar el anclaje de SSL, eludir la lógica de negocio o engañar a la aplicación para que cargue contenido malicioso.`,
-        immediateActions_en: "### Immediate Actions\nIdentify all security decisions made by the app. Trace the data sources for these decisions and immediately implement server-side validation or use hardcoded, secure values.",
-        immediateActions_es: "### Acciones Inmediatas\nIdentificar todas las decisiones de seguridad tomadas por la aplicación. Rastrear las fuentes de datos para estas decisiones e implementar inmediatamente la validación del lado del servidor o usar valores seguros y codificados de forma rígida.",
         remediation_en: {
             shortTerm: "Never make security decisions based on user-controlled or otherwise untrusted input. Security controls should be enforced by server-side logic or hardcoded in the application binary.",
             mediumTerm: "For any security-sensitive configurations, fetch them from a trusted server-side endpoint rather than storing them in a client-modifiable file.",
@@ -884,6 +882,8 @@ Esto puede conducir a una omisión completa de los controles de seguridad. Por e
 - [TODO: Especificar la decisión de seguridad y la entrada no confiable que la influye.]`,
         details_es: `### Prueba de Concepto
 [TODO: Proporcionar una PoC que demuestre cómo manipular la entrada no confiable para eludir un control de seguridad.]`,
+        immediateActions_en: "### Immediate Actions\n[TODO: Add immediate actions in English]",
+        immediateActions_es: "### Acciones Inmediatas\n[TODO: Añadir acciones inmediatas en español]",
     },
     {
         id: "vuln-mobile-009",
@@ -901,8 +901,6 @@ La aplicación puede emitir tokens de sesión que nunca caducan, o no invalidar 
 Leads to session hijacking and account takeover. An attacker with a stolen session token can maintain persistent access to a user's account.`,
         impact_es: `### Impacto
 Conduce al secuestro de sesiones y a la toma de control de cuentas. Un atacante con un token de sesión robado puede mantener un acceso persistente a la cuenta de un usuario.`,
-        immediateActions_en: "### Immediate Actions\nForce the invalidation of all current session tokens on the server side. Implement a short-lived session timeout on the server.",
-        immediateActions_es: "### Acciones Inmediatas\nForzar la invalidación de todos los tokens de sesión actuales en el lado del servidor. Implementar un tiempo de espera de sesión de corta duración en el servidor.",
         remediation_en: {
             shortTerm: "Implement server-side session timeouts. Session tokens must be invalidated on the server when a user logs out.",
             mediumTerm: "Use refresh tokens and short-lived access tokens. The access token provides access to resources, and the refresh token is used to obtain a new access token without requiring the user to re-authenticate.",
@@ -926,6 +924,8 @@ Conduce al secuestro de sesiones y a la toma de control de cuentas. Un atacante 
 - [TODO: Especificar el mecanismo de gestión de sesiones de la aplicación.]`,
         details_es: `### Prueba de Concepto
 [TODO: Proporcionar una PoC que demuestre que un token de sesión sigue siendo válido y puede ser reutilizado después de que el usuario haya cerrado la sesión.]`,
+        immediateActions_en: "### Immediate Actions\n[TODO: Add immediate actions in English]",
+        immediateActions_es: "### Acciones Inmediatas\n[TODO: Añadir acciones inmediatas en español]",
     },
     {
         id: "vuln-mobile-010",
@@ -943,8 +943,6 @@ Los binarios de las aplicaciones móviles pueden ser descompilados para revelar 
 Reverse engineering can lead to the discovery of other severe vulnerabilities, theft of intellectual property, and reputational damage. Tampering can lead to fraud, security control bypasses, and the distribution of malicious versions of the app.`,
         impact_es: `### Impacto
 La ingeniería inversa puede conducir al descubrimiento de otras vulnerabilidades graves, el robo de propiedad intelectual y el daño a la reputación. La manipulación puede conducir al fraude, a la omisión de controles de seguridad y a la distribución de versiones maliciosas de la aplicación.`,
-        immediateActions_en: "### Immediate Actions\nImplement basic root/jailbreak detection to prevent the app from running in an insecure environment. Remove any hardcoded API keys or secrets from the binary.",
-        immediateActions_es: "### Acciones Inmediatas\nImplementar la detección básica de root/jailbreak para evitar que la aplicación se ejecute en un entorno inseguro. Eliminar cualquier clave de API o secreto codificado de forma rígida del binario.",
         remediation_en: {
             shortTerm: "Apply code obfuscation to make the decompiled code harder to understand. Implement anti-tampering checks (e.g., checksum validation) to detect if the app has been modified.",
             mediumTerm: "Implement more robust root/jailbreak detection and anti-debugging techniques. Use tools that provide comprehensive binary protection, including string encryption and control flow obfuscation.",
@@ -968,6 +966,8 @@ La ingeniería inversa puede conducir al descubrimiento de otras vulnerabilidade
 - El propio binario de la aplicación (APK/IPA).`,
         details_es: `### Prueba de Concepto
 [TODO: Proporcionar capturas de pantalla del código descompilado, o demostrar cómo se elude un control de seguridad después de parchear el binario.]`,
+        immediateActions_en: "### Immediate Actions\n[TODO: Add immediate actions in English]",
+        immediateActions_es: "### Acciones Inmediatas\n[TODO: Añadir acciones inmediatas en español]",
     },
     // --- NETWORK VULNERABILITIES ---
     {
@@ -986,8 +986,6 @@ Esto se puede lograr interceptando el tráfico en una red Wi-Fi no segura, a tra
 The attacker can steal sensitive information like credentials and session tokens, inject malicious content into legitimate communications, or hijack user sessions completely.`,
         impact_es: `### Impacto
 El atacante puede robar información sensible como credenciales y tokens de sesión, inyectar contenido malicioso en comunicaciones legítimas o secuestrar sesiones de usuario por completo.`,
-        immediateActions_en: "### Immediate Actions\nImmediately enforce the use of TLS for all communications. Educate users about the risks of connecting to untrusted public Wi-Fi networks.",
-        immediateActions_es: "### Acciones Inmediatas\nForzar inmediatamente el uso de TLS para todas las comunicaciones. Educar a los usuarios sobre los riesgos de conectarse a redes Wi-Fi públicas no confiables.",
         remediation_en: {
             shortTerm: "Enforce TLS 1.2 or higher across all endpoints. Implement certificate pinning in mobile clients to ensure the app only communicates with the trusted server.",
             mediumTerm: "Use HTTP Strict Transport Security (HSTS) to ensure browsers only connect to your server over HTTPS.",
@@ -1011,6 +1009,8 @@ El atacante puede robar información sensible como credenciales y tokens de sesi
 - [TODO: Especificar los canales de comunicación de red que son vulnerables.]`,
         details_es: `### Prueba de Concepto
 [TODO: Proporcionar evidencia de un ataque MitM, como capturas de pantalla de una herramienta de proxy que muestren tráfico interceptado o modificado.]`,
+        immediateActions_en: "### Immediate Actions\n[TODO: Add immediate actions in English]",
+        immediateActions_es: "### Acciones Inmediatas\n[TODO: Añadir acciones inmediatas en español]",
     },
     { 
         id: "vuln-net-002", 
@@ -1022,8 +1022,6 @@ El atacante puede robar información sensible como credenciales y tokens de sesi
         technicalDescription_es: "### Descripción Técnica\nUn atacante puede explotar vulnerabilidades en el protocolo DNS para redirigir el tráfico destinado a un servidor legítimo a un servidor malicioso controlado por el atacante. Esto se hace a menudo enviando respuestas DNS falsificadas a un resolutor de DNS.", 
         impact_en: "### Impact\nThis can be used for phishing attacks, where a user is tricked into entering credentials on a fake website, or for distributing malware. It can also facilitate man-in-the-middle attacks.", 
         impact_es: "### Impacto\nEsto puede usarse para ataques de phishing, donde se engaña a un usuario para que ingrese credenciales en un sitio web falso, o para distribuir malware. También puede facilitar ataques de intermediario (man-in-the-middle).", 
-        immediateActions_en: "### Immediate Actions\nFlush the DNS cache on affected clients and servers. Use a trusted, public DNS resolver that implements DNSSEC.", 
-        immediateActions_es: "### Acciones Inmediatas\nVaciar la caché de DNS en los clientes y servidores afectados. Usar un resolutor de DNS público y de confianza que implemente DNSSEC.", 
         remediation_en: { shortTerm: "Implement DNSSEC (Domain Name System Security Extensions) to validate the authenticity of DNS responses.", mediumTerm: "Use end-to-end encryption (TLS) for all communications. This ensures that even if DNS is spoofed, the attacker cannot decrypt the traffic without the server's private key.", longTerm: "Monitor DNS traffic for anomalies. Regularly audit DNS server configurations for security best practices." }, 
         remediation_es: { shortTerm: "Implementar DNSSEC (Extensiones de Seguridad del Sistema de Nombres de Dominio) para validar la autenticidad de las respuestas DNS.", mediumTerm: "Usar cifrado de extremo a extremo (TLS) para todas las comunicaciones. Esto asegura que incluso si se suplanta el DNS, el atacante no puede descifrar el tráfico sin la clave privada del servidor.", longTerm: "Monitorear el tráfico DNS en busca de anomalías. Auditar regularmente las configuraciones del servidor DNS para seguir las mejores prácticas de seguridad." }, 
         cwe: "CWE-290", 
@@ -1034,7 +1032,9 @@ El atacante puede robar información sensible como credenciales y tokens de sesi
         affectedComponents_en: "### Affected Components\n- DNS resolvers and clients within the network.", 
         details_en: "### Proof of Concept\n[TODO: Show evidence of a successful DNS spoofing attack, such as a client being redirected to a malicious IP address.]", 
         affectedComponents_es: "### Componentes Afectados\n- Resolutores y clientes DNS dentro de la red.", 
-        details_es: "### Prueba de Concepto\n[TODO: Mostrar evidencia de un ataque de suplantación de DNS exitoso, como un cliente siendo redirigido a una dirección IP maliciosa.]" 
+        details_es: "### Prueba de Concepto\n[TODO: Mostrar evidencia de un ataque de suplantación de DNS exitoso, como un cliente siendo redirigido a una dirección IP maliciosa.]",
+        immediateActions_en: "### Immediate Actions\n[TODO: Add immediate actions in English]",
+        immediateActions_es: "### Acciones Inmediatas\n[TODO: Añadir acciones inmediatas en español]",
     },
     {
         id: "vuln-net-003",
@@ -1052,8 +1052,6 @@ Dado que ARP es un protocolo sin estado, un atacante puede enviar una respuesta 
 ARP poisoning can lead to man-in-the-middle attacks, denial-of-service attacks, and session hijacking within the local network.`,
         impact_es: `### Impacto
 El envenenamiento de ARP puede conducir a ataques de intermediario (man-in-the-middle), ataques de denegación de servicio y secuestro de sesiones dentro de la red local.`,
-        immediateActions_en: "### Immediate Actions\nUse static ARP entries for critical servers and the default gateway. Deploy an Intrusion Detection System (IDS) capable of detecting ARP poisoning.",
-        immediateActions_es: "### Acciones Inmediatas\nUtilizar entradas ARP estáticas para los servidores críticos y la puerta de enlace predeterminada. Desplegar un Sistema de Detección de Intrusiones (IDS) capaz de detectar el envenenamiento de ARP.",
         remediation_en: {
             shortTerm: "Use Dynamic ARP Inspection (DAI) on network switches to validate ARP packets.",
             mediumTerm: "Segment the network using VLANs to limit the broadcast domain and reduce the scope of a potential ARP poisoning attack.",
@@ -1072,7 +1070,9 @@ El envenenamiento de ARP puede conducir a ataques de intermediario (man-in-the-m
         affectedComponents_en: "### Affected Components\n- All devices on the local network segment.",
         details_en: "### Proof of Concept\n[TODO: Provide output from a tool like `arpspoof` and show intercepted traffic in a network analyzer like Wireshark.]",
         affectedComponents_es: "### Componentes Afectados\n- Todos los dispositivos en el segmento de red local.",
-        details_es: "### Prueba de Concepto\n[TODO: Proporcionar la salida de una herramienta como `arpspoof` y mostrar el tráfico interceptado en un analizador de red como Wireshark.]"
+        details_es: "### Prueba de Concepto\n[TODO: Proporcionar la salida de una herramienta como `arpspoof` y mostrar el tráfico interceptado en un analizador de red como Wireshark.]",
+        immediateActions_en: "### Immediate Actions\n[TODO: Add immediate actions in English]",
+        immediateActions_es: "### Acciones Inmediatas\n[TODO: Añadir acciones inmediatas en español]",
     },
     {
         id: "vuln-net-004",
@@ -1084,8 +1084,6 @@ El envenenamiento de ARP puede conducir a ataques de intermediario (man-in-the-m
         technicalDescription_es: "### Descripción Técnica\nEl atacante crea paquetes IP con una dirección de origen modificada. Esta técnica se puede utilizar para eludir los controles de acceso basados en IP o para realizar ataques de reflexión y amplificación en escenarios de DoS, donde la respuesta de un servidor se envía a la dirección IP suplantada (de la víctima).",
         impact_en: "### Impact\nCan lead to bypassing network access controls, session hijacking if combined with other techniques, and participation in Denial-of-Service attacks.",
         impact_es: "### Impacto\nPuede conducir a la omisión de los controles de acceso a la red, el secuestro de sesiones si se combina con otras técnicas y la participación en ataques de denegación de servicio.",
-        immediateActions_en: "### Immediate Actions\nImplement ingress and egress filtering on network routers and firewalls to block packets with source addresses that are not within the expected range for the network segment.",
-        immediateActions_es: "### Acciones Inmediatas\nImplementar filtrado de entrada y salida en los enrutadores y firewalls de la red para bloquear paquetes con direcciones de origen que no están dentro del rango esperado para el segmento de red.",
         remediation_en: {
             shortTerm: "Use ingress filtering (BCP38) at the network edge to drop packets with source IPs from outside your network's allocated range.",
             mediumTerm: "Enable Reverse Path Forwarding (RPF) on routers, which ensures that the source address of a packet is reachable via the interface the packet came in on.",
@@ -1104,7 +1102,9 @@ El envenenamiento de ARP puede conducir a ataques de intermediario (man-in-the-m
         affectedComponents_en: "### Affected Components\n- Network routers, firewalls, and systems that use IP-based access controls.",
         details_en: "### Proof of Concept\n[TODO: Provide evidence of spoofed packets being accepted by a target system, using a tool like hping3 or Scapy.]",
         affectedComponents_es: "### Componentes Afectados\n- Enrutadores de red, cortafuegos y sistemas que utilizan controles de acceso basados en IP.",
-        details_es: "### Prueba de Concepto\n[TODO: Proporcionar evidencia de que los paquetes suplantados son aceptados por un sistema objetivo, utilizando una herramienta como hping3 o Scapy.]"
+        details_es: "### Prueba de Concepto\n[TODO: Proporcionar evidencia de que los paquetes suplantados son aceptados por un sistema objetivo, utilizando una herramienta como hping3 o Scapy.]",
+        immediateActions_en: "### Immediate Actions\n[TODO: Add immediate actions in English]",
+        immediateActions_es: "### Acciones Inmediatas\n[TODO: Añadir acciones inmediatas en español]",
     },
     {
         id: "vuln-net-005",
@@ -1122,8 +1122,6 @@ Los ataques DoS se logran inundando la máquina o el recurso objetivo con solici
 The primary impact is service unavailability, leading to business disruption, financial loss, and reputational damage.`,
         impact_es: `### Impacto
 El impacto principal es la falta de disponibilidad del servicio, lo que conduce a la interrupción del negocio, pérdidas financieras y daño a la reputación.`,
-        immediateActions_en: "### Immediate Actions\nImplement rate limiting on firewalls and load balancers. Block the source IP addresses identified as part of the attack. Contact your ISP or a DDoS mitigation service for assistance.",
-        immediateActions_es: "### Acciones Inmediatas\nImplementar limitación de velocidad en cortafuegos y balanceadores de carga. Bloquear las direcciones IP de origen identificadas como parte del ataque. Ponerse en contacto con su ISP o un servicio de mitigación de DDoS para obtener ayuda.",
         remediation_en: {
             shortTerm: "Use a cloud-based DDoS mitigation service that can absorb and filter malicious traffic before it reaches your network.",
             mediumTerm: "Configure network hardware (routers, firewalls) with anti-DoS settings, such as SYN cookie protection and ingress filtering. Load balance critical services across multiple servers.",
@@ -1142,7 +1140,9 @@ El impacto principal es la falta de disponibilidad del servicio, lo que conduce 
         affectedComponents_en: "### Affected Components\n- [TODO: Specify the targeted servers, services, or network resources.]",
         details_en: "### Proof of Concept\n[TODO: Provide data showing the spike in traffic and corresponding resource exhaustion on the target system. Use tools like hping3 or Slowloris for demonstration.]",
         affectedComponents_es: "### Componentes Afectados\n- [TODO: Especificar los servidores, servicios o recursos de red objetivo.]",
-        details_es: "### Prueba de Concepto\n[TODO: Proporcionar datos que muestren el pico de tráfico y el agotamiento de recursos correspondiente en el sistema objetivo. Usar herramientas como hping3 o Slowloris para la demostración.]"
+        details_es: "### Prueba de Concepto\n[TODO: Proporcionar datos que muestren el pico de tráfico y el agotamiento de recursos correspondiente en el sistema objetivo. Usar herramientas como hping3 o Slowloris para la demostración.]",
+        immediateActions_en: "### Immediate Actions\n[TODO: Add immediate actions in English]",
+        immediateActions_es: "### Acciones Inmediatas\n[TODO: Añadir acciones inmediatas en español]",
     },
     {
         id: "vuln-net-006",
@@ -1154,8 +1154,6 @@ El impacto principal es la falta de disponibilidad del servicio, lo que conduce 
         technicalDescription_es: "### Descripción Técnica\nExisten dos métodos principales: suplantación de switch y doble etiquetado. En la suplantación de switch, la máquina de un atacante emula un switch y utiliza un protocolo de enlace troncal como DTP (Protocolo de Enlace Troncal Dinámico) para crear un enlace troncal, lo que le da acceso a todas las VLAN. En el doble etiquetado, el atacante agrega dos etiquetas VLAN a un paquete, lo que le permite atravesar la VLAN nativa de un enlace troncal y ser entregado a un objetivo en una VLAN diferente.",
         impact_en: "### Impact\nSuccessful VLAN hopping allows an attacker on one VLAN to gain unauthorized access to resources on another VLAN, bypassing network segmentation controls.",
         impact_es: "### Impacto\nUn salto de VLAN exitoso permite a un atacante en una VLAN obtener acceso no autorizado a los recursos de otra VLAN, eludiendo los controles de segmentación de la red.",
-        immediateActions_en: "### Immediate Actions\nDisable DTP on all user-facing switch ports. Set all unused ports to a disabled state and assign them to an unused, blackhole VLAN.",
-        immediateActions_es: "### Acciones Inmediatas\nDeshabilitar DTP en todos los puertos de switch orientados al usuario. Establecer todos los puertos no utilizados en un estado deshabilitado y asignarlos a una VLAN de agujero negro no utilizada.",
         remediation_en: {
             shortTerm: "Explicitly configure user-facing ports as access ports (`switchport mode access`). Avoid using the native VLAN (VLAN 1) for any traffic.",
             mediumTerm: "Implement port security on switches to limit the number of MAC addresses allowed per port.",
@@ -1174,7 +1172,9 @@ El impacto principal es la falta de disponibilidad del servicio, lo que conduce 
         affectedComponents_en: "### Affected Components\n- Network switches with misconfigured ports.",
         details_en: "### Proof of Concept\n[TODO: Provide steps to perform a VLAN hopping attack using a tool like Yersinia and show access to a resource on a different VLAN.]",
         affectedComponents_es: "### Componentes Afectados\n- Switches de red con puertos mal configurados.",
-        details_es: "### Prueba de Concepto\n[TODO: Proporcionar los pasos para realizar un ataque de salto de VLAN utilizando una herramienta como Yersinia y mostrar el acceso a un recurso en una VLAN diferente.]"
+        details_es: "### Prueba de Concepto\n[TODO: Proporcionar los pasos para realizar un ataque de salto de VLAN utilizando una herramienta como Yersinia y mostrar el acceso a un recurso en una VLAN diferente.]",
+        immediateActions_en: "### Immediate Actions\n[TODO: Add immediate actions in English]",
+        immediateActions_es: "### Acciones Inmediatas\n[TODO: Añadir acciones inmediatas en español]",
     },
     {
         id: "vuln-net-007",
@@ -1186,8 +1186,6 @@ El impacto principal es la falta de disponibilidad del servicio, lo que conduce 
         technicalDescription_es: "### Descripción Técnica\nEsta vulnerabilidad incluye el soporte de protocolos débiles como SSLv2, SSLv3 o versiones tempranas de TLS (1.0, 1.1), o el uso de conjuntos de cifrado con vulnerabilidades conocidas (p. ej., los que usan RC4, 3DES o tienen tamaños de clave pequeños). Un atacante puede explotar estas debilidades para descifrar el tráfico interceptado.",
         impact_en: "### Impact\nAn attacker can decrypt sensitive data transmitted over the network, including credentials, session tokens, and personal information, leading to a loss of confidentiality and integrity.",
         impact_es: "### Impacto\nUn atacante puede descifrar datos sensibles transmitidos por la red, incluidas credenciales, tokens de sesión e información personal, lo que lleva a una pérdida de confidencialidad e integridad.",
-        immediateActions_en: "### Immediate Actions\nImmediately disable support for all known weak protocols (SSLv2, SSLv3, TLS 1.0, TLS 1.1) and insecure cipher suites on all servers and network devices.",
-        immediateActions_es: "### Acciones Inmediatas\nDeshabilitar inmediatamente el soporte para todos los protocolos débiles conocidos (SSLv2, SSLv3, TLS 1.0, TLS 1.1) y los conjuntos de cifrado inseguros en todos los servidores y dispositivos de red.",
         remediation_en: {
             shortTerm: "Configure servers to only support strong protocols (TLS 1.2, TLS 1.3) and modern, secure cipher suites with forward secrecy.",
             mediumTerm: "Implement HTTP Strict Transport Security (HSTS) to ensure that browsers always connect using a secure protocol.",
@@ -1203,10 +1201,14 @@ El impacto principal es la falta de disponibilidad del servicio, lo que conduce 
         cvss: { score: 7.4, vectorString: "CVSS:3.1/AV:N/AC:H/PR:N/UI:N/S:U/C:H/I:H/A:N", attackVector: "N", attackComplexity: "H", privilegesRequired: "N", userInteraction: "N", scope: "U", confidentiality: "H", integrity: "H", availability: "N" },
         references: ["https://www.ssllabs.com/projects/best-practices/"],
         tags: ["Network", "Cryptography"],
-        affectedComponents_en: "### Affected Components\n- [TODO: List the servers or services that support weak encryption protocols or ciphers.]",
+        affectedComponents_en: `### Affected Components
+- [TODO: List the servers or services that support weak encryption protocols or ciphers.]`,
         details_en: "### Proof of Concept\n[TODO: Provide the output of a tool like `nmap --script ssl-enum-ciphers` or a report from SSL Labs showing the weak configurations.]",
-        affectedComponents_es: "### Componentes Afectados\n- [TODO: Listar los servidores o servicios que admiten protocolos o conjuntos de cifrado débiles.]",
-        details_es: "### Prueba de Concepto\n[TODO: Proporcionar la salida de una herramienta como `nmap --script ssl-enum-ciphers` o un informe de SSL Labs que muestre las configuraciones débiles.]"
+        affectedComponents_es: `### Componentes Afectados
+- [TODO: Listar los servidores o servicios que admiten protocolos o conjuntos de cifrado débiles.]`,
+        details_es: "### Prueba de Concepto\n[TODO: Proporcionar la salida de una herramienta como `nmap --script ssl-enum-ciphers` o un informe de SSL Labs que muestre las configuraciones débiles.]",
+        immediateActions_en: "### Immediate Actions\n[TODO: Add immediate actions in English]",
+        immediateActions_es: "### Acciones Inmediatas\n[TODO: Añadir acciones inmediatas en español]",
     },
     {
         id: "vuln-net-008",
@@ -1218,8 +1220,6 @@ El impacto principal es la falta de disponibilidad del servicio, lo que conduce 
         technicalDescription_es: "### Descripción Técnica\nEsto puede incluir reglas de 'permitir cualquiera/cualquiera', no aplicar filtrado de salida para prevenir la exfiltración de datos, dejar puertos innecesarios abiertos a Internet o no registrar el tráfico correctamente. Tales configuraciones incorrectas pueden hacer que el firewall sea ineficaz.",
         impact_en: "### Impact\nAn attacker can bypass the firewall to access internal network resources, exfiltrate data, or launch attacks against other systems. It effectively removes a critical layer of network security.",
         impact_es: "### Impacto\nUn atacante puede eludir el firewall para acceder a los recursos de la red interna, exfiltrar datos o lanzar ataques contra otros sistemas. Elimina eficazmente una capa crítica de seguridad de la red.",
-        immediateActions_en: "### Immediate Actions\nConduct an emergency audit of the firewall rulebase. Immediately remove or disable any overly permissive 'allow' rules. Block all traffic by default and only allow what is explicitly required.",
-        immediateActions_es: "### Acciones Inmediatas\nRealizar una auditoría de emergencia de la base de reglas del firewall. Eliminar o deshabilitar inmediatamente cualquier regla de 'permitir' demasiado permisiva. Bloquear todo el tráfico por defecto y solo permitir lo que se requiere explícitamente.",
         remediation_en: {
             shortTerm: "Implement a 'deny-by-default' firewall policy. Regularly review and simplify the firewall rulebase to remove unused or redundant rules.",
             mediumTerm: "Implement both ingress and egress filtering. Enable and monitor firewall logs to detect suspicious activity and policy violations.",
@@ -1236,9 +1236,13 @@ El impacto principal es la falta de disponibilidad del servicio, lo que conduce 
         references: ["https://www.cisa.gov/uscert/bsi/articles/best-practices/firewalls/securing-your-web-server"],
         tags: ["Network", "Infrastructure"],
         affectedComponents_en: "### Affected Components\n- The corporate firewall(s).",
-        details_en: "### Proof of Concept\n[TODO: Provide a screenshot of the firewall rulebase showing the permissive rule, or demonstrate access to a supposedly blocked port/service.]",
+        details_en: `### Proof of Concept
+[TODO: Provide a screenshot of the firewall rulebase showing the permissive rule, or demonstrate access to a supposedly blocked port/service.]`,
         affectedComponents_es: "### Componentes Afectados\n- El/los firewall(s) corporativo(s).",
-        details_es: "### Prueba de Concepto\n[TODO: Proporcionar una captura de pantalla de la base de reglas del firewall que muestre la regla permisiva, o demostrar el acceso a un puerto/servicio supuestamente bloqueado.]"
+        details_es: `### Prueba de Concepto
+[TODO: Proporcionar una captura de pantalla de la base de reglas del firewall que muestre la regla permisiva, o demostrar el acceso a un puerto/servicio supuestamente bloqueado.]`,
+        immediateActions_en: "### Immediate Actions\n[TODO: Add immediate actions in English]",
+        immediateActions_es: "### Acciones Inmediatas\n[TODO: Añadir acciones inmediatas en español]",
     },
     {
         id: "vuln-net-009",
@@ -1250,8 +1254,6 @@ El impacto principal es la falta de disponibilidad del servicio, lo que conduce 
         technicalDescription_es: "### Descripción Técnica\nEsto incluye redes Wi-Fi abiertas sin contraseña, o redes que utilizan protocolos de cifrado obsoletos y rotos como WEP o WPA. Incluso las redes WPA2 con claves pre-compartidas débiles y fáciles de adivinar son vulnerables a ataques de diccionario sin conexión.",
         impact_en: "### Impact\nAn attacker can gain unauthorized access to the internal network, intercept sensitive data transmitted by legitimate users, and launch further attacks against internal systems.",
         impact_es: "### Impacto\nUn atacante puede obtener acceso no autorizado a la red interna, interceptar datos sensibles transmitidos por usuarios legítimos y lanzar más ataques contra los sistemas internos.",
-        immediateActions_en: "### Immediate Actions\nImmediately secure all open Wi-Fi networks. Change the pre-shared key on any network using a weak password. Disable outdated protocols like WEP and WPA.",
-        immediateActions_es: "### Acciones Inmediatas\nAsegurar inmediatamente todas las redes Wi-Fi abiertas. Cambiar la clave pre-compartida en cualquier red que utilice una contraseña débil. Deshabilitar protocolos obsoletos como WEP y WPA.",
         remediation_en: {
             shortTerm: "Use WPA3 encryption for all Wi-Fi networks. If WPA3 is not available, use WPA2 with a strong, long, and complex pre-shared key.",
             mediumTerm: "Implement a guest network that is completely segregated from the internal corporate network for visitors and non-corporate devices.",
@@ -1274,7 +1276,9 @@ El impacto principal es la falta de disponibilidad del servicio, lo que conduce 
         affectedComponents_es: `### Componentes Afectados
 - [TODO: Especificar el SSID de la red Wi-Fi insegura.]`,
         details_es: `### Prueba de Concepto
-[TODO: Proporcionar evidencia de la conexión a la red no segura o del descifrado de una contraseña WPA2 débil utilizando una herramienta como Aircrack-ng.]`
+[TODO: Proporcionar evidencia de la conexión a la red no segura o del descifrado de una contraseña WPA2 débil utilizando una herramienta como Aircrack-ng.]`,
+        immediateActions_en: "### Immediate Actions\n[TODO: Add immediate actions in English]",
+        immediateActions_es: "### Acciones Inmediatas\n[TODO: Añadir acciones inmediatas en español]",
     },
     {
         id: "vuln-net-010",
@@ -1286,8 +1290,6 @@ El impacto principal es la falta de disponibilidad del servicio, lo que conduce 
         technicalDescription_es: "### Descripción Técnica\nUn atacante en una posición de red privilegiada (p. ej., en la misma LAN o Wi-Fi, o habiendo comprometido un dispositivo de red) puede usar un analizador de protocolos de red (como Wireshark) para capturar todo el tráfico. Si las aplicaciones utilizan protocolos no cifrados como HTTP, FTP o Telnet, cualquier dato transmitido, incluidos los nombres de usuario y las contraseñas, es visible en texto claro.",
         impact_en: "### Impact\nThis leads to a complete loss of confidentiality for any data transmitted over unencrypted channels. It can result in the compromise of credentials, session tokens, and sensitive business or personal information.",
         impact_es: "### Impacto\nEsto conduce a una pérdida total de la confidencialidad de cualquier dato transmitido a través de canales no cifrados. Puede resultar en el compromiso de credenciales, tokens de sesión e información comercial o personal sensible.",
-        immediateActions_en: "### Immediate Actions\nIdentify all services using unencrypted protocols and prioritize migrating them to secure alternatives (e.g., HTTP to HTTPS, FTP to SFTP).",
-        immediateActions_es: "### Acciones Inmediatas\nIdentificar todos los servicios que utilizan protocolos no cifrados y priorizar su migración a alternativas seguras (p. ej., HTTP a HTTPS, FTP a SFTP).",
         remediation_en: {
             shortTerm: "Enforce the use of strong, end-to-end encryption (e.g., TLS 1.2+) for all data in transit, both on internal and external networks.",
             mediumTerm: "Disable and decommission all legacy, unencrypted protocols within the environment.",
@@ -1310,7 +1312,9 @@ El impacto principal es la falta de disponibilidad del servicio, lo que conduce 
         affectedComponents_es: `### Componentes Afectados
 - [TODO: Listar las aplicaciones o servicios que utilizan protocolos no cifrados.]`,
         details_es: `### Prueba de Concepto
-[TODO: Proporcionar una captura de pantalla de Wireshark o una herramienta similar que muestre datos sensibles capturados en texto claro.]`
+[TODO: Proporcionar una captura de pantalla de Wireshark o una herramienta similar que muestre datos sensibles capturados en texto claro.]`,
+        immediateActions_en: "### Immediate Actions\n[TODO: Add immediate actions in English]",
+        immediateActions_es: "### Acciones Inmediatas\n[TODO: Añadir acciones inmediatas en español]",
     },
     // --- INFRASTRUCTURE VULNERABILITIES ---
     {
@@ -1329,8 +1333,6 @@ La infraestructura se basa en una versión de un servicio (p. ej., Apache, OpenS
 The impact can range from denial-of-service to full remote code execution, depending on the nature of the vulnerability in the unpatched software. This can lead to a complete compromise of the affected server and potentially the entire network.`,
         impact_es: `### Impacto
 El impacto puede variar desde la denegación de servicio hasta la ejecución remota de código completa, dependiendo de la naturaleza de la vulnerabilidad en el software sin parches. Esto puede llevar a un compromiso completo del servidor afectado y potencialmente de toda la red.`,
-        immediateActions_en: "### Immediate Actions\nImmediately apply the latest security patches to the vulnerable software. If a patch is not available, restrict access to the vulnerable service or take it offline until it can be patched.",
-        immediateActions_es: "### Acciones Inmediatas\nAplicar inmediatamente los últimos parches de seguridad al software vulnerable. Si no hay un parche disponible, restringir el acceso al servicio vulnerable o desconectarlo hasta que pueda ser parcheado.",
         remediation_en: {
             shortTerm: "Establish a robust patch management policy and process. Subscribe to security advisories for all software used in the environment.",
             mediumTerm: "Implement an automated patch management system to ensure that patches are applied in a timely manner. Use a vulnerability scanner to regularly scan the infrastructure for unpatched software.",
@@ -1353,7 +1355,9 @@ El impacto puede variar desde la denegación de servicio hasta la ejecución rem
         affectedComponents_es: `### Componentes Afectados
 - [TODO: Listar el software sin parches, su versión y el/los servidor(es) en el/los que se está ejecutando.]`,
         details_es: `### Prueba de Concepto
-[TODO: Proporcionar los pasos para explotar la vulnerabilidad, incluido cualquier código de explotación público utilizado y capturas de pantalla que muestren el compromiso.]`
+[TODO: Proporcionar los pasos para explotar la vulnerabilidad, incluido cualquier código de explotación público utilizado y capturas de pantalla que muestren el compromiso.]`,
+        immediateActions_en: "### Immediate Actions\n[TODO: Add immediate actions in English]",
+        immediateActions_es: "### Acciones Inmediatas\n[TODO: Añadir acciones inmediatas en español]",
     },
     {
         id: "vuln-infra-002",
@@ -1365,8 +1369,6 @@ El impacto puede variar desde la denegación de servicio hasta la ejecución rem
         technicalDescription_es: "### Descripción Técnica\nUn administrador o usuario no cambia las credenciales predeterminadas de un software o hardware (p. ej., admin/admin en un enrutador, administrator/password en una aplicación web). Los atacantes pueden usar escáneres automatizados para encontrar sistemas con estas credenciales predeterminadas y obtener acceso administrativo inmediato.",
         impact_en: "### Impact\nAn attacker can gain full administrative control of the affected system, leading to data theft, system compromise, and a pivot point to attack other systems on the network.",
         impact_es: "### Impacto\nUn atacante puede obtener el control administrativo total del sistema afectado, lo que conduce al robo de datos, el compromiso del sistema y un punto de pivote para atacar otros sistemas en la red.",
-        immediateActions_en: "### Immediate Actions\nImmediately change all default credentials on all systems. If the credentials cannot be changed, restrict network access to the device or take it offline.",
-        immediateActions_es: "### Acciones Inmediatas\nCambiar inmediatamente todas las credenciales predeterminadas en todos los sistemas. Si las credenciales no se pueden cambiar, restringir el acceso a la red del dispositivo o desconectarlo.",
         remediation_en: {
             shortTerm: "Audit the entire infrastructure for any use of default credentials and change them to strong, unique passwords.",
             mediumTerm: "Incorporate checks for default credentials into the standard build and deployment process for all new systems.",
@@ -1389,7 +1391,9 @@ El impacto puede variar desde la denegación de servicio hasta la ejecución rem
         affectedComponents_es: `### Componentes Afectados
 - [TODO: Listar los sistemas o dispositivos que utilizan credenciales predeterminadas.]`,
         details_es: `### Prueba de Concepto
-[TODO: Proporcionar una captura de pantalla de un inicio de sesión exitoso utilizando las credenciales predeterminadas.]`
+[TODO: Proporcionar una captura de pantalla de un inicio de sesión exitoso utilizando las credenciales predeterminadas.]`,
+        immediateActions_en: "### Immediate Actions\n[TODO: Add immediate actions in English]",
+        immediateActions_es: "### Acciones Inmediatas\n[TODO: Añadir acciones inmediatas en español]",
     },
     {
         id: "vuln-infra-003",
@@ -1407,8 +1411,6 @@ La vulnerabilidad ocurre cuando la aplicación utiliza la entrada proporcionada 
 Allows an attacker to read sensitive information from the server's filesystem, including application source code, configuration files with credentials, and OS files like \`/etc/passwd\`.`,
         impact_es: `### Impacto
 Permite a un atacante leer información sensible del sistema de archivos del servidor, incluido el código fuente de la aplicación, archivos de configuración con credenciales y archivos del sistema operativo como \`/etc/passwd\`.`,
-        immediateActions_en: "### Immediate Actions\nImplement input validation to strip or block directory traversal sequences (`../`, `..\\`).",
-        immediateActions_es: "### Acciones Inmediatas\nImplementar la validación de entradas para eliminar o bloquear las secuencias de salto de directorio (`../`, `..\\`).",
         remediation_en: {
             shortTerm: "Validate user input against a strict allow-list of characters or file paths. Ideally, do not pass user input directly to filesystem APIs.",
             mediumTerm: "Use a mapping mechanism where user input corresponds to a predefined, safe file path on the server.",
@@ -1431,7 +1433,9 @@ Permite a un atacante leer información sensible del sistema de archivos del ser
         affectedComponents_es: `### Componentes Afectados
 - [TODO: Listar la URL y el parámetro vulnerables.]`,
         details_es: `### Prueba de Concepto
-[TODO: Proporcionar una solicitud con una carga útil de salto de ruta y mostrar el contenido de un archivo sensible en la respuesta.]`
+[TODO: Proporcionar una solicitud con una carga útil de salto de ruta y mostrar el contenido de un archivo sensible en la respuesta.]`,
+        immediateActions_en: "### Immediate Actions\n[TODO: Add immediate actions in English]",
+        immediateActions_es: "### Acciones Inmediatas\n[TODO: Añadir acciones inmediatas en español]",
     },
     {
         id: "vuln-infra-004",
@@ -1449,17 +1453,15 @@ Las vulnerabilidades de RCE pueden surgir de varias fuentes, incluida la inyecci
 A successful RCE attack provides an attacker with complete control over the affected system, allowing them to steal data, install malware, pivot to other systems on the network, or cause a denial of service.`,
         impact_es: `### Impacto
 Un ataque RCE exitoso proporciona a un atacante el control total sobre el sistema afectado, lo que le permite robar datos, instalar malware, pivotar hacia otros sistemas en la red o causar una denegación de servicio.`,
-        immediateActions_en: "### Immediate Actions\nImmediately take the compromised system offline to contain the breach. Isolate it from the rest of the network. Begin forensic analysis to determine the scope of the compromise.",
-        immediateActions_es: "### Acciones Inmediatas\nDesconectar inmediatamente el sistema comprometido para contener la brecha. Aislarlo del resto de la red. Comenzar el análisis forense para determinar el alcance del compromiso.",
         remediation_en: {
             shortTerm: "Patch the underlying vulnerability that led to RCE. This could involve updating software, fixing an injection flaw, or disabling the vulnerable feature.",
             mediumTerm: "Implement the principle of least privilege. Run application processes with the minimum necessary permissions to limit the impact of a potential RCE.",
-            longTerm: "Use a Web Application Firewall (WAF) to block common attack patterns. Implement egress filtering to prevent compromised systems from communicating with attacker-controlled servers."
+            longTerm: "Use a Web Application Firewall (WAF) with rules to detect and block command injection attempts. Implement egress filtering to prevent compromised systems from communicating with attacker-controlled servers."
         },
         remediation_es: {
             shortTerm: "Parchear la vulnerabilidad subyacente que condujo a la RCE. Esto podría implicar la actualización del software, la corrección de una falla de inyección o la desactivación de la función vulnerable.",
             mediumTerm: "Implementar el principio de privilegio mínimo. Ejecutar los procesos de la aplicación con los permisos mínimos necesarios para limitar el impacto de una posible RCE.",
-            longTerm: "Usar un Web Application Firewall (WAF) para bloquear los patrones de ataque comunes. Implementar el filtrado de salida para evitar que los sistemas comprometidos se comuniquen con los servidores controlados por el atacante."
+            longTerm: "Usar un Web Application Firewall (WAF) con reglas para detectar y bloquear los patrones de ataque comunes. Implementar el filtrado de salida para evitar que los sistemas comprometidos se comuniquen con los servidores controlados por el atacante."
         },
         cwe: "CWE-94",
         severity: "Critical",
@@ -1471,7 +1473,9 @@ Un ataque RCE exitoso proporciona a un atacante el control total sobre el sistem
         details_en: "### Proof of Concept\n[TODO: Provide the steps taken to achieve remote code execution and show the output of a command (e.g., \\`whoami\\`, \\`id\\`) running on the target server.]",
         affectedComponents_es: `### Componentes Afectados
 - [TODO: Especificar el sistema y la vulnerabilidad que permite la RCE.]`,
-        details_es: "### Prueba de Concepto\n[TODO: Proporcionar los pasos seguidos para lograr la ejecución remota de código y mostrar la salida de un comando (p. ej., \\`whoami\\`, \\`id\\`) ejecutándose en el servidor objetivo.]"
+        details_es: "### Prueba de Concepto\n[TODO: Proporcionar los pasos seguidos para lograr la ejecución remota de código y mostrar la salida de un comando (p. ej., \\`whoami\\`, \\`id\\`) ejecutándose en el servidor objetivo.]",
+        immediateActions_en: "### Immediate Actions\n[TODO: Add immediate actions in English]",
+        immediateActions_es: "### Acciones Inmediatas\n[TODO: Añadir acciones inmediatas en español]",
     },
     {
         id: "vuln-infra-005",
@@ -1483,8 +1487,6 @@ Un ataque RCE exitoso proporciona a un atacante el control total sobre el sistem
         technicalDescription_es: "### Descripción Técnica\nEsto puede ocurrir de dos formas: escalada de privilegios vertical, donde un usuario de bajos privilegios obtiene acceso de mayores privilegios (p. ej., de usuario a root), y escalada de privilegios horizontal, donde un usuario obtiene acceso a recursos que pertenecen a otro usuario. Los vectores comunes incluyen binarios SUID mal configurados, exploits del kernel, servicios que se ejecutan con privilegios excesivos y permisos de archivo débiles.",
         impact_en: "### Impact\nSuccessful privilege escalation can result in an attacker gaining full administrative control over a system, allowing them to install persistent backdoors, steal all data on the system, and use it as a launchpad for further attacks.",
         impact_es: "### Impacto\nUna escalada de privilegios exitosa puede resultar en que un atacante obtenga el control administrativo total sobre un sistema, lo que le permite instalar puertas traseras persistentes, robar todos los datos del sistema y usarlo como plataforma de lanzamiento para nuevos ataques.",
-        immediateActions_en: "### Immediate Actions\nIdentify the escalation vector. If it's a misconfigured service or file, correct the permissions immediately. If it's a kernel vulnerability, isolate the machine and prepare to apply patches.",
-        immediateActions_es: "### Acciones Inmediatas\nIdentificar el vector de escalada. Si se trata de un servicio o archivo mal configurado, corregir los permisos de inmediato. Si es una vulnerabilidad del kernel, aislar la máquina y prepararse para aplicar parches.",
         remediation_en: {
             shortTerm: "Apply the principle of least privilege to all users, processes, and files. Regularly audit SUID/GUID binaries and file permissions.",
             mediumTerm: "Keep the operating system and all software fully patched to protect against kernel and software exploits.",
@@ -1507,7 +1509,9 @@ Un ataque RCE exitoso proporciona a un atacante el control total sobre el sistem
         affectedComponents_es: `### Componentes Afectados
 - [TODO: Especificar el sistema operativo o la aplicación y la configuración incorrecta o vulnerabilidad específica que permite la escalada de privilegios.]`,
         details_es: `### Prueba de Concepto
-[TODO: Proporcionar la secuencia de comandos utilizados para escalar privilegios y mostrar la salida de \`whoami\` o \`id\` como el usuario de altos privilegios.]`
+[TODO: Proporcionar la secuencia de comandos utilizados para escalar privilegios y mostrar la salida de \`whoami\` o \`id\` como el usuario de altos privilegios.]`,
+        immediateActions_en: "### Immediate Actions\n[TODO: Add immediate actions in English]",
+        immediateActions_es: "### Acciones Inmediatas\n[TODO: Añadir acciones inmediatas en español]",
     },
     {
         id: "vuln-infra-006",
@@ -1519,8 +1523,6 @@ Un ataque RCE exitoso proporciona a un atacante el control total sobre el sistem
         technicalDescription_es: "### Descripción Técnica\nEsto puede suceder a través de mensajes de error detallados que revelan seguimientos de pila o errores de base de datos, banners de versión de software que revelan componentes sin parches, puntos finales de depuración expuestos o archivos de configuración y repositorios de código fuente de acceso público (p. ej., directorio `.git` expuesto).",
         impact_en: "### Impact\nWhile often a lower-severity finding on its own, information disclosure provides attackers with valuable intelligence for planning more targeted and effective attacks. It can expose software versions, internal paths, and business logic.",
         impact_es: "### Impacto\nAunque a menudo es un hallazgo de menor gravedad por sí solo, la divulgación de información proporciona a los atacantes una inteligencia valiosa para planificar ataques más dirigidos y efectivos. Puede exponer versiones de software, rutas internas y lógica de negocio.",
-        immediateActions_en: "### Immediate Actions\nConfigure the application and web server to return generic, non-detailed error messages. Remove or restrict access to any exposed sensitive files or directories.",
-        immediateActions_es: "### Acciones Inmediatas\nConfigurar la aplicación y el servidor web para que devuelvan mensajes de error genéricos y no detallados. Eliminar o restringir el acceso a cualquier archivo o directorio sensible expuesto.",
         remediation_en: {
             shortTerm: "Disable verbose error reporting in production environments. Configure web servers to suppress software version banners.",
             mediumTerm: "Ensure that sensitive files, configuration files, and source code repositories are not accessible from the web root.",
@@ -1543,7 +1545,9 @@ Un ataque RCE exitoso proporciona a un atacante el control total sobre el sistem
         affectedComponents_es: `### Componentes Afectados
 - [TODO: Especificar qué información se está divulgando y dónde (p. ej., página de error, encabezado del servidor, directorio .git).]`,
         details_es: `### Prueba de Concepto
-[TODO: Proporcionar una captura de pantalla o respuesta del servidor que muestre la información divulgada.]`
+[TODO: Proporcionar una captura de pantalla o respuesta del servidor que muestre la información divulgada.]`,
+        immediateActions_en: "### Immediate Actions\n[TODO: Add immediate actions in English]",
+        immediateActions_es: "### Acciones Inmediatas\n[TODO: Añadir acciones inmediatas en español]",
     },
     {
         id: "vuln-infra-007",
@@ -1555,8 +1559,6 @@ Un ataque RCE exitoso proporciona a un atacante el control total sobre el sistem
         technicalDescription_es: "### Descripción Técnica\nEl código de la aplicación contiene una llamada a un comando del sistema e incorpora datos suministrados por el usuario en la cadena del comando sin una sanitización adecuada. Un atacante puede usar metacaracteres de la shell como `;`, `|`, `&&` o `||` para agregar nuevos comandos al original.",
         impact_en: "### Impact\nThis vulnerability can lead to full remote code execution on the server, with the privileges of the application process. This allows an attacker to compromise the server, steal data, and pivot to other systems on the network.",
         impact_es: "### Impacto\nEsta vulnerabilidad puede conducir a la ejecución remota completa de código en el servidor, con los privilegios del proceso de la aplicación. Esto permite a un atacante comprometer el servidor, robar datos y pivotar hacia otros sistemas en la red.",
-        immediateActions_en: "### Immediate Actions\nIdentify the vulnerable parameter and implement strict input validation to block shell metacharacters. If possible, temporarily disable the vulnerable functionality.",
-        immediateActions_es: "### Acciones Inmediatas\nIdentificar el parámetro vulnerable e implementar una validación de entrada estricta para bloquear los metacaracteres de la shell. Si es posible, deshabilitar temporalmente la funcionalidad vulnerable.",
         remediation_en: {
             shortTerm: "Never call system shell commands with user-supplied input. Use built-in language functions or libraries that provide the required functionality without invoking a shell.",
             mediumTerm: "If calling a system command is unavoidable, use structured APIs that accept a list of arguments rather than a single command string. This prevents the shell from interpreting metacharacters.",
@@ -1579,7 +1581,9 @@ Un ataque RCE exitoso proporciona a un atacante el control total sobre el sistem
         affectedComponents_es: `### Componentes Afectados
 - [TODO: Especificar la función, el parámetro y la URL vulnerables.]`,
         details_es: `### Prueba de Concepto
-[TODO: Proporcionar una solicitud con una carga útil de inyección de comandos (p. ej., \`; id\`) y mostrar la salida del comando en la respuesta.]`
+[TODO: Proporcionar una solicitud con una carga útil de inyección de comandos (p. ej., \`; id\`) y mostrar la salida del comando en la respuesta.]`,
+        immediateActions_en: "### Immediate Actions\n[TODO: Add immediate actions in English]",
+        immediateActions_es: "### Acciones Inmediatas\n[TODO: Añadir acciones inmediatas en español]",
     },
     {
         id: "vuln-infra-008",
@@ -1591,8 +1595,6 @@ Un ataque RCE exitoso proporciona a un atacante el control total sobre el sistem
         technicalDescription_es: "### Descripción Técnica\nLa vulnerabilidad ocurre cuando una aplicación utiliza la entrada proporcionada por el usuario para construir una ruta de archivo para leer o escribir sin una sanitización adecuada. Al usar secuencias `../` y otros caracteres especiales, un atacante puede navegar fuera del directorio previsto y acceder a archivos sensibles en otras partes del sistema de archivos.",
         impact_en: "### Impact\nAllows an attacker to read sensitive information, such as application source code, configuration files containing credentials, and operating system files. In some cases, it may also allow writing to arbitrary files, leading to remote code execution.",
         impact_es: "### Impacto\nPermite a un atacante leer información sensible, como el código fuente de la aplicación, archivos de configuración que contienen credenciales y archivos del sistema operativo. En algunos casos, también puede permitir escribir en archivos arbitrarios, lo que conduce a la ejecución remota de código.",
-        immediateActions_en: "### Immediate Actions\nImplement strong input validation to strip or block directory traversal sequences (`../`, `..\\`) and null byte characters (`%00`).",
-        immediateActions_es: "### Acciones Inmediatas\nImplementar una validación de entrada estricta para eliminar o bloquear las secuencias de salto de directorio (`../`, `..\\`) y los caracteres de byte nulo (`%00`).",
         remediation_en: {
             shortTerm: "Avoid passing user-supplied input to filesystem APIs entirely. Use an allow-list of safe, known file identifiers instead.",
             mediumTerm: "If user input in file paths is unavoidable, ensure the application canonicalizes the path and verifies that it starts with the expected base directory before using it.",
@@ -1615,7 +1617,9 @@ Un ataque RCE exitoso proporciona a un atacante el control total sobre el sistem
         affectedComponents_es: `### Componentes Afectados
 - [TODO: Listar la URL y el parámetro vulnerables.]`,
         details_es: `### Prueba de Concepto
-[TODO: Proporcionar una solicitud con una carga útil de salto de ruta y mostrar el contenido de un archivo sensible (p. ej., /etc/passwd) en la respuesta.]`
+[TODO: Proporcionar una solicitud con una carga útil de salto de ruta y mostrar el contenido de un archivo sensible (p. ej., /etc/passwd) en la respuesta.]`,
+        immediateActions_en: "### Immediate Actions\n[TODO: Add immediate actions in English]",
+        immediateActions_es: "### Acciones Inmediatas\n[TODO: Añadir acciones inmediatas en español]",
     },
     {
         id: "vuln-infra-009",
@@ -1627,8 +1631,6 @@ Un ataque RCE exitoso proporciona a un atacante el control total sobre el sistem
         technicalDescription_es: "### Descripción Técnica\nLa aplicación utiliza un parámetro, a menudo `redirect`, `url` o `next`, para especificar el destino después de una acción (como iniciar sesión). Si este parámetro no se valida, un atacante puede crear una URL como `http://sitio-confiable.com/login?redirect=http://sitio-malicioso.com`. Un usuario, al ver el dominio de confianza, puede hacer clic en el enlace y ser redirigido al sitio malicioso después de iniciar sesión.",
         impact_en: "### Impact\nFacilitates phishing attacks, increasing their credibility and success rate. It can be used to trick users into disclosing credentials or downloading malware from a site they are redirected to.",
         impact_es: "### Impacto\nFacilita los ataques de phishing, aumentando su credibilidad y tasa de éxito. Se puede utilizar para engañar a los usuarios para que divulguen credenciales o descarguen malware de un sitio al que son redirigidos.",
-        immediateActions_en: "### Immediate Actions\nReview all redirect functionality. If redirects to external domains are not a required feature, disable them immediately.",
-        immediateActions_es: "### Acciones Inmediatas\nRevisar toda la funcionalidad de redirección. Si las redirecciones a dominios externos no son una característica requerida, deshabilitarlas de inmediato.",
         remediation_en: {
             shortTerm: "Do not use user-supplied input to determine the redirect destination. Use a server-side mapping of short names or IDs to full target URLs.",
             mediumTerm: "If dynamic redirects are necessary, maintain an allow-list of trusted domains and validate the redirect parameter against this list. Ensure the URL scheme is also validated (e.g., only allow `http` and `https` ).",
@@ -1651,7 +1653,9 @@ Un ataque RCE exitoso proporciona a un atacante el control total sobre el sistem
         affectedComponents_es: `### Componentes Afectados
 - [TODO: Listar la URL y el parámetro vulnerables a la redirección abierta.]`,
         details_es: `### Prueba de Concepto
-[TODO: Proporcionar una URL que, al hacer clic, redirija al usuario a un dominio externo controlado por el atacante.]`
+[TODO: Proporcionar una URL que, al hacer clic, redirija al usuario a un dominio externo controlado por el atacante.]`,
+        immediateActions_en: "### Immediate Actions\n[TODO: Add immediate actions in English]",
+        immediateActions_es: "### Acciones Inmediatas\n[TODO: Añadir acciones inmediatas en español]",
     },
     {
         id: "vuln-infra-010",
@@ -1663,8 +1667,6 @@ Un ataque RCE exitoso proporciona a un atacante el control total sobre el sistem
         technicalDescription_es: "### Descripción Técnica\nLos recursos compartidos de archivos se configuran con permisos demasiado permisivos, como acceso de 'Todos' o 'Anónimo' con privilegios de lectura/escritura. Esto permite a cualquier usuario de la red acceder, modificar o eliminar archivos en el recurso compartido, o cargar archivos maliciosos.",
         impact_en: "### Impact\nThis can lead to sensitive data exposure, data loss, or the spread of malware (like ransomware) throughout the network. An attacker can use a writable share to host malicious tools for lateral movement.",
         impact_es: "### Impacto\nEsto puede conducir a la exposición de datos sensibles, la pérdida de datos o la propagación de malware (como ransomware) por toda la red. Un atacante puede usar un recurso compartido con permisos de escritura para alojar herramientas maliciosas para el movimiento lateral.",
-        immediateActions_en: "### Immediate Actions\nImmediately remove anonymous or 'Everyone' permissions from all file shares. If possible, take the insecure share offline until permissions can be properly configured.",
-        immediateActions_es: "### Acciones Inmediatas\nEliminar inmediatamente los permisos anónimos o de 'Todos' de todos los recursos compartidos de archivos. Si es posible, desconectar el recurso compartido inseguro hasta que los permisos se puedan configurar correctamente.",
         remediation_en: {
             shortTerm: "Apply the principle of least privilege. Grant access only to the specific user groups that require it, with the minimum necessary permissions (e.g., read-only vs. read/write).",
             mediumTerm: "Implement a regular auditing process for file share permissions to identify and remediate overly permissive configurations.",
@@ -1687,7 +1689,9 @@ Un ataque RCE exitoso proporciona a un atacante el control total sobre el sistem
         affectedComponents_es: `### Componentes Afectados
 - [TODO: Listar el nombre del servidor y el nombre del recurso compartido (p. ej., \\\\SERVIDOR\\recurso).]`,
         details_es: `### Prueba de Concepto
-[TODO: Proporcionar una captura de pantalla que muestre el acceso al recurso compartido inseguro y una lista de su contenido.]`
+[TODO: Proporcionar una captura de pantalla que muestre el acceso al recurso compartido inseguro y una lista de su contenido.]`,
+        immediateActions_en: "### Immediate Actions\n[TODO: Add immediate actions in English]",
+        immediateActions_es: "### Acciones Inmediatas\n[TODO: Añadir acciones inmediatas en español]",
     },
     {
         id: "vuln-infra-011",
@@ -1699,8 +1703,6 @@ Un ataque RCE exitoso proporciona a un atacante el control total sobre el sistem
         technicalDescription_es: "### Descripción Técnica\nDurante una revisión de los recursos compartidos de red accesibles, se descubrieron archivos que contienen información sensible. Incluso si el recurso compartido en sí no está abierto a 'Todos', los datos pueden ser accesibles para un grupo de empleados más grande de lo necesario, violando el principio de privilegio mínimo.",
         impact_en: "### Impact\nThis can lead to the compromise of credentials, providing attackers with access to other systems. It also constitutes a data breach if personal or customer information is exposed.",
         impact_es: "### Impacto\nEsto puede conducir al compromiso de credenciales, proporcionando a los atacantes acceso a otros sistemas. También constituye una brecha de datos si se expone información personal o de clientes.",
-        immediateActions_en: "### Immediate Actions\nImmediately restrict access to the files containing sensitive data to only the authorized individuals. If the data is credentials, rotate them immediately.",
-        immediateActions_es: "### Acciones Inmediatas\nRestringir inmediatamente el acceso a los archivos que contienen datos sensibles solo a las personas autorizadas. Si los datos son credenciales, rotarlas de inmediato.",
         remediation_en: {
             shortTerm: "Remove the sensitive data from the file share. Implement a secure secrets management solution for storing credentials and API keys.",
             mediumTerm: "Implement a data loss prevention (DLP) solution to automatically scan file shares for sensitive information.",
@@ -1723,7 +1725,9 @@ Un ataque RCE exitoso proporciona a un atacante el control total sobre el sistem
         affectedComponents_es: `### Componentes Afectados
 - [TODO: Listar el servidor, el recurso compartido y la ruta completa al archivo que contiene datos sensibles.]`,
         details_es: `### Prueba de Concepto
-[TODO: Proporcionar una captura de pantalla del contenido del archivo, redactando cualquier información altamente sensible.]`
+[TODO: Proporcionar una captura de pantalla del contenido del archivo, redactando cualquier información altamente sensible.]`,
+        immediateActions_en: "### Immediate Actions\n[TODO: Add immediate actions in English]",
+        immediateActions_es: "### Acciones Inmediatas\n[TODO: Añadir acciones inmediatas en español]",
     },
     {
         id: "vuln-infra-012",
@@ -1735,8 +1739,6 @@ Un ataque RCE exitoso proporciona a un atacante el control total sobre el sistem
         technicalDescription_es: "### Descripción Técnica\nDebido a una configuración incorrecta en un firewall, un grupo de seguridad en la nube o el enrutamiento de la red, los servicios que solo deberían ser accesibles en la red interna son accesibles desde la Internet pública. Esto aumenta drásticamente la superficie de ataque de la organización.",
         impact_en: "### Impact\nExposed services can be subjected to brute-force attacks, denial-of-service, or exploitation of known vulnerabilities, potentially leading to a full compromise of the system.",
         impact_es: "### Impacto\nLos servicios expuestos pueden ser objeto de ataques de fuerza bruta, denegación de servicio o explotación de vulnerabilidades conocidas, lo que puede llevar a un compromiso total del sistema.",
-        immediateActions_en: "### Immediate Actions\nImmediately block public access to the exposed services at the network perimeter (firewall or cloud security group).",
-        immediateActions_es: "### Acciones Inmediatas\nBloquear inmediatamente el acceso público a los servicios expuestos en el perímetro de la red (firewall o grupo de seguridad en la nube).",
         remediation_en: {
             shortTerm: "Implement a 'deny-by-default' firewall policy. Only allow access to specific services from trusted IP ranges.",
             mediumTerm: "Conduct regular external network scans to identify any unintentionally exposed services. Use a VPN with multi-factor authentication for all remote management access.",
@@ -1759,7 +1761,9 @@ Un ataque RCE exitoso proporciona a un atacante el control total sobre el sistem
         affectedComponents_es: `### Componentes Afectados
 - [TODO: Listar las direcciones IP y los puertos de los servicios expuestos innecesariamente.]`,
         details_es: `### Prueba de Concepto
-[TODO: Proporcionar una captura de pantalla de una herramienta como nmap o Shodan que muestre el puerto expuesto y el banner del servicio.]`
+[TODO: Proporcionar una captura de pantalla de una herramienta como nmap o Shodan que muestre el puerto expuesto y el banner del servicio.]`,
+        immediateActions_en: "### Immediate Actions\n[TODO: Add immediate actions in English]",
+        immediateActions_es: "### Acciones Inmediatas\n[TODO: Añadir acciones inmediatas en español]",
     },
     {
         id: "vuln-infra-013",
@@ -1771,8 +1775,6 @@ Un ataque RCE exitoso proporciona a un atacante el control total sobre el sistem
         technicalDescription_es: "### Descripción Técnica\nEsta es una categoría general para configuraciones incorrectas específicas de una tecnología en particular. Los ejemplos incluyen una instancia de Elasticsearch abierta al público, un servidor Jenkins que permite el acceso no autenticado a las consolas de script, o un socket del demonio de Docker expuesto a la red.",
         impact_en: "### Impact\nThe impact is highly dependent on the specific application and misconfiguration, but it often leads to information disclosure, unauthorized access, or remote code execution.",
         impact_es: "### Impacto\nEl impacto depende en gran medida de la aplicación y la configuración incorrecta específicas, pero a menudo conduce a la divulgación de información, el acceso no autorizado o la ejecución remota de código.",
-        immediateActions_en: "### Immediate Actions\nRestrict network access to the misconfigured instance. Consult the vendor's security best practices for the specific application.",
-        immediateActions_es: "### Acciones Inmediatas\nRestringir el acceso de red a la instancia mal configurada. Consultar las mejores prácticas de seguridad del proveedor para la aplicación específica.",
         remediation_en: {
             shortTerm: "Apply the specific remediation for the identified misconfiguration, such as enabling authentication, changing default credentials, or implementing proper access controls.",
             mediumTerm: "Develop a secure baseline configuration (hardening guide) for all critical applications deployed in the environment.",
@@ -1795,87 +1797,10 @@ Un ataque RCE exitoso proporciona a un atacante el control total sobre el sistem
         affectedComponents_es: `### Componentes Afectados
 - [TODO: Especificar la aplicación (p. ej., Elasticsearch) y la ubicación (dirección IP/URL) de la instancia mal configurada.]`,
         details_es: `### Prueba de Concepto
-[TODO: Proporcionar evidencia de la configuración incorrecta, como una captura de pantalla que muestre el acceso no autenticado a un panel o datos sensibles.]`
-    },
-    // --- AUTHENTICATION VULNERABILITIES ---
-    {
-        id: "vuln-auth-001",
-        title_en: "Weak Passwords",
-        title_es: "Contraseñas Débiles",
-        overview_en: `### Overview
-Weak passwords are easy for attackers to guess or crack, often using automated tools. This allows unauthorized access to user accounts and systems.`,
-        overview_es: `### Resumen
-Las contraseñas débiles son fáciles de adivinar o descifrar para los atacantes, a menudo utilizando herramientas automatizadas. Esto permite el acceso no autorizado a las cuentas y sistemas de los usuarios.`,
-        technicalDescription_en: `### Technical Description
-The application fails to enforce a strong password policy, allowing users to set short, simple, or common passwords (e.g., "password123", "123456"). Attackers can use brute-force or dictionary attacks to quickly compromise these accounts.`,
-        technicalDescription_es: `### Descripción Técnica
-La aplicación no impone una política de contraseñas segura, lo que permite a los usuarios establecer contraseñas cortas, simples o comunes (p. ej., "password123", "123456"). Los atacantes pueden usar ataques de fuerza bruta o de diccionario para comprometer rápidamente estas cuentas.`,
-        impact_en: `### Impact
-Account takeover, leading to unauthorized access to sensitive data and functionality. If an administrator account is compromised, it can lead to a full system compromise.`,
-        impact_es: `### Impacto
-Toma de control de la cuenta, lo que conduce a un acceso no autorizado a datos y funcionalidades sensibles. Si se compromete una cuenta de administrador, puede llevar a un compromiso total del sistema.`,
-        immediateActions_en: "### Immediate Actions\nForce a password reset for all users. Temporarily implement account lockout measures after a small number of failed login attempts.",
-        immediateActions_es: "### Acciones Inmediatas\nForzar un restablecimiento de contraseña para todos los usuarios. Implementar temporalmente medidas de bloqueo de cuenta después de un pequeño número de intentos de inicio de sesión fallidos.",
-        remediation_en: {
-            shortTerm: "Enforce a strong password policy (e.g., minimum length, complexity requirements). Check new passwords against a list of common and breached passwords.",
-            mediumTerm: "Implement Multi-Factor Authentication (MFA) as the most effective defense against password-based attacks.",
-            longTerm: "Educate users on the importance of strong, unique passwords. Consider implementing passwordless authentication options."
-        },
-        remediation_es: {
-            shortTerm: "Hacer cumplir una política de contraseñas segura (p. ej., longitud mínima, requisitos de complejidad). Comprobar las nuevas contraseñas con una lista de contraseñas comunes y filtradas.",
-            mediumTerm: "Implementar la autenticación multifactor (MFA) como la defensa más eficaz contra los ataques basados en contraseñas.",
-            longTerm: "Educar a los usuarios sobre la importancia de contraseñas seguras y únicas. Considerar la implementación de opciones de autenticación sin contraseña."
-        },
-        cwe: "CWE-521",
-        severity: "High",
-        cvss: { score: 8.1, vectorString: "CVSS:3.1/AV:N/AC:L/PR:L/UI:N/S:U/C:H/I:H/A:N", attackVector: "N", attackComplexity: "L", privilegesRequired: "L", userInteraction: "N", scope: "U", confidentiality: "H", integrity: "H", availability: "N" },
-        references: ["https://owasp.org/www-project-top-ten/2017/A2_2017-Broken_Authentication"],
-        tags: ["Authentication"],
-        affectedComponents_en: `### Affected Components
-- The application's login and password change functionality.`,
-        details_en: `### Proof of Concept
-[TODO: Provide an example of a weak password that was set and then cracked, or demonstrate a successful brute-force attack.]`,
-        affectedComponents_es: `### Componentes Afectados
-- La funcionalidad de inicio de sesión y cambio de contraseña de la aplicación.`,
-        details_es: `### Prueba de Concepto
-[TODO: Proporcionar un ejemplo de una contraseña débil que se estableció y luego se descifró, o demostrar un ataque de fuerza bruta exitoso.]`
-    },
-    {
-        id: "vuln-auth-002",
-        title_en: "Password Reuse",
-        title_es: "Reutilización de Contraseñas",
-        overview_en: "### Overview\nPassword reuse involves an attacker using a password that was compromised from one system to gain unauthorized access to another system where the user has used the same password.",
-        overview_es: "### Resumen\nLa reutilización de contraseñas implica que un atacante utilice una contraseña que fue comprometida en un sistema para obtener acceso no autorizado a otro sistema donde el usuario ha utilizado la misma contraseña.",
-        technicalDescription_en: "### Technical Description\nUsers often reuse the same password across multiple services. If one of those services suffers a data breach and credentials are leaked, an attacker can try those same credentials (an attack known as credential stuffing) on other services, including the target application.",
-        technicalDescription_es: "### Descripción Técnica\nLos usuarios a menudo reutilizan la misma contraseña en múltiples servicios. Si uno de esos servicios sufre una brecha de datos y se filtran las credenciales, un atacante puede probar esas mismas credenciales (un ataque conocido como credential stuffing) en otros servicios, incluida la aplicación objetivo.",
-        impact_en: "### Impact\nAn attacker can gain unauthorized access to user accounts without directly attacking the target application, leveraging breaches from entirely separate services.",
-        impact_es: "### Impacto\nUn atacante puede obtener acceso no autorizado a las cuentas de los usuarios sin atacar directamente la aplicación objetivo, aprovechando las brechas de servicios completamente separados.",
-        immediateActions_en: "### Immediate Actions\nForce a password reset for any identified compromised accounts. Communicate to users the risk of password reuse.",
-        immediateActions_es: "### Acciones Inmediatas\nForzar un restablecimiento de contraseña para cualquier cuenta comprometida identificada. Comunicar a los usuarios el riesgo de la reutilización de contraseñas.",
-        remediation_en: {
-            shortTerm: "Implement rate limiting and account lockout mechanisms to slow down credential stuffing attacks. Check new passwords against a database of known breached passwords.",
-            mediumTerm: "Implement Multi-Factor Authentication (MFA). This is the single most effective control against password reuse and credential stuffing.",
-            longTerm: "Educate users about the importance of using unique passwords for every service. Provide a password manager as a corporate tool to facilitate this."
-        },
-        remediation_es: {
-            shortTerm: "Implementar limitación de velocidad y mecanismos de bloqueo de cuentas para ralentizar los ataques de credential stuffing. Comprobar las nuevas contraseñas con una base de datos de contraseñas filtradas conocidas.",
-            mediumTerm: "Implementar la Autenticación Multifactor (MFA). Este es el control más efectivo contra la reutilización de contraseñas y el credential stuffing.",
-            longTerm: "Educar a los usuarios sobre la importancia de usar contraseñas únicas para cada servicio. Proporcionar un gestor de contraseñas como herramienta corporativa para facilitar esto."
-        },
-        cwe: "CWE-693",
-        severity: "High",
-        cvss: { score: 8.1, vectorString: "CVSS:3.1/AV:N/AC:H/PR:N/UI:N/S:U/C:H/I:H/A:N", attackVector: "N", attackComplexity: "H", privilegesRequired: "N", userInteraction: "N", scope: "U", confidentiality: "H", integrity: "H", availability: "N" },
-        references: ["https://haveibeenpwned.com/Passwords"],
-        tags: ["Authentication"],
-        affectedComponents_en: `### Affected Components
-- All user accounts within the application.`,
-        details_en: `### Proof of Concept
-[TODO: Provide evidence of a successful login using credentials known to be from a public data breach.]`,
-        affectedComponents_es: `### Componentes Afectados
-- Todas las cuentas de usuario dentro de la aplicación.`,
-        details_es: `### Prueba de Concepto
-[TODO: Proporcionar evidencia de un inicio de sesión exitoso utilizando credenciales que se sabe que provienen de una brecha de datos pública.]`
+[TODO: Proporcionar evidencia de la configuración incorrecta, como una captura de pantalla que muestre el acceso no autenticado a un panel o datos sensibles.]`,
+        immediateActions_en: "### Immediate Actions\n[TODO: Add immediate actions in English]",
+        immediateActions_es: "### Acciones Inmediatas\n[TODO: Añadir acciones inmediatas en español]",
     }
-]
+];
 
     
