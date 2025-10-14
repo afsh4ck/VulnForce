@@ -190,10 +190,12 @@ export const MarkdownPreview = ({ content, getImage, isReport }: { content: stri
                         
                         if (match) { // Code block with language
                             return (
-                                <CodeBlock
-                                    initialLanguage={match[1]}
-                                    code={codeContent}
-                                />
+                                <div className="overflow-x-auto">
+                                    <CodeBlock
+                                        initialLanguage={match[1]}
+                                        code={codeContent}
+                                    />
+                                </div>
                             );
                         }
                         
