@@ -199,7 +199,8 @@ export const MarkdownPreview = ({ content, getImage, isReport }: { content: stri
                                         language={match[1]}
                                         PreTag="div"
                                         customStyle={{
-                                          backgroundColor: 'transparent',
+                                            padding: '0',
+                                            margin: '0',
                                         }}
                                         {...props}
                                     >
