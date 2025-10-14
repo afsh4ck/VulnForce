@@ -40,7 +40,7 @@ export const LinkPreviewCard = ({ href }: { href: string }) => {
     }, [href]);
     
     if (isLoading) {
-        return <Skeleton className="h-28 w-full" />;
+        return <Skeleton className="h-24 w-full" />;
     }
 
     if (!data || !data.title) {
@@ -67,20 +67,10 @@ export const LinkPreviewCard = ({ href }: { href: string }) => {
                 "my-4 flex items-center gap-4 rounded-lg border bg-card text-card-foreground shadow-sm transition-colors",
                 "hover:border-primary"
             )}>
-                {data.image && (
-                    <div className="w-32 h-32 flex-shrink-0">
-                        {/* eslint-disable-next-line @next/next/no-img-element */}
-                        <img 
-                            src={data.image} 
-                            alt={data.title} 
-                            className="w-full h-full object-cover rounded-l-lg" 
-                        />
-                    </div>
-                )}
-                <div className="flex flex-col p-4">
+                <div className="flex flex-col p-4 space-y-1">
                     <p className="font-bold text-base line-clamp-1 group-hover:text-primary">{data.title}</p>
-                    <p className="text-sm text-muted-foreground mt-1 line-clamp-2">{data.description}</p>
-                    <div className="flex items-center gap-2 mt-2 text-xs text-muted-foreground">
+                    <p className="text-sm text-muted-foreground line-clamp-2">{data.description}</p>
+                    <div className="flex items-center gap-2 pt-1 text-xs text-muted-foreground">
                         {data.favicon ? (
                             // eslint-disable-next-line @next/next/no-img-element
                             <img src={data.favicon} alt="" className="w-4 h-4" />
