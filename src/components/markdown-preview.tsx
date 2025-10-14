@@ -14,16 +14,18 @@ import { LinkPreviewCard } from './link-preview-card';
 const highlightTodos = (text: string) => {
     if (typeof text !== 'string') return text;
     const todoRegex = /(\[TODO:?.*?\]|\bTODO\b)/g;
-    return text.split(todoRegex).map((part, index) => {
-        if (todoRegex.test(part)) {
-            const isSimpleTodo = part.toUpperCase() === 'TODO';
-            const highlighted = isSimpleTodo
-                ? `<span class="bg-red-500 text-white font-bold px-1 rounded-sm">TODO</span>`
-                : part.replace(/\[(TODO:?.*?)\]/i, `[<span class="bg-red-500 text-white font-bold px-0.5 rounded-sm">TODO</span>:${part.substring(part.indexOf(':') + 1, part.length - 1)}]`);
-            return <span key={index} dangerouslySetInnerHTML={{ __html: highlighted }} />;
-        }
-        return part;
-    });
+
+    return text
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(todoRegex, (match) => {
+             if (match === 'TODO') {
+                return `<span class="bg-red-500 text-white font-bold px-1 rounded-sm">TODO</span>`;
+            }
+             const highlighted = match.replace('TODO', `<span class="bg-red-500 text-white font-bold px-0.5 rounded-sm">TODO</span>`);
+            return highlighted;
+        });
 };
 
 const renderWithTodos = (Component: React.ElementType, className?: string, props: any = {}) => {
@@ -145,18 +147,29 @@ export const MarkdownPreview = ({ content, getImage, isReport }: { content: stri
                     h2: (props) => <CustomHeading level={2} {...props} />,
                     h3: (props) => <CustomHeading level={3} {...props} />,
                     h4: (props) => <CustomHeading level={4} {...props} />,
-                    p: ({ node, children }) => {
-                        // Check if the only child is an 'a' tag
-                        const isLinkOnly = React.Children.count(children) === 1 &&
-                            React.isValidElement(children[0]) &&
-                            (children[0] as React.ReactElement<any>).props.node.tagName === 'a';
-
+                    p: ({ node, children, ...props }) => {
+                        const isLinkOnly = 
+                            node &&
+                            node.children.length === 1 &&
+                            node.children[0].type === 'element' &&
+                            node.children[0].tagName === 'a';
+                        
                         if (isLinkOnly) {
-                            return <>{children}</>;
+                            const linkNode = node.children[0];
+                            const textNode = linkNode.children.length === 1 && linkNode.children[0].type === 'text' ? linkNode.children[0] : null;
+                            const href = linkNode.properties?.href as string;
+                            
+                            // Check if the link text is the same as the URL
+                            if (textNode && textNode.value === href) {
+                                return <LinkPreviewCard href={href} />;
+                            }
                         }
-                        return <p>{children}</p>;
+                        
+                        return <p {...props}>{children}</p>;
                     },
-                    a: ({ node, ...props }) => <LinkPreviewCard href={props.href || ''} />,
+                    a: ({ node, children, ...props }) => {
+                        return <a {...props} className="text-primary hover:underline">{children}</a>
+                    },
                     li: ({ node, children, ...props }: any) => (
                         <li {...props}>{React.Children.map(children, child => {
                             if (typeof child === 'string') {
