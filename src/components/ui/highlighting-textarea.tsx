@@ -40,6 +40,54 @@ export const HighlightingTextarea = React.forwardRef<HTMLTextAreaElement, Highli
                 backdropRef.current.scrollLeft = localTextareaRef.current.scrollLeft;
             }
         }, []);
+        
+        const handleKeyDown = (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
+            if (e.key === 'Enter') {
+                const textarea = e.currentTarget;
+                const { selectionStart, selectionEnd, value } = textarea;
+        
+                // Find the start of the current line
+                let lineStart = value.lastIndexOf('\n', selectionStart - 1) + 1;
+        
+                const currentLine = value.substring(lineStart, selectionStart);
+        
+                const bulletMatch = currentLine.match(/^(\s*-\s+)/);
+                const numberMatch = currentLine.match(/^(\s*\d+\.\s+)/);
+        
+                if (bulletMatch) {
+                    e.preventDefault();
+                    const newText = currentLine.trim() === '-' ? '\n' : '\n' + bulletMatch[1];
+                    const newValue = value.substring(0, selectionStart) + newText + value.substring(selectionEnd);
+                    onValueChange(newValue);
+        
+                    setTimeout(() => {
+                        textarea.selectionStart = textarea.selectionEnd = selectionStart + newText.length;
+                    }, 0);
+                } else if (numberMatch) {
+                    e.preventDefault();
+                    const currentNumber = parseInt(numberMatch[1].trim());
+                    // If the list item is empty, pressing Enter should remove it and create a newline
+                    if (currentLine.trim() === `${currentNumber}.`) {
+                         const newValue = value.substring(0, lineStart) + value.substring(selectionEnd);
+                         onValueChange(newValue);
+                         setTimeout(() => {
+                             textarea.selectionStart = textarea.selectionEnd = lineStart;
+                         }, 0);
+
+                    } else {
+                        const indentation = numberMatch[1].match(/^\s*/)?.[0] || '';
+                        const nextNumber = currentNumber + 1;
+                        const newText = `\n${indentation}${nextNumber}. `;
+                        const newValue = value.substring(0, selectionStart) + newText + value.substring(selectionEnd);
+                        onValueChange(newValue);
+            
+                        setTimeout(() => {
+                            textarea.selectionStart = textarea.selectionEnd = selectionStart + newText.length;
+                        }, 0);
+                    }
+                }
+            }
+        };
 
         const handleChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
             onValueChange(e.target.value);
@@ -68,6 +116,7 @@ export const HighlightingTextarea = React.forwardRef<HTMLTextAreaElement, Highli
                     value={value}
                     onChange={handleChange}
                     onScroll={handleScroll}
+                    onKeyDown={handleKeyDown}
                     className={cn(
                         'relative z-10 block w-full h-full resize-none overflow-auto whitespace-pre-wrap break-words border-0 bg-transparent text-transparent caret-foreground',
                         'font-code text-sm min-h-[300px]',
