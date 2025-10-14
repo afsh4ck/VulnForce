@@ -21,29 +21,31 @@ export const initialVulnerabilities: Vulnerability[] = [
         recommendations_en: `### Recommendations
 
 #### Short-Term Recommendations
-Refactor all database queries to use parameterized queries (also known as prepared statements). This is the most effective defense against SQLi as it separates the query logic from the data.
+- Refactor all database queries to use parameterized queries (also known as prepared statements). This is the most effective defense against SQLi as it separates the query logic from the data.
 
 #### Medium-Term Recommendations
-Implement least privilege access for database users. The application's database user should only have the minimum necessary permissions.
+- Implement least privilege access for database users. The application's database user should only have the minimum necessary permissions.
 
 #### Long-Term Recommendations
-Conduct regular security training for developers on secure coding practices. Implement static (SAST) and dynamic (DAST) application security testing into the CI/CD pipeline to proactively identify and fix vulnerabilities.`,
+- Conduct regular security training for developers on secure coding practices.
+- Implement static (SAST) and dynamic (DAST) application security testing into the CI/CD pipeline to proactively identify and fix vulnerabilities.`,
         recommendations_es: `### Recomendaciones
 
 #### Recomendaciones a Corto Plazo
-Refactorizar todas las consultas a la base de datos para usar consultas parametrizadas (también conocidas como prepared statements). Esta es la defensa más efectiva contra SQLi ya que separa la lógica de la consulta de los datos.
+- Refactorizar todas las consultas a la base de datos para usar consultas parametrizadas (también conocidas como prepared statements). Esta es la defensa más efectiva contra SQLi ya que separa la lógica de la consulta de los datos.
 
 #### Recomendaciones a Medio Plazo
-Implementar el principio de privilegio mínimo para los usuarios de la base de datos. El usuario de la base de datos de la aplicación solo debe tener los permisos mínimos necesarios.
+- Implementar el principio de privilegio mínimo para los usuarios de la base de datos. El usuario de la base de datos de la aplicación solo debe tener los permisos mínimos necesarios.
 
 #### Recomendaciones a Largo Plazo
-Realizar capacitaciones de seguridad periódicas para los desarrolladores sobre prácticas de codificación segura. Implementar pruebas de seguridad de aplicaciones estáticas (SAST) y dinámicas (DAST) en el pipeline de CI/CD para identificar y corregir vulnerabilidades de forma proactiva.`,
+- Realizar capacitaciones de seguridad periódicas para los desarrolladores sobre prácticas de codificación segura.
+- Implementar pruebas de seguridad de aplicaciones estáticas (SAST) y dinámicas (DAST) en el pipeline de CI/CD para identificar y corregir vulnerabilidades de forma proactiva.`,
         affectedComponents_en: "### Affected Components\n- [TODO: List affected components, URLs, parameters, etc.]",
         details_en: "### Proof of Concept\n[TODO: Provide a detailed PoC, including steps, code snippets, and screenshots in English]",
         affectedComponents_es: "### Componentes Afectados\n- [TODO: Listar componentes afectados, URLs, parámetros, etc.]",
         details_es: "### Prueba de Concepto\n[TODO: Proporcionar una PoC detallada, incluyendo pasos, fragmentos de código y capturas de pantalla en español]",
-        immediateActions_en: "### Immediate Actions\nImmediately implement parameterized queries (prepared statements) in the vulnerable forms to prevent SQL injection. Review logs for signs of past exploitation.",
-        immediateActions_es: "### Acciones Inmediatas\nImplementar inmediatamente consultas parametrizadas (prepared statements) en los formularios vulnerables para prevenir la inyección de SQL. Revisar los registros en busca de signos de explotación pasada.",
+        immediateActions_en: "### Immediate Actions\n- Implement parameterized queries (prepared statements) in the vulnerable forms to prevent SQL injection.\n- Review logs for signs of past exploitation.",
+        immediateActions_es: "### Acciones Inmediatas\n- Implementar inmediatamente consultas parametrizadas (prepared statements) en los formularios vulnerables para prevenir la inyección de SQL.\n- Revisar los registros en busca de signos de explotación pasada.",
     },
     {
         id: "vuln-web-002",
@@ -63,29 +65,33 @@ Realizar capacitaciones de seguridad periódicas para los desarrolladores sobre 
         recommendations_en: `### Recommendations
 
 #### Short-Term Recommendations
-Apply context-aware output encoding to all user-supplied data before it is rendered in the browser. For example, use HTML entity encoding for data placed in HTML context, and JavaScript encoding for data in script contexts.
+- Apply context-aware output encoding to all user-supplied data before it is rendered in the browser. For example, use HTML entity encoding for data placed in HTML context, and JavaScript encoding for data in script contexts.
 
 #### Medium-Term Recommendations
-Use modern web frameworks (like React, Angular, Vue) that have built-in protections against XSS. Avoid using dangerous functions like \`innerHTML\`.
+- Use modern web frameworks (like React, Angular, Vue) that have built-in protections against XSS.
+- Avoid using dangerous functions like \`innerHTML\`.
 
 #### Long-Term Recommendations
-Implement a security-focused design pattern where untrusted data is never mixed with executable code. Train developers to understand the different contexts of XSS and how to mitigate them.`,
+- Implement a security-focused design pattern where untrusted data is never mixed with executable code.
+- Train developers to understand the different contexts of XSS and how to mitigate them.`,
         recommendations_es: `### Recomendaciones
 
 #### Recomendaciones a Corto Plazo
-Aplicar codificación de salida sensible al contexto a todos los datos proporcionados por el usuario antes de que se rendericen en el navegador. Por ejemplo, usar codificación de entidades HTML para datos en contexto HTML, y codificación de JavaScript para datos en contextos de script.
+- Aplicar codificación de salida sensible al contexto a todos los datos proporcionados por el usuario antes de que se rendericen en el navegador. Por ejemplo, usar codificación de entidades HTML para datos en contexto HTML, y codificación de JavaScript para datos en contextos de script.
 
 #### Recomendaciones a Medio Plazo
-Utilizar frameworks web modernos (como React, Angular, Vue) que tengan protecciones incorporadas contra XSS. Evitar el uso de funciones peligrosas como \`innerHTML\`.
+- Utilizar frameworks web modernos (como React, Angular, Vue) que tengan protecciones incorporadas contra XSS.
+- Evitar el uso de funciones peligrosas como \`innerHTML\`.
 
 #### Recomendaciones a Largo Plazo
-Implementar un patrón de diseño centrado en la seguridad donde los datos no confiables nunca se mezclen con código ejecutable. Capacitar a los desarrolladores para que comprendan los diferentes contextos de XSS y cómo mitigarlos.`,
+- Implementar un patrón de diseño centrado en la seguridad donde los datos no confiables nunca se mezclen con código ejecutable.
+- Capacitar a los desarrolladores para que comprendan los diferentes contextos de XSS y cómo mitigarlos.`,
         affectedComponents_en: "### Affected Components\n- [TODO: List affected components, URLs, parameters, etc.]",
         details_en: "### Proof of Concept\n[TODO: Provide a detailed PoC, including steps, code snippets, and screenshots in English]",
         affectedComponents_es: "### Componentes Afectados\n- [TODO: Listar componentes afectados, URLs, parámetros, etc.]",
         details_es: "### Prueba de Concepto\n[TODO: Proporcionar una PoC detallada, incluyendo pasos, fragmentos de código y capturas de pantalla en español]",
-        immediateActions_en: "### Immediate Actions\nImmediately apply context-aware output encoding on the vulnerable fields to prevent script execution. Sanitize existing data to remove any stored malicious payloads.",
-        immediateActions_es: "### Acciones Inmediatas\nAplicar inmediatamente codificación de salida sensible al contexto en los campos vulnerables para prevenir la ejecución de scripts. Sanear los datos existentes para eliminar cualquier carga maliciosa almacenada.",
+        immediateActions_en: "### Immediate Actions\n- Apply context-aware output encoding on the vulnerable fields to prevent script execution.\n- Sanitize existing data to remove any stored malicious payloads.",
+        immediateActions_es: "### Acciones Inmediatas\n- Aplicar inmediatamente codificación de salida sensible al contexto en los campos vulnerables para prevenir la ejecución de scripts.\n- Sanear los datos existentes para eliminar cualquier carga maliciosa almacenada.",
     },
     {
         id: "vuln-web-003",
@@ -105,29 +111,35 @@ Implementar un patrón de diseño centrado en la seguridad donde los datos no co
         recommendations_en: `### Recommendations
 
 #### Short-Term Recommendations
-Enforce strong password policies and implement rate limiting and account lockout mechanisms on login attempts. Ensure session tokens are invalidated on the server-side upon logout.
+- Enforce strong password policies and implement rate limiting and account lockout mechanisms on login attempts.
+- Ensure session tokens are invalidated on the server-side upon logout.
 
 #### Medium-Term Recommendations
-Implement Multi-Factor Authentication (MFA) for all users, especially for administrative accounts. Use a centralized and standardized session management mechanism.
+- Implement Multi-Factor Authentication (MFA) for all users, especially for administrative accounts.
+- Use a centralized and standardized session management mechanism.
 
 #### Long-Term Recommendations
-Conduct a thorough review of the entire authentication and session management lifecycle. Use industry-standard frameworks and avoid creating custom authentication schemes.`,
+- Conduct a thorough review of the entire authentication and session management lifecycle.
+- Use industry-standard frameworks and avoid creating custom authentication schemes.`,
         recommendations_es: `### Recomendaciones
 
 #### Recomendaciones a Corto Plazo
-Forzar políticas de contraseñas seguras e implementar limitación de velocidad y mecanismos de bloqueo de cuentas en los intentos de inicio de sesión. Asegurarse de que los tokens de sesión se invaliden en el lado del servidor al cerrar la sesión.
+- Forzar políticas de contraseñas seguras e implementar limitación de velocidad y mecanismos de bloqueo de cuentas en los intentos de inicio de sesión.
+- Asegurarse de que los tokens de sesión se invaliden en el lado del servidor al cerrar la sesión.
 
 #### Recomendaciones a Medio Plazo
-Implementar la autenticación multifactor (MFA) para todos los usuarios, especialmente para las cuentas administrativas. Utilizar un mecanismo de gestión de sesiones centralizado y estandarizado.
+- Implementar la autenticación multifactor (MFA) para todos los usuarios, especialmente para las cuentas administrativas.
+- Utilizar un mecanismo de gestión de sesiones centralizado y estandarizado.
 
 #### Recomendaciones a Largo Plazo
-Realizar una revisión exhaustiva de todo el ciclo de vida de la autenticación y la gestión de sesiones. Utilizar frameworks estándar de la industria y evitar la creación de esquemas de autenticación personalizados.`,
+- Realizar una revisión exhaustiva de todo el ciclo de vida de la autenticación y la gestión de sesiones.
+- Utilizar frameworks estándar de la industria y evitar la creación de esquemas de autenticación personalizados.`,
         affectedComponents_en: "### Affected Components\n- [TODO: Specify the affected login forms, API endpoints, or session management components.]",
         details_en: "### Proof of Concept\n[TODO: Provide a detailed PoC, demonstrating credential stuffing, session hijacking, or password recovery bypass.]",
         affectedComponents_es: "### Componentes Afectados\n- [TODO: Especificar los formularios de inicio de sesión, endpoints de API o componentes de gestión de sesión afectados.]",
         details_es: "### Prueba de Concepto\n[TODO: Proporcionar una PoC detallada, demostrando el relleno de credenciales, el secuestro de sesión o el bypass de la recuperación de contraseña.]",
-        immediateActions_en: "### Immediate Actions\nForce a logout of all users to invalidate all existing session tokens. Implement rate limiting on the login page.",
-        immediateActions_es: "### Acciones Inmediatas\nForzar el cierre de sesión de todos los usuarios para invalidar todos los tokens de sesión existentes. Implementar limitación de velocidad en la página de inicio de sesión.",
+        immediateActions_en: "### Immediate Actions\n- Force a logout of all users to invalidate all existing session tokens.\n- Implement rate limiting on the login page.",
+        immediateActions_es: "### Acciones Inmediatas\n- Forzar el cierre de sesión de todos los usuarios para invalidar todos los tokens de sesión existentes.\n- Implementar limitación de velocidad en la página de inicio de sesión.",
     },
     {
         id: "vuln-web-004",
@@ -147,29 +159,37 @@ Realizar una revisión exhaustiva de todo el ciclo de vida de la autenticación 
         recommendations_en: `### Recommendations
 
 #### Short-Term Recommendations
-Identify all sensitive data and apply strong encryption both at rest and in transit (e.g., using TLS 1.2+). Disable caching for responses that contain sensitive data.
+- Identify all sensitive data and apply strong encryption both at rest and in transit (e.g., using TLS 1.2+).
+- Disable caching for responses that contain sensitive data.
 
 #### Medium-Term Recommendations
-Implement a data classification policy. Use strong, industry-standard encryption algorithms and protocols. Ensure proper key management and rotation.
+- Implement a data classification policy.
+- Use strong, industry-standard encryption algorithms and protocols.
+- Ensure proper key management and rotation.
 
 #### Long-Term Recommendations
-Minimize the collection and storage of sensitive data. Conduct regular data discovery and classification exercises to ensure no sensitive data is being stored improperly.`,
+- Minimize the collection and storage of sensitive data.
+- Conduct regular data discovery and classification exercises to ensure no sensitive data is being stored improperly.`,
         recommendations_es: `### Recomendaciones
 
 #### Recomendaciones a Corto Plazo
-Identificar todos los datos sensibles y aplicar un cifrado fuerte tanto en reposo como en tránsito (p. ej., usando TLS 1.2+). Deshabilitar el almacenamiento en caché para las responses que contienen datos sensibles.
+- Identificar todos los datos sensibles y aplicar un cifrado fuerte tanto en reposo como en tránsito (p. ej., usando TLS 1.2+).
+- Deshabilitar el almacenamiento en caché para las responses que contienen datos sensibles.
 
 #### Recomendaciones a Medio Plazo
-Implementar una política de clasificación de datos. Utilizar algoritmos y protocolos de cifrado fuertes y estándar de la industria. Asegurar una gestión y rotación de claves adecuadas.
+- Implementar una política de clasificación de datos.
+- Utilizar algoritmos y protocolos de cifrado fuertes y estándar de la industria.
+- Asegurar una gestión y rotación de claves adecuadas.
 
 #### Recomendaciones a Largo Plazo
-Minimizar la recopilación y el almacenamiento de datos sensibles. Realizar ejercicios regulares de descubrimiento y clasificación de datos para garantizar que no se almacenen datos sensibles de forma incorrecta.`,
+- Minimizar la recopilación y el almacenamiento de datos sensibles.
+- Realizar ejercicios regulares de descubrimiento y clasificación de datos para garantizar que no se almacenen datos sensibles de forma incorrecta.`,
         affectedComponents_en: "### Affected Components\n- [TODO: Specify where sensitive data is stored or transmitted insecurely.]",
         details_en: "### Proof of Concept\n[TODO: Provide evidence of the exposed data, e.g., screenshots of plaintext passwords in the database or unencrypted traffic.]",
         affectedComponents_es: "### Componentes Afectados\n- [TODO: Especificar dónde se almacenan o transmiten los datos sensibles de forma insegura.]",
         details_es: "### Prueba de Concepto\n[TODO: Proporcionar evidencia de los datos expuestos, p. ej., capturas de pantalla de contraseñas en texto plano en la base de datos o tráfico sin cifrar.]",
-        immediateActions_en: "### Immediate Actions\nImmediately remove or encrypt the exposed sensitive data. Force password resets if credentials were exposed.",
-        immediateActions_es: "### Acciones Inmediatas\nEliminar o cifrar inmediatamente los datos sensibles expuestos. Forzar el restablecimiento de contraseñas si se expusieron credenciales.",
+        immediateActions_en: "### Immediate Actions\n- Immediately remove or encrypt the exposed sensitive data.\n- Force password resets if credentials were exposed.",
+        immediateActions_es: "### Acciones Inmediatas\n- Eliminar o cifrar inmediatamente los datos sensibles expuestos.\n- Forzar el restablecimiento de contraseñas si se expusieron credenciales.",
     },
     {
         id: "vuln-web-005",
@@ -189,29 +209,33 @@ Minimizar la recopilación y el almacenamiento de datos sensibles. Realizar ejer
         recommendations_en: `### Recommendations
 
 #### Short-Term Recommendations
-Disable DTDs (Document Type Definitions) and external entities in all XML parsers in the application. This is the most effective and simplest way to prevent XXE.
+- Disable DTDs (Document Type Definitions) and external entities in all XML parsers in the application. This is the most effective and simplest way to prevent XXE.
 
 #### Medium-Term Recommendations
-Upgrade XML processors and libraries to their latest versions. Use less complex data formats like JSON where possible.
+- Upgrade XML processors and libraries to their latest versions.
+- Use less complex data formats like JSON where possible.
 
 #### Long-Term Recommendations
-Implement server-side input validation and filtering to prevent hostile data within XML documents. Use a Web Application Firewall (WAF) with rules to detect and block XXE attacks.`,
+- Implement server-side input validation and filtering to prevent hostile data within XML documents.
+- Use a Web Application Firewall (WAF) with rules to detect and block XXE attacks.`,
         recommendations_es: `### Recomendaciones
 
 #### Recomendaciones a Corto Plazo
-Deshabilitar los DTDs (Definiciones de Tipo de Documento) y las entidades externas en todos los analizadores XML de la aplicación. Esta es la forma más efectiva y sencilla de prevenir XXE.
+- Deshabilitar los DTDs (Definiciones de Tipo de Documento) y las entidades externas en todos los analizadores XML de la aplicación. Esta es la forma más efectiva y sencilla de prevenir XXE.
 
 #### Recomendaciones a Medio Plazo
-Actualizar los procesadores y bibliotecas XML a sus últimas versiones. Usar formatos de datos menos complejos como JSON cuando sea posible.
+- Actualizar los procesadores y bibliotecas XML a sus últimas versiones.
+- Usar formatos de datos menos complejos como JSON cuando sea posible.
 
 #### Recomendaciones a Largo Plazo
-Implementar validación y filtrado de entradas del lado del servidor para evitar datos hostiles dentro de los documentos XML. Usar un Web Application Firewall (WAF) con reglas para detectar y bloquear ataques XXE.`,
+- Implementar validación y filtrado de entradas del lado del servidor para evitar datos hostiles dentro de los documentos XML.
+- Usar un Web Application Firewall (WAF) con reglas para detectar y bloquear ataques XXE.`,
         affectedComponents_en: "### Affected Components\n- [TODO: Specify the functionality that processes XML input, e.g., file upload features.]",
         details_en: "### Proof of Concept\n[TODO: Provide a malicious XML file and show the resulting information disclosure or DoS.]",
         affectedComponents_es: "### Componentes Afectados\n- [TODO: Especificar la funcionalidad que procesa entradas XML, p. ej., funciones de carga de archivos.]",
         details_es: "### Prueba de Concepto\n[TODO: Proporcionar un archivo XML malicioso y mostrar la divulgación de información o el DoS resultante.]",
-        immediateActions_en: "### Immediate Actions\nImmediately disable DTDs and external entity processing in all XML parsers.",
-        immediateActions_es: "### Acciones Inmediatas\nDeshabilitar inmediatamente los DTDs y el procesamiento de entidades externas en todos los analizadores XML.",
+        immediateActions_en: "### Immediate Actions\n- Immediately disable DTDs and external entity processing in all XML parsers.",
+        immediateActions_es: "### Acciones Inmediatas\n- Deshabilitar inmediatamente los DTDs y el procesamiento de entidades externas en todos los analizadores XML.",
     },
     {
         id: "vuln-web-006",
@@ -231,29 +255,35 @@ Implementar validación y filtrado de entradas del lado del servidor para evitar
         recommendations_en: `### Recommendations
 
 #### Short-Term Recommendations
-Review and enforce access control on the server-side for every request. Use role-based access control (RBAC) mechanisms. Deny by default.
+- Review and enforce access control on the server-side for every request.
+- Use role-based access control (RBAC) mechanisms. Deny by default.
 
 #### Medium-Term Recommendations
-Implement a centralized access control mechanism that is used by all components of the application. Log access control failures and alert administrators.
+- Implement a centralized access control mechanism that is used by all components of the application.
+- Log access control failures and alert administrators.
 
 #### Long-Term Recommendations
-Conduct a full review of the access control logic. Implement the principle of least privilege, where users are only granted the minimum permissions necessary.`,
+- Conduct a full review of the access control logic.
+- Implement the principle of least privilege, where users are only granted the minimum permissions necessary.`,
         recommendations_es: `### Recomendaciones
 
 #### Recomendaciones a Corto Plazo
-Revisar y aplicar el control de acceso en el lado del servidor para cada solicitud. Utilizar mecanismos de control de acceso basados en roles (RBAC). Denegar por defecto.
+- Revisar y aplicar el control de acceso en el lado del servidor para cada solicitud.
+- Utilizar mecanismos de control de acceso basados en roles (RBAC). Denegar por defecto.
 
 #### Recomendaciones a Medio Plazo
-Implementar un mecanismo de control de acceso centralizado que sea utilizado por todos los componentes de la aplicación. Registrar las fallas de control de acceso y alertar a los administradores.
+- Implementar un mecanismo de control de acceso centralizado que sea utilizado por todos los componentes de la aplicación.
+- Registrar las fallas de control de acceso y alertar a los administradores.
 
 #### Recomendaciones a Largo Plazo
-Realizar una revisión completa de la lógica de control de acceso. Implementar el principio de privilegio mínimo, donde a los usuarios solo se les otorgan los permisos mínimos necesarios.`,
+- Realizar una revisión completa de la lógica de control de acceso.
+- Implementar el principio de privilegio mínimo, donde a los usuarios solo se les otorgan los permisos mínimos necesarios.`,
         affectedComponents_en: "### Affected Components\n- [TODO: Specify the functions or API endpoints with broken access control.]",
         details_en: "### Proof of Concept\n[TODO: Provide steps to reproduce, showing how a low-privileged user can access high-privilege resources.]",
         affectedComponents_es: "### Componentes Afectados\n- [TODO: Especificar las funciones o endpoints de API con control de acceso roto.]",
         details_es: "### Prueba de Concepto\n[TODO: Proporcionar los pasos para reproducir, mostrando cómo un usuario con pocos privilegios puede acceder a recursos de altos privilegios.]",
-        immediateActions_en: "### Immediate Actions\nReview and implement server-side authorization checks on all vulnerable endpoints.",
-        immediateActions_es: "### Acciones Inmediatas\nRevisar e implementar comprobaciones de autorización del lado del servidor en todos los puntos finales vulnerables.",
+        immediateActions_en: "### Immediate Actions\n- Review and implement server-side authorization checks on all vulnerable endpoints.",
+        immediateActions_es: "### Acciones Inmediatas\n- Revisar e implementar comprobaciones de autorización del lado del servidor en todos los puntos finales vulnerables.",
     },
     {
         id: "vuln-web-007",
@@ -273,29 +303,39 @@ Realizar una revisión completa de la lógica de control de acceso. Implementar 
         recommendations_en: `### Recommendations
 
 #### Short-Term Recommendations
-Review and harden configurations for all parts of the application stack. Implement security headers like Content Security Policy (CSP). Disable unnecessary features and services.
+- Review and harden configurations for all parts of the application stack.
+- Implement security headers like Content Security Policy (CSP).
+- Disable unnecessary features and services.
 
 #### Medium-Term Recommendations
-Develop a repeatable hardening process that is fast and easy to deploy. Automate the process of verifying configurations in different environments.
+- Develop a repeatable hardening process that is fast and easy to deploy.
+- Automate the process of verifying configurations in different environments.
 
 #### Long-Term Recommendations
-Implement a secure configuration lifecycle. Regularly scan and audit configurations for misconfigurations. Use automated tools to enforce secure baselines.`,
+- Implement a secure configuration lifecycle.
+- Regularly scan and audit configurations for misconfigurations.
+- Use automated tools to enforce secure baselines.`,
         recommendations_es: `### Recomendaciones
 
 #### Recomendaciones a Corto Plazo
-Revisar y fortalecer las configuraciones para todas las partes de la pila de aplicaciones. Implementar encabezados de seguridad como la Política de Seguridad de Contenido (CSP). Deshabilitar funciones y servicios innecesarios.
+- Revisar y fortalecer las configuraciones para todas las partes de la pila de aplicaciones.
+- Implementar encabezados de seguridad como la Política de Seguridad de Contenido (CSP).
+- Deshabilitar funciones y servicios innecesarios.
 
 #### Recomendaciones a Medio Plazo
-Desarrollar un proceso de fortalecimiento repetible que sea rápido y fácil de implementar. Automatizar el proceso de verificación de configuraciones en diferentes entornos.
+- Desarrollar un proceso de fortalecimiento repetible que sea rápido y fácil de implementar.
+- Automatizar el proceso de verificación de configuraciones en diferentes entornos.
 
 #### Recomendaciones a Largo Plazo
-Implementar un ciclo de vida de configuración seguro. Escanear y auditar regularmente las configuraciones en busca de errores. Usar herramientas automatizadas para hacer cumplir las líneas de base seguras.`,
+- Implementar un ciclo de vida de configuración seguro.
+- Escanear y auditar regularmente las configuraciones en busca de errores.
+- Usar herramientas automatizadas para hacer cumplir las líneas de base seguras.`,
         affectedComponents_en: "### Affected Components\n- [TODO: List the misconfigured components, services, or servers.]",
         details_en: "### Proof of Concept\n[TODO: Provide evidence of the misconfiguration, e.g., screenshot of directory listing, default admin page, or verbose error message.]",
         affectedComponents_es: "### Componentes Afectados\n- [TODO: Listar los componentes, servicios o servidores mal configurados.]",
         details_es: "### Prueba de Concepto\n[TODO: Proporcionar evidencia de la configuración incorrecta, p. ej., captura de pantalla del listado de directorios, página de administración predeterminada o mensaje de error detallado.]",
-        immediateActions_en: "### Immediate Actions\nImmediately correct the specific misconfiguration, such as disabling directory listing, changing default passwords, or restricting permissions.",
-        immediateActions_es: "### Acciones Inmediatas\nCorregir inmediatamente la configuración incorrecta específica, como deshabilitar el listado de directorios, cambiar las contraseñas predeterminadas o restringir los permisos.",
+        immediateActions_en: "### Immediate Actions\n- Immediately correct the specific misconfiguration, such as disabling directory listing, changing default passwords, or restricting permissions.",
+        immediateActions_es: "### Acciones Inmediatas\n- Corregir inmediatamente la configuración incorrecta específica, como deshabilitar el listado de directorios, cambiar las contraseñas predeterminadas o restringir los permisos.",
     },
     {
         id: "vuln-web-008",
@@ -315,29 +355,33 @@ Implementar un ciclo de vida de configuración seguro. Escanear y auditar regula
         recommendations_en: `### Recommendations
 
 #### Short-Term Recommendations
-Implement anti-CSRF tokens (synchronizer token pattern) for all state-changing requests. Verify the \`Origin\` or \`Referer\` header.
+- Implement anti-CSRF tokens (synchronizer token pattern) for all state-changing requests.
+- Verify the \`Origin\` or \`Referer\` header.
 
 #### Medium-Term Recommendations
-Use the SameSite cookie attribute, setting it to \`Strict\` or \`Lax\`.
+- Use the SameSite cookie attribute, setting it to \`Strict\` or \`Lax\`.
 
 #### Long-Term Recommendations
-Ensure the application framework has built-in CSRF protection and that it is enabled and configured correctly. For APIs, consider using token-based authentication (e.g., JWT) instead of cookies.`,
+- Ensure the application framework has built-in CSRF protection and that it is enabled and configured correctly.
+- For APIs, consider using token-based authentication (e.g., JWT) instead of cookies.`,
         recommendations_es: `### Recomendaciones
 
 #### Recomendaciones a Corto Plazo
-Implementar tokens anti-CSRF (patrón de token sincronizador) para todas las solicitudes que cambian el estado. Verificar el encabezado \`Origin\` o \`Referer\`.
+- Implementar tokens anti-CSRF (patrón de token sincronizador) para todas las solicitudes que cambian el estado.
+- Verificar el encabezado \`Origin\` o \`Referer\`.
 
 #### Recomendaciones a Medio Plazo
-Usar el atributo de cookie SameSite, configurándolo en \`Strict\` o \`Lax\`.
+- Usar el atributo de cookie SameSite, configurándolo en \`Strict\` o \`Lax\`.
 
 #### Recomendaciones a Largo Plazo
-Asegurarse de que el framework de la aplicación tenga protección CSRF incorporada y que esté habilitada y configurada correctamente. Para las API, considerar el uso de autenticación basada en tokens (p. ej., JWT) en lugar de cookies.`,
+- Asegurarse de que el framework de la aplicación tenga protección CSRF incorporada y que esté habilitada y configurada correctamente.
+- Para las API, considerar el uso de autenticación basada en tokens (p. ej., JWT) en lugar de cookies.`,
         affectedComponents_en: "### Affected Components\n- [TODO: List the forms or actions vulnerable to CSRF.]",
         details_en: "### Proof of Concept\n[TODO: Provide a CSRF HTML PoC file and demonstrate the unauthorized action being performed.]",
         affectedComponents_es: "### Componentes Afectados\n- [TODO: Listar los formularios o acciones vulnerables a CSRF.]",
         details_es: "### Prueba de Concepto\n[TODO: Proporcionar un archivo HTML de PoC de CSRF y demostrar que se realiza la acción no autorizada.]",
-        immediateActions_en: "### Immediate Actions\nImplement anti-CSRF tokens on all state-changing forms and API endpoints.",
-        immediateActions_es: "### Acciones Inmediatas\nImplementar tokens anti-CSRF en todos los formularios y puntos finales de API que cambian el estado.",
+        immediateActions_en: "### Immediate Actions\n- Implement anti-CSRF tokens on all state-changing forms and API endpoints.",
+        immediateActions_es: "### Acciones Inmediatas\n- Implementar tokens anti-CSRF en todos los formularios y puntos finales de API que cambian el estado.",
     },
     {
         id: "vuln-web-009",
@@ -357,29 +401,33 @@ Asegurarse de que el framework de la aplicación tenga protección CSRF incorpor
         recommendations_en: `### Recommendations
 
 #### Short-Term Recommendations
-Avoid deserializing data from untrusted sources. If necessary, implement strict type checking and validation before deserialization.
+- Avoid deserializing data from untrusted sources.
+- If necessary, implement strict type checking and validation before deserialization.
 
 #### Medium-Term Recommendations
-Use data formats that are not vulnerable to deserialization attacks, such as JSON, and avoid using complex native serialization formats.
+- Use data formats that are not vulnerable to deserialization attacks, such as JSON, and avoid using complex native serialization formats.
 
 #### Long-Term Recommendations
-Integrate integrity checks like digital signatures on any serialized data to prevent tampering. Isolate the deserialization code in a low-privilege environment.`,
+- Integrate integrity checks like digital signatures on any serialized data to prevent tampering.
+- Isolate the deserialization code in a low-privilege environment.`,
         recommendations_es: `### Recomendaciones
 
 #### Recomendaciones a Corto Plazo
-Evitar deserializar datos de fuentes no confiables. Si es necesario, implementar una comprobación y validación de tipos estricta antes de la deserialización.
+- Evitar deserializar datos de fuentes no confiables.
+- Si es necesario, implementar una comprobación y validación de tipos estricta antes de la deserialización.
 
 #### Recomendaciones a Medio Plazo
-Utilizar formatos de datos que no sean vulnerables a ataques de deserialización, como JSON, y evitar el uso de formatos de serialización nativos complejos.
+- Utilizar formatos de datos que no sean vulnerables a ataques de deserialización, como JSON, y evitar el uso de formatos de serialización nativos complejos.
 
 #### Recomendaciones a Largo Plazo
-Integrar comprobaciones de integridad como firmas digitales en cualquier dato serializado para evitar la manipulación. Aislar el código de deserialización en un entorno de bajos privilegios.`,
+- Integrar comprobaciones de integridad como firmas digitales en cualquier dato serializado para evitar la manipulación.
+- Aislar el código de deserialización en un entorno de bajos privilegios.`,
         affectedComponents_en: "### Affected Components\n- [TODO: Specify the function or parameter that accepts serialized data.]",
         details_en: "### Proof of Concept\n[TODO: Provide a serialized payload that, when processed, leads to code execution or another malicious outcome.]",
         affectedComponents_es: "### Componentes Afectados\n- [TODO: Especificar la función o el parámetro que acepta datos serializados.]",
         details_es: "### Prueba de Concepto\n[TODO: Proporcionar una carga útil serializada que, cuando se procesa, conduce a la ejecución de código u otro resultado malicioso.]",
-        immediateActions_en: "### Immediate Actions\nDisable or restrict the functionality that deserializes user-supplied data. If that's not possible, implement strict validation of the incoming data.",
-        immediateActions_es: "### Acciones Inmediatas\nDeshabilitar o restringir la funcionalidad que deserializa los datos proporcionados por el usuario. Si no es posible, implementar una validación estricta de los datos entrantes.",
+        immediateActions_en: "### Immediate Actions\n- Disable or restrict the functionality that deserializes user-supplied data.\n- If that's not possible, implement strict validation of the incoming data.",
+        immediateActions_es: "### Acciones Inmediatas\n- Deshabilitar o restringir la funcionalidad que deserializa los datos proporcionados por el usuario.\n- Si no es posible, implementar una validación estricta de los datos entrantes.",
     },
     {
         id: "vuln-web-010",
@@ -399,29 +447,31 @@ Integrar comprobaciones de integridad como firmas digitales en cualquier dato se
         recommendations_en: `### Recommendations
 
 #### Short-Term Recommendations
-Implement a strict allow-list of domains and protocols that the application is allowed to request. Deny all other requests.
+- Implement a strict allow-list of domains and protocols that the application is allowed to request. Deny all other requests.
 
 #### Medium-Term Recommendations
-Validate all user-supplied input to ensure it conforms to the expected format and values. Do not send raw responses from the server back to the client.
+- Validate all user-supplied input to ensure it conforms to the expected format and values.
+- Do not send raw responses from the server back to the client.
 
 #### Long-Term Recommendations
-Isolate the functionality that makes external requests in a separate, low-privilege network environment. This limits the impact of a potential SSRF vulnerability.`,
+- Isolate the functionality that makes external requests in a separate, low-privilege network environment. This limits the impact of a potential SSRF vulnerability.`,
         recommendations_es: `### Recomendaciones
 
 #### Recomendaciones a Corto Plazo
-Implementar una lista blanca estricta de dominios y protocolos que la aplicación tiene permitido solicitar. Denegar todas las demás solicitudes.
+- Implementar una lista blanca estricta de dominios y protocolos que la aplicación tiene permitido solicitar. Denegar todas las demás solicitudes.
 
 #### Recomendaciones a Medio Plazo
-Validar todas las entradas proporcionadas por el usuario para asegurarse de que se ajustan al formato y los valores esperados. No enviar responses sin procesar del servidor al cliente.
+- Validar todas las entradas proporcionadas por el usuario para asegurarse de que se ajustan al formato y los valores esperados.
+- No enviar responses sin procesar del servidor al cliente.
 
 #### Recomendaciones a Largo Plazo
-Aislar la funcionalidad que realiza solicitudes externas en un entorno de red separado y de bajos privilegios. Esto limita el impacto de una posible vulnerabilidad SSRF.`,
+- Aislar la funcionalidad que realiza solicitudes externas en un entorno de red separado y de bajos privilegios. Esto limita el impacto de una posible vulnerabilidad SSRF.`,
         affectedComponents_en: "### Affected Components\n- [TODO: Specify the functionality that makes server-side requests based on user input, e.g., a URL preview generator.]",
         details_en: "### Proof of Concept\n[TODO: Provide a payload that demonstrates making a request to an internal or restricted resource, and show the server's response.]",
         affectedComponents_es: "### Componentes Afectados\n- [TODO: Especificar la funcionalidad que realiza solicitudes del lado del servidor basadas en la entrada del usuario, p. ej., un generador de vista previa de URL.]",
         details_es: "### Prueba de Concepto\n[TODO: Proporcionar una carga útil que demuestre cómo realizar una solicitud a un recurso interno o restringido y mostrar la respuesta del servidor.]",
-        immediateActions_en: "### Immediate Actions\nImplement a strict allow-list for domains that can be requested by the server. Block all internal and metadata IP addresses.",
-        immediateActions_es: "### Acciones Inmediatas\nImplementar una lista blanca estricta para los dominios que el servidor puede solicitar. Bloquear todas las direcciones IP internas y de metadatos.",
+        immediateActions_en: "### Immediate Actions\n- Implement a strict allow-list for domains that can be requested by the server.\n- Block all internal and metadata IP addresses.",
+        immediateActions_es: "### Acciones Inmediatas\n- Implementar una lista blanca estricta para los dominios que el servidor puede solicitar.\n- Bloquear todas las direcciones IP internas y de metadatos.",
     },
     {
         id: "vuln-web-011",
@@ -441,29 +491,29 @@ Aislar la funcionalidad que realiza solicitudes externas en un entorno de red se
         recommendations_en: `### Recommendations
 
 #### Short-Term Recommendations
-Enforce strict, default-deny access control for all endpoints, regardless of the HTTP verb used.
+- Enforce strict, default-deny access control for all endpoints, regardless of the HTTP verb used.
 
 #### Medium-Term Recommendations
-Use a framework that correctly maps actions to specific HTTP verbs and enforces this mapping.
+- Use a framework that correctly maps actions to specific HTTP verbs and enforces this mapping.
 
 #### Long-Term Recommendations
-Implement a centralized and robust access control mechanism that is verb-agnostic.`,
+- Implement a centralized and robust access control mechanism that is verb-agnostic.`,
         recommendations_es: `### Recomendaciones
 
 #### Recomendaciones a Corto Plazo
-Aplicar un control de acceso estricto y de denegación por defecto para todos los puntos de conexión, independientemente del verbo HTTP utilizado.
+- Aplicar un control de acceso estricto y de denegación por defecto para todos los puntos de conexión, independientemente del verbo HTTP utilizado.
 
 #### Recomendaciones a Medio Plazo
-Usar un framework que mapee correctamente las acciones a verbos HTTP específicos y haga cumplir este mapeo.
+- Usar un framework que mapee correctamente las acciones a verbos HTTP específicos y haga cumplir este mapeo.
 
 #### Recomendaciones a Largo Plazo
-Implementar un mecanismo de control de acceso centralizado y robusto que sea independiente del verbo.`,
+- Implementar un mecanismo de control de acceso centralizado y robusto que sea independiente del verbo.`,
         affectedComponents_en: "### Affected Components\n- [TODO: List endpoints vulnerable to verb tampering.]",
         details_en: "### Proof of Concept\n[TODO: Show a request with a tampered verb (e.g., GET instead of POST) that successfully bypasses access controls.]",
         affectedComponents_es: "### Componentes Afectados\n- [TODO: Listar los puntos de conexión vulnerables a la manipulación de verbos.]",
         details_es: "### Prueba de Concepto\n[TODO: Mostrar una solicitud con un verbo manipulado (p. ej., GET en lugar de POST) que elude con éxito los controles de acceso.]",
-        immediateActions_en: "### Immediate Actions\nReview the server-side code to ensure authorization checks are applied consistently across all HTTP verbs for a given endpoint.",
-        immediateActions_es: "### Acciones Inmediatas\nRevisar el código del lado del servidor para garantizar que las comprobaciones de autorización se apliquen de manera consistente a todos los verbos HTTP para un punto final determinado.",
+        immediateActions_en: "### Immediate Actions\n- Review the server-side code to ensure authorization checks are applied consistently across all HTTP verbs for a given endpoint.",
+        immediateActions_es: "### Acciones Inmediatas\n- Revisar el código del lado del servidor para garantizar que las comprobaciones de autorización se apliquen de manera consistente a todos los verbos HTTP para un punto final determinado.",
     },
     {
         id: "vuln-web-012",
@@ -483,29 +533,31 @@ Implementar un mecanismo de control de acceso centralizado y robusto que sea ind
         recommendations_en: `### Recommendations
 
 #### Short-Term Recommendations
-Validate user input against a strict allow-list of acceptable file names and paths.
+- Validate user input against a strict allow-list of acceptable file names and paths.
 
 #### Medium-Term Recommendations
-Avoid passing user-supplied input to filesystem APIs. If unavoidable, use a mapping to safe, pre-defined file paths.
+- Avoid passing user-supplied input to filesystem APIs.
+- If unavoidable, use a mapping to safe, pre-defined file paths.
 
 #### Long-Term Recommendations
-Run the application in a sandboxed or chrooted environment to limit the impact of a potential LFI.`,
+- Run the application in a sandboxed or chrooted environment to limit the impact of a potential LFI.`,
         recommendations_es: `### Recomendaciones
 
 #### Recomendaciones a Corto Plazo
-Validar la entrada del usuario contra una lista blanca estricta de nombres y rutas de archivo aceptables.
+- Validar la entrada del usuario contra una lista blanca estricta de nombres y rutas de archivo aceptables.
 
 #### Recomendaciones a Medio Plazo
-Evitar pasar la entrada proporcionada por el usuario a las API del sistema de archivos. Si es inevitable, usar un mapeo a rutas de archivo seguras y predefinidas.
+- Evitar pasar la entrada proporcionada por el usuario a las API del sistema de archivos.
+- Si es inevitable, usar un mapeo a rutas de archivo seguras y predefinidas.
 
 #### Recomendaciones a Largo Plazo
-Ejecutar la aplicación en un entorno aislado o chroot para limitar el impacto de un posible LFI.`,
+- Ejecutar la aplicación en un entorno aislado o chroot para limitar el impacto de un posible LFI.`,
         affectedComponents_en: "### Affected Components\n- [TODO: Specify the parameter and URL vulnerable to LFI.]",
         details_en: "### Proof of Concept\n[TODO: Show a request with a payload like `../../../../etc/passwd` and the resulting file content being displayed.]",
         affectedComponents_es: "### Componentes Afectados\n- [TODO: Especificar el parámetro y la URL vulnerables a LFI.]",
         details_es: "### Prueba de Concepto\n[TODO: Mostrar una solicitud con una carga útil como `../../../../etc/passwd` y el contenido del archivo resultante que se muestra.]",
-        immediateActions_en: "### Immediate Actions\nImplement strict input validation on the vulnerable parameter to prevent directory traversal characters.",
-        immediateActions_es: "### Acciones Inmediatas\nImplementar una validación de entrada estricta en el parámetro vulnerable para prevenir los caracteres de salto de directorio.",
+        immediateActions_en: "### Immediate Actions\n- Implement strict input validation on the vulnerable parameter to prevent directory traversal characters.",
+        immediateActions_es: "### Acciones Inmediatas\n- Implementar una validación de entrada estricta en el parámetro vulnerable para prevenir los caracteres de salto de directorio.",
     },
     {
         id: "vuln-web-013",
@@ -525,29 +577,29 @@ Ejecutar la aplicación en un entorno aislado o chroot para limitar el impacto d
         recommendations_en: `### Recommendations
 
 #### Short-Term Recommendations
-Strictly disallow the \`file://\` URI scheme in all functions that make server-side requests.
+- Strictly disallow the \`file://\` URI scheme in all functions that make server-side requests.
 
 #### Medium-Term Recommendations
-Implement a robust URI parser that validates and restricts protocols to an allow-list (e.g., only HTTP and HTTPS).
+- Implement a robust URI parser that validates and restricts protocols to an allow-list (e.g., only HTTP and HTTPS).
 
 #### Long-Term Recommendations
-Run the application with the minimum necessary file system permissions to limit the files it can access.`,
+- Run the application with the minimum necessary file system permissions to limit the files it can access.`,
         recommendations_es: `### Recomendaciones
 
 #### Recomendaciones a Corto Plazo
-Desautorizar estrictamente el esquema URI \`file://\` en todas las funciones que realizan solicitudes del lado del servidor.
+- Desautorizar estrictamente el esquema URI \`file://\` en todas las funciones que realizan solicitudes del lado del servidor.
 
 #### Recomendaciones a Medio Plazo
-Implementar un analizador de URI robusto que valide y restrinja los protocolos a una lista de permitidos (p. ej., solo HTTP y HTTPS).
+- Implementar un analizador de URI robusto que valide y restrinja los protocolos a una lista de permitidos (p. ej., solo HTTP y HTTPS).
 
 #### Recomendaciones a Largo Plazo
-Ejecutar la aplicación con los permisos mínimos necesarios del sistema de archivos para limitar los archivos a los que puede acceder.`,
+- Ejecutar la aplicación con los permisos mínimos necesarios del sistema de archivos para limitar los archivos a los que puede acceder.`,
         affectedComponents_en: "### Affected Components\n- [TODO: Specify the functionality vulnerable to SSRF with file:// scheme.]",
         details_en: "### Proof of Concept\n[TODO: Provide a request using a `file://` payload and show the content of a local file in the response.]",
         affectedComponents_es: "### Componentes Afectados\n- [TODO: Especificar la funcionalidad vulnerable a SSRF con el esquema file://.]",
         details_es: "### Prueba de Concepto\n[TODO: Proporcionar una solicitud utilizando una carga útil `file://` y mostrar el contenido de un archivo local en la respuesta.]",
-        immediateActions_en: "### Immediate Actions\nImmediately block the `file://` scheme in the application's request handler.",
-        immediateActions_es: "### Acciones Inmediatas\nBloquear inmediatamente el esquema `file://` en el manejador de solicitudes de la aplicación.",
+        immediateActions_en: "### Immediate Actions\n- Immediately block the `file://` scheme in the application's request handler.",
+        immediateActions_es: "### Acciones Inmediatas\n- Bloquear inmediatamente el esquema `file://` en el manejador de solicitudes de la aplicación.",
     },
     // --- MOBILE VULNERABILITIES ---
     {
@@ -568,29 +620,35 @@ Ejecutar la aplicación con los permisos mínimos necesarios del sistema de arch
         recommendations_en: `### Recommendations
 
 #### Short-Term Recommendations
-Encrypt all sensitive data before storing it on the device. Use platform-provided secure storage mechanisms like Android's EncryptedSharedPreferences or iOS's Keychain.
+- Encrypt all sensitive data before storing it on the device.
+- Use platform-provided secure storage mechanisms like Android's EncryptedSharedPreferences or iOS's Keychain.
 
 #### Medium-Term Recommendations
-Develop a data classification policy for the mobile app to identify what data is sensitive and requires encryption. Avoid storing sensitive data on the device whenever possible.
+- Develop a data classification policy for the mobile app to identify what data is sensitive and requires encryption.
+- Avoid storing sensitive data on the device whenever possible.
 
 #### Long-Term Recommendations
-Implement a secure data management lifecycle for the mobile app, including secure storage, transmission, and deletion of data. Conduct regular security audits of the app's data storage practices.`,
+- Implement a secure data management lifecycle for the mobile app, including secure storage, transmission, and deletion of data.
+- Conduct regular security audits of the app's data storage practices.`,
         recommendations_es: `### Recomendaciones
 
 #### Recomendaciones a Corto Plazo
-Cifrar todos los datos sensibles antes de almacenarlos en el dispositivo. Utilizar los mecanismos de almacenamiento seguro proporcionados por la plataforma, como EncryptedSharedPreferences de Android o el Llavero (Keychain) de iOS.
+- Cifrar todos los datos sensibles antes de almacenarlos en el dispositivo.
+- Utilizar los mecanismos de almacenamiento seguro proporcionados por la plataforma, como EncryptedSharedPreferences de Android o el Llavero (Keychain) de iOS.
 
 #### Recomendaciones a Medio Plazo
-Desarrollar una política de clasificación de datos para la aplicación móvil para identificar qué datos son sensibles y requieren cifrado. Evitar almacenar datos sensibles en el dispositivo siempre que sea posible.
+- Desarrollar una política de clasificación de datos para la aplicación móvil para identificar qué datos son sensibles y requieren cifrado.
+- Evitar almacenar datos sensibles en el dispositivo siempre que sea posible.
 
 #### Recomendaciones a Largo Plazo
-Implementar un ciclo de vida de gestión de datos seguro para la aplicación móvil, que incluya almacenamiento, transmisión y eliminación seguros de los datos. Realizar auditorías de seguridad periódicas de las prácticas de almacenamiento de datos de la aplicación.`,
+- Implementar un ciclo de vida de gestión de datos seguro para la aplicación móvil, que incluya almacenamiento, transmisión y eliminación seguros de los datos.
+- Realizar auditorías de seguridad periódicas de las prácticas de almacenamiento de datos de la aplicación.`,
         affectedComponents_en: "### Affected Components\n- [TODO: List the files or databases where data is stored insecurely (e.g., SharedPreferences file, SQLite DB).]",
         details_en: "### Proof of Concept\n[TODO: Provide steps to extract the insecurely stored data from a test device (e.g., using ADB or file system explorers).]",
         affectedComponents_es: "### Componentes Afectados\n- [TODO: Listar los archivos o bases de datos donde los datos se almacenan de forma insegura (p. ej., archivo SharedPreferences, BD SQLite).]",
         details_es: "### Prueba de Concepto\n[TODO: Proporcionar los pasos para extraer los datos almacenados de forma insegura de un dispositivo de prueba (p. ej., usando ADB o exploradores de sistema de archivos).]",
-        immediateActions_en: "### Immediate Actions\nImmediately remove sensitive data from insecure storage. If the data must persist, re-implement storage using secure mechanisms like Android's EncryptedSharedPreferences or iOS's Keychain.",
-        immediateActions_es: "### Acciones Inmediatas\nEliminar inmediatamente los datos sensibles del almacenamiento inseguro. Si los datos deben persistir, volver a implementar el almacenamiento utilizando mecanismos seguros como EncryptedSharedPreferences de Android o el Keychain de iOS.",
+        immediateActions_en: "### Immediate Actions\n- Immediately remove sensitive data from insecure storage.\n- If the data must persist, re-implement storage using secure mechanisms like Android's EncryptedSharedPreferences or iOS's Keychain.",
+        immediateActions_es: "### Acciones Inmediatas\n- Eliminar inmediatamente los datos sensibles del almacenamiento inseguro.\n- Si los datos deben persistir, volver a implementar el almacenamiento utilizando mecanismos seguros como EncryptedSharedPreferences de Android o el Keychain de iOS.",
     },
     {
         id: "vuln-mobile-002",
@@ -610,29 +668,31 @@ Implementar un ciclo de vida de gestión de datos seguro para la aplicación mó
         recommendations_en: `### Recommendations
 
 #### Short-Term Recommendations
-Apply the same security best practices to mobile backend APIs as you would for a standard web application. This includes input validation, parameterized queries, and strong access control.
+- Apply the same security best practices to mobile backend APIs as you would for a standard web application. This includes input validation, parameterized queries, and strong access control.
 
 #### Medium-Term Recommendations
-Implement API-specific security measures, such as rate limiting, request throttling, and robust authentication/authorization for all endpoints.
+- Implement API-specific security measures, such as rate limiting, request throttling, and robust authentication/authorization for all endpoints.
 
 #### Long-Term Recommendations
-Design the backend API with a 'zero trust' model, assuming that any request from a mobile client could be malicious. Do not rely on client-side controls for security.`,
+- Design the backend API with a 'zero trust' model, assuming that any request from a mobile client could be malicious.
+- Do not rely on client-side controls for security.`,
         recommendations_es: `### Recomendaciones
 
 #### Recomendaciones a Corto Plazo
-Aplicar las mismas mejores prácticas de seguridad a las API de backend móvil que se aplicarían a una aplicación web estándar. Esto incluye validación de entradas, consultas parametrizadas y un fuerte control de acceso.
+- Aplicar las mismas mejores prácticas de seguridad a las API de backend móvil que se aplicarían a una aplicación web estándar. Esto incluye validación de entradas, consultas parametrizadas y un fuerte control de acceso.
 
 #### Recomendaciones a Medio Plazo
-Implementar medidas de seguridad específicas para la API, como limitación de velocidad, regulación de solicitudes y autenticación/autorización robustas para todos los puntos de conexión.
+- Implementar medidas de seguridad específicas para la API, como limitación de velocidad, regulación de solicitudes y autenticación/autorización robustas para todos los puntos de conexión.
 
 #### Recomendaciones a Largo Plazo
-Diseñar la API de backend con un modelo de 'confianza cero', asumiendo que cualquier solicitud de un cliente móvil puede ser maliciosa. No depender de los controles del lado del cliente para la seguridad.`,
+- Diseñar la API de backend con un modelo de 'confianza cero', asumiendo que cualquier solicitud de un cliente móvil puede ser maliciosa.
+- No depender de los controles del lado del cliente para la seguridad.`,
         affectedComponents_en: "### Affected Components\n- [TODO: List the vulnerable backend API endpoints.]",
         details_en: "### Proof of Concept\n[TODO: Provide the API request and response that demonstrates the server-side vulnerability.]",
         affectedComponents_es: "### Componentes Afectados\n- [TODO: Listar los endpoints de la API de backend vulnerables.]",
         details_es: "### Prueba de Concepto\n[TODO: Proporcionar la solicitud y respuesta de la API que demuestra la vulnerabilidad del lado del servidor.]",
-        immediateActions_en: "### Immediate Actions\nApply server-side validation and authorization checks to all API endpoints, treating all client-side input as untrusted.",
-        immediateActions_es: "### Acciones Inmediatas\nAplicar validación y comprobaciones de autorización del lado del servidor a todos los puntos finales de la API, tratando todas las entradas del lado del cliente como no confiables.",
+        immediateActions_en: "### Immediate Actions\n- Apply server-side validation and authorization checks to all API endpoints, treating all client-side input as untrusted.",
+        immediateActions_es: "### Acciones Inmediatas\n- Aplicar validación y comprobaciones de autorización del lado del servidor a todos los puntos finales de la API, tratando todas las entradas del lado del cliente como no confiables.",
     },
     {
         id: "vuln-mobile-003",
@@ -652,29 +712,35 @@ Diseñar la API de backend con un modelo de 'confianza cero', asumiendo que cual
         recommendations_en: `### Recommendations
 
 #### Short-Term Recommendations
-Ensure that TLS is used for all network communications. Configure the app to only support strong TLS protocols (TLS 1.2, TLS 1.3) and modern cipher suites.
+- Ensure that TLS is used for all network communications.
+- Configure the app to only support strong TLS protocols (TLS 1.2, TLS 1.3) and modern cipher suites.
 
 #### Medium-Term Recommendations
-Implement SSL/TLS certificate pinning to prevent MitM attacks even if the device's trust store is compromised. Disallow the use of self-signed certificates in production builds.
+- Implement SSL/TLS certificate pinning to prevent MitM attacks even if the device's trust store is compromised.
+- Disallow the use of self-signed certificates in production builds.
 
 #### Long-Term Recommendations
-Regularly review and update the list of trusted certificates and cipher suites. Use automated tools to scan the application for insecure network configurations during the development cycle.`,
+- Regularly review and update the list of trusted certificates and cipher suites.
+- Use automated tools to scan the application for insecure network configurations during the development cycle.`,
         recommendations_es: `### Recomendaciones
 
 #### Recomendaciones a Corto Plazo
-Asegurarse de que se utilice TLS para todas las comunicaciones de red. Configurar la aplicación para que solo admita protocolos TLS fuertes (TLS 1.2, TLS 1.3) y conjuntos de cifrado modernos.
+- Asegurarse de que se utilice TLS para todas las comunicaciones de red.
+- Configurar la aplicación para que solo admita protocolos TLS fuertes (TLS 1.2, TLS 1.3) y conjuntos de cifrado modernos.
 
 #### Recomendaciones a Medio Plazo
-Implementar el anclaje de certificados SSL/TLS (certificate pinning) para prevenir ataques MitM incluso si el almacén de confianza del dispositivo está comprometido. No permitir el uso de certificados autofirmados en las compilaciones de producción.
+- Implementar el anclaje de certificados SSL/TLS (certificate pinning) para prevenir ataques MitM incluso si el almacén de confianza del dispositivo está comprometido.
+- No permitir el uso de certificados autofirmados en las compilaciones de producción.
 
 #### Recomendaciones a Largo Plazo
-Revisar y actualizar regularmente la lista de certificados y conjuntos de cifrado de confianza. Utilizar herramientas automatizadas para escanear la aplicación en busca de configuraciones de red inseguras durante el ciclo de desarrollo.`,
+- Revisar y actualizar regularmente la lista de certificados y conjuntos de cifrado de confianza.
+- Utilizar herramientas automatizadas para escanear la aplicación en busca de configuraciones de red inseguras durante el ciclo de desarrollo.`,
         affectedComponents_en: "### Affected Components\n- [TODO: List the network requests or API endpoints using insecure communication.]",
         details_en: "### Proof of Concept\n[TODO: Provide screenshots from a proxy tool (e.g., Burp Suite) showing intercepted plaintext traffic or a successful TLS downgrade attack.]",
         affectedComponents_es: "### Componentes Afectados\n- [TODO: Listar las solicitudes de red o puntos de conexión de API que utilizan comunicación insegura.]",
         details_es: "### Prueba de Concepto\n[TODO: Proporcionar capturas de pantalla de una herramienta de proxy (p. ej., Burp Suite) que muestren tráfico en texto plano interceptado o un ataque de degradación de TLS exitoso.]",
-        immediateActions_en: "### Immediate Actions\nEnforce TLS for all application communications. Disable cleartext traffic in the app's configuration (e.g., Android's `network_security_config.xml`).",
-        immediateActions_es: "### Acciones Inmediatas\nForzar el uso de TLS para todas las comunicaciones de la aplicación. Deshabilitar el tráfico de texto claro en la configuración de la aplicación (p. ej., `network_security_config.xml` en Android).",
+        immediateActions_en: "### Immediate Actions\n- Enforce TLS for all application communications.\n- Disable cleartext traffic in the app's configuration (e.g., Android's `network_security_config.xml`).",
+        immediateActions_es: "### Acciones Inmediatas\n- Forzar el uso de TLS para todas las comunicaciones de la aplicación.\n- Deshabilitar el tráfico de texto claro en la configuración de la aplicación (p. ej., `network_security_config.xml` en Android).",
     },
     {
         id: "vuln-mobile-004",
@@ -694,29 +760,37 @@ Revisar y actualizar regularmente la lista de certificados y conjuntos de cifrad
         recommendations_en: `### Recommendations
 
 #### Short-Term Recommendations
-Remove all logging of sensitive data. Disable keyboard caching for password fields. Clear the clipboard after a user copies sensitive information from the app.
+- Remove all logging of sensitive data.
+- Disable keyboard caching for password fields.
+- Clear the clipboard after a user copies sensitive information from the app.
 
 #### Medium-Term Recommendations
-Review and minimize the data sent to third-party services. Implement data masking or tokenization for any sensitive data that must be shared.
+- Review and minimize the data sent to third-party services.
+- Implement data masking or tokenization for any sensitive data that must be shared.
 
 #### Long-Term Recommendations
-Establish a clear data flow diagram for the application and conduct a privacy impact assessment. Regularly review third-party SDKs for their data handling practices.`,
+- Establish a clear data flow diagram for the application and conduct a privacy impact assessment.
+- Regularly review third-party SDKs for their data handling practices.`,
         recommendations_es: `### Recomendaciones
 
 #### Recomendaciones a Corto Plazo
-Eliminar todo el registro de datos sensibles. Deshabilitar el almacenamiento en caché del teclado para los campos de contraseña. Limpiar el portapapeles después de que un usuario copie información sensible de la aplicación.
+- Eliminar todo el registro de datos sensibles.
+- Deshabilitar el almacenamiento en caché del teclado para los campos de contraseña.
+- Limpiar el portapapeles después de que un usuario copie información sensible de la aplicación.
 
 #### Recomendaciones a Medio Plazo
-Revisar y minimizar los datos enviados a servicios de terceros. Implementar enmascaramiento de datos o tokenización para cualquier dato sensible que deba compartirse.
+- Revisar y minimizar los datos enviados a servicios de terceros.
+- Implementar enmascaramiento de datos o tokenización para cualquier dato sensible que deba compartirse.
 
 #### Recomendaciones a Largo Plazo
-Establecer un diagrama de flujo de datos claro para la aplicación y realizar una evaluación de impacto en la privacidad. Revisar regularmente los SDK de terceros por sus prácticas de manejo de datos.`,
+- Establecer un diagrama de flujo de datos claro para la aplicación y realizar una evaluación de impacto en la privacidad.
+- Revisar regularmente los SDK de terceros por sus prácticas de manejo de datos.`,
         affectedComponents_en: "### Affected Components\n- [TODO: Specify where data leakage occurs (e.g., Logcat output, clipboard, analytics data).]",
         details_en: "### Proof of Concept\n[TODO: Provide screenshots or log excerpts showing the sensitive data being leaked.]",
         affectedComponents_es: "### Componentes Afectados\n- [TODO: Especificar dónde ocurre la filtración de datos (p. ej., salida de Logcat, portapapeles, datos de análisis).]",
         details_es: "### Prueba de Concepto\n[TODO: Proporcionar capturas de pantalla o extractos de registros que muestren la filtración de datos sensibles.]",
-        immediateActions_en: "### Immediate Actions\nImmediately remove all logging of sensitive data from the application code. Disable keyboard caching for sensitive input fields.",
-        immediateActions_es: "### Acciones Inmediatas\nEliminar inmediatamente todo el registro de datos sensibles del código de la aplicación. Deshabilitar el almacenamiento en caché del teclado para los campos de entrada sensibles.",
+        immediateActions_en: "### Immediate Actions\n- Immediately remove all logging of sensitive data from the application code.\n- Disable keyboard caching for sensitive input fields.",
+        immediateActions_es: "### Acciones Inmediatas\n- Eliminar inmediatamente todo el registro de datos sensibles del código de la aplicación.\n- Deshabilitar el almacenamiento en caché del teclado para los campos de entrada sensibles.",
     },
     {
         id: "vuln-mobile-005",
@@ -736,29 +810,35 @@ Establecer un diagrama de flujo de datos claro para la aplicación y realizar un
         recommendations_en: `### Recommendations
 
 #### Short-Term Recommendations
-Enforce authorization checks on the server-side for every single API request. Do not rely on the client to control which UI elements are shown to the user.
+- Enforce authorization checks on the server-side for every single API request.
+- Do not rely on the client to control which UI elements are shown to the user.
 
 #### Medium-Term Recommendations
-Implement a robust, centralized role-based access control (RBAC) system for the backend API. Ensure that ownership is checked for all data access requests.
+- Implement a robust, centralized role-based access control (RBAC) system for the backend API.
+- Ensure that ownership is checked for all data access requests.
 
 #### Long-Term Recommendations
-Conduct a thorough security review of the entire API surface. Unit and integration tests should be created to verify that authorization rules are correctly enforced.`,
+- Conduct a thorough security review of the entire API surface.
+- Unit and integration tests should be created to verify that authorization rules are correctly enforced.`,
         recommendations_es: `### Recomendaciones
 
 #### Recomendaciones a Corto Plazo
-Hacer cumplir las comprobaciones de autorización en el lado del servidor para cada solicitud de API individual. No depender del cliente para controlar qué elementos de la interfaz de usuario se muestran al usuario.
+- Hacer cumplir las comprobaciones de autorización en el lado del servidor para cada solicitud de API individual.
+- No depender del cliente para controlar qué elementos de la interfaz de usuario se muestran al usuario.
 
 #### Recomendaciones a Medio Plazo
-Implementar un sistema de control de acceso basado en roles (RBAC) robusto y centralizado para la API de backend. Asegurarse de que se compruebe la propiedad para todas las solicitudes de acceso a datos.
+- Implementar un sistema de control de acceso basado en roles (RBAC) robusto y centralizado para la API de backend.
+- Asegurarse de que se compruebe la propiedad para todas las solicitudes de acceso a datos.
 
 #### Recomendaciones a Largo Plazo
-Realizar una revisión de seguridad exhaustiva de toda la superficie de la API. Se deben crear pruebas unitarias y de integración para verificar que las reglas de autorización se apliquen correctamente.`,
+- Realizar una revisión de seguridad exhaustiva de toda la superficie de la API.
+- Se deben crear pruebas unitarias y de integración para verificar que las reglas de autorización se apliquen correctamente.`,
         affectedComponents_en: "### Affected Components\n- [TODO: List the API endpoints that fail to enforce proper authorization.]",
         details_en: "### Proof of Concept\n[TODO: Provide a sequence of API requests (e.g., from Burp Suite) showing how a low-privilege user can access or modify data they should not have access to.]",
         affectedComponents_es: "### Componentes Afectados\n- [TODO: Listar los endpoints de la API de backend vulnerables.]",
         details_es: "### Prueba de Concepto\n[TODO: Proporcionar una secuencia de solicitudes de API (p. ej., desde Burp Suite) que muestre cómo un usuario con pocos privilegios puede acceder o modificar datos a los que no debería tener acceso.]",
-        immediateActions_en: "### Immediate Actions\nImplement server-side checks on the vulnerable API endpoints to verify that the authenticated user is authorized to access the requested resource.",
-        immediateActions_es: "### Acciones Inmediatas\nImplementar inmediatamente comprobaciones del lado del servidor en los puntos finales de la API vulnerables para verificar que el usuario autenticado está autorizado para acceder al recurso solicitado.",
+        immediateActions_en: "### Immediate Actions\n- Implement server-side checks on the vulnerable API endpoints to verify that the authenticated user is authorized to access the requested resource.",
+        immediateActions_es: "### Acciones Inmediatas\n- Implementar inmediatamente comprobaciones del lado del servidor en los puntos finales de la API vulnerables para verificar que el usuario autenticado está autorizado para acceder al recurso solicitado.",
     },
     {
         id: "vuln-mobile-006",
@@ -778,29 +858,31 @@ Realizar una revisión de seguridad exhaustiva de toda la superficie de la API. 
         recommendations_en: `### Recommendations
 
 #### Short-Term Recommendations
-Replace all weak or custom cryptographic algorithms with modern, industry-standard algorithms (e.g., AES-256-GCM for encryption, PBKDF2 or Argon2 for password hashing).
+- Replace all weak or custom cryptographic algorithms with modern, industry-standard algorithms (e.g., AES-256-GCM for encryption, PBKDF2 or Argon2 for password hashing).
 
 #### Medium-Term Recommendations
-Do not implement cryptography from scratch. Use well-vetted, platform-provided cryptographic libraries and APIs.
+- Do not implement cryptography from scratch.
+- Use well-vetted, platform-provided cryptographic libraries and APIs.
 
 #### Long-Term Recommendations
-Establish a policy for cryptographic standards and regularly review the application to ensure compliance. This includes key management, algorithm choice, and protocol usage.`,
+- Establish a policy for cryptographic standards and regularly review the application to ensure compliance. This includes key management, algorithm choice, and protocol usage.`,
         recommendations_es: `### Recomendaciones
 
 #### Recomendaciones a Corto Plazo
-Reemplazar todos los algoritmos criptográficos débiles o personalizados con algoritmos modernos y estándar de la industria (p. ej., AES-256-GCM para el cifrado, PBKDF2 o Argon2 para el hasheo de contraseñas).
+- Reemplazar todos los algoritmos criptográficos débiles o personalizados con algoritmos modernos y estándar de la industria (p. ej., AES-256-GCM para el cifrado, PBKDF2 o Argon2 para el hasheo de contraseñas).
 
 #### Recomendaciones a Medio Plazo
-No implementar la criptografía desde cero. Utilizar bibliotecas y API criptográficas bien examinadas y proporcionadas por la plataforma.
+- No implementar la criptografía desde cero.
+- Utilizar bibliotecas y API criptográficas bien examinadas y proporcionadas por la plataforma.
 
 #### Recomendaciones a Largo Plazo
-Establecer una política para los estándares criptográficos y revisar regularmente la aplicación para asegurar el cumplimiento. Esto incluye la gestión de claves, la elección de algoritmos y el uso de protocolos.`,
+- Establecer una política para los estándares criptográficos y revisar regularmente la aplicación para asegurar el cumplimiento. Esto incluye la gestión de claves, la elección de algoritmos y el uso de protocolos.`,
         affectedComponents_en: "### Affected Components\n- [TODO: Specify the part of the code where broken cryptography is used.]",
         details_en: "### Proof of Concept\n[TODO: Provide evidence of the weak cryptography, such as decrypting data encrypted with a static key or cracking a password hash.]",
         affectedComponents_es: "### Componentes Afectados\n- [TODO: Especificar la parte del código donde se utiliza la criptografía rota.]",
         details_es: "### Prueba de Concepto\n[TODO: Proporcionar evidencia de la criptografía débil, como el descifrado de datos cifrados con una clave estática o el craqueo de un hash de contraseña.]",
-        immediateActions_en: "### Immediate Actions\nReplace any hardcoded keys with securely generated and stored keys. Upgrade all cryptographic functions to use modern, recommended algorithms (e.g., AES-256-GCM).",
-        immediateActions_es: "### Acciones Inmediatas\nReemplazar cualquier clave codificada de forma rígida con claves generadas y almacenadas de forma segura. Actualizar todas las funciones criptográficas para usar algoritmos modernos y recomendados (p. ej., AES-256-GCM).",
+        immediateActions_en: "### Immediate Actions\n- Replace any hardcoded keys with securely generated and stored keys.\n- Upgrade all cryptographic functions to use modern, recommended algorithms (e.g., AES-256-GCM).",
+        immediateActions_es: "### Acciones Inmediatas\n- Reemplazar cualquier clave codificada de forma rígida con claves generadas y almacenadas de forma segura.\n- Actualizar todas las funciones criptográficas para usar algoritmos modernos y recomendados (p. ej., AES-256-GCM).",
     },
     {
         id: "vuln-mobile-007",
@@ -820,29 +902,35 @@ Establecer una política para los estándares criptográficos y revisar regularm
         recommendations_en: `### Recommendations
 
 #### Short-Term Recommendations
-Use parameterized queries (prepared statements) for all local SQLite database interactions. For WebViews, ensure JavaScript is disabled if not needed, and properly encode any data displayed in them.
+- Use parameterized queries (prepared statements) for all local SQLite database interactions.
+- For WebViews, ensure JavaScript is disabled if not needed, and properly encode any data displayed in them.
 
 #### Medium-Term Recommendations
-Avoid processing untrusted data on the client side whenever possible. Perform validation and sanitization on the server side before sending data to the client.
+- Avoid processing untrusted data on the client side whenever possible.
+- Perform validation and sanitization on the server side before sending data to the client.
 
 #### Long-Term Recommendations
-Implement a secure coding standard for the mobile app that includes guidelines for handling untrusted data on the client side. Use automated scanning tools to detect client-side injection flaws.`,
+- Implement a secure coding standard for the mobile app that includes guidelines for handling untrusted data on the client side.
+- Use automated scanning tools to detect client-side injection flaws.`,
         recommendations_es: `### Recomendaciones
 
 #### Recomendaciones a Corto Plazo
-Usar consultas parametrizadas (prepared statements) para todas las interacciones con la base de datos SQLite local. Para las WebViews, asegurarse de que JavaScript esté deshabilitado si no es necesario, y codificar correctamente cualquier dato que se muestre en ellas.
+- Usar consultas parametrizadas (prepared statements) para todas las interacciones con la base de datos SQLite local.
+- Para las WebViews, asegurarse de que JavaScript esté deshabilitado si no es necesario, y codificar correctamente cualquier dato que se muestre en ellas.
 
 #### Recomendaciones a Medio Plazo
-Evitar el procesamiento de datos no confiables en el lado del cliente siempre que sea posible. Realizar la validación y el saneamiento en el lado del servidor antes de enviar los datos al cliente.
+- Evitar el procesamiento de datos no confiables en el lado del cliente siempre que sea posible.
+- Realizar la validación y el saneamiento en el lado del servidor antes de enviar los datos al cliente.
 
 #### Recomendaciones a Largo Plazo
-Implementar un estándar de codificación segura para la aplicación móvil que incluya pautas para el manejo de datos no confiables en el lado del cliente. Usar herramientas de escaneo automatizadas para detectar fallas de inyección en el lado del cliente.`,
+- Implementar un estándar de codificación segura para la aplicación móvil que incluya pautas para el manejo de datos no confiables en el lado del cliente.
+- Usar herramientas de escaneo automatizadas para detectar fallas de inyección en el lado del cliente.`,
         affectedComponents_en: "### Affected Components\n- [TODO: Specify the local database query or WebView that is vulnerable.]",
         details_en: "### Proof of Concept\n[TODO: Provide a PoC, such as a malicious SQL query that corrupts the local DB, or an XSS payload that executes in a WebView.]",
         affectedComponents_es: "### Componentes Afectados\n- [TODO: Especificar la consulta de la base de datos local o la WebView que es vulnerable.]",
         details_es: "### Prueba de Concepto\n[TODO: Proporcionar una PoC, como una consulta SQL maliciosa que corrompe la BD local, o una carga útil de XSS que se ejecuta en una WebView.]",
-        immediateActions_en: "### Immediate Actions\nImplement parameterized queries for local database interactions. Apply proper encoding for data rendered in WebViews.",
-        immediateActions_es: "### Acciones Inmediatas\nImplementar consultas parametrizadas para las interacciones con la base de datos local. Aplicar la codificación adecuada para los datos renderizados en WebViews.",
+        immediateActions_en: "### Immediate Actions\n- Implement parameterized queries for local database interactions.\n- Apply proper encoding for data rendered in WebViews.",
+        immediateActions_es: "### Acciones Inmediatas\n- Implementar consultas parametrizadas para las interacciones con la base de datos local.\n- Aplicar la codificación adecuada para los datos renderizados en WebViews.",
     },
     {
         id: "vuln-mobile-008",
@@ -862,29 +950,33 @@ Implementar un estándar de codificación segura para la aplicación móvil que 
         recommendations_en: `### Recommendations
 
 #### Short-Term Recommendations
-Never make security decisions based on user-controlled or otherwise untrusted input. Security controls should be enforced by server-side logic or hardcoded in the application binary.
+- Never make security decisions based on user-controlled or otherwise untrusted input.
+- Security controls should be enforced by server-side logic or hardcoded in the application binary.
 
 #### Medium-Term Recommendations
-For any security-sensitive configurations, fetch them from a trusted server-side endpoint rather than storing them in a client-modifiable file.
+- For any security-sensitive configurations, fetch them from a trusted server-side endpoint rather than storing them in a client-modifiable file.
 
 #### Long-Term Recommendations
-Design the application so that the client is treated as a completely untrusted environment. All significant security checks and decisions must be made on the server.`,
+- Design the application so that the client is treated as a completely untrusted environment.
+- All significant security checks and decisions must be made on the server.`,
         recommendations_es: `### Recomendaciones
 
 #### Recomendaciones a Corto Plazo
-Nunca tomar decisiones de seguridad basadas en entradas controladas por el usuario o de otra manera no confiables. Los controles de seguridad deben ser aplicados por la lógica del lado del servidor o codificados de forma rígida en el binario de la aplicación.
+- Nunca tomar decisiones de seguridad basadas en entradas controladas por el usuario o de otra manera no confiables.
+- Los controles de seguridad deben ser aplicados por la lógica del lado del servidor o codificados de forma rígida en el binario de la aplicación.
 
 #### Recomendaciones a Medio Plazo
-Para cualquier configuración sensible a la seguridad, obtenerla de un punto de conexión de confianza del lado del servidor en lugar de almacenarla en un archivo modificable por el cliente.
+- Para cualquier configuración sensible a la seguridad, obtenerla de un punto de conexión de confianza del lado del servidor en lugar de almacenarla en un archivo modificable por el cliente.
 
 #### Recomendaciones a Largo Plazo
-Diseñar la aplicación de modo que el cliente sea tratado como un entorno completamente no confiable. Todas las comprobaciones y decisiones de seguridad significativas deben realizarse en el servidor.`,
+- Diseñar la aplicación de modo que el cliente sea tratado como un entorno completamente no confiable.
+- Todas las comprobaciones y decisiones de seguridad significativas deben realizarse en el servidor.`,
         affectedComponents_en: "### Affected Components\n- [TODO: Specify the security decision and the untrusted input that influences it.]",
         details_en: "### Proof of Concept\n[TODO: Provide a PoC demonstrating how to manipulate the untrusted input to bypass a security control.]",
         affectedComponents_es: "### Componentes Afectados\n- [TODO: Especificar la decisión de seguridad y la entrada no confiable que la influye.]",
         details_es: "### Prueba de Concepto\n[TODO: Proporcionar una PoC que demuestre cómo manipular la entrada no confiable para eludir un control de seguridad.]",
-        immediateActions_en: "### Immediate Actions\nRefactor the code to remove any security decisions based on untrusted inputs. Move security logic to the server-side where possible.",
-        immediateActions_es: "### Acciones Inmediatas\nRefactorizar el código para eliminar cualquier decisión de seguridad basada en entradas no confiables. Mover la lógica de seguridad al lado del servidor siempre que sea posible.",
+        immediateActions_en: "### Immediate Actions\n- Refactor the code to remove any security decisions based on untrusted inputs.\n- Move security logic to the server-side where possible.",
+        immediateActions_es: "### Acciones Inmediatas\n- Refactorizar el código para eliminar cualquier decisión de seguridad basada en entradas no confiables.\n- Mover la lógica de seguridad al lado del servidor siempre que sea posible.",
     },
     {
         id: "vuln-mobile-009",
@@ -904,29 +996,31 @@ Diseñar la aplicación de modo que el cliente sea tratado como un entorno compl
         recommendations_en: `### Recommendations
 
 #### Short-Term Recommendations
-Implement server-side session timeouts. Session tokens must be invalidated on the server when a user logs out.
+- Implement server-side session timeouts.
+- Session tokens must be invalidated on the server when a user logs out.
 
 #### Medium-Term Recommendations
-Use refresh tokens and short-lived access tokens. The access token provides access to resources, and the refresh token is used to obtain a new access token without requiring the user to re-authenticate.
+- Use refresh tokens and short-lived access tokens. The access token provides access to resources, and the refresh token is used to obtain a new access token without requiring the user to re-authenticate.
 
 #### Long-Term Recommendations
-Implement a mechanism to detect and alert on suspicious session activity, such as a session being used from multiple IP addresses or devices simultaneously.`,
+- Implement a mechanism to detect and alert on suspicious session activity, such as a session being used from multiple IP addresses or devices simultaneously.`,
         recommendations_es: `### Recomendaciones
 
 #### Recomendaciones a Corto Plazo
-Implementar tiempos de espera de sesión del lado del servidor. Los tokens de sesión deben invalidarse en el servidor cuando un usuario cierra la sesión.
+- Implementar tiempos de espera de sesión del lado del servidor.
+- Los tokens de sesión deben invalidarse en el servidor cuando un usuario cierra la sesión.
 
 #### Recomendaciones a Medio Plazo
-Usar tokens de actualización y tokens de acceso de corta duración. El token de acceso proporciona acceso a los recursos, y el token de actualización se utiliza para obtener un nuevo token de acceso sin requerir que el usuario se vuelva a autenticar.
+- Usar tokens de actualización y tokens de acceso de corta duración. El token de acceso proporciona acceso a los recursos, y el token de actualización se utiliza para obtener un nuevo token de acceso sin requerir que el usuario se vuelva a autenticar.
 
 #### Recomendaciones a Largo Plazo
-Implementar un mecanismo para detectar y alertar sobre actividades de sesión sospechosas, como una sesión que se utiliza desde múltiples direcciones IP o dispositivos simultáneamente.`,
+- Implementar un mecanismo para detectar y alertar sobre actividades de sesión sospechosas, como una sesión que se utiliza desde múltiples direcciones IP o dispositivos simultáneamente.`,
         affectedComponents_en: "### Affected Components\n- [TODO: Specify the session management mechanism of the application.]",
         details_en: "### Proof of Concept\n[TODO: Provide a PoC demonstrating that a session token remains valid and can be reused after the user has logged out.]",
         affectedComponents_es: "### Componentes Afectados\n- [TODO: Especificar el mecanismo de gestión de sesiones de la aplicación.]",
         details_es: "### Prueba de Concepto\n[TODO: Proporcionar una PoC que demuestre que un token de sesión sigue siendo válido y puede ser reutilizado después de que el usuario haya cerrado la sesión.]",
-        immediateActions_en: "### Immediate Actions\nForce logout of all active sessions to invalidate all existing session tokens.",
-        immediateActions_es: "### Acciones Inmediatas\nForzar el cierre de sesión de todas las sesiones activas para invalidar todos los tokens de sesión existentes.",
+        immediateActions_en: "### Immediate Actions\n- Force logout of all active sessions to invalidate all existing session tokens.",
+        immediateActions_es: "### Acciones Inmediatas\n- Forzar el cierre de sesión de todas las sesiones activas para invalidar todos los tokens de sesión existentes.",
     },
     {
         id: "vuln-mobile-010",
@@ -946,29 +1040,34 @@ Implementar un mecanismo para detectar y alertar sobre actividades de sesión so
         recommendations_en: `### Recommendations
 
 #### Short-Term Recommendations
-Apply code obfuscation to make the decompiled code harder to understand. Implement anti-tampering checks (e.g., checksum validation) to detect if the app has been modified.
+- Apply code obfuscation to make the decompiled code harder to understand.
+- Implement anti-tampering checks (e.g., checksum validation) to detect if the app has been modified.
 
 #### Medium-Term Recommendations
-Implement more robust root/jailbreak detection and anti-debugging techniques. Use tools that provide comprehensive binary protection, including string encryption and control flow obfuscation.
+- Implement more robust root/jailbreak detection and anti-debugging techniques.
+- Use tools that provide comprehensive binary protection, including string encryption and control flow obfuscation.
 
 #### Long-Term Recommendations
-Adopt a defense-in-depth strategy for mobile security. Assume that a determined attacker can bypass client-side controls, and therefore, critical security logic must always be enforced on the server side.`,
+- Adopt a defense-in-depth strategy for mobile security. Assume that a determined attacker can bypass client-side controls, and therefore, critical security logic must always be enforced on the server side.`,
         recommendations_es: `### Recomendaciones
 
 #### Recomendaciones a Corto Plazo
-Aplicar la ofuscación de código para dificultar la comprensión del código descompilado. Implementar comprobaciones anti-manipulación (p. ej., validación de checksum) para detectar si el código de la aplicación ha sido modificado.
+- Aplicar la ofuscación de código para dificultar la comprensión del código descompilado.
+- Implementar comprobaciones anti-manipulación (p. ej., validación de checksum) para detectar si el código de la aplicación ha sido modificado.
 
 #### Recomendaciones a Medio Plazo
-Implementar una detección de root/jailbreak más robusta y técnicas anti-depuración. Utilizar herramientas que proporcionen una protección binaria completa, incluido el cifrado de cadenas y la ofuscación del flujo de control.
+- Implementar una detección de root/jailbreak más robusta y técnicas anti-depuración.
+- Utilizar herramientas que proporcionen una protección binaria completa, incluido el cifrado de cadenas y la ofuscación del flujo de control.
 
 #### Recomendaciones a Largo Plazo
-Adoptar una estrategia de defensa en profundidad para la seguridad móvil. Asumir que un atacante determinado puede eludir los controles del lado del cliente y, por lo tanto, la lógica de seguridad crítica siempre debe aplicarse en el lado del servidor.`,
+- Adoptar una estrategia de defensa en profundidad para la seguridad móvil.
+- Asumir que un atacante determinado puede eludir los controles del lado del cliente y, por lo tanto, la lógica de seguridad crítica siempre debe aplicarse en el lado del servidor.`,
         affectedComponents_en: "### Affected Components\n- The application binary itself (APK/IPA).",
         details_en: "### Proof of Concept\n[TODO: Demonstrate patching the application binary to bypass a security control and re-signing it.]",
         affectedComponents_es: "### Componentes Afectados\n- El propio binario de la aplicación (APK/IPA).",
         details_es: "### Prueba de Concepto\n[TODO: Demostrar cómo parchear el binario de la aplicación para eludir un control de seguridad y volver a firmarlo.]",
-        immediateActions_en: "### Immediate Actions\nImplement basic code obfuscation and integrity checks (checksums) in the build process.",
-        immediateActions_es: "### Acciones Inmediatas\nImplementar ofuscación de código básica y comprobaciones de integridad (checksums) en el proceso de compilación.",
+        immediateActions_en: "### Immediate Actions\n- Implement basic code obfuscation and integrity checks (checksums) in the build process.",
+        immediateActions_es: "### Acciones Inmediatas\n- Implementar ofuscación de código básica y comprobaciones de integridad (checksums) en el proceso de compilación.",
     },
     // --- NETWORK VULNERABILITIES ---
     {
@@ -989,29 +1088,33 @@ Adoptar una estrategia de defensa en profundidad para la seguridad móvil. Asumi
         recommendations_en: `### Recommendations
 
 #### Short-Term Recommendations
-Enforce TLS 1.2 or higher across all endpoints. Implement certificate pinning in mobile clients to ensure the app only communicates with the trusted server.
+- Enforce TLS 1.2 or higher across all endpoints.
+- Implement certificate pinning in mobile clients to ensure the app only communicates with the trusted server.
 
 #### Medium-Term Recommendations
-Use HTTP Strict Transport Security (HSTS) to ensure browsers only connect to your server over HTTPS.
+- Use HTTP Strict Transport Security (HSTS) to ensure browsers only connect to your server over HTTPS.
 
 #### Long-Term Recommendations
-Conduct regular network security audits. Deploy intrusion detection systems (IDS) to monitor for suspicious network activity like ARP poisoning.`,
+- Conduct regular network security audits.
+- Deploy intrusion detection systems (IDS) to monitor for suspicious network activity like ARP poisoning.`,
         recommendations_es: `### Recomendaciones
 
 #### Recomendaciones a Corto Plazo
-Hacer cumplir TLS 1.2 o superior en todos los puntos de conexión. Implementar el anclaje de certificados (certificate pinning) en los clientes móviles para garantizar que la aplicación solo se comunique con el servidor de confianza.
+- Hacer cumplir TLS 1.2 o superior en todos los puntos de conexión.
+- Implementar el anclaje de certificados (certificate pinning) en los clientes móviles para garantizar que la aplicación solo se comunique con el servidor de confianza.
 
 #### Recomendaciones a Medio Plazo
-Usar HTTP Strict Transport Security (HSTS) para garantizar que los navegadores solo se conecten a su servidor a través de HTTPS.
+- Usar HTTP Strict Transport Security (HSTS) para garantizar que los navegadores solo se conecten a su servidor a través de HTTPS.
 
 #### Recomendaciones a Largo Plazo
-Realizar auditorías de seguridad de red periódicas. Desplegar sistemas de detección de intrusiones (IDS) para monitorear actividades de red sospechosas como el envenenamiento ARP.`,
+- Realizar auditorías de seguridad de red periódicas.
+- Desplegar sistemas de detección de intrusiones (IDS) para monitorear actividades de red sospechosas como el envenenamiento ARP.`,
         affectedComponents_en: "### Affected Components\n- [TODO: Specify the network communication channels that are vulnerable.]",
         details_en: "### Proof of Concept\n[TODO: Provide evidence of a MitM attack, such as screenshots from a proxy tool showing intercepted or modified traffic.]",
         affectedComponents_es: "### Componentes Afectados\n- [TODO: Especificar los canales de comunicación de red que son vulnerables.]",
         details_es: "### Prueba de Concepto\n[TODO: Proporcionar evidencia de un ataque MitM, como capturas de pantalla de una herramienta de proxy que muestren tráfico interceptado o modificado.]",
-        immediateActions_en: "### Immediate Actions\nEnforce TLS for all communications. In mobile applications, implement certificate pinning to prevent interception.",
-        immediateActions_es: "### Acciones Inmediatas\nForzar el uso de TLS para todas las comunicaciones. En aplicaciones móviles, implementar anclaje de certificados (certificate pinning) para prevenir la interceptación.",
+        immediateActions_en: "### Immediate Actions\n- Enforce TLS for all communications.\n- In mobile applications, implement certificate pinning to prevent interception.",
+        immediateActions_es: "### Acciones Inmediatas\n- Forzar el uso de TLS para todas las comunicaciones.\n- En aplicaciones móviles, implementar anclaje de certificados (certificate pinning) para prevenir la interceptación.",
     },
     { 
         id: "vuln-net-002", 
@@ -1031,29 +1134,31 @@ Realizar auditorías de seguridad de red periódicas. Desplegar sistemas de dete
         recommendations_en: `### Recommendations
 
 #### Short-Term Recommendations
-Implement DNSSEC (Domain Name System Security Extensions) to validate the authenticity of DNS responses.
+- Implement DNSSEC (Domain Name System Security Extensions) to validate the authenticity of DNS responses.
 
 #### Medium-Term Recommendations
-Use end-to-end encryption (TLS) for all communications. This ensures that even if DNS is spoofed, the attacker cannot decrypt the traffic without the server's private key.
+- Use end-to-end encryption (TLS) for all communications. This ensures that even if DNS is spoofed, the attacker cannot decrypt the traffic without the server's private key.
 
 #### Long-Term Recommendations
-Monitor DNS traffic for anomalies. Regularly audit DNS server configurations for security best practices.`, 
+- Monitor DNS traffic for anomalies.
+- Regularly audit DNS server configurations for security best practices.`, 
         recommendations_es: `### Recomendaciones
 
 #### Recomendaciones a Corto Plazo
-Implementar DNSSEC (Extensiones de Seguridad del Sistema de Nombres de Dominio) para validar la autenticidad de las responses DNS.
+- Implementar DNSSEC (Extensiones de Seguridad del Sistema de Nombres de Dominio) para validar la autenticidad de las responses DNS.
 
 #### Recomendaciones a Medio Plazo
-Usar cifrado de extremo a extremo (TLS) para todas las comunicaciones. Esto asegura que incluso si se suplanta el DNS, el atacante no puede descifrar el tráfico sin la clave privada del servidor.
+- Usar cifrado de extremo a extremo (TLS) para todas las comunicaciones. Esto asegura que incluso si se suplanta el DNS, el atacante no puede descifrar el tráfico sin la clave privada del servidor.
 
 #### Recomendaciones a Largo Plazo
-Monitorear el tráfico DNS en busca de anomalías. Auditar regularmente las configuraciones del servidor DNS para seguir las mejores prácticas de seguridad.`, 
+- Monitorear el tráfico DNS en busca de anomalías.
+- Auditar regularmente las configuraciones del servidor DNS para seguir las mejores prácticas de seguridad.`, 
         affectedComponents_en: "### Affected Components\n- DNS resolvers and clients within the network.", 
         details_en: "### Proof of Concept\n[TODO: Show evidence of a successful DNS spoofing attack, such as a client being redirected to a malicious IP address.]", 
         affectedComponents_es: "### Componentes Afectados\n- Resolutores y clientes DNS dentro de la red.", 
         details_es: "### Prueba de Concepto\n[TODO: Mostrar evidencia de un ataque de suplantación de DNS exitoso, como un cliente siendo redirigido a una dirección IP maliciosa.]",
-        immediateActions_en: "### Immediate Actions\nFlush the DNS cache on affected resolvers and clients. Implement DNSSEC to prevent future spoofing.",
-        immediateActions_es: "### Acciones Inmediatas\nLimpiar la caché de DNS en los resolutores y clientes afectados. Implementar DNSSEC para prevenir futuras suplantaciones.",
+        immediateActions_en: "### Immediate Actions\n- Flush the DNS cache on affected resolvers and clients.\n- Implement DNSSEC to prevent future spoofing.",
+        immediateActions_es: "### Acciones Inmediatas\n- Limpiar la caché de DNS en los resolutores y clientes afectados.\n- Implementar DNSSEC para prevenir futuras suplantaciones.",
     },
     {
         id: "vuln-net-003",
@@ -1073,29 +1178,29 @@ Monitorear el tráfico DNS en busca de anomalías. Auditar regularmente las conf
         recommendations_en: `### Recommendations
 
 #### Short-Term Recommendations
-Use Dynamic ARP Inspection (DAI) on network switches to validate ARP packets.
+- Use Dynamic ARP Inspection (DAI) on network switches to validate ARP packets.
 
 #### Medium-Term Recommendations
-Segment the network using VLANs to limit the broadcast domain and reduce the scope of a potential ARP poisoning attack.
+- Segment the network using VLANs to limit the broadcast domain and reduce the scope of a potential ARP poisoning attack.
 
 #### Long-Term Recommendations
-Encrypt all network traffic using protocols like TLS and SSH. This does not prevent ARP poisoning but mitigates the impact by preventing the attacker from reading or modifying the intercepted traffic.`,
+- Encrypt all network traffic using protocols like TLS and SSH. This does not prevent ARP poisoning but mitigates the impact by preventing the attacker from reading or modifying the intercepted traffic.`,
         recommendations_es: `### Recomendaciones
 
 #### Recomendaciones a Corto Plazo
-Utilizar la Inspección Dinámica de ARP (DAI) en los switches de red para validar los paquetes ARP.
+- Utilizar la Inspección Dinámica de ARP (DAI) en los switches de red para validar los paquetes ARP.
 
 #### Recomendaciones a Medio Plazo
-Segmentar la red utilizando VLAN para limitar el dominio de difusión y reducir el alcance de un posible ataque de envenenamiento ARP.
+- Segmentar la red utilizando VLAN para limitar el dominio de difusión y reducir el alcance de un posible ataque de envenenamiento ARP.
 
 #### Recomendaciones a Largo Plazo
-Cifrar todo el tráfico de red utilizando protocolos como TLS y SSH. Esto no previene el envenenamiento de ARP, pero mitiga el impacto al evitar que el atacante lea o modifique el tráfico interceptado.`,
+- Cifrar todo el tráfico de red utilizando protocolos como TLS y SSH. Esto no previene el envenenamiento de ARP, pero mitiga el impacto al evitar que el atacante lea o modifique el tráfico interceptado.`,
         affectedComponents_en: "### Affected Components\n- All devices on the local network segment.",
         details_en: "### Proof of Concept\n[TODO: Provide output from a tool like `arpspoof` and show intercepted traffic in a network analyzer like Wireshark.]",
         affectedComponents_es: "### Componentes Afectados\n- Todos los dispositivos en el segmento de red local.",
         details_es: "### Prueba de Concepto\n[TODO: Proporcionar la salida de una herramienta como `arpspoof` y mostrar el tráfico interceptado en un analizador de red como Wireshark.]",
-        immediateActions_en: "### Immediate Actions\nEnable Dynamic ARP Inspection (DAI) on network switches to validate ARP packets and prevent spoofing.",
-        immediateActions_es: "### Acciones Inmediatas\nHabilitar la Inspección Dinámica de ARP (DAI) en los conmutadores de red para validar los paquetes ARP y prevenir la suplantación.",
+        immediateActions_en: "### Immediate Actions\n- Enable Dynamic ARP Inspection (DAI) on network switches to validate ARP packets and prevent spoofing.",
+        immediateActions_es: "### Acciones Inmediatas\n- Habilitar la Inspección Dinámica de ARP (DAI) en los conmutadores de red para validar los paquetes ARP y prevenir la suplantación.",
     },
     {
         id: "vuln-net-004",
@@ -1115,29 +1220,29 @@ Cifrar todo el tráfico de red utilizando protocolos como TLS y SSH. Esto no pre
         recommendations_en: `### Recommendations
 
 #### Short-Term Recommendations
-Use ingress filtering (BCP38) at the network edge to drop packets with source IPs from outside your network's allocated range.
+- Use ingress filtering (BCP38) at the network edge to drop packets with source IPs from outside your network's allocated range.
 
 #### Medium-Term Recommendations
-Enable Reverse Path Forwarding (RPF) on routers, which ensures that the source address of a packet is reachable via the interface the packet came in on.
+- Enable Reverse Path Forwarding (RPF) on routers, which ensures that the source address of a packet is reachable via the interface the packet came in on.
 
 #### Long-Term Recommendations
-Use cryptographic authentication protocols like IPsec, which provide data integrity and origin authentication for IP packets, making spoofing significantly more difficult.`,
+- Use cryptographic authentication protocols like IPsec, which provide data integrity and origin authentication for IP packets, making spoofing significantly more difficult.`,
         recommendations_es: `### Recomendaciones
 
 #### Recomendaciones a Corto Plazo
-Usar filtrado de entrada (BCP38) en el borde de la red para descartar paquetes con IPs de origen fuera del rango asignado a su red.
+- Usar filtrado de entrada (BCP38) en el borde de la red para descartar paquetes con IPs de origen fuera del rango asignado a su red.
 
 #### Recomendaciones a Medio Plazo
-Habilitar el Reenvío de Ruta Inversa (RPF) en los enrutadores, lo que asegura que la dirección de origen de un paquete sea alcanzable a través de la interfaz por la que llegó el paquete.
+- Habilitar el Reenvío de Ruta Inversa (RPF) en los enrutadores, lo que asegura que la dirección de origen de un paquete sea alcanzable a través de la interfaz por la que llegó el paquete.
 
 #### Recomendaciones a Largo Plazo
-Utilizar protocolos de autenticación criptográfica como IPsec, que proporcionan integridad de datos y autenticación de origen para los paquetes IP, lo que dificulta significativamente la suplantación.`,
+- Utilizar protocolos de autenticación criptográfica como IPsec, que proporcionan integridad de datos y autenticación de origen para los paquetes IP, lo que dificulta significativamente la suplantación.`,
         affectedComponents_en: "### Affected Components\n- Network routers, firewalls, and systems that use IP-based access controls.",
         details_en: "### Proof of Concept\n[TODO: Provide evidence of spoofed packets being accepted by a target system, using a tool like hping3 or Scapy.]",
         affectedComponents_es: "### Componentes Afectados\n- Enrutadores de red, cortafuegos y sistemas que utilizan controles de acceso basados en IP.",
         details_es: "### Prueba de Concepto\n[TODO: Proporcionar evidencia de que los paquetes suplantados son aceptados por un sistema objetivo, utilizando una herramienta como hping3 o Scapy.]",
-        immediateActions_en: "### Immediate Actions\nImplement ingress filtering (BCP38/RFC 2827) at the network border to drop packets with forged source IP addresses.",
-        immediateActions_es: "### Acciones Inmediatas\nImplementar el filtrado de entrada (BCP38/RFC 2827) en el borde de la red para descartar paquetes con direcciones IP de origen falsificadas.",
+        immediateActions_en: "### Immediate Actions\n- Implement ingress filtering (BCP38/RFC 2827) at the network border to drop packets with forged source IP addresses.",
+        immediateActions_es: "### Acciones Inmediatas\n- Implementar el filtrado de entrada (BCP38/RFC 2827) en el borde de la red para descartar paquetes con direcciones IP de origen falsificadas.",
     },
     {
         id: "vuln-net-005",
@@ -1157,29 +1262,33 @@ Utilizar protocolos de autenticación criptográfica como IPsec, que proporciona
         recommendations_en: `### Recommendations
 
 #### Short-Term Recommendations
-Use a cloud-based DDoS mitigation service that can absorb and filter malicious traffic before it reaches your network.
+- Use a cloud-based DDoS mitigation service that can absorb and filter malicious traffic before it reaches your network.
 
 #### Medium-Term Recommendations
-Configure network hardware (routers, firewalls) with anti-DoS settings, such as SYN cookie protection and ingress filtering. Load balance critical services across multiple servers.
+- Configure network hardware (routers, firewalls) with anti-DoS settings, such as SYN cookie protection and ingress filtering.
+- Load balance critical services across multiple servers.
 
 #### Long-Term Recommendations
-Design applications to be resilient to resource exhaustion. Implement caching and content delivery networks (CDNs) to reduce the load on origin servers.`,
+- Design applications to be resilient to resource exhaustion.
+- Implement caching and content delivery networks (CDNs) to reduce the load on origin servers.`,
         recommendations_es: `### Recomendaciones
 
 #### Recomendaciones a Corto Plazo
-Utilizar un servicio de mitigación de DDoS basado en la nube que pueda absorber y filtrar el tráfico malicioso antes de que llegue a su red.
+- Utilizar un servicio de mitigación de DDoS basado en la nube que pueda absorber y filtrar el tráfico malicioso antes de que llegue a su red.
 
 #### Recomendaciones a Medio Plazo
-Configurar el hardware de red (enrutadores, cortafuegos) con ajustes anti-DoS, como la protección de cookies SYN y el filtrado de entrada. Balancear la carga de los servicios críticos en varios servidores.
+- Configurar el hardware de red (enrutadores, cortafuegos) con ajustes anti-DoS, como la protección de cookies SYN y el filtrado de entrada.
+- Balancear la carga de los servicios críticos en varios servidores.
 
 #### Recomendaciones a Largo Plazo
-Diseñar aplicaciones para que sean resistentes al agotamiento de recursos. Implementar cachés y redes de entrega de contenido (CDN) para reducir la carga en los servidores de origen.`,
+- Diseñar aplicaciones para que sean resistentes al agotamiento de recursos.
+- Implementar cachés y redes de entrega de contenido (CDN) para reducir la carga en los servidores de origen.`,
         affectedComponents_en: "### Affected Components\n- [TODO: Specify the targeted servers, services, or network resources.]",
         details_en: "### Proof of Concept\n[TODO: Provide data showing the spike in traffic and corresponding resource exhaustion on the target system. Use tools like hping3 or Slowloris for demonstration.]",
         affectedComponents_es: "### Componentes Afectados\n- [TODO: Especificar los servidores, servicios o recursos de red objetivo.]",
         details_es: "### Prueba de Concepto\n[TODO: Proporcionar datos que muestren el pico de tráfico y el agotamiento de recursos correspondiente en el sistema objetivo. Usar herramientas como hping3 o Slowloris para la demostración.]",
-        immediateActions_en: "### Immediate Actions\nEngage a DDoS mitigation service. Implement rate limiting and connection limits on edge devices and servers.",
-        immediateActions_es: "### Acciones Inmediatas\nContratar un servicio de mitigación de DDoS. Implementar limitación de velocidad y límites de conexión en los dispositivos de borde y servidores.",
+        immediateActions_en: "### Immediate Actions\n- Engage a DDoS mitigation service.\n- Implement rate limiting and connection limits on edge devices and servers.",
+        immediateActions_es: "### Acciones Inmediatas\n- Contratar un servicio de mitigación de DDoS.\n- Implementar limitación de velocidad y límites de conexión en los dispositivos de borde y servidores.",
     },
     {
         id: "vuln-net-006",
@@ -1199,29 +1308,31 @@ Diseñar aplicaciones para que sean resistentes al agotamiento de recursos. Impl
         recommendations_en: `### Recommendations
 
 #### Short-Term Recommendations
-Disable Dynamic Trunking Protocol (DTP) on all end-user facing switch ports. Statically configure ports as either access or trunk ports.
+- Disable Dynamic Trunking Protocol (DTP) on all end-user facing switch ports.
+- Statically configure ports as either access or trunk ports.
 
 #### Medium-Term Recommendations
-Set the native VLAN on trunk ports to an unused VLAN ID. This prevents double-tagging attacks from reaching any active devices.
+- Set the native VLAN on trunk ports to an unused VLAN ID. This prevents double-tagging attacks from reaching any active devices.
 
 #### Long-Term Recommendations
-Implement 802.1X port-based authentication to control which devices can connect to the network, preventing unauthorized devices from attempting these attacks.`,
+- Implement 802.1X port-based authentication to control which devices can connect to the network, preventing unauthorized devices from attempting these attacks.`,
         recommendations_es: `### Recomendaciones
 
 #### Recomendaciones a Corto Plazo
-Deshabilitar el Protocolo de Enlace Troncal Dinámico (DTP) en todos los puertos de switch que dan al usuario final. Configurar estáticamente los puertos como puertos de acceso o troncales.
+- Deshabilitar el Protocolo de Enlace Troncal Dinámico (DTP) en todos los puertos de switch que dan al usuario final.
+- Configurar estáticamente los puertos como puertos de acceso o troncales.
 
 #### Recomendaciones a Medio Plazo
-Establecer la VLAN nativa en los puertos troncales a un ID de VLAN no utilizado. Esto evita que los ataques de doble etiquetado lleguen a cualquier dispositivo activo.
+- Establecer la VLAN nativa en los puertos troncales a un ID de VLAN no utilizado. Esto evita que los ataques de doble etiquetado lleguen a cualquier dispositivo activo.
 
 #### Recomendaciones a Largo Plazo
-Implementar la autenticación basada en puertos 802.1X para controlar qué dispositivos pueden conectarse a la red, evitando que dispositivos no autorizados intenten estos ataques.`,
+- Implementar la autenticación basada en puertos 802.1X para controlar qué dispositivos pueden conectarse a la red, evitando que dispositivos no autorizados intenten estos ataques.`,
         affectedComponents_en: "### Affected Components\n- Network switches with misconfigured ports.",
         details_en: "### Proof of Concept\n[TODO: Provide steps to perform a VLAN hopping attack using a tool like Yersinia and show access to a resource on a different VLAN.]",
         affectedComponents_es: "### Componentes Afectados\n- Switches de red con puertos mal configurados.",
         details_es: "### Prueba de Concepto\n[TODO: Proporcionar los pasos para realizar un ataque de salto de VLAN utilizando una herramienta como Yersinia y mostrar el acceso a un recurso en una VLAN diferente.]",
-        immediateActions_en: "### Immediate Actions\nDisable Dynamic Trunking Protocol (DTP) on all user-facing switch ports and configure them as static access ports.",
-        immediateActions_es: "### Acciones Inmediatas\nDeshabilitar el Protocolo de Enlace Troncal Dinámico (DTP) en todos los puertos de conmutador orientados al usuario y configurarlos como puertos de acceso estáticos.",
+        immediateActions_en: "### Immediate Actions\n- Disable Dynamic Trunking Protocol (DTP) on all user-facing switch ports and configure them as static access ports.",
+        immediateActions_es: "### Acciones Inmediatas\n- Deshabilitar el Protocolo de Enlace Troncal Dinámico (DTP) en todos los puertos de conmutador orientados al usuario y configurarlos como puertos de acceso estáticos.",
     },
     {
         id: "vuln-net-007",
@@ -1241,29 +1352,31 @@ Implementar la autenticación basada en puertos 802.1X para controlar qué dispo
         recommendations_en: `### Recommendations
 
 #### Short-Term Recommendations
-Configure servers to only support TLS 1.2 and TLS 1.3 with a strong, modern set of cipher suites that provide forward secrecy.
+- Configure servers to only support TLS 1.2 and TLS 1.3 with a strong, modern set of cipher suites that provide forward secrecy.
 
 #### Medium-Term Recommendations
-Implement HTTP Strict Transport Security (HSTS) to ensure that browsers always connect to the server over a secure connection.
+- Implement HTTP Strict Transport Security (HSTS) to ensure that browsers always connect to the server over a secure connection.
 
 #### Long-Term Recommendations
-Establish a corporate policy for cryptographic standards for network communication. Regularly audit all external and internal services for compliance using tools like SSL Labs' SSL Test.`,
+- Establish a corporate policy for cryptographic standards for network communication.
+- Regularly audit all external and internal services for compliance using tools like SSL Labs' SSL Test.`,
         recommendations_es: `### Recomendaciones
 
 #### Recomendaciones a Corto Plazo
-Configurar los servidores para que solo admitan TLS 1.2 y TLS 1.3 con un conjunto de cifrado fuerte y moderno que proporcione secreto hacia adelante (forward secrecy).
+- Configurar los servidores para que solo admitan TLS 1.2 y TLS 1.3 con un conjunto de cifrado fuerte y moderno que proporcione secreto hacia adelante (forward secrecy).
 
 #### Recomendaciones a Medio Plazo
-Implementar HTTP Strict Transport Security (HSTS) para garantizar que los navegadores siempre se conecten al servidor a través de una conexión segura.
+- Implementar HTTP Strict Transport Security (HSTS) para garantizar que los navegadores siempre se conecten al servidor a través de una conexión segura.
 
 #### Recomendaciones a Largo Plazo
-Establecer una política corporativa para los estándares criptográficos para la comunicación de red. Auditar regularmente todos los servicios externos e internos para verificar el cumplimiento utilizando herramientas como la prueba SSL de SSL Labs.`,
+- Establecer una política corporativa para los estándares criptográficos para la comunicación de red.
+- Auditar regularmente todos los servicios externos e internos para verificar el cumplimiento utilizando herramientas como la prueba SSL de SSL Labs.`,
         affectedComponents_en: "### Affected Components\n- [TODO: List the servers or services that support weak encryption protocols or ciphers.]",
         details_en: "### Proof of Concept\n[TODO: Provide a report from a tool like `nmap --script ssl-enum-ciphers` or a report from SSL Labs showing the support for weak protocols or ciphers.]",
         affectedComponents_es: "### Componentes Afectados\n- [TODO: Listar los servidores o servicios que admiten protocolos o conjuntos de cifrado débiles.]",
         details_es: "### Prueba de Concepto\n[TODO: Proporcionar un informe de una herramienta como `nmap --script ssl-enum-ciphers` o un informe de SSL Labs que muestre el soporte para protocolos o cifrados débiles.]",
-        immediateActions_en: "### Immediate Actions\nImmediately disable support for all SSL versions and TLS 1.0/1.1 on the server. Disable all known weak cipher suites.",
-        immediateActions_es: "### Acciones Inmediatas\nDeshabilitar inmediatamente el soporte para todas las versiones de SSL y TLS 1.0/1.1 en el servidor. Deshabilitar todos los conjuntos de cifrado débiles conocidos.",
+        immediateActions_en: "### Immediate Actions\n- Immediately disable support for all SSL versions and TLS 1.0/1.1 on the server.\n- Disable all known weak cipher suites.",
+        immediateActions_es: "### Acciones Inmediatas\n- Deshabilitar inmediatamente el soporte para todas las versiones de SSL y TLS 1.0/1.1 en el servidor.\n- Deshabilitar todos los conjuntos de cifrado débiles conocidos.",
     },
     {
         id: "vuln-net-008",
@@ -1283,29 +1396,35 @@ Establecer una política corporativa para los estándares criptográficos para l
         recommendations_en: `### Recommendations
 
 #### Short-Term Recommendations
-Review and simplify the firewall rulebase to remove unused or redundant rules. Implement a 'deny-by-default' firewall policy.
+- Review and simplify the firewall rulebase to remove unused or redundant rules.
+- Implement a 'deny-by-default' firewall policy.
 
 #### Medium-Term Recommendations
-Implement both ingress and egress filtering. Enable and monitor firewall logs to detect suspicious activity and policy violations.
+- Implement both ingress and egress filtering.
+- Enable and monitor firewall logs to detect suspicious activity and policy violations.
 
 #### Long-Term Recommendations
-Automate the process of firewall rule review and validation. Use a network security policy management tool to maintain consistency and compliance.`,
+- Automate the process of firewall rule review and validation.
+- Use a network security policy management tool to maintain consistency and compliance.`,
         recommendations_es: `### Recomendaciones
 
 #### Recomendaciones a Corto Plazo
-Implementar una política de firewall de 'denegar por defecto'. Revisar y simplificar regularmente la base de reglas del firewall para eliminar reglas no utilizadas o redundantes.
+- Implementar una política de firewall de 'denegar por defecto'.
+- Revisar y simplificar regularmente la base de reglas del firewall para eliminar reglas no utilizadas o redundantes.
 
 #### Recomendaciones a Medio Plazo
-Implementar tanto el filtrado de entrada como el de salida. Habilitar y monitorear los registros del firewall para detectar actividades sospechosas y violaciones de políticas.
+- Implementar tanto el filtrado de entrada como el de salida.
+- Habilitar y monitorear los registros del firewall para detectar actividades sospechosas y violaciones de políticas.
 
 #### Recomendaciones a Largo Plazo
-Automatizar el proceso de revisión y validación de reglas de firewall. Usar una herramienta de gestión de políticas de seguridad de red para mantener la coherencia y el cumplimiento.`,
+- Automatizar el proceso de revisión y validación de reglas de firewall.
+- Usar una herramienta de gestión de políticas de seguridad de red para mantener la coherencia y el cumplimiento.`,
         affectedComponents_en: "### Affected Components\n- The corporate firewall(s).",
         details_en: "### Proof of Concept\n[TODO: Provide a screenshot of the firewall rulebase showing the permissive rule, or demonstrate access to a supposedly blocked port/service.]",
         affectedComponents_es: "### Componentes Afectados\n- El/los firewall(s) corporativo(s).",
         details_es: "### Prueba de Concepto\n[TODO: Proporcionar una captura de pantalla de la base de reglas del firewall que muestre la regla permisiva, o demostrar el acceso a un puerto/servicio supuestamente bloqueado.]",
-        immediateActions_en: "### Immediate Actions\nReview the firewall rulebase and immediately remove or restrict any overly permissive 'any/any' rules. Apply a 'deny-by-default' policy.",
-        immediateActions_es: "### Acciones Inmediatas\nRevisar la base de reglas del firewall y eliminar o restringir inmediatamente cualquier regla 'cualquiera/cualquiera' demasiado permisiva. Aplicar una política de 'denegar por defecto'.",
+        immediateActions_en: "### Immediate Actions\n- Review the firewall rulebase and immediately remove or restrict any overly permissive 'any/any' rules.\n- Apply a 'deny-by-default' policy.",
+        immediateActions_es: "### Acciones Inmediatas\n- Revisar la base de reglas del firewall y eliminar o restringir inmediatamente cualquier regla 'cualquiera/cualquiera' demasiado permisiva.\n- Aplicar una política de 'denegar por defecto'.",
     },
     {
         id: "vuln-net-009",
@@ -1325,29 +1444,31 @@ Automatizar el proceso de revisión y validación de reglas de firewall. Usar un
         recommendations_en: `### Recommendations
 
 #### Short-Term Recommendations
-Use WPA3 encryption for all Wi-Fi networks. If WPA3 is not available, use WPA2 with a strong, long, and complex pre-shared key.
+- Use WPA3 encryption for all Wi-Fi networks.
+- If WPA3 is not available, use WPA2 with a strong, long, and complex pre-shared key.
 
 #### Medium-Term Recommendations
-Implement a guest network that is completely segregated from the internal corporate network for visitors and non-corporate devices.
+- Implement a guest network that is completely segregated from the internal corporate network for visitors and non-corporate devices.
 
 #### Long-Term Recommendations
-Implement enterprise-level Wi-Fi security using 802.1X, which authenticates each user individually (e.g., with a username and password) rather than using a shared key.`,
+- Implement enterprise-level Wi-Fi security using 802.1X, which authenticates each user individually (e.g., with a username and password) rather than using a shared key.`,
         recommendations_es: `### Recomendaciones
 
 #### Recomendaciones a Corto Plazo
-Utilizar cifrado WPA3 para todas las redes Wi-Fi. Si WPA3 no está disponible, usar WPA2 con una clave pre-compartida fuerte, larga y compleja.
+- Utilizar cifrado WPA3 para todas las redes Wi-Fi.
+- Si WPA3 no está disponible, usar WPA2 con una clave pre-compartida fuerte, larga y compleja.
 
 #### Recomendaciones a Medio Plazo
-Implementar una red de invitados que esté completamente segregada de la red corporativa interna para visitantes y dispositivos no corporativos.
+- Implementar una red de invitados que esté completamente segregada de la red corporativa interna para visitantes y dispositivos no corporativos.
 
 #### Recomendaciones a Largo Plazo
-Implementar seguridad Wi-Fi de nivel empresarial utilizando 802.1X, que autentica a cada usuario individualmente (p. ej., con un nombre de usuario y contraseña) en lugar de usar una clave compartida.`,
+- Implementar seguridad Wi-Fi de nivel empresarial utilizando 802.1X, que autentica a cada usuario individualmente (p. ej., con un nombre de usuario y contraseña) en lugar de usar una clave compartida.`,
         affectedComponents_en: "### Affected Components\n- [TODO: Specify the SSID of the insecure Wi-Fi network.]",
         details_en: "### Proof of Concept\n[TODO: Provide evidence of connecting to the unsecured network or cracking a weak WPA2 password using a tool like Aircrack-ng.]",
         affectedComponents_es: "### Componentes Afectados\n- [TODO: Especificar el SSID de la red Wi-Fi insegura.]",
         details_es: "### Prueba de Concepto\n[TODO: Proporcionar evidencia de la conexión a la red no segura o del descifrado de una contraseña WPA2 débil utilizando una herramienta como Aircrack-ng.]",
-        immediateActions_en: "### Immediate Actions\nImmediately disable any open Wi-Fi networks. Change weak WPA2 passwords to strong, complex phrases and enable WPA3 if available.",
-        immediateActions_es: "### Acciones Inmediatas\nDeshabilitar inmediatamente cualquier red Wi-Fi abierta. Cambiar las contraseñas WPA2 débiles por frases complejas y seguras, y habilitar WPA3 si está disponible.",
+        immediateActions_en: "### Immediate Actions\n- Immediately disable any open Wi-Fi networks.\n- Change weak WPA2 passwords to strong, complex phrases and enable WPA3 if available.",
+        immediateActions_es: "### Acciones Inmediatas\n- Deshabilitar inmediatamente cualquier red Wi-Fi abierta.\n- Cambiar las contraseñas WPA2 débiles por frases complejas y seguras, y habilitar WPA3 si está disponible.",
     },
     {
         id: "vuln-net-010",
@@ -1367,29 +1488,29 @@ Implementar seguridad Wi-Fi de nivel empresarial utilizando 802.1X, que autentic
         recommendations_en: `### Recommendations
 
 #### Short-Term Recommendations
-Enforce the use of strong, end-to-end encryption (e.g., TLS 1.2+) for all data in transit, both on internal and external networks.
+- Enforce the use of strong, end-to-end encryption (e.g., TLS 1.2+) for all data in transit, both on internal and external networks.
 
 #### Medium-Term Recommendations
-Disable and decommission all legacy, unencrypted protocols within the environment.
+- Disable and decommission all legacy, unencrypted protocols within the environment.
 
 #### Long-Term Recommendations
-Implement network segmentation and a 'zero-trust' network model, where traffic between different network segments is also encrypted and inspected.`,
+- Implement network segmentation and a 'zero-trust' network model, where traffic between different network segments is also encrypted and inspected.`,
         recommendations_es: `### Recomendaciones
 
 #### Recomendaciones a Corto Plazo
-Hacer cumplir el uso de un cifrado fuerte de extremo a extremo (p. ej., TLS 1.2+) para todos los datos en tránsito, tanto en redes internas como externas.
+- Hacer cumplir el uso de un cifrado fuerte de extremo a extremo (p. ej., TLS 1.2+) para todos los datos en tránsito, tanto en redes internas como externas.
 
 #### Recomendaciones a Medio Plazo
-Deshabilitar y dar de baja todos los protocolos heredados y no cifrados dentro del entorno.
+- Deshabilitar y dar de baja todos los protocolos heredados y no cifrados dentro del entorno.
 
 #### Recomendaciones a Largo Plazo
-Implementar la segmentación de la red y un modelo de red de 'confianza cero', donde el tráfico entre diferentes segmentos de red también se cifra e inspecciona.`,
+- Implementar la segmentación de la red y un modelo de red de 'confianza cero', donde el tráfico entre diferentes segmentos de red también se cifra e inspecciona.`,
         affectedComponents_en: "### Affected Components\n- [TODO: List the applications or services that use unencrypted protocols.]",
         details_en: "### Proof of Concept\n[TODO: Provide a screenshot from Wireshark or a similar tool showing captured sensitive data in cleartext.]",
         affectedComponents_es: "### Componentes Afectados\n- [TODO: Listar las aplicaciones o servicios que utilizan protocolos no cifrados.]",
         details_es: "### Prueba de Concepto\n[TODO: Proporcionar una captura de pantalla de Wireshark o una herramienta similar que muestre datos sensibles capturados en texto claro.]",
-        immediateActions_en: "### Immediate Actions\nImmediately disable any services that transmit sensitive data over unencrypted protocols. Enforce TLS across all applications.",
-        immediateActions_es: "### Acciones Inmediatas\nDeshabilitar inmediatamente cualquier servicio que transmita datos sensibles a través de protocolos no cifrados. Forzar el uso de TLS en todas las aplicaciones.",
+        immediateActions_en: "### Immediate Actions\n- Immediately disable any services that transmit sensitive data over unencrypted protocols.\n- Enforce TLS across all applications.",
+        immediateActions_es: "### Acciones Inmediatas\n- Deshabilitar inmediatamente cualquier servicio que transmita datos sensibles a través de protocolos no cifrados.\n- Forzar el uso de TLS en todas las aplicaciones.",
     },
     // --- INFRASTRUCTURE VULNERABILITIES ---
     {
@@ -1410,29 +1531,35 @@ Implementar la segmentación de la red y un modelo de red de 'confianza cero', d
         recommendations_en: `### Recommendations
 
 #### Short-Term Recommendations
-Establish a robust patch management policy and process. Subscribe to security advisories for all software used in the environment.
+- Establish a robust patch management policy and process.
+- Subscribe to security advisories for all software used in the environment.
 
 #### Medium-Term Recommendations
-Implement an automated patch management system to ensure that patches are applied in a timely manner. Use a vulnerability scanner to regularly scan the infrastructure for unpatched software.
+- Implement an automated patch management system to ensure that patches are applied in a timely manner.
+- Use a vulnerability scanner to regularly scan the infrastructure for unpatched software.
 
 #### Long-Term Recommendations
-Integrate vulnerability scanning into the CI/CD pipeline. Use software composition analysis (SCA) tools to identify and manage vulnerabilities in third-party libraries.`,
+- Integrate vulnerability scanning into the CI/CD pipeline.
+- Use software composition analysis (SCA) tools to identify and manage vulnerabilities in third-party libraries.`,
         recommendations_es: `### Recomendaciones
 
 #### Recomendaciones a Corto Plazo
-Establecer una política y un proceso de gestión de parches sólidos. Suscribirse a los avisos de seguridad de todo el software utilizado en el entorno.
+- Establecer una política y un proceso de gestión de parches sólidos.
+- Suscribirse a los avisos de seguridad de todo el software utilizado en el entorno.
 
 #### Recomendaciones a Medio Plazo
-Implementar un sistema de gestión de parches automatizado para garantizar que los parches se apliquen de manera oportuna. Usar un escáner de vulnerabilidades para escanear regularmente la infraestructura en busca de software sin parches.
+- Implementar un sistema de gestión de parches automatizado para garantizar que los parches se apliquen de manera oportuna.
+- Usar un escáner de vulnerabilidades para escanear regularmente la infraestructura en busca de software sin parches.
 
 #### Recomendaciones a Largo Plazo
-Integrar el escaneo de vulnerabilidades en el pipeline de CI/CD. Usar herramientas de análisis de composición de software (SCA) para identificar y gestionar las vulnerabilidades en las bibliotecas de terceros.`,
+- Integrar el escaneo de vulnerabilidades en el pipeline de CI/CD.
+- Usar herramientas de análisis de composición de software (SCA) para identificar y gestionar las vulnerabilidades en las bibliotecas de terceros.`,
         affectedComponents_en: "### Affected Components\n- [TODO: List the unpatched software, its version, and the server(s) it is running on.]",
         details_en: "### Proof of Concept\n[TODO: Provide the steps to exploit the vulnerability, including any public exploit code used and screenshots showing the compromise.]",
         affectedComponents_es: "### Componentes Afectados\n- [TODO: Listar el software sin parches, su versión y el/los servidor(es) en el/los que se está ejecutando.]",
         details_es: "### Prueba de Concepto\n[TODO: Proporcionar los pasos para explotar la vulnerabilidad, incluido cualquier código de explotación público utilizado y capturas de pantalla que muestren el compromiso.]",
-        immediateActions_en: "### Immediate Actions\nApply security patches to the vulnerable software immediately. If a patch is not available, isolate the system from the network or disable the service.",
-        immediateActions_es: "### Acciones Inmediatas\nAplicar inmediatamente los parches de seguridad al software vulnerable. Si no hay un parche disponible, aislar el sistema de la red o deshabilitar el servicio.",
+        immediateActions_en: "### Immediate Actions\n- Apply security patches to the vulnerable software immediately.\n- If a patch is not available, isolate the system from the network or disable the service.",
+        immediateActions_es: "### Acciones Inmediatas\n- Aplicar inmediatamente los parches de seguridad al software vulnerable.\n- Si no hay un parche disponible, aislar el sistema de la red o deshabilitar el servicio.",
     },
     {
         id: "vuln-infra-002",
@@ -1452,29 +1579,31 @@ Integrar el escaneo de vulnerabilidades en el pipeline de CI/CD. Usar herramient
         recommendations_en: `### Recommendations
 
 #### Short-Term Recommendations
-Audit the entire infrastructure for any use of default credentials and change them to strong, unique passwords.
+- Audit the entire infrastructure for any use of default credentials and change them to strong, unique passwords.
 
 #### Medium-Term Recommendations
-Incorporate checks for default credentials into the standard build and deployment process for all new systems.
+- Incorporate checks for default credentials into the standard build and deployment process for all new systems.
 
 #### Long-Term Recommendations
-Automate scanning for default credentials across the environment. Implement a policy that prohibits the deployment of any system with default credentials active.`,
+- Automate scanning for default credentials across the environment.
+- Implement a policy that prohibits the deployment of any system with default credentials active.`,
         recommendations_es: `### Recomendaciones
 
 #### Recomendaciones a Corto Plazo
-Auditar toda la infraestructura en busca de cualquier uso de credenciales predeterminadas y cambiarlas por contraseñas seguras y únicas.
+- Auditar toda la infraestructura en busca de cualquier uso de credenciales predeterminadas y cambiarlas por contraseñas seguras y únicas.
 
 #### Recomendaciones a Medio Plazo
-Incorporar comprobaciones de credenciales predeterminadas en el proceso de compilación e implementación estándar para todos los sistemas nuevos.
+- Incorporar comprobaciones de credenciales predeterminadas en el proceso de compilación e implementación estándar para todos los sistemas nuevos.
 
 #### Recomendaciones a Largo Plazo
-Automatizar el escaneo en busca de credenciales predeterminadas en todo el entorno. Implementar una política que prohíba la implementación de cualquier sistema con credenciales predeterminadas activas.`,
+- Automatizar el escaneo en busca de credenciales predeterminadas en todo el entorno.
+- Implementar una política que prohíba la implementación de cualquier sistema con credenciales predeterminadas activas.`,
         affectedComponents_en: "### Affected Components\n- [TODO: List the systems or devices using default credentials.]",
         details_en: "### Proof of Concept\n[TODO: Provide a screenshot of a successful login using the default credentials.]",
         affectedComponents_es: "### Componentes Afectados\n- [TODO: Listar los sistemas o dispositivos que utilizan credenciales predeterminadas.]",
         details_es: "### Prueba de Concepto\n[TODO: Proporcionar una captura de pantalla de un inicio de sesión exitoso utilizando las credenciales predeterminadas.]",
-        immediateActions_en: "### Immediate Actions\nImmediately change all default passwords on affected systems to strong, unique values. Disable the default accounts if they are not needed.",
-        immediateActions_es: "### Acciones Inmediatas\nCambiar inmediatamente todas las contraseñas predeterminadas en los sistemas afectados por valores fuertes y únicos. Deshabilitar las cuentas predeterminadas si no son necesarias.",
+        immediateActions_en: "### Immediate Actions\n- Immediately change all default passwords on affected systems to strong, unique values.\n- Disable the default accounts if they are not needed.",
+        immediateActions_es: "### Acciones Inmediatas\n- Cambiar inmediatamente todas las contraseñas predeterminadas en los sistemas afectados por valores fuertes y únicos.\n- Deshabilitar las cuentas predeterminadas si no son necesarias.",
     },
     {
         id: "vuln-infra-003",
@@ -1494,29 +1623,31 @@ Automatizar el escaneo en busca de credenciales predeterminadas en todo el entor
         recommendations_en: `### Recommendations
 
 #### Short-Term Recommendations
-Validate user input against a strict allow-list of characters or file paths. Ideally, do not pass user input directly to filesystem APIs.
+- Validate user input against a strict allow-list of characters or file paths.
+- Ideally, do not pass user input directly to filesystem APIs.
 
 #### Medium-Term Recommendations
-Use a mapping mechanism where user input corresponds to a predefined, safe file path on the server.
+- Use a mapping mechanism where user input corresponds to a predefined, safe file path on the server.
 
 #### Long-Term Recommendations
-Run the application with the minimum necessary filesystem permissions in a chrooted or sandboxed environment to limit the scope of a potential traversal attack.`,
+- Run the application with the minimum necessary filesystem permissions in a chrooted or sandboxed environment to limit the scope of a potential traversal attack.`,
         recommendations_es: `### Recomendaciones
 
 #### Recomendaciones a Corto Plazo
-Validar la entrada del usuario contra una lista blanca estricta de caracteres o rutas de archivo. Idealmente, no pasar la entrada del usuario directamente a las API del sistema de archivos.
+- Validar la entrada del usuario contra una lista blanca estricta de caracteres o rutas de archivo.
+- Idealmente, no pasar la entrada del usuario directamente a las API del sistema de archivos.
 
 #### Recomendaciones a Medio Plazo
-Usar un mecanismo de mapeo donde la entrada del usuario corresponda a una ruta de archivo predefinida y segura en el servidor.
+- Usar un mecanismo de mapeo donde la entrada del usuario corresponda a una ruta de archivo predefinida y segura en el servidor.
 
 #### Recomendaciones a Largo Plazo
-Ejecutar la aplicación con los permisos mínimos necesarios del sistema de archivos en un entorno chroot o sandbox para limitar el alcance de un posible ataque de salto.`,
+- Ejecutar la aplicación con los permisos mínimos necesarios del sistema de archivos en un entorno chroot o sandbox para limitar el alcance de un posible ataque de salto.`,
         affectedComponents_en: "### Affected Components\n- [TODO: List the vulnerable URL and parameter.]",
         details_en: "### Proof of Concept\n[TODO: Provide a request with a path traversal payload and show the contents of a sensitive file in the response.]",
         affectedComponents_es: "### Componentes Afectados\n- [TODO: Listar la URL y el parámetro vulnerables.]",
         details_es: "### Prueba de Concepto\n[TODO: Proporcionar una solicitud con una carga útil de salto de ruta y mostrar el contenido de un archivo sensible en la respuesta.]",
-        immediateActions_en: "### Immediate Actions\nImplement strict input validation and sanitization on the affected parameters to filter out directory traversal characters like `../`.",
-        immediateActions_es: "### Acciones Inmediatas\nImplementar una validación y saneamiento de entrada estrictos en los parámetros afectados para filtrar los caracteres de salto de directorio como `../`.",
+        immediateActions_en: "### Immediate Actions\n- Implement strict input validation and sanitization on the affected parameters to filter out directory traversal characters like `../`.",
+        immediateActions_es: "### Acciones Inmediatas\n- Implementar una validación y saneamiento de entrada estrictos en los parámetros afectados para filtrar los caracteres de salto de directorio como `../`.",
     },
     {
         id: "vuln-infra-004",
@@ -1536,29 +1667,31 @@ Ejecutar la aplicación con los permisos mínimos necesarios del sistema de arch
         recommendations_en: `### Recommendations
 
 #### Short-Term Recommendations
-Patch the underlying vulnerability that led to RCE. This could involve updating software, fixing an injection flaw, or disabling the vulnerable feature.
+- Patch the underlying vulnerability that led to RCE. This could involve updating software, fixing an injection flaw, or disabling the vulnerable feature.
 
 #### Medium-Term Recommendations
-Implement the principle of least privilege. Run application processes with the minimum necessary permissions to limit the impact of a potential RCE.
+- Implement the principle of least privilege. Run application processes with the minimum necessary permissions to limit the impact of a potential RCE.
 
 #### Long-Term Recommendations
-Use a Web Application Firewall (WAF) with rules to detect and block command injection attempts. Implement egress filtering to prevent compromised systems from communicating with attacker-controlled servers.`,
+- Use a Web Application Firewall (WAF) with rules to detect and block command injection attempts.
+- Implement egress filtering to prevent compromised systems from communicating with attacker-controlled servers.`,
         recommendations_es: `### Recomendaciones
 
 #### Recomendaciones a Corto Plazo
-Parchear la vulnerabilidad subyacente que condujo a la RCE. Esto podría implicar la actualización del software, la corrección de una falla de inyección o la desactivación de la función vulnerable.
+- Parchear la vulnerabilidad subyacente que condujo a la RCE. Esto podría implicar la actualización del software, la corrección de una falla de inyección o la desactivación de la función vulnerable.
 
 #### Recomendaciones a Medio Plazo
-Implementar el principio de privilegio mínimo. Ejecutar los procesos de la aplicación con los permisos mínimos necesarios para limitar el impacto de una posible RCE.
+- Implementar el principio de privilegio mínimo. Ejecutar los procesos de la aplicación con los permisos mínimos necesarios para limitar el impacto de una posible RCE.
 
 #### Recomendaciones a Largo Plazo
-Usar un Web Application Firewall (WAF) con rules para detectar y bloquear los patrones de ataque comunes. Implementar el filtrado de salida para evitar que los sistemas comprometidos se comuniquen con los servidores controlados por el atacante.`,
+- Usar un Web Application Firewall (WAF) con rules para detectar y bloquear los patrones de ataque comunes.
+- Implementar el filtrado de salida para evitar que los sistemas comprometidos se comuniquen con los servidores controlados por el atacante.`,
         affectedComponents_en: "### Affected Components\n- [TODO: Specify the system and vulnerability that allows RCE.]",
         details_en: "### Proof of Concept\n[TODO: Provide the steps taken to achieve remote code execution and show the output of a command (e.g., `whoami`, `id`) running on the target server.]",
         affectedComponents_es: "### Componentes Afectados\n- [TODO: Especificar el sistema y la vulnerabilidad que permite la RCE.]",
         details_es: "### Prueba de Concepto\n[TODO: Proporcionar los pasos seguidos para lograr la ejecución remota de código y mostrar la salida de un comando (p. ej., `whoami`, `id`) ejecutándose en el servidor objetivo.]",
-        immediateActions_en: "### Immediate Actions\nIsolate the compromised system from the network. Patch the underlying vulnerability (e.g., update software, fix injection flaw) immediately.",
-        immediateActions_es: "### Acciones Inmediatas\nAislar el sistema comprometido de la red. Parchear inmediatamente la vulnerabilidad subyacente (p. ej., actualizar el software, corregir la falla de inyección).",
+        immediateActions_en: "### Immediate Actions\n- Isolate the compromised system from the network.\n- Patch the underlying vulnerability (e.g., update software, fix injection flaw) immediately.",
+        immediateActions_es: "### Acciones Inmediatas\n- Aislar el sistema comprometido de la red.\n- Parchear inmediatamente la vulnerabilidad subyacente (p. ej., actualizar el software, corregir la falla de inyección).",
     },
     {
         id: "vuln-infra-005",
@@ -1578,29 +1711,31 @@ Usar un Web Application Firewall (WAF) con rules para detectar y bloquear los pa
         recommendations_en: `### Recommendations
 
 #### Short-Term Recommendations
-Apply the principle of least privilege to all users, processes, and files. Regularly audit SUID/GUID binaries and file permissions.
+- Apply the principle of least privilege to all users, processes, and files.
+- Regularly audit SUID/GUID binaries and file permissions.
 
 #### Medium-Term Recommendations
-Keep the operating system and all software fully patched to protect against kernel and software exploits.
+- Keep the operating system and all software fully patched to protect against kernel and software exploits.
 
 #### Long-Term Recommendations
-Use mandatory access control systems like SELinux or AppArmor to enforce strict boundaries on what processes can do, even if they are compromised.`,
+- Use mandatory access control systems like SELinux or AppArmor to enforce strict boundaries on what processes can do, even if they are compromised.`,
         recommendations_es: `### Recomendaciones
 
 #### Recomendaciones a Corto Plazo
-Aplicar el principio de privilegio mínimo a todos los usuarios, procesos y archivos. Auditar regularmente los binarios SUID/GUID y los permisos de los archivos.
+- Aplicar el principio de privilegio mínimo a todos los usuarios, procesos y archivos.
+- Auditar regularmente los binarios SUID/GUID y los permisos de los archivos.
 
 #### Recomendaciones a Medio Plazo
-Mantener el sistema operativo y todo el software completamente parcheados para protegerse contra exploits del kernel y de software.
+- Mantener el sistema operativo y todo el software completamente parcheados para protegerse contra exploits del kernel y de software.
 
 #### Recomendaciones a Largo Plazo
-Utilizar sistemas de control de acceso obligatorio como SELinux o AppArmor para imponer límites estrictos sobre lo que pueden hacer los procesos, incluso si están comprometidos.`,
+- Utilizar sistemas de control de acceso obligatorio como SELinux o AppArmor para imponer límites estrictos sobre lo que pueden hacer los procesos, incluso si están comprometidos.`,
         affectedComponents_en: "### Affected Components\n- [TODO: Specify the operating system or application and the specific misconfiguration or vulnerability that allows privilege escalation.]",
         details_en: "### Proof of Concept\n[TODO: Provide the sequence of commands used to escalate privileges and show the output of `whoami` or `id` as the high-privilege user.]",
         affectedComponents_es: "### Componentes Afectados\n- [TODO: Especificar el sistema operativo o la aplicación y la configuración incorrecta o vulnerabilidad específica que permite la escalada de privilegios.]",
         details_es: "### Prueba de Concepto\n[TODO: Proporcionar la secuencia de comandos utilizados para escalar privilegios y mostrar la salida de `whoami` o `id` como el usuario de altos privilegios.]",
-        immediateActions_en: "### Immediate Actions\nImmediately patch the vulnerable component or correct the misconfiguration (e.g., remove SUID bit, fix permissions).",
-        immediateActions_es: "### Acciones Inmediatas\nParchear inmediatamente el componente vulnerable o corregir la configuración incorrecta (p. ej., eliminar el bit SUID, corregir los permisos).",
+        immediateActions_en: "### Immediate Actions\n- Immediately patch the vulnerable component or correct the misconfiguration (e.g., remove SUID bit, fix permissions).",
+        immediateActions_es: "### Acciones Inmediatas\n- Parchear inmediatamente el componente vulnerable o corregir la configuración incorrecta (p. ej., eliminar el bit SUID, corregir los permisos).",
     },
     {
         id: "vuln-infra-006",
@@ -1620,29 +1755,33 @@ Utilizar sistemas de control de acceso obligatorio como SELinux o AppArmor para 
         recommendations_en: `### Recommendations
 
 #### Short-Term Recommendations
-Disable verbose error reporting in production environments. Configure web servers to suppress software version banners.
+- Disable verbose error reporting in production environments.
+- Configure web servers to suppress software version banners.
 
 #### Medium-Term Recommendations
-Ensure that sensitive files, configuration files, and source code repositories are not accessible from the web root.
+- Ensure that sensitive files, configuration files, and source code repositories are not accessible from the web root.
 
 #### Long-Term Recommendations
-Implement a standardized logging mechanism that captures detailed errors for internal analysis but does not expose them to users. Regularly scan for information disclosure vulnerabilities.`,
+- Implement a standardized logging mechanism that captures detailed errors for internal analysis but does not expose them to users.
+- Regularly scan for information disclosure vulnerabilities.`,
         recommendations_es: `### Recomendaciones
 
 #### Recomendaciones a Corto Plazo
-Deshabilitar los informes de errores detallados en los entornos de producción. Configurar los servidores web para suprimir los banners de versión de software.
+- Deshabilitar los informes de errores detallados en los entornos de producción.
+- Configurar los servidores web para suprimir los banners de versión de software.
 
 #### Recomendaciones a Medio Plazo
-Asegurarse de que los archivos sensibles, los archivos de configuración y los repositorios de código fuente no sean accesibles desde la raíz web.
+- Asegurarse de que los archivos sensibles, los archivos de configuración y los repositorios de código fuente no sean accesibles desde la raíz web.
 
 #### Recomendaciones a Largo Plazo
-Implementar un mecanismo de registro estandarizado que capture errores detallados para el análisis interno pero no los exponga a los usuarios. Escanear regularmente en busca de vulnerabilidades de divulgación de información.`,
+- Implementar un mecanismo de registro estandarizado que capture errores detallados para el análisis interno pero no los exponga a los usuarios.
+- Escanear regularmente en busca de vulnerabilidades de divulgación de información.`,
         affectedComponents_en: "### Affected Components\n- [TODO: Specify what information is being disclosed and where (e.g., error page, server header, .git directory).]",
         details_en: "### Proof of Concept\n[TODO: Provide a screenshot or server response that shows the disclosed information.]",
         affectedComponents_es: "### Componentes Afectados\n- [TODO: Especificar qué información se está divulgando y dónde (p. ej., página de error, encabezado del servidor, directorio .git).]",
         details_es: "### Prueba de Concepto\n[TODO: Proporcionar una captura de pantalla o respuesta del servidor que muestre la información divulgada.]",
-        immediateActions_en: "### Immediate Actions\nImmediately disable verbose error messages in the production environment. Remove any exposed sensitive files or directories from the web root.",
-        immediateActions_es: "### Acciones Inmediatas\nDeshabilitar inmediatamente los mensajes de error detallados en el entorno de producción. Eliminar cualquier archivo o directorio sensible expuesto de la raíz web.",
+        immediateActions_en: "### Immediate Actions\n- Immediately disable verbose error messages in the production environment.\n- Remove any exposed sensitive files or directories from the web root.",
+        immediateActions_es: "### Acciones Inmediatas\n- Deshabilitar inmediatamente los mensajes de error detallados en el entorno de producción.\n- Eliminar cualquier archivo o directorio sensible expuesto de la raíz web.",
     },
     {
         id: "vuln-infra-007",
@@ -1662,29 +1801,33 @@ Implementar un mecanismo de registro estandarizado que capture errores detallado
         recommendations_en: `### Recommendations
 
 #### Short-Term Recommendations
-Never call system shell commands with user-supplied input. Use built-in language functions or libraries that provide the required functionality without invoking a shell.
+- Never call system shell commands with user-supplied input.
+- Use built-in language functions or libraries that provide the required functionality without invoking a shell.
 
 #### Medium-Term Recommendations
-If calling a system command is unavoidable, use structured APIs that accept a list of arguments rather than a single command string. This prevents the shell from interpreting metacharacters.
+- If calling a system command is unavoidable, use structured APIs that accept a list of arguments rather than a single command string. This prevents the shell from interpreting metacharacters.
 
 #### Long-Term Recommendations
-Run the application with the minimum privileges necessary. Implement a Web Application Firewall (WAF) with rules to detect and block command injection attempts.`,
+- Run the application with the minimum privileges necessary.
+- Implement a Web Application Firewall (WAF) with rules to detect and block command injection attempts.`,
         recommendations_es: `### Recomendaciones
 
 #### Recomendaciones a Corto Plazo
-Nunca llamar a comandos de la shell del sistema con datos suministrados por el usuario. Usar funciones o bibliotecas integradas del lenguaje que proporcionen la funcionalidad requerida sin invocar una shell.
+- Nunca llamar a comandos de la shell del sistema con datos suministrados por el usuario.
+- Usar funciones o bibliotecas integradas del lenguaje que proporcionen la funcionalidad requerida sin invocar una shell.
 
 #### Recomendaciones a Medio Plazo
-Si es inevitable llamar a un comando del sistema, usar API estructuradas que acepten una lista de argumentos en lugar de una sola cadena de comando. Esto evita que la shell interprete los metacaracteres.
+- Si es inevitable llamar a un comando del sistema, usar API estructuradas que acepten una lista de argumentos en lugar de una sola cadena de comando. Esto evita que la shell interprete los metacaracteres.
 
 #### Recomendaciones a Largo Plazo
-Ejecutar la aplicación con los privilegios mínimos necesarios. Implementar un Web Application Firewall (WAF) con reglas para detectar y bloquear los patrones de ataque comunes. `,
+- Ejecutar la aplicación con los privilegios mínimos necesarios.
+- Implementar un Web Application Firewall (WAF) con reglas para detectar y bloquear los patrones de ataque comunes.`,
         affectedComponents_en: "### Affected Components\n- [TODO: Specify the vulnerable function, parameter, and URL.]",
         details_en: "### Proof of Concept\n[TODO: Provide a request with a command injection payload (e.g., `; id`) and show the output of the executed command.]",
         affectedComponents_es: "### Componentes Afectados\n- [TODO: Especificar la función, el parámetro y la URL vulnerables.]",
         details_es: "### Prueba de Concepto\n[TODO: Proporcionar una solicitud con una carga útil de inyección de comandos (p. ej., `; id`) y mostrar la salida del comando ejecutado.]",
-        immediateActions_en: "### Immediate Actions\nImplement input sanitization to filter or escape shell metacharacters from user-supplied data in the vulnerable function.",
-        immediateActions_es: "### Acciones Inmediatas\nImplementar inmediatamente el saneamiento de entradas para filtrar o escapar los metacaracteres de la shell de los datos proporcionados por el usuario en la función vulnerable.",
+        immediateActions_en: "### Immediate Actions\n- Implement input sanitization to filter or escape shell metacharacters from user-supplied data in the vulnerable function.",
+        immediateActions_es: "### Acciones Inmediatas\n- Implementar inmediatamente el saneamiento de entradas para filtrar o escapar los metacaracteres de la shell de los datos proporcionados por el usuario en la función vulnerable.",
     },
     {
         id: "vuln-infra-008",
@@ -1704,29 +1847,31 @@ Ejecutar la aplicación con los privilegios mínimos necesarios. Implementar un 
         recommendations_en: `### Recommendations
 
 #### Short-Term Recommendations
-Avoid passing user-supplied input to filesystem APIs entirely. Use an allow-list of safe, known file identifiers instead.
+- Avoid passing user-supplied input to filesystem APIs entirely.
+- Use an allow-list of safe, known file identifiers instead.
 
 #### Medium-Term Recommendations
-If user input in file paths is unavoidable, ensure the application canonicalizes the path and verifies that it starts with the expected base directory before using it.
+- If user input in file paths is unavoidable, ensure the application canonicalizes the path and verifies that it starts with the expected base directory before using it.
 
 #### Long-Term Recommendations
-Run the application in a sandboxed or chrooted jail with minimal filesystem access to limit the impact of a successful traversal attack.`,
+- Run the application in a sandboxed or chrooted jail with minimal filesystem access to limit the impact of a successful traversal attack.`,
         recommendations_es: `### Recomendaciones
 
 #### Recomendaciones a Corto Plazo
-Evitar por completo pasar la entrada proporcionada por el usuario a las API del sistema de archivos. En su lugar, utilizar una lista blanca de identificadores de archivo seguros y conocidos.
+- Evitar por completo pasar la entrada proporcionada por el usuario a las API del sistema de archivos.
+- En su lugar, utilizar una lista blanca de identificadores de archivo seguros y conocidos.
 
 #### Recomendaciones a Medio Plazo
-Si la entrada del usuario en las rutas de archivo es inevitable, asegurarse de que la aplicación canonicalice la ruta y verifique que comienza con el directorio base esperado antes de usarla.
+- Si la entrada del usuario en las rutas de archivo es inevitable, asegurarse de que la aplicación canonicalice la ruta y verifique que comienza con el directorio base esperado antes de usarla.
 
 #### Recomendaciones a Largo Plazo
-Ejecutar la aplicación en una jaula (jail) chroot o sandbox con acceso mínimo al sistema de archivos para limitar el impacto de un ataque de salto exitoso.`,
+- Ejecutar la aplicación en una jaula (jail) chroot o sandbox con acceso mínimo al sistema de archivos para limitar el impacto de un ataque de salto exitoso.`,
         affectedComponents_en: "### Affected Components\n- [TODO: List the vulnerable URL and the ID parameter.]",
         details_en: "### Proof of Concept\n[TODO: Provide a request with a path traversal payload and show the contents of a sensitive file (e.g., /etc/passwd) in the response.]",
         affectedComponents_es: "### Componentes Afectados\n- [TODO: Listar la URL vulnerable y el parámetro de ID.]",
         details_es: "### Prueba de Concepto\n[TODO: Proporcionar una solicitud con una carga útil de salto de ruta y mostrar el contenido de un archivo sensible (p. ej., /etc/passwd) en la respuesta.]",
-        immediateActions_en: "### Immediate Actions\nImplement strict input validation on the vulnerable parameter to filter directory traversal characters. Canonicalize all file paths before use.",
-        immediateActions_es: "### Acciones Inmediatas\nImplementar una validación de entrada estricta en el parámetro vulnerable para filtrar los caracteres de salto de directorio. Canonicalizar todas las rutas de archivo antes de su uso.",
+        immediateActions_en: "### Immediate Actions\n- Implement strict input validation on the vulnerable parameter to filter directory traversal characters.\n- Canonicalize all file paths before use.",
+        immediateActions_es: "### Acciones Inmediatas\n- Implementar una validación de entrada estricta en el parámetro vulnerable para filtrar los caracteres de salto de directorio.\n- Canonicalizar todas las rutas de archivo antes de su uso.",
     },
     {
         id: "vuln-infra-009",
@@ -1746,29 +1891,33 @@ Ejecutar la aplicación en una jaula (jail) chroot o sandbox con acceso mínimo 
         recommendations_en: `### Recommendations
 
 #### Short-Term Recommendations
-Do not use user-supplied input to determine the redirect destination. Use a server-side mapping of short names or IDs to full target URLs.
+- Do not use user-supplied input to determine the redirect destination.
+- Use a server-side mapping of short names or IDs to full target URLs.
 
 #### Medium-Term Recommendations
-If dynamic redirects are necessary, maintain an allow-list of trusted domains and validate the redirect parameter against this list. Ensure the URL scheme is also validated (e.g., only allow \`http\` and \`https\` ).
+- If dynamic redirects are necessary, maintain an allow-list of trusted domains and validate the redirect parameter against this list.
+- Ensure the URL scheme is also validated (e.g., only allow \`http\` and \`https\` ).
 
 #### Long-Term Recommendations
-Display an intermediate page that clearly informs the user they are being redirected to another website, and require them to click a link to proceed.`,
+- Display an intermediate page that clearly informs the user they are being redirected to another website, and require them to click a link to proceed.`,
         recommendations_es: `### Recomendaciones
 
 #### Recomendaciones a Corto Plazo
-No utilizar la entrada proporcionada por el usuario para determinar el destino de la redirección. Utilizar un mapeo del lado del servidor de nombres cortos o ID a las URL de destino completas.
+- No utilizar la entrada proporcionada por el usuario para determinar el destino de la redirección.
+- Utilizar un mapeo del lado del servidor de nombres cortos o ID a las URL de destino completas.
 
 #### Recomendaciones a Medio Plazo
-Si las redirecciones dinámicas son necesarias, mantener una lista blanca de dominios de confianza y validar el parámetro de redirección contra esta lista. Asegurarse de que también se valide el esquema de la URL (p. ej., solo permitir \`http\` y \`https\` ).
+- Si las redirecciones dinámicas son necesarias, mantener una lista blanca de dominios de confianza y validar el parámetro de redirección contra esta lista.
+- Asegurarse de que también se valide el esquema de la URL (p. ej., solo permitir \`http\` y \`https\` ).
 
 #### Recomendaciones a Largo Plazo
-Mostrar una página intermedia que informe claramente al usuario que está siendo redirigido a otro sitio web, y requerir que haga clic en un enlace para continuar.`,
+- Mostrar una página intermedia que informe claramente al usuario que está siendo redirigido a otro sitio web, y requerir que haga clic en un enlace para continuar.`,
         affectedComponents_en: "### Affected Components\n- [TODO: List the vulnerable URL and the ID parameter.]",
         details_en: "### Proof of Concept\n[TODO: Provide a URL that, when clicked, redirects the user to an external, attacker-controlled domain.]",
         affectedComponents_es: "### Componentes Afectados\n- [TODO: Listar la URL vulnerable y el parámetro de ID.]",
         details_es: "### Prueba de Concepto\n[TODO: Proporcionar una URL que, al hacer clic, redirija al usuario a un dominio externo controlado por el atacante.]",
-        immediateActions_en: "### Immediate Actions\nImplement a server-side allow-list for all redirect URLs. Disallow any redirection to external domains.",
-        immediateActions_es: "### Acciones Inmediatas\nImplementar una lista blanca del lado del servidor para todas las URL de redirección. No permitir ninguna redirección a dominios externos.",
+        immediateActions_en: "### Immediate Actions\n- Implement a server-side allow-list for all redirect URLs.\n- Disallow any redirection to external domains.",
+        immediateActions_es: "### Acciones Inmediatas\n- Implementar una lista blanca del lado del servidor para todas las URL de redirección.\n- No permitir ninguna redirección a dominios externos.",
     },
     {
         id: "vuln-infra-010",
@@ -1788,29 +1937,29 @@ Mostrar una página intermedia que informe claramente al usuario que está siend
         recommendations_en: `### Recommendations
 
 #### Short-Term Recommendations
-Apply the principle of least privilege. Grant access only to the specific user groups that require it, with the minimum necessary permissions (e.g., read-only vs. read/write).
+- Apply the principle of least privilege. Grant access only to the specific user groups that require it, with the minimum necessary permissions (e.g., read-only vs. read/write).
 
 #### Medium-Term Recommendations
-Implement a regular auditing process for file share permissions to identify and remediate overly permissive configurations.
+- Implement a regular auditing process for file share permissions to identify and remediate overly permissive configurations.
 
 #### Long-Term Recommendations
-Consider migrating from traditional file shares to more modern, secure collaboration platforms that offer more granular access controls and better auditing capabilities.`,
+- Consider migrating from traditional file shares to more modern, secure collaboration platforms that offer more granular access controls and better auditing capabilities.`,
         recommendations_es: `### Recomendaciones
 
 #### Recomendaciones a Corto Plazo
-Aplicar el principio de privilegio mínimo. Otorgar acceso solo a los grupos de usuarios específicos que lo requieran, con los permisos mínimos necesarios (p. ej., solo lectura frente a lectura/escritura).
+- Aplicar el principio de privilegio mínimo. Otorgar acceso solo a los grupos de usuarios específicos que lo requieran, con los permisos mínimos necesarios (p. ej., solo lectura frente a lectura/escritura).
 
 #### Recomendaciones a Medio Plazo
-Implementar un proceso de auditoría regular para los permisos de los recursos compartidos de archivos para identificar y remediar configuraciones demasiado permisivas.
+- Implementar un proceso de auditoría regular para los permisos de los recursos compartidos de archivos para identificar y remediar configuraciones demasiado permisivas.
 
 #### Recomendaciones a Largo Plazo
-Considerar la migración de los recursos compartidos de archivos tradicionales a plataformas de colaboración más modernas y seguras que ofrezcan controles de acceso más granulares y mejores capacidades de auditoría.`,
+- Considerar la migración de los recursos compartidos de archivos tradicionales a plataformas de colaboración más modernas y seguras que ofrezcan controles de acceso más granulares y mejores capacidades de auditoría.`,
         affectedComponents_en: "### Affected Components\n- [TODO: List the server name and share name (e.g., \\\\SERVER\\share).]",
         details_en: "### Proof of Concept\n[TODO: Provide a screenshot showing access to the insecure share and a listing of its contents.]",
         affectedComponents_es: "### Componentes Afectados\n- [TODO: Listar el nombre del servidor y el nombre del recurso compartido (p. ej., \\\\SERVIDOR\\recurso).]",
         details_es: "### Prueba de Concepto\n[TODO: Proporcionar una captura de pantalla que muestre el acceso al recurso compartido inseguro y una lista de su contenido.]",
-        immediateActions_en: "### Immediate Actions\nImmediately remove 'Everyone' or 'Anonymous' permissions from the file share. Apply access controls based on the principle of least privilege.",
-        immediateActions_es: "### Acciones Inmediatas\nEliminar inmediatamente los permisos de 'Todos' o 'Anónimo' del recurso compartido de archivos. Aplicar controles de acceso basados en el principio de privilegio mínimo.",
+        immediateActions_en: "### Immediate Actions\n- Immediately remove 'Everyone' or 'Anonymous' permissions from the file share.\n- Apply access controls based on the principle of least privilege.",
+        immediateActions_es: "### Acciones Inmediatas\n- Eliminar inmediatamente los permisos de 'Todos' o 'Anónimo' del recurso compartido de archivos.\n- Aplicar controles de acceso basados en el principio de privilegio mínimo.",
     },
     {
         id: "vuln-infra-011",
@@ -1830,29 +1979,33 @@ Considerar la migración de los recursos compartidos de archivos tradicionales a
         recommendations_en: `### Recommendations
 
 #### Short-Term Recommendations
-Remove the sensitive data from the file share. Implement a secure secrets management solution for storing service account passwords and other credentials.
+- Remove the sensitive data from the file share.
+- Implement a secure secrets management solution for storing service account passwords and other credentials.
 
 #### Medium-Term Recommendations
-Implement a data loss prevention (DLP) solution to automatically scan file shares for sensitive information.
+- Implement a data loss prevention (DLP) solution to automatically scan file shares for sensitive information.
 
 #### Long-Term Recommendations
-Conduct regular security awareness training for all employees on the proper handling and storage of sensitive data. Establish a clear data classification policy.`,
+- Conduct regular security awareness training for all employees on the proper handling and storage of sensitive data.
+- Establish a clear data classification policy.`,
         recommendations_es: `### Recomendaciones
 
 #### Recomendaciones a Corto Plazo
-Eliminar los datos sensibles del recurso compartido de archivos. Implementar una solución segura de gestión de secretos para almacenar contraseñas de cuentas de servicio y otras credenciales.
+- Eliminar los datos sensibles del recurso compartido de archivos.
+- Implementar una solución segura de gestión de secretos para almacenar contraseñas de cuentas de servicio y otras credenciales.
 
 #### Recomendaciones a Medio Plazo
-Implementar una solución de prevención de pérdida de datos (DLP) para escanear automáticamente los recursos compartidos de archivos en busca de información sensible.
+- Implementar una solución de prevención de pérdida de datos (DLP) para escanear automáticamente los recursos compartidos de archivos en busca de información sensible.
 
 #### Recomendaciones a Largo Plazo
-Realizar capacitaciones periódicas de concienciación sobre seguridad para todos los empleados sobre el manejo y almacenamiento adecuados de datos sensibles. Establecer una política clara de clasificación de datos.`,
+- Realizar capacitaciones periódicas de concienciación sobre seguridad para todos los empleados sobre el manejo y almacenamiento adecuados de datos sensibles.
+- Establecer una política clara de clasificación de datos.`,
         affectedComponents_en: "### Affected Components\n- [TODO: List the server, share, and full path to the file containing sensitive data.]",
         details_en: "### Proof of Concept\n[TODO: Provide a screenshot of the file's contents, redacting any highly sensitive information.]",
         affectedComponents_es: "### Componentes Afectados\n- [TODO: Listar el servidor, el recurso compartido y la ruta completa al archivo que contiene datos sensibles.]",
         details_es: "### Prueba de Concepto\n[TODO: Proporcionar una captura de pantalla del contenido del archivo, redactando cualquier información altamente sensible.]",
-        immediateActions_en: "### Immediate Actions\nImmediately remove the sensitive files from the share. Revoke and rotate any credentials found in the files.",
-        immediateActions_es: "### Acciones Inmediatas\nEliminar inmediatamente los archivos sensibles del recurso compartido. Revocar y rotar cualquier credencial encontrada en los archivos.",
+        immediateActions_en: "### Immediate Actions\n- Immediately remove the sensitive files from the share.\n- Revoke and rotate any credentials found in the files.",
+        immediateActions_es: "### Acciones Inmediatas\n- Eliminar inmediatamente los archivos sensibles del recurso compartido.\n- Revocar y rotar cualquier credencial encontrada en los archivos.",
     },
     {
         id: "vuln-infra-012",
@@ -1861,7 +2014,7 @@ Realizar capacitaciones periódicas de concienciación sobre seguridad para todo
         cwe: "CWE-489",
         severity: "High",
         cvss: { score: 8.6, vectorString: "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:C/C:H/I:N/A:L", attackVector: "N", attackComplexity: "L", privilegesRequired: "N", userInteraction: "N", scope: "C", confidentiality: "H", integrity: "N", availability: "L" },
-        references: ["https://www.shodan.io/"],
+        references: ["https://www.cisa.gov/uscert/bsi/articles/best-practices/firewalls/securing-your-web-server"],
         tags: ["Infrastructure", "Network"],
         overview_en: "### Overview\nServices that are not intended for public access, such as databases, remote management interfaces (RDP, SSH), or internal applications, are exposed to the internet.",
         overview_es: "### Resumen\nLos servicios que no están destinados al acceso público, como bases de datos, interfaces de gestión remota (RDP, SSH) o aplicaciones internas, están expuestos a Internet.",
@@ -1872,29 +2025,33 @@ Realizar capacitaciones periódicas de concienciación sobre seguridad para todo
         recommendations_en: `### Recommendations
 
 #### Short-Term Recommendations
-Implement a 'deny-by-default' firewall policy. Only allow access to specific services from trusted IP ranges.
+- Implement a 'deny-by-default' firewall policy.
+- Only allow access to specific services from trusted IP ranges.
 
 #### Medium-Term Recommendations
-Conduct regular external network scans to identify any unintentionally exposed services. Use a VPN with multi-factor authentication for all remote management access.
+- Conduct regular external network scans to identify any unintentionally exposed services.
+- Use a VPN with multi-factor authentication for all remote management access.
 
 #### Long-Term Recommendations
-Implement a robust change management process for all firewall and network configuration changes to prevent accidental exposure.`,
+- Implement a robust change management process for all firewall and network configuration changes to prevent accidental exposure.`,
         recommendations_es: `### Recomendaciones
 
 #### Recomendaciones a Corto Plazo
-Implementar una política de firewall de 'denegar por defecto'. Solo permitir el acceso a servicios específicos desde rangos de IP de confianza.
+- Implementar una política de firewall de 'denegar por defecto'.
+- Solo permitir el acceso a servicios específicos desde rangos de IP de confianza.
 
 #### Recomendaciones a Medio Plazo
-Realizar escaneos de red externos regulares para identificar cualquier servicio expuesto involuntariamente. Usar una VPN con autenticación multifactor para todo el acceso de gestión remota.
+- Realizar escaneos de red externos regulares para identificar cualquier servicio expuesto involuntariamente.
+- Usar una VPN con autenticación multifactor para todo el acceso de gestión remota.
 
 #### Recomendaciones a Largo Plazo
-Implementar un proceso de gestión de cambios robusto para todos los cambios de configuración de firewall y red para evitar la exposición accidental.`,
+- Implementar un proceso de gestión de cambios robusto para todos los cambios de configuración de firewall y red para evitar la exposición accidental.`,
         affectedComponents_en: "### Affected Components\n- [TODO: Specify the IP addresses and ports of the unnecessarily exposed services.]",
         details_en: "### Proof of Concept\n[TODO: Provide a screenshot from a tool like nmap or Shodan showing the exposed port and service banner.]",
         affectedComponents_es: "### Componentes Afectados\n- [TODO: Listar las direcciones IP y los puertos de los servicios expuestos innecesariamente.]",
         details_es: "### Prueba de Concepto\n[TODO: Proporcionar una captura de pantalla de una herramienta como nmap o Shodan que muestre el puerto expuesto y el banner del servicio.]",
-        immediateActions_en: "### Immediate Actions\nImmediately block public access to the exposed services at the network firewall or cloud security group level.",
-        immediateActions_es: "### Acciones Inmediatas\nBloquear inmediatamente el acceso público a los servicios expuestos a nivel de firewall de red o grupo de seguridad en la nube.",
+        immediateActions_en: "### Immediate Actions\n- Immediately block public access to the exposed services at the network firewall or cloud security group level.",
+        immediateActions_es: "### Acciones Inmediatas\n- Bloquear inmediatamente el acceso público a los servicios expuestos a nivel de firewall de red o grupo de seguridad en la nube.",
     },
     {
         id: "vuln-infra-013",
@@ -1914,29 +2071,29 @@ Implementar un proceso de gestión de cambios robusto para todos los cambios de 
         recommendations_en: `### Recommendations
 
 #### Short-Term Recommendations
-Apply the specific remediation for the identified misconfiguration, such as enabling authentication, changing default credentials, or implementing proper access controls.
+- Apply the specific remediation for the identified misconfiguration, such as enabling authentication, changing default credentials, or implementing proper access controls.
 
 #### Medium-Term Recommendations
-Develop a secure baseline configuration (hardening guide) for all critical applications deployed in the environment.
+- Develop a secure baseline configuration (hardening guide) for all critical applications deployed in the environment.
 
 #### Long-Term Recommendations
-Automate the deployment and configuration of applications using infrastructure-as-code tools to ensure consistency and enforce secure baselines.`,
+- Automate the deployment and configuration of applications using infrastructure-as-code tools to ensure consistency and enforce secure baselines.`,
         recommendations_es: `### Recomendaciones
 
 #### Recomendaciones a Corto Plazo
-Aplicar la remediación específica para la configuración incorrecta identificada, como habilitar la autenticación, cambiar las credenciales predeterminadas o implementar controles de acceso adecuados.
+- Aplicar la remediación específica para la configuración incorrecta identificada, como habilitar la autenticación, cambiar las credenciales predeterminadas o implementar controles de acceso adecuados.
 
 #### Recomendaciones a Medio Plazo
-Desarrollar una configuración de línea de base segura (guía de fortalecimiento) para todas las aplicaciones críticas implementadas en el entorno.
+- Desarrollar una configuración de línea de base segura (guía de fortalecimiento) para todas las aplicaciones críticas implementadas en el entorno.
 
 #### Recomendaciones a Largo Plazo
-Automatizar la implementación y configuración de aplicaciones utilizando herramientas de infraestructura como código para garantizar la coherencia y hacer cumplir las líneas de base seguras.`,
+- Automatizar la implementación y configuración de aplicaciones utilizando herramientas de infraestructura como código para garantizar la coherencia y hacer cumplir las líneas de base seguras.`,
         affectedComponents_en: "### Affected Components\n- [TODO: Specify the application (e.g., Elasticsearch) and the location (IP address/URL) of the misconfigured instance.]",
         details_en: "### Proof of Concept\n[TODO: Provide evidence of the misconfiguration, such as a screenshot showing unauthenticated access to a sensitive panel or data.]",
         affectedComponents_es: "### Componentes Afectados\n- [TODO: Especificar la aplicación (p. ej., Elasticsearch) y la ubicación (dirección IP/URL) de la instancia mal configurada.]",
         details_es: "### Prueba de Concepto\n[TODO: Proporcionar evidencia de la configuración incorrecta, como una captura de pantalla que muestre el acceso no autenticado a un panel o datos sensibles.]",
-        immediateActions_en: "### Immediate Actions\nApply the correct security configuration, such as enabling authentication or restricting network access to the service.",
-        immediateActions_es: "### Acciones Inmediatas\nAplicar inmediatamente la configuración de seguridad correcta, como habilitar la autenticación o restringir el acceso de red al servicio.",
+        immediateActions_en: "### Immediate Actions\n- Apply the correct security configuration, such as enabling authentication or restricting network access to the service.",
+        immediateActions_es: "### Acciones Inmediatas\n- Aplicar inmediatamente la configuración de seguridad correcta, como habilitar la autenticación o restringir el acceso de red al servicio.",
     },
     {
         id: "vuln-auth-001",
@@ -1956,29 +2113,29 @@ Automatizar la implementación y configuración de aplicaciones utilizando herra
         recommendations_en: `### Recommendations
 
 #### Short-Term Recommendations
-Force a password reset for all users and enforce a new, strong password policy upon their next login.
+- Force a password reset for all users and enforce a new, strong password policy upon their next login.
 
 #### Medium-Term Recommendations
-Implement Multi-Factor Authentication (MFA) as the most effective control to mitigate the risk of weak passwords.
+- Implement Multi-Factor Authentication (MFA) as the most effective control to mitigate the risk of weak passwords.
 
 #### Long-Term Recommendations
-Educate users on the importance of strong, unique passwords and provide tools like password managers to help them manage their credentials securely.`,
+- Educate users on the importance of strong, unique passwords and provide tools like password managers to help them manage their credentials securely.`,
         recommendations_es: `### Recomendaciones
 
 #### Recomendaciones a Corto Plazo
-Forzar un restablecimiento de contraseña para todos los usuarios y hacer cumplir una nueva política de contraseñas seguras en su próximo inicio de sesión.
+- Forzar un restablecimiento de contraseña para todos los usuarios y hacer cumplir una nueva política de contraseñas seguras en su próximo inicio de sesión.
 
 #### Recomendaciones a Medio Plazo
-Implementar la Autenticación Multifactor (MFA) como el control más efectivo para mitigar el riesgo de contraseñas débiles.
+- Implementar la Autenticación Multifactor (MFA) como el control más efectivo para mitigar el riesgo de contraseñas débiles.
 
 #### Recomendaciones a Largo Plazo
-Educar a los usuarios sobre la importancia de usar contraseñas seguras y únicas y proporcionar herramientas como gestores de contraseñas para ayudarles a gestionar sus credenciales de forma segura.`,
+- Educar a los usuarios sobre la importancia de usar contraseñas seguras y únicas y proporcionar herramientas como gestores de contraseñas para ayudarles a gestionar sus credenciales de forma segura.`,
         affectedComponents_en: "### Affected Components\n- User registration and password change functionality.",
         details_en: "### Proof of Concept\n[TODO: Provide evidence of being able to set a weak password (e.g., 'password123') and successfully authenticating with it.]",
         affectedComponents_es: "### Componentes Afectados\n- Funcionalidad de registro de usuarios y cambio de contraseña.",
         details_es: "### Prueba de Concepto\n[TODO: Proporcionar evidencia de poder establecer una contraseña débil (p. ej., 'password123') y autenticarse con éxito con ella.]",
-        immediateActions_en: "### Immediate Actions\nForce a password reset for all users and enforce a new, strong password policy upon their next login.",
-        immediateActions_es: "### Acciones Inmediatas\nForzar un restablecimiento de contraseña para todos los usuarios y hacer cumplir una nueva política de contraseñas seguras en su próximo inicio de sesión.",
+        immediateActions_en: "### Immediate Actions\n- Force a password reset for all users and enforce a new, strong password policy upon their next login.",
+        immediateActions_es: "### Acciones Inmediatas\n- Forzar un restablecimiento de contraseña para todos los usuarios y hacer cumplir una nueva política de contraseñas seguras en su próximo inicio de sesión.",
     },
     {
         id: "vuln-auth-002",
@@ -1998,29 +2155,33 @@ Educar a los usuarios sobre la importancia de usar contraseñas seguras y única
         recommendations_en: `### Recommendations
 
 #### Short-Term Recommendations
-Implement rate limiting and account lockout mechanisms to slow down credential stuffing attacks. Check new passwords against a database of known breached passwords.
+- Implement rate limiting and account lockout mechanisms to slow down credential stuffing attacks.
+- Check new passwords against a database of known breached passwords.
 
 #### Medium-Term Recommendations
-Implement Multi-Factor Authentication (MFA). This is the single most effective control against password reuse and credential stuffing.
+- Implement Multi-Factor Authentication (MFA). This is the single most effective control against password reuse and credential stuffing.
 
 #### Long-Term Recommendations
-Educate users about the importance of using unique passwords for every service. Provide a password manager as a corporate tool to facilitate this.`, 
+- Educate users about the importance of using unique passwords for every service.
+- Provide a password manager as a corporate tool to facilitate this.`, 
         recommendations_es: `### Recomendaciones
 
 #### Recomendaciones a Corto Plazo
-Implementar limitación de velocidad y mecanismos de bloqueo de cuentas para ralentizar los ataques de credential stuffing. Comprobar las nuevas contraseñas con una base de datos de contraseñas filtradas conocidas.
+- Implementar limitación de velocidad y mecanismos de bloqueo de cuentas para ralentizar los ataques de credential stuffing.
+- Comprobar las nuevas contraseñas con una base de datos de contraseñas filtradas conocidas.
 
 #### Recomendaciones a Medio Plazo
-Implementar la Autenticación Multifactor (MFA). Este es el control más efectivo contra la reutilización de contraseñas y el credential stuffing.
+- Implementar la Autenticación Multifactor (MFA). Este es el control más efectivo contra la reutilización de contraseñas y el credential stuffing.
 
 #### Recomendaciones a Largo Plazo
-Educar a los usuarios sobre la importancia de usar contraseñas únicas para cada servicio. Proporcionar un gestor de contraseñas como herramienta corporativa para facilitar esto.`, 
+- Educar a los usuarios sobre la importancia de usar contraseñas únicas para cada servicio.
+- Proporcionar un gestor de contraseñas como herramienta corporativa para facilitar esto.`, 
         affectedComponents_en: "### Affected Components\n- All user accounts within the application.", 
         details_en: "### Proof of Concept\n[TODO: Provide evidence of a successful login using credentials known to be from a public data breach.]", 
         affectedComponents_es: "### Componentes Afectados\n- Todas las cuentas de usuario dentro de la aplicación.", 
         details_es: "### Prueba de Concepto\n[TODO: Proporcionar evidencia de un inicio de sesión exitoso utilizando credenciales que se sabe que provienen de una brecha de datos pública.]",
-        immediateActions_en: "### Immediate Actions\nForce a password reset for any identified compromised accounts. Communicate to users the risk of password reuse.",
-        immediateActions_es: "### Acciones Inmediatas\nForzar un restablecimiento de contraseña para cualquier cuenta comprometida identificada. Comunicar a los usuarios el riesgo de la reutilización de contraseñas.",
+        immediateActions_en: "### Immediate Actions\n- Force a password reset for any identified compromised accounts.\n- Communicate to users the risk of password reuse.",
+        immediateActions_es: "### Acciones Inmediatas\n- Forzar un restablecimiento de contraseña para cualquier cuenta comprometida identificada.\n- Comunicar a los usuarios el riesgo de la reutilización de contraseñas.",
     },
     {
         id: "vuln-auth-003",
@@ -2040,29 +2201,31 @@ Educar a los usuarios sobre la importancia de usar contraseñas únicas para cad
         recommendations_en: `### Recommendations
 
 #### Short-Term Recommendations
-Implement support for Time-Based One-Time Password (TOTP) authenticator apps (like Google Authenticator or Authy) as a second factor.
+- Implement support for Time-Based One-Time Password (TOTP) authenticator apps (like Google Authenticator or Authy) as a second factor.
 
 #### Medium-Term Recommendations
-Make MFA mandatory for all administrative and privileged users. Provide options for users to enable MFA for their own accounts.
+- Make MFA mandatory for all administrative and privileged users.
+- Provide options for users to enable MFA for their own accounts.
 
 #### Long-Term Recommendations
-Explore and implement stronger, phishing-resistant MFA methods such as FIDO2/WebAuthn.`,
+- Explore and implement stronger, phishing-resistant MFA methods such as FIDO2/WebAuthn.`,
         recommendations_es: `### Recomendaciones
 
 #### Recomendaciones a Corto Plazo
-Implementar soporte para aplicaciones de autenticación de contraseña de un solo uso basada en tiempo (TOTP) (como Google Authenticator o Authy) como segundo factor.
+- Implementar soporte para aplicaciones de autenticación de contraseña de un solo uso basada en tiempo (TOTP) (como Google Authenticator o Authy) como segundo factor.
 
 #### Recomendaciones a Medio Plazo
-Hacer que la MFA sea obligatoria para todos los usuarios administrativos y con privilegios. Proporcionar opciones para que los usuarios habiliten la MFA para sus propias cuentas.
+- Hacer que la MFA sea obligatoria para todos los usuarios administrativos y con privilegios.
+- Proporcionar opciones para que los usuarios habiliten la MFA para sus propias cuentas.
 
 #### Recomendaciones a Largo Plazo
-Explorar e implementar métodos de MFA más fuertes y resistentes al phishing, como FIDO2/WebAuthn.`,
+- Explorar e implementar métodos de MFA más fuertes y resistentes al phishing, como FIDO2/WebAuthn.`,
         affectedComponents_en: "### Affected Components\n- The entire user authentication flow.",
         details_en: "### Proof of Concept\n[TODO: Document that after a successful password-only login, no second factor is requested, granting full access.]",
         affectedComponents_es: "### Componentes Afectados\n- Todo el flujo de autenticación de usuarios.",
         details_es: "### Prueba de Concepto\n[TODO: Documentar que después de un inicio de sesión exitoso solo con contraseña, no se solicita un segundo factor, otorgando acceso completo.]",
-        immediateActions_en: "### Immediate Actions\nPrioritize the implementation of MFA, especially for administrative or privileged accounts.",
-        immediateActions_es: "### Acciones Inmediatas\nPriorizar la implementación de MFA, especialmente para cuentas administrativas o con privilegios.",
+        immediateActions_en: "### Immediate Actions\n- Prioritize the implementation of MFA, especially for administrative or privileged accounts.",
+        immediateActions_es: "### Acciones Inmediatas\n- Priorizar la implementación de MFA, especialmente para cuentas administrativas o con privilegios.",
     },
     {
         id: "vuln-auth-004",
@@ -2082,29 +2245,31 @@ Explorar e implementar métodos de MFA más fuertes y resistentes al phishing, c
         recommendations_en: `### Recommendations
 
 #### Short-Term Recommendations
-Set the \`HttpOnly\` and \`Secure\` flags on all session cookies to prevent them from being accessed by client-side scripts or transmitted over unencrypted connections.
+- Set the \`HttpOnly\` and \`Secure\` flags on all session cookies to prevent them from being accessed by client-side scripts or transmitted over unencrypted connections.
 
 #### Medium-Term Recommendations
-Implement a mechanism to regenerate the session ID after any privilege level change, such as login. Bind the session token to other user properties, like their IP address or User-Agent, to make hijacking more difficult.
+- Implement a mechanism to regenerate the session ID after any privilege level change, such as login.
+- Bind the session token to other user properties, like their IP address or User-Agent, to make hijacking more difficult.
 
 #### Long-Term Recommendations
-Use a robust, centralized session management framework that handles token generation, validation, and expiration securely.`,
+- Use a robust, centralized session management framework that handles token generation, validation, and expiration securely.`,
         recommendations_es: `### Recomendaciones
 
 #### Recomendaciones a Corto Plazo
-Establecer las banderas \`HttpOnly\` y \`Secure\` en todas las cookies de sesión para evitar que sean accedidas por scripts del lado del cliente o transmitidas a través de conexiones no cifradas.
+- Establecer las banderas \`HttpOnly\` y \`Secure\` en todas las cookies de sesión para evitar que sean accedidas por scripts del lado del cliente o transmitidas a través de conexiones no cifradas.
 
 #### Recomendaciones a Medio Plazo
-Implementar un mecanismo para regenerar el ID de sesión después de cualquier cambio de nivel de privilegio, como el inicio de sesión. Vincular el token de sesión a otras propiedades del usuario, como su dirección IP o User-Agent, para dificultar el secuestro.
+- Implementar un mecanismo para regenerar el ID de sesión después de cualquier cambio de nivel de privilegio, como el inicio de sesión.
+- Vincular el token de sesión a otras propiedades del usuario, como su dirección IP o User-Agent, para dificultar el secuestro.
 
 #### Recomendaciones a Largo Plazo
-Utilizar un framework de gestión de sesiones robusto y centralizado que maneje la generación, validación y expiración de tokens de forma segura.`,
+- Utilizar un framework de gestión de sesiones robusto y centralizado que maneje la generación, validación y expiración de tokens de forma segura.`,
         affectedComponents_en: "### Affected Components\n- The application's session management mechanism.",
         details_en: "### Proof of Concept\n[TODO: Provide a PoC demonstrating the theft of a session cookie (e.g., via XSS or network sniffing) and its reuse in a different browser to access the application as the victim user.]",
         affectedComponents_es: "### Componentes Afectados\n- El mecanismo de gestión de sesiones de la aplicación.",
         details_es: "### Prueba de Concepto\n[TODO: Proporcionar una PoC que demuestre el robo de una cookie de sesión (p. ej., a través de XSS o sniffing de red) y su reutilización en un navegador diferente para acceder a la aplicación como el usuario víctima.]",
-        immediateActions_en: "### Immediate Actions\nForce logout of all active sessions to invalidate all existing session tokens.",
-        immediateActions_es: "### Acciones Inmediatas\nForzar el cierre de sesión de todas las sesiones activas para invalidar todos los tokens de sesión existentes.",
+        immediateActions_en: "### Immediate Actions\n- Force logout of all active sessions to invalidate all existing session tokens.",
+        immediateActions_es: "### Acciones Inmediatas\n- Forzar el cierre de sesión de todas las sesiones activas para invalidar todos los tokens de sesión existentes.",
     },
     {
         id: "vuln-auth-005",
@@ -2124,29 +2289,31 @@ Utilizar un framework de gestión de sesiones robusto y centralizado que maneje 
         recommendations_en: `### Recommendations
 
 #### Short-Term Recommendations
-Regenerate the session ID immediately after a user successfully authenticates. Do not accept session identifiers from URL parameters.
+- Regenerate the session ID immediately after a user successfully authenticates.
+- Do not accept session identifiers from URL parameters.
 
 #### Medium-Term Recommendations
-Ensure the session management system creates a completely new session object, with a new ID, upon login.
+- Ensure the session management system creates a completely new session object, with a new ID, upon login.
 
 #### Long-Term Recommendations
-Review the entire session lifecycle to ensure session identifiers are never accepted from untrusted sources and are properly renewed at changes in privilege level.`,
+- Review the entire session lifecycle to ensure session identifiers are never accepted from untrusted sources and are properly renewed at changes in privilege level.`,
         recommendations_es: `### Recomendaciones
 
 #### Recomendaciones a Corto Plazo
-Regenerar el ID de sesión inmediatamente después de que un usuario se autentique con éxito. No aceptar identificadores de sesión de los parámetros de la URL.
+- Regenerar el ID de sesión inmediatamente después de que un usuario se autentique con éxito.
+- No aceptar identificadores de sesión de los parámetros de la URL.
 
 #### Recomendaciones a Medio Plazo
-Asegurarse de que el sistema de gestión de sesiones cree un objeto de sesión completamente nuevo, con un nuevo ID, al iniciar sesión.
+- Asegurarse de que el sistema de gestión de sesiones cree un objeto de sesión completamente nuevo, con un nuevo ID, al iniciar sesión.
 
 #### Recomendaciones a Largo Plazo
-Revisar todo el ciclo de vida de la sesión para garantizar que los identificadores de sesión nunca se acepten de fuentes no confiables y se renueven correctamente en los cambios de nivel de privilegio.`,
+- Revisar todo el ciclo de vida de la sesión para garantizar que los identificadores de sesión nunca se acepten de fuentes no confiables y se renueven correctamente en los cambios de nivel de privilegio.`,
         affectedComponents_en: "### Affected Components\n- The login process and session initialization logic.",
         details_en: "### Proof of Concept\n1. Attacker visits site and gets a session ID.\n2. Attacker tricks victim into clicking a link with that session ID.\n3. Victim logs in.\n4. Attacker uses the same session ID to access the victim's authenticated session.",
         affectedComponents_es: "### Componentes Afectados\n- El proceso de inicio de sesión y la lógica de inicialización de la sesión.",
         details_es: "### Prueba de Concepto\n1. El atacante visita el sitio y obtiene un ID de sesión.\n2. El atacante engaña a la víctima para que haga clic en un enlace con ese ID de sesión.\n3. La víctima inicia sesión.\n4. El atacante usa el mismo ID de sesión para acceder a la sesión autenticada de la víctima.",
-        immediateActions_en: "### Immediate Actions\nForce logout of all active sessions to invalidate all existing session tokens.",
-        immediateActions_es: "### Acciones Inmediatas\nForzar el cierre de sesión de todas las sesiones activas para invalidar todos los tokens de sesión existentes.",
+        immediateActions_en: "### Immediate Actions\n- Force logout of all active sessions to invalidate all existing session tokens.",
+        immediateActions_es: "### Acciones Inmediatas\n- Forzar el cierre de sesión de todas las sesiones activas para invalidar todos los tokens de sesión existentes.",
     },
     {
         id: "vuln-auth-006",
@@ -2166,29 +2333,33 @@ Revisar todo el ciclo de vida de la sesión para garantizar que los identificado
         recommendations_en: `### Recommendations
 
 #### Short-Term Recommendations
-Implement rate limiting and account lockout mechanisms to slow down credential stuffing attacks. Check new passwords against a database of known breached passwords.
+- Implement rate limiting and account lockout mechanisms to slow down credential stuffing attacks.
+- Check new passwords against a database of known breached passwords.
 
 #### Medium-Term Recommendations
-Implement Multi-Factor Authentication (MFA). This is the single most effective control against password reuse and credential stuffing.
+- Implement Multi-Factor Authentication (MFA). This is the single most effective control against password reuse and credential stuffing.
 
 #### Long-Term Recommendations
-Educate users about the importance of using unique passwords for every service. Provide a password manager as a corporate tool to facilitate this.`, 
+- Educate users about the importance of using unique passwords for every service.
+- Provide a password manager as a corporate tool to facilitate this.`, 
         recommendations_es: `### Recomendaciones
 
 #### Recomendaciones a Corto Plazo
-Implementar limitación de velocidad y mecanismos de bloqueo de cuentas para ralentizar los ataques de credential stuffing. Comprobar las nuevas contraseñas con una base de datos de contraseñas filtradas conocidas.
+- Implementar limitación de velocidad y mecanismos de bloqueo de cuentas para ralentizar los ataques de credential stuffing.
+- Comprobar las nuevas contraseñas con una base de datos de contraseñas filtradas conocidas.
 
 #### Recomendaciones a Medio Plazo
-Implementar la Autenticación Multifactor (MFA). Este es el control más efectivo contra la reutilización de contraseñas y el credential stuffing.
+- Implementar la Autenticación Multifactor (MFA). Este es el control más efectivo contra la reutilización de contraseñas y el credential stuffing.
 
 #### Recomendaciones a Largo Plazo
-Educar a los usuarios sobre la importancia de usar contraseñas únicas para cada servicio. Proporcionar un gestor de contraseñas como herramienta corporativa para facilitar esto.`, 
+- Educar a los usuarios sobre la importancia de usar contraseñas únicas para cada servicio.
+- Proporcionar un gestor de contraseñas como herramienta corporativa para facilitar esto.`, 
         affectedComponents_en: "### Affected Components\n- The application's login endpoint.", 
         details_en: "### Proof of Concept\n[TODO: Provide logs or metrics showing a high volume of failed login attempts from specific IP addresses, indicating a credential stuffing attack.]", 
         affectedComponents_es: "### Componentes Afectados\n- El punto de conexión de inicio de sesión de la aplicación.", 
         details_es: "### Prueba de Concepto\n[TODO: Proporcionar registros o métricas que muestren un alto volumen de intentos de inicio de sesión fallidos desde direcciones IP específicas, lo que indica un ataque de relleno de credenciales.]",
-        immediateActions_en: "### Immediate Actions\nImplement temporary IP-based blocking for addresses that generate a high rate of failed login attempts. Force a password reset for any accounts that were successfully compromised.",
-        immediateActions_es: "### Acciones Inmediatas\nBloquear temporalmente las direcciones IP con una alta tasa de intentos de inicio de sesión fallidos. Forzar un restablecimiento de contraseña para cualquier cuenta comprometida identificada.",
+        immediateActions_en: "### Immediate Actions\n- Implement temporary IP-based blocking for addresses that generate a high rate of failed login attempts.\n- Force a password reset for any accounts that were successfully compromised.",
+        immediateActions_es: "### Acciones Inmediatas\n- Bloquear temporalmente las direcciones IP con una alta tasa de intentos de inicio de sesión fallidos.\n- Forzar un restablecimiento de contraseña para cualquier cuenta comprometida identificada.",
     },
     {
         id: "vuln-auth-007",
@@ -2208,29 +2379,33 @@ Educar a los usuarios sobre la importancia de usar contraseñas únicas para cad
         recommendations_en: `### Recommendations
 
 #### Short-Term Recommendations
-Ensure that password recovery tokens are long, random, single-use, and have a short expiration time. Send tokens via a secure channel (e.g., email) and do not leak them in URLs or headers.
+- Ensure that password recovery tokens are long, random, single-use, and have a short expiration time.
+- Send tokens via a secure channel (e.g., email) and do not leak them in URLs or headers.
 
 #### Medium-Term Recommendations
-Avoid using knowledge-based authentication (secret questions) as the sole recovery mechanism. Require users to verify their identity through a second factor (like a code to their phone) before allowing a password reset.
+- Avoid using knowledge-based authentication (secret questions) as the sole recovery mechanism.
+- Require users to verify their identity through a second factor (like a code to their phone) before allowing a password reset.
 
 #### Long-Term Recommendations
-Implement a robust password recovery workflow that logs all attempts and notifies the user of any password reset activity on their account.`,
+- Implement a robust password recovery workflow that logs all attempts and notifies the user of any password reset activity on their account.`,
         recommendations_es: `### Recomendaciones
 
 #### Recomendaciones a Corto Plazo
-Asegurarse de que los tokens de recuperación de contraseña sean largos, aleatorios, de un solo uso y tengan un tiempo de expiración corto. Enviar tokens a través de un canal seguro (p. ej., correo electrónico) y no filtrarlos en URL o encabezados.
+- Asegurarse de que los tokens de recuperación de contraseña sean largos, aleatorios, de un solo uso y tengan un tiempo de expiración corto.
+- Enviar tokens a través de un canal seguro (p. ej., correo electrónico) y no filtrarlos en URL o encabezados.
 
 #### Recomendaciones a Medio Plazo
-Evitar el uso de la autenticación basada en conocimientos (preguntas secretas) como único mecanismo de recuperación. Requerir que los usuarios verifiquen su identidad a través de un segundo factor (como un código a su teléfono) antes de permitir un restablecimiento de contraseña.
+- Evitar el uso de la autenticación basada en conocimientos (preguntas secretas) como único mecanismo de recuperación.
+- Requerir que los usuarios verifiquen su identidad a través de un segundo factor (como un código a su teléfono) antes de permitir un restablecimiento de contraseña.
 
 #### Recomendaciones a Largo Plazo
-Implementar un flujo de trabajo de recuperación de contraseña robusto que registre todos los intentos y notifique al usuario de cualquier actividad de restablecimiento de contraseña en su cuenta.`,
+- Implementar un flujo de trabajo de recuperación de contraseña robusto que registre todos los intentos y notifique al usuario de cualquier actividad de restablecimiento de contraseña en su cuenta.`,
         affectedComponents_en: "### Affected Components\n- The password recovery/reset functionality.",
         details_en: "### Proof of Concept\n[TODO: Provide a PoC demonstrating the weakness, such as guessing a recovery token, answering weak secret questions, or showing a token leak.]",
         affectedComponents_es: "### Componentes Afectados\n- La funcionalidad de recuperación/restablecimiento de contraseña.",
         details_es: "### Prueba de Concepto\n[TODO: Proporcionar una PoC que demuestre la debilidad, como adivinar un token de recuperación, responder preguntas secretas débiles o mostrar una fuga de token.]",
-        immediateActions_en: "### Immediate Actions\nDisable the password recovery feature until it can be secured. Manually assist users who need to recover their accounts.",
-        immediateActions_es: "### Acciones Inmediatas\nDeshabilitar la función de recuperación de contraseña hasta que pueda ser asegurada. Ayudar manualmente a los usuarios que necesiten recuperar sus cuentas.",
+        immediateActions_en: "### Immediate Actions\n- Disable the password recovery feature until it can be secured.\n- Manually assist users who need to recover their accounts.",
+        immediateActions_es: "### Acciones Inmediatas\n- Deshabilitar la función de recuperación de contraseña hasta que pueda ser asegurada.\n- Ayudar manualmente a los usuarios que necesiten recuperar sus cuentas.",
     },
     {
         id: "vuln-auth-008",
@@ -2250,29 +2425,29 @@ Implementar un flujo de trabajo de recuperación de contraseña robusto que regi
         recommendations_en: `### Recommendations
 
 #### Short-Term Recommendations
-Ensure that all responses for login, password reset, and registration attempts are generic and identical, regardless of whether the username is valid or invalid (e.g., 'Invalid username or password').
+- Ensure that all responses for login, password reset, and registration attempts are generic and identical, regardless of whether the username is valid or invalid (e.g., 'Invalid username or password').
 
 #### Medium-Term Recommendations
-Review all application endpoints to identify and remediate any other potential user enumeration vectors.
+- Review all application endpoints to identify and remediate any other potential user enumeration vectors.
 
 #### Long-Term Recommendations
-Implement rate limiting and monitoring to detect and block automated user enumeration attempts.`,
+- Implement rate limiting and monitoring to detect and block automated user enumeration attempts.`,
         recommendations_es: `### Recomendaciones
 
 #### Recomendaciones a Corto Plazo
-Asegurarse de que todas las responses para los intentos de inicio de sesión, restablecimiento de contraseña y registro sean genéricas e idénticas, independientemente de si el nombre de usuario es válido o no (p. ej., 'Nombre de usuario o contraseña inválidos').
+- Asegurarse de que todas las responses para los intentos de inicio de sesión, restablecimiento de contraseña y registro sean genéricas e idénticas, independientemente de si el nombre de usuario es válido o no (p. ej., 'Nombre de usuario o contraseña inválidos').
 
 #### Recomendaciones a Medio Plazo
-Revisar todos los puntos de conexión de la aplicación para identificar y remediar cualquier otro posible vector de enumeración de usuarios.
+- Revisar todos los puntos de conexión de la aplicación para identificar y remediar cualquier otro posible vector de enumeración de usuarios.
 
 #### Recomendaciones a Largo Plazo
-Implementar limitación de velocidad y monitoreo para detectar y bloquear los intentos automatizados de enumeración de usuarios.`,
+- Implementar limitación de velocidad y monitoreo para detectar y bloquear los intentos automatizados de enumeración de usuarios.`,
         affectedComponents_en: "### Affected Components\n- Login, password reset, and user registration pages.",
         details_en: "### Proof of Concept\n[TODO: Provide screenshots showing the different application responses for a valid username vs. an invalid username.]",
         affectedComponents_es: "### Componentes Afectados\n- Páginas de inicio de sesión, restablecimiento de contraseña y registro de usuarios.",
         details_es: "### Prueba de Concepto\n[TODO: Proporcionar capturas de pantalla que muestren las diferentes responses de la aplicación para un nombre de usuario válido frente a un nombre de usuario inválido.]",
-        immediateActions_en: "### Immediate Actions\nImmediately change the response messages to be generic for all relevant functionalities.",
-        immediateActions_es: "### Acciones Inmediatas\nCambiar inmediatamente los mensajes de respuesta para que sean genéricos para todas las funcionalidades relevantes.",
+        immediateActions_en: "### Immediate Actions\n- Immediately change the response messages to be generic for all relevant functionalities.",
+        immediateActions_es: "### Acciones Inmediatas\n- Cambiar inmediatamente los mensajes de respuesta para que sean genéricos para todas las funcionalidades relevantes.",
     },
     {
         id: "vuln-auth-009",
@@ -2292,29 +2467,33 @@ Implementar limitación de velocidad y monitoreo para detectar y bloquear los in
         recommendations_en: `### Recommendations
 
 #### Short-Term Recommendations
-Use long, random, and unpredictable session identifiers. Ensure all session tokens are invalidated on the server upon logout and password reset.
+- Use long, random, and unpredictable session identifiers.
+- Ensure all session tokens are invalidated on the server upon logout and password reset.
 
 #### Medium-Term Recommendations
-Implement reasonable session timeout periods (both for inactivity and absolute duration). Regenerate session tokens upon any change in privilege level (e.g., authentication).
+- Implement reasonable session timeout periods (both for inactivity and absolute duration).
+- Regenerate session tokens upon any change in privilege level (e.g., authentication).
 
 #### Long-Term Recommendations
-Use a proven, industry-standard library or framework for session management rather than building a custom solution.`,
+- Use a proven, industry-standard library or framework for session management rather than building a custom solution.`,
         recommendations_es: `### Recomendaciones
 
 #### Recomendaciones a Corto Plazo
-Usar identificadores de sesión largos, aleatorios e impredecibles. Asegurarse de que todos los tokens de sesión se invaliden en el servidor al cerrar la sesión y al restablecer la contraseña.
+- Usar identificadores de sesión largos, aleatorios e impredecibles.
+- Asegurarse de que todos los tokens de sesión se invaliden en el servidor al cerrar la sesión y al restablecer la contraseña.
 
 #### Recomendaciones a Medio Plazo
-Implementar períodos de tiempo de espera de sesión razonables (tanto para inactividad como para duración absoluta). Regenerar los tokens de sesión ante cualquier cambio en el nivel de privilegio (p. ej., autenticación).
+- Implementar períodos de tiempo de espera de sesión razonables (tanto para inactividad como para duración absoluta).
+- Regenerar los tokens de sesión ante cualquier cambio en el nivel de privilegio (p. ej., autenticación).
 
 #### Recomendaciones a Largo Plazo
-Utilizar una biblioteca o un framework probado y estándar de la industria para la gestión de sesiones en lugar de construir una solución personalizada.`,
+- Utilizar una biblioteca o un framework probado y estándar de la industria para la gestión de sesiones en lugar de construir una solución personalizada.`,
         affectedComponents_en: "### Affected Components\n- The entire session management lifecycle of the application.",
         details_en: "### Proof of Concept\n[TODO: Provide a PoC, such as showing that a session token is predictable, or that it remains valid after logging out and can be reused.]",
         affectedComponents_es: "### Componentes Afectados\n- Todo el ciclo de vida de la gestión de sesiones de la aplicación.",
         details_es: "### Prueba de Concepto\n[TODO: Proporcionar una PoC, como demostrar que un token de sesión es predecible, o que sigue siendo válido después de cerrar la sesión y puede ser reutilizado.]",
-        immediateActions_en: "### Immediate Actions\nForce a logout of all users to invalidate all existing session tokens.",
-        immediateActions_es: "### Acciones Inmediatas\nForzar el cierre de sesión de todas las sesiones activas para invalidar todos los tokens de sesión existentes.",
+        immediateActions_en: "### Immediate Actions\n- Force a logout of all users to invalidate all existing session tokens.",
+        immediateActions_es: "### Acciones Inmediatas\n- Forzar el cierre de sesión de todas las sesiones activas para invalidar todos los tokens de sesión existentes.",
     },
     {
         id: "vuln-auth-010",
@@ -2334,29 +2513,31 @@ Utilizar una biblioteca o un framework probado y estándar de la industria para 
         recommendations_en: `### Recommendations
 
 #### Short-Term Recommendations
-Implement strong rate limiting on login attempts per IP address and per user account.
+- Implement strong rate limiting on login attempts per IP address and per user account.
 
 #### Medium-Term Recommendations
-Implement an account lockout policy that temporarily disables an account after a small number of consecutive failed login attempts (e.g., 5-10 attempts).
+- Implement an account lockout policy that temporarily disables an account after a small number of consecutive failed login attempts (e.g., 5-10 attempts).
 
 #### Long-Term Recommendations
-Use CAPTCHA or other bot-detection mechanisms after a few failed attempts to prevent automated attacks. Monitor and alert on high volumes of failed logins.`,
+- Use CAPTCHA or other bot-detection mechanisms after a few failed attempts to prevent automated attacks.
+- Monitor and alert on high volumes of failed logins.`,
         recommendations_es: `### Recomendaciones
 
 #### Recomendaciones a Corto Plazo
-Implementar una estricta limitación de velocidad en los intentos de inicio de sesión por dirección IP y por cuenta de usuario.
+- Implementar una estricta limitación de velocidad en los intentos de inicio de sesión por dirección IP y por cuenta de usuario.
 
 #### Recomendaciones a Medio Plazo
-Implementar una política de bloqueo de cuenta que deshabilite temporalmente una cuenta después de un pequeño número de intentos de inicio de sesión fallidos consecutivos (p. ej., 5-10 intentos).
+- Implementar una política de bloqueo de cuenta que deshabilite temporalmente una cuenta después de un pequeño número de intentos de inicio de sesión fallidos consecutivos (p. ej., 5-10 intentos).
 
 #### Recomendaciones a Largo Plazo
-Usar CAPTCHA u otros mecanismos de detección de bots después de algunos intentos fallidos para prevenir ataques automatizados. Monitorear y alertar sobre altos volúmenes de inicios de sesión fallidos.`,
+- Usar CAPTCHA u otros mecanismos de detección de bots después de algunos intentos fallidos para prevenir ataques automatizados.
+- Monitorear y alertar sobre altos volúmenes de inicios de sesión fallidos.`,
         affectedComponents_en: "### Affected Components\n- The login functionality.",
         details_en: "### Proof of Concept\n[TODO: Provide evidence of a brute-force attack using a tool like Hydra or Burp Intruder, showing that a large number of password guesses can be attempted without being blocked.]",
         affectedComponents_es: "### Componentes Afectados\n- La funcionalidad de inicio de sesión.",
         details_es: "### Prueba de Concepto\n[TODO: Proporcionar evidencia de un ataque de fuerza bruta utilizando una herramienta como Hydra o Burp Intruder, demostrando que se puede intentar un gran número de contraseñas sin ser bloqueado.]",
-        immediateActions_en: "### Immediate Actions\nImplement temporary IP-based blocking for addresses that generate a high rate of failed login attempts.",
-        immediateActions_es: "### Acciones Inmediatas\nImplementar un bloqueo temporal basado en IP para las direcciones que generan una alta tasa de intentos de inicio de sesión fallidos.",
+        immediateActions_en: "### Immediate Actions\n- Implement temporary IP-based blocking for addresses that generate a high rate of failed login attempts.",
+        immediateActions_es: "### Acciones Inmediatas\n- Implementar un bloqueo temporal basado en IP para las direcciones que generan una alta tasa de intentos de inicio de sesión fallidos.",
     },
     {
         id: "vuln-auth-011",
@@ -2376,29 +2557,31 @@ Usar CAPTCHA u otros mecanismos de detección de bots después de algunos intent
         recommendations_en: `### Recommendations
 
 #### Short-Term Recommendations
-Change the default administrative password to a strong, randomly generated password.
+- Change the default administrative password to a strong, randomly generated password.
 
 #### Medium-Term Recommendations
-Restrict access to the administrative interface to trusted IP addresses or a VPN. Implement Multi-Factor Authentication (MFA) for the administrative account if supported.
+- Restrict access to the administrative interface to trusted IP addresses or a VPN.
+- Implement Multi-Factor Authentication (MFA) for the administrative account if supported.
 
 #### Long-Term Recommendations
-Establish a policy that requires changing all default credentials during the deployment process of any new software or hardware.`,
+- Establish a policy that requires changing all default credentials during the deployment process of any new software or hardware.`,
         recommendations_es: `### Recomendaciones
 
 #### Recomendaciones a Corto Plazo
-Cambiar la contraseña administrativa predeterminada por una contraseña segura y generada aleatoriamente.
+- Cambiar la contraseña administrativa predeterminada por una contraseña segura y generada aleatoriamente.
 
 #### Recomendaciones a Medio Plazo
-Restringir el acceso a la interfaz administrativa a direcciones IP de confianza o una VPN. Implementar la Autenticación Multifactor (MFA) para la cuenta administrativa si es compatible.
+- Restringir el acceso a la interfaz administrativa a direcciones IP de confianza o una VPN.
+- Implementar la Autenticación Multifactor (MFA) para la cuenta administrativa si es compatible.
 
 #### Recomendaciones a Largo Plazo
-Establecer una política que requiera cambiar todas las credenciales predeterminadas durante el proceso de implementación de cualquier nuevo software o hardware.`,
+- Establecer una política que requiera cambiar todas las credenciales predeterminadas durante el proceso de implementación de cualquier nuevo software o hardware.`,
         affectedComponents_en: "### Affected Components\n- The administrative login page for <APPLICATION>.",
         details_en: "### Proof of Concept\n[TODO: Provide a screenshot showing a successful login to the <APPLICATION> admin panel using the weak or default credentials.]",
         affectedComponents_es: "### Componentes Afectados\n- La página de inicio de sesión administrativa para <APPLICATION>.",
         details_es: "### Prueba de Concepto\n[TODO: Proporcionar una captura de pantalla que muestre un inicio de sesión exitoso en el panel de administración de <APPLICATION> utilizando las credenciales débiles o predeterminadas.]",
-        immediateActions_en: "### Immediate Actions\nImmediately change the default or weak password for the administrative account of <APPLICATION>.",
-        immediateActions_es: "### Acciones Inmediatas\nCambiar inmediatamente la contraseña predeterminada o débil de la cuenta administrativa de <APPLICATION>.",
+        immediateActions_en: "### Immediate Actions\n- Immediately change the default or weak password for the administrative account of <APPLICATION>.",
+        immediateActions_es: "### Acciones Inmediatas\n- Cambiar inmediatamente la contraseña predeterminada o débil de la cuenta administrativa de <APPLICATION>.",
     },
     {
         id: "vuln-auth-012",
@@ -2418,29 +2601,33 @@ Establecer una política que requiera cambiar todas las credenciales predetermin
         recommendations_en: `### Recommendations
 
 #### Short-Term Recommendations
-Review the membership of all high-privilege Active Directory groups (e.g., Domain Admins, Enterprise Admins, Schema Admins) and remove any accounts that do not strictly require those privileges.
+- Review the membership of all high-privilege Active Directory groups (e.g., Domain Admins, Enterprise Admins, Schema Admins) and remove any accounts that do not strictly require those privileges.
 
 #### Medium-Term Recommendations
-Implement the principle of least privilege for all user and service accounts. Grant permissions based on specific roles and responsibilities.
+- Implement the principle of least privilege for all user and service accounts.
+- Grant permissions based on specific roles and responsibilities.
 
 #### Long-Term Recommendations
-Implement a Privileged Access Management (PAM) solution to control and monitor access to privileged accounts. Regularly audit group memberships and permissions.`,
+- Implement a Privileged Access Management (PAM) solution to control and monitor access to privileged accounts.
+- Regularly audit group memberships and permissions.`,
         recommendations_es: `### Recomendaciones
 
 #### Recomendaciones a Corto Plazo
-Revisar la membresía de todos los grupos de altos privilegios de Active Directory (p. ej., Domain Admins, Enterprise Admins, Schema Admins) y eliminar cualquier cuenta que no requiera estrictamente esos privilegios.
+- Revisar la membresía de todos los grupos de altos privilegios de Active Directory (p. ej., Domain Admins, Enterprise Admins, Schema Admins) y eliminar cualquier cuenta que no requiera estrictamente esos privilegios.
 
 #### Recomendaciones a Medio Plazo
-Implementar el principio de privilegio mínimo para todas las cuentas de usuario y de servicio. Otorgar permisos basados en roles y responsabilidades específicas.
+- Implementar el principio de privilegio mínimo para todas las cuentas de usuario y de servicio.
+- Otorgar permisos basados en roles y responsabilidades específicas.
 
 #### Recomendaciones a Largo Plazo
-Implementar una solución de Gestión de Acceso Privilegiado (PAM) para controlar y monitorear el acceso a cuentas privilegiadas. Auditar regularmente las membresías de grupo y los permisos.`,
+- Implementar una solución de Gestión de Acceso Privilegiado (PAM) para controlar y monitorear el acceso a cuentas privilegiadas.
+- Auditar regularmente las membresías de grupo y los permisos.`,
         affectedComponents_en: "### Affected Components\n- [TODO: Specify the user/service account and the high-privilege AD group.]",
         details_en: "### Proof of Concept\n[TODO: Provide a screenshot from a tool like BloodHound or Active Directory Users and Computers showing the over-privileged group membership.]",
         affectedComponents_es: "### Componentes Afectados\n- La cuenta de usuario/servicio especificada y el grupo de AD de altos privilegios.",
         details_es: "### Prueba de Concepto\n[TODO: Proporcionar una captura de pantalla de una herramienta como BloodHound o Usuarios y equipos de Active Directory que muestre la membresía de grupo con privilegios excesivos.]",
-        immediateActions_en: "### Immediate Actions\nImmediately remove the compromised or over-privileged account from the high-privilege group.",
-        immediateActions_es: "### Acciones Inmediatas\nEliminar inmediatamente la cuenta comprometida o con privilegios excesivos del grupo de altos privilegios.",
+        immediateActions_en: "### Immediate Actions\n- Immediately remove the compromised or over-privileged account from the high-privilege group.",
+        immediateActions_es: "### Acciones Inmediatas\n- Eliminar inmediatamente la cuenta comprometida o con privilegios excesivos del grupo de altos privilegios.",
     },
     {
         id: "vuln-auth-013",
@@ -2460,29 +2647,31 @@ Implementar una solución de Gestión de Acceso Privilegiado (PAM) para controla
         recommendations_en: `### Recommendations
 
 #### Short-Term Recommendations
-Scan all user and computer account Description fields in Active Directory for passwords and other sensitive information and remove them.
+- Scan all user and computer account Description fields in Active Directory for passwords and other sensitive information and remove them.
 
 #### Medium-Term Recommendations
-Implement a secure secrets management solution (like a password vault) for storing service account passwords and other credentials.
+- Implement a secure secrets management solution (like a password vault) for storing service account passwords and other credentials.
 
 #### Long-Term Recommendations
-Conduct regular security awareness training for all IT staff and administrators on the dangers of storing sensitive information in insecure locations. Implement regular audits to scan for this issue.`,
+- Conduct regular security awareness training for all IT staff and administrators on the dangers of storing sensitive information in insecure locations.
+- Implement regular audits to scan for this issue.`,
         recommendations_es: `### Recomendaciones
 
 #### Recomendaciones a Corto Plazo
-Escanear todos los campos de Descripción de las cuentas de usuario y equipo en Active Directory en busca de contraseñas y otra información sensible y eliminarlos.
+- Escanear todos los campos de Descripción de las cuentas de usuario y equipo en Active Directory en busca de contraseñas y otra información sensible y eliminarlos.
 
 #### Recomendaciones a Medio Plazo
-Implementar una solución segura de gestión de secretos (como una bóveda de contraseñas) para almacenar contraseñas de cuentas de servicio y otras credenciales.
+- Implementar una solución segura de gestión de secretos (como una bóveda de contraseñas) para almacenar contraseñas de cuentas de servicio y otras credenciales.
 
 #### Recomendaciones a Largo Plazo
-Educar a todo el personal de TI y a los administradores sobre los peligros de almacenar información sensible en ubicaciones inseguras. Implementar auditorías regulares para escanear en busca de este problema.`,
+- Educar a todo el personal de TI y a los administradores sobre los peligros de almacenar información sensible en ubicaciones inseguras.
+- Implementar auditorías regulares para escanear en busca de este problema.`,
         affectedComponents_en: "### Affected Components\n- [TODO: Specify the Active Directory user/computer account.]",
         details_en: "### Proof of Concept\n[TODO: Provide a screenshot of the Active Directory user/computer properties window showing the password in the Description field.]",
         affectedComponents_es: "### Componentes Afectados\n- [TODO: Especificar la cuenta de usuario/equipo de Active Directory.]",
         details_es: "### Prueba de Concepto\n[TODO: Proporcionar una captura de pantalla de la ventana de propiedades del usuario/equipo de Active Directory que muestra la contraseña en el campo Descripción.]",
-        immediateActions_en: "### Immediate Actions\nImmediately remove the password from the Description field and reset the password for the associated account.",
-        immediateActions_es: "### Acciones Inmediatas\nEliminar inmediatamente la contraseña del campo Descripción y restablecer la contraseña de la cuenta asociada.",
+        immediateActions_en: "### Immediate Actions\n- Immediately remove the password from the Description field and reset the password for the associated account.",
+        immediateActions_es: "### Acciones Inmediatas\n- Eliminar inmediatamente la contraseña del campo Descripción y restablecer la contraseña de la cuenta asociada.",
     },
     // --- CRYPTOGRAPHY VULNERABILITIES ---
     {
@@ -2503,29 +2692,37 @@ Educar a todo el personal de TI y a los administradores sobre los peligros de al
         recommendations_en: `### Recommendations
 
 #### Short-Term Recommendations
-Replace all weak algorithms with strong, industry-standard alternatives. For symmetric encryption, use AES-256 (GCM mode is recommended). For hashing, use SHA-256 or stronger.
+- Replace all weak algorithms with strong, industry-standard alternatives.
+- For symmetric encryption, use AES-256 (GCM mode is recommended).
+- For hashing, use SHA-256 or stronger.
 
 #### Medium-Term Recommendations
-Establish a corporate policy defining approved cryptographic standards and algorithms. Create a centralized crypto library for developers to use.
+- Establish a corporate policy defining approved cryptographic standards and algorithms.
+- Create a centralized crypto library for developers to use.
 
 #### Long-Term Recommendations
-Implement a process for regularly reviewing and updating cryptographic standards as new research emerges. Use code scanning tools to detect the use of deprecated cryptographic functions.`,
+- Implement a process for regularly reviewing and updating cryptographic standards as new research emerges.
+- Use code scanning tools to detect the use of deprecated cryptographic functions.`,
         recommendations_es: `### Recomendaciones
 
 #### Recomendaciones a Corto Plazo
-Reemplazar los algoritmos débiles con alternativas fuertes y estándar de la industria. Para el cifrado simétrico, usar AES-256 (se recomienda el modo GCM). Para el hashing, usar SHA-256 o más fuerte.
+- Reemplazar los algoritmos débiles con alternativas fuertes y estándar de la industria.
+- Para el cifrado simétrico, usar AES-256 (se recomienda el modo GCM).
+- Para el hashing, usar SHA-256 o más fuerte.
 
 #### Recomendaciones a Medio Plazo
-Establecer una política corporativa que defina los estándares y algoritmos criptográficos aprobados. Crear una biblioteca de criptografía centralizada para que la usen los desarrolladores.
+- Establecer una política corporativa que defina los estándares y algoritmos criptográficos aprobados.
+- Crear una biblioteca de criptografía centralizada para que la usen los desarrolladores.
 
 #### Recomendaciones a Largo Plazo
-Implementar un proceso para revisar y actualizar regularmente los estándares criptográficos a medida que surja nueva investigación. Usar herramientas de escaneo de código para detectar el uso de funciones criptográficas obsoletas.`,
+- Implementar un proceso para revisar y actualizar regularmente los estándares criptográficos a medida que surja nueva investigación.
+- Usar herramientas de escaneo de código para detectar el uso de funciones criptográficas obsoletas.`,
         affectedComponents_en: "### Affected Components\n- [TODO: Specify the component or code section using the weak algorithm.]",
         details_en: "### Proof of Concept\n[TODO: Provide code snippets or configuration files that show the use of a weak algorithm (e.g., 'Cipher.getInstance(\"DES\")').]",
         affectedComponents_es: "### Componentes Afectados\n- [TODO: Especificar el componente o la sección de código que utiliza el algoritmo débil.]",
         details_es: "### Prueba de Concepto\n[TODO: Proporcionar fragmentos de código o archivos de configuración que muestren el uso de un algoritmo débil (p. ej., 'Cipher.getInstance(\"DES\")').]",
-        immediateActions_en: "### Immediate Actions\nPrioritize the replacement of the weak cryptographic algorithms with modern, strong alternatives.",
-        immediateActions_es: "### Acciones Inmediatas\nPriorizar la sustitución de los algoritmos criptográficos débiles por alternativas modernas y fuertes.",
+        immediateActions_en: "### Immediate Actions\n- Prioritize the replacement of the weak cryptographic algorithms with modern, strong alternatives.",
+        immediateActions_es: "### Acciones Inmediatas\n- Priorizar la sustitución de los algoritmos criptográficos débiles por alternativas modernas y fuertes.",
     },
     {
         id: "vuln-crypto-002",
@@ -2545,29 +2742,31 @@ Implementar un proceso para revisar y actualizar regularmente los estándares cr
         recommendations_en: `### Recommendations
 
 #### Short-Term Recommendations
-Store all cryptographic keys in a secure secrets management system, such as a hardware security module (HSM) or a cloud-based key vault (e.g., AWS KMS, Azure Key Vault, Google Cloud KMS).
+- Store all cryptographic keys in a secure secrets management system, such as a hardware security module (HSM) or a cloud-based key vault (e.g., AWS KMS, Azure Key Vault, Google Cloud KMS).
 
 #### Medium-Term Recommendations
-Establish a key management policy that defines key generation standards, rotation periods, and access control procedures.
+- Establish a key management policy that defines key generation standards, rotation periods, and access control procedures.
 
 #### Long-Term Recommendations
-Automate the key rotation process. Implement monitoring and alerting for any unauthorized access attempts to the key management system.`,
+- Automate the key rotation process.
+- Implement monitoring and alerting for any unauthorized access attempts to the key management system.`,
         recommendations_es: `### Recomendaciones
 
 #### Recomendaciones a Corto Plazo
-Almacenar todas las claves criptográficas en un sistema de gestión de secretos seguro, como un módulo de seguridad de hardware (HSM) o una bóveda de claves basada en la nube (p. ej., AWS KMS, Azure Key Vault, Google Cloud KMS).
+- Almacenar todas las claves criptográficas en un sistema de gestión de secretos seguro, como un módulo de seguridad de hardware (HSM) o una bóveda de claves basada en la nube (p. ej., AWS KMS, Azure Key Vault, Google Cloud KMS).
 
 #### Recomendaciones a Medio Plazo
-Establecer una política de gestión de claves que defina los estándares de generación de claves, los períodos de rotación y los procedimientos de control de acceso.
+- Establecer una política de gestión de claves que defina los estándares de generación de claves, los períodos de rotación y los procedimientos de control de acceso.
 
 #### Recomendaciones a Largo Plazo
-Automatizar el proceso de rotación de claves. Implementar monitoreo y alertas para cualquier intento de acceso no autorizado al sistema de gestión de claves.`,
+- Automatizar el proceso de rotación de claves.
+- Implementar monitoreo y alertas para cualquier intento de acceso no autorizado al sistema de gestión de claves.`,
         affectedComponents_en: "### Affected Components\n- [TODO: Specify where the key is insecurely stored or managed.]",
         details_en: "### Proof of Concept\n[TODO: Provide a code snippet showing a hardcoded key, or a screenshot of a configuration file containing a key.]",
         affectedComponents_es: "### Componentes Afectados\n- [TODO: Especificar dónde se almacena o gestiona la clave de forma insegura.]",
         details_es: "### Prueba de Concepto\n[TODO: Proporcionar un fragmento de código que muestre una clave codificada, o una captura de pantalla de un archivo de configuración que contenga una clave.]",
-        immediateActions_en: "### Immediate Actions\nImmediately rotate any compromised or insecurely stored keys. Remove keys from source code or configuration files.",
-        immediateActions_es: "### Acciones Inmediatas\nRotar inmediatamente cualquier clave comprometida o almacenada de forma insegura. Eliminar las claves del código fuente o de los archivos de configuración.",
+        immediateActions_en: "### Immediate Actions\n- Immediately rotate any compromised or insecurely stored keys.\n- Remove keys from source code or configuration files.",
+        immediateActions_es: "### Acciones Inmediatas\n- Rotar inmediatamente cualquier clave comprometida o almacenada de forma insegura.\n- Eliminar las claves del código fuente o de los archivos de configuración.",
     },
     {
         id: "vuln-crypto-003",
@@ -2587,29 +2786,33 @@ Automatizar el proceso de rotación de claves. Implementar monitoreo y alertas p
         recommendations_en: `### Recommendations
 
 #### Short-Term Recommendations
-Remove all hardcoded secrets from the code and configuration files. Store them securely in a secrets management system (e.g., HashiCorp Vault, AWS Secrets Manager).
+- Remove all hardcoded secrets from the code and configuration files.
+- Store them securely in a secrets management system (e.g., HashiCorp Vault, AWS Secrets Manager).
 
 #### Medium-Term Recommendations
-Use environment variables or a secure configuration service to inject secrets into the application at runtime. Never commit secrets to source control.
+- Use environment variables or a secure configuration service to inject secrets into the application at runtime.
+- Never commit secrets to source control.
 
 #### Long-Term Recommendations
-Implement pre-commit hooks and CI/CD pipeline checks to automatically scan for and block any commits that contain hardcoded secrets.`,
+- Implement pre-commit hooks and CI/CD pipeline checks to automatically scan for and block any commits that contain hardcoded secrets.`,
         recommendations_es: `### Recomendaciones
 
 #### Recomendaciones a Corto Plazo
-Eliminar todos los secretos codificados del código y los archivos de configuración. Almacenarlos de forma segura en un sistema de gestión de secretos (p. ej., HashiCorp Vault, AWS Secrets Manager).
+- Eliminar todos los secretos codificados del código y los archivos de configuración.
+- Almacenarlos de forma segura en un sistema de gestión de secretos (p. ej., HashiCorp Vault, AWS Secrets Manager).
 
 #### Recomendaciones a Medio Plazo
-Usar variables de entorno o un servicio de configuración seguro para inyectar secretos en la aplicación en tiempo de ejecución. Nunca cometer secretos en el control de fuentes.
+- Usar variables de entorno o un servicio de configuración seguro para inyectar secretos en la aplicación en tiempo de ejecución.
+- Nunca cometer secretos en el control de fuentes.
 
 #### Recomendaciones a Largo Plazo
-Implementar ganchos pre-commit y comprobaciones en el pipeline de CI/CD para escanear y bloquear automáticamente cualquier commit que contenga secretos codificados.`,
+- Implementar ganchos pre-commit y comprobaciones en el pipeline de CI/CD para escanear y bloquear automáticamente cualquier commit que contenga secretos codificados.`,
         affectedComponents_en: "### Affected Components\n- [TODO: Specify the file and line number where the secret is hardcoded.]",
         details_en: "### Proof of Concept\n[TODO: Provide a screenshot or code snippet showing the hardcoded secret.]",
         affectedComponents_es: "### Componentes Afectados\n- [TODO: Especificar el archivo y el número de línea donde está codificado el secreto.]",
         details_es: "### Prueba de Concepto\n[TODO: Proporcionar una captura de pantalla o un fragmento de código que muestre el secreto codificado.]",
-        immediateActions_en: "### Immediate Actions\nImmediately revoke the hardcoded secret and generate a new one. Remove the secret from the source code and commit history.",
-        immediateActions_es: "### Acciones Inmediatas\nRevocar inmediatamente el secreto codificado y generar uno nuevo. Eliminar el secreto del código fuente y del historial de commits.",
+        immediateActions_en: "### Immediate Actions\n- Immediately revoke the hardcoded secret and generate a new one.\n- Remove the secret from the source code and commit history.",
+        immediateActions_es: "### Acciones Inmediatas\n- Revocar inmediatamente el secreto codificado y generar uno nuevo.\n- Eliminar el secreto del código fuente y del historial de commits.",
     },
     {
         id: "vuln-crypto-004",
@@ -2629,29 +2832,29 @@ Implementar ganchos pre-commit y comprobaciones en el pipeline de CI/CD para esc
         recommendations_en: `### Recommendations
 
 #### Short-Term Recommendations
-Use a cryptographically secure pseudo-random number generator (CSPRNG) provided by the operating system or a trusted library for all security-sensitive values (e.g., \`/dev/urandom\` on Linux, \`crypto.randomBytes\` in Node.js).
+- Use a cryptographically secure pseudo-random number generator (CSPRNG) provided by the operating system or a trusted library for all security-sensitive values (e.g., \`/dev/urandom\` on Linux, \`crypto.randomBytes\` in Node.js).
 
 #### Medium-Term Recommendations
-Review all code to ensure that no weak PRNGs (like \`Math.random()\` or \`rand()\`) are used for generating session tokens, keys, salts, or other cryptographic material.
+- Review all code to ensure that no weak PRNGs (like \`Math.random()\` or \`rand()\`) are used for generating session tokens, keys, salts, or other cryptographic material.
 
 #### Long-Term Recommendations
-Establish a coding standard that mandates the use of approved CSPRNGs for all security contexts.`,
+- Establish a coding standard that mandates the use of approved CSPRNGs for all security contexts.`,
         recommendations_es: `### Recomendaciones
 
 #### Recomendaciones a Corto Plazo
-Utilizar un generador de números pseudoaleatorios criptográficamente seguro (CSPRNG) proporcionado por el sistema operativo o una biblioteca de confianza para todos los valores sensibles a la seguridad (p. ej., \`/dev/urandom\` en Linux, \`crypto.randomBytes\` en Node.js).
+- Utilizar un generador de números pseudoaleatorios criptográficamente seguro (CSPRNG) proporcionado por el sistema operativo o una biblioteca de confianza para todos los valores sensibles a la seguridad (p. ej., \`/dev/urandom\` en Linux, \`crypto.randomBytes\` en Node.js).
 
 #### Recomendaciones a Medio Plazo
-Revisar todo el código para asegurarse de que no se utilicen PRNG débiles (como \`Math.random()\` o \`rand()\`) para generar tokens de sesión, claves, sales o IVs.
+- Revisar todo el código para asegurarse de que no se utilicen PRNG débiles (como \`Math.random()\` o \`rand()\`) para generar tokens de sesión, claves, sales o IVs.
 
 #### Recomendaciones a Largo Plazo
-Establecer un estándar de codificación que exija el uso de CSPRNG aprobados para todos los contextos de seguridad.`,
+- Establecer un estándar de codificación que exija el uso de CSPRNG aprobados para todos los contextos de seguridad.`,
         affectedComponents_en: "### Affected Components\n- [TODO: Specify the functionality that uses a weak random number generator.]",
         details_en: "### Proof of Concept\n[TODO: Provide a sequence of generated tokens and demonstrate their predictability, or show the code using a weak PRNG function.]",
         affectedComponents_es: "### Componentes Afectados\n- [TODO: Especificar la funcionalidad que utiliza un generador de números aleatorios débil.]",
         details_es: "### Prueba de Concepto\n[TODO: Proporcionar una secuencia de tokens generados y demostrar su previsibilidad, o mostrar el código que utiliza una función PRNG débil.]",
-        immediateActions_en: "### Immediate Actions\nReplace all uses of weak random number generators with cryptographically secure ones.",
-        immediateActions_es: "### Acciones Inmediatas\nReemplazar todos los usos de generadores de números aleatorios débiles por otros criptográficamente seguros.",
+        immediateActions_en: "### Immediate Actions\n- Replace all uses of weak random number generators with cryptographically secure ones.",
+        immediateActions_es: "### Acciones Inmediatas\n- Reemplazar todos los usos de generadores de números aleatorios débiles por otros criptográficamente seguros.",
     },
     {
         id: "vuln-crypto-005",
@@ -2671,29 +2874,31 @@ Establecer un estándar de codificación que exija el uso de CSPRNG aprobados pa
         recommendations_en: `### Recommendations
 
 #### Short-Term Recommendations
-Ensure that the application returns a generic error message regardless of whether the failure was due to invalid padding, incorrect MAC, or other decryption errors. Do not leak information through error messages.
+- Ensure that the application returns a generic error message regardless of whether the failure was due to invalid padding, incorrect MAC, or other decryption errors.
+- Do not leak information through error messages.
 
 #### Medium-Term Recommendations
-Use an authenticated encryption mode (AEAD) such as AES-GCM or ChaCha20-Poly1305. These modes combine encryption and authentication, which inherently protects against padding oracle attacks.
+- Use an authenticated encryption mode (AEAD) such as AES-GCM or ChaCha20-Poly1305. These modes combine encryption and authentication, which inherently protects against padding oracle attacks.
 
 #### Long-Term Recommendations
-Review all cryptographic implementations to ensure that they are not vulnerable to side-channel attacks based on error messages or timing differences.`,
+- Review all cryptographic implementations to ensure that they are not vulnerable to side-channel attacks based on error messages or timing differences.`,
         recommendations_es: `### Recomendaciones
 
 #### Recomendaciones a Corto Plazo
-Asegurarse de que la aplicación devuelva un mensaje de error genérico independientemente de si el fallo se debió a un relleno no válido, una MAC incorrecta u otros errores de descifrado. No filtrar información a través de los mensajes de error.
+- Asegurarse de que la aplicación devuelva un mensaje de error genérico independientemente de si el fallo se debió a un relleno no válido, una MAC incorrecta u otros errores de descifrado.
+- No filtrar información a través de los mensajes de error.
 
 #### Recomendaciones a Medio Plazo
-Utilizar un modo de cifrado autenticado (AEAD) como AES-GCM o ChaCha20-Poly1305. Estos modos combinan cifrado y autenticación, lo que protege inherentemente contra los ataques de oráculo de relleno.
+- Utilizar un modo de cifrado autenticado (AEAD) como AES-GCM o ChaCha20-Poly1305. Estos modos combinan cifrado y autenticación, lo que protege inherentemente contra los ataques de oráculo de relleno.
 
 #### Recomendaciones a Largo Plazo
-Revisar todas las implementaciones criptográficas para asegurarse de que no sean vulnerables a ataques de canal lateral basados en mensajes de error o diferencias de tiempo.`,
+- Revisar todas las implementaciones criptográficas para asegurarse de que no sean vulnerables a ataques de canal lateral basados en mensajes de error o diferencias de tiempo.`,
         affectedComponents_en: "### Affected Components\n- [TODO: Specify the functionality that decrypts user-supplied data.]",
         details_en: "### Proof of Concept\n[TODO: Provide a demonstration using a tool like PadBuster to decrypt an encrypted cookie or parameter.]",
         affectedComponents_es: "### Componentes Afectados\n- [TODO: Especificar la funcionalidad que descifra los datos proporcionados por el usuario.]",
         details_es: "### Prueba de Concepto\n[TODO: Proporcionar una demostración utilizando una herramienta como PadBuster para descifrar una cookie o un parámetro cifrado.]",
-        immediateActions_en: "### Immediate Actions\nSwitch from a vulnerable cipher mode like CBC to an authenticated encryption mode like GCM or CCM.",
-        immediateActions_es: "### Acciones Inmediatas\nCambiar de un modo de cifrado vulnerable como CBC a un modo de cifrado autenticado como GCM o CCM.",
+        immediateActions_en: "### Immediate Actions\n- Switch from a vulnerable cipher mode like CBC to an authenticated encryption mode like GCM or CCM.",
+        immediateActions_es: "### Acciones Inmediatas\n- Cambiar de un modo de cifrado vulnerable como CBC a un modo de cifrado autenticado como GCM o CCM.",
     },
     {
         id: "vuln-crypto-006",
@@ -2713,29 +2918,29 @@ Revisar todas las implementaciones criptográficas para asegurarse de que no sea
         recommendations_en: `### Recommendations
 
 #### Short-Term Recommendations
-Use a cryptographically secure pseudo-random number generator (CSPRNG) provided by the operating system or a trusted library for all security-sensitive values (e.g., \`/dev/urandom\` on Linux, \`crypto.randomBytes\` in Node.js).
+- Use a cryptographically secure pseudo-random number generator (CSPRNG) provided by the operating system or a trusted library for all security-sensitive values (e.g., \`/dev/urandom\` on Linux, \`crypto.randomBytes\` in Node.js).
 
 #### Medium-Term Recommendations
-Review all code to ensure that no weak PRNGs (like \`Math.random()\` or \`rand()´) are used for generating session tokens, keys, salts, or other cryptographic material.
+- Review all code to ensure that no weak PRNGs (like \`Math.random()\` or \`rand()\`) are used for generating session tokens, keys, salts, or other cryptographic material.
 
 #### Long-Term Recommendations
-Establish a coding standard that mandates the use of approved CSPRNGs for all security contexts.`,
+- Establish a coding standard that mandates the use of approved CSPRNGs for all security contexts.`,
         recommendations_es: `### Recomendaciones
 
 #### Recomendaciones a Corto Plazo
-Utilizar un generador de números pseudoaleatorios criptográficamente seguro (CSPRNG) proporcionado por el sistema operativo o una biblioteca de confianza para todos los valores sensibles a la seguridad (p. ej., \`/dev/urandom\` en Linux, \`crypto.randomBytes\` en Node.js).
+- Utilizar un generador de números pseudoaleatorios criptográficamente seguro (CSPRNG) proporcionado por el sistema operativo o una biblioteca de confianza para todos los valores sensibles a la seguridad (p. ej., \`/dev/urandom\` en Linux, \`crypto.randomBytes\` en Node.js).
 
 #### Recomendaciones a Medio Plazo
-Revisar todo el código para asegurarse de que no se utilicen PRNG débiles (como \`Math.random()\` o \`rand()\`) para generar tokens de sesión, claves, sales o IVs.
+- Revisar todo el código para asegurarse de que no se utilicen PRNG débiles (como \`Math.random()\` o \`rand()\`) para generar tokens de sesión, claves, sales o IVs.
 
 #### Recomendaciones a Largo Plazo
-Establecer un estándar de codificación que exija el uso de CSPRNG aprobados para todos los contextos de seguridad.`,
+- Establecer un estándar de codificación que exija el uso de CSPRNG aprobados para todos los contextos de seguridad.`,
         affectedComponents_en: "### Affected Components\n- [TODO: Specify the functionality that uses a weak random number generator.]",
         details_en: "### Proof of Concept\n[TODO: Show the code using a weak PRNG function (e.g., Math.random()) for a security-sensitive purpose.]",
         affectedComponents_es: "### Componentes Afectados\n- [TODO: Especificar la funcionalidad que utiliza un generador de números aleatorios débil.]",
         details_es: "### Prueba de Concepto\n[TODO: Mostrar el código que utiliza una función PRNG débil (p. ej., Math.random()) para un propósito sensible a la seguridad.]",
-        immediateActions_en: "### Immediate Actions\nReplace all uses of weak random number generators with cryptographically secure ones.",
-        immediateActions_es: "### Acciones Inmediatas\nReemplazar todos los usos de generadores de números aleatorios débiles por otros criptográficamente seguros.",
+        immediateActions_en: "### Immediate Actions\n- Replace all uses of weak random number generators with cryptographically secure ones.",
+        immediateActions_es: "### Acciones Inmediatas\n- Reemplazar todos los usos de generadores de números aleatorios débiles por otros criptográficamente seguros.",
     },
     {
         id: "vuln-crypto-007",
@@ -2755,29 +2960,31 @@ Establecer un estándar de codificación que exija el uso de CSPRNG aprobados pa
         recommendations_en: `### Recommendations
 
 #### Short-Term Recommendations
-Redesign the flawed security feature based on well-vetted, standard security patterns. For example, use HMAC to add authentication to encrypted data.
+- Redesign the flawed security feature based on well-vetted, standard security patterns. For example, use HMAC to add authentication to encrypted data.
 
 #### Medium-Term Recommendations
-Avoid designing custom cryptographic protocols. Rely on established standards like TLS, JWT, and SAML.
+- Avoid designing custom cryptographic protocols.
+- Rely on established standards like TLS, JWT, and SAML.
 
 #### Long-Term Recommendations
-Incorporate threat modeling and security design reviews into the software development lifecycle to identify and eliminate design flaws before implementation.`,
+- Incorporate threat modeling and security design reviews into the software development lifecycle to identify and eliminate design flaws before implementation.`,
         recommendations_es: `### Recomendaciones
 
 #### Recomendaciones a Corto Plazo
-Rediseñar la característica de seguridad defectuosa basándose en patrones de seguridad estándar y bien examinados. Por ejemplo, usar HMAC para agregar autenticación a los datos cifrados.
+- Rediseñar la característica de seguridad defectuosa basándose en patrones de seguridad estándar y bien examinados. Por ejemplo, usar HMAC para agregar autenticación a los datos cifrados.
 
 #### Recomendaciones a Medio Plazo
-Evitar el diseño de protocolos criptográficos personalizados. Confiar en estándares establecidos como TLS, JWT y SAML.
+- Evitar el diseño de protocolos criptográficos personalizados.
+- Confiar en estándares establecidos como TLS, JWT y SAML.
 
 #### Recomendaciones a Largo Plazo
-Incorporar el modelado de amenazas y las revisiones de diseño de seguridad en el ciclo de vida del desarrollo de software para identificar y eliminar los defectos de diseño antes de la implementación.`,
+- Incorporar el modelado de amenazas y las revisiones de diseño de seguridad en el ciclo de vida del desarrollo de software para identificar y eliminar los defectos de diseño antes de la implementación.`,
         affectedComponents_en: "### Affected Components\n- [TODO: Describe the security feature with the design flaw.]",
         details_en: "### Proof of Concept\n[TODO: Provide a step-by-step demonstration of how to bypass the flawed security feature.]",
         affectedComponents_es: "### Componentes Afectados\n- [TODO: Describir la característica de seguridad con el defecto de diseño.]",
         details_es: "### Prueba de Concepto\n[TODO: Proporcionar una demostración paso a paso de cómo eludir la característica de seguridad defectuosa.]",
-        immediateActions_en: "### Immediate Actions\nConduct a thorough design review of the flawed security feature with a cryptography expert.",
-        immediateActions_es: "### Acciones Inmediatas\nRealizar una revisión de diseño exhaustiva de la característica de seguridad defectuosa con un experto en criptografía.",
+        immediateActions_en: "### Immediate Actions\n- Conduct a thorough design review of the flawed security feature with a cryptography expert.",
+        immediateActions_es: "### Acciones Inmediatas\n- Realizar una revisión de diseño exhaustiva de la característica de seguridad defectuosa con un experto en criptografía.",
     },
     {
         id: "vuln-crypto-008",
@@ -2797,29 +3004,31 @@ Incorporar el modelado de amenazas y las revisiones de diseño de seguridad en e
         recommendations_en: `### Recommendations
 
 #### Short-Term Recommendations
-Ensure that all cryptographic operations are performed in constant time, meaning they take the same amount of time regardless of the input data. Use safe string comparison functions instead of \`==\` for secrets.
+- Ensure that all cryptographic operations are performed in constant time, meaning they take the same amount of time regardless of the input data.
+- Use safe string comparison functions instead of \`==\` for secrets.
 
 #### Medium-Term Recommendations
-Use cryptographic libraries that are specifically designed to be resistant to side-channel attacks.
+- Use cryptographic libraries that are specifically designed to be resistant to side-channel attacks.
 
 #### Long-Term Recommendations
-For highly sensitive applications, consider physical security measures to protect against power analysis and electromagnetic leak attacks.`,
+- For highly sensitive applications, consider physical security measures to protect against power analysis and electromagnetic leak attacks.`,
         recommendations_es: `### Recomendaciones
 
 #### Recomendaciones a Corto Plazo
-Asegurarse de que todas las operaciones criptográficas se realicen en tiempo constante, lo que significa que tardan la misma cantidad de tiempo independientemente de los datos de entrada. Usar funciones de comparación de cadenas seguras en lugar de \`==\` para los secretos.
+- Asegurarse de que todas las operaciones criptográficas se realicen en tiempo constante, lo que significa que tardan la misma cantidad de tiempo independientemente de los datos de entrada.
+- Usar funciones de comparación de cadenas seguras en lugar de \`==\` para los secretos.
 
 #### Recomendaciones a Medio Plazo
-Utilizar bibliotecas criptográficas que estén diseñadas específicamente para ser resistentes a los ataques de canal lateral.
+- Utilizar bibliotecas criptográficas que estén diseñadas específicamente para ser resistentes a los ataques de canal lateral.
 
 #### Recomendaciones a Largo Plazo
-Para aplicaciones altamente sensibles, considerar medidas de seguridad física para proteger contra el análisis de energía y los ataques de fuga electromagnética.`,
+- Para aplicaciones altamente sensibles, considerar medidas de seguridad física para proteger contra el análisis de energía y los ataques de fuga electromagnética.`,
         affectedComponents_en: "### Affected Components\n- [TODO: Specify the cryptographic operation that is vulnerable to a side-channel attack.]",
         details_en: "### Proof of Concept\n[TODO: Provide data showing the timing differences or other leaked information that allows an attacker to infer secret data.]",
         affectedComponents_es: "### Componentes Afectados\n- [TODO: Especificar la operación criptográfica que es vulnerable a un ataque de canal lateral.]",
         details_es: "### Prueba de Concepto\n[TODO: Proporcionar datos que muestren las diferencias de tiempo u otra información filtrada que permita a un atacante inferir datos secretos.]",
-        immediateActions_en: "### Immediate Actions\nImplement constant-time operations for all cryptographic comparisons and processing to prevent timing-based side channels.",
-        immediateActions_es: "### Acciones Inmediatas\nImplementar operaciones de tiempo constante para todas las comparaciones y procesamientos criptográficos para prevenir los canales laterales basados en el tiempo.",
+        immediateActions_en: "### Immediate Actions\n- Implement constant-time operations for all cryptographic comparisons and processing to prevent timing-based side channels.",
+        immediateActions_es: "### Acciones Inmediatas\n- Implementar operaciones de tiempo constante para todas las comparaciones y procesamientos criptográficos para prevenir los canales laterales basados en el tiempo.",
     },
     {
         id: "vuln-crypto-009",
@@ -2839,29 +3048,29 @@ Para aplicaciones altamente sensibles, considerar medidas de seguridad física p
         recommendations_en: `### Recommendations
 
 #### Short-Term Recommendations
-Ensure that the client application always validates the server's certificate against the device's trusted root CAs and checks that the certificate's hostname matches the server's domain.
+- Ensure that the client application always validates the server's certificate against the device's trusted root CAs and checks that the certificate's hostname matches the server's domain.
 
 #### Medium-Term Recommendations
-Implement SSL/TLS certificate pinning, where the application is hardcoded to only trust a specific server certificate or public key. This provides protection even if the device's trust store is compromised.
+- Implement SSL/TLS certificate pinning, where the application is hardcoded to only trust a specific server certificate or public key. This provides protection even if the device's trust store is compromised.
 
 #### Long-Term Recommendations
-Use a centralized and secure networking library for all network communications that enforces these security controls by default.`,
+- Use a centralized and secure networking library for all network communications that enforces these security controls by default.`,
         recommendations_es: `### Recomendaciones
 
 #### Recomendaciones a Corto Plazo
-Asegurarse de que la aplicación cliente siempre valide el certificado del servidor con las CA raíz de confianza del dispositivo y compruebe que el nombre de host del certificado coincida con el servidor al que se está conectando.
+- Asegurarse de que la aplicación cliente siempre valide el certificado del servidor con las CA raíz de confianza del dispositivo y compruebe que el nombre de host del certificado coincida con el servidor al que se está conectando.
 
 #### Recomendaciones a Medio Plazo
-Implementar el anclaje de certificados SSL/TLS (certificate pinning), donde la aplicación está codificada para confiar únicamente en un certificado de servidor o clave pública específicos. Esto proporciona protección incluso si el almacén de confianza del dispositivo está comprometido.
+- Implementar el anclaje de certificados SSL/TLS (certificate pinning), donde la aplicación está codificada para confiar únicamente en un certificado de servidor o clave pública específicos. Esto proporciona protección incluso si el almacén de confianza del dispositivo está comprometido.
 
 #### Recomendaciones a Largo Plazo
-Utilizar una biblioteca de red centralizada y segura para todas las comunicaciones de red que aplique estos controles de seguridad por defecto.`,
+- Utilizar una biblioteca de red centralizada y segura para todas las comunicaciones de red que aplique estos controles de seguridad por defecto.`,
         affectedComponents_en: "### Affected Components\n- The client application's TLS/SSL handling code.",
         details_en: "### Proof of Concept\n[TODO: Provide a PoC using a proxy tool like Burp or mitmproxy to intercept the application's traffic by presenting a self-signed certificate.]",
         affectedComponents_es: "### Componentes Afectados\n- El código de manejo de TLS/SSL de la aplicación cliente.",
         details_es: "### Prueba de Concepto\n[TODO: Proporcionar una PoC utilizando una herramienta de proxy como Burp o mitmproxy para interceptar el tráfico de la aplicación presentando un certificado autofirmado.]",
-        immediateActions_en: "### Immediate Actions\nEnforce strict TLS certificate validation in the client application immediately.",
-        immediateActions_es: "### Acciones Inmediatas\nHacer cumplir inmediatamente la validación estricta de certificados TLS en la aplicación cliente.",
+        immediateActions_en: "### Immediate Actions\n- Enforce strict TLS certificate validation in the client application immediately.",
+        immediateActions_es: "### Acciones Inmediatas\n- Hacer cumplir inmediatamente la validación estricta de certificados TLS en la aplicación cliente.",
     },
     {
         id: "vuln-crypto-010",
@@ -2881,29 +3090,31 @@ Utilizar una biblioteca de red centralizada y segura para todas las comunicacion
         recommendations_en: `### Recommendations
 
 #### Short-Term Recommendations
-Configure the server to only support TLS 1.2 and TLS 1.3 with a strong, modern set of cipher suites that provide forward secrecy.
+- Configure the server to only support TLS 1.2 and TLS 1.3 with a strong, modern set of cipher suites that provide forward secrecy.
 
 #### Medium-Term Recommendations
-Implement HTTP Strict Transport Security (HSTS) to ensure that browsers always connect to the server over a secure connection.
+- Implement HTTP Strict Transport Security (HSTS) to ensure that browsers always connect to the server over a secure connection.
 
 #### Long-Term Recommendations
-Establish a corporate policy for cryptographic standards for network communication. Regularly audit all external and internal services for compliance using tools like SSL Labs' SSL Test.`,
+- Establish a corporate policy for cryptographic standards for network communication.
+- Regularly audit all external and internal services for compliance using tools like SSL Labs' SSL Test.`,
         recommendations_es: `### Recomendaciones
 
 #### Recomendaciones a Corto Plazo
-Configurar los servidores para que solo admitan TLS 1.2 y TLS 1.3 con un conjunto de cifrado fuerte y moderno que proporcione secreto hacia adelante (forward secrecy).
+- Configurar los servidores para que solo admitan TLS 1.2 y TLS 1.3 con un conjunto de cifrado fuerte y moderno que proporcione secreto hacia adelante (forward secrecy).
 
 #### Recomendaciones a Medio Plazo
-Implementar HTTP Strict Transport Security (HSTS) para garantizar que los navegadores siempre se conecten al servidor a través de una conexión segura.
+- Implementar HTTP Strict Transport Security (HSTS) para garantizar que los navegadores siempre se conecten al servidor a través de una conexión segura.
 
 #### Recomendaciones a Largo Plazo
-Establecer una política corporativa para los estándares criptográficos para la comunicación de red. Auditar regularmente todos los servicios externos e internos para verificar el cumplimiento utilizando herramientas como la prueba SSL de SSL Labs.`,
+- Establecer una política corporativa para los estándares criptográficos para la comunicación de red.
+- Auditar regularmente todos los servicios externos e internos para verificar el cumplimiento utilizando herramientas como la prueba SSL de SSL Labs.`,
         affectedComponents_en: "### Affected Components\n- The SSL/TLS configuration of the web server or other network services.",
         details_en: "### Proof of Concept\n[TODO: Provide a report from a tool like `nmap --script ssl-enum-ciphers` or a report from SSL Labs showing the support for weak protocols or ciphers.]",
         affectedComponents_es: "### Componentes Afectados\n- La configuración SSL/TLS del servidor web u otros servicios de red.",
         details_es: "### Prueba de Concepto\n[TODO: Proporcionar un informe de una herramienta como `nmap --script ssl-enum-ciphers` o un informe de SSL Labs que muestre el soporte para protocolos o cifrados débiles.]",
-        immediateActions_en: "### Immediate Actions\nImmediately disable support for all SSL versions and TLS 1.0/1.1 on the server. Disable all known weak cipher suites.",
-        immediateActions_es: "### Acciones Inmediatas\nDeshabilitar inmediatamente el soporte para todas las versiones de SSL y TLS 1.0/1.1 en el servidor. Deshabilitar todos los conjuntos de cifrado débiles conocidos.",
+        immediateActions_en: "### Immediate Actions\n- Immediately disable support for all SSL versions and TLS 1.0/1.1 on the server.\n- Disable all known weak cipher suites.",
+        immediateActions_es: "### Acciones Inmediatas\n- Deshabilitar inmediatamente el soporte para todas las versiones de SSL y TLS 1.0/1.1 en el servidor.\n- Deshabilitar todos los conjuntos de cifrado débiles conocidos.",
     },
     {
         id: 'vuln-add-001',
@@ -2923,29 +3134,33 @@ Establecer una política corporativa para los estándares criptográficos para l
         recommendations_en: `### Recommendations
 
 #### Short-Term Recommendations
-Replace all unsafe functions (like \`strcpy\`) with their safer, bounds-checking counterparts (like \`strncpy\`). Recompile the application with modern compiler protections like Stack Canaries, ASLR, and DEP/NX.
+- Replace all unsafe functions (like \`strcpy\`) with their safer, bounds-checking counterparts (like \`strncpy\`).
+- Recompile the application with modern compiler protections like Stack Canaries, ASLR, and DEP/NX.
 
 #### Medium-Term Recommendations
-Conduct a full source code review to identify and eliminate all potential buffer overflow vulnerabilities.
+- Conduct a full source code review to identify and eliminate all potential buffer overflow vulnerabilities.
 
 #### Long-Term Recommendations
-Train developers in secure coding practices, specifically focusing on memory management and input validation. Use static analysis (SAST) tools to automatically detect these flaws during development.`,
+- Train developers in secure coding practices, specifically focusing on memory management and input validation.
+- Use static analysis (SAST) tools to automatically detect these flaws during development.`,
         recommendations_es: `### Recomendaciones
 
 #### Recomendaciones a Corto Plazo
-Reemplazar todas las funciones inseguras (como \`strcpy\`) por sus contrapartes más seguras que comprueban los límites (como \`strncpy\`). Recompilar la aplicación con protecciones de compilador modernas como Stack Canaries, ASLR y DEP/NX.
+- Reemplazar todas las funciones inseguras (como \`strcpy\`) por sus contrapartes más seguras que comprueban los límites (como \`strncpy\`).
+- Recompilar la aplicación con protecciones de compilador modernas como Stack Canaries, ASLR y DEP/NX.
 
 #### Recomendaciones a Medio Plazo
-Realizar una revisión completa del código fuente para identificar y eliminar todas las posibles vulnerabilidades de desbordamiento de búfer.
+- Realizar una revisión completa del código fuente para identificar y eliminar todas las posibles vulnerabilidades de desbordamiento de búfer.
 
 #### Recomendaciones a Largo Plazo
-Capacitar a los desarrolladores en prácticas de codificación segura, centrándose específicamente en la gestión de la memoria y la validación de entradas. Usar herramientas de análisis estático (SAST) para detectar automáticamente estos fallos durante el desarrollo.`,
+- Capacitar a los desarrolladores en prácticas de codificación segura, centrándose específicamente en la gestión de la memoria y la validación de entradas.
+- Usar herramientas de análisis estático (SAST) para detectar automáticamente estos fallos durante el desarrollo.`,
         affectedComponents_en: '### Affected Components\n- [TODO: Specify the vulnerable function and the input parameter that can be overflowed.]',
         details_en: '### Proof of Concept\n[TODO: Provide a script or payload that causes the buffer overflow and demonstrates code execution or a crash.]',
         affectedComponents_es: '### Componentes Afectados\n- [TODO: Especificar la función vulnerable y el parámetro de entrada que se puede desbordar.]',
         details_es: '### Prueba de Concepto\n[TODO: Proporcionar un script o una carga útil que cause el desbordamiento del búfer y demuestre la ejecución de código o un bloqueo.]',
-        immediateActions_en: "### Immediate Actions\nIf possible, immediately disable the vulnerable functionality or apply a temporary filter to block overly long inputs.",
-        immediateActions_es: "### Acciones Inmediatas\nSi es posible, deshabilitar inmediatamente la funcionalidad vulnerable o aplicar un filtro temporal para bloquear las entradas demasiado largas.",
+        immediateActions_en: "### Immediate Actions\n- If possible, immediately disable the vulnerable functionality or apply a temporary filter to block overly long inputs.",
+        immediateActions_es: "### Acciones Inmediatas\n- Si es posible, deshabilitar inmediatamente la funcionalidad vulnerable o aplicar un filtro temporal para bloquear las entradas demasiado largas.",
     },
     {
         id: 'vuln-add-002',
@@ -2965,29 +3180,29 @@ Capacitar a los desarrolladores en prácticas de codificación segura, centránd
         recommendations_en: `### Recommendations
 
 #### Short-Term Recommendations
-Always specify a format string as a constant in functions like \`printf\`. For example, use \`printf("%s", userInput)\` instead of \`printf(userInput)\`.
+- Always specify a format string as a constant in functions like \`printf\`. For example, use \`printf("%s", userInput)\` instead of \`printf(userInput)\`.
 
 #### Medium-Term Recommendations
-Use compiler flags that warn about potential format string vulnerabilities (e.g., \`-Wformat\` in GCC).
+- Use compiler flags that warn about potential format string vulnerabilities (e.g., \`-Wformat\` in GCC).
 
 #### Long-Term Recommendations
-Use static analysis tools to automatically detect format string bugs in the codebase.`,
+- Use static analysis tools to automatically detect format string bugs in the codebase.`,
         recommendations_es: `### Recomendaciones
 
 #### Recomendaciones a Corto Plazo
-Siempre especificar una cadena de formato como una constante en funciones como \`printf\`. Por ejemplo, usar \`printf("%s", userInput)\` en lugar de \`printf(userInput)\`.
+- Siempre especificar una cadena de formato como una constante en funciones como \`printf\`. Por ejemplo, usar \`printf("%s", userInput)\` en lugar de \`printf(userInput)\`.
 
 #### Recomendaciones a Medio Plazo
-Usar banderas de compilador que adviertan sobre posibles vulnerabilidades de cadena de formato (p. ej., \`-Wformat\` en GCC).
+- Usar banderas de compilador que adviertan sobre posiblesulnerabilidades de cadena de formato (p. ej., \`-Wformat\` en GCC).
 
 #### Recomendaciones a Largo Plazo
-Usar herramientas de análisis estático para detectar automáticamente errores de cadena de formato en el código base.`,
+- Usar herramientas de análisis estático para detectar automáticamente errores de cadena de formato en el código base.`,
         affectedComponents_en: '### Affected Components\n- [TODO: Specify the function and user input that is vulnerable.]',
         details_en: '### Proof of Concept\n[TODO: Provide an input string with format specifiers that demonstrates reading from the stack or writing to memory.]',
         affectedComponents_es: '### Componentes Afectados\n- [TODO: Especificar la función y la entrada de usuario que es vulnerable.]',
         details_es: '### Prueba de Concepto\n[TODO: Proporcionar una cadena de entrada con especificadores de formato que demuestre la lectura de la pila o la escritura en la memoria.]',
-        immediateActions_en: "### Immediate Actions\nReview and fix all instances where user input is passed directly to formatting functions.",
-        immediateActions_es: "### Acciones Inmediatas\nRevisar y corregir todas las instancias donde la entrada del usuario se pasa directamente a las funciones de formato.",
+        immediateActions_en: "### Immediate Actions\n- Review and fix all instances where user input is passed directly to formatting functions.",
+        immediateActions_es: "### Acciones Inmediatas\n- Revisar y corregir todas las instancias donde la entrada del usuario se pasa directamente a las funciones de formato.",
     },
     {
         id: 'vuln-add-003',
@@ -3007,29 +3222,33 @@ Usar herramientas de análisis estático para detectar automáticamente errores 
         recommendations_en: `### Recommendations
 
 #### Short-Term Recommendations
-Implement proper synchronization mechanisms like mutexes, semaphores, or locks when accessing shared resources.
+- Implement proper synchronization mechanisms like mutexes, semaphores, or locks when accessing shared resources.
 
 #### Medium-Term Recommendations
-Design atomic operations for critical sections of code. Avoid TOCTOU flaws by performing the action immediately after the check within a locked section.
+- Design atomic operations for critical sections of code.
+- Avoid TOCTOU flaws by performing the action immediately after the check within a locked section.
 
 #### Long-Term Recommendations
-Use thread-safe libraries and frameworks. Conduct thorough code reviews and use static/dynamic analysis tools to identify potential race conditions.`,
+- Use thread-safe libraries and frameworks.
+- Conduct thorough code reviews and use static/dynamic analysis tools to identify potential race conditions.`,
         recommendations_es: `### Recomendaciones
 
 #### Recomendaciones a Corto Plazo
-Implementar mecanismos de sincronización adecuados como mutex, semáforos o bloqueos al acceder a recursos compartidos.
+- Implementar mecanismos de sincronización adecuados como mutex, semáforos o bloqueos al acceder a recursos compartidos.
 
 #### Recomendaciones a Medio Plazo
-Diseñar operaciones atómicas para secciones críticas del código. Evitar fallas TOCTOU realizando la acción inmediatamente después de la verificación dentro de una sección bloqueada.
+- Diseñar operaciones atómicas para secciones críticas del código.
+- Evitar fallas TOCTOU realizando la acción inmediatamente después de la verificación dentro de una sección bloqueada.
 
 #### Recomendaciones a Largo Plazo
-Usar bibliotecas y frameworks seguros para hilos. Realizar revisiones de código exhaustivas y usar herramientas de análisis estático/dinámico para identificar posibles condiciones de carrera.`,
+- Usar bibliotecas y frameworks seguros para hilos.
+- Realizar revisiones de código exhaustivas y usar herramientas de análisis estático/dinámico para identificar posibles condiciones de carrera.`,
         affectedComponents_en: '### Affected Components\n- [TODO: Specify the multi-threaded functionality and the shared resource.]',
         details_en: '### Proof of Concept\n[TODO: Provide a PoC that demonstrates the race condition, for example, by rapidly sending concurrent requests that lead to an inconsistent state.]',
         affectedComponents_es: '### Componentes Afectados\n- [TODO: Especificar la funcionalidad multihilo y el recurso compartido.]',
         details_es: '### Prueba de Concepto\n[TODO: Proporcionar una PoC que demuestre la condición de carrera, por ejemplo, enviando rápidamente solicitudes concurrentes que conduzcan a un estado inconsistente.]',
-        immediateActions_en: "### Immediate Actions\nReview the logic for handling shared resources and implement proper locking mechanisms.",
-        immediateActions_es: "### Acciones Inmediatas\nRevisar la lógica para manejar recursos compartidos e implementar mecanismos de bloqueo adecuados.",
+        immediateActions_en: "### Immediate Actions\n- Review the logic for handling shared resources and implement proper locking mechanisms.",
+        immediateActions_es: "### Acciones Inmediatas\n- Revisar la lógica para manejar recursos compartidos e implementar mecanismos de bloqueo adecuados.",
     },
     {
         id: 'vuln-add-004',
@@ -3049,29 +3268,31 @@ Usar bibliotecas y frameworks seguros para hilos. Realizar revisiones de código
         recommendations_en: `### Recommendations
 
 #### Short-Term Recommendations
-Use a framework-provided LDAP encoding function to sanitize all user-supplied input before it is placed in an LDAP query.
+- Use a framework-provided LDAP encoding function to sanitize all user-supplied input before it is placed in an LDAP query.
 
 #### Medium-Term Recommendations
-Avoid constructing LDAP queries from user input. Use a mapping to predefined queries where possible.
+- Avoid constructing LDAP queries from user input.
+- Use a mapping to predefined queries where possible.
 
 #### Long-Term Recommendations
-Implement the principle of least privilege for the LDAP user account, so it can only access the necessary parts of the directory.`,
+- Implement the principle of least privilege for the LDAP user account, so it can only access the necessary parts of the directory.`,
         recommendations_es: `### Recomendaciones
 
 #### Recomendaciones a Corto Plazo
-Utilizar una función de codificación LDAP proporcionada por el framework para sanear toda la entrada proporcionada por el usuario antes de que se coloque en una consulta LDAP.
+- Utilizar una función de codificación LDAP proporcionada por el framework para sanear toda la entrada proporcionada por el usuario antes de que se coloque en una consulta LDAP.
 
 #### Recomendaciones a Medio Plazo
-Evitar la construcción de consultas LDAP a partir de la entrada del usuario. Usar un mapeo a consultas predefinidas cuando sea posible.
+- Evitar la construcción de consultas LDAP a partir de la entrada del usuario.
+- Usar un mapeo a consultas predefinidas cuando sea posible.
 
 #### Recomendaciones a Largo Plazo
-Implementar el principio de privilegio mínimo para la cuenta de usuario LDAP, de modo que solo pueda acceder a las partes necesarias del directorio.`,
+- Implementar el principio de privilegio mínimo para la cuenta de usuario LDAP, de modo que solo pueda acceder a las partes necesarias del directorio.`,
         affectedComponents_en: '### Affected Components\n- [TODO: Specify the function and parameter vulnerable to LDAP injection.]',
         details_en: '### Proof of Concept\n[TODO: Provide a payload with LDAP metacharacters that bypasses authentication or extracts information.]',
         affectedComponents_es: '### Componentes Afectados\n- [TODO: Especificar la función y el parámetro vulnerables a la inyección LDAP.]',
         details_es: '### Prueba de Concepto\n[TODO: Proporcionar una carga útil con metacaracteres LDAP que eluda la autenticación o extraiga información.]',
-        immediateActions_en: "### Immediate Actions\nImplement input sanitization on all parameters used in LDAP queries.",
-        immediateActions_es: "### Acciones Inmediatas\nImplementar la sanitización de entradas en todos los parámetros utilizados en las consultas LDAP.",
+        immediateActions_en: "### Immediate Actions\n- Implement input sanitization on all parameters used in LDAP queries.",
+        immediateActions_es: "### Acciones Inmediatas\n- Implementar la sanitización de entradas en todos los parámetros utilizados en las consultas LDAP.",
     },
     {
         id: 'vuln-add-005',
@@ -3091,29 +3312,31 @@ Implementar el principio de privilegio mínimo para la cuenta de usuario LDAP, d
         recommendations_en: `### Recommendations
 
 #### Short-Term Recommendations
-Use parameterized XPath queries or libraries that automatically handle the escaping of special characters.
+- Use parameterized XPath queries or libraries that automatically handle the escaping of special characters.
 
 #### Medium-Term Recommendations
-Validate all user input against a strict allow-list of expected values.
+- Validate all user input against a strict allow-list of expected values.
 
 #### Long-Term Recommendations
-Avoid building XPath queries from user input. Use predefined queries where possible.`,
+- Avoid building XPath queries from user input.
+- Use predefined queries where possible.`,
         recommendations_es: `### Recomendaciones
 
 #### Recomendaciones a Corto Plazo
-Utilizar consultas XPath parametrizadas o bibliotecas que manejen automáticamente el escape de caracteres especiales.
+- Utilizar consultas XPath parametrizadas o bibliotecas que manejen automáticamente el escape de caracteres especiales.
 
 #### Recomendaciones a Medio Plazo
-Validar toda la entrada del usuario con una lista blanca estricta de valores esperados.
+- Validar toda la entrada del usuario con una lista blanca estricta de valores esperados.
 
 #### Recomendaciones a Largo Plazo
-Evitar construir consultas XPath a partir de la entrada del usuario. Usar consultas predefinidas cuando sea posible.`,
+- Evitar construir consultas XPath a partir de la entrada del usuario.
+- Usar consultas predefinidas cuando sea posible.`,
         affectedComponents_en: '### Affected Components\n- [TODO: Specify the function and parameter vulnerable to XPath injection.]',
         details_en: '### Proof of Concept\n[TODO: Provide a payload with XPath syntax that bypasses authentication or extracts sensitive information from the XML document.]',
         affectedComponents_es: '### Componentes Afectados\n- [TODO: Especificar la función y el parámetro vulnerables a la inyección XPath.]',
         details_es: '### Prueba de Concepto\n[TODO: Proporcionar una carga útil con sintaxis XPath que eluda la autenticación o extraiga información sensible del documento XML.]',
-        immediateActions_en: "### Immediate Actions\nImplement input sanitization on all parameters used in XPath queries.",
-        immediateActions_es: "### Acciones Inmediatas\nImplementar la sanitización de entradas en todos los parámetros utilizados en las consultas XPath.",
+        immediateActions_en: "### Immediate Actions\n- Implement input sanitization on all parameters used in XPath queries.",
+        immediateActions_es: "### Acciones Inmediatas\n- Implementar la sanitización de entradas en todos los parámetros utilizados en las consultas XPath.",
     },
     {
         id: 'vuln-add-006',
@@ -3133,29 +3356,29 @@ Evitar construir consultas XPath a partir de la entrada del usuario. Usar consul
         recommendations_en: `### Recommendations
 
 #### Short-Term Recommendations
-Always pass user input as data to the template engine, never concatenate it into the template string itself.
+- Always pass user input as data to the template engine, never concatenate it into the template string itself.
 
 #### Medium-Term Recommendations
-Use logic-less templates where possible to reduce the attack surface.
+- Use logic-less templates where possible to reduce the attack surface.
 
 #### Long-Term Recommendations
-Run the application in a sandboxed environment to limit the impact of a potential RCE.`,
+- Run the application in a sandboxed environment to limit the impact of a potential RCE.`,
         recommendations_es: `### Recomendaciones
 
 #### Recomendaciones a Corto Plazo
-Siempre pasar la entrada del usuario como datos al motor de plantillas, nunca concatenarla en la propia cadena de la plantilla.
+- Siempre pasar la entrada del usuario como datos al motor de plantillas, nunca concatenarla en la propia cadena de la plantilla.
 
 #### Recomendaciones a Medio Plazo
-Usar plantillas sin lógica cuando sea posible para reducir la superficie de ataque.
+- Usar plantillas sin lógica cuando sea posible para reducir la superficie de ataque.
 
 #### Recomendaciones a Largo Plazo
-Ejecutar la aplicación en un entorno sandbox para limitar el impacto de una posible RCE.`,
+- Ejecutar la aplicación en un entorno sandbox para limitar el impacto de una posible RCE.`,
         affectedComponents_en: '### Affected Components\n- [TODO: Specify the template and input vulnerable to SSTI.]',
         details_en: '### Proof of Concept\n[TODO: Provide a payload (e.g., `{{7*7}}`) that demonstrates template syntax is being evaluated, and escalate it to RCE if possible.]',
         affectedComponents_es: '### Componentes Afectados\n- [TODO: Especificar la plantilla y la entrada vulnerables a SSTI.]',
         details_es: '### Prueba de Concepto\n[TODO: Proporcionar una carga útil (p. ej., `{{7*7}}`) que demuestre que se está evaluando la sintaxis de la plantilla, y escalarla a RCE si es posible.]',
-        immediateActions_en: "### Immediate Actions\nIdentify and sanitize all user inputs that are used within server-side templates.",
-        immediateActions_es: "### Acciones Inmediatas\nIdentificar y sanear todas las entradas de usuario que se utilizan dentro de las plantillas del lado del servidor.",
+        immediateActions_en: "### Immediate Actions\n- Identify and sanitize all user inputs that are used within server-side templates.",
+        immediateActions_es: "### Acciones Inmediatas\n- Identificar y sanear todas las entradas de usuario que se utilizan dentro de las plantillas del lado del servidor.",
     },
     {
         id: 'vuln-add-007',
@@ -3175,29 +3398,31 @@ Ejecutar la aplicación en un entorno sandbox para limitar el impacto de una pos
         recommendations_en: `### Recommendations
 
 #### Short-Term Recommendations
-Update all vulnerable dependencies to the latest secure version.
+- Update all vulnerable dependencies to the latest secure version.
 
 #### Medium-Term Recommendations
-Implement a Software Composition Analysis (SCA) tool (like \`npm audit\`, Snyk, or Dependabot) to automatically scan for and alert on vulnerable dependencies.
+- Implement a Software Composition Analysis (SCA) tool (like \`npm audit\`, Snyk, or Dependabot) to automatically scan for and alert on vulnerable dependencies.
 
 #### Long-Term Recommendations
-Establish a process for regularly reviewing and updating all third-party libraries. Have a plan in place for responding to newly disclosed vulnerabilities in your dependencies.`,
+- Establish a process for regularly reviewing and updating all third-party libraries.
+- Have a plan in place for responding to newly disclosed vulnerabilities in your dependencies.`,
         recommendations_es: `### Recomendaciones
 
 #### Recomendaciones a Corto Plazo
-Actualizar todas las dependencias vulnerables a la última versión segura.
+- Actualizar todas las dependencias vulnerables a la última versión segura.
 
 #### Recomendaciones a Medio Plazo
-Implementar una herramienta de Análisis de Composición de Software (SCA) (como \`npm audit\`, Snyk, o Dependabot) para escanear y alertar automáticamente sobre dependencias vulnerables.
+- Implementar una herramienta de Análisis de Composición de Software (SCA) (como \`npm audit\`, Snyk, o Dependabot) para escanear y alertar automáticamente sobre dependencias vulnerables.
 
 #### Recomendaciones a Largo Plazo
-Establecer un proceso para revisar y actualizar regularmente todas las bibliotecas de terceros. Tener un plan para responder a lasulnerabilidades recién divulgadas en sus dependencias.`,
+- Establecer un proceso para revisar y actualizar regularmente todas las bibliotecas de terceros.
+- Tener un plan para responder a lasulnerabilidades recién divulgadas en sus dependencias.`,
         affectedComponents_en: '### Affected Components\n- [TODO: List the vulnerable library and its version.]',
         details_en: '### Proof of Concept\n[TODO: Provide a link to the public CVE and, if possible, demonstrate the exploit.]',
         affectedComponents_es: '### Componentes Afectados\n- [TODO: Listar la biblioteca vulnerable y su versión.]',
         details_es: '### Prueba de Concepto\n[TODO: Proporcionar un enlace al CVE público y, si es posible, demostrar el exploit.]',
-        immediateActions_en: "### Immediate Actions\nUpdate the vulnerable components to a patched version immediately.",
-        immediateActions_es: "### Acciones Inmediatas\nActualizar inmediatamente los componentes vulnerables a una versión parcheada.",
+        immediateActions_en: "### Immediate Actions\n- Update the vulnerable components to a patched version immediately.",
+        immediateActions_es: "### Acciones Inmediatas\n- Actualizar inmediatamente los componentes vulnerables a una versión parcheada."
     },
     {
         id: 'vuln-add-008',
@@ -3217,29 +3442,31 @@ Establecer un proceso para revisar y actualizar regularmente todas las bibliotec
         recommendations_en: `### Recommendations
 
 #### Short-Term Recommendations
-For every request that accesses a private object, verify that the logged-in user is authorized to access that specific object.
+- For every request that accesses a private object, verify that the logged-in user is authorized to access that specific object.
 
 #### Medium-Term Recommendations
-Avoid using direct object references in URLs. Use indirect references per user or session, or use unpredictable, random identifiers (GUIDs).
+- Avoid using direct object references in URLs.
+- Use indirect references per user or session, or use unpredictable, random identifiers (GUIDs).
 
 #### Long-Term Recommendations
-Implement a centralized access control mechanism that performs these checks automatically.`,
+- Implement a centralized access control mechanism that performs these checks automatically.`,
         recommendations_es: `### Recomendaciones
 
 #### Recomendaciones a Corto Plazo
-Para cada solicitud que acceda a un objeto privado, verificar que el usuario que ha iniciado sesión esté autorizado para acceder a ese objeto específico.
+- Para cada solicitud que acceda a un objeto privado, verificar que el usuario que ha iniciado sesión esté autorizado para acceder a ese objeto específico.
 
 #### Recomendaciones a Medio Plazo
-Evitar el uso de referencias directas a objetos en las URL. Usar referencias indirectas por usuario o sesión, o usar identificadores impredecibles y aleatorios (GUID).
+- Evitar el uso de referencias directas a objetos en las URL.
+- Usar referencias indirectas por usuario o sesión, o usar identificadores impredecibles y aleatorios (GUID).
 
 #### Recomendaciones a Largo Plazo
-Implementar un mecanismo de control de acceso centralizado que realice estas comprobaciones automáticamente.`,
+- Implementar un mecanismo de control de acceso centralizado que realice estas comprobaciones automáticamente.`,
         affectedComponents_en: '### Affected Components\n- [TODO: Specify the vulnerable URL and the ID parameter.]',
         details_en: '### Proof of Concept\n[TODO: Provide two sets of credentials. Log in as user A, access their resource, then change the ID in the URL to one belonging to user B and show that access is granted.]',
         affectedComponents_es: '### Componentes Afectados\n- [TODO: Especificar la URL vulnerable y el parámetro de ID.]',
         details_es: '### Prueba de Concepto\n[TODO: Proporcionar dos conjuntos de credenciales. Iniciar sesión como usuario A, acceder a su recurso, luego cambiar el ID en la URL por uno que pertenezca al usuario B y mostrar que se concede el acceso.]',
-        immediateActions_en: "### Immediate Actions\nImplement server-side authorization checks for all functions that access objects based on user input.",
-        immediateActions_es: "### Acciones Inmediatas\nImplementar comprobaciones de autorización del lado del servidor para todas las funciones que acceden a objetos basados en la entrada del usuario.",
+        immediateActions_en: "### Immediate Actions\n- Implement server-side authorization checks for all functions that access objects based on user input.",
+        immediateActions_es: "### Acciones Inmediatas\n- Implementar comprobaciones de autorización del lado del servidor para todas las funciones que acceden a objetos basados en la entrada del usuario.",
     },
     {
         id: 'vuln-add-009',
@@ -3259,29 +3486,29 @@ Implementar un mecanismo de control de acceso centralizado que realice estas com
         recommendations_en: `### Recommendations
 
 #### Short-Term Recommendations
-Set the \`X-Frame-Options\` HTTP header to \`DENY\` or \`SAMEORIGIN\`.
+- Set the \`X-Frame-Options\` HTTP header to \`DENY\` or \`SAMEORIGIN\`.
 
 #### Medium-Term Recommendations
-Implement a strong \`Content-Security-Policy\` (CSP) with the \`frame-ancestors\` directive (e.g., \`frame-ancestors 'self';\`).
+- Implement a strong \`Content-Security-Policy\` (CSP) with the \`frame-ancestors\` directive (e.g., \`frame-ancestors 'self';\`).
 
 #### Long-Term Recommendations
-In addition to headers, use "frame-busting" scripts as a defense-in-depth measure, although this is less reliable than headers.`,
+- In addition to headers, use "frame-busting" scripts as a defense-in-depth measure, although this is less reliable than headers.`,
         recommendations_es: `### Recomendaciones
 
 #### Recomendaciones a Corto Plazo
-Establecer el encabezado HTTP \`X-Frame-Options\` en \`DENY\` o \`SAMEORIGIN\`.
+- Establecer el encabezado HTTP \`X-Frame-Options\` en \`DENY\` o \`SAMEORIGIN\`.
 
 #### Recomendaciones a Medio Plazo
-Implementar una política de seguridad de contenido (CSP) sólida con la directiva \`frame-ancestors\` (p. ej., \`frame-ancestors 'self';\`).
+- Implementar una política de seguridad de contenido (CSP) sólida con la directiva \`frame-ancestors\` (p. ej., \`frame-ancestors 'self';\`).
 
 #### Recomendaciones a Largo Plazo
-Además de los encabezados, usar scripts "frame-busting" como una medida de defensa en profundidad, aunque esto es menos fiable que los encabezados.`,
+- Además de los encabezados, usar scripts "frame-busting" como una medida de defensa en profundidad, aunque esto es menos fiable que los encabezados.`,
         affectedComponents_en: '### Affected Components\n- All HTTP responses from the application server.',
         details_en: '### Proof of Concept\n[TODO: Provide a screenshot of the HTTP response headers showing the absence of recommended security headers.]',
         affectedComponents_es: '### Componentes Afectados\n- Todas las responses HTTP del servidor de aplicaciones.]',
         details_es: '### Prueba de Concepto\n[TODO: Proporcionar una captura de pantalla de las herramientas de desarrollador del navegador que muestre los atributos de la cookie, o la falta de ellos.]',
-        immediateActions_en: "### Immediate Actions\nAdd the recommended security headers to all HTTP responses from the server.",
-        immediateActions_es: "### Acciones Inmediatas\nAñadir los encabezados de seguridad recomendados a todas las responses HTTP del servidor.",
+        immediateActions_en: "### Immediate Actions\n- Add the recommended security headers to all HTTP responses from the server.",
+        immediateActions_es: "### Acciones Inmediatas\n- Añadir los encabezados de seguridad recomendados a todas las responses HTTP del servidor.",
     },
     {
         id: 'vuln-add-010',
@@ -3301,29 +3528,29 @@ Además de los encabezados, usar scripts "frame-busting" como una medida de defe
         recommendations_en: `### Recommendations
 
 #### Short-Term Recommendations
-Set the \`X-Frame-Options\` HTTP header to \`DENY\` or \`SAMEORIGIN\`.
+- Set the \`X-Frame-Options\` HTTP header to \`DENY\` or \`SAMEORIGIN\`.
 
 #### Medium-Term Recommendations
-Implement a strong \`Content-Security-Policy\` (CSP) with the \`frame-ancestors\` directive (e.g., \`frame-ancestors 'self';\`).
+- Implement a strong \`Content-Security-Policy\` (CSP) with the \`frame-ancestors\` directive (e.g., \`frame-ancestors 'self';\`).
 
 #### Long-Term Recommendations
-In addition to headers, use "frame-busting" scripts as a defense-in-depth measure, although this is less reliable than headers.`,
+- In addition to headers, use "frame-busting" scripts as a defense-in-depth measure, although this is less reliable than headers.`,
         recommendations_es: `### Recomendaciones
 
 #### Recomendaciones a Corto Plazo
-Establecer el encabezado HTTP \`X-Frame-Options\` en \`DENY\` o \`SAMEORIGIN\`.
+- Establecer el encabezado HTTP \`X-Frame-Options\` en \`DENY\` o \`SAMEORIGIN\`.
 
 #### Recomendaciones a Medio Plazo
-Implementar una política de seguridad de contenido (CSP) sólida con la directiva \`frame-ancestors\` (p. ej., \`frame-ancestors 'self';\`).
+- Implementar una política de seguridad de contenido (CSP) sólida con la directiva \`frame-ancestors\` (p. ej., \`frame-ancestors 'self';\`).
 
 #### Recomendaciones a Largo Plazo
-Además de los encabezados, usar scripts "frame-busting" como una medida de defensa en profundidad, aunque esto es menos fiable que los encabezados.`,
+- Además de los encabezados, usar scripts "frame-busting" como una medida de defensa en profundidad, aunque esto es menos fiable que los encabezados.`,
         affectedComponents_en: '### Affected Components\n- All pages on the web application that do not have framing protection.',
         details_en: '### Proof of Concept\n[TODO: Provide an HTML page with an `<iframe>` that loads the vulnerable application and demonstrates a clickjacking attack.]',
         affectedComponents_es: '### Componentes Afectados\n- Todas las páginas de la aplicación web que no tienen protección contra enmarcado.]',
         details_es: '### Prueba de Concepto\n[TODO: Proporcionar una página HTML con un `<iframe>` que cargue la aplicación vulnerable y demuestre un ataque de secuestro de clics.]',
-        immediateActions_en: "### Immediate Actions\nImplement the `X-Frame-Options` or `Content-Security-Policy: frame-ancestors` header to prevent the site from being framed.",
-        immediateActions_es: "### Acciones Inmediatas\nImplementar el encabezado `X-Frame-Options` o `Content-Security-Policy: frame-ancestors` para evitar que el sitio sea enmarcado.",
+        immediateActions_en: "### Immediate Actions\n- Implement the `X-Frame-Options` or `Content-Security-Policy: frame-ancestors` header to prevent the site from being framed.",
+        immediateActions_es: "### Acciones Inmediatas\n- Implementar el encabezado `X-Frame-Options` o `Content-Security-Policy: frame-ancestors` para evitar que el sitio sea enmarcado.",
     },
     {
         id: "vuln-add-011",
@@ -3343,29 +3570,33 @@ Además de los encabezados, usar scripts "frame-busting" como una medida de defe
         recommendations_en: `### Recommendations
 
 #### Short-Term Recommendations
-Avoid writing user-controllable data directly to the DOM. Use safe functions like \`textContent\` instead of \`innerHTML\`. When dynamic HTML is necessary, use a sanitization library.
+- Avoid writing user-controllable data directly to the DOM.
+- Use safe functions like \`textContent\` instead of \`innerHTML\`.
+- When dynamic HTML is necessary, use a sanitization library.
 
 #### Medium-Term Recommendations
-Use modern frontend frameworks like React or Angular that automatically sanitize data bindings, reducing the risk of DOM-based XSS.
+- Use modern frontend frameworks like React or Angular that automatically sanitize data bindings, reducing the risk of DOM-based XSS.
 
 #### Long-Term Recommendations
-Implement a strong Content Security Policy (CSP) to restrict the sources from which scripts can be loaded, mitigating the impact of any potential XSS flaw.`,
+- Implement a strong Content Security Policy (CSP) to restrict the sources from which scripts can be loaded, mitigating the impact of any potential XSS flaw.`,
         recommendations_es: `### Recomendaciones
 
 #### Recomendaciones a Corto Plazo
-Evitar escribir datos controlables por el usuario directamente en el DOM. Usar funciones seguras como \`textContent\` en lugar de \`innerHTML\`. Cuando el HTML dinámico es necesario, usar una biblioteca de sanitización.
+- Evitar escribir datos controlables por el usuario directamente en el DOM.
+- Usar funciones seguras como \`textContent\` en lugar de \`innerHTML\`.
+- Cuando el HTML dinámico es necesario, usar una biblioteca de sanitización.
 
 #### Recomendaciones a Medio Plazo
-Utilizar frameworks de frontend modernos como React o Angular que sanitizan automáticamente los enlaces de datos, reduciendo el riesgo de XSS basado en DOM.
+- Utilizar frameworks de frontend modernos como React o Angular que sanitizan automáticamente los enlaces de datos, reduciendo el riesgo de XSS basado en DOM.
 
 #### Recomendaciones a Largo Plazo
-Implementar una Política de Seguridad de Contenido (CSP) sólida para restringir las fuentes desde las que se pueden cargar los scripts, mitigando el impacto de cualquier posible falla de XSS.`,
+- Implementar una Política de Seguridad de Contenido (CSP) sólida para restringir las fuentes desde las que se pueden cargar los scripts, mitigando el impacto de cualquier posible falla de XSS.`,
         affectedComponents_en: "### Affected Components\n- [TODO: Specify the client-side script and the DOM sink (e.g., `innerHTML`, `document.write`) that is vulnerable.]",
         details_en: "### Proof of Concept\n[TODO: Provide a URL with a payload in the fragment that, when visited, executes JavaScript in the browser.]",
         affectedComponents_es: "### Componentes Afectados\n- [TODO: Especificar el script del lado del cliente y el 'sink' del DOM (p. ej., `innerHTML`, `document.write`) que es vulnerable.]",
         details_es: "### Prueba de Concepto\n[TODO: Proporcionar una URL con una carga útil en el fragmento que, al ser visitada, ejecuta JavaScript en el navegador.]",
-        immediateActions_en: "### Immediate Actions\nSanitize all user-controlled data that is written to the DOM. Prefer using 'safe' sinks like `.textContent` over dangerous ones like `.innerHTML`.",
-        immediateActions_es: "### Acciones Inmediatas\nSanear todos los datos controlados por el usuario que se escriben en el DOM. Preferir el uso de 'sinks' seguros como `.textContent` sobre los peligrosos como `.innerHTML`."
+        immediateActions_en: "### Immediate Actions\n- Sanitize all user-controlled data that is written to the DOM.\n- Prefer using 'safe' sinks like `.textContent` over dangerous ones like `.innerHTML`.",
+        immediateActions_es: "### Acciones Inmediatas\n- Sanear todos los datos controlados por el usuario que se escriben en el DOM.\n- Preferir el uso de 'sinks' seguros como `.textContent` sobre los peligrosos como `.innerHTML`."
     },
     {
         id: "vuln-add-012",
@@ -3385,29 +3616,33 @@ Implementar una Política de Seguridad de Contenido (CSP) sólida para restringi
         recommendations_en: `### Recommendations
 
 #### Short-Term Recommendations
-Implement a strict allow-list of permitted file extensions and MIME types. Rename uploaded files to a random, non-executable name.
+- Implement a strict allow-list of permitted file extensions and MIME types.
+- Rename uploaded files to a random, non-executable name.
 
 #### Medium-Term Recommendations
-Store uploaded files in a directory outside of the web root, and serve them through a script that performs authorization checks. Scan uploaded files for malware.
+- Store uploaded files in a directory outside of the web root, and serve them through a script that performs authorization checks.
+- Scan uploaded files for malware.
 
 #### Long-Term Recommendations
-Use a dedicated, isolated file storage service (like Amazon S3) with strict permissions instead of storing uploads on the application server.`,
+- Use a dedicated, isolated file storage service (like Amazon S3) with strict permissions instead of storing uploads on the application server.`,
         recommendations_es: `### Recomendaciones
 
 #### Recomendaciones a Corto Plazo
-Implementar una lista blanca estricta de extensiones de archivo y tipos MIME permitidos. Renombrar los archivos subidos a un nombre aleatorio y no ejecutable.
+- Implementar una lista blanca estricta de extensiones de archivo y tipos MIME permitidos.
+- Renombrar los archivos subidos a un nombre aleatorio y no ejecutable.
 
 #### Recomendaciones a Medio Plazo
-Almacenar los archivos subidos en un directorio fuera de la raíz web y servirlos a través de un script que realice comprobaciones de autorización. Escanear los archivos subidos en busca de malware.
+- Almacenar los archivos subidos en un directorio fuera de la raíz web y servirlos a través de un script que realice comprobaciones de autorización.
+- Escanear los archivos subidos en busca de malware.
 
 #### Recomendaciones a Largo Plazo
-Utilizar un servicio de almacenamiento de archivos dedicado y aislado (como Amazon S3) con permisos estrictos en lugar de almacenar las subidas en el servidor de la aplicación.`,
+- Utilizar un servicio de almacenamiento de archivos dedicado y aislado (como Amazon S3) con permisos estrictos en lugar de almacenar las subidas en el servidor de la aplicación.`,
         affectedComponents_en: "### Affected Components\n- [TODO: Specify the file upload functionality and URL.]",
         details_en: "### Proof of Concept\n[TODO: Upload a simple web shell (e.g., `<?php system($_GET['cmd']); ?>`) and then access it via URL to execute a command like `id`.]",
         affectedComponents_es: "### Componentes Afectados\n- [TODO: Especificar la funcionalidad de subida de archivos y la URL.]",
         details_es: "### Prueba de Concepto\n[TODO: Subir una shell web simple (p. ej., `<?php system($_GET['cmd']); ?>`) y luego acceder a ella a través de la URL para ejecutar un comando como `id`.]",
-        immediateActions_en: "### Immediate Actions\nImplement a strict allow-list for file extensions and MIME types on the server side. Do not rely on client-side validation.",
-        immediateActions_es: "### Acciones Inmediatas\nImplementar una lista blanca estricta para las extensiones de archivo y los tipos MIME en el lado del servidor. No confiar en la validación del lado del cliente."
+        immediateActions_en: "### Immediate Actions\n- Implement a strict allow-list for file extensions and MIME types on the server side.\n- Do not rely on client-side validation.",
+        immediateActions_es: "### Acciones Inmediatas\n- Implementar una lista blanca estricta para las extensiones de archivo y los tipos MIME en el lado del servidor.\n- No confiar en la validación del lado del cliente."
     },
     {
         id: "vuln-add-013",
@@ -3440,29 +3675,29 @@ Utilizar un servicio de almacenamiento de archivos dedicado y aislado (como Amaz
         recommendations_en: `### Recommendations
 
 #### Short-Term Recommendations
-Review and add server-side validation to enforce all steps of a business process.
+- Review and add server-side validation to enforce all steps of a business process.
 
 #### Medium-Term Recommendations
-Threat model all business-critical workflows to identify potential abuse cases.
+- Threat model all business-critical workflows to identify potential abuse cases.
 
 #### Long-Term Recommendations
-Implement anomaly detection to identify and alert on unusual application usage patterns that may indicate the exploitation of a logic flaw.`,
+- Implement anomaly detection to identify and alert on unusual application usage patterns that may indicate the exploitation of a logic flaw.`,
         recommendations_es: `### Recomendaciones
 
 #### Recomendaciones a Corto Plazo
-Revisar y añadir validación del lado del servidor para hacer cumplir todos los pasos de un proceso de negocio.
+- Revisar y añadir validación del lado del servidor para hacer cumplir todos los pasos de un proceso de negocio.
 
 #### Recomendaciones a Medio Plazo
-Modelar las amenazas de todos los flujos de trabajo críticos para el negocio para identificar posibles casos de abuso.
+- Modelar las amenazas de todos los flujos de trabajo críticos para el negocio para identificar posibles casos de abuso.
 
 #### Recomendaciones a Largo Plazo
-Implementar la detección de anomalías para identificar y alertar sobre patrones de uso inusuales de la aplicación que puedan indicar la explotación de un fallo lógico.`,
+- Implementar la detección de anomalías para identificar y alertar sobre patrones de uso inusuales de la aplicación que puedan indicar la explotación de un fallo lógico.`,
         affectedComponents_en: "### Affected Components\n- [TODO: Describe the business workflow that is vulnerable.]",
         details_en: "### Proof of Concept\n[TODO: Provide a step-by-step description of how to manipulate the business logic to achieve an unintended outcome.]",
         affectedComponents_es: "### Componentes Afectados\n- [TODO: Describir el flujo de trabajo de negocio que es vulnerable.]",
         details_es: "### Prueba de Concepto\n[TODO: Proporcionar una descripción paso a paso de cómo manipular la lógica de negocio para lograr un resultado no deseado.]",
-        immediateActions_en: "### Immediate Actions\nImplement strict server-side validation to enforce the intended business workflow.",
-        immediateActions_es: "### Acciones Inmediatas\nImplementar una validación estricta del lado del servidor para hacer cumplir el flujo de trabajo de negocio previsto."
+        immediateActions_en: "### Immediate Actions\n- Implement strict server-side validation to enforce the intended business workflow.",
+        immediateActions_es: "### Acciones Inmediatas\n- Implementar una validación estricta del lado del servidor para hacer cumplir el flujo de trabajo de negocio previsto."
     },
     {
         id: "vuln-add-014",
@@ -3495,29 +3730,31 @@ Implementar la detección de anomalías para identificar y alertar sobre patrone
         recommendations_en: `### Recommendations
 
 #### Short-Term Recommendations
-Implement a strict CORS policy. Remove sensitive information from all API error responses.
+- Implement a strict CORS policy.
+- Remove sensitive information from all API error responses.
 
 #### Medium-Term Recommendations
-Review and harden the configuration of the API gateway and server.
+- Review and harden the configuration of the API gateway and server.
 
 #### Long-Term Recommendations
-Automate security configuration checks in the CI/CD pipeline to ensure consistent and secure deployment.`,
+- Automate security configuration checks in the CI/CD pipeline to ensure consistent and secure deployment.`,
         recommendations_es: `### Recomendaciones
 
 #### Recomendaciones a Corto Plazo
-Implementar una política CORS estricta. Eliminar la información sensible de todas las respuestas de error de la API.
+- Implementar una política CORS estricta.
+- Eliminar la información sensible de todas las respuestas de error de la API.
 
 #### Recomendaciones a Medio Plazo
-Revisar y reforzar la configuración de la pasarela de la API y del servidor.
+- Revisar y reforzar la configuración de la pasarela de la API y del servidor.
 
 #### Recomendaciones a Largo Plazo
-Automatizar las comprobaciones de configuración de seguridad en el pipeline de CI/CD para garantizar una implementación consistente y segura.`,
+- Automatizar las comprobaciones de configuración de seguridad en el pipeline de CI/CD para garantizar una implementación consistente y segura.`,
         affectedComponents_en: "### Affected Components\n- [TODO: Specify the API endpoint and the nature of the misconfiguration.]",
         details_en: "### Proof of Concept\n[TODO: Provide an API request that demonstrates the misconfiguration, e.g., a request from an untrusted origin that is not blocked by CORS.]",
         affectedComponents_es: "### Componentes Afectados\n- [TODO: Especificar el punto de conexión de la API y la naturaleza de la mala configuración.]",
         details_es: "### Prueba de Concepto\n[TODO: Proporcionar una solicitud de API que demuestre la mala configuración, por ejemplo, una solicitud de un origen no fiable que no está bloqueada por CORS.]",
-        immediateActions_en: "### Immediate Actions\nApply a strict CORS policy and remove any sensitive information from API error messages.",
-        immediateActions_es: "### Acciones Inmediatas\nAplicar una política CORS estricta y eliminar cualquier información sensible de los mensajes de error de la API."
+        immediateActions_en: "### Immediate Actions\n- Apply a strict CORS policy and remove any sensitive information from API error messages.",
+        immediateActions_es: "### Acciones Inmediatas\n- Aplicar una política CORS estricta y eliminar cualquier información sensible de los mensajes de error de la API."
     },
     {
         id: "vuln-add-015",
@@ -3550,29 +3787,29 @@ Automatizar las comprobaciones de configuración de seguridad en el pipeline de 
         recommendations_en: `### Recommendations
 
 #### Short-Term Recommendations
-Set the \`Secure\` and \`HttpOnly\` flags on all session cookies.
+- Set the \`Secure\` and \`HttpOnly\` flags on all session cookies.
 
 #### Medium-Term Recommendations
-Set the \`SameSite\` attribute to \`Strict\` or \`Lax\` to protect against CSRF attacks.
+- Set the \`SameSite\` attribute to \`Strict\` or \`Lax\` to protect against CSRF attacks.
 
 #### Long-Term Recommendations
-Use token-based authentication for APIs where possible, as it is not vulnerable to CSRF in the same way as cookie-based sessions.`,
+- Use token-based authentication for APIs where possible, as it is not vulnerable to CSRF in the same way as cookie-based sessions.`,
         recommendations_es: `### Recomendaciones
 
 #### Recomendaciones a Corto Plazo
-Establecer las banderas \`Secure\` y \`HttpOnly\` en todas las cookies de sesión.
+- Establecer las banderas \`Secure\` y \`HttpOnly\` en todas las cookies de sesión.
 
 #### Recomendaciones a Medio Plazo
-Establecer el atributo \`SameSite\` en \`Strict\` o \`Lax\` para protegerse contra los ataques CSRF.
+- Establecer el atributo \`SameSite\` en \`Strict\` o \`Lax\` para protegerse contra los ataques CSRF.
 
 #### Recomendaciones a Largo Plazo
-Utilizar la autenticación basada en tokens para las API siempre que sea posible, ya que no es vulnerable a CSRF de la misma manera que las sesiones basadas en cookies.`,
+- Utilizar la autenticación basada en tokens para las API siempre que sea posible, ya que no es vulnerable a CSRF de la misma manera que las sesiones basadas en cookies.`,
         affectedComponents_en: "### Affected Components\n- The application's session cookies.",
         details_en: "### Proof of Concept\n[TODO: Provide a screenshot of the browser's developer tools showing the cookie attributes, or lack thereof.]",
         affectedComponents_es: "### Componentes Afectados\n- Las cookies de sesión de la aplicación.",
         details_es: "### Prueba de Concepto\n[TODO: Proporcionar una captura de pantalla de las herramientas de desarrollador del navegador que muestre los atributos de la cookie, o la falta de ellos.]",
-        immediateActions_en: "### Immediate Actions\nSet the `Secure` and `HttpOnly` flags for all session-related cookies.",
-        immediateActions_es: "### Acciones Inmediatas\nEstablecer las banderas `Secure` y `HttpOnly` para todas las cookies relacionadas con la sesión."
+        immediateActions_en: "### Immediate Actions\n- Set the `Secure` and `HttpOnly` flags for all session-related cookies.",
+        immediateActions_es: "### Acciones Inmediatas\n- Establecer las banderas `Secure` y `HttpOnly` para todas las cookies relacionadas con la sesión."
     },
     {
         id: "vuln-add-016",
@@ -3605,29 +3842,29 @@ Utilizar la autenticación basada en tokens para las API siempre que sea posible
         recommendations_en: `### Recommendations
 
 #### Short-Term Recommendations
-Sanitize all user input before including it in HTTP response headers, specifically filtering out CRLF characters.
+- Sanitize all user input before including it in HTTP response headers, specifically filtering out CRLF characters.
 
 #### Medium-Term Recommendations
-Use a library or framework function that automatically handles header encoding and prevents header injection.
+- Use a library or framework function that automatically handles header encoding and prevents header injection.
 
 #### Long-Term Recommendations
-Avoid including user-supplied data in response headers whenever possible.`,
+- Avoid including user-supplied data in response headers whenever possible.`,
         recommendations_es: `### Recomendaciones
 
 #### Recomendaciones a Corto Plazo
-Sanear todas las entradas de usuario antes de incluirlas en las cabeceras de respuesta HTTP, filtrando específicamente los caracteres CRLF.
+- Sanear todas las entradas de usuario antes de incluirlas en las cabeceras de respuesta HTTP, filtrando específicamente los caracteres CRLF.
 
 #### Recomendaciones a Medio Plazo
-Utilizar una biblioteca o función de framework que maneje automáticamente la codificación de cabeceras y prevenga la inyección de cabeceras.
+- Utilizar una biblioteca o función de framework que maneje automáticamente la codificación de cabeceras y prevenga la inyección de cabeceras.
 
 #### Recomendaciones a Largo Plazo
-Evitar incluir datos proporcionados por el usuario en las cabeceras de respuesta siempre que sea posible.`,
+- Evitar incluir datos proporcionados por el usuario en las cabeceras de respuesta siempre que sea posible.`,
         affectedComponents_en: "### Affected Components\n- [TODO: Specify the HTTP response header and the parameter that is vulnerable.]",
         details_en: "### Proof of Concept\n[TODO: Provide a request with a payload containing CRLF characters that results in a split response.]",
         affectedComponents_es: "### Componentes Afectados\n- [TODO: Especificar la cabecera de respuesta HTTP y el parámetro que es vulnerable.]",
         details_es: "### Prueba de Concepto\n[TODO: Proporcionar una solicitud con una carga útil que contenga caracteres CRLF que resulte en una respuesta dividida.]",
-        immediateActions_en: "### Immediate Actions\nSanitize all input that is reflected in HTTP response headers to filter out CRLF characters.",
-        immediateActions_es: "### Acciones Inmediatas\nSanear todas las entradas que se reflejan en las cabeceras de respuesta HTTP para filtrar los caracteres CRLF."
+        immediateActions_en: "### Immediate Actions\n- Sanitize all input that is reflected in HTTP response headers to filter out CRLF characters.",
+        immediateActions_es: "### Acciones Inmediatas\n- Sanear todas las entradas que se reflejan en las cabeceras de respuesta HTTP para filtrar los caracteres CRLF."
     },
     {
         id: "vuln-add-017",
@@ -3660,29 +3897,29 @@ Evitar incluir datos proporcionados por el usuario en las cabeceras de respuesta
         recommendations_en: `### Recommendations
 
 #### Short-Term Recommendations
-Review and restrict the use of unkeyed headers in the caching logic.
+- Review and restrict the use of unkeyed headers in the caching logic.
 
 #### Medium-Term Recommendations
-Disable caching for dynamic or user-specific content.
+- Disable caching for dynamic or user-specific content.
 
 #### Long-Term Recommendations
-Use modern caching technologies that are less susceptible to this type of attack and have clearer keying mechanisms.`,
+- Use modern caching technologies that are less susceptible to this type of attack and have clearer keying mechanisms.`,
         recommendations_es: `### Recomendaciones
 
 #### Recomendaciones a Corto Plazo
-Revisar y restringir el uso de cabeceras no clave en la lógica de caché.
+- Revisar y restringir el uso de cabeceras no clave en la lógica de caché.
 
 #### Recomendaciones a Medio Plazo
-Deshabilitar el almacenamiento en caché para contenido dinámico o específico del usuario.
+- Deshabilitar el almacenamiento en caché para contenido dinámico o específico del usuario.
 
 #### Recomendaciones a Largo Plazo
-Utilizar tecnologías de caché modernas que sean menos susceptibles a este tipo de ataque y tengan mecanismos de clave más claros.`,
+- Utilizar tecnologías de caché modernas que sean menos susceptibles a este tipo de ataque y tengan mecanismos de clave más claros.`,
         affectedComponents_en: "### Affected Components\n- The application's caching mechanism (e.g., Varnish, CDN).",
         details_en: "### Proof of Concept\n[TODO: Provide a sequence of requests that poisons the cache and then a second request that retrieves the poisoned content.]",
         affectedComponents_es: "### Componentes Afectados\n- El mecanismo de caché de la aplicación (p. ej., Varnish, CDN).",
         details_es: "### Prueba de Concepto\n[TODO: Proporcionar una secuencia de solicitudes que envenena la caché y luego una segunda solicitud que recupera el contenido envenenado.]",
-        immediateActions_en: "### Immediate Actions\nPurge the web cache. Review the caching configuration to ensure only safe headers are included in the cache key.",
-        immediateActions_es: "### Acciones Inmediatas\nPurgar la caché web. Revisar la configuración de caché para asegurar que solo se incluyan cabeceras seguras en la clave de caché."
+        immediateActions_en: "### Immediate Actions\n- Purge the web cache.\n- Review the caching configuration to ensure only safe headers are included in the cache key.",
+        immediateActions_es: "### Acciones Inmediatas\n- Purgar la caché web.\n- Revisar la configuración de caché para asegurar que solo se incluyan cabeceras seguras en la clave de caché."
     },
     {
         id: "vuln-add-018",
@@ -3715,29 +3952,31 @@ Utilizar tecnologías de caché modernas que sean menos susceptibles a este tipo
         recommendations_en: `### Recommendations
 
 #### Short-Term Recommendations
-Do not use the Host header in application code. Get the hostname from a trusted, server-side configuration file.
+- Do not use the Host header in application code.
+- Get the hostname from a trusted, server-side configuration file.
 
 #### Medium-Term Recommendations
-Configure the web server to only respond to requests for expected hostnames.
+- Configure the web server to only respond to requests for expected hostnames.
 
 #### Long-Term Recommendations
-Review all code to ensure the Host header is never used for security-sensitive operations.`,
+- Review all code to ensure the Host header is never used for security-sensitive operations.`,
         recommendations_es: `### Recomendaciones
 
 #### Recomendaciones a Corto Plazo
-No utilizar la cabecera Host en el código de la aplicación. Obtener el nombre de host de un archivo de configuración fiable del lado del servidor.
+- No utilizar la cabecera Host en el código de la aplicación.
+- Obtener el nombre de host de un archivo de configuración fiable del lado del servidor.
 
 #### Recomendaciones a Medio Plazo
-Configurar el servidor web para que solo responda a solicitudes de nombres de host esperados.
+- Configurar el servidor web para que solo responda a solicitudes de nombres de host esperados.
 
 #### Recomendaciones a Largo Plazo
-Revisar todo el código para asegurar que la cabecera Host nunca se utilice para operaciones sensibles a la seguridad.`,
+- Revisar todo el código para asegurar que la cabecera Host nunca se utilice para operaciones sensibles a la seguridad.`,
         affectedComponents_en: "### Affected Components\n- [TODO: Specify the functionality that improperly uses the Host header.]",
         details_en: "### Proof of Concept\n[TODO: Provide a request with a manipulated Host header and show how it affects the application's response (e.g., a generated URL).]",
         affectedComponents_es: "### Componentes Afectados\n- [TODO: Especificar la funcionalidad que utiliza incorrectamente la cabecera Host.]",
         details_es: "### Prueba de Concepto\n[TODO: Proporcionar una solicitud con una cabecera Host manipulada y mostrar cómo afecta a la respuesta de la aplicación (por ejemplo, una URL generada).]",
-        immediateActions_en: "### Immediate Actions\nConfigure the web server to validate the Host header against an allow-list of known domains.",
-        immediateActions_es: "### Acciones Inmediatas\nConfigurar el servidor web para validar la cabecera Host contra una lista de dominios conocidos."
+        immediateActions_en: "### Immediate Actions\n- Configure the web server to validate the Host header against an allow-list of known domains.",
+        immediateActions_es: "### Acciones Inmediatas\n- Configurar el servidor web para validar la cabecera Host contra una lista de dominios conocidos."
     },
     {
         id: "vuln-add-019",
@@ -3770,29 +4009,29 @@ Revisar todo el código para asegurar que la cabecera Host nunca se utilice para
         recommendations_en: `### Recommendations
 
 #### Short-Term Recommendations
-Use parameterized queries (prepared statements) for all database interactions.
+- Use parameterized queries (prepared statements) for all database interactions.
 
 #### Medium-Term Recommendations
-Implement least privilege access for the application's database user.
+- Implement least privilege access for the application's database user.
 
 #### Long-Term Recommendations
-Use a Web Application Firewall (WAF) with rules to detect and block SQLi patterns.`,
+- Use a Web Application Firewall (WAF) with rules to detect and block SQLi patterns.`,
         recommendations_es: `### Recomendaciones
 
 #### Recomendaciones a Corto Plazo
-Utilizar consultas parametrizadas (prepared statements) para todas las interacciones con la base de datos.
+- Utilizar consultas parametrizadas (prepared statements) para todas las interacciones con la base de datos.
 
 #### Recomendaciones a Medio Plazo
-Implementar el acceso de privilegio mínimo para el usuario de la base de datos de la aplicación.
+- Implementar el acceso de privilegio mínimo para el usuario de la base de datos de la aplicación.
 
 #### Recomendaciones a Largo Plazo
-Utilizar un Firewall de Aplicaciones Web (WAF) con reglas para detectar y bloquear los patrones de SQLi.`,
+- Utilizar un Firewall de Aplicaciones Web (WAF) con reglas para detectar y bloquear los patrones de SQLi.`,
         affectedComponents_en: "### Affected Components\n- [TODO: Specify the vulnerable parameter and URL.]",
         details_en: "### Proof of Concept\n[TODO: Provide a payload using a time-based function (like `SLEEP()` or `BENCHMARK()`) and show the resulting delay in the application's response.]",
         affectedComponents_es: "### Componentes Afectados\n- [TODO: Especificar el parámetro y la URL vulnerables.]",
         details_es: "### Prueba de Concepto\n[TODO: Proporcionar una carga útil utilizando una función basada en el tiempo (como `SLEEP()` o `BENCHMARK()`) y mostrar el retraso resultante en la respuesta de la aplicación.]",
-        immediateActions_en: "### Immediate Actions\nImplement parameterized queries (prepared statements) to prevent all forms of SQL injection.",
-        immediateActions_es: "### Acciones Inmediatas\nImplementar consultas parametrizadas (prepared statements) para prevenir todas las formas de inyección de SQL."
+        immediateActions_en: "### Immediate Actions\n- Implement parameterized queries (prepared statements) to prevent all forms of SQL injection.",
+        immediateActions_es: "### Acciones Inmediatas\n- Implementar consultas parametrizadas (prepared statements) para prevenir todas las formas de inyección de SQL."
     },
     {
         id: "vuln-add-020",
@@ -3825,29 +4064,31 @@ Utilizar un Firewall de Aplicaciones Web (WAF) con reglas para detectar y bloque
         recommendations_en: `### Recommendations
 
 #### Short-Term Recommendations
-Never call system shell commands with user-supplied input. Use built-in language functions that do not invoke a shell.
+- Never call system shell commands with user-supplied input.
+- Use built-in language functions that do not invoke a shell.
 
 #### Medium-Term Recommendations
-If calling a system command is unavoidable, use structured APIs that accept a list of arguments.
+- If calling a system command is unavoidable, use structured APIs that accept a list of arguments.
 
 #### Long-Term Recommendations
-Run the application with minimal privileges and in a sandboxed environment.`,
+- Run the application with minimal privileges and in a sandboxed environment.`,
         recommendations_es: `### Recomendaciones
 
 #### Recomendaciones a Corto Plazo
-Nunca llamar a comandos de la shell del sistema con entradas proporcionadas por el usuario. Utilizar funciones integradas del lenguaje que no invoquen una shell.
+- Nunca llamar a comandos de la shell del sistema con entradas proporcionadas por el usuario.
+- Utilizar funciones integradas del lenguaje que no invoquen una shell.
 
 #### Recomendaciones a Medio Plazo
-Si es inevitable llamar a un comando del sistema, utilizar API estructuradas que acepten una lista de argumentos.
+- Si es inevitable llamar a un comando del sistema, utilizar API estructuradas que acepten una lista de argumentos.
 
 #### Recomendaciones a Largo Plazo
-Ejecutar la aplicación con los privilegios mínimos y en un entorno aislado (sandbox).`,
+- Ejecutar la aplicación con los privilegios mínimos y en un entorno aislado (sandbox).`,
         affectedComponents_en: "### Affected Components\n- [TODO: Specify the vulnerable function and parameter.]",
         details_en: "### Proof of Concept\n[TODO: Provide a request with a payload containing shell metacharacters and show the output of an executed OS command.]",
         affectedComponents_es: "### Componentes Afectados\n- [TODO: Especificar la función y el parámetro vulnerables.]",
         details_es: "### Prueba de Concepto\n[TODO: Proporcionar una solicitud con una carga útil que contenga metacaracteres de la shell y mostrar la salida de un comando del SO ejecutado.]",
-        immediateActions_en: "### Immediate Actions\nSanitize all user input that is passed to system shell commands. Use language-specific APIs that do not invoke a shell.",
-        immediateActions_es: "### Acciones Inmediatas\nSanear todas las entradas de usuario que se pasan a los comandos de la shell del sistema. Utilizar API específicas del lenguaje que no invoquen una shell."
+        immediateActions_en: "### Immediate Actions\n- Sanitize all user input that is passed to system shell commands.\n- Use language-specific APIs that do not invoke a shell.",
+        immediateActions_es: "### Acciones Inmediatas\n- Sanear todas las entradas de usuario que se pasan a los comandos de la shell del sistema.\n- Utilizar API específicas del lenguaje que no invoquen una shell."
     },
     {
         id: "vuln-add-021",
@@ -3880,29 +4121,29 @@ Ejecutar la aplicación con los privilegios mínimos y en un entorno aislado (sa
         recommendations_en: `### Recommendations
 
 #### Short-Term Recommendations
-Apply context-aware output encoding to all data retrieved from the database before rendering it in the browser.
+- Apply context-aware output encoding to all data retrieved from the database before rendering it in the browser.
 
 #### Medium-Term Recommendations
-Sanitize user input upon receipt, before it is stored in the database.
+- Sanitize user input upon receipt, before it is stored in the database.
 
 #### Long-Term Recommendations
-Implement a strong Content Security Policy (CSP) to mitigate the impact of any potential XSS flaws.`,
+- Implement a strong Content Security Policy (CSP) to mitigate the impact of any potential XSS flaws.`,
         recommendations_es: `### Recomendaciones
 
 #### Recomendaciones a Corto Plazo
-Aplicar codificación de salida sensible al contexto a todos los datos recuperados de la base de datos antes de renderizarlos en el navegador.
+- Aplicar codificación de salida sensible al contexto a todos los datos recuperados de la base de datos antes de renderizarlos en el navegador.
 
 #### Recomendaciones a Medio Plazo
-Sanear la entrada del usuario al recibirla, antes de que se almacene en la base de datos.
+- Sanear la entrada del usuario al recibirla, antes de que se almacene en la base de datos.
 
 #### Recomendaciones a Largo Plazo
-Implementar una Política de Seguridad de Contenido (CSP) sólida para mitigar el impacto de cualquier posible fallo de XSS.`,
+- Implementar una Política de Seguridad de Contenido (CSP) sólida para mitigar el impacto de cualquier posible fallo de XSS.`,
         affectedComponents_en: "### Affected Components\n- [TODO: Specify the vulnerable field and page where the XSS is stored.]",
         details_en: "### Proof of Concept\n[TODO: Provide a payload that, when submitted, is stored by the application and executed when viewed by another user.]",
         affectedComponents_es: "### Componentes Afectados\n- [TODO: Especificar el campo y la página vulnerables donde se almacena el XSS.]",
         details_es: "### Prueba de Concepto\n[TODO: Proporcionar una carga útil que, al ser enviada, sea almacenada por la aplicación y ejecutada cuando la vea otro usuario.]",
-        immediateActions_en: "### Immediate Actions\nSanitize all user-controllable data that is stored in the database and rendered on pages. Apply output encoding as a primary defense.",
-        immediateActions_es: "### Acciones Inmediatas\nSanear todos los datos controlables por el usuario que se almacenan en la base de datos y se renderizan en las páginas. Aplicar codificación de salida como defensa principal."
+        immediateActions_en: "### Immediate Actions\n- Sanitize all user-controllable data that is stored in the database and rendered on pages.\n- Apply output encoding as a primary defense.",
+        immediateActions_es: "### Acciones Inmediatas\n- Sanear todos los datos controlables por el usuario que se almacenan en la base de datos y se renderizan en las páginas.\n- Aplicar codificación de salida como defensa principal."
     },
     {
         id: "vuln-add-022",
@@ -3935,29 +4176,29 @@ Implementar una Política de Seguridad de Contenido (CSP) sólida para mitigar e
         recommendations_en: `### Recommendations
 
 #### Short-Term Recommendations
-Ensure anti-CSRF tokens are never transmitted in GET request URLs.
+- Ensure anti-CSRF tokens are never transmitted in GET request URLs.
 
 #### Medium-Term Recommendations
-Use the \`SameSite=Strict\` cookie attribute as a robust defense-in-depth against CSRF.
+- Use the \`SameSite=Strict\` cookie attribute as a robust defense-in-depth against CSRF.
 
 #### Long-Term Recommendations
-Review the entire application to ensure that sensitive tokens are not logged or leaked in any other way.`,
+- Review the entire application to ensure that sensitive tokens are not logged or leaked in any other way.`,
         recommendations_es: `### Recomendaciones
 
 #### Recomendaciones a Corto Plazo
-Asegurarse de que los tokens anti-CSRF nunca se transmitan en las URL de las solicitudes GET.
+- Asegurarse de que los tokens anti-CSRF nunca se transmitan en las URL de las solicitudes GET.
 
 #### Recomendaciones a Medio Plazo
-Utilizar el atributo de cookie \`SameSite=Strict\` como una defensa en profundidad robusta contra CSRF.
+- Utilizar el atributo de cookie \`SameSite=Strict\` como una defensa en profundidad robusta contra CSRF.
 
 #### Recomendaciones a Largo Plazo
-Revisar toda la aplicación para asegurar que los tokens sensibles no se registren ni se filtren de ninguna otra manera.`,
+- Revisar toda la aplicación para asegurar que los tokens sensibles no se registren ni se filtren de ninguna otra manera.`,
         affectedComponents_en: "### Affected Components\n- [TODO: Specify where the CSRF token is being leaked.]",
         details_en: "### Proof of Concept\n[TODO: Provide evidence showing the CSRF token being leaked, for example, in a `Referer` header to a third-party site.]",
         affectedComponents_es: "### Componentes Afectados\n- [TODO: Especificar dónde se está filtrando el token CSRF.]",
         details_es: "### Prueba de Concepto\n[TODO: Proporcionar evidencia que muestre la filtración del token CSRF, por ejemplo, en una cabecera `Referer` a un sitio de terceros.]",
-        immediateActions_en: "### Immediate Actions\nRemove the anti-CSRF token from GET request URLs and only transmit it in POST request bodies or headers.",
-        immediateActions_es: "### Acciones Inmediatas\nEliminar el token anti-CSRF de las URL de las solicitudes GET y transmitirlo únicamente en los cuerpos o cabeceras de las solicitudes POST."
+        immediateActions_en: "### Immediate Actions\n- Remove the anti-CSRF token from GET request URLs and only transmit it in POST request bodies or headers.",
+        immediateActions_es: "### Acciones Inmediatas\n- Eliminar el token anti-CSRF de las URL de las solicitudes GET y transmitirlo únicamente en los cuerpos o cabeceras de las solicitudes POST."
     },
     {
         id: "vuln-add-023",
@@ -3990,29 +4231,33 @@ Revisar toda la aplicación para asegurar que los tokens sensibles no se registr
         recommendations_en: `### Recommendations
 
 #### Short-Term Recommendations
-Always validate the token signature and expiration. Use a strong, secret key for symmetric algorithms or a strong key pair for asymmetric algorithms.
+- Always validate the token signature and expiration.
+- Use a strong, secret key for symmetric algorithms or a strong key pair for asymmetric algorithms.
 
 #### Medium-Term Recommendations
-Explicitly specify and enforce the expected signing algorithm on the server side. Do not trust the \`alg\` header from the JWT itself.
+- Explicitly specify and enforce the expected signing algorithm on the server side.
+- Do not trust the \`alg\` header from the JWT itself.
 
 #### Long-Term Recommendations
-Use a well-vetted, standard library for handling JWTs and keep it updated.`,
+- Use a well-vetted, standard library for handling JWTs and keep it updated.`,
         recommendations_es: `### Recomendaciones
 
 #### Recomendaciones a Corto Plazo
-Validar siempre la firma y la expiración del token. Utilizar una clave secreta fuerte para algoritmos simétricos o un par de claves fuerte para algoritmos asimétricos.
+- Validar siempre la firma y la expiración del token.
+- Utilizar una clave secreta fuerte para algoritmos simétricos o un par de claves fuerte para algoritmos asimétricos.
 
 #### Recomendaciones a Medio Plazo
-Especificar y hacer cumplir explícitamente el algoritmo de firma esperado en el lado del servidor. No confiar en la cabecera \`alg\` del propio JWT.
+- Especificar y hacer cumplir explícitamente el algoritmo de firma esperado en el lado del servidor.
+- No confiar en la cabecera \`alg\` del propio JWT.
 
 #### Recomendaciones a Largo Plazo
-Utilizar una biblioteca estándar y bien examinada para manejar los JWT y mantenerla actualizada.`,
+- Utilizar una biblioteca estándar y bien examinada para manejar los JWT y mantenerla actualizada.`,
         affectedComponents_en: "### Affected Components\n- The application's JWT validation logic.",
         details_en: "### Proof of Concept\n[TODO: Provide a forged JWT (e.g., with the `alg` header set to 'none') and show that the application accepts it.]",
         affectedComponents_es: "### Componentes Afectados\n- La lógica de validación de JWT de la aplicación.",
         details_es: "### Prueba de Concepto\n[TODO: Proporcionar un JWT falsificado (p. ej., con la cabecera `alg` establecida en 'none') y mostrar que la aplicación lo acepta.]",
-        immediateActions_en: "### Immediate Actions\nEnforce strict signature validation for all JWTs and explicitly reject tokens with the 'none' algorithm.",
-        immediateActions_es: "### Acciones Inmediatas\nHacer cumplir una validación de firma estricta para todos los JWT y rechazar explícitamente los tokens con el algoritmo 'none'."
+        immediateActions_en: "### Immediate Actions\n- Enforce strict signature validation for all JWTs and explicitly reject tokens with the 'none' algorithm.",
+        immediateActions_es: "### Acciones Inmediatas\n- Hacer cumplir una validación de firma estricta para todos los JWT y rechazar explícitamente los tokens con el algoritmo 'none'."
     },
     {
         id: "vuln-add-024",
@@ -4045,29 +4290,31 @@ Utilizar una biblioteca estándar y bien examinada para manejar los JWT y manten
         recommendations_en: `### Recommendations
 
 #### Short-Term Recommendations
-Strictly validate the \`redirect_uri\` against a pre-registered allow-list. Always use and validate the \`state\` parameter.
+- Strictly validate the \`redirect_uri\` against a pre-registered allow-list.
+- Always use and validate the \`state\` parameter.
 
 #### Medium-Term Recommendations
-Use Proof Key for Code Exchange (PKCE) for all OAuth flows, especially for mobile and single-page applications.
+- Use Proof Key for Code Exchange (PKCE) for all OAuth flows, especially for mobile and single-page applications.
 
 #### Long-Term Recommendations
-Follow the latest OAuth 2.0 Security Best Current Practice guidelines.`,
+- Follow the latest OAuth 2.0 Security Best Current Practice guidelines.`,
         recommendations_es: `### Recomendaciones
 
 #### Recomendaciones a Corto Plazo
-Validar estrictamente la \`redirect_uri\` contra una lista blanca pre-registrada. Usar y validar siempre el parámetro \`state\`.
+- Validar estrictamente la \`redirect_uri\` contra una lista blanca pre-registrada.
+- Usar y validar siempre el parámetro \`state\`.
 
 #### Recomendaciones a Medio Plazo
-Utilizar Proof Key for Code Exchange (PKCE) para todos los flujos de OAuth, especialmente para aplicaciones móviles y de una sola página.
+- Utilizar Proof Key for Code Exchange (PKCE) para todos los flujos de OAuth, especialmente para aplicaciones móviles y de una sola página.
 
 #### Recomendaciones a Largo Plazo
-Seguir las últimas directrices de Mejores Prácticas de Seguridad de OAuth 2.0.`,
+- Seguir las últimas directrices de Mejores Prácticas de Seguridad de OAuth 2.0.`,
         affectedComponents_en: "### Affected Components\n- The OAuth 2.0 authentication flow.",
         details_en: "### Proof of Concept\n[TODO: Provide a PoC demonstrating the OAuth flaw, such as a CSRF attack against the flow or redirecting the authorization code to an attacker-controlled server.]",
         affectedComponents_es: "### Componentes Afectados\n- El flujo de autenticación OAuth 2.0.",
         details_es: "### Prueba de Concepto\n[TODO: Proporcionar una PoC que demuestre el fallo de OAuth, como un ataque CSRF contra el flujo o la redirección del código de autorización a un servidor controlado por el atacante.]",
-        immediateActions_en: "### Immediate Actions\nEnforce strict validation of the `redirect_uri` against a pre-registered allow-list. Use and validate the `state` parameter in all authorization requests.",
-        immediateActions_es: "### Acciones Inmediatas\nHacer cumplir una validación estricta de la `redirect_uri` contra una lista blanca pre-registrada. Usar y validar el parámetro `state` en todas las solicitudes de autorización."
+        immediateActions_en: "### Immediate Actions\n- Enforce strict validation of the `redirect_uri` against a pre-registered allow-list.\n- Use and validate the `state` parameter in all authorization requests.",
+        immediateActions_es: "### Acciones Inmediatas\n- Hacer cumplir una validación estricta de la `redirect_uri` contra una lista blanca pre-registrada.\n- Usar y validar el parámetro `state` en todas las solicitudes de autorización."
     },
     {
         id: "vuln-add-025",
@@ -4100,29 +4347,29 @@ Seguir las últimas directrices de Mejores Prácticas de Seguridad de OAuth 2.0.
         recommendations_en: `### Recommendations
 
 #### Short-Term Recommendations
-Use parameterized queries and variables instead of string concatenation to build GraphQL queries.
+- Use parameterized queries and variables instead of string concatenation to build GraphQL queries.
 
 #### Medium-Term Recommendations
-Implement query depth and complexity analysis to prevent denial-of-service attacks.
+- Implement query depth and complexity analysis to prevent denial-of-service attacks.
 
 #### Long-Term Recommendations
-Use a GraphQL-aware Web Application Firewall (WAF) and implement granular access control at the resolver level.`,
+- Use a GraphQL-aware Web Application Firewall (WAF) and implement granular access control at the resolver level.`,
         recommendations_es: `### Recomendaciones
 
 #### Recomendaciones a Corto Plazo
-Utilizar consultas parametrizadas y variables en lugar de la concatenación de cadenas para construir consultas GraphQL.
+- Utilizar consultas parametrizadas y variables en lugar de la concatenación de cadenas para construir consultas GraphQL.
 
 #### Recomendaciones a Medio Plazo
-Implementar análisis de profundidad y complejidad de las consultas para prevenir ataques de denegación de servicio.
+- Implementar análisis de profundidad y complejidad de las consultas para prevenir ataques de denegación de servicio.
 
 #### Recomendaciones a Largo Plazo
-Utilizar un Firewall de Aplicaciones Web (WAF) consciente de GraphQL e implementar un control de acceso granular a nivel de resolver.`,
+- Utilizar un Firewall de Aplicaciones Web (WAF) consciente de GraphQL e implementar un control de acceso granular a nivel de resolver.`,
         affectedComponents_en: "### Affected Components\n- The GraphQL endpoint and query resolvers.",
         details_en: "### Proof of Concept\n[TODO: Provide a crafted GraphQL query that demonstrates bypassing access controls or extracting unauthorized data.]",
         affectedComponents_es: "### Componentes Afectados\n- El punto de conexión de GraphQL y los resolvers de consulta.",
         details_es: "### Prueba de Concepto\n[TODO: Proporcionar una consulta GraphQL elaborada que demuestre la omisión de controles de acceso o la extracción de datos no autorizados.]",
-        immediateActions_en: "### Immediate Actions\nUse parameterized queries (variables) for all user-supplied input in GraphQL queries.",
-        immediateActions_es: "### Acciones Inmediatas\nUtilizar consultas parametrizadas (variables) para todas las entradas proporcionadas por el usuario en las consultas de GraphQL."
+        immediateActions_en: "### Immediate Actions\n- Use parameterized queries (variables) for all user-supplied input in GraphQL queries.",
+        immediateActions_es: "### Acciones Inmediatas\n- Utilizar consultas parametrizadas (variables) para todas las entradas proporcionadas por el usuario en las consultas de GraphQL."
     },
     {
         id: "vuln-add-026",
@@ -4155,29 +4402,29 @@ Utilizar un Firewall de Aplicaciones Web (WAF) consciente de GraphQL e implement
         recommendations_en: `### Recommendations
 
 #### Short-Term Recommendations
-Validate the \`Origin\` header during the WebSocket handshake to prevent CSWSH.
+- Validate the \`Origin\` header during the WebSocket handshake to prevent CSWSH.
 
 #### Medium-Term Recommendations
-Implement a token-based authentication mechanism for WebSocket connections instead of relying solely on cookies.
+- Implement a token-based authentication mechanism for WebSocket connections instead of relying solely on cookies.
 
 #### Long-Term Recommendations
-Apply server-side validation and authorization checks for every message received over the WebSocket connection.`,
+- Apply server-side validation and authorization checks for every message received over the WebSocket connection.`,
         recommendations_es: `### Recomendaciones
 
 #### Recomendaciones a Corto Plazo
-Validar la cabecera \`Origin\` durante el handshake de WebSocket para prevenir CSWSH.
+- Validar la cabecera \`Origin\` durante el handshake de WebSocket para prevenir CSWSH.
 
 #### Recomendaciones a Medio Plazo
-Implementar un mecanismo de autenticación basado en tokens para las conexiones WebSocket en lugar de depender únicamente de las cookies.
+- Implementar un mecanismo de autenticación basado en tokens para las conexiones WebSocket en lugar de depender únicamente de las cookies.
 
 #### Recomendaciones a Largo Plazo
-Aplicar validación y comprobaciones de autorización del lado del servidor para cada mensaje recibido a través de la conexión WebSocket.`,
+- Aplicar validación y comprobaciones de autorización del lado del servidor para cada mensaje recibido a través de la conexión WebSocket.`,
         affectedComponents_en: "### Affected Components\n- The WebSocket endpoint.",
         details_en: "### Proof of Concept\n[TODO: Provide a PoC for a CSWSH attack, showing a malicious page establishing a WebSocket connection to the target application.]",
         affectedComponents_es: "### Componentes Afectados\n- El punto de conexión de WebSocket.",
         details_es: "### Prueba de Concepto\n[TODO: Proporcionar una PoC para un ataque CSWSH, mostrando una página maliciosa que establece una conexión WebSocket con la aplicación objetivo.]",
-        immediateActions_en: "### Immediate Actions\nImplement strict validation of the `Origin` header during the WebSocket handshake.",
-        immediateActions_es: "### Acciones Inmediatas\nImplementar una validación estricta de la cabecera `Origin` durante el handshake de WebSocket."
+        immediateActions_en: "### Immediate Actions\n- Implement strict validation of the `Origin` header during the WebSocket handshake.",
+        immediateActions_es: "### Acciones Inmediatas\n- Implementar una validación estricta de la cabecera `Origin` durante el handshake de WebSocket."
     },
     {
         id: "vuln-add-027",
@@ -4210,29 +4457,33 @@ Aplicar validación y comprobaciones de autorización del lado del servidor para
         recommendations_en: `### Recommendations
 
 #### Short-Term Recommendations
-Implement multiple, diverse detection checks. Do not rely on a single method.
+- Implement multiple, diverse detection checks.
+- Do not rely on a single method.
 
 #### Medium-Term Recommendations
-Use a commercial-grade binary protection tool that provides more robust and obfuscated root detection.
+- Use a commercial-grade binary protection tool that provides more robust and obfuscated root detection.
 
 #### Long-Term Recommendations
-Design the application with a 'zero trust' model for the client. Critical security logic should always be enforced server-side, as client-side checks can ultimately be bypassed.`,
+- Design the application with a 'zero trust' model for the client.
+- Critical security logic should always be enforced server-side, as client-side checks can ultimately be bypassed.`,
         recommendations_es: `### Recomendaciones
 
 #### Recomendaciones a Corto Plazo
-Implementar múltiples y diversas comprobaciones de detección. No depender de un solo método.
+- Implementar múltiples y diversas comprobaciones de detección.
+- No depender de un solo método.
 
 #### Recomendaciones a Medio Plazo
-Utilizar una herramienta de protección de binarios de grado comercial que proporcione una detección de root más robusta y ofuscada.
+- Utilizar una herramienta de protección de binarios de grado comercial que proporcione una detección de root más robusta y ofuscada.
 
 #### Recomendaciones a Largo Plazo
-Diseñar la aplicación con un modelo de 'confianza cero' para el cliente. La lógica de seguridad crítica siempre debe aplicarse del lado del servidor, ya que las comprobaciones del lado del cliente pueden ser finalmente eludidas.`,
+- Diseñar la aplicación con un modelo de 'confianza cero' para el cliente.
+- La lógica de seguridad crítica siempre debe aplicarse del lado del servidor, ya que las comprobaciones del lado del cliente pueden ser finalmente eludidas.`,
         affectedComponents_en: "### Affected Components\n- The root/jailbreak detection logic in the application binary.",
         details_en: "### Proof of Concept\n[TODO: Provide a Frida script or similar tool that hooks the detection function and forces it to return 'false', allowing the app to run on a rooted device.]",
         affectedComponents_es: "### Componentes Afectados\n- La lógica de detección de root/jailbreak en el binario de la aplicación.",
         details_es: "### Prueba de Concepto\n[TODO: Proporcionar un script de Frida o una herramienta similar que intercepte la función de detección y la fuerce a devolver 'falso', permitiendo que la aplicación se ejecute en un dispositivo rooteado.]",
-        immediateActions_en: "### Immediate Actions\nAdd more detection checks, such as checking for common jailbreak-related files and running shell commands.",
-        immediateActions_es: "### Acciones Inmediatas\nAñadir más comprobaciones de detección, como la verificación de archivos comunes relacionados con el jailbreak y la ejecución de comandos de shell."
+        immediateActions_en: "### Immediate Actions\n- Add more detection checks, such as checking for common jailbreak-related files and running shell commands.",
+        immediateActions_es: "### Acciones Inmediatas\n- Añadir más comprobaciones de detección, como la verificación de archivos comunes relacionados con el jailbreak y la ejecución de comandos de shell."
     },
     {
         id: "vuln-add-028",
@@ -4265,29 +4516,31 @@ Diseñar la aplicación con un modelo de 'confianza cero' para el cliente. La l�
         recommendations_en: `### Recommendations
 
 #### Short-Term Recommendations
-Validate and sanitize all parameters received through deep links. Require user confirmation for any sensitive action initiated via a deep link.
+- Validate and sanitize all parameters received through deep links.
+- Require user confirmation for any sensitive action initiated via a deep link.
 
 #### Medium-Term Recommendations
-Move to using App Links (Android) or Universal Links (iOS), which provide a more secure association between a domain and an app.
+- Move to using App Links (Android) or Universal Links (iOS), which provide a more secure association between a domain and an app.
 
 #### Long-Term Recommendations
-Minimize the amount of sensitive functionality exposed through deep links.`,
+- Minimize the amount of sensitive functionality exposed through deep links.`,
         recommendations_es: `### Recomendaciones
 
 #### Recomendaciones a Corto Plazo
-Validar y sanear todos los parámetros recibidos a través de enlaces profundos. Requerir la confirmación del usuario para cualquier acción sensible iniciada a través de un enlace profundo.
+- Validar y sanear todos los parámetros recibidos a través de enlaces profundos.
+- Requerir la confirmación del usuario para cualquier acción sensible iniciada a través de un enlace profundo.
 
 #### Recomendaciones a Medio Plazo
-Migrar al uso de App Links (Android) o Universal Links (iOS), que proporcionan una asociación más segura entre un dominio y una aplicación.
+- Migrar al uso de App Links (Android) o Universal Links (iOS), que proporcionan una asociación más segura entre un dominio y una aplicación.
 
 #### Recomendaciones a Largo Plazo
-Minimizar la cantidad de funcionalidades sensibles expuestas a través de enlaces profundos.`,
+- Minimizar la cantidad de funcionalidades sensibles expuestas a través de enlaces profundos.`,
         affectedComponents_en: "### Affected Components\n- The application's custom URL scheme handler.",
         details_en: "### Proof of Concept\n[TODO: Provide an HTML page with a malicious deep link that, when clicked, invokes a sensitive action in the app.]",
         affectedComponents_es: "### Componentes Afectados\n- El manejador de esquemas de URL personalizados de la aplicación.",
         details_es: "### Prueba de Concepto\n[TODO: Proporcionar una página HTML con un enlace profundo malicioso que, al hacer clic, invoque una acción sensible en la aplicación.]",
-        immediateActions_en: "### Immediate Actions\nImplement strict validation and sanitization for all parameters received through deep links.",
-        immediateActions_es: "### Acciones Inmediatas\nImplementar una validación y saneamiento estrictos para todos los parámetros recibidos a través de enlaces profundos."
+        immediateActions_en: "### Immediate Actions\n- Implement strict validation and sanitization for all parameters received through deep links.",
+        immediateActions_es: "### Acciones Inmediatas\n- Implementar una validación y saneamiento estrictos para todos los parámetros recibidos a través de enlaces profundos."
     },
     {
         id: "vuln-add-029",
@@ -4320,29 +4573,29 @@ Minimizar la cantidad de funcionalidades sensibles expuestas a través de enlace
         recommendations_en: `### Recommendations
 
 #### Short-Term Recommendations
-Implement anti-tampering controls, such as checksum validation or signature verification, to detect if the app's code has been modified.
+- Implement anti-tampering controls, such as checksum validation or signature verification, to detect if the app's code has been modified.
 
 #### Medium-Term Recommendations
-Use code obfuscation to make the application harder to reverse-engineer and modify.
+- Use code obfuscation to make the application harder to reverse-engineer and modify.
 
 #### Long-Term Recommendations
-Use a commercial-grade application shielding solution that provides comprehensive anti-tampering and anti-repackaging protections.`,
+- Use a commercial-grade application shielding solution that provides comprehensive anti-tampering and anti-repackaging protections.`,
         recommendations_es: `### Recomendaciones
 
 #### Recomendaciones a Corto Plazo
-Implementar controles anti-manipulación, como la validación de checksum o la verificación de la firma, para detectar si el código de la aplicación ha sido modificado.
+- Implementar controles anti-manipulación, como la validación de checksum o la verificación de la firma, para detectar si el código de la aplicación ha sido modificado.
 
 #### Recomendaciones a Medio Plazo
-Utilizar la ofuscación de código para dificultar la ingeniería inversa y la modificación de la aplicación.
+- Utilizar la ofuscación de código para dificultar la ingeniería inversa y la modificación de la aplicación.
 
 #### Recomendaciones a Largo Plazo
-Utilizar una solución de blindaje de aplicaciones de grado comercial que proporcione protecciones integrales anti-manipulación y anti-reempaquetado.`,
+- Utilizar una solución de blindaje de aplicaciones de grado comercial que proporcione protecciones integrales anti-manipulación y anti-reempaquetado.`,
         affectedComponents_en: "### Affected Components\n- The application binary (APK/IPA).",
         details_en: "### Proof of Concept\n[TODO: Demonstrate the process of decompiling the app, modifying a string or function, and recompiling it into a working application.]",
         affectedComponents_es: "### Componentes Afectados\n- El binario de la aplicación (APK/IPA).",
         details_es: "### Prueba de Concepto\n[TODO: Demostrar el proceso de descompilar la aplicación, modificar una cadena o función y volver a compilarla en una aplicación funcional.]",
-        immediateActions_en: "### Immediate Actions\nImplement basic signature and checksum validation within the app to detect tampering.",
-        immediateActions_es: "### Acciones Inmediatas\nImplementar una validación básica de la firma y del checksum dentro de la aplicación para detectar manipulaciones."
+        immediateActions_en: "### Immediate Actions\n- Implement basic signature and checksum validation within the app to detect tampering.",
+        immediateActions_es: "### Acciones Inmediatas\n- Implementar una validación básica de la firma y del checksum dentro de la aplicación para detectar manipulaciones."
     },
     {
         id: "vuln-add-030",
@@ -4375,29 +4628,29 @@ Utilizar una solución de blindaje de aplicaciones de grado comercial que propor
         recommendations_en: `### Recommendations
 
 #### Short-Term Recommendations
-Configure firewalls and routers with anti-DoS settings, such as SYN cookie protection.
+- Configure firewalls and routers with anti-DoS settings, such as SYN cookie protection.
 
 #### Medium-Term Recommendations
-Deploy an Intrusion Detection/Prevention System (IDS/IPS) to monitor for and block protocol-level attacks.
+- Deploy an Intrusion Detection/Prevention System (IDS/IPS) to monitor for and block protocol-level attacks.
 
 #### Long-Term Recommendations
-Use modern, resilient operating systems and network stacks that have built-in protections against common TCP/IP attacks.`,
+- Use modern, resilient operating systems and network stacks that have built-in protections against common TCP/IP attacks.`,
         recommendations_es: `### Recomendaciones
 
 #### Recomendaciones a Corto Plazo
-Configurar los firewalls y routers con ajustes anti-DoS, como la protección de cookies SYN.
+- Configurar los firewalls y routers con ajustes anti-DoS, como la protección de cookies SYN.
 
 #### Recomendaciones a Medio Plazo
-Desplegar un Sistema de Detección/Prevención de Intrusiones (IDS/IPS) para monitorear y bloquear los ataques a nivel de protocolo.
+- Desplegar un Sistema de Detección/Prevención de Intrusiones (IDS/IPS) para monitorear y bloquear los ataques a nivel de protocolo.
 
 #### Recomendaciones a Largo Plazo
-Utilizar sistemas operativos y pilas de red modernos y resilientes que tengan protecciones incorporadas contra los ataques TCP/IP comunes.`,
+- Utilizar sistemas operativos y pilas de red modernos y resilientes que tengan protecciones incorporadas contra los ataques TCP/IP comunes.`,
         affectedComponents_en: "### Affected Components\n- The server's network stack and firewall.",
         details_en: "### Proof of Concept\n[TODO: Provide data from a tool like `hping3` demonstrating a SYN flood and show the impact on the target server's responsiveness.]",
         affectedComponents_es: "### Componentes Afectados\n- La pila de red del servidor y el firewall.",
         details_es: "### Prueba de Concepto\n[TODO: Proporcionar datos de una herramienta como `hping3` que demuestren una inundación SYN y mostrar el impacto en la capacidad de respuesta del servidor objetivo.]",
-        immediateActions_en: "### Immediate Actions\nEnable SYN cookie protection and configure rate limiting on network edge devices.",
-        immediateActions_es: "### Acciones Inmediatas\nHabilitar la protección de cookies SYN y configurar la limitación de velocidad en los dispositivos de borde de la red."
+        immediateActions_en: "### Immediate Actions\n- Enable SYN cookie protection and configure rate limiting on network edge devices.",
+        immediateActions_es: "### Acciones Inmediatas\n- Habilitar la protección de cookies SYN y configurar la limitación de velocidad en los dispositivos de borde de la red."
     },
     {
         id: "vuln-add-031",
@@ -4430,29 +4683,35 @@ Utilizar sistemas operativos y pilas de red modernos y resilientes que tengan pr
         recommendations_en: `### Recommendations
 
 #### Short-Term Recommendations
-Isolate the affected system from the network. Monitor for indicators of compromise (IoCs) provided by security researchers. Apply vendor patches as soon as they become available.
+- Isolate the affected system from the network.
+- Monitor for indicators of compromise (IoCs) provided by security researchers.
+- Apply vendor patches as soon as they become available.
 
 #### Medium-Term Recommendations
-Implement a defense-in-depth strategy, including network segmentation, principle of least privilege, and egress filtering, to limit the impact of a potential zero-day exploit.
+- Implement a defense-in-depth strategy, including network segmentation, principle of least privilege, and egress filtering, to limit the impact of a potential zero-day exploit.
 
 #### Long-Term Recommendations
-Maintain a robust and rapid patch management process. Use endpoint detection and response (EDR) and other behavioral analysis tools that may be able to detect the anomalous activity of a zero-day exploit even without a specific signature.`,
+- Maintain a robust and rapid patch management process.
+- Use endpoint detection and response (EDR) and other behavioral analysis tools that may be able to detect the anomalous activity of a zero-day exploit even without a specific signature.`,
         recommendations_es: `### Recomendaciones
 
 #### Recomendaciones a Corto Plazo
-Aislar el sistema afectado de la red. Monitorear los indicadores de compromiso (IoC) proporcionados por los investigadores de seguridad. Aplicar los parches del proveedor tan pronto como estén disponibles.
+- Aislar el sistema afectado de la red.
+- Monitorear los indicadores de compromiso (IoC) proporcionados por los investigadores de seguridad.
+- Aplicar los parches del proveedor tan pronto como estén disponibles.
 
 #### Recomendaciones a Medio Plazo
-Implementar una estrategia de defensa en profundidad, que incluya segmentación de red, principio de privilegio mínimo y filtrado de salida, para limitar el impacto de un posible exploit de día cero.
+- Implementar una estrategia de defensa en profundidad, que incluya segmentación de red, principio de privilegio mínimo y filtrado de salida, para limitar el impacto de un posible exploit de día cero.
 
 #### Recomendaciones a Largo Plazo
-Mantener un proceso de gestión de parches robusto y rápido. Utilizar herramientas de detección y respuesta de punto final (EDR) y otras herramientas de análisis de comportamiento que puedan detectar la actividad anómala de un exploit de día cero incluso sin una firma específica.`,
+- Mantener un proceso de gestión de parches robusto y rápido.
+- Utilizar herramientas de detección y respuesta de punto final (EDR) y otras herramientas de análisis de comportamiento que puedan detectar la actividad anómala de un exploit de día cero incluso sin una firma específica.`,
         affectedComponents_en: "### Affected Components\n- [TODO: Specify the software or hardware affected by the zero-day vulnerability.]",
         details_en: "### Proof of Concept\n[TODO: Provide a reference to the public disclosure of the zero-day and the PoC exploit, if available.]",
         affectedComponents_es: "### Componentes Afectados\n- [TODO: Especificar el software o hardware afectado por la vulnerabilidad de día cero.]",
         details_es: "### Prueba de Concepto\n[TODO: Proporcionar una referencia a la divulgación pública del día cero y el exploit de PoC, si está disponible.]",
-        immediateActions_en: "### Immediate Actions\nIsolate the vulnerable system from all untrusted networks. Monitor for Indicators of Compromise (IoCs) and apply vendor patches immediately upon release.",
-        immediateActions_es: "### Acciones Inmediatas\nAislar el sistema vulnerable de todas las redes no fiables. Monitorear los Indicadores de Compromiso (IoC) y aplicar los parches del proveedor inmediatamente después de su publicación."
+        immediateActions_en: "### Immediate Actions\n- Isolate the vulnerable system from all untrusted networks.\n- Monitor for Indicators of Compromise (IoCs) and apply vendor patches immediately upon release.",
+        immediateActions_es: "### Acciones Inmediatas\n- Aislar el sistema vulnerable de todas las redes no fiables.\n- Monitorear los Indicadores de Compromiso (IoC) y aplicar los parches del proveedor inmediatamente después de su publicación."
     }
 ]
     
@@ -4466,3 +4725,4 @@ Mantener un proceso de gestión de parches robusto y rápido. Utilizar herramien
     
 
     
+
