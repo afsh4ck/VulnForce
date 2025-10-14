@@ -55,7 +55,7 @@ export default function SettingsPage() {
       deleteAccountDesc: "Permanently delete your account and all associated data.",
       deleteAccountBtn: "Delete Account",
       confirmDeleteTitle: "Are you sure you want to delete your account?",
-      confirmDeleteDesc: "This action cannot be undone. All your data, including clients, projects, and findings, will be permanently deleted.",
+      confirmDeleteDesc: "This action cannot be undone. All your data, including clients, projects, and findings, will be permanently deleted. Make sure you have a backup if you wish to restore your data later.",
       cancel: "Cancel",
       delete: "Delete",
     },
@@ -83,7 +83,7 @@ export default function SettingsPage() {
       deleteAccountDesc: "Elimina permanentemente tu cuenta y todos los datos asociados.",
       deleteAccountBtn: "Eliminar Cuenta",
       confirmDeleteTitle: "¿Estás seguro de que quieres eliminar tu cuenta?",
-      confirmDeleteDesc: "Esta acción no se puede deshacer. Todos tus datos, incluyendo clientes, proyectos y hallazgos, serán eliminados permanentemente.",
+      confirmDeleteDesc: "Esta acción no se puede deshacer. Todos tus datos, incluyendo clientes, proyectos y hallazgos, serán eliminados permanentemente. Asegúrate de tener una copia de seguridad si deseas restaurar tus datos más tarde.",
       cancel: "Cancelar",
       delete: "Eliminar",
     }
