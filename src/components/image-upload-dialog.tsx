@@ -128,7 +128,7 @@ export const ImageUploadDialog = ({ onInsert, children }: { onInsert: (markdown:
                                 className="flex flex-col items-center justify-center w-full h-64 border-2 border-dashed rounded-lg cursor-pointer bg-muted hover:bg-muted/80"
                             >
                                 {previewUrl ? (
-                                    <Image src={previewUrl} alt="Preview" width={400} height={200} className="max-h-full w-auto rounded-lg" />
+                                    <Image src={previewUrl} alt="Preview" width={400} height={200} className="max-h-full w-auto rounded-lg object-contain" />
                                 ) : (
                                     <div className="flex flex-col items-center justify-center pt-5 pb-6">
                                         <Upload className="w-8 h-8 mb-4 text-muted-foreground" />
@@ -147,7 +147,7 @@ export const ImageUploadDialog = ({ onInsert, children }: { onInsert: (markdown:
                          </div>
                          {url && (
                              <div className="flex justify-center p-4 border rounded-lg bg-muted">
-                                 <Image src={url} alt="URL Preview" width={400} height={200} className="max-h-64 w-auto rounded" />
+                                 <Image src={url} alt="URL Preview" width={400} height={200} className="max-h-64 w-auto rounded object-contain" />
                              </div>
                          )}
                     </TabsContent>

@@ -187,6 +187,7 @@ const ScopeSectionEditor = ({ section, onContentChange, onDelete, view, onViewCh
       confirmDeleteDesc: "This will permanently delete this report section.",
       cancel: "Cancel",
       delete: "Delete",
+      upload: "Upload",
     },
     es: {
       viewEdit: 'Edición',
@@ -198,6 +199,7 @@ const ScopeSectionEditor = ({ section, onContentChange, onDelete, view, onViewCh
       confirmDeleteDesc: "Esta acción eliminará permanentemente esta sección del informe.",
       cancel: "Cancelar",
       delete: "Eliminar",
+      upload: "Subir",
     }
   };
   
@@ -355,7 +357,7 @@ const ScopeSectionEditor = ({ section, onContentChange, onDelete, view, onViewCh
                       <Button variant="ghost" size="icon" className="h-auto w-auto p-1"><FileCode className="h-3 w-3" /></Button>
                     </CodeBlockDialog>
                     <ImageUploadDialog onInsert={insertMarkdown}>
-                       <Button variant="ghost" size="icon" className="h-auto w-auto p-1"><Image className="w-4 h-4 mr-2"/>{t[language].upload}</Button>
+                       <Button variant="ghost" size="icon" className="h-auto w-auto p-1"><Image className="h-3 w-3" /></Button>
                     </ImageUploadDialog>
                   </div>
                 )}
@@ -501,7 +503,7 @@ export default function ProjectDetailsPage() {
       setTimeout(() => {
         const headings = Array.from(document.querySelectorAll('h1, h2, h3, h4, h5, h6'));
         const targetHeading = headings.find(h => {
-          const id = h.textContent?.trim().replace(/\s+/g, '-').replace(/[^a-zA-Z0-9-]/g, '') || '';
+          const id = h.textContent?.trim().replace(/\s+/g, '-').replace(/[^\w-]+/g, '') || '';
           return id === decodedHash;
         });
 
