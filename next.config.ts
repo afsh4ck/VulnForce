@@ -28,6 +28,10 @@ const nextConfig: NextConfig = {
         port: '',
         pathname: '/**',
       },
+      {
+        protocol: 'https',
+        hostname: '**',
+      }
     ],
   },
   // Forcing a recompilation to solve chunk loading errors.

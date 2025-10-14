@@ -284,7 +284,7 @@ const ScopeSectionEditor = ({ section, onContentChange, onDelete, view, onViewCh
   };
   
   const handleInsertCode = (lang: string, code: string) => {
-    const codeBlock = `\`\`\`${lang}\n${code}\n\`\`\``;
+    const codeBlock = '```' + lang + '\n' + code + '\n' + '```';
     const textarea = textareaRef.current;
     if (!textarea) return;
 
@@ -404,14 +404,14 @@ const ScopeSectionEditor = ({ section, onContentChange, onDelete, view, onViewCh
   )
 }
 
-function LeaveConfirmationDialog({ open, onOpenChange, onConfirm, onCancel }: {
+function LeaveConfirmationDialog({ open, onOpenChange, onConfirm, onCancel, onDiscard }: {
     open: boolean;
     onOpenChange: (open: boolean) => void;
     onConfirm: () => void;
     onCancel: () => void;
+    onDiscard: () => void;
 }) {
     const { language } = useLanguage();
-    const router = useRouter();
     const t = {
         en: {
             title: 'Unsaved Changes',
@@ -438,7 +438,7 @@ function LeaveConfirmationDialog({ open, onOpenChange, onConfirm, onCancel }: {
                 </AlertDialogHeader>
                 <AlertDialogFooter>
                     <AlertDialogCancel onClick={onCancel}>{t[language].cancel}</AlertDialogCancel>
-                    <Button variant="destructive" onClick={() => router.push('/dashboard/projects')}>{t[language].discardAndExit}</Button>
+                    <Button variant="destructive" onClick={onDiscard}>{t[language].discardAndExit}</Button>
                     <AlertDialogAction onClick={onConfirm}>{t[language].saveAndExit}</AlertDialogAction>
                 </AlertDialogFooter>
             </AlertDialogContent>
@@ -476,8 +476,11 @@ export default function ProjectDetailsPage() {
   const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
 
   // Save state
+  const [isDirty, setIsDirty] = useState(false);
   const [saveStatus, setSaveStatus] = useState<SaveStatus>('saved');
   const [showLeaveConfirm, setShowLeaveConfirm] = useState(false);
+  const [nextPath, setNextPath] = useState<string | null>(null);
+
 
   const sensors = useSensors(
     useSensor(PointerSensor),
@@ -530,6 +533,7 @@ export default function ProjectDetailsPage() {
     setEditStatus(currentProject.status);
     setEditLanguage(currentProject.language);
     setEditIcon(currentProject.icon || 'FileText');
+    setIsDirty(false);
     setSaveStatus('saved');
   }, [params.id, projects, router, parseSections]);
   
@@ -657,6 +661,7 @@ export default function ProjectDetailsPage() {
         if (showToast) {
             toast({ title: language === 'es' ? 'Informe guardado' : 'Report saved' });
         }
+        setIsDirty(false);
         setIsOrganizing(false);
         setTimeout(() => setSaveStatus('saved'), 500); // Give a moment to show "Saving..."
     }
@@ -666,6 +671,7 @@ export default function ProjectDetailsPage() {
     setScopeSections(prevSections =>
       prevSections.map(sec => sec.id === sectionId ? { ...sec, content: newContent } : sec)
     );
+    setIsDirty(true);
     setSaveStatus('unsaved');
   };
   
@@ -681,6 +687,7 @@ export default function ProjectDetailsPage() {
         return sec;
       })
     );
+    setIsDirty(true);
     setSaveStatus('unsaved');
   }
 
@@ -691,6 +698,7 @@ export default function ProjectDetailsPage() {
       };
       setScopeSections(prev => [...prev, newSection]);
       setSectionViews(prev => ({ ...prev, [newSection.id]: 'edit' }));
+      setIsDirty(true);
       setSaveStatus('unsaved');
   };
 
@@ -701,6 +709,7 @@ export default function ProjectDetailsPage() {
           delete newViews[sectionId];
           return newViews;
       });
+      setIsDirty(true);
       setSaveStatus('unsaved');
   };
   
@@ -726,6 +735,7 @@ export default function ProjectDetailsPage() {
         // Also update the sections in the editor
         const sections = parseSections(newReportBody);
         setScopeSections(sections);
+        setIsDirty(true);
         setSaveStatus('unsaved');
         
         toast({ title: t[language].translationSuccess });
@@ -747,24 +757,38 @@ export default function ProjectDetailsPage() {
         const oldIndex = items.findIndex((item) => item.id === active.id);
         const newIndex = items.findIndex((item) => item.id === over.id);
         const newItems = arrayMove(items, oldIndex, newIndex);
+        setIsDirty(true);
         setSaveStatus('unsaved');
         return newItems;
       });
     }
   }
 
-  const handleLeave = () => {
-    if (saveStatus === 'unsaved') {
+  const handleLeave = (path: string) => (e: React.MouseEvent) => {
+    if (isDirty) {
+      e.preventDefault();
+      setNextPath(path);
       setShowLeaveConfirm(true);
     } else {
-      router.push('/dashboard/projects');
+      router.push(path);
     }
   };
 
-  const handleSaveAndLeave = () => {
+  const onConfirmLeave = () => {
     handleSaveScope();
     setShowLeaveConfirm(false);
-    router.push('/dashboard/projects');
+    if(nextPath) router.push(nextPath);
+  };
+  
+  const onDiscardLeave = () => {
+    setIsDirty(false);
+    setShowLeaveConfirm(false);
+    if(nextPath) router.push(nextPath);
+  }
+
+  const onCancelLeave = () => {
+    setShowLeaveConfirm(false);
+    setNextPath(null);
   };
 
   const t = {
@@ -881,12 +905,13 @@ export default function ProjectDetailsPage() {
        <LeaveConfirmationDialog 
         open={showLeaveConfirm}
         onOpenChange={setShowLeaveConfirm}
-        onConfirm={handleSaveAndLeave}
-        onCancel={() => setShowLeaveConfirm(false)}
+        onConfirm={onConfirmLeave}
+        onCancel={onCancelLeave}
+        onDiscard={onDiscardLeave}
        />
        <div className="flex justify-between items-start">
           <div className="flex items-center gap-4">
-            <Button variant="outline" size="icon" className="h-10 w-10" onClick={handleLeave}>
+            <Button variant="outline" size="icon" className="h-10 w-10" onClick={handleLeave('/dashboard/projects')}>
                 <ChevronLeft className="h-5 w-5" />
                 <span className="sr-only">{t[language].backToProjects}</span>
             </Button>
@@ -1050,7 +1075,7 @@ export default function ProjectDetailsPage() {
                 <Rows className="mr-2 h-4 w-4" />
                 {isOrganizing ? t[language].finishOrganizing : t[language].organizeSections}
               </Button>
-              <Button size="sm" onClick={() => handleSaveScope(true)} disabled={saveStatus === 'saving'}>
+              <Button size="sm" onClick={() => handleSaveScope(true)} disabled={saveStatus === 'saving' || saveStatus === 'saved'}>
                 {saveStatus === 'saving' ? (<><Save className="mr-2 h-4 w-4 animate-spin" />{t[language].saving}</>) : 
                  saveStatus === 'saved' ? (<><CheckCircle className="mr-2 h-4 w-4" />{t[language].saved}</>) : 
                  (<><Save className="mr-2 h-4 w-4" />{t[language].saveScope}</>)}
@@ -1058,10 +1083,8 @@ export default function ProjectDetailsPage() {
             </div>
           )}
           {activeTab === 'findings' && (
-             <Button size="sm" asChild>
-                <Link href={`/dashboard/projects/${project.id}/findings/new`}>
+             <Button size="sm" onClick={(e) => handleLeave(`/dashboard/projects/${project.id}/findings/new`)(e)}>
                 <PlusCircle className="mr-2 h-4 w-4" /> {t[language].addFinding}
-                </Link>
             </Button>
           )}
         </div>

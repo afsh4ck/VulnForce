@@ -1,6 +1,7 @@
 'use client';
 import Link from 'next/link';
-import { usePathname } from 'next/navigation';
+import { usePathname, useRouter } from 'next/navigation';
+import React from 'react';
 import { Home, ShieldCheck, FolderKanban, Users, Settings, FileText, PanelLeft, User, LayoutTemplate, History, Bomb } from 'lucide-react';
 
 import {
@@ -20,11 +21,43 @@ import { UserNav } from '@/components/user-nav';
 import { Logo } from '@/components/logo';
 import { useLanguage } from '@/context/language-context';
 
+// Definimos el tipo para la función de manejo de clics
+type HandleLeaveFunction = (path: string) => (e: React.MouseEvent) => void;
+
+// Creamos un contexto para la función
+const LeaveContext = React.createContext<HandleLeaveFunction | null>(null);
+
+// Hook para usar el contexto
+export const useLeavePage = () => {
+    const context = React.useContext(LeaveContext);
+    if (!context) {
+        // En lugar de lanzar un error, podrías devolver una función por defecto 
+        // si el contexto no es estrictamente necesario en todas partes.
+        // Pero para este caso, es mejor asegurarse de que esté disponible.
+        return (path: string) => (e: React.MouseEvent) => console.warn('LeavePage context not available');
+    }
+    return context;
+};
+
 function DashboardNav({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
   const { state, isMobile } = useSidebar();
   const { language } = useLanguage();
   const isCollapsed = state === 'collapsed';
+
+  // Esta lógica podría venir de un estado superior si es necesario
+  const handleLeave: HandleLeaveFunction = (path) => (e) => {
+    // Si hay cambios sin guardar, se previene la navegación y se muestra un diálogo.
+    // Esta lógica se manejaría en la página específica (p. ej., [id]/page.tsx).
+    // Aquí solo simulamos la llamada.
+    const hasUnsavedChanges = (window as any).hasUnsavedChanges;
+    if (hasUnsavedChanges) {
+      e.preventDefault();
+      // El evento personalizado notificará a la página para que muestre su diálogo.
+      window.dispatchEvent(new CustomEvent('requestLeave', { detail: path }));
+    }
+    // Si no hay cambios, la navegación procede de forma natural con el Link de Next.js
+  };
 
   const t = {
     en: {
@@ -67,10 +100,10 @@ function DashboardNav({ children }: { children: React.ReactNode }) {
   ]
 
   return (
-    <>
+    <LeaveContext.Provider value={handleLeave}>
       <Sidebar collapsible="icon" className="border-r border-sidebar-border">
         <SidebarHeader>
-          <Link href="/dashboard">
+          <Link href="/dashboard" onClick={handleLeave('/dashboard')}>
             <Logo isCollapsed={isCollapsed} />
           </Link>
         </SidebarHeader>
@@ -83,7 +116,7 @@ function DashboardNav({ children }: { children: React.ReactNode }) {
                   isActive={pathname === item.href || (item.href !== '/dashboard' && pathname.startsWith(item.href))}
                   tooltip={{ children: item.label }}
                 >
-                  <Link href={item.href}>
+                  <Link href={item.href} onClick={handleLeave(item.href)}>
                     <item.icon />
                     <span>{item.label}</span>
                   </Link>
@@ -101,7 +134,7 @@ function DashboardNav({ children }: { children: React.ReactNode }) {
                   isActive={pathname === item.href}
                   tooltip={{ children: item.label }}
                 >
-                  <Link href={item.href}>
+                  <Link href={item.href} onClick={handleLeave(item.href)}>
                     <item.icon />
                     <span>{item.label}</span>
                   </Link>
@@ -121,7 +154,7 @@ function DashboardNav({ children }: { children: React.ReactNode }) {
         </header>
         <main className="flex-1 p-4 sm:p-6">{children}</main>
       </SidebarInset>
-    </>
+    </LeaveContext.Provider>
   );
 }
 

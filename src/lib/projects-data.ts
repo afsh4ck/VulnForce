@@ -32,7 +32,7 @@ echo "10.10.11.88 imagery.htb" | sudo tee -a /etc/hosts
 
 ### Escaneo de Puertos (Nmap)
 
-#### Escaneo Simple
+#### Simple Scan
 \`\`\`bash
 sudo nmap -v -sV -T5 10.10.11.88
 \`\`\`
@@ -69,6 +69,7 @@ OS details: Linux 5.0 - 5.14, MikroTik RouterOS 7.2 - 7.5 (Linux 5.6.3)
 ---
 ## Análisis con Visual Map
 
+[Visual-Map](https://github.com/afsh4ck/Visual-Map)
 ### Resumen de Scripts NSE
 Este análisis de scripts NSE revela la presencia de dos servicios clave:
 - **Servicio SSH:** Se identificaron claves de host ECDSA y ED25519, lo que confirma la ejecución de un servidor SSH.
@@ -79,7 +80,9 @@ Este análisis de scripts NSE revela la presencia de dos servicios clave:
 
 ---
 ## Acceso Web
-Accedemos a http://10.10.11.88:8000/ y observamos que parece ser una galería de fotos online. Nos registraremos para ver la aplicación web por dentro.
+Accedemos a 
+http://10.10.11.88:8000/
+ y observamos que parece ser una galería de fotos online. Nos registraremos para ver la aplicación web por dentro.
 Una vez dentro vemos que podemos subir una imagen, por lo que puede ser el vector de entrada principal.
 
 ### Prueba de subida de archivos
@@ -333,7 +336,7 @@ The engagement began with reconnaissance against the *.hackthebox.eu domain, whi
     endDate: '2023-07-15',
     status: 'Completed',
     language: 'en',
-    createdAt: formatISO(sub(now, { months: 1 })),
+    createdAt: formatISO(sub(now, { months: 2 })),
     updatedAt: formatISO(sub(now, { months: 1 })),
     icon: 'Scan'
   },
@@ -363,7 +366,7 @@ Este informe detalla los hallazgos de la evaluación de seguridad de la red inte
     status: 'In Progress',
     language: 'es',
     createdAt: '2023-08-10T09:00:00Z',
-    updatedAt: formatISO(sub(now, { months: 2 })),
+    updatedAt: formatISO(sub(now, { days: 3 })),
     icon: 'Network'
   },
 ];
