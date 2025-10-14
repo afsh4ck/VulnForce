@@ -78,8 +78,20 @@ const addHeaderIds = (markdownContent: string) => {
 export const MarkdownPreview = ({ content, getImage, isReport }: { content: string, getImage: (id: string) => ImageAsset | undefined, isReport?: boolean }) => {
     
     const processedContent = useMemo(() => {
-        return addHeaderIds(content || '');
-    }, [content]);
+        let processed = addHeaderIds(content || '');
+        
+        // Find all internal image references and replace them with the actual dataUrl
+        const imageRegex = /!\[(.*?)\]\(image:\/\/([a-zA-Z0-9-]+)\)/g;
+        processed = processed.replace(imageRegex, (match, altText, imageId) => {
+            const image = getImage(imageId);
+            if (image) {
+                return `![${altText}](${image.dataUrl})`;
+            }
+            return match; // If image not found, leave the original markdown
+        });
+        
+        return processed;
+    }, [content, getImage]);
     
     const getSeverityVariant = (severity: string): 'destructive' | 'high' | 'medium' | 'low' | 'secondary' => {
         switch (severity) {
@@ -209,19 +221,7 @@ export const MarkdownPreview = ({ content, getImage, isReport }: { content: stri
                         );
                     },
                     img: ({ node, src, alt, ...props }) => {
-                        let finalSrc = src;
-                        if (src?.startsWith('image://')) {
-                            const imageId = src.substring('image://'.length);
-                            const image = getImage(imageId);
-                            if (image) {
-                                finalSrc = image.dataUrl;
-                            } else {
-                                return null; // Don't render a broken image if not found
-                            }
-                        }
-                        
-                        // eslint-disable-next-line @next/next/no-img-element
-                        return <img src={finalSrc} alt={alt} {...props} className="max-w-full h-auto rounded-md border" />;
+                        return <img src={src} alt={alt} {...props} className="max-w-full h-auto rounded-md border" />;
                     },
                 }}
             >
