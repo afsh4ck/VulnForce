@@ -76,9 +76,9 @@ export const LinkPreviewCard = ({ href }: { href: string }) => {
                     )}
                 </div>
                 <div className="flex flex-col overflow-hidden">
-                    <p className="font-medium text-sm line-clamp-1 group-hover:text-primary">{data.title}</p>
-                    <p className="text-sm text-muted-foreground line-clamp-2 mb-1">{data.description}</p>
-                    <p className="text-xs text-muted-foreground/80">{data.hostname}</p>
+                    <p className="font-medium text-sm line-clamp-1 group-hover:text-primary mb-1">{data.title}</p>
+                    <p className="text-sm text-muted-foreground line-clamp-2">{data.description}</p>
+                    <p className="text-xs text-muted-foreground/80 mt-2">{data.hostname}</p>
                 </div>
             </div>
         </a>
