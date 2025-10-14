@@ -38,7 +38,7 @@ export function Combobox({ options, selectedValue, onSelect, placeholder, search
           variant="outline"
           role="combobox"
           aria-expanded={open}
-          className="w-[180px] justify-between bg-slate-800 hover:bg-slate-700"
+          className="w-auto justify-between bg-slate-800 hover:bg-slate-700 hover:text-primary"
         >
           {selectedValue
             ? options.find((option) => option.value === selectedValue)?.label
@@ -46,7 +46,7 @@ export function Combobox({ options, selectedValue, onSelect, placeholder, search
           <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
         </Button>
       </PopoverTrigger>
-      <PopoverContent className="w-[--radix-popover-trigger-width] p-0">
+      <PopoverContent className="w-auto p-0" align="start">
         <Command>
           <CommandInput placeholder={searchPlaceholder || "Search..."} />
           <CommandList className="max-h-[200px] overflow-y-auto">
