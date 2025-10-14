@@ -10,10 +10,11 @@ import { Upload, Link, GalleryHorizontal } from 'lucide-react';
 import { useLanguage } from '@/context/language-context';
 import { useData } from '@/context/data-context';
 import type { ImageAsset } from '@/lib/types';
+import Image from 'next/image';
 
 export const ImageUploadDialog = ({ onInsert, children }: { onInsert: (markdown: string) => void, children: React.ReactNode }) => {
     const { language } = useLanguage();
-    const { images } = useData();
+    const { images, addImage } = useData();
     const [open, setOpen] = useState(false);
     const [activeTab, setActiveTab] = useState("upload");
     const [file, setFile] = useState<File | null>(null);
@@ -45,8 +46,8 @@ export const ImageUploadDialog = ({ onInsert, children }: { onInsert: (markdown:
             noRecent: "No hay imágenes recientes.",
         }
     };
-
-    const handleFileChange = (selectedFile: File | null) => {
+    
+    const handleFileChange = useCallback((selectedFile: File | null) => {
         if (selectedFile && selectedFile.type.startsWith('image/')) {
             setFile(selectedFile);
             const reader = new FileReader();
@@ -58,7 +59,7 @@ export const ImageUploadDialog = ({ onInsert, children }: { onInsert: (markdown:
             setFile(null);
             setPreviewUrl(null);
         }
-    };
+    }, []);
 
     const handleDrop = (e: React.DragEvent<HTMLDivElement>) => {
         e.preventDefault();
@@ -73,24 +74,35 @@ export const ImageUploadDialog = ({ onInsert, children }: { onInsert: (markdown:
         e.stopPropagation();
     };
 
+    const resetAndClose = () => {
+        setOpen(false);
+        setFile(null);
+        setPreviewUrl(null);
+        setUrl('');
+    }
+
     const handleInsert = () => {
         let markdown = '';
         if (activeTab === 'upload' && previewUrl) {
-            markdown = `![${file?.name || 'Uploaded Image'}](${previewUrl})`;
+            const newImage = addImage(previewUrl);
+            markdown = `![${file?.name || 'Uploaded Image'}](image://${newImage.id})`;
         } else if (activeTab === 'embed' && url) {
-            markdown = `![${'Pasted Image'}](${url})`;
+            markdown = `![Pasted Image](${url})`;
         }
         
         if (markdown) {
             onInsert(markdown);
         }
         
-        // Reset state and close
-        setOpen(false);
-        setFile(null);
-        setPreviewUrl(null);
-        setUrl('');
+        resetAndClose();
     };
+
+    const handleGalleryInsert = (image: ImageAsset) => {
+        const markdown = `![Image from Gallery](image://${image.id})`;
+        onInsert(markdown);
+        resetAndClose();
+    }
+
 
     return (
         <Dialog open={open} onOpenChange={setOpen}>
@@ -116,8 +128,7 @@ export const ImageUploadDialog = ({ onInsert, children }: { onInsert: (markdown:
                                 className="flex flex-col items-center justify-center w-full h-64 border-2 border-dashed rounded-lg cursor-pointer bg-muted hover:bg-muted/80"
                             >
                                 {previewUrl ? (
-                                    // eslint-disable-next-line @next/next/no-img-element
-                                    <img src={previewUrl} alt="Preview" className="max-h-full max-w-full rounded-lg" />
+                                    <Image src={previewUrl} alt="Preview" width={400} height={200} className="max-h-full w-auto rounded-lg" />
                                 ) : (
                                     <div className="flex flex-col items-center justify-center pt-5 pb-6">
                                         <Upload className="w-8 h-8 mb-4 text-muted-foreground" />
@@ -136,8 +147,7 @@ export const ImageUploadDialog = ({ onInsert, children }: { onInsert: (markdown:
                          </div>
                          {url && (
                              <div className="flex justify-center p-4 border rounded-lg bg-muted">
-                                 {/* eslint-disable-next-line @next/next/no-img-element */}
-                                 <img src={url} alt="URL Preview" className="max-h-64 max-w-full rounded" />
+                                 <Image src={url} alt="URL Preview" width={400} height={200} className="max-h-64 w-auto rounded" />
                              </div>
                          )}
                     </TabsContent>
@@ -145,9 +155,8 @@ export const ImageUploadDialog = ({ onInsert, children }: { onInsert: (markdown:
                         {images.length > 0 ? (
                            <div className="grid grid-cols-4 gap-4 max-h-80 overflow-y-auto p-1">
                              {images.map((image: ImageAsset) => (
-                               <div key={image.id} className="relative aspect-square cursor-pointer group" onClick={() => onInsert(`![${'Image from Gallery'}](${image.dataUrl})`)}>
-                                 {/* eslint-disable-next-line @next/next/no-img-element */}
-                                 <img src={image.dataUrl} alt="Gallery image" className="w-full h-full object-cover rounded-md" />
+                               <div key={image.id} className="relative aspect-square cursor-pointer group" onClick={() => handleGalleryInsert(image)}>
+                                 <Image src={image.dataUrl} alt="Gallery image" layout="fill" className="object-cover rounded-md" />
                                  <div className="absolute inset-0 bg-black/40 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
                                    <p className="text-white text-xs text-center">Insert</p>
                                  </div>

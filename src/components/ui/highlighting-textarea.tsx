@@ -1,13 +1,12 @@
 
 
 'use client';
-import React, { useRef, useEffect, useCallback, useImperativeHandle } from 'react';
+import React, { useRef, useEffect, useCallback, useImperativeHandle, useState } from 'react';
 import { cn } from '@/lib/utils';
 
 const getHighlightedText = (text: string) => {
     if (!text) return '';
-    // Matches [TODO: anything] and the word TODO itself, case-sensitive
-    const todoRegex = /(\[TODO(?::[^\]]*)?\]|\bTODO\b)/g;
+    const todoRegex = /(\[TODO:?.*?\]|\bTODO\b)/g;
 
     return text
         .replace(/&/g, '&amp;')
@@ -46,7 +45,6 @@ export const HighlightingTextarea = React.forwardRef<HTMLTextAreaElement, Highli
                 const textarea = e.currentTarget;
                 const { selectionStart, selectionEnd, value } = textarea;
         
-                // Find the start of the current line
                 let lineStart = value.lastIndexOf('\n', selectionStart - 1) + 1;
         
                 const currentLine = value.substring(lineStart, selectionStart);
@@ -66,7 +64,7 @@ export const HighlightingTextarea = React.forwardRef<HTMLTextAreaElement, Highli
                 } else if (numberMatch) {
                     e.preventDefault();
                     const currentNumber = parseInt(numberMatch[1].trim());
-                    // If the list item is empty, pressing Enter should remove it and create a newline
+
                     if (currentLine.trim() === `${currentNumber}.`) {
                          const newValue = value.substring(0, lineStart) + value.substring(selectionEnd);
                          onValueChange(newValue);
@@ -106,7 +104,7 @@ export const HighlightingTextarea = React.forwardRef<HTMLTextAreaElement, Highli
                     className={cn(
                         "absolute inset-0 z-0 overflow-auto whitespace-pre-wrap break-words pointer-events-none",
                         "font-code text-sm min-h-[300px]",
-                        "p-4" // Match textarea padding
+                        "p-4"
                     )}
                 >
                     <span dangerouslySetInnerHTML={{ __html: highlightedText + '\n' }}/>
