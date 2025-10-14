@@ -38,7 +38,7 @@ export function Combobox({ options, selectedValue, onSelect, placeholder, search
           variant="outline"
           role="combobox"
           aria-expanded={open}
-          className="w-auto justify-between bg-slate-800 hover:bg-slate-700 hover:text-primary"
+          className="w-auto justify-between bg-transparent hover:bg-accent/10 hover:text-primary h-8 px-2"
         >
           {selectedValue
             ? options.find((option) => option.value === selectedValue)?.label

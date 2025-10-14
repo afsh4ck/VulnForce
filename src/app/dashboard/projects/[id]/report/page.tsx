@@ -485,7 +485,7 @@ export default function ReportPreviewPage() {
              )}
             
             <nav className="space-y-2">
-              <p className="font-semibold text-sm px-2">{langT.tableOfContents}</p>
+              <p className="font-normal text-xs text-muted-foreground px-2 mb-2">{langT.tableOfContents}</p>
               <ul className="space-y-1">
                 {headings.map((heading) => (
                   <li key={heading.id}>
