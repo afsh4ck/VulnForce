@@ -130,14 +130,8 @@ export const MarkdownPreview = ({ content, getImage, isReport }: { content: stri
                         
                         return <h2 id={id} {...props} className={cn("text-2xl font-semibold mb-3 border-b pb-2", isReport && "mt-12 font-headline")}>{renderWithTodos('span', '')({children: rawText})}</h2>
                     },
-                    h3: ({ node, children, ...props }) => {
-                        const [text, id] = extractIdFromText(String(children));
-                        return <h3 id={id} {...props} className={cn("text-xl font-semibold mb-3", isReport && "mt-8")}>{renderWithTodos('span', '')({children: text})}</h3>
-                    },
-                     h4: ({ node, children, ...props }) => {
-                        const [text, id] = extractIdFromText(String(children));
-                        return <h4 id={id} {...props} className={cn("text-lg font-semibold mb-2", isReport && "mt-6")}>{renderWithTodos('span', '')({children: text})}</h4>
-                    },
+                    h3: renderWithTodos('h3', "text-xl font-semibold mb-3 mt-8"),
+                    h4: renderWithTodos('h4', "text-lg font-semibold mb-2 mt-6"),
                     p: renderWithTodos('p'),
                     li: ({ node, children, ...props }: any) => (
                         <li {...props}>{React.Children.map(children, child => {
@@ -159,8 +153,16 @@ export const MarkdownPreview = ({ content, getImage, isReport }: { content: stri
                     hr: () => isReport ? null : <hr className="my-8" />,
                     code({ node, className, children, ...props }) {
                         const match = /language-(\w+)/.exec(className || '');
-                        const codeContent = String(children).replace(/\n$/, '');
+                        let codeContent = String(children).replace(/\n$/, '');
 
+                        // Handle both `code` and 'code' for inline
+                        const isInlineWithBackticks = codeContent.startsWith('`') && codeContent.endsWith('`');
+                        const isInlineWithSingleQuotes = codeContent.startsWith("'") && codeContent.endsWith("'");
+
+                        if (!match && (isInlineWithBackticks || isInlineWithSingleQuotes)) {
+                           codeContent = codeContent.substring(1, codeContent.length - 1);
+                        }
+                        
                         if (match) { // Code block with language
                             return (
                                 <SyntaxHighlighter
