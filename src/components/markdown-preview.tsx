@@ -13,7 +13,7 @@ import { LinkPreviewCard } from './link-preview-card';
 
 const highlightTodos = (text: string) => {
     if (typeof text !== 'string') return text;
-    const todoRegex = /(\[TODO:?.*?\]|\bTODO\b)/g;
+    const todoRegex = /(\[TODO:?.*?\]|\bTODO\b)/gi;
 
     return text
         .replace(/&/g, '&amp;')
@@ -32,7 +32,7 @@ const renderWithTodos = (Component: React.ElementType, className?: string, props
     const RenderComponent = ({ node, children, ...componentProps }: any) => {
         const newChildren = React.Children.map(children, child => {
             if (typeof child === 'string') {
-                return highlightTodos(child);
+                return <span dangerouslySetInnerHTML={{ __html: highlightTodos(child) }} />;
             }
              if (React.isValidElement(child) && (child.props.node?.tagName === 'code' || child.props.node?.tagName === 'pre')) {
                  return child;
@@ -138,6 +138,18 @@ export const MarkdownPreview = ({ content, getImage, isReport }: { content: stri
         );
     };
 
+    const codeBlockStyle = {
+      ...vscDarkPlus,
+      'pre[class*="language-"]': {
+        ...vscDarkPlus['pre[class*="language-"]'],
+        backgroundColor: '#1E293B',
+        padding: '1em',
+        margin: '0',
+        overflowX: 'auto',
+        width: '100%',
+      },
+    };
+
     return (
         <div className="prose dark:prose-invert max-w-none">
             <ReactMarkdown
@@ -152,16 +164,14 @@ export const MarkdownPreview = ({ content, getImage, isReport }: { content: stri
                             node &&
                             node.children.length === 1 &&
                             node.children[0].type === 'element' &&
-                            node.children[0].tagName === 'a';
+                            node.children[0].tagName === 'a' &&
+                            node.children[0].children.length === 1 &&
+                            node.children[0].children[0].type === 'text' &&
+                            node.children[0].children[0].value === node.children[0].properties?.href;
                         
-                        if (isLinkOnly) {
-                            const linkNode = node.children[0];
-                            const textNode = linkNode.children.length === 1 && linkNode.children[0].type === 'text' ? linkNode.children[0] : null;
-                            const href = linkNode.properties?.href as string;
-                            
-                            if (isReport && textNode && textNode.value === href) {
-                                return <LinkPreviewCard href={href} />;
-                            }
+                        if (isReport && isLinkOnly) {
+                            const href = node.children[0].properties?.href as string;
+                            return <LinkPreviewCard href={href} />;
                         }
                         
                         return <p {...props}>{children}</p>;
@@ -172,7 +182,7 @@ export const MarkdownPreview = ({ content, getImage, isReport }: { content: stri
                     li: ({ node, children, ...props }: any) => (
                         <li {...props}>{React.Children.map(children, child => {
                             if (typeof child === 'string') {
-                                return highlightTodos(child);
+                                return <span dangerouslySetInnerHTML={{ __html: highlightTodos(child) }} />;
                             }
                             if (React.isValidElement(child) && child.props.node?.tagName === 'p') {
                             return <>{renderWithTodos('p', '')(child.props)}</>;
@@ -193,17 +203,10 @@ export const MarkdownPreview = ({ content, getImage, isReport }: { content: stri
                         
                         if (match) { // Code block with language
                             return (
-                                <div className="w-full overflow-x-auto">
+                                <div className="w-full overflow-x-auto my-4 rounded-md">
                                   <SyntaxHighlighter
-                                      style={vscDarkPlus}
+                                      style={codeBlockStyle}
                                       language={match[1]}
-                                      PreTag={({ children: preChildren, ...rest }) => <pre {...rest} style={{ padding: '0', margin: '0' }}>{preChildren}</pre>}
-                                      customStyle={{
-                                          padding: '1em',
-                                          margin: '0',
-                                          overflowX: 'auto',
-                                          width: '100%',
-                                      }}
                                       {...props}
                                   >
                                       {codeContent}
@@ -214,7 +217,7 @@ export const MarkdownPreview = ({ content, getImage, isReport }: { content: stri
                         
                         // Inline code
                         return (
-                        <code className="bg-muted text-muted-foreground font-code px-1 py-0.5 rounded-sm break-words" {...props}>
+                        <code className="font-code px-1.5 py-1 rounded-md break-words" style={{backgroundColor: '#1E293B'}} {...props}>
                            {children}
                         </code>
                         );
