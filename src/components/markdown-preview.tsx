@@ -193,20 +193,20 @@ export const MarkdownPreview = ({ content, getImage, isReport }: { content: stri
                         
                         if (match) { // Code block with language
                             return (
-                                <div className="w-full overflow-x-auto">
-                                    <SyntaxHighlighter
-                                        style={vscDarkPlus}
-                                        language={match[1]}
-                                        PreTag="div"
-                                        customStyle={{
-                                            padding: '0',
-                                            margin: '0',
-                                        }}
-                                        {...props}
-                                    >
-                                        {codeContent}
-                                    </SyntaxHighlighter>
-                                </div>
+                                <SyntaxHighlighter
+                                    style={vscDarkPlus}
+                                    language={match[1]}
+                                    PreTag={({ children, ...rest }) => <pre {...rest} style={{ padding: '0', margin: '0' }}>{children}</pre>}
+                                    customStyle={{
+                                        padding: '1em',
+                                        margin: '0',
+                                        overflowX: 'auto',
+                                        width: '100%',
+                                    }}
+                                    {...props}
+                                >
+                                    {codeContent}
+                                </SyntaxHighlighter>
                             );
                         }
                         
@@ -236,3 +236,4 @@ export const MarkdownPreview = ({ content, getImage, isReport }: { content: stri
         </div>
     );
 };
+
