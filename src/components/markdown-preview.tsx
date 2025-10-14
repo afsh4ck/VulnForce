@@ -195,6 +195,18 @@ export const MarkdownPreview = ({ content, getImage, isReport }: { content: stri
                         </code>
                         );
                     },
+                    img: ({ src, alt }) => {
+                        if (src?.startsWith('image://')) {
+                            const imageId = src.substring(8);
+                            const image = getImage(imageId);
+                            if (image) {
+                                // eslint-disable-next-line @next/next/no-img-element
+                                return <img src={image.dataUrl} alt={alt} className="max-w-full h-auto rounded-md border" />;
+                            }
+                        }
+                        // eslint-disable-next-line @next/next/no-img-element
+                        return <img src={src} alt={alt} />;
+                    },
                 }}
             >
                 {processedContent}
