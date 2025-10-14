@@ -142,7 +142,7 @@ export const MarkdownPreview = ({ content, getImage, isReport }: { content: stri
       ...vscDarkPlus,
       'pre[class*="language-"]': {
         ...vscDarkPlus['pre[class*="language-"]'],
-        backgroundColor: '#1E293B',
+        backgroundColor: '#0F172A',
         padding: '1em',
         margin: '0',
         overflowX: 'auto',
@@ -217,7 +217,7 @@ export const MarkdownPreview = ({ content, getImage, isReport }: { content: stri
                         
                         // Inline code
                         return (
-                        <code className="font-code px-1.5 py-1 rounded-md break-words" style={{backgroundColor: '#1E293B'}} {...props}>
+                        <code className="font-code px-1.5 py-1 rounded-md break-words" style={{backgroundColor: '#0F172A'}} {...props}>
                            {children}
                         </code>
                         );
