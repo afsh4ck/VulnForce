@@ -10,6 +10,7 @@ import { cn } from '@/lib/utils';
 import { Badge } from './ui/badge';
 import { Separator } from './ui/separator';
 import { LinkPreviewCard } from './link-preview-card';
+import { CodeBlock } from './code-block';
 
 const highlightTodos = (text: string) => {
     if (typeof text !== 'string') return text;
@@ -138,18 +139,6 @@ export const MarkdownPreview = ({ content, getImage, isReport }: { content: stri
         );
     };
 
-    const codeBlockStyle = {
-      ...vscDarkPlus,
-      'pre[class*="language-"]': {
-        ...vscDarkPlus['pre[class*="language-"]'],
-        backgroundColor: '#0F172A',
-        padding: '1em',
-        margin: '0',
-        overflowX: 'auto',
-        width: '100%',
-      },
-    };
-
     return (
         <div className="prose dark:prose-invert max-w-none">
             <ReactMarkdown
@@ -203,21 +192,16 @@ export const MarkdownPreview = ({ content, getImage, isReport }: { content: stri
                         
                         if (match) { // Code block with language
                             return (
-                                <div className="w-full overflow-x-auto my-4 rounded-md">
-                                  <SyntaxHighlighter
-                                      style={codeBlockStyle}
-                                      language={match[1]}
-                                      {...props}
-                                  >
-                                      {codeContent}
-                                  </SyntaxHighlighter>
-                                </div>
+                                <CodeBlock
+                                    initialLanguage={match[1]}
+                                    code={codeContent}
+                                />
                             );
                         }
                         
                         // Inline code
                         return (
-                        <code className="font-code px-1.5 py-1 rounded-md break-words" style={{backgroundColor: '#0F172A'}} {...props}>
+                        <code className="font-code bg-muted text-muted-foreground px-1.5 py-1 rounded-md break-words" {...props}>
                            {children}
                         </code>
                         );
