@@ -64,21 +64,21 @@ export const LinkPreviewCard = ({ href }: { href: string }) => {
             className="group no-underline"
         >
             <div className={cn(
-                "my-4 flex items-center gap-4 rounded-lg border bg-card text-card-foreground shadow-sm transition-colors",
+                "my-4 flex items-center gap-4 rounded-lg border bg-card text-card-foreground shadow-sm transition-colors p-4",
                 "hover:border-primary"
             )}>
-                <div className="flex flex-col p-4 space-y-1">
-                    <p className="font-bold text-base line-clamp-1 group-hover:text-primary">{data.title}</p>
+                <div className="flex-shrink-0">
+                    {data.favicon ? (
+                        // eslint-disable-next-line @next/next/no-img-element
+                        <img src={data.favicon} alt="" className="w-6 h-6" />
+                    ) : (
+                        <Globe className="w-6 h-6 text-muted-foreground" />
+                    )}
+                </div>
+                <div className="flex flex-col space-y-1 overflow-hidden">
+                    <p className="font-semibold text-sm line-clamp-1 group-hover:text-primary">{data.title}</p>
                     <p className="text-sm text-muted-foreground line-clamp-2">{data.description}</p>
-                    <div className="flex items-center gap-2 pt-1 text-xs text-muted-foreground">
-                        {data.favicon ? (
-                            // eslint-disable-next-line @next/next/no-img-element
-                            <img src={data.favicon} alt="" className="w-4 h-4" />
-                        ) : (
-                            <Globe className="w-4 h-4" />
-                        )}
-                        <span>{data.hostname}</span>
-                    </div>
+                    <p className="text-xs text-muted-foreground/80">{data.hostname}</p>
                 </div>
             </div>
         </a>
