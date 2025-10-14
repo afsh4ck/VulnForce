@@ -159,9 +159,8 @@ export const MarkdownPreview = ({ content, getImage, isReport }: { content: stri
                             const textNode = linkNode.children.length === 1 && linkNode.children[0].type === 'text' ? linkNode.children[0] : null;
                             const href = linkNode.properties?.href as string;
                             
-                            // Check if the link text is the same as the URL
                             if (textNode && textNode.value === href) {
-                                return <LinkPreviewCard href={href} />;
+                                return isReport ? <LinkPreviewCard href={href} /> : <a href={href} target="_blank" rel="noopener noreferrer" className="text-primary hover:underline">{href}</a>;
                             }
                         }
                         
@@ -194,23 +193,19 @@ export const MarkdownPreview = ({ content, getImage, isReport }: { content: stri
                         
                         if (match) { // Code block with language
                             return (
-                                <SyntaxHighlighter
-                                    style={vscDarkPlus}
-                                    language={match[1]}
-                                    PreTag="div"
-                                    wrapLines={true}
-                                    wrapLongLines={true}
-                                    customStyle={{
-                                        whiteSpace: 'pre-wrap',
-                                        wordBreak: 'break-all',
-                                    }}
-                                    codeTagProps={{
-                                        style: { fontFamily: 'inherit' }
-                                    }}
-                                    {...props}
-                                >
-                                    {codeContent}
-                                </SyntaxHighlighter>
+                                <div className="w-full overflow-x-auto">
+                                    <SyntaxHighlighter
+                                        style={vscDarkPlus}
+                                        language={match[1]}
+                                        PreTag="div"
+                                        customStyle={{
+                                          backgroundColor: 'transparent',
+                                        }}
+                                        {...props}
+                                    >
+                                        {codeContent}
+                                    </SyntaxHighlighter>
+                                </div>
                             );
                         }
                         
