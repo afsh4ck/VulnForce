@@ -138,7 +138,7 @@ export const MarkdownPreview = ({ content, getImage, isReport }: { content: stri
     };
 
     return (
-        <div className="prose dark:prose-invert max-w-none">
+        <div className="prose dark:prose-invert">
             <ReactMarkdown
                 remarkPlugins={[remarkGfm]}
                 components={{
@@ -177,7 +177,7 @@ export const MarkdownPreview = ({ content, getImage, isReport }: { content: stri
                             return child;
                         })}</li>
                     ),
-                    table: ({ node, ...props }) => <table className="table-auto w-full my-4 border-collapse border border-border" {...props} />,
+                    table: ({ node, ...props }) => <div className="overflow-x-auto"><table className="table-auto w-full my-4 border-collapse border border-border" {...props} /></div>,
                     thead: ({ node, ...props }) => <thead className="bg-muted" {...props} />,
                     tbody: ({ node, ...props }) => <tbody {...props} />,
                     tr: ({ node, ...props }) => <tr className="border-b border-border" {...props} />,
@@ -190,12 +190,10 @@ export const MarkdownPreview = ({ content, getImage, isReport }: { content: stri
                         
                         if (match) { // Code block with language
                             return (
-                                <div className="overflow-x-auto">
-                                    <CodeBlock
-                                        initialLanguage={match[1]}
-                                        code={codeContent}
-                                    />
-                                </div>
+                                <CodeBlock
+                                    initialLanguage={match[1]}
+                                    code={codeContent}
+                                />
                             );
                         }
                         

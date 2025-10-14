@@ -35,10 +35,10 @@ export function Combobox({ options, selectedValue, onSelect, placeholder, search
     <Popover open={open} onOpenChange={setOpen}>
       <PopoverTrigger asChild>
         <Button
-          variant="outline"
+          variant="ghost"
           role="combobox"
           aria-expanded={open}
-          className="w-auto justify-between bg-transparent hover:bg-accent/10 hover:text-primary h-8 px-2"
+          className="w-auto justify-between bg-transparent hover:bg-primary/20 hover:text-primary h-8 px-2"
         >
           {selectedValue
             ? options.find((option) => option.value === selectedValue)?.label

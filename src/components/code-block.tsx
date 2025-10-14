@@ -46,10 +46,10 @@ export const CodeBlock = ({ initialLanguage, code }: { initialLanguage: string; 
                     searchPlaceholder={t[currentUiLang].search}
                 />
 
-                <Button variant="ghost" size="icon" className={cn("h-8 w-8", isWrapped ? "bg-primary text-primary-foreground hover:bg-primary/90 hover:text-black" : "hover:bg-accent/10 hover:text-primary")} onClick={() => setIsWrapped(!isWrapped)}>
+                <Button variant="ghost" size="icon" className={cn("h-8 w-8", isWrapped ? "bg-primary text-black hover:bg-primary/90" : "hover:bg-primary/20 hover:text-primary")} onClick={() => setIsWrapped(!isWrapped)}>
                     <WrapText className="h-4 w-4" />
                 </Button>
-                <Button variant="ghost" size="icon" className="h-8 w-8 hover:bg-accent/10 hover:text-primary" onClick={handleCopy}>
+                <Button variant="ghost" size="icon" className="h-8 w-8 hover:bg-primary/20 hover:text-primary" onClick={handleCopy}>
                     {isCopied ? <Check className="h-4 w-4 text-green-500" /> : <Copy className="h-4 w-4" />}
                 </Button>
             </div>
