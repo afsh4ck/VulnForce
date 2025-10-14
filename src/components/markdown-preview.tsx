@@ -191,10 +191,12 @@ export const MarkdownPreview = ({ content, getImage, isReport }: { content: stri
                         
                         if (match) { // Code block with language
                             return (
-                                <CodeBlock
-                                    initialLanguage={match[1]}
-                                    code={codeContent}
-                                />
+                               <div className="overflow-x-auto">
+                                    <CodeBlock
+                                        initialLanguage={match[1]}
+                                        code={codeContent}
+                                    />
+                                </div>
                             );
                         }
                         
@@ -213,9 +215,11 @@ export const MarkdownPreview = ({ content, getImage, isReport }: { content: stri
                                 // eslint-disable-next-line @next/next/no-img-element
                                 return <img src={image.dataUrl} alt={alt} className="max-w-full h-auto rounded-md border" />;
                             }
+                             // Return a placeholder or null if the image isn't found
+                            return <img src="" alt={alt} className="max-w-full h-auto rounded-md border border-dashed" />;
                         }
                         // eslint-disable-next-line @next/next/no-img-element
-                        return <img src={src} alt={alt} />;
+                        return <img src={src} alt={alt} className="max-w-full h-auto rounded-md border" />;
                     },
                 }}
             >
@@ -224,3 +228,4 @@ export const MarkdownPreview = ({ content, getImage, isReport }: { content: stri
         </div>
     );
 };
+
