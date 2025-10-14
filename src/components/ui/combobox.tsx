@@ -1,3 +1,4 @@
+
 "use client"
 
 import * as React from "react"
@@ -37,7 +38,7 @@ export function Combobox({ options, selectedValue, onSelect, placeholder, search
           variant="outline"
           role="combobox"
           aria-expanded={open}
-          className="w-full justify-between"
+          className="w-[180px] justify-between bg-slate-800 hover:bg-slate-700"
         >
           {selectedValue
             ? options.find((option) => option.value === selectedValue)?.label

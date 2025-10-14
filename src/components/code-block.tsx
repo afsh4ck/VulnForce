@@ -29,7 +29,7 @@ export const CodeBlock = ({ initialLanguage, code }: { initialLanguage: string; 
     }
 
     return (
-        <div className="relative group my-4 rounded-md bg-[#0F172A]">
+        <div className="relative group my-4 rounded-md border border-slate-700 bg-[#0F172A]">
              <div className="absolute top-2 right-2 z-10 flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
                 <Combobox
                     options={languageOptions}
@@ -39,10 +39,10 @@ export const CodeBlock = ({ initialLanguage, code }: { initialLanguage: string; 
                     searchPlaceholder="Search language..."
                 />
 
-                <Button variant="ghost" size="icon" className={cn("h-8 w-8", isWrapped ? "text-primary hover:text-black" : "")} onClick={() => setIsWrapped(!isWrapped)}>
+                <Button variant="ghost" size="icon" className={cn("h-8 w-8", isWrapped ? "bg-primary text-primary-foreground hover:bg-primary/90 hover:text-black" : "hover:bg-slate-700")} onClick={() => setIsWrapped(!isWrapped)}>
                     <WrapText className="h-4 w-4" />
                 </Button>
-                <Button variant="ghost" size="icon" className="h-8 w-8" onClick={handleCopy}>
+                <Button variant="ghost" size="icon" className="h-8 w-8 hover:bg-slate-700" onClick={handleCopy}>
                     {isCopied ? <Check className="h-4 w-4 text-green-500" /> : <Copy className="h-4 w-4" />}
                 </Button>
             </div>
@@ -53,7 +53,8 @@ export const CodeBlock = ({ initialLanguage, code }: { initialLanguage: string; 
                     margin: 0,
                     padding: '1em',
                     backgroundColor: 'transparent',
-                    borderRadius: '0.375rem',
+                    width: '100%',
+                    overflowX: 'auto',
                 }}
                 codeTagProps={{
                     style: {
