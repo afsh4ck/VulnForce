@@ -14,6 +14,11 @@ export default {
           css: {
             '--tw-prose-bullets': theme('colors.primary.DEFAULT'),
             '--tw-prose-counters': theme('colors.primary.DEFAULT'),
+            pre: {
+              'margin-top': '0',
+              'margin-bottom': '0',
+              'padding': '0',
+            },
           }
         }
       }),
