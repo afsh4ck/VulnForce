@@ -31,7 +31,7 @@ const renderWithTodos = (Component: React.ElementType, className?: string, props
             if (typeof child === 'string') {
                 return highlightTodos(child);
             }
-            if (React.isValidElement(child) && (child.props.node?.tagName === 'code' || child.props.node?.tagName === 'pre')) {
+             if (React.isValidElement(child) && (child.props.node?.tagName === 'code' || child.props.node?.tagName === 'pre')) {
                  return child;
             }
             return child;
@@ -96,7 +96,7 @@ export const MarkdownPreview = ({ content, getImage, isReport }: { content: stri
     };
 
     const CustomHeading = ({ level, children, ...props }: { level: number, children: React.ReactNode, [key: string]: any }) => {
-      const [rawText, id] = extractIdFromText(String(children));
+      const [rawText, id] = extractIdFromText(React.Children.toArray(children).join(''));
 
       const severityRegex = /\[SEVERITY:(.*?),CVSS:(.*?)\]/;
       const severityMatch = rawText.match(severityRegex);
@@ -191,7 +191,7 @@ export const MarkdownPreview = ({ content, getImage, isReport }: { content: stri
                         // Inline code
                         return (
                         <code className="bg-muted text-muted-foreground font-code px-1 py-0.5 rounded-sm break-words" {...props}>
-                            {highlightTodos(codeContent)}
+                           {children}
                         </code>
                         );
                     },
