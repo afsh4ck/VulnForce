@@ -76,14 +76,14 @@ const addHeaderIds = (markdownContent: string) => {
 export const MarkdownPreview = ({ content, getImage, isReport }: { content: string, getImage: (id: string) => ImageAsset | undefined, isReport?: boolean }) => {
     
     const processedContent = useMemo(() => addHeaderIds(content), [content]);
-
-    const extractIdFromText = (text: string): [string, string] => {
+    
+    const extractIdFromText = (text: string): [string, string | undefined] => {
         const match = text.match(/(.*) {#(.*)}/);
         if (match) {
-            return [match[1], match[2]];
+            return [match[1].trim(), match[2].trim()];
         }
-        return [text, ''];
-    }
+        return [text.trim(), undefined];
+    };
     
     const getSeverityVariant = (severity: string): 'destructive' | 'high' | 'medium' | 'low' | 'secondary' => {
         switch (severity) {
@@ -93,45 +93,56 @@ export const MarkdownPreview = ({ content, getImage, isReport }: { content: stri
           case 'Low': return 'low';
           default: return 'secondary';
         }
-    }
+    };
+
+    const CustomHeading = ({ level, children, ...props }: { level: number, children: React.ReactNode, [key: string]: any }) => {
+      const [rawText, id] = extractIdFromText(String(children));
+
+      const severityRegex = /\[SEVERITY:(.*?),CVSS:(.*?)\]/;
+      const severityMatch = rawText.match(severityRegex);
+
+      if (level === 2 && isReport && severityMatch) {
+        const title = rawText.replace(severityRegex, '').trim();
+        const severity = severityMatch[1];
+        const cvss = severityMatch[2];
+        return (
+          <div id={id}>
+            <div className="flex justify-between items-center mb-2">
+              <h2 {...props} className={cn("text-2xl font-semibold border-b-0 pb-0", isReport && "mt-12 font-headline")}>
+                {renderWithTodos('span', '')({ children: title })}
+              </h2>
+              <Badge variant={getSeverityVariant(severity)} className="text-base px-3 py-1">{severity}</Badge>
+            </div>
+            <p className="font-code text-sm text-muted-foreground mt-0 mb-6">CVSS: {cvss}</p>
+            <Separator className="my-6" />
+          </div>
+        );
+      }
+      
+      const Tag = `h${level}` as keyof JSX.IntrinsicElements;
+      const classNames: Record<number, string> = {
+        1: cn("font-headline text-3xl font-bold mb-4 border-b-2 border-primary pb-2", isReport && "mt-12"),
+        2: cn("text-2xl font-semibold mb-3 border-b pb-2", isReport && "mt-12 font-headline"),
+        3: "text-xl font-semibold mb-3 mt-8",
+        4: "text-lg font-semibold mb-2 mt-6",
+      };
+
+      return (
+        <Tag id={id} {...props} className={classNames[level] || ''}>
+          {renderWithTodos('span', '')({ children: rawText })}
+        </Tag>
+      );
+    };
 
     return (
         <div className="prose dark:prose-invert max-w-none">
             <ReactMarkdown
                 remarkPlugins={[remarkGfm]}
                 components={{
-                    h1: ({ node, children, ...props }) => {
-                        const [text, id] = extractIdFromText(String(children));
-                        return <h1 id={id} {...props} className={cn("font-headline text-3xl font-bold mb-4 border-b-2 border-primary pb-2", isReport && "mt-12")}>{renderWithTodos('span', '')({children: text})}</h1>
-                    },
-                    h2: ({ node, children, ...props }) => {
-                        const [rawText, id] = extractIdFromText(String(children));
-                        
-                        const severityRegex = /\[SEVERITY:(.*?),CVSS:(.*?)\]/;
-                        const severityMatch = rawText.match(severityRegex);
-
-                        if (isReport && severityMatch) {
-                            const title = rawText.replace(severityRegex, '').trim();
-                            const severity = severityMatch[1];
-                            const cvss = severityMatch[2];
-                            return (
-                                <div id={id}>
-                                    <div className="flex justify-between items-center mb-2">
-                                      <h2 {...props} className={cn("text-2xl font-semibold border-b-0 pb-0", isReport && "mt-12 font-headline")}>
-                                        {renderWithTodos('span', '')({children: title})}
-                                      </h2>
-                                      <Badge variant={getSeverityVariant(severity)} className="text-base px-3 py-1">{severity}</Badge>
-                                    </div>
-                                    <p className="font-code text-sm text-muted-foreground mt-0 mb-6">CVSS: {cvss}</p>
-                                    <Separator className="my-6" />
-                                </div>
-                            );
-                        }
-                        
-                        return <h2 id={id} {...props} className={cn("text-2xl font-semibold mb-3 border-b pb-2", isReport && "mt-12 font-headline")}>{renderWithTodos('span', '')({children: rawText})}</h2>
-                    },
-                    h3: renderWithTodos('h3', "text-xl font-semibold mb-3 mt-8"),
-                    h4: renderWithTodos('h4', "text-lg font-semibold mb-2 mt-6"),
+                    h1: (props) => <CustomHeading level={1} {...props} />,
+                    h2: (props) => <CustomHeading level={2} {...props} />,
+                    h3: (props) => <CustomHeading level={3} {...props} />,
+                    h4: (props) => <CustomHeading level={4} {...props} />,
                     p: renderWithTodos('p'),
                     li: ({ node, children, ...props }: any) => (
                         <li {...props}>{React.Children.map(children, child => {
@@ -153,15 +164,7 @@ export const MarkdownPreview = ({ content, getImage, isReport }: { content: stri
                     hr: () => isReport ? null : <hr className="my-8" />,
                     code({ node, className, children, ...props }) {
                         const match = /language-(\w+)/.exec(className || '');
-                        let codeContent = String(children).replace(/\n$/, '');
-
-                        // Handle both `code` and 'code' for inline
-                        const isInlineWithBackticks = codeContent.startsWith('`') && codeContent.endsWith('`');
-                        const isInlineWithSingleQuotes = codeContent.startsWith("'") && codeContent.endsWith("'");
-
-                        if (!match && (isInlineWithBackticks || isInlineWithSingleQuotes)) {
-                           codeContent = codeContent.substring(1, codeContent.length - 1);
-                        }
+                        const codeContent = String(children).replace(/\n$/, '');
                         
                         if (match) { // Code block with language
                             return (

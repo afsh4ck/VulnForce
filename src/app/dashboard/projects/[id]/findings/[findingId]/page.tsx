@@ -326,7 +326,7 @@ const SectionEditor = ({ section, onContentChange, onDelete, view, onViewChange,
                   <div className="p-1 border-b flex gap-1">
                     <Button variant="ghost" size="icon" className="h-auto w-auto p-1" onClick={() => applyMarkdownSyntax('**')}><Bold className="h-3 w-3" /></Button>
                     <Button variant="ghost" size="icon" className="h-auto w-auto p-1" onClick={() => applyMarkdownSyntax('*')}><Italic className="h-3 w-3" /></Button>
-                    <Button variant="ghost" size="icon" className="h-auto w-auto p-1" onClick={() => applyMarkdownSyntax("'")}><Code className="h-3 w-3" /></Button>
+                    <Button variant="ghost" size="icon" className="h-auto w-auto p-1" onClick={() => applyMarkdownSyntax('`')}><Code className="h-3 w-3" /></Button>
                     <Button variant="ghost" size="icon" className="h-auto w-auto p-1" onClick={() => applyListSyntax('bullet')}><List className="h-3 w-3" /></Button>
                     <Button variant="ghost" size="icon" className="h-auto w-auto p-1" onClick={() => applyListSyntax('number')}><ListOrdered className="h-3 w-3" /></Button>
                     <CodeBlockDialog onInsert={handleInsertCode}>
@@ -663,12 +663,12 @@ export default function FindingEditorPage() {
       
       const langT = t[projectLanguage];
       const newSections: FindingSection[] = [
-        { id: `sec-overview-${Date.now()}`, content: `### ${langT.overview}\n${projectLanguage === 'es' ? vuln.overview_es : vuln.overview_en}` },
-        { id: `sec-tech-${Date.now()}`, content: `### ${langT.technicalDescription}\n${projectLanguage === 'es' ? vuln.technicalDescription_es : vuln.technicalDescription_en}` },
-        { id: `sec-affected-${Date.now()}`, content: `### ${langT.affectedComponents}\n${projectLanguage === 'es' ? vuln.affectedComponents_es : vuln.affectedComponents_en}` },
-        { id: `sec-impact-${Date.now()}`, content: `### ${langT.impact}\n${projectLanguage === 'es' ? vuln.impact_es : vuln.impact_en}` },
-        { id: `sec-recom-${Date.now()}`, content: `### ${langT.recommendations}\n${projectLanguage === 'es' ? vuln.recommendations_es : vuln.recommendations_en}` },
-        { id: `sec-details-${Date.now()}`, content: `### ${langT.details}\n${projectLanguage === 'es' ? vuln.details_es : vuln.details_en}` },
+        { id: `sec-overview-${Date.now()}`, content: `${projectLanguage === 'es' ? vuln.overview_es : vuln.overview_en}` },
+        { id: `sec-tech-${Date.now()}`, content: `${projectLanguage === 'es' ? vuln.technicalDescription_es : vuln.technicalDescription_en}` },
+        { id: `sec-affected-${Date.now()}`, content: `${projectLanguage === 'es' ? vuln.affectedComponents_es : vuln.affectedComponents_en}` },
+        { id: `sec-impact-${Date.now()}`, content: `${projectLanguage === 'es' ? vuln.impact_es : vuln.impact_en}` },
+        { id: `sec-recom-${Date.now()}`, content: `${projectLanguage === 'es' ? vuln.recommendations_es : vuln.recommendations_en}` },
+        { id: `sec-details-${Date.now()}`, content: `${projectLanguage === 'es' ? vuln.details_es : vuln.details_en}` },
       ];
       
       setSections(newSections);
