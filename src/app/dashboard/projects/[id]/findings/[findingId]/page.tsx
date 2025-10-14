@@ -1,4 +1,5 @@
 
+
 'use client';
 
 import React, { useState, useEffect, useMemo, useCallback, useRef } from 'react';
@@ -9,7 +10,7 @@ import { Label } from '@/components/ui/label';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import Link from 'next/link';
-import { ChevronLeft, Save, Plus, GripVertical, Rows, Bold, Italic, Code, List, ListOrdered, FileCode, Trash2, CheckCircle } from 'lucide-react';
+import { ChevronLeft, Save, Plus, GripVertical, Rows, Bold, Italic, Code, List, ListOrdered, FileCode, Trash2, CheckCircle, Image } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import { useLanguage } from '@/context/language-context';
 import type { Vulnerability, Finding, Project, ImageAsset, Severity } from '@/lib/types';
@@ -26,6 +27,7 @@ import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, 
 import { Textarea } from '@/components/ui/textarea';
 import { Dialog, DialogContent, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
 import { Badge } from '@/components/ui/badge';
+import { ImageUploadDialog } from '@/components/image-upload-dialog';
 
 type ScopeView = 'edit' | 'split' | 'preview';
 type SaveStatus = 'unsaved' | 'saving' | 'saved';
@@ -197,14 +199,7 @@ const SectionEditor = ({ section, onContentChange, onDelete, view, onViewChange,
                     if (dataUrl) {
                         const newImage = addImage(dataUrl);
                         const markdownImage = `![Pasted Image](image://${newImage.id})`;
-                        const textarea = e.target as HTMLTextAreaElement;
-                        const start = textarea.selectionStart;
-                        const end = textarea.selectionEnd;
-                        const newContent =
-                            section.content.substring(0, start) +
-                            markdownImage +
-                            section.content.substring(end);
-                        onContentChange(newContent);
+                        insertMarkdown(markdownImage);
                     }
                 };
                 reader.readAsDataURL(blob);
@@ -214,25 +209,27 @@ const SectionEditor = ({ section, onContentChange, onDelete, view, onViewChange,
     }
   };
   
-  const applyMarkdownSyntax = (startSyntax: string, endSyntax = startSyntax) => {
+  const insertMarkdown = (markdown: string) => {
     const textarea = textareaRef.current;
     if (!textarea) return;
 
     const start = textarea.selectionStart;
     const end = textarea.selectionEnd;
-    const selectedText = section.content.substring(start, end);
     const newContent =
       section.content.substring(0, start) +
-      startSyntax +
-      selectedText +
-      endSyntax +
+      markdown +
       section.content.substring(end);
     onContentChange(newContent);
 
     setTimeout(() => {
         textarea.focus();
-        textarea.setSelectionRange(start + startSyntax.length, end + startSyntax.length);
+        textarea.setSelectionRange(start + markdown.length, start + markdown.length);
     }, 0);
+  };
+  
+  const applyMarkdownSyntax = (startSyntax: string, endSyntax = startSyntax) => {
+    const selectedText = window.getSelection()?.toString() || '';
+    insertMarkdown(startSyntax + selectedText + endSyntax);
   };
 
   const applyListSyntax = (type: 'bullet' | 'number') => {
@@ -262,20 +259,7 @@ const SectionEditor = ({ section, onContentChange, onDelete, view, onViewChange,
   
   const handleInsertCode = (lang: string, code: string) => {
     const codeBlock = `\`\`\`${lang}\n${code}\n\`\`\``;
-    const textarea = textareaRef.current;
-    if (!textarea) return;
-
-    const start = textarea.selectionStart;
-    const end = textarea.selectionEnd;
-    const newContent =
-      section.content.substring(0, start) +
-      codeBlock +
-      section.content.substring(end);
-    onContentChange(newContent);
-    setTimeout(() => {
-      textarea.focus();
-      textarea.setSelectionRange(start + codeBlock.length, start + codeBlock.length);
-    }, 0);
+    insertMarkdown(codeBlock);
   };
 
 
@@ -333,6 +317,9 @@ const SectionEditor = ({ section, onContentChange, onDelete, view, onViewChange,
                     <CodeBlockDialog onInsert={handleInsertCode}>
                       <Button variant="ghost" size="icon" className="h-auto w-auto p-1"><FileCode className="h-3 w-3" /></Button>
                     </CodeBlockDialog>
+                    <ImageUploadDialog onInsert={insertMarkdown}>
+                       <Button variant="ghost" size="icon" className="h-auto w-auto p-1"><Image className="h-3 w-3" /></Button>
+                    </ImageUploadDialog>
                   </div>
                 )}
                  <div className="p-0">

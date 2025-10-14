@@ -1,4 +1,5 @@
 
+
 'use client';
 import React, { useMemo } from 'react';
 import ReactMarkdown from 'react-markdown';
@@ -138,7 +139,7 @@ export const MarkdownPreview = ({ content, getImage, isReport }: { content: stri
     };
 
     return (
-        <div className="prose dark:prose-invert">
+        <div className="prose dark:prose-invert max-w-full">
             <ReactMarkdown
                 remarkPlugins={[remarkGfm]}
                 components={{

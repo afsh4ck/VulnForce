@@ -2,14 +2,14 @@
 
 'use client';
 
-import React, { useState, useMemo, useEffect, useCallback } from 'react';
+import React, { useState, useMemo, useEffect, useCallback, useRef } from 'react';
 import { useRouter, useParams, useSearchParams } from "next/navigation";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import Link from 'next/link';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
-import { PlusCircle, FileText, ArrowUpDown, Edit, Save, Trash2, CalendarIcon, Split, Eye, Plus, GripVertical, Rows, Languages, Bold, Italic, Code, List, ListOrdered, FileCode, Scan, Globe, Network, Smartphone, Wifi, Award, ChevronLeft, CheckCircle } from "lucide-react";
+import { PlusCircle, FileText, ArrowUpDown, Edit, Save, Trash2, CalendarIcon, Split, Eye, Plus, GripVertical, Rows, Languages, Bold, Italic, Code, List, ListOrdered, FileCode, Scan, Globe, Network, Smartphone, Wifi, Award, ChevronLeft, CheckCircle, Image } from "lucide-react";
 import { Separator } from "@/components/ui/separator";
 import { useLanguage } from "@/context/language-context";
 import type { Finding, Project, ImageAsset } from '@/lib/types';
@@ -36,7 +36,7 @@ import { HighlightingTextarea } from '@/components/ui/highlighting-textarea';
 import { ResizableHandle, ResizablePanel, ResizablePanelGroup } from '@/components/ui/resizable';
 import { Textarea } from '@/components/ui/textarea';
 import { Combobox } from '@/components/ui/combobox';
-
+import { ImageUploadDialog } from '@/components/image-upload-dialog';
 
 type SortKey = keyof Finding;
 type ScopeView = 'edit' | 'split' | 'preview';
@@ -208,6 +208,24 @@ const ScopeSectionEditor = ({ section, onContentChange, onDelete, view, onViewCh
     onTitleChange(e.target.value);
   }
 
+  const insertMarkdown = (markdown: string) => {
+    const textarea = textareaRef.current;
+    if (!textarea) return;
+
+    const start = textarea.selectionStart;
+    const end = textarea.selectionEnd;
+    const newContent =
+      section.content.substring(0, start) +
+      markdown +
+      section.content.substring(end);
+    onContentChange(newContent);
+
+    setTimeout(() => {
+        textarea.focus();
+        textarea.setSelectionRange(start + markdown.length, start + markdown.length);
+    }, 0);
+  };
+  
   const handlePaste = (e: React.ClipboardEvent<HTMLTextAreaElement>) => {
     const items = e.clipboardData.items;
     for (let i = 0; i < items.length; i++) {
@@ -220,14 +238,7 @@ const ScopeSectionEditor = ({ section, onContentChange, onDelete, view, onViewCh
                     if (dataUrl) {
                         const newImage = addImage(dataUrl);
                         const markdownImage = `![Pasted Image](image://${newImage.id})`;
-                        const textarea = e.target as HTMLTextAreaElement;
-                        const start = textarea.selectionStart;
-                        const end = textarea.selectionEnd;
-                        const newContent =
-                            section.content.substring(0, start) +
-                            markdownImage +
-                            section.content.substring(end);
-                        onContentChange(newContent);
+                        insertMarkdown(markdownImage);
                     }
                 };
                 reader.readAsDataURL(blob);
@@ -285,20 +296,7 @@ const ScopeSectionEditor = ({ section, onContentChange, onDelete, view, onViewCh
   
   const handleInsertCode = (lang: string, code: string) => {
     const codeBlock = '```' + lang + '\n' + code + '\n' + '```';
-    const textarea = textareaRef.current;
-    if (!textarea) return;
-
-    const start = textarea.selectionStart;
-    const end = textarea.selectionEnd;
-    const newContent =
-      section.content.substring(0, start) +
-      codeBlock +
-      section.content.substring(end);
-    onContentChange(newContent);
-    setTimeout(() => {
-      textarea.focus();
-      textarea.setSelectionRange(start + codeBlock.length, start + codeBlock.length);
-    }, 0);
+    insertMarkdown(codeBlock);
   };
 
 
@@ -356,6 +354,9 @@ const ScopeSectionEditor = ({ section, onContentChange, onDelete, view, onViewCh
                     <CodeBlockDialog onInsert={handleInsertCode}>
                       <Button variant="ghost" size="icon" className="h-auto w-auto p-1"><FileCode className="h-3 w-3" /></Button>
                     </CodeBlockDialog>
+                    <ImageUploadDialog onInsert={insertMarkdown}>
+                       <Button variant="ghost" size="icon" className="h-auto w-auto p-1"><Image className="h-3 w-3" /></Button>
+                    </ImageUploadDialog>
                   </div>
                 )}
                  <CardContent className="p-0">
