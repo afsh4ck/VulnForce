@@ -404,48 +404,6 @@ const ScopeSectionEditor = ({ section, onContentChange, onDelete, view, onViewCh
   )
 }
 
-function LeaveConfirmationDialog({ open, onOpenChange, onConfirm, onCancel, onDiscard }: {
-    open: boolean;
-    onOpenChange: (open: boolean) => void;
-    onConfirm: () => void;
-    onCancel: () => void;
-    onDiscard: () => void;
-}) {
-    const { language } = useLanguage();
-    const t = {
-        en: {
-            title: 'Unsaved Changes',
-            description: 'You have unsaved changes. Would you like to save them before leaving?',
-            saveAndExit: 'Save and Exit',
-            discardAndExit: 'Discard and Exit',
-            cancel: 'Cancel',
-        },
-        es: {
-            title: 'Cambios sin Guardar',
-            description: 'Tienes cambios sin guardar. ¿Quieres guardarlos antes de salir?',
-            saveAndExit: 'Guardar y Salir',
-            discardAndExit: 'Salir sin Guardar',
-            cancel: 'Cancelar',
-        },
-    };
-
-    return (
-        <AlertDialog open={open} onOpenChange={onOpenChange}>
-            <AlertDialogContent>
-                <AlertDialogHeader>
-                    <AlertDialogTitle>{t[language].title}</AlertDialogTitle>
-                    <AlertDialogDescription>{t[language].description}</AlertDialogDescription>
-                </AlertDialogHeader>
-                <AlertDialogFooter>
-                    <AlertDialogCancel onClick={onCancel}>{t[language].cancel}</AlertDialogCancel>
-                    <Button variant="destructive" onClick={onDiscard}>{t[language].discardAndExit}</Button>
-                    <AlertDialogAction onClick={onConfirm}>{t[language].saveAndExit}</AlertDialogAction>
-                </AlertDialogFooter>
-            </AlertDialogContent>
-        </AlertDialog>
-    );
-}
-
 export default function ProjectDetailsPage() {
   const params = useParams();
   const router = useRouter();
@@ -478,9 +436,6 @@ export default function ProjectDetailsPage() {
   // Save state
   const [isDirty, setIsDirty] = useState(false);
   const [saveStatus, setSaveStatus] = useState<SaveStatus>('saved');
-  const [showLeaveConfirm, setShowLeaveConfirm] = useState(false);
-  const [nextPath, setNextPath] = useState<string | null>(null);
-
 
   const sensors = useSensors(
     useSensor(PointerSensor),
@@ -764,33 +719,6 @@ export default function ProjectDetailsPage() {
     }
   }
 
-  const handleLeave = (path: string) => (e: React.MouseEvent) => {
-    if (isDirty) {
-      e.preventDefault();
-      setNextPath(path);
-      setShowLeaveConfirm(true);
-    } else {
-      router.push(path);
-    }
-  };
-
-  const onConfirmLeave = () => {
-    handleSaveScope();
-    setShowLeaveConfirm(false);
-    if(nextPath) router.push(nextPath);
-  };
-  
-  const onDiscardLeave = () => {
-    setIsDirty(false);
-    setShowLeaveConfirm(false);
-    if(nextPath) router.push(nextPath);
-  }
-
-  const onCancelLeave = () => {
-    setShowLeaveConfirm(false);
-    setNextPath(null);
-  };
-
   const t = {
     en: {
       status: "Status",
@@ -902,18 +830,13 @@ export default function ProjectDetailsPage() {
 
   return (
     <div className="space-y-6">
-       <LeaveConfirmationDialog 
-        open={showLeaveConfirm}
-        onOpenChange={setShowLeaveConfirm}
-        onConfirm={onConfirmLeave}
-        onCancel={onCancelLeave}
-        onDiscard={onDiscardLeave}
-       />
        <div className="flex justify-between items-start">
           <div className="flex items-center gap-4">
-            <Button variant="outline" size="icon" className="h-10 w-10" onClick={handleLeave('/dashboard/projects')}>
-                <ChevronLeft className="h-5 w-5" />
-                <span className="sr-only">{t[language].backToProjects}</span>
+            <Button variant="outline" size="icon" className="h-10 w-10" asChild>
+                <Link href="/dashboard/projects">
+                    <ChevronLeft className="h-5 w-5" />
+                    <span className="sr-only">{t[language].backToProjects}</span>
+                </Link>
             </Button>
             <div className="space-y-2">
                 <p className="text-sm text-muted-foreground">{client?.name}</p>
@@ -1083,8 +1006,10 @@ export default function ProjectDetailsPage() {
             </div>
           )}
           {activeTab === 'findings' && (
-             <Button size="sm" onClick={(e) => handleLeave(`/dashboard/projects/${project.id}/findings/new`)(e)}>
-                <PlusCircle className="mr-2 h-4 w-4" /> {t[language].addFinding}
+             <Button size="sm" asChild>
+                <Link href={`/dashboard/projects/${project.id}/findings/new`}>
+                    <PlusCircle className="mr-2 h-4 w-4" /> {t[language].addFinding}
+                </Link>
             </Button>
           )}
         </div>

@@ -687,7 +687,7 @@ export default function TemplateEditorPage() {
                       </div>
                     </SortableContext>
                   </DndContext>
-                  {!isEsOrganizing && (
+                  {!isEnOrganizing && (
                     <div className="flex justify-center pt-4">
                       <Button variant="outline" onClick={() => handleAddSection('es')}>
                         <Plus className="mr-2 h-4 w-4" />
