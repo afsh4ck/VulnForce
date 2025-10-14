@@ -159,8 +159,8 @@ export const MarkdownPreview = ({ content, getImage, isReport }: { content: stri
                             const textNode = linkNode.children.length === 1 && linkNode.children[0].type === 'text' ? linkNode.children[0] : null;
                             const href = linkNode.properties?.href as string;
                             
-                            if (textNode && textNode.value === href) {
-                                return isReport ? <LinkPreviewCard href={href} /> : <a href={href} target="_blank" rel="noopener noreferrer" className="text-primary hover:underline">{href}</a>;
+                            if (isReport && textNode && textNode.value === href) {
+                                return <LinkPreviewCard href={href} />;
                             }
                         }
                         
@@ -193,20 +193,22 @@ export const MarkdownPreview = ({ content, getImage, isReport }: { content: stri
                         
                         if (match) { // Code block with language
                             return (
-                                <SyntaxHighlighter
-                                    style={vscDarkPlus}
-                                    language={match[1]}
-                                    PreTag={({ children, ...rest }) => <pre {...rest} style={{ padding: '0', margin: '0' }}>{children}</pre>}
-                                    customStyle={{
-                                        padding: '1em',
-                                        margin: '0',
-                                        overflowX: 'auto',
-                                        width: '100%',
-                                    }}
-                                    {...props}
-                                >
-                                    {codeContent}
-                                </SyntaxHighlighter>
+                                <div className="w-full overflow-x-auto">
+                                  <SyntaxHighlighter
+                                      style={vscDarkPlus}
+                                      language={match[1]}
+                                      PreTag={({ children: preChildren, ...rest }) => <pre {...rest} style={{ padding: '0', margin: '0' }}>{preChildren}</pre>}
+                                      customStyle={{
+                                          padding: '1em',
+                                          margin: '0',
+                                          overflowX: 'auto',
+                                          width: '100%',
+                                      }}
+                                      {...props}
+                                  >
+                                      {codeContent}
+                                  </SyntaxHighlighter>
+                                </div>
                             );
                         }
                         
@@ -236,4 +238,3 @@ export const MarkdownPreview = ({ content, getImage, isReport }: { content: stri
         </div>
     );
 };
-
