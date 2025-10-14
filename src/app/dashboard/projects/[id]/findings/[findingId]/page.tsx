@@ -9,7 +9,7 @@ import { Label } from '@/components/ui/label';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import Link from 'next/link';
-import { ChevronLeft, Save, Plus, GripVertical, Rows, Bold, Italic, Code, List, ListOrdered, FileCode, Trash2 } from 'lucide-react';
+import { ChevronLeft, Save, Plus, GripVertical, Rows, Bold, Italic, Code, List, ListOrdered, FileCode, Trash2, CheckCircle } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import { useLanguage } from '@/context/language-context';
 import type { Vulnerability, Finding, Project, ImageAsset, Severity } from '@/lib/types';
@@ -28,6 +28,7 @@ import { Dialog, DialogContent, DialogFooter, DialogHeader, DialogTitle, DialogT
 import { Badge } from '@/components/ui/badge';
 
 type ScopeView = 'edit' | 'split' | 'preview';
+type SaveStatus = 'unsaved' | 'saving' | 'saved';
 
 interface FindingSection {
   id: string;
@@ -393,29 +394,27 @@ export default function FindingEditorPage() {
     useSensor(KeyboardSensor, { coordinateGetter: sortableKeyboardCoordinates })
   );
 
-  const [title, setTitle] = useState('');
-  const [severity, setSeverity] = useState<Severity>('Informational');
-  const [cvss, setCvss] = useState<string>('0.0');
-  
+  const [finding, setFinding] = useState<Omit<Finding, 'id' | 'createdAt' | 'updatedAt'> | null>(null);
+
   const [project, setProject] = useState<Project | undefined>();
   const [projectLanguage, setProjectLanguage] = useState<Project['language']>('en');
   
   const [sections, setSections] = useState<FindingSection[]>([]);
   const [sectionViews, setSectionViews] = useState<Record<string, ScopeView>>({});
   const [isOrganizing, setIsOrganizing] = useState(false);
+  const [saveStatus, setSaveStatus] = useState<SaveStatus>('saved');
 
   const client = clients.find(c => c.id === project?.clientId);
 
   const parseMarkdownToSections = useCallback((markdown: string): FindingSection[] => {
     if (!markdown) return [];
     
-    // This regex splits the text by '---' separators that are on their own line
     const parts = markdown.split(/\n\s*---\s*\n/);
     
     return parts
       .map((part, index) => {
         return {
-          id: `section-${index}-${Date.now()}`, // Generate a transient ID for the session
+          id: `section-${index}-${Date.now()}`,
           content: part.trim()
         };
       })
@@ -430,19 +429,29 @@ export default function FindingEditorPage() {
     }
     
     if (findingId !== 'new') {
-      const finding = findings.find(f => f.id === findingId && f.projectId === projectId);
-      if (finding) {
-        setTitle(finding.title);
-        setSeverity(finding.severity);
-        setCvss(finding.cvss.toString());
-        const initialSections = parseMarkdownToSections(finding.markdown);
+      const currentFinding = findings.find(f => f.id === findingId && f.projectId === projectId);
+      if (currentFinding) {
+        setFinding({
+          title: currentFinding.title,
+          severity: currentFinding.severity,
+          cvss: currentFinding.cvss,
+          markdown: currentFinding.markdown,
+          projectId: currentFinding.projectId
+        });
+        const initialSections = parseMarkdownToSections(currentFinding.markdown);
         setSections(initialSections);
         setSectionViews(initialSections.reduce((acc, sec) => ({ ...acc, [sec.id]: 'split' }), {}));
       } else {
         router.push(`/dashboard/projects/${projectId}`);
       }
     } else {
-      setTitle(projectLanguage === 'es' ? 'Nuevo Hallazgo' : 'New Finding');
+        setFinding({
+            title: projectLanguage === 'es' ? 'Nuevo Hallazgo' : 'New Finding',
+            severity: 'Informational',
+            cvss: 0,
+            markdown: '',
+            projectId: Array.isArray(projectId) ? projectId[0] : projectId,
+        });
       setSections([]);
     }
   }, [findingId, projectId, projectLanguage, findings, router, projects, parseMarkdownToSections]);
@@ -451,7 +460,6 @@ export default function FindingEditorPage() {
     const hash = window.location.hash.substring(1);
     if (hash) {
       const decodedHash = decodeURIComponent(hash);
-      // Timeout to allow DOM to render
       setTimeout(() => {
         const headings = Array.from(document.querySelectorAll('h1, h2, h3, h4, h5, h6'));
         const targetHeading = headings.find(h => {
@@ -471,45 +479,62 @@ export default function FindingEditorPage() {
     }
   }, [sections]);
 
+  useEffect(() => {
+    if (saveStatus === 'unsaved') {
+      const handler = setTimeout(() => {
+        handleSave(false);
+      }, 2000);
+      return () => clearTimeout(handler);
+    }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [finding, sections, saveStatus]);
 
-  const handleSave = () => {
-    if (!title || !severity || !cvss) {
-      toast({
-        variant: 'destructive',
-        title: uiLanguage === 'es' ? 'Campos Incompletos' : 'Incomplete Fields',
-        description: uiLanguage === 'es' ? 'Por favor, rellena todos los detalles del hallazgo.' : 'Please fill in all finding details.',
-      });
+
+  const handleSave = (showToast = true) => {
+    if (!finding || !finding.title || !finding.severity) {
+        if (showToast) {
+            toast({
+                variant: 'destructive',
+                title: uiLanguage === 'es' ? 'Campos Incompletos' : 'Incomplete Fields',
+                description: uiLanguage === 'es' ? 'Por favor, rellena todos los detalles del hallazgo.' : 'Please fill in all finding details.',
+            });
+        }
       return;
     }
     
+    setSaveStatus('saving');
     const markdownContent = sections.map(s => s.content).join('\n\n---\n\n');
 
     const findingData = {
-      title,
-      severity,
-      cvss: parseFloat(cvss) || 0,
-      projectId: Array.isArray(projectId) ? projectId[0] : projectId,
+      ...finding,
       markdown: markdownContent,
     };
 
     if (findingId === 'new') {
       addFinding(findingData);
-      toast({ title: t[uiLanguage].saveSuccessTitle, description: `${title} ${t[uiLanguage].saveSuccessNew}` });
+      if (showToast) toast({ title: t[uiLanguage].saveSuccessTitle, description: `${finding.title} ${t[uiLanguage].saveSuccessNew}` });
+      router.push(`/dashboard/projects/${projectId}`);
     } else {
       updateFinding({
         id: Array.isArray(findingId) ? findingId[0] : findingId,
         ...findingData,
       });
-      toast({ title: t[uiLanguage].saveSuccessTitle, description: `${title} ${t[uiLanguage].saveSuccessUpdate}` });
+      if (showToast) toast({ title: t[uiLanguage].saveSuccessTitle, description: `${finding.title} ${t[uiLanguage].saveSuccessUpdate}` });
     }
     
-    router.push(`/dashboard/projects/${projectId}`);
+    setTimeout(() => setSaveStatus('saved'), 500);
   };
+  
+  const handleFieldChange = (field: keyof Omit<Finding, 'id'|'createdAt'|'updatedAt'>, value: any) => {
+    setFinding(prev => prev ? {...prev, [field]: value} : null);
+    setSaveStatus('unsaved');
+  }
 
   const handleSectionContentChange = (sectionId: string, newContent: string) => {
     setSections(prevSections =>
       prevSections.map(sec => sec.id === sectionId ? { ...sec, content: newContent } : sec)
     );
+    setSaveStatus('unsaved');
   };
   
   const handleSectionTitleChange = (sectionId: string, newTitle: string) => {
@@ -524,6 +549,7 @@ export default function FindingEditorPage() {
         return sec;
       })
     );
+    setSaveStatus('unsaved');
   }
 
   const handleAddSection = () => {
@@ -533,6 +559,7 @@ export default function FindingEditorPage() {
     };
     setSections(prev => [...prev, newSection]);
     setSectionViews(prev => ({ ...prev, [newSection.id]: 'edit' }));
+    setSaveStatus('unsaved');
   };
 
   const handleDeleteSection = (sectionId: string) => {
@@ -542,6 +569,7 @@ export default function FindingEditorPage() {
           delete newViews[sectionId];
           return newViews;
       });
+      setSaveStatus('unsaved');
   };
 
   function handleDragEnd(event: DragEndEvent) {
@@ -551,21 +579,23 @@ export default function FindingEditorPage() {
       setSections((items) => {
         const oldIndex = items.findIndex((item) => item.id === active.id);
         const newIndex = items.findIndex((item) => item.id === over.id);
+        setSaveStatus('unsaved');
         return arrayMove(items, oldIndex, newIndex);
       });
     }
   }
 
   const handleSeverityChange = (newSeverity: Severity) => {
-    setSeverity(newSeverity);
+    handleFieldChange('severity', newSeverity);
+    let newCvss = 0.0;
     switch (newSeverity) {
-        case 'Critical': setCvss('9.5'); break;
-        case 'High': setCvss('8.5'); break;
-        case 'Medium': setCvss('5.5'); break;
-        case 'Low': setCvss('2.5'); break;
-        case 'Informational': setCvss('0.0'); break;
-        default: setCvss('0.0');
+        case 'Critical': newCvss = 9.5; break;
+        case 'High': newCvss = 8.5; break;
+        case 'Medium': newCvss = 5.5; break;
+        case 'Low': newCvss = 2.5; break;
+        case 'Informational': newCvss = 0.0; break;
     }
+    handleFieldChange('cvss', newCvss);
   }
 
   const getSeverityVariant = (severity: string): 'destructive' | 'high' | 'medium' | 'low' | 'secondary' => {
@@ -583,6 +613,8 @@ export default function FindingEditorPage() {
     en: {
       backToProject: 'Back to Project',
       saveFinding: 'Save Finding',
+      saving: 'Saving...',
+      saved: 'Saved',
       findingDetails: 'Finding Details',
       importFromDB: 'Import from Database',
       selectTemplate: 'Select a vulnerability template',
@@ -614,6 +646,8 @@ export default function FindingEditorPage() {
     es: {
       backToProject: 'Volver al Proyecto',
       saveFinding: 'Guardar Hallazgo',
+      saving: 'Guardando...',
+      saved: 'Guardado',
       findingDetails: 'Detalles del Hallazgo',
       importFromDB: 'Importar desde Base de Datos',
       selectTemplate: 'Seleccionar una plantilla de vulnerabilidad',
@@ -657,9 +691,8 @@ export default function FindingEditorPage() {
   const handleImport = (vulnId: string) => {
     const vuln = vulnerabilities.find(v => v.id === vulnId);
     if (vuln) {
-      setTitle(getVulnTitle(vuln));
+      handleFieldChange('title', getVulnTitle(vuln));
       handleSeverityChange(vuln.severity);
-      setCvss(vuln.cvss.score.toString());
       
       const langT = t[projectLanguage];
       const newSections: FindingSection[] = [
@@ -673,6 +706,7 @@ export default function FindingEditorPage() {
       
       setSections(newSections);
       setSectionViews(newSections.reduce((acc, sec) => ({ ...acc, [sec.id]: 'split' }), {}));
+      setSaveStatus('unsaved');
     }
   }
 
@@ -687,7 +721,7 @@ export default function FindingEditorPage() {
             </Link>
           </Button>
           <div>
-            <h1 className="font-headline text-xl font-bold">{title || (projectLanguage === 'es' ? 'Nuevo Hallazgo' : 'New Finding')}</h1>
+            <h1 className="font-headline text-xl font-bold">{finding?.title || (projectLanguage === 'es' ? 'Nuevo Hallazgo' : 'New Finding')}</h1>
             <p className="text-sm text-muted-foreground">{project?.name} / {client?.name}</p>
           </div>
         </div>
@@ -696,7 +730,11 @@ export default function FindingEditorPage() {
                 <Rows className="mr-2 h-4 w-4" />
                 {isOrganizing ? t[uiLanguage].finishOrganizing : t[uiLanguage].organizeSections}
             </Button>
-          <Button onClick={handleSave}><Save className="mr-2 h-4 w-4" /> {t[uiLanguage].saveFinding}</Button>
+          <Button onClick={() => handleSave(true)} disabled={saveStatus === 'saving' || saveStatus === 'saved'}>
+            {saveStatus === 'saving' ? (<><Save className="mr-2 h-4 w-4 animate-spin" />{t[uiLanguage].saving}</>) : 
+             saveStatus === 'saved' ? (<><CheckCircle className="mr-2 h-4 w-4" />{t[uiLanguage].saved}</>) : 
+             (<><Save className="mr-2 h-4 w-4" />{t[uiLanguage].saveFinding}</>)}
+          </Button>
         </div>
       </header>
 
@@ -704,13 +742,13 @@ export default function FindingEditorPage() {
           <Card>
             <CardHeader className="flex flex-row items-center justify-between">
               <CardTitle>{t[uiLanguage].findingDetails}</CardTitle>
-              {severity && <Badge variant={getSeverityVariant(severity)}>{severity}</Badge>}
+              {finding?.severity && <Badge variant={getSeverityVariant(finding.severity)}>{finding.severity}</Badge>}
             </CardHeader>
             <CardContent className="space-y-4">
               <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
                   <div className="space-y-2">
                     <Label htmlFor="title">{t[uiLanguage].titleLabel}</Label>
-                    <Input id="title" value={title} onChange={e => setTitle(e.target.value)} />
+                    <Input id="title" value={finding?.title || ''} onChange={e => handleFieldChange('title', e.target.value)} />
                   </div>
                   <div className="space-y-2">
                     <Label>{t[uiLanguage].importFromDB}</Label>
@@ -726,7 +764,7 @@ export default function FindingEditorPage() {
               <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
                 <div className="space-y-2">
                   <Label htmlFor="severity">{t[uiLanguage].severityLabel}</Label>
-                  <Select value={severity} onValueChange={(value) => handleSeverityChange(value as Severity)}>
+                  <Select value={finding?.severity} onValueChange={(value) => handleSeverityChange(value as Severity)}>
                     <SelectTrigger id="severity">
                       <SelectValue placeholder={t[uiLanguage].selectSeverity} />
                     </SelectTrigger>
@@ -741,7 +779,7 @@ export default function FindingEditorPage() {
                 </div>
                 <div className="space-y-2">
                   <Label htmlFor="cvss">{t[uiLanguage].cvssScore}</Label>
-                  <Input id="cvss" type="number" step="0.1" value={cvss} onChange={e => setCvss(e.target.value)} />
+                  <Input id="cvss" type="number" step="0.1" value={finding?.cvss || 0} onChange={e => handleFieldChange('cvss', parseFloat(e.target.value))} />
                 </div>
               </div>
             </CardContent>
@@ -784,3 +822,5 @@ export default function FindingEditorPage() {
     </div>
   );
 }
+
+    

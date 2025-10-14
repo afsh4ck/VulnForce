@@ -10,7 +10,7 @@ import { Textarea } from '@/components/ui/textarea';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import Link from 'next/link';
-import { ChevronLeft, Save, FileText, Scan, Globe, Network, Smartphone, Wifi, Award, Plus, Trash2, Rows, Bold, Italic, Code, List, ListOrdered, FileCode, GripVertical } from 'lucide-react';
+import { ChevronLeft, Save, FileText, Scan, Globe, Network, Smartphone, Wifi, Award, Plus, Trash2, Rows, Bold, Italic, Code, List, ListOrdered, FileCode, GripVertical, CheckCircle } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import { useLanguage } from '@/context/language-context';
 import type { ProjectTemplate, ImageAsset } from '@/lib/types';
@@ -29,6 +29,7 @@ import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs';
 
 
 type ScopeView = 'edit' | 'split' | 'preview';
+type SaveStatus = 'unsaved' | 'saving' | 'saved';
 
 interface TemplateSection {
   id: string;
@@ -376,6 +377,7 @@ export default function TemplateEditorPage() {
   const [isEnOrganizing, setIsEnOrganizing] = useState(false);
   const [isEsOrganizing, setIsEsOrganizing] = useState(false);
   const [activeAccordion, setActiveAccordion] = useState<string[]>(['details', 'en-content']);
+  const [saveStatus, setSaveStatus] = useState<SaveStatus>('saved');
 
   const parseContentToSections = useCallback((content: string): TemplateSection[] => {
     if (!content || typeof content !== 'string') return [];
@@ -416,17 +418,33 @@ export default function TemplateEditorPage() {
     }
   }, [id, isNew, projectTemplates, router, toast, parseContentToSections]);
 
+  useEffect(() => {
+    if (saveStatus === 'unsaved') {
+      const handler = setTimeout(() => {
+        handleSave(false);
+      }, 2000);
+      return () => clearTimeout(handler);
+    }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [template, enSections, esSections, saveStatus]);
+
+
   const handleInputChange = (field: keyof Omit<ProjectTemplate, 'id'>, value: string) => {
     setTemplate(prev => prev ? { ...prev, [field]: value } : null);
+    setSaveStatus('unsaved');
   };
   
-  const handleSave = () => {
+  const handleSave = (showToast = true) => {
     if (!template) return;
     
     if (!template.name_en || !template.name_es) {
-        toast({ variant: 'destructive', title: 'Missing required fields', description: 'Please provide a name for the template in both English and Spanish.' });
+        if(showToast) {
+            toast({ variant: 'destructive', title: 'Missing required fields', description: 'Please provide a name for the template in both English and Spanish.' });
+        }
         return;
     }
+    
+    setSaveStatus('saving');
 
     const [scope_en, ...appendix_en_parts] = enSections.map(s => s.content).join('\n\n---\n\n').split('### Appendix');
     const appendix_en = appendix_en_parts.length > 0 ? '### Appendix' + appendix_en_parts.join('### Appendix') : '';
@@ -438,18 +456,21 @@ export default function TemplateEditorPage() {
 
     if (isNew) {
       addProjectTemplate(finalTemplate as Omit<ProjectTemplate, 'id'>);
-      toast({ title: 'Template Created', description: `The "${template.name_en}" template has been created.` });
+      if(showToast) toast({ title: 'Template Created', description: `The "${template.name_en}" template has been created.` });
+      router.push('/dashboard/templates');
     } else {
       updateProjectTemplate(finalTemplate as ProjectTemplate);
-      toast({ title: 'Template Updated', description: `The "${template.name_en}" template has been updated.` });
+      if(showToast) toast({ title: 'Template Updated', description: `The "${template.name_en}" template has been updated.` });
     }
-    router.push('/dashboard/templates');
+    setTimeout(() => setSaveStatus('saved'), 500);
   };
 
   const t = {
     en: {
         back: 'Back to Templates',
         save: 'Save Template',
+        saving: 'Saving...',
+        saved: 'Saved',
         create: 'Create Template',
         newTitle: 'New Project Template',
         editTitle: 'Edit Project Template',
@@ -471,6 +492,8 @@ export default function TemplateEditorPage() {
     es: {
         back: 'Volver a Plantillas',
         save: 'Guardar Plantilla',
+        saving: 'Guardando...',
+        saved: 'Guardado',
         create: 'Crear Plantilla',
         newTitle: 'Nueva Plantilla de Proyecto',
         editTitle: 'Editar Plantilla de Proyecto',
@@ -494,6 +517,7 @@ export default function TemplateEditorPage() {
   const handleSectionChange = (lang: 'en' | 'es', sectionId: string, newContent: string) => {
     const updater = lang === 'en' ? setEnSections : setEsSections;
     updater(prev => prev.map(s => s.id === sectionId ? { ...s, content: newContent } : s));
+    setSaveStatus('unsaved');
   };
 
   const handleTitleChange = (lang: 'en' | 'es', sectionId: string, newTitle: string) => {
@@ -507,6 +531,7 @@ export default function TemplateEditorPage() {
         }
         return sec;
     }));
+    setSaveStatus('unsaved');
   }
 
   const handleAddSection = (lang: 'en' | 'es') => {
@@ -518,6 +543,7 @@ export default function TemplateEditorPage() {
         setEsSections(prev => [...prev, newSection]);
         setEsSectionViews(prev => ({ ...prev, [newSection.id]: 'edit' }));
     }
+    setSaveStatus('unsaved');
   };
 
   const handleDeleteSection = (lang: 'en' | 'es', sectionId: string) => {
@@ -526,6 +552,7 @@ export default function TemplateEditorPage() {
     } else {
         setEsSections(prev => prev.filter(s => s.id !== sectionId));
     }
+    setSaveStatus('unsaved');
   };
 
   const handleDragEnd = (event: DragEndEvent, lang: 'en' | 'es') => {
@@ -535,6 +562,7 @@ export default function TemplateEditorPage() {
         updater((items) => {
             const oldIndex = items.findIndex((item) => item.id === active.id);
             const newIndex = items.findIndex((item) => item.id === over.id);
+            setSaveStatus('unsaved');
             return arrayMove(items, oldIndex, newIndex);
         });
     }
@@ -561,10 +589,9 @@ export default function TemplateEditorPage() {
     <div className="space-y-6">
        <header className="flex items-center justify-between">
         <div className="flex items-center gap-4">
-          <Button variant="outline" size="sm" asChild>
+          <Button variant="outline" size="icon" asChild>
             <Link href="/dashboard/templates">
               <ChevronLeft className="mr-2 h-4 w-4" />
-              {t[language].back}
             </Link>
           </Button>
           <div>
@@ -572,7 +599,11 @@ export default function TemplateEditorPage() {
             <p className="text-sm text-muted-foreground">{isNew ? t[language].newDescription : t[language].editDescription}</p>
           </div>
         </div>
-        <Button onClick={handleSave}><Save className="mr-2 h-4 w-4" /> {isNew ? t[language].create : t[language].save}</Button>
+        <Button onClick={() => handleSave(true)} disabled={saveStatus === 'saving' || saveStatus === 'saved'}>
+            {saveStatus === 'saving' ? (<><Save className="mr-2 h-4 w-4 animate-spin" />{t[language].saving}</>) : 
+             saveStatus === 'saved' ? (<><CheckCircle className="mr-2 h-4 w-4" />{t[language].saved}</>) : 
+             (<><Save className="mr-2 h-4 w-4" /> {isNew ? t[language].create : t[language].save}</>)}
+        </Button>
       </header>
        <Accordion type="multiple" className="w-full space-y-6" defaultValue={['details']} value={activeAccordion} onValueChange={setActiveAccordion}>
           <AccordionItem value="details" className="border bg-card rounded-lg">
@@ -703,3 +734,5 @@ export default function TemplateEditorPage() {
     </div>
   );
 }
+
+    

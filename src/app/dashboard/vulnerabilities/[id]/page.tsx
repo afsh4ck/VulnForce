@@ -11,7 +11,7 @@ import { Textarea } from '@/components/ui/textarea';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import Link from 'next/link';
-import { ChevronDown, ChevronLeft, Save, GripVertical, Plus, Trash2, Rows, Bold, Italic, Code, List, ListOrdered, FileCode, ChevronUp } from 'lucide-react';
+import { ChevronDown, ChevronLeft, Save, GripVertical, Plus, Trash2, Rows, Bold, Italic, Code, List, ListOrdered, FileCode, ChevronUp, CheckCircle } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import { useLanguage } from '@/context/language-context';
 import type { Vulnerability, CVSS, ImageAsset, Severity } from '@/lib/types';
@@ -91,6 +91,8 @@ const CodeBlockDialog = ({ onInsert, children }: { onInsert: (lang: string, code
 
 
 type ScopeView = 'edit' | 'split' | 'preview';
+type SaveStatus = 'unsaved' | 'saving' | 'saved';
+
 interface FindingSection {
   id: string;
   content: string;
@@ -388,6 +390,7 @@ export default function VulnerabilityEditorPage() {
   const [vuln, setVuln] = useState<Vulnerability | null>(null);
   const [references, setReferences] = useState<string[]>([]);
   const [activeAccordion, setActiveAccordion] = useState<string[]>(['details', 'en-content']);
+  const [saveStatus, setSaveStatus] = useState<SaveStatus>('saved');
 
   const [enSections, setEnSections] = useState<FindingSection[]>([]);
   const [esSections, setEsSections] = useState<FindingSection[]>([]);
@@ -400,6 +403,8 @@ export default function VulnerabilityEditorPage() {
     en: {
       back: 'Back to Vulnerabilities',
       save: 'Save Changes',
+      saving: 'Saving...',
+      saved: 'Saved',
       detailsTitle: 'Description',
       titleEnLabel: 'Title (English)',
       titleEsLabel: 'Title (Spanish)',
@@ -446,6 +451,8 @@ export default function VulnerabilityEditorPage() {
     es: {
       back: 'Volver a Vulnerabilidades',
       save: 'Guardar Cambios',
+      saving: 'Guardando...',
+      saved: 'Guardado',
       detailsTitle: 'Descripción',
       titleEnLabel: 'Título (Inglés)',
       titleEsLabel: 'Título (Español)',
@@ -536,12 +543,25 @@ export default function VulnerabilityEditorPage() {
     }
   }, [id, vulnerabilities, router, parseMarkdownToSections, getFullContent]);
 
+  useEffect(() => {
+    if (saveStatus === 'unsaved') {
+      const handler = setTimeout(() => {
+        handleSave(false);
+      }, 2000);
+      return () => clearTimeout(handler);
+    }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [vuln, references, enSections, esSections, saveStatus]);
+
+
   const handleInputChange = useCallback(<T extends keyof Vulnerability>(field: T, value: Vulnerability[T]) => {
     setVuln(prev => prev ? { ...prev, [field]: value } : null);
+    setSaveStatus('unsaved');
   }, []);
 
   const handleCategoryChange = useCallback((value: string) => {
     setVuln(prev => prev ? ({ ...prev, tags: [value] }) : null);
+    setSaveStatus('unsaved');
   }, []);
 
   const handleCvssChange = useCallback((field: keyof CVSS, value: string | number) => {
@@ -551,17 +571,20 @@ export default function VulnerabilityEditorPage() {
         const vectorString = getCVSS(newCvss);
         const score = getScore(vectorString);
         const severity = getSeverity(score) as Severity;
-        return {
+        
+        const updatedVuln = {
             ...prevVuln,
             cvss: { ...newCvss, vectorString, score },
             severity,
         };
+        return updatedVuln;
     });
+    setSaveStatus('unsaved');
   }, []);
   
-  const handleSave = () => {
+  const handleSave = (showToast = true) => {
     if (vuln) {
-        
+        setSaveStatus('saving');
         const extractContent = (sections: FindingSection[], titleKey: string) => {
             const searchTitleEn = t.en[titleKey as keyof typeof t.en];
             const searchTitleEs = t.es[titleKey as keyof typeof t.es];
@@ -595,10 +618,13 @@ export default function VulnerabilityEditorPage() {
         };
         
         updateVulnerability(updatedVuln);
-        toast({
-        title: t[language].saveSuccessTitle,
-        description: t[language].saveSuccessDescription,
-        });
+        if (showToast) {
+            toast({
+            title: t[language].saveSuccessTitle,
+            description: t[language].saveSuccessDescription,
+            });
+        }
+        setTimeout(() => setSaveStatus('saved'), 500);
     }
   };
 
@@ -615,6 +641,7 @@ export default function VulnerabilityEditorPage() {
   const handleSectionChange = (lang: 'en' | 'es', sectionId: string, newContent: string) => {
     const updater = lang === 'en' ? setEnSections : setEsSections;
     updater(prev => prev.map(s => s.id === sectionId ? { ...s, content: newContent } : s));
+    setSaveStatus('unsaved');
   };
 
   const handleTitleChange = (lang: 'en' | 'es', sectionId: string, newTitle: string) => {
@@ -628,6 +655,7 @@ export default function VulnerabilityEditorPage() {
         }
         return sec;
     }));
+    setSaveStatus('unsaved');
   }
 
   const handleAddSection = (lang: 'en' | 'es') => {
@@ -639,6 +667,7 @@ export default function VulnerabilityEditorPage() {
         setEsSections(prev => [...prev, newSection]);
         setEsSectionViews(prev => ({ ...prev, [newSection.id]: 'edit' }));
     }
+    setSaveStatus('unsaved');
   };
 
   const handleDeleteSection = (lang: 'en' | 'es', sectionId: string) => {
@@ -647,6 +676,7 @@ export default function VulnerabilityEditorPage() {
     } else {
         setEsSections(prev => prev.filter(s => s.id !== sectionId));
     }
+    setSaveStatus('unsaved');
   };
   
   const handleDragEnd = (event: DragEndEvent, lang: 'en' | 'es') => {
@@ -656,6 +686,7 @@ export default function VulnerabilityEditorPage() {
         updater((items) => {
             const oldIndex = items.findIndex((item) => item.id === active.id);
             const newIndex = items.findIndex((item) => item.id === over.id);
+            setSaveStatus('unsaved');
             return arrayMove(items, oldIndex, newIndex);
         });
     }
@@ -665,15 +696,18 @@ export default function VulnerabilityEditorPage() {
     const newReferences = [...references];
     newReferences[index] = value;
     setReferences(newReferences);
+    setSaveStatus('unsaved');
   };
 
   const handleAddReference = () => {
     setReferences([...references, '']);
+    setSaveStatus('unsaved');
   };
 
   const handleRemoveReference = (index: number) => {
     const newReferences = references.filter((_, i) => i !== index);
     setReferences(newReferences);
+    setSaveStatus('unsaved');
   };
   
   const handleOrganizeClick = (lang: 'en' | 'es') => {
@@ -707,7 +741,11 @@ export default function VulnerabilityEditorPage() {
                 {vuln.severity && <Badge variant={getSeverityVariant(vuln.severity)}>{vuln.severity}</Badge>}
             </div>
         </div>
-        <Button onClick={handleSave}><Save className="mr-2 h-4 w-4" /> {t[language].save}</Button>
+        <Button onClick={() => handleSave(true)} disabled={saveStatus === 'saving' || saveStatus === 'saved'}>
+            {saveStatus === 'saving' ? (<><Save className="mr-2 h-4 w-4 animate-spin" />{t[language].saving}</>) : 
+             saveStatus === 'saved' ? (<><CheckCircle className="mr-2 h-4 w-4" />{t[language].saved}</>) : 
+             (<><Save className="mr-2 h-4 w-4" />{t[language].save}</>)}
+        </Button>
       </header>
       
         <div className="space-y-6">
@@ -934,3 +972,5 @@ export default function VulnerabilityEditorPage() {
     </div>
   );
 }
+
+    
