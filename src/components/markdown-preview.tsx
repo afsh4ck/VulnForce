@@ -1,5 +1,3 @@
-
-
 'use client';
 import React, { useMemo } from 'react';
 import ReactMarkdown from 'react-markdown';
@@ -208,18 +206,18 @@ export const MarkdownPreview = ({ content, getImage, isReport }: { content: stri
                         );
                     },
                     img: ({ src, alt }) => {
+                        let finalSrc = src;
                         if (src?.startsWith('image://')) {
                             const imageId = src.substring(8);
                             const image = getImage(imageId);
                             if (image) {
-                                // eslint-disable-next-line @next/next/no-img-element
-                                return <img src={image.dataUrl} alt={alt} className="max-w-full h-auto rounded-md border" />;
+                                finalSrc = image.dataUrl;
+                            } else {
+                                finalSrc = ''; // Set to empty if image not found to show broken icon
                             }
-                             // Return a placeholder or null if the image isn't found
-                            return <img src="" alt={alt} className="max-w-full h-auto rounded-md border border-dashed" />;
                         }
                         // eslint-disable-next-line @next/next/no-img-element
-                        return <img src={src} alt={alt} className="max-w-full h-auto rounded-md border" />;
+                        return <img src={finalSrc} alt={alt} className="max-w-full h-auto rounded-md border" />;
                     },
                 }}
             >
@@ -228,4 +226,3 @@ export const MarkdownPreview = ({ content, getImage, isReport }: { content: stri
         </div>
     );
 };
-
