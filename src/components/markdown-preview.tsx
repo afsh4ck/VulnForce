@@ -77,14 +77,6 @@ export const MarkdownPreview = ({ content, getImage, isReport }: { content: stri
     
     const processedContent = useMemo(() => addHeaderIds(content), [content]);
     
-    const extractIdFromText = (text: string): [string, string | undefined] => {
-        const match = text.match(/(.*) {#(.*)}/);
-        if (match) {
-            return [match[1].trim(), match[2].trim()];
-        }
-        return [text.trim(), undefined];
-    };
-    
     const getSeverityVariant = (severity: string): 'destructive' | 'high' | 'medium' | 'low' | 'secondary' => {
         switch (severity) {
           case 'Critical': return 'destructive';
@@ -96,7 +88,10 @@ export const MarkdownPreview = ({ content, getImage, isReport }: { content: stri
     };
 
     const CustomHeading = ({ level, children, ...props }: { level: number, children: React.ReactNode, [key: string]: any }) => {
-      const [rawText, id] = extractIdFromText(React.Children.toArray(children).join(''));
+      const childString = React.Children.toArray(children).join('');
+      const match = childString.match(/(.*) {#(.*)}/);
+      const rawText = match ? match[1].trim() : childString.trim();
+      const id = match ? match[2].trim() : undefined;
 
       const severityRegex = /\[SEVERITY:(.*?),CVSS:(.*?)\]/;
       const severityMatch = rawText.match(severityRegex);
