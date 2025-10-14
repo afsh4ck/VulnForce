@@ -134,6 +134,10 @@ export const MarkdownPreview = ({ content, getImage, isReport }: { content: stri
                         const [text, id] = extractIdFromText(String(children));
                         return <h3 id={id} {...props} className={cn("text-xl font-semibold mb-3", isReport && "mt-8")}>{renderWithTodos('span', '')({children: text})}</h3>
                     },
+                     h4: ({ node, children, ...props }) => {
+                        const [text, id] = extractIdFromText(String(children));
+                        return <h4 id={id} {...props} className={cn("text-lg font-semibold mb-2", isReport && "mt-6")}>{renderWithTodos('span', '')({children: text})}</h4>
+                    },
                     p: renderWithTodos('p'),
                     li: ({ node, children, ...props }: any) => (
                         <li {...props}>{React.Children.map(children, child => {
