@@ -79,21 +79,8 @@ export const MarkdownPreview = ({ content, getImage, isReport }: { content: stri
     
     const processedContent = useMemo(() => {
         if (!content) return '';
-        
-        let processed = addHeaderIds(content);
-        
-        const imageRegex = /!\[(.*?)\]\(image:\/\/([a-zA-Z0-9-]+)\)/g;
-        processed = processed.replace(imageRegex, (match, altText, imageId) => {
-            const image = getImage(imageId);
-            if (image) {
-                return `![${altText}](${image.dataUrl})`;
-            }
-            // Return an empty string or a placeholder if the image is not found to avoid broken links
-            return `![Image not found: ${imageId}]()`;
-        });
-        
-        return processed;
-    }, [content, getImage]);
+        return addHeaderIds(content);
+    }, [content]);
     
     const getSeverityVariant = (severity: string): 'destructive' | 'high' | 'medium' | 'low' | 'secondary' => {
         switch (severity) {
@@ -222,8 +209,7 @@ export const MarkdownPreview = ({ content, getImage, isReport }: { content: stri
                         </code>
                         );
                     },
-                    img: ({ node, src, alt, ...props }) => {
-                        // The pre-processing step handles internal images, this is now a fallback.
+                    img: ({node, src, alt, ...props}) => {
                         if (src?.startsWith('image://')) {
                             const imageId = src.substring('image://'.length);
                             const image = getImage(imageId);
@@ -231,7 +217,7 @@ export const MarkdownPreview = ({ content, getImage, isReport }: { content: stri
                                 // eslint-disable-next-line @next/next/no-img-element
                                 return <img src={image.dataUrl} alt={alt} {...props} className="max-w-full h-auto rounded-md border" />;
                             }
-                            return null; // Or a placeholder for not found image
+                            return null;
                         }
                         // eslint-disable-next-line @next/next/no-img-element
                         return <img src={src} alt={alt} {...props} className="max-w-full h-auto rounded-md border" />;

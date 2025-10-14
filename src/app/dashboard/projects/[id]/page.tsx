@@ -355,7 +355,7 @@ const ScopeSectionEditor = ({ section, onContentChange, onDelete, view, onViewCh
                       <Button variant="ghost" size="icon" className="h-auto w-auto p-1"><FileCode className="h-3 w-3" /></Button>
                     </CodeBlockDialog>
                     <ImageUploadDialog onInsert={insertMarkdown}>
-                       <Button variant="ghost" size="icon" className="h-auto w-auto p-1"><Image className="h-3 w-3" /></Button>
+                       <Button variant="ghost" size="icon" className="h-auto w-auto p-1"><Image className="w-4 h-4 mr-2"/>{t[language].upload}</Button>
                     </ImageUploadDialog>
                   </div>
                 )}
@@ -746,7 +746,6 @@ export default function ProjectDetailsPage() {
       confirmDeleteTitle: "Are you sure?",
       confirmDeleteDesc: "This action cannot be undone. This will permanently delete the project and all its findings.",
       cancel: "Cancel",
-      delete: "Delete",
       projectUpdated: "Project updated successfully.",
       projectDeleted: "Project deleted successfully.",
       incompleteFields: "Incomplete Fields",
@@ -766,6 +765,7 @@ export default function ProjectDetailsPage() {
       iconLabel: "Icon",
       selectIcon: "Select an icon",
       backToProjects: "Back to Projects",
+      upload: "Upload",
     },
     es: {
       status: "Estado",
@@ -792,7 +792,6 @@ export default function ProjectDetailsPage() {
       confirmDeleteTitle: "¿Estás seguro?",
       confirmDeleteDesc: "Esta acción no se puede deshacer. Esto eliminará permanentemente el proyecto y todos sus hallazgos.",
       cancel: "Cancelar",
-      delete: "Eliminar",
       projectUpdated: "Proyecto actualizado correctamente.",
       projectDeleted: "Proyecto eliminado correctamente.",
       incompleteFields: "Campos Incompletos",
@@ -812,6 +811,7 @@ export default function ProjectDetailsPage() {
       iconLabel: "Icono",
       selectIcon: "Selecciona un icono",
       backToProjects: "Volver a Proyectos",
+      upload: "Subir",
     }
   }
 
