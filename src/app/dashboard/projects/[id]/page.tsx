@@ -107,6 +107,12 @@ const EditableBlock = React.forwardRef<HTMLDivElement, {
     
     useEffect(() => {
         if (blockRef.current && isFocused) {
+            const range = document.createRange();
+            const selection = window.getSelection();
+            range.selectNodeContents(blockRef.current);
+            range.collapse(false); // Go to the end
+            selection?.removeAllRanges();
+            selection?.addRange(range);
             blockRef.current.focus();
         }
     }, [isFocused]);
@@ -136,7 +142,6 @@ const EditableBlock = React.forwardRef<HTMLDivElement, {
 
     return (
         <div 
-          dir="ltr"
           ref={ref as React.Ref<HTMLDivElement>}
           className="relative"
           onFocus={onFocus}
@@ -513,9 +518,8 @@ export default function ProjectDetailsPage() {
   const sensors = useSensors(useSensor(PointerSensor), useSensor(KeyboardSensor, { coordinateGetter: sortableKeyboardCoordinates }));
   
   const handleBlockUpdate = useCallback((id: string, content: string) => {
-    if(id !== activeBlockId) return;
     updateBlocks(prev => prev.map(b => b.id === id ? { ...b, content } : b));
-  }, [updateBlocks, activeBlockId]);
+  }, [updateBlocks]);
   
   const handleDeleteBlock = useCallback((id: string) => {
       updateBlocks(prev => {
@@ -681,7 +685,7 @@ export default function ProjectDetailsPage() {
 
       } else if (e.key === 'Backspace' && (target.innerHTML === '' || target.innerHTML === '<br>')) {
            e.preventDefault();
-           if(currentBlock.tag !== 'p') {
+           if(currentBlock.tag !== 'p' && (currentBlock.tag === 'h1' || currentBlock.tag === 'h2' || currentBlock.tag === 'h3')) {
                 updateBlockTag(id, 'p');
            } else if (blocks.length > 1) {
               handleDeleteBlock(id);
@@ -707,7 +711,7 @@ export default function ProjectDetailsPage() {
               setCommandMenuOpen(true);
           }
       }
-  }, [blocks, handleAddBlock, updateBlockTag, handleDeleteBlock, updateBlocks, handleBlockUpdate]);
+  }, [blocks, handleAddBlock, updateBlockTag, handleDeleteBlock, handleBlockUpdate, updateBlocks]);
 
   const handleCommandSelect = (command: 'h1' | 'h2' | 'h3' | 'pre' | 'ul' | 'ol') => {
     if (!activeBlockId) return;
