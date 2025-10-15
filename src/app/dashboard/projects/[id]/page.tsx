@@ -487,8 +487,11 @@ export default function ProjectDetailsPage() {
   const sensors = useSensors(useSensor(PointerSensor), useSensor(KeyboardSensor, { coordinateGetter: sortableKeyboardCoordinates }));
   
   const handleBlockUpdate = (id: string, content: string) => {
-    setBlocks(prev => prev.map(b => b.id === id ? { ...b, content } : b));
-    setSaveStatus('unsaved');
+    const hasChanged = blocks.find(b => b.id === id)?.content !== content;
+    if (hasChanged) {
+        setBlocks(prev => prev.map(b => b.id === id ? { ...b, content } : b));
+        setSaveStatus('unsaved');
+    }
   };
 
   const handleDragEnd = (event: DragEndEvent) => {
@@ -548,25 +551,21 @@ export default function ProjectDetailsPage() {
           } else {
             handleAddBlock(id);
           }
-      } else if (e.key === 'Backspace' && target.innerHTML === '' && blocks.length > 1) {
+      } else if (e.key === 'Backspace' && (target.innerHTML === '' || target.innerHTML === '<br>') && blocks.length > 1) {
           e.preventDefault();
-          if (['h1', 'h2', 'h3', 'pre', 'ul', 'ol'].includes(currentBlock.tag)) {
-            updateBlockTag(id, 'p');
-          } else {
-            const newBlocks = blocks.filter(b => b.id !== id);
-            setBlocks(newBlocks);
-            if (currentBlockIndex > 0) {
-                setActiveBlockId(blocks[currentBlockIndex - 1].id);
-            }
-            setSaveStatus('unsaved');
+          const newBlocks = blocks.filter(b => b.id !== id);
+          setBlocks(newBlocks);
+          if (currentBlockIndex > 0) {
+              setActiveBlockId(blocks[currentBlockIndex - 1].id);
           }
-      } else if (e.key === ' ' && target.innerHTML.match(/^#\s*$/)) {
+          setSaveStatus('unsaved');
+      } else if (e.key === ' ' && target.innerHTML.match(/^#&nbsp;$/)) {
           e.preventDefault();
           updateBlockTag(id, 'h1');
-      } else if (e.key === ' ' && target.innerHTML.match(/^##\s*$/)) {
+      } else if (e.key === ' ' && target.innerHTML.match(/^##&nbsp;$/)) {
           e.preventDefault();
           updateBlockTag(id, 'h2');
-      } else if (e.key === ' ' && target.innerHTML.match(/^###\s*$/)) {
+      } else if (e.key === ' ' && target.innerHTML.match(/^###&nbsp;$/)) {
           e.preventDefault();
           updateBlockTag(id, 'h3');
       } else if (e.key === '/') {
@@ -828,5 +827,3 @@ export default function ProjectDetailsPage() {
     </>
   );
 }
-
-    
