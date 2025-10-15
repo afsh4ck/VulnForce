@@ -1,4 +1,3 @@
-
 'use client';
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
@@ -130,7 +129,7 @@ export default function BackupPage() {
 
   return (
     <>
-      <div className="space-y-6">
+      <div className="space-y-6 p-4 sm:p-6">
         <div className="space-y-2">
             <h1 className="font-headline text-3xl font-bold tracking-tight">{t[language].title}</h1>
             <p className="text-muted-foreground">{t[language].description}</p>

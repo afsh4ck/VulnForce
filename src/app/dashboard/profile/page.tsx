@@ -85,7 +85,7 @@ export default function ProfilePage() {
   };
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-6 p-4 sm:p-6">
       <h1 className="font-headline text-3xl font-bold tracking-tight">{t[language].title}</h1>
 
       <Card>

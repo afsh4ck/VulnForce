@@ -1,5 +1,3 @@
-
-
 'use client';
 
 import React, { useState, useMemo, useEffect, useCallback, useRef } from 'react';
@@ -830,7 +828,7 @@ export default function ProjectDetailsPage() {
 
 
   return (
-    <div className="space-y-6">
+    <div className="w-full space-y-6 p-4 sm:p-6">
        <div className="flex justify-between items-start">
           <div className="flex items-center gap-4">
             <Button variant="outline" size="icon" className="h-10 w-10" asChild>
@@ -1014,7 +1012,7 @@ export default function ProjectDetailsPage() {
             </Button>
           )}
         </div>
-        <TabsContent value="scope" className="w-full flex-shrink-0">
+        <TabsContent value="scope" className="w-full">
              <div className="space-y-4">
                 <DndContext sensors={sensors} collisionDetection={closestCenter} onDragEnd={handleDragEnd}>
                   <SortableContext items={scopeSections.map(s => s.id)} strategy={verticalListSortingStrategy}>

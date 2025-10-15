@@ -152,7 +152,7 @@ function DashboardNav({ children }: { children: React.ReactNode }) {
           </div>
           <UserNav />
         </header>
-        <main className="flex-1 p-4 sm:p-6">{children}</main>
+        <main className="flex-1">{children}</main>
       </SidebarInset>
     </LeaveContext.Provider>
   );

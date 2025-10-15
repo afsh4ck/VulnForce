@@ -256,7 +256,7 @@ export default function ClientsPage() {
 
   return (
     <>
-    <div className="space-y-6">
+    <div className="space-y-6 p-4 sm:p-6">
       <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
         <h1 className="font-headline text-3xl font-bold tracking-tight">{t[language].title}</h1>
         <div className="flex items-center gap-2">

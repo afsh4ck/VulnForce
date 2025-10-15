@@ -1,5 +1,3 @@
-
-
 'use client';
 
 import { useState, useMemo, useCallback, useRef, useEffect } from 'react';
@@ -745,7 +743,7 @@ export default function NewVulnerabilityPage() {
 }, [vuln, parseMarkdownToSections, getFullContent]);
 
   return (
-    <div className="space-y-6 w-full">
+    <div className="space-y-6 w-full p-4 sm:p-6">
       <header className="flex items-center justify-between">
         <div className="flex items-center gap-4">
           <Button variant="outline" size="icon" asChild>
