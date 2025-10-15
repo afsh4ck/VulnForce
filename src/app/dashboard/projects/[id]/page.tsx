@@ -30,6 +30,7 @@ import { DndContext, closestCenter, KeyboardSensor, PointerSensor, useSensor, us
 import { arrayMove, SortableContext, sortableKeyboardCoordinates, useSortable, verticalListSortingStrategy } from '@dnd-kit/sortable';
 import { CSS } from '@dnd-kit/utilities';
 import { CommandMenu } from '@/components/command-menu';
+import { useLeavePage } from '@/app/dashboard/layout';
 
 type SortKey = keyof Finding;
 type SaveStatus = 'unsaved' | 'saving' | 'saved';
@@ -110,7 +111,7 @@ const EditableBlock = React.forwardRef<HTMLDivElement, {
             const range = document.createRange();
             const selection = window.getSelection();
             range.selectNodeContents(blockRef.current);
-            range.collapse(false); // Go to the end
+            range.collapse(false);
             selection?.removeAllRanges();
             selection?.addRange(range);
             blockRef.current.focus();
@@ -126,7 +127,7 @@ const EditableBlock = React.forwardRef<HTMLDivElement, {
     const isList = ['ul', 'ol'].includes(block.tag);
 
     const getPlaceholder = () => {
-        if (isFocused && (block.content === '' || block.content === '<br>')) {
+        if (isFocused && (!block.content || block.content === '<br>')) {
              if (block.tag.startsWith('h')) {
                 const level = block.tag.substring(1);
                 return t_editor.headings[level as '1' | '2' | '3'];
@@ -145,9 +146,9 @@ const EditableBlock = React.forwardRef<HTMLDivElement, {
           ref={ref as React.Ref<HTMLDivElement>}
           className="relative"
           onFocus={onFocus}
+          dir="ltr"
         >
           <div
-              dir="ltr"
               ref={blockRef}
               onBlur={handleBlur}
               onInput={(e: React.FormEvent<HTMLDivElement>) => onUpdate(e.currentTarget.innerHTML)}
@@ -227,9 +228,7 @@ export default function ProjectDetailsPage() {
   const [projectLanguage, setProjectLanguage] = useState<Project['language']>('en');
   
   const [blocks, setBlocks] = useState<ContentBlock[]>([]);
-  const [history, setHistory] = useState<ContentBlock[][]>([[]]);
-  const [historyIndex, setHistoryIndex] = useState(0);
-
+  
   const [activeBlockId, setActiveBlockId] = useState<string | null>(null);
   const [commandMenuOpen, setCommandMenuOpen] = useState(false);
   const commandMenuRef = useRef<HTMLDivElement>(null);
@@ -237,61 +236,50 @@ export default function ProjectDetailsPage() {
   const [saveStatus, setSaveStatus] = useState<SaveStatus>('saved');
 
   const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
+  const [isLeaveDialogOpen, setIsLeaveDialogOpen] = useState(false);
+  const [nextPath, setNextPath] = useState('');
+
   const blockRefs = useRef<Record<string, HTMLDivElement | null>>({});
 
   const client = clients.find(c => c.id === project?.clientId);
   
-  const updateBlocks = useCallback((newBlocks: ContentBlock[] | ((prev: ContentBlock[]) => ContentBlock[]), recordHistory = true) => {
-    setBlocks(prevBlocks => {
-      const resolvedBlocks = typeof newBlocks === 'function' ? newBlocks(prevBlocks) : newBlocks;
-      if (recordHistory) {
-        setHistory(prevHistory => {
-            const newHistory = prevHistory.slice(0, historyIndex + 1);
-            newHistory.push(resolvedBlocks);
-            return newHistory;
-        });
-        setHistoryIndex(prevIndex => prevIndex + 1);
-      }
-      setSaveStatus('unsaved');
-      return resolvedBlocks;
-    });
-  }, [historyIndex]);
+  useEffect(() => {
+    (window as any).hasUnsavedChanges = saveStatus === 'unsaved';
+  }, [saveStatus]);
 
   useEffect(() => {
-    const handleUndoRedo = (e: KeyboardEvent) => {
-      if (e.ctrlKey || e.metaKey) {
-        if (e.key === 'z') {
-          e.preventDefault();
-          if (!e.shiftKey) { // Undo
-            if (historyIndex > 0) {
-              const newIndex = historyIndex - 1;
-              setHistoryIndex(newIndex);
-              setBlocks(history[newIndex]);
-              setSaveStatus('unsaved');
-            }
-          } else { // Redo
-            if (historyIndex < history.length - 1) {
-              const newIndex = historyIndex + 1;
-              setHistoryIndex(newIndex);
-              setBlocks(history[newIndex]);
-              setSaveStatus('unsaved');
-            }
-          }
-        } else if (e.key === 'y') { // Redo
-          e.preventDefault();
-          if (historyIndex < history.length - 1) {
-            const newIndex = historyIndex + 1;
-            setHistoryIndex(newIndex);
-            setBlocks(history[newIndex]);
-            setSaveStatus('unsaved');
-          }
-        }
+    const handleBeforeUnload = (e: BeforeUnloadEvent) => {
+      if ((window as any).hasUnsavedChanges) {
+        e.preventDefault();
+        e.returnValue = '';
       }
     };
-    window.addEventListener('keydown', handleUndoRedo);
-    return () => window.removeEventListener('keydown', handleUndoRedo);
-  }, [history, historyIndex]);
 
+    const handleRequestLeave = (e: CustomEvent) => {
+      if ((window as any).hasUnsavedChanges) {
+        setNextPath(e.detail);
+        setIsLeaveDialogOpen(true);
+      } else {
+        router.push(e.detail);
+      }
+    };
+    
+    window.addEventListener('beforeunload', handleBeforeUnload);
+    window.addEventListener('requestLeave', handleRequestLeave as EventListener);
+
+    return () => {
+      window.removeEventListener('beforeunload', handleBeforeUnload);
+      window.removeEventListener('requestLeave', handleRequestLeave as EventListener);
+      (window as any).hasUnsavedChanges = false;
+    };
+  }, [saveStatus, router]);
+
+  const handleLeaveConfirm = () => {
+    (window as any).hasUnsavedChanges = false;
+    if (nextPath) {
+      router.push(nextPath);
+    }
+  };
 
   const t = {
     en: {
@@ -342,7 +330,10 @@ export default function ProjectDetailsPage() {
         '1': 'Heading 1',
         '2': 'Heading 2',
         '3': 'Heading 3',
-      }
+      },
+      unsavedChangesTitle: "Unsaved Changes",
+      unsavedChangesDesc: "You have unsaved changes. Are you sure you want to leave?",
+      leave: "Leave",
     },
     es: {
       back: 'Volver a Proyectos',
@@ -392,7 +383,10 @@ export default function ProjectDetailsPage() {
         '1': 'Título 1',
         '2': 'Título 2',
         '3': 'Título 3',
-      }
+      },
+      unsavedChangesTitle: "Cambios sin Guardar",
+      unsavedChangesDesc: "¿Tienes cambios sin guardar. Estás seguro que quieres salir?",
+      leave: "Salir",
     }
   }
 
@@ -428,8 +422,6 @@ export default function ProjectDetailsPage() {
       setProjectFindings(filteredFindings);
       const initialBlocks = parseHtmlToBlocks(currentProject.reportBody);
       setBlocks(initialBlocks);
-      setHistory([initialBlocks]);
-      setHistoryIndex(0);
       if (initialBlocks.length > 0) {
         setActiveBlockId(initialBlocks[0].id);
       }
@@ -467,15 +459,6 @@ export default function ProjectDetailsPage() {
 
     setTimeout(() => setSaveStatus('saved'), 500);
   }, [project, name, clientId, status, date, icon, projectLanguage, blocks, updateProject, toast, t, uiLanguage]);
-  
-  useEffect(() => {
-    if (saveStatus === 'unsaved') {
-      const handler = setTimeout(() => {
-        handleSave(false);
-      }, 2000);
-      return () => clearTimeout(handler);
-    }
-  }, [saveStatus, handleSave]);
 
   const handleFieldChange = (setter: React.Dispatch<React.SetStateAction<any>>, value: any) => {
     setter(value);
@@ -518,11 +501,12 @@ export default function ProjectDetailsPage() {
   const sensors = useSensors(useSensor(PointerSensor), useSensor(KeyboardSensor, { coordinateGetter: sortableKeyboardCoordinates }));
   
   const handleBlockUpdate = useCallback((id: string, content: string) => {
-    updateBlocks(prev => prev.map(b => b.id === id ? { ...b, content } : b));
-  }, [updateBlocks]);
+    setBlocks(prev => prev.map(b => b.id === id ? { ...b, content } : b));
+    setSaveStatus('unsaved');
+  }, []);
   
   const handleDeleteBlock = useCallback((id: string) => {
-      updateBlocks(prev => {
+      setBlocks(prev => {
           if (prev.length <= 1) return prev;
           const index = prev.findIndex(b => b.id === id);
           if (index > 0) {
@@ -532,32 +516,35 @@ export default function ProjectDetailsPage() {
           }
           return prev.filter(b => b.id !== id);
       });
-  }, [updateBlocks]);
+      setSaveStatus('unsaved');
+  }, []);
 
   const handleDragEnd = useCallback((event: DragEndEvent) => {
     const { active, over } = event;
     if (over && active.id !== over.id) {
-      updateBlocks((items) => {
+      setBlocks((items) => {
         const oldIndex = items.findIndex((item) => item.id === active.id);
         const newIndex = items.findIndex((item) => item.id === over.id);
         const newItems = arrayMove(items, oldIndex, newIndex);
+        setSaveStatus('unsaved');
         return newItems;
       });
     }
-  }, [updateBlocks]);
+  }, []);
   
   const handleAddBlock = useCallback((index: number, tag: ContentBlock['tag'] = 'p', content = '') => {
     const newBlock: ContentBlock = { id: `block-new-${Date.now()}`, tag, content };
-    updateBlocks(prev => {
+    setBlocks(prev => {
         const newBlocks = [...prev];
         newBlocks.splice(index + 1, 0, newBlock);
         return newBlocks;
     });
     setActiveBlockId(newBlock.id);
-  }, [updateBlocks]);
+    setSaveStatus('unsaved');
+  }, []);
 
   const updateBlockTag = useCallback((id: string, newTag: ContentBlock['tag']) => {
-    updateBlocks(blocks => {
+    setBlocks(blocks => {
       const newBlocks = blocks.map(b => {
         if (b.id === id) {
           const newBlock = { ...b, tag: newTag };
@@ -576,8 +563,9 @@ export default function ProjectDetailsPage() {
       });
       return newBlocks;
     });
-    setTimeout(() => setActiveBlockId(id), 0);
-  }, [updateBlocks]);
+    setActiveBlockId(id);
+    setSaveStatus('unsaved');
+  }, []);
   
   const handleKeyDown = useCallback((e: React.KeyboardEvent<HTMLDivElement>, id: string) => {
       const currentIndex = blocks.findIndex(b => b.id === id);
@@ -636,8 +624,8 @@ export default function ProjectDetailsPage() {
       }
       else if (e.key === 'Enter') {
         if (e.shiftKey) return;
-        
         e.preventDefault();
+        
         if (currentBlock.tag === 'ul' || currentBlock.tag === 'ol') {
             const selection = window.getSelection();
             if (selection && selection.anchorNode) {
@@ -645,7 +633,6 @@ export default function ProjectDetailsPage() {
                 if (currentLi && currentLi.textContent?.trim() === '') {
                      const newBlocks = [...blocks];
                      const listBlock = newBlocks[currentIndex];
-                     
                      const tempDiv = document.createElement('div');
                      tempDiv.innerHTML = listBlock.content;
                      const listItems = Array.from(tempDiv.querySelectorAll('li'));
@@ -658,9 +645,7 @@ export default function ProjectDetailsPage() {
  
                      const beforeContent = listItems.slice(0, currentLiIndex).map(li => li.outerHTML).join('');
                      const afterContent = listItems.slice(currentLiIndex + 1).map(li => li.outerHTML).join('');
- 
                      const newParagraphBlock: ContentBlock = { id: `block-new-${Date.now()}`, tag: 'p', content: '' };
-                     
                      listBlock.content = beforeContent;
                      
                      if(afterContent){
@@ -670,10 +655,11 @@ export default function ProjectDetailsPage() {
                      } else {
                         newBlocks.splice(currentIndex + 1, 0, newParagraphBlock);
                      }
-                     updateBlocks(newBlocks);
+                     setBlocks(newBlocks);
                      setActiveBlockId(newParagraphBlock.id);
+                     setSaveStatus('unsaved');
                 } else {
-                  document.execCommand('insertHTML', false, '</li><li>');
+                  document.execCommand('insertHTML', false, '</li><li><br></li>');
                    if(blockRefs.current[id]) {
                        handleBlockUpdate(id, blockRefs.current[id]!.querySelector('[contenteditable=true]')!.innerHTML);
                    }
@@ -711,7 +697,7 @@ export default function ProjectDetailsPage() {
               setCommandMenuOpen(true);
           }
       }
-  }, [blocks, handleAddBlock, updateBlockTag, handleDeleteBlock, handleBlockUpdate, updateBlocks]);
+  }, [blocks, handleAddBlock, updateBlockTag, handleDeleteBlock, handleBlockUpdate]);
 
   const handleCommandSelect = (command: 'h1' | 'h2' | 'h3' | 'pre' | 'ul' | 'ol') => {
     if (!activeBlockId) return;
@@ -797,7 +783,7 @@ export default function ProjectDetailsPage() {
             
             <TabsContent value="content" className="pt-6">
                <Card>
-                  <CardContent className="max-w-4xl mx-auto pt-6">
+                  <CardContent className="max-w-4xl mx-auto pt-6" dir="ltr">
                      <DndContext sensors={sensors} collisionDetection={closestCenter} onDragEnd={handleDragEnd}>
                         <SortableContext items={blocks.map(b => b.id)} strategy={verticalListSortingStrategy}>
                             {blocks.map((block, index) => (
@@ -967,6 +953,19 @@ export default function ProjectDetailsPage() {
           <AlertDialogFooter>
             <AlertDialogCancel>{t[uiLanguage].cancel}</AlertDialogCancel>
             <AlertDialogAction onClick={handleDeleteFinding} className="bg-destructive hover:bg-destructive/90">{t[uiLanguage].delete}</AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
+
+      <AlertDialog open={isLeaveDialogOpen} onOpenChange={setIsLeaveDialogOpen}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>{t[uiLanguage].unsavedChangesTitle}</AlertDialogTitle>
+            <AlertDialogDescription>{t[uiLanguage].unsavedChangesDesc}</AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel onClick={() => setNextPath('')}>{t[uiLanguage].cancel}</AlertDialogCancel>
+            <AlertDialogAction onClick={handleLeaveConfirm}>{t[uiLanguage].leave}</AlertDialogAction>
           </AlertDialogFooter>
         </AlertDialogContent>
       </AlertDialog>
