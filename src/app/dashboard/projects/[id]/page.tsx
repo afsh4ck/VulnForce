@@ -8,11 +8,11 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import Link from 'next/link';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
-import { PlusCircle, FileText, ArrowUpDown, Edit, Save, Trash2, CalendarIcon, Plus, GripVertical, Languages, ChevronLeft, CheckCircle, Heading1, Heading2, Heading3, Code, File } from "lucide-react";
+import { PlusCircle, FileText, ArrowUpDown, Edit, Save, Trash2, CalendarIcon, Plus, GripVertical, Languages, ChevronLeft, CheckCircle, Heading1, Heading2, Heading3, Code, File, List, ListOrdered } from "lucide-react";
 import { useLanguage } from "@/context/language-context";
 import type { Finding, Project } from '@/lib/types';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Dialog, DialogTrigger, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from "@/components/ui/dialog";
+import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
@@ -37,7 +37,6 @@ interface ContentBlock {
   id: string;
   tag: 'h1' | 'h2' | 'h3' | 'p' | 'pre' | 'ul' | 'ol';
   content: string;
-  children?: ContentBlock[];
 }
 
 const iconOptions = [
@@ -66,13 +65,13 @@ function parseHtmlToBlocks(html: string): ContentBlock[] {
         blocks.push({ id, tag: tag as 'h1' | 'h2'|'h3'|'p', content: element.innerHTML || '' });
       } else if (tag === 'pre') {
          blocks.push({ id, tag: 'pre', content: element.querySelector('code')?.textContent || '' });
-      } else if (['ul', 'ol'].includes(tag)) {
+      } else if (tag === 'ul' || tag === 'ol') {
         const items = Array.from(element.querySelectorAll('li')).map(li => ({
           id: `block-${Date.now()}-${Math.random()}`,
           tag: 'p' as 'p',
           content: li.innerHTML,
         }));
-        blocks.push({ id, tag: tag as 'ul' | 'ol', content: '', children: items });
+        blocks.push({ id, tag: tag as 'ul' | 'ol', content: '' });
       }
     } else if (node.nodeType === Node.TEXT_NODE && node.textContent?.trim()) {
       blocks.push({ id, tag: 'p', content: node.textContent.trim() });
@@ -89,7 +88,7 @@ function blocksToHtml(blocks: ContentBlock[]): string {
         return `<pre><code>${escapedContent}</code></pre>`
     }
     if (block.tag === 'ul' || block.tag === 'ol') {
-        const itemsHtml = block.children?.map(child => `<li>${child.content}</li>`).join('') || '';
+        const itemsHtml = ''; // Handled by inner contentEditable logic now
         return `<${block.tag}>${itemsHtml}</${block.tag}>`;
     }
     if (block.tag === 'p' && !block.content.trim()) {
@@ -125,10 +124,14 @@ const EditableBlock = ({ block, onUpdate, onKeyDown, onFocus, isFocused, placeho
     }, [isFocused]);
 
     const handleBlur = (e: React.FocusEvent<HTMLDivElement>) => {
-        onUpdate(e.currentTarget.innerHTML);
+        if (props.onUpdateContent) {
+           props.onUpdateContent(e.currentTarget.innerHTML);
+        } else {
+           onUpdate(e.currentTarget.innerHTML);
+        }
     };
     
-    const Tag = block.tag === 'pre' ? 'div' : (['ul', 'ol'].includes(block.tag) ? 'div' : block.tag);
+    const Tag = block.tag === 'pre' ? 'div' : (['ul', 'ol'].includes(block.tag) ? block.tag : block.tag);
     const isCode = block.tag === 'pre';
     const isList = ['ul', 'ol'].includes(block.tag);
 
@@ -145,39 +148,34 @@ const EditableBlock = ({ block, onUpdate, onKeyDown, onFocus, isFocused, placeho
     const placeholderText = getPlaceholder();
 
     if (isList) {
-      const ListTag = block.tag as 'ul' | 'ol';
       return (
-        <ListTag className="my-2 ml-6 list-outside">
-          {block.children?.map((child, index) => (
-            <li key={child.id}>
-              <div
-                onInput={(e) => {
-                  onUpdate(e.currentTarget.innerHTML);
-                }}
-                onKeyDown={onKeyDown}
-                contentEditable
-                suppressContentEditableWarning
-                dangerouslySetInnerHTML={{ __html: child.content }}
-                 className={cn(
-                  "w-full outline-none p-1 rounded-md"
-                )}
-              />
-            </li>
-          ))}
-        </ListTag>
-      )
+        <Tag
+          ref={blockRef}
+          onBlur={handleBlur}
+          onInput={(e: React.FormEvent<HTMLDivElement>) => onUpdate(e.currentTarget.innerHTML)}
+          onKeyDown={onKeyDown}
+          onFocus={onFocus}
+          contentEditable
+          suppressContentEditableWarning
+          className={cn(
+            "w-full outline-none p-1 rounded-md my-2 list-outside",
+            block.tag === 'ul' ? 'list-disc ml-6' : 'list-decimal ml-6'
+          )}
+          dangerouslySetInnerHTML={{ __html: block.content || '<li><br></li>' }}
+        />
+      );
     }
     
     return (
         <div 
           className="relative"
           onFocus={onFocus}
-          dir="ltr"
         >
-          <Tag
+          <div
+              dir="ltr"
               ref={blockRef}
               onBlur={handleBlur}
-              onInput={(e) => onUpdate(e.currentTarget.innerHTML)}
+              onInput={(e: React.FormEvent<HTMLDivElement>) => onUpdate(e.currentTarget.innerHTML)}
               onKeyDown={onKeyDown}
               contentEditable
               suppressContentEditableWarning
@@ -192,7 +190,7 @@ const EditableBlock = ({ block, onUpdate, onKeyDown, onFocus, isFocused, placeho
                   'text-muted-foreground/50': !!placeholderText,
                 }
               )}
-              dangerouslySetInnerHTML={{ __html: block.content }}
+              dangerouslySetInnerHTML={{ __html: isCode ? block.content.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;") : block.content }}
           />
            {placeholderText && (
               <div className="absolute top-1 left-1 text-muted-foreground/50 pointer-events-none">{placeholderText}</div>
@@ -214,12 +212,17 @@ const SortableBlock = ({ block, ...props }: { block: ContentBlock, [key: string]
   return (
     <div ref={setNodeRef} style={style} className="relative group/block">
       <div className="absolute top-0 -left-12 h-full flex items-center gap-1 opacity-0 group-hover/block:opacity-100 transition-opacity">
-        <Button variant="ghost" size="icon" className="h-8 w-8 cursor-pointer" onClick={() => props.onAdd(block.id)}>
+        <Button variant="ghost" size="icon" className="h-8 w-8 cursor-pointer" onClick={() => props.onAdd(props.index)}>
           <Plus className="h-4 w-4"/>
         </Button>
         <div {...attributes} {...listeners} className="cursor-grab p-1">
           <GripVertical className="h-5 w-5 text-muted-foreground" />
         </div>
+      </div>
+       <div className="absolute top-0 -right-12 h-full flex items-center opacity-0 group-hover/block:opacity-100 transition-opacity">
+        <Button variant="ghost" size="icon" className="h-8 w-8 text-destructive" onClick={() => props.onDelete(block.id)}>
+            <Trash2 className="h-4 w-4" />
+        </Button>
       </div>
       <EditableBlock 
         block={block}
@@ -405,18 +408,7 @@ export default function ProjectDetailsPage() {
     }
   }, [id, projects, findings, router]);
   
-  useEffect(() => {
-    if (saveStatus === 'unsaved') {
-      const handler = setTimeout(() => {
-        handleSave(false);
-      }, 2000);
-      return () => clearTimeout(handler);
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [blocks, saveStatus]);
-
-
-  const handleSave = (showToast = true) => {
+  const handleSave = useCallback((showToast = true) => {
     if (!project || !name || !clientId || !status || !date?.from || !date?.to) {
       if(showToast){
         toast({ variant: "destructive", title: "Incomplete fields", description: "Please fill in all project details." });
@@ -444,8 +436,17 @@ export default function ProjectDetailsPage() {
     }
 
     setTimeout(() => setSaveStatus('saved'), 500);
-  };
+  }, [project, name, clientId, status, date, icon, projectLanguage, blocks, updateProject, toast, t, uiLanguage]);
   
+  useEffect(() => {
+    if (saveStatus === 'unsaved') {
+      const handler = setTimeout(() => {
+        handleSave(false);
+      }, 2000);
+      return () => clearTimeout(handler);
+    }
+  }, [blocks, saveStatus, handleSave]);
+
   const handleFieldChange = (setter: React.Dispatch<React.SetStateAction<any>>, value: any) => {
     setter(value);
     setSaveStatus('unsaved');
@@ -486,15 +487,20 @@ export default function ProjectDetailsPage() {
   
   const sensors = useSensors(useSensor(PointerSensor), useSensor(KeyboardSensor, { coordinateGetter: sortableKeyboardCoordinates }));
   
-  const handleBlockUpdate = (id: string, content: string) => {
+  const handleBlockUpdate = useCallback((id: string, content: string) => {
     const hasChanged = blocks.find(b => b.id === id)?.content !== content;
     if (hasChanged) {
         setBlocks(prev => prev.map(b => b.id === id ? { ...b, content } : b));
         setSaveStatus('unsaved');
     }
-  };
+  }, [blocks]);
+  
+  const handleDeleteBlock = useCallback((id: string) => {
+      setBlocks(prev => prev.filter(b => b.id !== id));
+      setSaveStatus('unsaved');
+  }, []);
 
-  const handleDragEnd = (event: DragEndEvent) => {
+  const handleDragEnd = useCallback((event: DragEndEvent) => {
     const { active, over } = event;
     if (over && active.id !== over.id) {
       setBlocks((items) => {
@@ -505,29 +511,28 @@ export default function ProjectDetailsPage() {
         return newItems;
       });
     }
-  };
+  }, []);
   
-  const handleAddBlock = (currentBlockId: string, tag: ContentBlock['tag'] = 'p', content = '') => {
+  const handleAddBlock = useCallback((index: number, tag: ContentBlock['tag'] = 'p', content = '') => {
     const newBlock: ContentBlock = { id: `block-new-${Date.now()}`, tag, content };
-    const currentIndex = blocks.findIndex(b => b.id === currentBlockId);
     const newBlocks = [...blocks];
-    newBlocks.splice(currentIndex + 1, 0, newBlock);
+    newBlocks.splice(index + 1, 0, newBlock);
     setBlocks(newBlocks);
     setActiveBlockId(newBlock.id);
     setSaveStatus('unsaved');
-  };
+  }, [blocks]);
 
-  const updateBlockTag = (id: string, newTag: ContentBlock['tag']) => {
+  const updateBlockTag = useCallback((id: string, newTag: ContentBlock['tag']) => {
     setBlocks(blocks => {
       const newBlocks = blocks.map(b => {
         if (b.id === id) {
           const newBlock = { ...b, tag: newTag };
-           if(newTag !== 'p' && newTag !== 'h1' && newTag !== 'h2' && newTag !== 'h3' && newTag !== 'pre') {
-             newBlock.content = '';
-             newBlock.children = [{id: `child-${Date.now()}`, tag: 'p', content: b.content}];
-          } else {
-            newBlock.content = b.children?.[0]?.content || b.content || '';
-            delete newBlock.children;
+          if(newTag === 'ul' || newTag === 'ol') {
+             newBlock.content = `<li>${b.content || '<br>'}</li>`;
+          } else if(b.tag === 'ul' || b.tag === 'ol') {
+             const tempEl = document.createElement('div');
+             tempEl.innerHTML = b.content;
+             newBlock.content = tempEl.textContent || '';
           }
           return newBlock;
         }
@@ -537,48 +542,57 @@ export default function ProjectDetailsPage() {
     });
     setSaveStatus('unsaved');
     setTimeout(() => setActiveBlockId(id), 0);
-  };
+  }, []);
   
-  const handleKeyDown = (e: React.KeyboardEvent<HTMLDivElement>, id: string) => {
-      const currentBlockIndex = blocks.findIndex(b => b.id === id);
-      const currentBlock = blocks[currentBlockIndex];
+  const handleKeyDown = useCallback((e: React.KeyboardEvent<HTMLDivElement>, id: string) => {
+      const currentIndex = blocks.findIndex(b => b.id === id);
+      const currentBlock = blocks[currentIndex];
       const target = e.target as HTMLDivElement;
 
       if (e.key === 'Enter' && !e.shiftKey) {
-          e.preventDefault();
-          if (currentBlock.tag === 'ul' || currentBlock.tag === 'ol') {
-            // Logic for lists
-          } else {
-            handleAddBlock(id);
+          if (currentBlock.tag !== 'ul' && currentBlock.tag !== 'ol') {
+              e.preventDefault();
+              handleAddBlock(currentIndex, 'p', '<br>');
           }
-      } else if (e.key === 'Backspace' && (target.innerHTML === '' || target.innerHTML === '<br>') && blocks.length > 1) {
-          e.preventDefault();
-          const newBlocks = blocks.filter(b => b.id !== id);
-          setBlocks(newBlocks);
-          if (currentBlockIndex > 0) {
-              setActiveBlockId(blocks[currentBlockIndex - 1].id);
-          }
-          setSaveStatus('unsaved');
-      } else if (e.key === ' ' && target.innerHTML.match(/^#&nbsp;$/)) {
+      } else if (e.key === 'Backspace' && (target.innerHTML === '' || target.innerHTML === '<br>')) {
+           e.preventDefault();
+           if(blocks.length > 1) {
+              const newBlocks = blocks.filter(b => b.id !== id);
+              setBlocks(newBlocks);
+              if (currentIndex > 0) {
+                  setActiveBlockId(blocks[currentIndex - 1].id);
+              }
+              setSaveStatus('unsaved');
+           }
+      } else if (e.key === ' ' && target.textContent?.match(/^#\s$/)) {
           e.preventDefault();
           updateBlockTag(id, 'h1');
-      } else if (e.key === ' ' && target.innerHTML.match(/^##&nbsp;$/)) {
+      } else if (e.key === ' ' && target.textContent?.match(/^##\s$/)) {
           e.preventDefault();
           updateBlockTag(id, 'h2');
-      } else if (e.key === ' ' && target.innerHTML.match(/^###&nbsp;$/)) {
+      } else if (e.key === ' ' && target.textContent?.match(/^###\s$/)) {
           e.preventDefault();
           updateBlockTag(id, 'h3');
-      } else if (e.key === '/') {
+      } else if (e.key === ' ' && target.textContent?.match(/^-\s$/)) {
+          e.preventDefault();
+          updateBlockTag(id, 'ul');
+      } else if (e.key === ' ' && target.textContent?.match(/^1\.\s$/)) {
+          e.preventDefault();
+          updateBlockTag(id, 'ol');
+      }
+       else if (e.key === '/') {
           const selection = window.getSelection();
-          if (selection && selection.anchorOffset === 1 && target.innerHTML === '/') {
+          if (selection && selection.anchorOffset === 1 && target.textContent === '/') {
               setCommandMenuOpen(true);
           }
       }
-  };
+  }, [blocks, handleAddBlock, updateBlockTag]);
 
-  const handleCommandSelect = (command: 'h1' | 'h2' | 'h3' | 'pre' | 'ol' | 'ul') => {
+  const handleCommandSelect = (command: 'h2' | 'h3' | 'pre' | 'ul' | 'ol') => {
     if (!activeBlockId) return;
     updateBlockTag(activeBlockId, command);
+    const block = document.querySelector(`[data-rbd-draggable-id="${activeBlockId}"] [contenteditable="true"]`) as HTMLElement;
+    if(block) block.innerHTML = '';
     setCommandMenuOpen(false);
   };
 
@@ -643,13 +657,15 @@ export default function ProjectDetailsPage() {
                   <CardContent className="max-w-4xl mx-auto pt-6">
                      <DndContext sensors={sensors} collisionDetection={closestCenter} onDragEnd={handleDragEnd}>
                         <SortableContext items={blocks.map(b => b.id)} strategy={verticalListSortingStrategy}>
-                            {blocks.map(block => (
+                            {blocks.map((block, index) => (
                                 <SortableBlock 
                                     key={block.id}
                                     block={block}
+                                    index={index}
                                     onUpdate={(content: string) => handleBlockUpdate(block.id, content)}
                                     onKeyDown={(e: React.KeyboardEvent<HTMLDivElement>) => handleKeyDown(e, block.id)}
                                     onAdd={handleAddBlock}
+                                    onDelete={handleDeleteBlock}
                                     onFocus={() => setActiveBlockId(block.id)}
                                     isFocused={activeBlockId === block.id}
                                     placeholder={t[projectLanguage as 'en' | 'es'].commandPlaceholder}
@@ -668,10 +684,11 @@ export default function ProjectDetailsPage() {
                                     <CommandList>
                                         <CommandEmpty>No commands found.</CommandEmpty>
                                         <CommandGroup heading="Elements">
-                                            <CommandItem onSelect={() => handleCommandSelect('h1')}><Heading1 className="mr-2 h-4 w-4" />Title 1</CommandItem>
                                             <CommandItem onSelect={() => handleCommandSelect('h2')}><Heading2 className="mr-2 h-4 w-4" />Title 2</CommandItem>
                                             <CommandItem onSelect={() => handleCommandSelect('h3')}><Heading3 className="mr-2 h-4 w-4" />Title 3</CommandItem>
                                             <CommandItem onSelect={() => handleCommandSelect('pre')}><Code className="mr-2 h-4 w-4" />Code Block</CommandItem>
+                                            <CommandItem onSelect={() => handleCommandSelect('ul')}><List className="mr-2 h-4 w-4" />Bulleted List</CommandItem>
+                                            <CommandItem onSelect={() => handleCommandSelect('ol')}><ListOrdered className="mr-2 h-4 w-4" />Numbered List</CommandItem>
                                         </CommandGroup>
                                     </CommandList>
                                 </Command>
