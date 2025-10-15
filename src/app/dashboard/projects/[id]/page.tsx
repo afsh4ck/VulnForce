@@ -13,11 +13,11 @@ import { PlusCircle, FileText, ArrowUpDown, Edit, Save, Trash2, CalendarIcon, Pl
 import { useLanguage } from "@/context/language-context";
 import type { Finding, Project } from '@/lib/types';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
+import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from "@/components/ui/alert-dialog";
+import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from "@/components/ui/alert-dialog";
 import { useToast } from "@/hooks/use-toast";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { Calendar } from "@/components/ui/calendar";
@@ -239,13 +239,7 @@ export default function ProjectDetailsPage() {
   const [isLeaveDialogOpen, setIsLeaveDialogOpen] = useState(false);
   const [nextPath, setNextPath] = useState('');
   
-  const setHasUnsavedChanges = useCallback((hasChanges: boolean) => {
-    if (typeof (window as any).setHasUnsavedChanges === 'function') {
-        (window as any).setHasUnsavedChanges(hasChanges);
-    }
-  }, []);
-
-  const handleLeave = useLeavePage(setHasUnsavedChanges);
+  const setHasUnsavedChanges = useLeavePage();
 
 
   const blockRefs = useRef<Record<string, HTMLDivElement | null>>({});
@@ -263,6 +257,7 @@ export default function ProjectDetailsPage() {
     window.addEventListener('beforeunload', handler);
     return () => {
       window.removeEventListener('beforeunload', handler);
+      setHasUnsavedChanges(false);
     };
   }, [saveStatus, setHasUnsavedChanges]);
 
@@ -271,15 +266,13 @@ export default function ProjectDetailsPage() {
         if (saveStatus === 'unsaved') {
             setNextPath(e.detail);
             setIsLeaveDialogOpen(true);
-        } else {
-            router.push(e.detail);
         }
     };
     window.addEventListener('requestLeave', handleRequestLeave as EventListener);
     return () => {
         window.removeEventListener('requestLeave', handleRequestLeave as EventListener);
     };
-  }, [saveStatus, router]);
+  }, [saveStatus]);
 
 
   const handleLeaveConfirm = () => {
@@ -510,10 +503,11 @@ export default function ProjectDetailsPage() {
   
   const sensors = useSensors(useSensor(PointerSensor), useSensor(KeyboardSensor, { coordinateGetter: sortableKeyboardCoordinates }));
   
-  const handleBlockUpdate = useCallback((id: string, content: string) => {
-    setBlocks(prev => prev.map(b => b.id === id ? { ...b, content } : b));
+  const updateBlocks = useCallback((newBlocks: ContentBlock[]) => {
+    setBlocks(newBlocks);
     setSaveStatus('unsaved');
   }, []);
+
   
   const handleDeleteBlock = useCallback((id: string) => {
       setBlocks(prev => {
@@ -665,13 +659,12 @@ export default function ProjectDetailsPage() {
                      } else {
                         newBlocks.splice(currentIndex + 1, 0, newParagraphBlock);
                      }
-                     setBlocks(newBlocks);
+                     updateBlocks(newBlocks);
                      setActiveBlockId(newParagraphBlock.id);
-                     setSaveStatus('unsaved');
                 } else {
                   document.execCommand('insertHTML', false, '</li><li><br></li>');
                    if(blockRefs.current[id]) {
-                       handleBlockUpdate(id, blockRefs.current[id]!.querySelector('[contenteditable=true]')!.innerHTML);
+                       updateBlocks(blocks.map(b => b.id === id ? { ...b, content: blockRefs.current[id]!.querySelector('[contenteditable=true]')!.innerHTML } : b));
                    }
                 }
             }
@@ -707,8 +700,8 @@ export default function ProjectDetailsPage() {
               setCommandMenuOpen(true);
           }
       }
-  }, [blocks, handleAddBlock, updateBlockTag, handleDeleteBlock, handleBlockUpdate]);
-
+  }, [blocks, handleAddBlock, updateBlockTag, handleDeleteBlock, updateBlocks]);
+  
   const handleCommandSelect = (command: 'h1' | 'h2' | 'h3' | 'pre' | 'ul' | 'ol') => {
     if (!activeBlockId) return;
 
@@ -802,7 +795,7 @@ export default function ProjectDetailsPage() {
                                     ref={(el: any) => (blockRefs.current[block.id] = el)}
                                     block={block}
                                     index={index}
-                                    onUpdate={(content: string) => handleBlockUpdate(block.id, content)}
+                                    onUpdate={(content: string) => updateBlocks(blocks.map(b => b.id === block.id ? { ...b, content } : b))}
                                     onKeyDown={(e: React.KeyboardEvent<HTMLDivElement>) => handleKeyDown(e, block.id)}
                                     onAdd={handleAddBlock}
                                     onFocus={() => setActiveBlockId(block.id)}

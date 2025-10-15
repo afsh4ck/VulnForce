@@ -22,21 +22,21 @@ import { UserNav } from '@/components/user-nav';
 import { Logo } from '@/components/logo';
 import { useLanguage } from '@/context/language-context';
 
-type SetHasUnsavedChanges = (hasChanges: boolean) => void;
-type UseLeavePageHook = (setHasUnsavedChanges: SetHasUnsavedChanges) => (path: string) => (e: React.MouseEvent) => void;
+type UseLeavePageHook = (hasChanges: boolean) => void;
 
-const LeavePageContext = React.createContext<UseLeavePageHook | null>(null);
+const LeavePageContext = React.createContext<{
+    setHasUnsavedChanges: UseLeavePageHook;
+    handleRequestLeave: (path: string) => void;
+} | null>(null);
 
-export const useLeavePage = (setHasUnsavedChanges: SetHasUnsavedChanges) => {
+export const useLeavePage = () => {
     const context = React.useContext(LeavePageContext);
     if (!context) {
-        // Return a dummy function if context is not available
-        return () => (path: string) => (e: React.MouseEvent) => {
-            console.warn('LeavePage context not available');
-        };
+        throw new Error('useLeavePage must be used within a LeavePageProvider');
     }
-    return context(setHasUnsavedChanges);
+    return context.setHasUnsavedChanges;
 };
+
 
 function DashboardNav({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
@@ -45,32 +45,24 @@ function DashboardNav({ children }: { children: React.ReactNode }) {
   const router = useRouter();
   const isCollapsed = state === 'collapsed';
 
-  // This ref will hold the latest state of unsaved changes from the child page
   const hasUnsavedChangesRef = React.useRef(false);
+  const setHasUnsavedChanges = (hasChanges: boolean) => {
+    hasUnsavedChangesRef.current = hasChanges;
+  };
 
   const handleRequestLeave = (path: string) => {
-    window.dispatchEvent(new CustomEvent('requestLeave', { detail: path }));
+    if (hasUnsavedChangesRef.current) {
+        window.dispatchEvent(new CustomEvent('requestLeave', { detail: path }));
+    } else {
+        router.push(path);
+    }
   }
 
-  const handleLeave: UseLeavePageHook = (setHasUnsavedChanges) => {
-    // This effect updates the ref whenever the child component's state changes.
-    React.useEffect(() => {
-        return () => {
-            hasUnsavedChangesRef.current = false;
-        };
-    }, []);
-
-    (window as any).setUnsavedChanges = (hasChanges: boolean) => {
-        hasUnsavedChangesRef.current = hasChanges;
-    };
-    
-    return (path) => (e) => {
-        if (hasUnsavedChangesRef.current) {
-            e.preventDefault();
-            handleRequestLeave(path);
-        }
-    };
+  const handleLeaveClick = (path: string) => (e: React.MouseEvent) => {
+    e.preventDefault();
+    handleRequestLeave(path);
   };
+  
 
   const t = {
     en: {
@@ -113,7 +105,6 @@ function DashboardNav({ children }: { children: React.ReactNode }) {
   ]
 
   const NavLink = ({ item }: { item: { href: string, icon: React.ElementType, label: string } }) => {
-    const handleLeaveClick = handleLeave(hasUnsavedChangesRef.current ? (v) => {} : () => {});
     return (
       <Link href={item.href} onClick={handleLeaveClick(item.href)}>
         <item.icon />
@@ -123,27 +114,7 @@ function DashboardNav({ children }: { children: React.ReactNode }) {
   };
 
   return (
-    <LeavePageContext.Provider value={(setHasUnsavedChanges: SetHasUnsavedChanges) => {
-        // This effect will be called by the child page that uses the hook
-        React.useEffect(() => {
-            (window as any).setHasUnsavedChanges = setHasUnsavedChanges;
-            // Cleanup on unmount
-            return () => {
-                if ((window as any).setHasUnsavedChanges === setHasUnsavedChanges) {
-                    (window as any).setHasUnsavedChanges = null;
-                }
-            };
-        }, [setHasUnsavedChanges]);
-
-        return (path) => (e) => {
-             if (hasUnsavedChangesRef.current) {
-                e.preventDefault();
-                handleRequestLeave(path);
-            } else {
-                 router.push(path);
-             }
-        };
-    }}>
+    <LeavePageContext.Provider value={{ setHasUnsavedChanges, handleRequestLeave }}>
       <Sidebar collapsible="icon" className="border-r border-sidebar-border">
         <SidebarHeader>
           <Link href="/dashboard">
