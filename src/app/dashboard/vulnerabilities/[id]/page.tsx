@@ -37,7 +37,7 @@ const SortableSection = ({ section, ...props }: { section: FindingSection, [key:
   const { attributes, listeners, setNodeRef, transform, transition, isDragging } = useSortable({ id: section.id });
 
   const style = {
-    transform: CSS.Transform.toString(transform),
+    transform: transform ? CSS.Transform.toString(transform) : undefined,
     transition,
     opacity: isDragging ? 0.5 : 1,
     zIndex: isDragging ? 100 : 'auto',
@@ -606,7 +606,7 @@ export default function VulnerabilityEditorPage() {
                               key={section.id}
                               section={section}
                               onContentChange={(newContent: string) => handleSectionChange('en', section.id, newContent)}
-                              onTitleChange={(newTitle: string) => handleTitleChange('en', section.id, newTitle)}
+                              onTitleChange={(newTitle: string) => handleTitleChange('en', section.id, newContent)}
                               onDelete={() => handleDeleteSection('en', section.id)}
                             />
                           ))}

@@ -73,7 +73,7 @@ const SortableSection = ({ section, ...props }: { section: FindingSection, isOrg
   const { attributes, listeners, setNodeRef, transform, transition, isDragging } = useSortable({ id: section.id });
 
   const style = {
-    transform: CSS.Transform.toString(transform),
+    transform: transform ? CSS.Transform.toString(transform) : undefined,
     transition,
     opacity: isDragging ? 0.5 : 1,
     zIndex: isDragging ? 100 : 'auto',

@@ -30,6 +30,7 @@ import { arrayMove, SortableContext, sortableKeyboardCoordinates, useSortable, v
 import { translateText } from '@/ai/flows/translate-text-flow';
 import { HighlightingTextarea } from '@/components/ui/highlighting-textarea';
 import { MarkdownPreview } from '@/components/markdown-preview';
+import { CSS } from '@dnd-kit/utilities';
 
 type SortKey = keyof Finding;
 type SaveStatus = 'unsaved' | 'saving' | 'saved';
@@ -59,10 +60,6 @@ const ScopeSectionEditor = ({ section, onContentChange, onDelete, onTitleChange,
   getImage: (id: string) => ImageAsset | undefined
 }) => {
     const [isEditing, setIsEditing] = useState(false);
-
-    const handleSave = () => {
-      setIsEditing(false);
-    }
     
     return (
         <Card className="mb-4">
@@ -83,17 +80,17 @@ const ScopeSectionEditor = ({ section, onContentChange, onDelete, onTitleChange,
                 </CardHeader>
             </div>
             <CardContent className="p-4" onClick={() => setIsEditing(true)}>
-                {isEditing ? (
-                    <HighlightingTextarea 
-                      value={section.content}
-                      onValueChange={onContentChange}
-                      onBlur={handleSave}
-                      autoFocus
-                      className="w-full min-h-[200px] font-code text-sm focus-visible:ring-0 focus-visible:ring-offset-0"
-                    />
-                ) : (
-                    <MarkdownPreview content={section.content} getImage={getImage} />
-                )}
+              {isEditing ? (
+                  <HighlightingTextarea 
+                    value={section.content}
+                    onValueChange={onContentChange}
+                    onBlur={() => setIsEditing(false)}
+                    autoFocus
+                    className="w-full min-h-[200px] font-code text-sm focus-visible:ring-0 focus-visible:ring-offset-0"
+                  />
+              ) : (
+                  <MarkdownPreview content={section.content} getImage={getImage} />
+              )}
             </CardContent>
         </Card>
     )
@@ -103,7 +100,7 @@ const SortableScopeSection = ({ section, ...props }: { section: ScopeSection, [k
   const { attributes, listeners, setNodeRef, transform, transition, isDragging } = useSortable({ id: section.id });
 
   const style = {
-    transform: CSS.Transform.toString(transform),
+    transform: transform ? CSS.Transform.toString(transform) : undefined,
     transition,
     opacity: isDragging ? 0.5 : 1,
     zIndex: isDragging ? 100 : 'auto',

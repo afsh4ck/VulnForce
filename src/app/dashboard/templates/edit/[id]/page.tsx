@@ -30,7 +30,7 @@ const SortableSection = ({ section, ...props }: { section: TemplateSection, [key
   const { attributes, listeners, setNodeRef, transform, transition, isDragging } = useSortable({ id: section.id });
 
   const style = {
-    transform: CSS.Transform.toString(transform),
+    transform: transform ? CSS.Transform.toString(transform) : undefined,
     transition,
     opacity: isDragging ? 0.5 : 1,
     zIndex: isDragging ? 100 : 'auto',
@@ -257,7 +257,7 @@ export default function TemplateEditorPage() {
     const updater = lang === 'en' ? setEnSections : setEsSections;
     updater(prev => prev.map(sec => {
         if (sec.id === sectionId) {
-            const contentWithoutTitle = sec.content.replace(/^(#{2,4}) .*\n?/, '');
+            const contentWithoutTitle = sec.content.replace(/^(#{1,4}) .*\n?/, '');
             return { ...sec, content: `### ${newTitle}\n${contentWithoutTitle}` };
         }
         return sec;
