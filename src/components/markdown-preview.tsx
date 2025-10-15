@@ -1,6 +1,6 @@
 
 'use client';
-import React, { useMemo } from 'react';
+import React from 'react';
 import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
 import type { ImageAsset } from '@/lib/types';
@@ -110,21 +110,31 @@ export const MarkdownPreview = ({ content, getImage, isReport }: { content: stri
                     th: ({ node, ...props }) => <th className="border border-border px-4 py-2 text-left font-semibold" {...props} />,
                     td: ({ node, ...props }) => <td className="border border-border px-4 py-2" {...props} />,
                     hr: () => isReport ? null : <hr className="my-8" />,
-                    code({ node, className, children, ...props }) {
+                    pre: ({ node, children, ...props }) => {
+                      const codeElement = React.Children.toArray(children).find(
+                        (child) => React.isValidElement(child) && child.type === 'code'
+                      ) as React.ReactElement | undefined;
+            
+                      if (codeElement) {
+                        const { className, children: codeChildren } = codeElement.props;
                         const match = /language-(\w+)/.exec(className || '');
-                        const codeContent = String(children).replace(/\n$/, '');
+                        const codeContent = String(codeChildren).replace(/\n$/, '');
                         
-                        if (match) {
-                            return (
-                               <div className="overflow-x-auto">
-                                    <CodeBlock
-                                        initialLanguage={match[1]}
-                                        code={codeContent}
-                                    />
-                                </div>
-                            );
-                        }
-                        
+                        return (
+                          <div className="overflow-x-auto">
+                            <CodeBlock
+                              initialLanguage={match ? match[1] : ''}
+                              code={codeContent}
+                            />
+                          </div>
+                        );
+                      }
+                      
+                      return <pre {...props} className="bg-muted p-4 rounded-md overflow-x-auto">{children}</pre>;
+                    },
+                    code({ node, className, children, ...props }) {
+                        // This will be handled by the <pre> component override for block code.
+                        // This renders inline code.
                         return (
                         <code className="font-code bg-muted text-muted-foreground px-1.5 py-1 rounded-md break-words" {...props}>
                            {children}
@@ -136,11 +146,11 @@ export const MarkdownPreview = ({ content, getImage, isReport }: { content: stri
                             const imageId = src.replace('image://', '');
                             const image = getImage(imageId);
                             if (image) {
-                                return <img src={image.dataUrl} alt={alt} {...props} style={{maxWidth: '100%', height: 'auto'}} className="rounded-md border" />;
+                                return <Image src={image.dataUrl} alt={alt || 'Embedded image'} width={800} height={600} {...props} style={{maxWidth: '100%', height: 'auto'}} className="rounded-md border" />;
                             }
                             return null; // Don't render broken image
                         }
-                        return <img src={src} alt={alt} {...props} style={{maxWidth: '100%', height: 'auto'}} className="rounded-md border" />;
+                        return <Image src={src || ''} alt={alt || 'Image'} width={800} height={600} {...props} style={{maxWidth: '100%', height: 'auto'}} className="rounded-md border" />;
                     },
                 }}
             >
