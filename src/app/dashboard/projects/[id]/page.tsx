@@ -16,7 +16,7 @@ import { Dialog, DialogTrigger, DialogContent, DialogDescription, DialogFooter, 
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from "@/components/ui/alert-dialog";
+import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from "@/components/ui/alert-dialog";
 import { useToast } from "@/hooks/use-toast";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { Calendar } from "@/components/ui/calendar";
@@ -78,11 +78,9 @@ function parseHtmlToBlocks(html: string): ContentBlock[] {
 function blocksToHtml(blocks: ContentBlock[]): string {
   return blocks.map(block => {
     if (block.tag === 'pre') {
-        // A basic way to escape HTML, you might want a more robust library
         const escapedContent = block.content.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
         return `<pre><code>${escapedContent}</code></pre>`
     }
-    // For other tags, we assume the content is safe HTML from contentEditable
     return `<${block.tag}>${block.content}</${block.tag}>`
   }).join('');
 }
