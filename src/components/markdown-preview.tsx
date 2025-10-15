@@ -121,7 +121,7 @@ export const MarkdownPreview = ({ content, getImage, isReport }: { content: stri
                         const codeContent = String(codeChildren).replace(/\n$/, '');
                         
                         return (
-                          <div className="overflow-x-auto my-4">
+                          <div className="my-4">
                             <CodeBlock
                               initialLanguage={match ? match[1] : 'bash'}
                               code={codeContent}

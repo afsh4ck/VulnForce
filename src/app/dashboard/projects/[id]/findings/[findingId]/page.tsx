@@ -1,3 +1,4 @@
+
 'use client';
 
 import React, { useState, useEffect, useMemo, useCallback, useRef } from 'react';
@@ -264,100 +265,100 @@ const SectionEditor = ({ section, onContentChange, onDelete, view, onViewChange,
   return (
     <>
       <Card>
-        <CardHeader className="flex flex-row items-center justify-between bg-muted/50 px-4 py-3">
-            <div className="flex items-center gap-2 w-full">
-              {isOrganizing && <div {...dragHandleProps} {...dragListeners} className="cursor-grab"><GripVertical className="h-5 w-5 text-muted-foreground" /></div>}
-              <Input 
-                value={sectionTitle}
-                onChange={handleTitleChange}
-                className="font-semibold text-base border-none focus-visible:ring-0 focus-visible:ring-offset-0 bg-transparent h-auto p-0"
-              />
-          </div>
-          <div className="flex items-center gap-2">
-              {!isOrganizing && (
-                  <Tabs value={view} onValueChange={(value) => onViewChange(value as ScopeView)}>
-                      <TabsList className="h-8">
-                          <TabsTrigger value="edit" className="h-6 text-xs px-2">{t[language].viewEdit}</TabsTrigger>
-                          <TabsTrigger value="split" className="h-6 text-xs px-2">{t[language].viewSplit}</TabsTrigger>
-                          <TabsTrigger value="preview" className="h-6 text-xs px-2">{t[language].viewPreview}</TabsTrigger>
-                      </TabsList>
-                  </Tabs>
-              )}
-               <AlertDialog open={showDeleteConfirm} onOpenChange={setShowDeleteConfirm}>
-                <AlertDialogTrigger asChild>
-                    <Button variant="ghost" size="icon" className="h-8 w-8 text-destructive hover:bg-destructive hover:text-destructive-foreground">
-                        <Trash2 className="h-4 w-4" />
-                        <span className="sr-only">{t[language].deleteSection}</span>
-                    </Button>
-                </AlertDialogTrigger>
-                <AlertDialogContent>
-                    <AlertDialogHeader>
-                        <AlertDialogTitle>{t[language].confirmDeleteTitle}</AlertDialogTitle>
-                        <AlertDialogDescription>{t[language].confirmDeleteDesc}</AlertDialogDescription>
-                    </AlertDialogHeader>
-                    <AlertDialogFooter>
-                        <AlertDialogCancel>{t[language].cancel}</AlertDialogCancel>
-                        <AlertDialogAction onClick={onDelete} className="bg-destructive text-destructive-foreground hover:bg-destructive/90">{t[language].delete}</AlertDialogAction>
-                    </AlertDialogFooter>
-                </AlertDialogContent>
-              </AlertDialog>
-          </div>
-        </CardHeader>
-        {!isOrganizing && (
-             <div className="border-t">
-                {view !== 'preview' && (
-                  <div className="p-1 border-b flex gap-1">
-                    <Button variant="ghost" size="icon" className="h-auto w-auto p-1" onClick={() => applyMarkdownSyntax('**')}><Bold className="h-3 w-3" /></Button>
-                    <Button variant="ghost" size="icon" className="h-auto w-auto p-1" onClick={() => applyMarkdownSyntax('*')}><Italic className="h-3 w-3" /></Button>
-                    <Button variant="ghost" size="icon" className="h-auto w-auto p-1" onClick={() => applyMarkdownSyntax('`')}><Code className="h-3 w-3" /></Button>
-                    <Button variant="ghost" size="icon" className="h-auto w-auto p-1" onClick={() => applyListSyntax('bullet')}><List className="h-3 w-3" /></Button>
-                    <Button variant="ghost" size="icon" className="h-auto w-auto p-1" onClick={() => applyListSyntax('number')}><ListOrdered className="h-3 w-3" /></Button>
-                    <CodeBlockDialog onInsert={handleInsertCode}>
-                      <Button variant="ghost" size="icon" className="h-auto w-auto p-1"><FileCode className="h-3 w-3" /></Button>
-                    </CodeBlockDialog>
-                    <ImageUploadDialog onInsert={insertMarkdown}>
-                       <Button variant="ghost" size="icon" className="h-auto w-auto p-1"><Image className="h-3 w-3" /></Button>
-                    </ImageUploadDialog>
-                  </div>
-                )}
-                 <div className="p-0">
-                    {view === 'split' ? (
-                        <div className="relative w-full">
-                            <ResizablePanelGroup direction="horizontal" className="min-h-[300px] w-full rounded-lg border">
-                                <ResizablePanel defaultSize={50}>
-                                    <div className="h-full">
-                                    <HighlightingTextarea
-                                        ref={textareaRef}
-                                        value={section.content}
-                                        onValueChange={(newContent) => onContentChange(newContent)}
-                                        onPaste={handlePaste}
-                                    />
-                                    </div>
-                                </ResizablePanel>
-                                <ResizableHandle withHandle />
-                                <ResizablePanel defaultSize={50}>
-                                <div className="h-full overflow-auto rounded-md p-4">
-                                    <MarkdownPreview content={section.content} getImage={getImage} />
-                                </div>
-                                </ResizablePanel>
-                            </ResizablePanelGroup>
-                        </div>
-                    ) : view === 'edit' ? (
-                        <div className="relative w-full">
-                            <HighlightingTextarea
-                                ref={textareaRef}
-                                value={section.content}
-                                onValueChange={(newContent) => onContentChange(newContent)}
-                                onPaste={handlePaste}
-                            />
-                        </div>
-                    ) : (
-                        <div className="rounded-md p-4 min-h-[300px] overflow-auto">
-                            <MarkdownPreview content={section.content} getImage={getImage} />
-                        </div>
-                    )}
-                 </div>
+        <div className="sticky top-[65px] z-10">
+          <CardHeader className="flex flex-row items-center justify-between bg-card px-4 py-3">
+              <div className="flex items-center gap-2 w-full">
+                {isOrganizing && <div {...dragHandleProps} {...dragListeners} className="cursor-grab"><GripVertical className="h-5 w-5 text-muted-foreground" /></div>}
+                <Input 
+                  value={sectionTitle}
+                  onChange={handleTitleChange}
+                  className="font-semibold text-base border-none focus-visible:ring-0 focus-visible:ring-offset-0 bg-transparent h-auto p-0"
+                />
             </div>
+            <div className="flex items-center gap-2">
+                {!isOrganizing && (
+                    <Tabs value={view} onValueChange={(value) => onViewChange(value as ScopeView)}>
+                        <TabsList className="h-8">
+                            <TabsTrigger value="edit" className="h-6 text-xs px-2">{t[language].viewEdit}</TabsTrigger>
+                            <TabsTrigger value="split" className="h-6 text-xs px-2">{t[language].viewSplit}</TabsTrigger>
+                            <TabsTrigger value="preview" className="h-6 text-xs px-2">{t[language].viewPreview}</TabsTrigger>
+                        </TabsList>
+                    </Tabs>
+                )}
+                 <AlertDialog open={showDeleteConfirm} onOpenChange={setShowDeleteConfirm}>
+                  <AlertDialogTrigger asChild>
+                      <Button variant="ghost" size="icon" className="h-8 w-8 text-destructive hover:bg-destructive hover:text-destructive-foreground">
+                          <Trash2 className="h-4 w-4" />
+                          <span className="sr-only">{t[language].deleteSection}</span>
+                      </Button>
+                  </AlertDialogTrigger>
+                  <AlertDialogContent>
+                      <AlertDialogHeader>
+                          <AlertDialogTitle>{t[language].confirmDeleteTitle}</AlertDialogTitle>
+                          <AlertDialogDescription>{t[language].confirmDeleteDesc}</AlertDialogDescription>
+                      </AlertDialogHeader>
+                      <AlertDialogFooter>
+                          <AlertDialogCancel>{t[language].cancel}</AlertDialogCancel>
+                          <AlertDialogAction onClick={onDelete} className="bg-destructive text-destructive-foreground hover:bg-destructive/90">{t[language].delete}</AlertDialogAction>
+                      </AlertDialogFooter>
+                  </AlertDialogContent>
+                </AlertDialog>
+            </div>
+          </CardHeader>
+          {!isOrganizing && view !== 'preview' && (
+            <div className="p-1 border-y bg-card flex gap-1">
+              <Button variant="ghost" size="icon" className="h-auto w-auto p-1" onClick={() => applyMarkdownSyntax('**')}><Bold className="h-3 w-3" /></Button>
+              <Button variant="ghost" size="icon" className="h-auto w-auto p-1" onClick={() => applyMarkdownSyntax('*')}><Italic className="h-3 w-3" /></Button>
+              <Button variant="ghost" size="icon" className="h-auto w-auto p-1" onClick={() => applyMarkdownSyntax('`')}><Code className="h-3 w-3" /></Button>
+              <Button variant="ghost" size="icon" className="h-auto w-auto p-1" onClick={() => applyListSyntax('bullet')}><List className="h-3 w-3" /></Button>
+              <Button variant="ghost" size="icon" className="h-auto w-auto p-1" onClick={() => applyListSyntax('number')}><ListOrdered className="h-3 w-3" /></Button>
+              <CodeBlockDialog onInsert={handleInsertCode}>
+                <Button variant="ghost" size="icon" className="h-auto w-auto p-1"><FileCode className="h-3 w-3" /></Button>
+              </CodeBlockDialog>
+              <ImageUploadDialog onInsert={insertMarkdown}>
+                 <Button variant="ghost" size="icon" className="h-auto w-auto p-1"><Image className="h-3 w-3" /></Button>
+              </ImageUploadDialog>
+            </div>
+          )}
+        </div>
+        {!isOrganizing && (
+          <div className="p-0">
+              {view === 'split' ? (
+                  <div className="relative w-full">
+                      <ResizablePanelGroup direction="horizontal" className="min-h-[300px] w-full rounded-b-lg border-t">
+                          <ResizablePanel defaultSize={50}>
+                              <div className="h-full">
+                              <HighlightingTextarea
+                                  ref={textareaRef}
+                                  value={section.content}
+                                  onValueChange={(newContent) => onContentChange(newContent)}
+                                  onPaste={handlePaste}
+                              />
+                              </div>
+                          </ResizablePanel>
+                          <ResizableHandle withHandle />
+                          <ResizablePanel defaultSize={50}>
+                          <div className="h-full overflow-auto rounded-md p-4">
+                              <MarkdownPreview content={section.content} getImage={getImage} />
+                          </div>
+                          </ResizablePanel>
+                      </ResizablePanelGroup>
+                  </div>
+              ) : view === 'edit' ? (
+                  <div className="relative w-full">
+                      <HighlightingTextarea
+                          ref={textareaRef}
+                          value={section.content}
+                          onValueChange={(newContent) => onContentChange(newContent)}
+                          onPaste={handlePaste}
+                      />
+                  </div>
+              ) : (
+                  <div className="rounded-b-lg p-4 min-h-[300px] overflow-auto border-t">
+                      <MarkdownPreview content={section.content} getImage={getImage} />
+                  </div>
+              )}
+          </div>
         )}
       </Card>
     </>

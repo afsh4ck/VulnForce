@@ -1,3 +1,4 @@
+
 'use client';
 
 import { useState, useMemo, useCallback, useRef, useEffect } from 'react';
@@ -8,7 +9,7 @@ import { Textarea } from '@/components/ui/textarea';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import Link from 'next/link';
-import { ChevronDown, ChevronLeft, Save, GripVertical, Plus, Trash2, Rows, Bold, Italic, Code, List, ListOrdered, FileCode, ChevronUp } from 'lucide-react';
+import { ChevronDown, ChevronLeft, Save, GripVertical, Plus, Trash2, Rows, Bold, Italic, Code, List, ListOrdered, FileCode, ChevronUp, Image } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import { useLanguage } from '@/context/language-context';
 import type { Vulnerability, CVSS, ImageAsset, Severity } from '@/lib/types';
@@ -33,6 +34,7 @@ import { Combobox } from '@/components/ui/combobox';
 import { getCVSS, getScore, getSeverity } from '@/lib/cvss';
 import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { cn } from '@/lib/utils';
+import { ImageUploadDialog } from '@/components/image-upload-dialog';
 
 
 const languageOptions = [
@@ -255,99 +257,99 @@ const SectionEditor = ({ section, onContentChange, onDelete, view, onViewChange,
 
   return (
     <Card>
-      <CardHeader className="flex flex-row items-center justify-between bg-muted/50 px-4 py-3">
-          <div className="flex items-center gap-2 w-full">
-            {isOrganizing && <div {...dragHandleProps} {...dragListeners} className="cursor-grab"><GripVertical className="h-5 w-5 text-muted-foreground" /></div>}
-            <Input 
-              value={sectionTitle}
-              onChange={handleTitleChange}
-              className="font-semibold text-base border-none focus-visible:ring-0 focus-visible:ring-offset-0 bg-transparent h-auto p-0"
-            />
-        </div>
-        <div className="flex items-center gap-2">
-            {!isOrganizing && (
-                <Tabs value={view} onValueChange={(value) => onViewChange(value as ScopeView)}>
-                    <TabsList className="h-8">
-                        <TabsTrigger value="edit" className="h-6 text-xs px-2">{t[language].viewEdit}</TabsTrigger>
-                        <TabsTrigger value="split" className="h-6 text-xs px-2">{t[language].viewSplit}</TabsTrigger>
-                        <TabsTrigger value="preview" className="h-6 text-xs px-2">{t[language].viewPreview}</TabsTrigger>
-                    </TabsList>
-                </Tabs>
-            )}
-             <AlertDialog open={showDeleteConfirm} onOpenChange={setShowDeleteConfirm}>
-              <AlertDialogTrigger asChild>
-                  <Button variant="ghost" size="icon" className="h-8 w-8 text-destructive hover:bg-destructive hover:text-destructive-foreground">
-                      <Trash2 className="h-4 w-4" />
-                      <span className="sr-only">{t[language].deleteSection}</span>
-                  </Button>
-              </AlertDialogTrigger>
-              <AlertDialogContent>
-                  <AlertDialogHeader>
-                      <AlertDialogTitle>{t[language].confirmDeleteTitle}</AlertDialogTitle>
-                      <AlertDialogDescription>{t[language].confirmDeleteDesc}</AlertDialogDescription>
-                  </AlertDialogHeader>
-                  <AlertDialogFooter>
-                      <AlertDialogCancel>{t[language].cancel}</AlertDialogCancel>
-                      <AlertDialogAction onClick={onDelete} className="bg-destructive text-destructive-foreground hover:bg-destructive/90">{t[language].delete}</AlertDialogAction>
-                  </AlertDialogFooter>
-              </AlertDialogContent>
-            </AlertDialog>
-        </div>
-      </CardHeader>
-      {!isOrganizing && (
-           <div className="border-t">
-              {view !== 'preview' && (
-                <div className="p-1 border-b flex gap-1">
-                  <Button variant="ghost" size="icon" className="h-auto w-auto p-1" onClick={() => applyMarkdownSyntax('**')}><Bold className="h-3 w-3" /></Button>
-                  <Button variant="ghost" size="icon" className="h-auto w-auto p-1" onClick={() => applyMarkdownSyntax('*')}><Italic className="h-3 w-3" /></Button>
-                  <Button variant="ghost" size="icon" className="h-auto w-auto p-1" onClick={() => applyMarkdownSyntax('`')}><Code className="h-3 w-3" /></Button>
-                  <Button variant="ghost" size="icon" className="h-auto w-auto p-1" onClick={() => applyListSyntax('bullet')}><List className="h-3 w-3" /></Button>
-                  <Button variant="ghost" size="icon" className="h-auto w-auto p-1" onClick={() => applyListSyntax('number')}><ListOrdered className="h-3 w-3" /></Button>
-                  <CodeBlockDialog onInsert={handleInsertCode}>
-                    <Button variant="ghost" size="icon" className="h-auto w-auto p-1"><FileCode className="h-3 w-3" /></Button>
-                  </CodeBlockDialog>
-                </div>
-              )}
-               <div className="p-0">
-                  {view === 'split' && (
-                      <div className="relative">
-                          <ResizablePanelGroup direction="horizontal" className="min-h-[300px] w-full rounded-lg border">
-                              <ResizablePanel defaultSize={50}>
-                                  <div className="h-full">
-                                  <HighlightingTextarea
-                                      ref={textareaRef}
-                                      value={section.content}
-                                      onValueChange={(newContent) => onContentChange(newContent)}
-                                      onPaste={handlePaste}
-                                  />
-                                  </div>
-                              </ResizablePanel>
-                              <ResizableHandle withHandle />
-                              <ResizablePanel defaultSize={50}>
-                              <div className="h-full overflow-auto rounded-md p-4">
-                                  <MarkdownPreview content={section.content} getImage={getImage} />
-                              </div>
-                              </ResizablePanel>
-                          </ResizablePanelGroup>
-                      </div>
-                  )}
-                  {view === 'edit' && (
-                      <div>
-                          <HighlightingTextarea
-                              ref={textareaRef}
-                              value={section.content}
-                              onValueChange={(newContent) => onContentChange(newContent)}
-                              onPaste={handlePaste}
-                          />
-                      </div>
-                  )}
-                  {view === 'preview' && (
-                      <div className="rounded-md p-4 min-h-[300px] overflow-auto">
-                          <MarkdownPreview content={section.content} getImage={getImage} />
-                      </div>
-                  )}
-               </div>
+      <div className="sticky top-[65px] z-10">
+        <CardHeader className="flex flex-row items-center justify-between bg-card px-4 py-3">
+            <div className="flex items-center gap-2 w-full">
+              {isOrganizing && <div {...dragHandleProps} {...dragListeners} className="cursor-grab"><GripVertical className="h-5 w-5 text-muted-foreground" /></div>}
+              <Input 
+                value={sectionTitle}
+                onChange={handleTitleChange}
+                className="font-semibold text-base border-none focus-visible:ring-0 focus-visible:ring-offset-0 bg-transparent h-auto p-0"
+              />
           </div>
+          <div className="flex items-center gap-2">
+              {!isOrganizing && (
+                  <Tabs value={view} onValueChange={(value) => onViewChange(value as ScopeView)}>
+                      <TabsList className="h-8">
+                          <TabsTrigger value="edit" className="h-6 text-xs px-2">{t[language].viewEdit}</TabsTrigger>
+                          <TabsTrigger value="split" className="h-6 text-xs px-2">{t[language].viewSplit}</TabsTrigger>
+                          <TabsTrigger value="preview" className="h-6 text-xs px-2">{t[language].viewPreview}</TabsTrigger>
+                      </TabsList>
+                  </Tabs>
+              )}
+               <AlertDialog open={showDeleteConfirm} onOpenChange={setShowDeleteConfirm}>
+                <AlertDialogTrigger asChild>
+                    <Button variant="ghost" size="icon" className="h-8 w-8 text-destructive hover:bg-destructive hover:text-destructive-foreground">
+                        <Trash2 className="h-4 w-4" />
+                        <span className="sr-only">{t[language].deleteSection}</span>
+                    </Button>
+                </AlertDialogTrigger>
+                <AlertDialogContent>
+                    <AlertDialogHeader>
+                        <AlertDialogTitle>{t[language].confirmDeleteTitle}</AlertDialogTitle>
+                        <AlertDialogDescription>{t[language].confirmDeleteDesc}</AlertDialogDescription>
+                    </AlertDialogHeader>
+                    <AlertDialogFooter>
+                        <AlertDialogCancel>{t[language].cancel}</AlertDialogCancel>
+                        <AlertDialogAction onClick={onDelete} className="bg-destructive text-destructive-foreground hover:bg-destructive/90">{t[language].delete}</AlertDialogAction>
+                    </AlertDialogFooter>
+                </AlertDialogContent>
+              </AlertDialog>
+          </div>
+        </CardHeader>
+        {!isOrganizing && view !== 'preview' && (
+          <div className="p-1 border-y bg-card flex gap-1">
+            <Button variant="ghost" size="icon" className="h-auto w-auto p-1" onClick={() => applyMarkdownSyntax('**')}><Bold className="h-3 w-3" /></Button>
+            <Button variant="ghost" size="icon" className="h-auto w-auto p-1" onClick={() => applyMarkdownSyntax('*')}><Italic className="h-3 w-3" /></Button>
+            <Button variant="ghost" size="icon" className="h-auto w-auto p-1" onClick={() => applyMarkdownSyntax('`')}><Code className="h-3 w-3" /></Button>
+            <Button variant="ghost" size="icon" className="h-auto w-auto p-1" onClick={() => applyListSyntax('bullet')}><List className="h-3 w-3" /></Button>
+            <Button variant="ghost" size="icon" className="h-auto w-auto p-1" onClick={() => applyListSyntax('number')}><ListOrdered className="h-3 w-3" /></Button>
+            <CodeBlockDialog onInsert={handleInsertCode}>
+              <Button variant="ghost" size="icon" className="h-auto w-auto p-1"><FileCode className="h-3 w-3" /></Button>
+            </CodeBlockDialog>
+          </div>
+        )}
+      </div>
+      {!isOrganizing && (
+           <div className="p-0">
+              {view === 'split' && (
+                  <div className="relative">
+                      <ResizablePanelGroup direction="horizontal" className="min-h-[300px] w-full rounded-b-lg border-t">
+                          <ResizablePanel defaultSize={50}>
+                              <div className="h-full">
+                              <HighlightingTextarea
+                                  ref={textareaRef}
+                                  value={section.content}
+                                  onValueChange={(newContent) => onContentChange(newContent)}
+                                  onPaste={handlePaste}
+                              />
+                              </div>
+                          </ResizablePanel>
+                          <ResizableHandle withHandle />
+                          <ResizablePanel defaultSize={50}>
+                          <div className="h-full overflow-auto rounded-md p-4">
+                              <MarkdownPreview content={section.content} getImage={getImage} />
+                          </div>
+                          </ResizablePanel>
+                      </ResizablePanelGroup>
+                  </div>
+              )}
+              {view === 'edit' && (
+                  <div>
+                      <HighlightingTextarea
+                          ref={textareaRef}
+                          value={section.content}
+                          onValueChange={(newContent) => onContentChange(newContent)}
+                          onPaste={handlePaste}
+                      />
+                  </div>
+              )}
+              {view === 'preview' && (
+                  <div className="rounded-b-lg p-4 min-h-[300px] overflow-auto border-t">
+                      <MarkdownPreview content={section.content} getImage={getImage} />
+                  </div>
+              )}
+           </div>
       )}
     </Card>
   )
