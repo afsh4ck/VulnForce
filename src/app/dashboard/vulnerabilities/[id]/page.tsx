@@ -28,7 +28,7 @@ import { CSS } from '@dnd-kit/utilities';
 import { ResizableHandle, ResizablePanel, ResizablePanelGroup } from '@/components/ui/resizable';
 import { HighlightingTextarea } from '@/components/ui/highlighting-textarea';
 import { MarkdownPreview } from '@/components/markdown-preview';
-import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from '@/components/ui/alert-dialog';
+import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from '@/componentsui/alert-dialog';
 import { Dialog, DialogContent, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
 import { Combobox } from '@/components/ui/combobox';
 import { getCVSS, getScore, getSeverity } from '@/lib/cvss';
@@ -256,7 +256,7 @@ const SectionEditor = ({ section, onContentChange, onDelete, view, onViewChange,
 
   return (
     <Card>
-      <div className="sticky top-[65px] z-10 bg-background">
+      <div className="sticky top-16 z-10 bg-background">
         <CardHeader className="flex flex-row items-center justify-between px-4 py-3">
             <div className="flex items-center gap-2 w-full">
               {isOrganizing && <div {...dragHandleProps} {...dragListeners} className="cursor-grab"><GripVertical className="h-5 w-5 text-muted-foreground" /></div>}
@@ -729,7 +729,7 @@ export default function VulnerabilityEditorPage() {
 
   return (
     <div className="space-y-6 w-full">
-      <header className="flex items-center justify-between p-4 sm:p-6">
+      <header className="flex items-center justify-between px-4 sm:px-6">
         <div className="flex items-center gap-4">
             <Button variant="outline" size="icon" asChild>
                 <Link href="/dashboard/vulnerabilities">
