@@ -121,7 +121,7 @@ export const MarkdownPreview = ({ content, getImage, isReport }: { content: stri
                         const codeContent = String(codeChildren).replace(/\n$/, '');
                         
                         return (
-                          <div className="overflow-x-auto">
+                          <div className="overflow-x-auto my-4">
                             <CodeBlock
                               initialLanguage={match ? match[1] : 'bash'}
                               code={codeContent}
@@ -130,7 +130,7 @@ export const MarkdownPreview = ({ content, getImage, isReport }: { content: stri
                         );
                       }
                       
-                      return <div className="overflow-x-auto"><pre {...props} className="bg-muted p-4 rounded-md">{children}</pre></div>;
+                      return <div className="overflow-x-auto my-4"><pre {...props} className="bg-muted p-4 rounded-md">{children}</pre></div>;
                     },
                     code({ node, className, children, ...props }) {
                         // This will be handled by the <pre> component override for block code.
