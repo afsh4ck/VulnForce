@@ -28,14 +28,12 @@ interface FindingSection {
   content: string;
 }
 
-const SectionEditor = ({ section, onContentChange, onDelete, onTitleChange, isOrganizing, dragHandleProps, dragListeners, getImage }: {
+const SectionEditor = ({ section, onContentChange, onDelete, onTitleChange, isOrganizing, getImage }: {
   section: FindingSection;
   onContentChange: (content: string) => void;
   onDelete: () => void;
   onTitleChange: (newTitle: string) => void;
   isOrganizing: boolean;
-  dragHandleProps: any;
-  dragListeners: any;
   getImage: (id: string) => ImageAsset | undefined
 }) => {
     const [isEditing, setIsEditing] = useState(false);
@@ -43,25 +41,22 @@ const SectionEditor = ({ section, onContentChange, onDelete, onTitleChange, isOr
     const sectionTitle = headingMatch ? headingMatch[2].trim() : 'New Section';
     const contentWithoutTitle = section.content.replace(/^(#{2,4}) .*\n?/, '');
 
-    return (
-        <Card className="mb-4">
-            <div className="sticky top-16 z-10 bg-background">
-                <CardHeader className="flex flex-row items-center gap-2 p-2 border-b">
-                    <div {...dragHandleProps} {...dragListeners} className="cursor-grab p-2">
-                        <GripVertical className="h-5 w-5 text-muted-foreground" />
-                    </div>
-                    <Input
-                        value={sectionTitle}
-                        onChange={(e) => onTitleChange(e.target.value)}
-                        className="font-semibold text-base border-none focus-visible:ring-0 focus-visible:ring-offset-0 bg-transparent h-auto p-0 flex-1"
-                    />
-                    <Button variant="ghost" size="icon" className="h-8 w-8 text-destructive" onClick={onDelete}>
-                        <Trash2 className="h-4 w-4" />
-                    </Button>
-                </CardHeader>
-            </div>
-            <CardContent className="p-4" onClick={() => setIsEditing(true)}>
-                {isEditing ? (
+    if (isEditing) {
+        return (
+            <Card className="mb-4">
+                 <div className="sticky top-16 z-10 bg-background">
+                    <CardHeader className="flex flex-row items-center gap-2 p-2 border-b">
+                        <Input
+                            value={sectionTitle}
+                            onChange={(e) => onTitleChange(e.target.value)}
+                            className="font-semibold text-base border-none focus-visible:ring-0 focus-visible:ring-offset-0 bg-transparent h-auto p-0 flex-1"
+                        />
+                        <Button variant="ghost" size="icon" className="h-8 w-8 text-destructive" onClick={onDelete}>
+                            <Trash2 className="h-4 w-4" />
+                        </Button>
+                    </CardHeader>
+                </div>
+                <CardContent className="p-4">
                     <HighlightingTextarea
                         value={contentWithoutTitle}
                         onValueChange={(newContent) => onContentChange(newContent)}
@@ -69,15 +64,19 @@ const SectionEditor = ({ section, onContentChange, onDelete, onTitleChange, isOr
                         autoFocus
                         className="w-full min-h-[200px] font-code text-sm focus-visible:ring-0 focus-visible:ring-offset-0"
                     />
-                ) : (
-                    <MarkdownPreview content={section.content} getImage={getImage} />
-                )}
-            </CardContent>
-        </Card>
+                </CardContent>
+            </Card>
+        );
+    }
+    
+    return (
+        <div className="py-2" onClick={() => setIsEditing(true)}>
+            <MarkdownPreview content={section.content} getImage={getImage} />
+        </div>
     );
 }
 
-const SortableSection = ({ section, ...props }: { section: FindingSection, isOrganizing: boolean, [key: string]: any }) => {
+const SortableSection = ({ section, index, onAddSection, ...props }: { section: FindingSection, index: number, onAddSection: (index: number) => void, isOrganizing: boolean, [key: string]: any }) => {
   const { attributes, listeners, setNodeRef, transform, transition, isDragging } = useSortable({ id: section.id });
 
   const style = {
@@ -88,8 +87,16 @@ const SortableSection = ({ section, ...props }: { section: FindingSection, isOrg
   };
   
   return (
-    <div ref={setNodeRef} style={style}>
-      <SectionEditor section={section} isOrganizing={isOrganizing} dragHandleProps={attributes} dragListeners={listeners} {...props} />
+    <div ref={setNodeRef} style={style} className="relative group/section">
+      <div className="absolute top-0 -left-12 h-full flex items-center gap-1 opacity-0 group-hover/section:opacity-100 transition-opacity">
+         <Button variant="ghost" size="icon" className="h-6 w-6 cursor-pointer" onClick={() => onAddSection(index + 1)}>
+          <Plus className="h-4 w-4"/>
+        </Button>
+        <div {...attributes} {...listeners} className="cursor-grab p-1">
+          <GripVertical className="h-5 w-5 text-muted-foreground" />
+        </div>
+      </div>
+      <SectionEditor section={section} {...props} />
     </div>
   );
 };
@@ -244,12 +251,18 @@ export default function FindingEditorPage() {
     setSaveStatus('unsaved');
   };
   
-  const handleAddSection = () => {
+  const handleAddSection = (index?: number) => {
     const newSection: FindingSection = {
         id: `section-new-${Date.now()}`,
         content: `### ${t[uiLanguage].newSection}`
     };
-    setSections(prev => [...prev, newSection]);
+    if (index !== undefined) {
+      const newSections = [...sections];
+      newSections.splice(index, 0, newSection);
+      setSections(newSections);
+    } else {
+      setSections(prev => [...prev, newSection]);
+    }
     setSaveStatus('unsaved');
   };
 
@@ -383,7 +396,7 @@ export default function FindingEditorPage() {
 
   return (
     <div className="w-full grid grid-cols-1 gap-6 pt-6">
-      <header className="flex items-center justify-between px-4 sm:px-6 pt-6">
+      <header className="flex items-center justify-between px-4 sm:px-6">
         <div className="flex items-center gap-4">
           <Button variant="outline" size="icon" className="h-10 w-10" asChild>
             <Link href={`/dashboard/projects/${projectId}`}>
@@ -455,11 +468,13 @@ export default function FindingEditorPage() {
               <DndContext sensors={sensors} collisionDetection={closestCenter} onDragEnd={handleDragEnd}>
                 <SortableContext items={sections.map(s => s.id)} strategy={verticalListSortingStrategy}>
                   <div className="space-y-4">
-                    {sections.map(section => {
+                    {sections.map((section, index) => {
                        return (
                           <SortableSection
                             key={section.id}
                             section={section}
+                            index={index}
+                            onAddSection={handleAddSection}
                             onContentChange={(newContent: string) => handleSectionChange(section.id, newContent)}
                             onTitleChange={(newTitle: string) => handleTitleChange(section.id, newContent)}
                             onDelete={() => handleDeleteSection(section.id)}
@@ -473,7 +488,7 @@ export default function FindingEditorPage() {
               </DndContext>
 
               <div className="flex justify-center pt-4">
-                  <Button variant="outline" onClick={handleAddSection}>
+                  <Button variant="outline" onClick={() => handleAddSection()}>
                       <Plus className="mr-2 h-4 w-4" />
                       {t[uiLanguage].addNewSection}
                   </Button>

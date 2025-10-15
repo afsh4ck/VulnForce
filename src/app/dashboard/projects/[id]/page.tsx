@@ -50,53 +50,52 @@ const iconOptions = [
     { value: 'Award', label: 'Award' },
 ];
 
-const ScopeSectionEditor = ({ section, onContentChange, onDelete, onTitleChange, dragHandleProps, dragListeners, getImage }: {
+const ScopeSectionEditor = ({ section, onContentChange, onDelete, onTitleChange, getImage }: {
   section: ScopeSection;
   onContentChange: (content: string) => void;
   onDelete: () => void;
   onTitleChange: (newTitle: string) => void;
-  dragHandleProps: any;
-  dragListeners: any;
   getImage: (id: string) => ImageAsset | undefined
 }) => {
     const [isEditing, setIsEditing] = useState(false);
     
-    return (
-        <Card className="mb-4">
-            <div className="sticky top-16 z-10 bg-background">
-                <CardHeader className="flex flex-row items-center gap-2 p-2 border-b">
-                    <div {...dragHandleProps} {...dragListeners} className="cursor-grab p-2">
-                        <GripVertical className="h-5 w-5 text-muted-foreground" />
-                    </div>
-                    <Input 
-                      value={section.content.match(/^(#{2,4}) (.*)/)?.[2].trim() || 'New Section'}
-                      onChange={(e) => onTitleChange(e.target.value)}
-                      className="font-semibold text-base border-none focus-visible:ring-0 focus-visible:ring-offset-0 bg-transparent h-auto p-0 flex-1"
-                      readOnly // For now, title editing will be handled differently
+    if (isEditing) {
+        return (
+            <Card className="mb-4">
+                 <div className="sticky top-16 z-10 bg-background">
+                    <CardHeader className="flex flex-row items-center gap-2 p-2 border-b">
+                        <Input 
+                            value={section.content.match(/^(#{2,4}) (.*)/)?.[2].trim() || 'New Section'}
+                            onChange={(e) => onTitleChange(e.target.value)}
+                            className="font-semibold text-base border-none focus-visible:ring-0 focus-visible:ring-offset-0 bg-transparent h-auto p-0 flex-1"
+                            readOnly // For now, title editing will be handled differently
+                        />
+                        <Button variant="ghost" size="icon" className="h-8 w-8 text-destructive" onClick={onDelete}>
+                            <Trash2 className="h-4 w-4" />
+                        </Button>
+                    </CardHeader>
+                </div>
+                <CardContent className="p-4">
+                    <HighlightingTextarea 
+                        value={section.content}
+                        onValueChange={onContentChange}
+                        onBlur={() => setIsEditing(false)}
+                        autoFocus
+                        className="w-full min-h-[200px] font-code text-sm focus-visible:ring-0 focus-visible:ring-offset-0"
                     />
-                    <Button variant="ghost" size="icon" className="h-8 w-8 text-destructive" onClick={onDelete}>
-                      <Trash2 className="h-4 w-4" />
-                    </Button>
-                </CardHeader>
-            </div>
-            <CardContent className="p-4" onClick={() => setIsEditing(true)}>
-              {isEditing ? (
-                  <HighlightingTextarea 
-                    value={section.content}
-                    onValueChange={onContentChange}
-                    onBlur={() => setIsEditing(false)}
-                    autoFocus
-                    className="w-full min-h-[200px] font-code text-sm focus-visible:ring-0 focus-visible:ring-offset-0"
-                  />
-              ) : (
-                  <MarkdownPreview content={section.content} getImage={getImage} />
-              )}
-            </CardContent>
-        </Card>
+                </CardContent>
+            </Card>
+        )
+    }
+
+    return (
+        <div className="py-2" onClick={() => setIsEditing(true)}>
+            <MarkdownPreview content={section.content} getImage={getImage} />
+        </div>
     )
 }
 
-const SortableScopeSection = ({ section, ...props }: { section: ScopeSection, [key: string]: any }) => {
+const SortableScopeSection = ({ section, index, onAddSection, ...props }: { section: ScopeSection, index: number, onAddSection: (index: number) => void, [key: string]: any }) => {
   const { attributes, listeners, setNodeRef, transform, transition, isDragging } = useSortable({ id: section.id });
 
   const style = {
@@ -107,8 +106,16 @@ const SortableScopeSection = ({ section, ...props }: { section: ScopeSection, [k
   };
   
   return (
-    <div ref={setNodeRef} style={style}>
-      <ScopeSectionEditor section={section} dragHandleProps={attributes} dragListeners={listeners} {...props} />
+    <div ref={setNodeRef} style={style} className="relative group/section">
+      <div className="absolute top-0 -left-12 h-full flex items-center gap-1 opacity-0 group-hover/section:opacity-100 transition-opacity">
+        <Button variant="ghost" size="icon" className="h-6 w-6 cursor-pointer" onClick={() => onAddSection(index + 1)}>
+          <Plus className="h-4 w-4"/>
+        </Button>
+        <div {...attributes} {...listeners} className="cursor-grab p-1">
+          <GripVertical className="h-5 w-5 text-muted-foreground" />
+        </div>
+      </div>
+      <ScopeSectionEditor section={section} {...props} />
     </div>
   );
 };
@@ -314,12 +321,18 @@ export default function ProjectDetailsPage() {
     setSaveStatus('unsaved');
   }
 
-  const handleAddSection = () => {
+  const handleAddSection = (index?: number) => {
       const newSection: ScopeSection = {
           id: `section-${Date.now()}-${Math.random()}`,
           content: '## ' + t[language].newSection
       };
-      setScopeSections(prev => [...prev, newSection]);
+      if (index !== undefined) {
+        const newSections = [...scopeSections];
+        newSections.splice(index, 0, newSection);
+        setScopeSections(newSections);
+      } else {
+        setScopeSections(prev => [...prev, newSection]);
+      }
       setSaveStatus('unsaved');
   };
 
@@ -668,11 +681,13 @@ export default function ProjectDetailsPage() {
                     <DndContext sensors={sensors} collisionDetection={closestCenter} onDragEnd={handleDragEnd}>
                     <SortableContext items={scopeSections.map(s => s.id)} strategy={verticalListSortingStrategy}>
                         <div className="space-y-4">
-                        {scopeSections.map(section => {
+                        {scopeSections.map((section, index) => {
                             return (
                             <SortableScopeSection
                                 key={section.id}
                                 section={section}
+                                index={index}
+                                onAddSection={handleAddSection}
                                 onContentChange={(newContent: string) => handleSectionContentChange(section.id, newContent)}
                                 onTitleChange={(newTitle: string) => handleSectionTitleChange(section.id, newTitle)}
                                 onDelete={() => handleDeleteSection(section.id)}
@@ -685,7 +700,7 @@ export default function ProjectDetailsPage() {
                     </DndContext>
 
                     <div className="flex justify-center pt-4">
-                        <Button variant="outline" onClick={handleAddSection}>
+                        <Button variant="outline" onClick={() => handleAddSection()}>
                             <Plus className="mr-2 h-4 w-4" />
                             {t[language].addNewSection}
                         </Button>
