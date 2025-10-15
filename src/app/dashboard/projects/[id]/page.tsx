@@ -363,7 +363,7 @@ const ScopeSectionEditor = ({ section, onContentChange, onDelete, view, onViewCh
                 )}
                  <CardContent className="p-0">
                     {view === 'split' ? (
-                       <div className="relative">
+                       <div className="relative w-full">
                             <ResizablePanelGroup direction="horizontal" className="min-h-[300px] w-full rounded-lg border">
                                 <ResizablePanel defaultSize={50}>
                                     <div className="h-full">
@@ -384,7 +384,7 @@ const ScopeSectionEditor = ({ section, onContentChange, onDelete, view, onViewCh
                             </ResizablePanelGroup>
                         </div>
                     ) : view === 'edit' ? (
-                        <div>
+                        <div className="relative w-full">
                             <HighlightingTextarea
                                 ref={textareaRef}
                                 value={section.content}
