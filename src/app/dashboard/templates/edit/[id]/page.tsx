@@ -588,7 +588,7 @@ export default function TemplateEditorPage() {
   }
 
   return (
-    <div className="space-y-6 max-w-full overflow-x-hidden">
+    <div className="space-y-6 w-full max-w-full overflow-x-hidden flex-shrink-0">
        <header className="flex items-center justify-between">
         <div className="flex items-center gap-4">
           <Button variant="outline" size="icon" asChild>
@@ -736,5 +736,3 @@ export default function TemplateEditorPage() {
     </div>
   );
 }
-
-    
