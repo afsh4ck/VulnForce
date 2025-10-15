@@ -1,4 +1,3 @@
-
 'use client';
 
 import React, { useState, useMemo, useEffect, useCallback, useRef } from 'react';
@@ -17,7 +16,7 @@ import { Dialog, DialogTrigger, DialogContent, DialogDescription, DialogFooter, 
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from "@/components/ui/alert-dialog";
+import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from "@/components/ui/alert-dialog";
 import { useToast } from "@/hooks/use-toast";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { Calendar } from "@/components/ui/calendar";
@@ -51,6 +50,9 @@ const iconOptions = [
 ];
 
 function parseHtmlToBlocks(html: string): ContentBlock[] {
+  if (typeof document === 'undefined') {
+    return [{ id: `block-${Date.now()}`, tag: 'p', content: html || '' }];
+  }
   if (!html) return [{ id: `block-${Date.now()}`, tag: 'p', content: '' }];
   const el = document.createElement('div');
   el.innerHTML = html;
@@ -76,14 +78,17 @@ function parseHtmlToBlocks(html: string): ContentBlock[] {
 function blocksToHtml(blocks: ContentBlock[]): string {
   return blocks.map(block => {
     if (block.tag === 'pre') {
-        return `<pre><code>${block.content}</code></pre>`
+        // A basic way to escape HTML, you might want a more robust library
+        const escapedContent = block.content.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
+        return `<pre><code>${escapedContent}</code></pre>`
     }
+    // For other tags, we assume the content is safe HTML from contentEditable
     return `<${block.tag}>${block.content}</${block.tag}>`
   }).join('');
 }
 
 
-const EditableBlock = ({ block, onUpdate, onKeyDown }: { block: ContentBlock, onUpdate: (content: string) => void, onKeyDown: (e: React.KeyboardEvent<HTMLDivElement>) => void }) => {
+const EditableBlock = ({ block, onUpdate, onKeyDown, onFocus }: { block: ContentBlock, onUpdate: (content: string) => void, onKeyDown: (e: React.KeyboardEvent<HTMLDivElement>) => void, onFocus: () => void }) => {
     const blockRef = useRef<HTMLDivElement>(null);
 
     useEffect(() => {
@@ -91,41 +96,54 @@ const EditableBlock = ({ block, onUpdate, onKeyDown }: { block: ContentBlock, on
             blockRef.current.innerHTML = block.content;
         }
     }, [block.content]);
-
-    const handleInput = (e: React.FormEvent<HTMLDivElement>) => {
+    
+    const handleBlur = (e: React.FocusEvent<HTMLDivElement>) => {
         onUpdate(e.currentTarget.innerHTML);
     };
-    
+
     const Tag = block.tag === 'pre' ? 'div' : block.tag;
     const isCode = block.tag === 'pre';
-
+    const isPlaceholder = block.content.trim() === '';
+    const placeholderText = 'Type \'/\' for commands';
+    
     return (
-        <Tag
-            ref={blockRef}
-            onInput={handleInput}
-            onKeyDown={onKeyDown}
-            contentEditable
-            suppressContentEditableWarning
-            className={cn(
-              "w-full outline-none focus:ring-2 focus:ring-primary/20 p-1 rounded-md",
-              {
-                'text-2xl font-semibold mb-3 border-b pb-2 mt-8 font-headline': block.tag === 'h2',
-                'text-xl font-semibold mb-3 mt-6 font-headline': block.tag === 'h3',
-                'my-2 leading-relaxed': block.tag === 'p',
-                'bg-muted font-code text-sm p-4 rounded-md overflow-x-auto my-4 whitespace-pre': isCode,
-              }
+        <div 
+          className="relative"
+          onFocus={onFocus}
+        >
+          <Tag
+              ref={blockRef}
+              onBlur={handleBlur}
+              onKeyDown={onKeyDown}
+              contentEditable
+              suppressContentEditableWarning
+              className={cn(
+                "w-full outline-none focus:ring-2 focus:ring-primary/20 p-1 rounded-md",
+                {
+                  'text-2xl font-semibold mb-3 border-b pb-2 mt-8 font-headline': block.tag === 'h2',
+                  'text-xl font-semibold mb-3 mt-6 font-headline': block.tag === 'h3',
+                  'my-2 leading-relaxed': block.tag === 'p',
+                  'bg-muted font-code text-sm p-4 rounded-md overflow-x-auto my-4 whitespace-pre-wrap': isCode,
+                  'text-muted-foreground/50': isPlaceholder
+                }
+              )}
+              dangerouslySetInnerHTML={{ __html: block.content }}
+          />
+           {isPlaceholder && !isCode && (
+              <div className="absolute top-1 left-1 text-muted-foreground/50 pointer-events-none">{placeholderText}</div>
             )}
-        />
+        </div>
     );
 };
 
 
-const SortableBlock = ({ block, onUpdate, onKeyDown, onDelete, onAdd }: { 
+const SortableBlock = ({ block, onUpdate, onKeyDown, onDelete, onAdd, onFocus }: { 
     block: ContentBlock, 
     onUpdate: (id: string, content: string) => void, 
-    onKeyDown: (e: React.KeyboardEvent<HTMLDivElement>, id: string) => void,
+    onKeyDown: (e: React.KeyboardEvent<HTMLDivElement>, id: string, tag: ContentBlock['tag']) => void,
     onDelete: (id: string) => void,
-    onAdd: (id: string) => void
+    onAdd: (id: string) => void,
+    onFocus: (id: string) => void
 }) => {
   const { attributes, listeners, setNodeRef, transform, transition, isDragging } = useSortable({ id: block.id });
 
@@ -137,8 +155,8 @@ const SortableBlock = ({ block, onUpdate, onKeyDown, onDelete, onAdd }: {
   };
 
   return (
-    <div ref={setNodeRef} style={style} className="relative group/section">
-      <div className="absolute top-0 -left-12 h-full flex items-center gap-1 opacity-0 group-hover/section:opacity-100 transition-opacity">
+    <div ref={setNodeRef} style={style} className="relative group/block">
+      <div className="absolute top-0 -left-12 h-full flex items-center gap-1 opacity-0 group-hover/block:opacity-100 transition-opacity">
         <Button variant="ghost" size="icon" className="h-8 w-8 cursor-pointer" onClick={() => onAdd(block.id)}>
           <Plus className="h-4 w-4"/>
         </Button>
@@ -149,7 +167,8 @@ const SortableBlock = ({ block, onUpdate, onKeyDown, onDelete, onAdd }: {
       <EditableBlock 
         block={block} 
         onUpdate={(content) => onUpdate(block.id, content)} 
-        onKeyDown={(e) => onKeyDown(e, block.id)} 
+        onKeyDown={(e) => onKeyDown(e, block.id, block.tag)} 
+        onFocus={() => onFocus(block.id)}
       />
     </div>
   );
@@ -183,6 +202,8 @@ export default function ProjectDetailsPage() {
   const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
 
   const [saveStatus, setSaveStatus] = useState<SaveStatus>('saved');
+  const [focusedBlockId, setFocusedBlockId] = useState<string | null>(null);
+
 
   const sensors = useSensors( useSensor(PointerSensor), useSensor(KeyboardSensor, { coordinateGetter: sortableKeyboardCoordinates, }) );
 
@@ -197,12 +218,8 @@ export default function ProjectDetailsPage() {
     }
     setProject(currentProject);
     
-    // Parse HTML content into blocks
-    if (currentProject.reportBody) {
-      setBlocks(parseHtmlToBlocks(currentProject.reportBody));
-    }
+    setBlocks(parseHtmlToBlocks(currentProject.reportBody));
 
-    // Set state for edit dialog
     setEditName(currentProject.name);
     setEditClientId(currentProject.clientId);
     setEditDate({ from: new Date(currentProject.startDate), to: new Date(currentProject.endDate) });
@@ -212,6 +229,18 @@ export default function ProjectDetailsPage() {
     setSaveStatus('saved');
   }, [params.id, projects, router]);
   
+  const handleSaveScope = useCallback((showToast = true) => {
+    if (project) {
+        setSaveStatus('saving');
+        const newReportBody = blocksToHtml(blocks);
+        updateProject({...project, reportBody: newReportBody});
+        if (showToast) {
+            toast({ title: language === 'es' ? 'Informe guardado' : 'Report saved' });
+        }
+        setTimeout(() => setSaveStatus('saved'), 500);
+    }
+  }, [project, blocks, updateProject, toast, language]);
+
   useEffect(() => {
     if (saveStatus === 'unsaved') {
         const handler = setTimeout(() => {
@@ -222,8 +251,7 @@ export default function ProjectDetailsPage() {
             clearTimeout(handler);
         };
     }
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [blocks, saveStatus]);
+  }, [blocks, saveStatus, handleSaveScope]);
 
 
   const handleUpdateProject = () => {
@@ -303,18 +331,6 @@ export default function ProjectDetailsPage() {
     return sortConfig.direction === 'ascending' ? ' ▲' : ' ▼';
   };
 
-  const handleSaveScope = (showToast = true) => {
-    if (project) {
-        setSaveStatus('saving');
-        const newReportBody = blocksToHtml(blocks);
-        updateProject({...project, reportBody: newReportBody});
-        if (showToast) {
-            toast({ title: language === 'es' ? 'Informe guardado' : 'Report saved' });
-        }
-        setTimeout(() => setSaveStatus('saved'), 500);
-    }
-  }
-
   const handleBlockUpdate = (id: string, content: string) => {
     setBlocks(prevBlocks =>
       prevBlocks.map(b => b.id === id ? { ...b, content } : b)
@@ -322,15 +338,18 @@ export default function ProjectDetailsPage() {
     setSaveStatus('unsaved');
   };
 
-  const handleBlockKeyDown = (e: React.KeyboardEvent<HTMLDivElement>, id: string) => {
-    if (e.key === ' ' && (e.currentTarget.textContent === '##' || e.currentTarget.textContent === '###')) {
+  const handleBlockKeyDown = (e: React.KeyboardEvent<HTMLDivElement>, id: string, tag: ContentBlock['tag']) => {
+    const rawText = e.currentTarget.textContent || '';
+    if (e.key === ' ' && rawText.startsWith('##')) {
         e.preventDefault();
-        const newTag = e.currentTarget.textContent === '##' ? 'h2' : 'h3';
-        setBlocks(prev => prev.map(b => b.id === id ? { ...b, tag: newTag, content: '' } : b));
-    } else if (e.key === 'Enter' && !e.shiftKey) {
+        setBlocks(prev => prev.map(b => b.id === id ? { ...b, tag: 'h2', content: rawText.substring(2).trimStart() } : b));
+    } else if (e.key === ' ' && rawText.startsWith('###')) {
+        e.preventDefault();
+        setBlocks(prev => prev.map(b => b.id === id ? { ...b, tag: 'h3', content: rawText.substring(3).trimStart() } : b));
+    } else if (e.key === 'Enter' && !e.shiftKey && tag !== 'pre') {
         e.preventDefault();
         handleAddBlock(id);
-    } else if (e.key === 'Backspace' && e.currentTarget.textContent === '') {
+    } else if (e.key === 'Backspace' && rawText === '') {
         e.preventDefault();
         handleDeleteBlock(id);
     }
@@ -339,11 +358,13 @@ export default function ProjectDetailsPage() {
   const handleAddBlock = (afterId: string) => {
     const newBlock: ContentBlock = { id: `block-${Date.now()}`, tag: 'p', content: '' };
     const index = blocks.findIndex(b => b.id === afterId);
-    const newBlocks = [...blocks];
-    newBlocks.splice(index + 1, 0, newBlock);
-    setBlocks(newBlocks);
+    setBlocks(prev => {
+        const newBlocks = [...prev];
+        newBlocks.splice(index + 1, 0, newBlock);
+        return newBlocks;
+    });
     setSaveStatus('unsaved');
-    // TODO: Focus the new block
+    setFocusedBlockId(newBlock.id);
   };
 
   const handleDeleteBlock = (id: string) => {
@@ -370,7 +391,6 @@ export default function ProjectDetailsPage() {
         updateProject(updatedProject);
         setProject(updatedProject);
         setBlocks(parseHtmlToBlocks(translatedText));
-        setSaveStatus('unsaved');
         
         toast({ title: t[language].translationSuccess });
 
@@ -684,7 +704,7 @@ export default function ProjectDetailsPage() {
             )}
             </div>
             <TabsContent value="scope" className="mt-4">
-                <div className="w-full">
+                <div className="w-full max-w-4xl mx-auto">
                     <DndContext sensors={sensors} collisionDetection={closestCenter} onDragEnd={handleDragEnd}>
                         <SortableContext items={blocks.map(b => b.id)} strategy={verticalListSortingStrategy}>
                             <div className="space-y-1">
@@ -696,6 +716,7 @@ export default function ProjectDetailsPage() {
                                         onKeyDown={handleBlockKeyDown}
                                         onDelete={handleDeleteBlock}
                                         onAdd={handleAddBlock}
+                                        onFocus={setFocusedBlockId}
                                     />
                                 ))}
                             </div>
@@ -748,3 +769,4 @@ export default function ProjectDetailsPage() {
     </div>
   );
 }
+    
