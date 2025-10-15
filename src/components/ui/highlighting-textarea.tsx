@@ -1,24 +1,19 @@
 
-
 'use client';
-import React, { useRef, useEffect, useCallback, useImperativeHandle, useState } from 'react';
+import React, { useRef, useEffect, useCallback, useImperativeHandle } from 'react';
 import { cn } from '@/lib/utils';
 
+// This function is simplified and might need adjustments based on the exact markdown-like syntax
 const getHighlightedText = (text: string) => {
     if (!text) return '';
-    const todoRegex = /(\[TODO:?.*?\]|\bTODO\b)/g;
-
     return text
         .replace(/&/g, '&amp;')
         .replace(/</g, '&lt;')
         .replace(/>/g, '&gt;')
-        .replace(todoRegex, (match) => {
-             if (match === 'TODO') {
-                return `<span class="bg-red-500 text-white font-bold px-1 rounded-sm">TODO</span>`;
-            }
-             const highlighted = match.replace('TODO', `<span class="bg-red-500 text-white font-bold px-0.5 rounded-sm">TODO</span>`);
-            return highlighted;
-        });
+        .replace(/(\[TODO:?.*?\])/g, '<span class="bg-destructive text-destructive-foreground font-bold px-1 rounded-sm">$1</span>')
+        .replace(/^(#{1,4})\s(.*)/gm, '<span class="text-primary font-bold">$1 $2</span>')
+        .replace(/(\*\*|__)(.*?)\1/g, '<strong>$2</strong>')
+        .replace(/(\*|_)(.*?)\1/g, '<em>$2</em>');
 };
 
 interface HighlightingTextareaProps extends Omit<React.TextareaHTMLAttributes<HTMLTextAreaElement>, 'onChange' | 'value'> {
@@ -33,57 +28,27 @@ export const HighlightingTextarea = React.forwardRef<HTMLTextAreaElement, Highli
 
         useImperativeHandle(ref, () => localTextareaRef.current as HTMLTextAreaElement);
 
-        const handleScroll = useCallback(() => {
+        const syncScroll = useCallback(() => {
             if (backdropRef.current && localTextareaRef.current) {
                 backdropRef.current.scrollTop = localTextareaRef.current.scrollTop;
                 backdropRef.current.scrollLeft = localTextareaRef.current.scrollLeft;
             }
         }, []);
-        
+
+        useEffect(() => {
+            syncScroll();
+        }, [value, syncScroll]);
+
         const handleKeyDown = (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
-            if (e.key === 'Enter') {
+            if (e.key === 'Tab') {
+                e.preventDefault();
                 const textarea = e.currentTarget;
                 const { selectionStart, selectionEnd, value } = textarea;
-        
-                let lineStart = value.lastIndexOf('\n', selectionStart - 1) + 1;
-        
-                const currentLine = value.substring(lineStart, selectionStart);
-        
-                const bulletMatch = currentLine.match(/^(\s*-\s+)/);
-                const numberMatch = currentLine.match(/^(\s*\d+\.\s+)/);
-        
-                if (bulletMatch) {
-                    e.preventDefault();
-                    const newText = currentLine.trim() === '-' ? '\n' : '\n' + bulletMatch[1];
-                    const newValue = value.substring(0, selectionStart) + newText + value.substring(selectionEnd);
-                    onValueChange(newValue);
-        
-                    setTimeout(() => {
-                        textarea.selectionStart = textarea.selectionEnd = selectionStart + newText.length;
-                    }, 0);
-                } else if (numberMatch) {
-                    e.preventDefault();
-                    const currentNumber = parseInt(numberMatch[1].trim());
-
-                    if (currentLine.trim() === `${currentNumber}.`) {
-                         const newValue = value.substring(0, lineStart) + value.substring(selectionEnd);
-                         onValueChange(newValue);
-                         setTimeout(() => {
-                             textarea.selectionStart = textarea.selectionEnd = lineStart;
-                         }, 0);
-
-                    } else {
-                        const indentation = numberMatch[1].match(/^\s*/)?.[0] || '';
-                        const nextNumber = currentNumber + 1;
-                        const newText = `\n${indentation}${nextNumber}. `;
-                        const newValue = value.substring(0, selectionStart) + newText + value.substring(selectionEnd);
-                        onValueChange(newValue);
-            
-                        setTimeout(() => {
-                            textarea.selectionStart = textarea.selectionEnd = selectionStart + newText.length;
-                        }, 0);
-                    }
-                }
+                const newValue = value.substring(0, selectionStart) + '  ' + value.substring(selectionEnd);
+                onValueChange(newValue);
+                setTimeout(() => {
+                    textarea.selectionStart = textarea.selectionEnd = selectionStart + 2;
+                }, 0);
             }
         };
 
@@ -91,29 +56,18 @@ export const HighlightingTextarea = React.forwardRef<HTMLTextAreaElement, Highli
             onValueChange(e.target.value);
         };
         
-        useEffect(() => {
-            handleScroll();
-        }, [value, handleScroll]);
-
-        const highlightedText = getHighlightedText(value);
+        const highlightedHtml = getHighlightedText(value) + '\n';
 
         return (
             <div className={cn("relative w-full h-full", className)}>
-                <div
-                    ref={backdropRef}
-                    className={cn(
-                        "absolute inset-0 z-0 overflow-auto whitespace-pre-wrap break-words pointer-events-none",
-                        "font-code text-sm min-h-[300px]",
-                        "p-4"
-                    )}
-                >
-                    <span dangerouslySetInnerHTML={{ __html: highlightedText + '\n' }}/>
+                <div ref={backdropRef} className="absolute inset-0 z-0 overflow-auto whitespace-pre-wrap break-words pointer-events-none p-4 font-code text-sm min-h-[300px]">
+                    <div dangerouslySetInnerHTML={{ __html: highlightedHtml }} />
                 </div>
                 <textarea
                     ref={localTextareaRef}
                     value={value}
                     onChange={handleChange}
-                    onScroll={handleScroll}
+                    onScroll={syncScroll}
                     onKeyDown={handleKeyDown}
                     className={cn(
                         'relative z-10 block w-full h-full resize-none overflow-auto whitespace-pre-wrap break-words border-0 bg-transparent text-transparent caret-foreground',

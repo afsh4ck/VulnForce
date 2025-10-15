@@ -1,3 +1,4 @@
+
 'use client';
 import React from 'react';
 import ReactMarkdown from 'react-markdown';
@@ -148,7 +149,7 @@ export const MarkdownPreview = ({ content, getImage, isReport }: { content: stri
                             if (image) {
                                 finalSrc = image.dataUrl;
                             } else {
-                                return <div className="w-full aspect-video bg-muted rounded-md flex items-center justify-center text-muted-foreground">Image not found</div>;
+                                return <div className="w-full text-center text-xs aspect-video bg-muted rounded-md flex items-center justify-center text-muted-foreground">Image not found</div>;
                             }
                         }
                         return <Image src={finalSrc || ''} alt={alt || 'Image'} width={800} height={600} {...props} style={{maxWidth: '100%', height: 'auto'}} className="rounded-md border" />;
