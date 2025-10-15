@@ -1,4 +1,5 @@
 
+
 'use client';
 
 import React, { useState, useMemo, useEffect, useCallback, useRef } from 'react';
@@ -141,6 +142,7 @@ const EditableBlock = React.forwardRef<HTMLDivElement, {
           onFocus={onFocus}
         >
           <div
+              dir="ltr"
               ref={blockRef}
               onBlur={handleBlur}
               onInput={(e: React.FormEvent<HTMLDivElement>) => onUpdate(e.currentTarget.innerHTML)}
@@ -521,6 +523,8 @@ export default function ProjectDetailsPage() {
           const index = prev.findIndex(b => b.id === id);
           if (index > 0) {
             setActiveBlockId(prev[index - 1].id);
+          } else if (prev.length > 1) {
+            setActiveBlockId(prev[1].id);
           }
           return prev.filter(b => b.id !== id);
       });
@@ -667,7 +671,7 @@ export default function ProjectDetailsPage() {
                 } else {
                   document.execCommand('insertHTML', false, '</li><li>');
                    if(blockRefs.current[id]) {
-                       onUpdate(blockRefs.current[id]!.querySelector('[contenteditable=true]')!.innerHTML);
+                       handleBlockUpdate(id, blockRefs.current[id]!.querySelector('[contenteditable=true]')!.innerHTML);
                    }
                 }
             }
@@ -677,7 +681,7 @@ export default function ProjectDetailsPage() {
 
       } else if (e.key === 'Backspace' && (target.innerHTML === '' || target.innerHTML === '<br>')) {
            e.preventDefault();
-           if(currentBlock.tag !== 'p' && currentBlock.tag !== 'pre') {
+           if(currentBlock.tag !== 'p') {
                 updateBlockTag(id, 'p');
            } else if (blocks.length > 1) {
               handleDeleteBlock(id);
@@ -703,7 +707,7 @@ export default function ProjectDetailsPage() {
               setCommandMenuOpen(true);
           }
       }
-  }, [blocks, handleAddBlock, updateBlockTag, handleDeleteBlock, updateBlocks, onUpdate]);
+  }, [blocks, handleAddBlock, updateBlockTag, handleDeleteBlock, updateBlocks, handleBlockUpdate]);
 
   const handleCommandSelect = (command: 'h1' | 'h2' | 'h3' | 'pre' | 'ul' | 'ol') => {
     if (!activeBlockId) return;
