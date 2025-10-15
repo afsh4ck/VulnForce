@@ -73,22 +73,6 @@ export const MarkdownPreview = ({ content, getImage, isReport }: { content: stri
             </Tag>
         );
     };
-    
-    const processedContent = useMemo(() => {
-        if (!content) return '';
-        // Regex to find all instances of our internal image format: ![alt text](image://image-id)
-        const imageRegex = /!\[(.*?)\]\(image:\/\/([a-zA-Z0-9-]+)\)/g;
-        return content.replace(imageRegex, (match, altText, imageId) => {
-            const image = getImage(imageId);
-            if (image) {
-                // Replace the custom protocol with the actual base64 data URL
-                return `![${altText}](${image.dataUrl})`;
-            }
-            // If image not found, return an empty string or some placeholder
-            return ''; 
-        });
-    }, [content, getImage]);
-
 
     return (
         <div className="prose dark:prose-invert max-w-full break-words">
@@ -148,11 +132,19 @@ export const MarkdownPreview = ({ content, getImage, isReport }: { content: stri
                         );
                     },
                     img: ({node, src, alt, ...props}) => {
+                        if (src?.startsWith('image://')) {
+                            const imageId = src.replace('image://', '');
+                            const image = getImage(imageId);
+                            if (image) {
+                                return <img src={image.dataUrl} alt={alt} {...props} style={{maxWidth: '100%', height: 'auto'}} className="rounded-md border" />;
+                            }
+                            return null; // Don't render broken image
+                        }
                         return <img src={src} alt={alt} {...props} style={{maxWidth: '100%', height: 'auto'}} className="rounded-md border" />;
                     },
                 }}
             >
-                {processedContent}
+                {content}
             </ReactMarkdown>
         </div>
     );

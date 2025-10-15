@@ -315,8 +315,8 @@ const SectionEditor = ({ section, onContentChange, onDelete, view, onViewChange,
               )}
                <div className="p-0">
                   {view === 'split' && (
-                      <div className="relative">
-                          <ResizablePanelGroup direction="horizontal" className="min-h-[300px] rounded-lg">
+                      <div className="relative w-full">
+                          <ResizablePanelGroup direction="horizontal" className="min-h-[300px] w-full rounded-lg border">
                               <ResizablePanel defaultSize={50}>
                                   <div className="h-full">
                                   <HighlightingTextarea
@@ -729,7 +729,7 @@ export default function VulnerabilityEditorPage() {
   }
 
   return (
-    <div className="space-y-6 max-w-full overflow-x-hidden">
+    <div className="space-y-6 overflow-x-auto">
       <header className="flex items-center justify-between">
         <div className="flex items-center gap-4">
             <Button variant="outline" size="icon" asChild>
@@ -973,5 +973,3 @@ export default function VulnerabilityEditorPage() {
     </div>
   );
 }
-
-    
