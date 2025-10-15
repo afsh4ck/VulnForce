@@ -14,8 +14,8 @@ export default {
           css: {
             '--tw-prose-bullets': theme('colors.primary.DEFAULT'),
             '--tw-prose-counters': theme('colors.primary.DEFAULT'),
-            'maxWidth': '100%', 
-            pre: {
+            'maxWidth': '100%',
+             pre: {
               'margin-top': '0',
               'margin-bottom': '0',
               'padding': '0',
@@ -27,7 +27,16 @@ export default {
               'width': '100%',
               'overflow-x': 'auto',
               'display': 'block',
-            }
+            },
+            '[contenteditable="true"]:focus': {
+              outline: 'none',
+            },
+            '.placeholder::before': {
+              content: 'attr(data-placeholder)',
+              color: theme('colors.muted.foreground'),
+              position: 'absolute',
+              pointerEvents: 'none',
+            },
           }
         }
       }),

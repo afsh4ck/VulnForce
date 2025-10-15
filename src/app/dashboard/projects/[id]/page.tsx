@@ -28,7 +28,7 @@ import { DateRange } from 'react-day-picker';
 import { DndContext, closestCenter, KeyboardSensor, PointerSensor, useSensor, useSensors, DragEndEvent } from '@dnd-kit/core';
 import { arrayMove, SortableContext, sortableKeyboardCoordinates, useSortable, verticalListSortingStrategy } from '@dnd-kit/sortable';
 import { CSS } from '@dnd-kit/utilities';
-import { Command, CommandEmpty, CommandGroup, CommandInput, CommandItem, CommandList } from "@/components/ui/command";
+import { CommandMenu } from '@/components/command-menu';
 
 type SortKey = keyof Finding;
 type SaveStatus = 'unsaved' | 'saving' | 'saved';
@@ -93,15 +93,15 @@ function blocksToHtml(blocks: ContentBlock[]): string {
   }).join('');
 }
 
-const EditableBlock = ({ block, onUpdate, onKeyDown, onFocus, isFocused, placeholder, ...props }: { 
+const EditableBlock = React.forwardRef<HTMLDivElement, { 
   block: ContentBlock, 
   onUpdate: (content: string) => void, 
   onKeyDown: (e: React.KeyboardEvent<HTMLDivElement>) => void, 
   onFocus: () => void,
   isFocused: boolean,
-  placeholder: string
-  [key: string]: any;
-}) => {
+  placeholder: string,
+  t_editor: any
+}>(({ block, onUpdate, onKeyDown, onFocus, isFocused, placeholder, t_editor, ...props }, ref) => {
     const blockRef = useRef<HTMLDivElement>(null);
     
     useEffect(() => {
@@ -127,11 +127,11 @@ const EditableBlock = ({ block, onUpdate, onKeyDown, onFocus, isFocused, placeho
     const isList = ['ul', 'ol'].includes(block.tag);
 
     const getPlaceholder = () => {
-        if (!block.content && !isList && !isCode) {
+        if (isFocused && (block.content === '' || block.content === '<br>')) {
             if (block.tag.startsWith('h')) {
-                return props.t_editor.headings[block.tag as 'h1' | 'h2' | 'h3'];
+                return t_editor.headings[block.tag as 'h1' | 'h2' | 'h3'];
             }
-            if (block.content === '' || block.content === '<br>') {
+            if (!isList && !isCode) {
                 return placeholder;
             }
         }
@@ -140,28 +140,10 @@ const EditableBlock = ({ block, onUpdate, onKeyDown, onFocus, isFocused, placeho
 
     const placeholderText = getPlaceholder();
 
-    if (isList) {
-      return (
-        <Tag
-          ref={blockRef}
-          onBlur={handleBlur}
-          onInput={(e: React.FormEvent<HTMLUListElement>) => onUpdate(e.currentTarget.innerHTML)}
-          onKeyDown={onKeyDown}
-          onFocus={onFocus}
-          contentEditable
-          suppressContentEditableWarning
-          className={cn(
-            "w-full outline-none p-1 rounded-md my-2 list-outside",
-            block.tag === 'ul' ? 'list-disc ml-6' : 'list-decimal ml-6'
-          )}
-          dangerouslySetInnerHTML={{ __html: block.content || '<li><br></li>' }}
-        />
-      );
-    }
-    
     return (
         <div 
           dir="ltr"
+          ref={ref as React.Ref<HTMLDivElement>}
           className="relative"
           onFocus={onFocus}
         >
@@ -174,23 +156,25 @@ const EditableBlock = ({ block, onUpdate, onKeyDown, onFocus, isFocused, placeho
               suppressContentEditableWarning
               className={cn(
                 "w-full outline-none p-1 rounded-md",
+                isList ? "list-outside my-2 " + (block.tag === 'ul' ? 'list-disc ml-6' : 'list-decimal ml-6') : "",
                 {
                   'text-3xl font-bold mb-4 border-b-2 border-primary pb-2 mt-12 font-headline': block.tag === 'h1',
                   'text-2xl font-semibold mb-3 border-b pb-2 mt-8 font-headline': block.tag === 'h2',
                   'text-xl font-semibold mb-3 mt-6 font-headline': block.tag === 'h3',
                   'my-2 leading-relaxed': block.tag === 'p',
                   'bg-muted font-code text-sm p-4 rounded-md overflow-x-auto my-4 whitespace-pre-wrap': isCode,
-                  'text-muted-foreground/50': !!placeholderText,
+                  'placeholder': !!placeholderText,
                 }
               )}
-              dangerouslySetInnerHTML={{ __html: isCode ? block.content.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;") : block.content }}
+              dangerouslySetInnerHTML={{ __html: isCode ? block.content.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;") : block.content || (isList ? '<li><br></li>' : '') }}
           />
            {placeholderText && (
-              <div className="absolute top-1 left-1 text-muted-foreground/50 pointer-events-none">{placeholderText}</div>
+              <div className="absolute top-1 left-1 text-muted-foreground pointer-events-none">{placeholderText}</div>
             )}
         </div>
     );
-};
+});
+EditableBlock.displayName = "EditableBlock";
 
 const SortableBlock = ({ block, ...props }: { block: ContentBlock, [key: string]: any }) => {
   const { attributes, listeners, setNodeRef, transform, transition, isDragging } = useSortable({ id: block.id });
@@ -249,10 +233,12 @@ export default function ProjectDetailsPage() {
 
   const [activeBlockId, setActiveBlockId] = useState<string | null>(null);
   const [commandMenuOpen, setCommandMenuOpen] = useState(false);
+  const commandMenuRef = useRef<HTMLDivElement>(null);
   
   const [saveStatus, setSaveStatus] = useState<SaveStatus>('saved');
 
   const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
+  const blockRefs = useRef<Record<string, HTMLDivElement | null>>({});
 
   const client = clients.find(c => c.id === project?.clientId);
   
@@ -260,15 +246,17 @@ export default function ProjectDetailsPage() {
     setBlocks(prevBlocks => {
       const resolvedBlocks = typeof newBlocks === 'function' ? newBlocks(prevBlocks) : newBlocks;
       if (recordHistory) {
-        const newHistory = history.slice(0, historyIndex + 1);
-        newHistory.push(resolvedBlocks);
-        setHistory(newHistory);
-        setHistoryIndex(newHistory.length - 1);
+        setHistory(prevHistory => {
+            const newHistory = prevHistory.slice(0, historyIndex + 1);
+            newHistory.push(resolvedBlocks);
+            return newHistory;
+        });
+        setHistoryIndex(prevIndex => prevIndex + 1);
       }
       setSaveStatus('unsaved');
       return resolvedBlocks;
     });
-  }, [history, historyIndex]);
+  }, [historyIndex]);
 
   useEffect(() => {
     const handleUndoRedo = (e: KeyboardEvent) => {
@@ -531,19 +519,17 @@ export default function ProjectDetailsPage() {
   const sensors = useSensors(useSensor(PointerSensor), useSensor(KeyboardSensor, { coordinateGetter: sortableKeyboardCoordinates }));
   
   const handleBlockUpdate = useCallback((id: string, content: string) => {
-    const currentBlock = blocks.find(b => b.id === id);
-    const hasChanged = currentBlock?.content !== content;
-    
-    if (hasChanged) {
-        updateBlocks(prev => prev.map(b => b.id === id ? { ...b, content } : b));
-    }
-  }, [blocks, updateBlocks]);
+    updateBlocks(prev => prev.map(b => b.id === id ? { ...b, content } : b));
+  }, [updateBlocks]);
   
   const handleDeleteBlock = useCallback((id: string) => {
       updateBlocks(prev => {
           if (prev.length <= 1) return prev;
-          const newBlocks = prev.filter(b => b.id !== id);
-          return newBlocks;
+          const index = prev.findIndex(b => b.id === id);
+          if (index > 0) {
+            setActiveBlockId(prev[index - 1].id);
+          }
+          return prev.filter(b => b.id !== id);
       });
   }, [updateBlocks]);
 
@@ -578,7 +564,7 @@ export default function ProjectDetailsPage() {
             const contentAsText = document.createElement('div');
             contentAsText.innerHTML = b.content;
             newBlock.content = `<li>${contentAsText.textContent || '<br>'}</li>`;
-          } else if(newTag === 'p' && (b.tag === 'ul' || b.tag === 'ol')) {
+          } else if(newTag !== 'ul' && newTag !== 'ol' && (b.tag === 'ul' || b.tag === 'ol')) {
              const tempEl = document.createElement('div');
              tempEl.innerHTML = b.content;
              newBlock.content = tempEl.textContent || '';
@@ -597,9 +583,61 @@ export default function ProjectDetailsPage() {
       const currentBlock = blocks[currentIndex];
       const target = e.target as HTMLDivElement;
       
-      if (e.key === 'Enter') {
-        if (currentBlock.tag === 'ul' || currentBlock.tag === 'ol') {
+      const moveCursor = (index: number, position: 'start' | 'end') => {
+        if (index >= 0 && index < blocks.length) {
             e.preventDefault();
+            const nextBlockId = blocks[index].id;
+            setActiveBlockId(nextBlockId);
+             setTimeout(() => {
+                const nextBlockRef = blockRefs.current[nextBlockId]?.querySelector('[contenteditable="true"]') as HTMLElement;
+                if(nextBlockRef) {
+                    nextBlockRef.focus();
+                    const selection = window.getSelection();
+                    const range = document.createRange();
+                    range.selectNodeContents(nextBlockRef);
+                    range.collapse(position === 'start');
+                    selection?.removeAllRanges();
+                    selection?.addRange(range);
+                }
+            }, 0);
+        }
+      }
+
+      if (e.key === 'ArrowUp') {
+        const selection = window.getSelection();
+        if (selection && selection.rangeCount > 0) {
+            const range = selection.getRangeAt(0);
+            const rect = range.getClientRects()[0];
+            if (!rect || rect.top > target.getBoundingClientRect().top + 5) {
+               moveCursor(currentIndex - 1, 'end');
+            }
+        }
+      } else if (e.key === 'ArrowDown') {
+        const selection = window.getSelection();
+        if (selection && selection.rangeCount > 0) {
+            const range = selection.getRangeAt(0);
+            const rect = range.getClientRects()[0];
+            const targetRect = target.getBoundingClientRect();
+            if (!rect || rect.bottom < targetRect.bottom - 5) {
+                moveCursor(currentIndex + 1, 'start');
+            }
+        }
+      } else if (e.key === 'ArrowLeft') {
+          const selection = window.getSelection();
+          if (selection?.anchorOffset === 0) {
+            moveCursor(currentIndex - 1, 'end');
+          }
+      } else if (e.key === 'ArrowRight') {
+          const selection = window.getSelection();
+          if (selection?.anchorOffset === target.textContent?.length) {
+            moveCursor(currentIndex + 1, 'start');
+          }
+      }
+      else if (e.key === 'Enter') {
+        if (e.shiftKey) return;
+        
+        e.preventDefault();
+        if (currentBlock.tag === 'ul' || currentBlock.tag === 'ol') {
             const selection = window.getSelection();
             if (selection && selection.anchorNode) {
                 const currentLi = selection.anchorNode.parentElement?.closest('li');
@@ -608,7 +646,6 @@ export default function ProjectDetailsPage() {
                      const newBlocks = [...blocks];
                      const listBlock = newBlocks[currentIndex];
                      
-                     // Get content of all LIs except the current empty one
                      const tempDiv = document.createElement('div');
                      tempDiv.innerHTML = listBlock.content;
                      const listItems = Array.from(tempDiv.querySelectorAll('li'));
@@ -636,25 +673,18 @@ export default function ProjectDetailsPage() {
                      updateBlocks(newBlocks);
                      setActiveBlockId(newParagraphBlock.id);
                 } else {
-                  document.execCommand('insertHTML', false, '</li><li><br>');
+                  document.execCommand('insertHTML', false, '</li><li>');
                 }
             }
             return;
         }
-        if (!e.shiftKey) {
-            e.preventDefault();
-            handleAddBlock(currentIndex, 'p', '');
-        }
+        handleAddBlock(currentIndex, 'p', '');
+
       } else if (e.key === 'Backspace' && (target.innerHTML === '' || target.innerHTML === '<br>')) {
            e.preventDefault();
-           if(currentBlock.tag.startsWith('h')) {
-              updateBlockTag(id, 'p');
-           } else if (blocks.length > 1) {
+            if (blocks.length > 1) {
               handleDeleteBlock(id);
-              if (currentIndex > 0) {
-                  setActiveBlockId(blocks[currentIndex - 1].id);
-              }
-           }
+            }
       } else if (e.key === ' ' && target.textContent?.match(/^#$/)) {
           e.preventDefault();
           updateBlockTag(id, 'h1');
@@ -672,8 +702,7 @@ export default function ProjectDetailsPage() {
           updateBlockTag(id, 'ol');
       }
        else if (e.key === '/') {
-          const selection = window.getSelection();
-          if (selection && selection.anchorOffset === 1 && target.textContent === '/') {
+          if (target.textContent === '/') {
               setCommandMenuOpen(true);
           }
       }
@@ -681,10 +710,18 @@ export default function ProjectDetailsPage() {
 
   const handleCommandSelect = (command: 'h1' | 'h2' | 'h3' | 'pre' | 'ul' | 'ol') => {
     if (!activeBlockId) return;
-    updateBlockTag(activeBlockId, command);
-    const blockEl = document.querySelector(`[data-rbd-draggable-id="${activeBlockId}"] [contenteditable="true"]`) as HTMLElement;
-    if(blockEl) {
-        blockEl.innerHTML = '';
+
+    const currentIndex = blocks.findIndex(b => b.id === activeBlockId);
+    
+    // Create new block instead of updating if current is not empty
+    if(blocks[currentIndex].content.trim() !== '' && blocks[currentIndex].content !== '<br>') {
+        handleAddBlock(currentIndex, command);
+    } else {
+        updateBlockTag(activeBlockId, command);
+        const blockEl = blockRefs.current[activeBlockId]?.querySelector('[contenteditable="true"]') as HTMLElement;
+        if(blockEl) {
+            blockEl.innerHTML = '';
+        }
     }
     setCommandMenuOpen(false);
   };
@@ -760,8 +797,9 @@ export default function ProjectDetailsPage() {
                      <DndContext sensors={sensors} collisionDetection={closestCenter} onDragEnd={handleDragEnd}>
                         <SortableContext items={blocks.map(b => b.id)} strategy={verticalListSortingStrategy}>
                             {blocks.map((block, index) => (
-                                <SortableBlock 
+                                <SortableBlock
                                     key={block.id}
+                                    ref={(el: any) => (blockRefs.current[block.id] = el)}
                                     block={block}
                                     index={index}
                                     onUpdate={(content: string) => handleBlockUpdate(block.id, content)}
@@ -776,27 +814,12 @@ export default function ProjectDetailsPage() {
                             ))}
                         </SortableContext>
                      </DndContext>
-                     <Popover open={commandMenuOpen} onOpenChange={setCommandMenuOpen}>
-                            <PopoverTrigger asChild>
-                                <div />
-                            </PopoverTrigger>
-                            <PopoverContent className="w-48 p-0">
-                                <Command>
-                                    <CommandInput placeholder="Search commands..." />
-                                    <CommandList>
-                                        <CommandEmpty>No commands found.</CommandEmpty>
-                                        <CommandGroup heading="Elements">
-                                            <CommandItem onSelect={() => handleCommandSelect('h1')}><Heading1 className="mr-2 h-4 w-4" />Title 1</CommandItem>
-                                            <CommandItem onSelect={() => handleCommandSelect('h2')}><Heading2 className="mr-2 h-4 w-4" />Title 2</CommandItem>
-                                            <CommandItem onSelect={() => handleCommandSelect('h3')}><Heading3 className="mr-2 h-4 w-4" />Title 3</CommandItem>
-                                            <CommandItem onSelect={() => handleCommandSelect('pre')}><Code className="mr-2 h-4 w-4" />Code Block</CommandItem>
-                                            <CommandItem onSelect={() => handleCommandSelect('ul')}><List className="mr-2 h-4 w-4" />Bulleted List</CommandItem>
-                                            <CommandItem onSelect={() => handleCommandSelect('ol')}><ListOrdered className="mr-2 h-4 w-4" />Numbered List</CommandItem>
-                                        </CommandGroup>
-                                    </CommandList>
-                                </Command>
-                            </PopoverContent>
-                        </Popover>
+                     <CommandMenu
+                        open={commandMenuOpen}
+                        onOpenChange={setCommandMenuOpen}
+                        onSelect={handleCommandSelect}
+                        triggerRef={activeBlockId ? blockRefs.current[activeBlockId] : null}
+                     />
                   </CardContent>
                </Card>
             </TabsContent>
