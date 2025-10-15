@@ -57,54 +57,24 @@ const ScopeSectionEditor = ({ section, onContentChange, getImage }: {
   getImage: (id: string) => ImageAsset | undefined
 }) => {
     const [isEditing, setIsEditing] = useState(false);
-    const textareaRef = useRef<HTMLTextAreaElement>(null);
-    const divRef = useRef<HTMLDivElement>(null);
-
-    useEffect(() => {
-        if (isEditing && textareaRef.current) {
-            textareaRef.current.focus();
-            textareaRef.current.style.height = 'auto';
-            textareaRef.current.style.height = `${textareaRef.current.scrollHeight}px`;
-        }
-    }, [isEditing]);
-    
-    const handleContentChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
-        onContentChange(e.target.value);
-        if (textareaRef.current) {
-            textareaRef.current.style.height = 'auto';
-            textareaRef.current.style.height = `${e.target.scrollHeight}px`;
-        }
-    };
-
-    const handleBlur = () => {
-        setIsEditing(false);
-    };
 
     if (isEditing) {
-        const divHeight = divRef.current ? divRef.current.clientHeight : 'auto';
         return (
-             <div ref={divRef} className="relative w-full">
-                <Textarea
-                    ref={textareaRef}
-                    value={section.content}
-                    onChange={handleContentChange}
-                    onBlur={handleBlur}
-                    className="absolute inset-0 w-full h-full p-0 border-none resize-none bg-transparent focus-visible:ring-0 focus-visible:ring-offset-0 font-sans text-sm"
-                    style={{ minHeight: divHeight }}
-                />
-                 {/* This div is for height calculation and is invisible */}
-                <div className="invisible whitespace-pre-wrap font-sans text-sm p-0 w-full" aria-hidden="true">
-                  <MarkdownPreview content={section.content} getImage={getImage} />
-                </div>
-            </div>
+            <Textarea
+                value={section.content}
+                onChange={(e) => onContentChange(e.target.value)}
+                onBlur={() => setIsEditing(false)}
+                autoFocus
+                className="w-full min-h-[100px] p-2 bg-transparent border-none focus:outline-none focus:ring-0 resize-none"
+            />
         )
     }
-
+    
     return (
-        <div ref={divRef} className="py-2" onClick={() => setIsEditing(true)}>
+        <div className="py-2" onClick={() => setIsEditing(true)}>
             <MarkdownPreview content={section.content} getImage={getImage} />
         </div>
-    )
+    );
 }
 
 const SortableScopeSection = ({ section, index, onAddSection, onDelete, ...props }: { section: ScopeSection, index: number, onAddSection: (index: number) => void, onDelete: () => void, [key: string]: any }) => {
@@ -119,8 +89,8 @@ const SortableScopeSection = ({ section, index, onAddSection, onDelete, ...props
   
   return (
     <div ref={setNodeRef} style={style} className="relative group/section">
-      <div className="absolute top-0 -left-12 h-full flex items-center gap-1 opacity-0 group-hover/section:opacity-100 transition-opacity">
-        <Button variant="ghost" size="icon" className="h-8 w-8 cursor-pointer" onClick={() => onAddSection(index + 1)}>
+       <div className="absolute top-0 -left-12 h-full flex items-center gap-1 opacity-0 group-hover/section:opacity-100 transition-opacity">
+         <Button variant="ghost" size="icon" className="h-8 w-8 cursor-pointer" onClick={() => onAddSection(index + 1)}>
           <Plus className="h-4 w-4"/>
         </Button>
         <div {...attributes} {...listeners} className="cursor-grab p-1">
@@ -750,4 +720,3 @@ export default function ProjectDetailsPage() {
     </div>
   );
 }
-
