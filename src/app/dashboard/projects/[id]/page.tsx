@@ -829,7 +829,7 @@ export default function ProjectDetailsPage() {
 
 
   return (
-    <div className="w-full space-y-6">
+    <div className="w-full space-y-6 pt-6">
        <div className="flex justify-between items-start px-4 sm:px-6">
           <div className="flex items-center gap-4">
             <Button variant="outline" size="icon" className="h-10 w-10" asChild>
