@@ -18,7 +18,7 @@ import { DndContext, closestCenter, KeyboardSensor, PointerSensor, useSensor, us
 import { arrayMove, SortableContext, sortableKeyboardCoordinates, useSortable, verticalListSortingStrategy } from '@dnd-kit/sortable';
 import { CSS } from '@dnd-kit/utilities';
 import { Badge } from '@/components/ui/badge';
-import { MarkdownPreview } from '@/components/markdown-preview';
+import { HighlightingTextarea } from '@/components/ui/highlighting-textarea';
 
 type SaveStatus = 'unsaved' | 'saving' | 'saved';
 
@@ -39,6 +39,7 @@ const SectionEditor = ({ section, onContentChange, onDelete, onTitleChange, isOr
 }) => {
   const headingMatch = section.content.match(/^(#{2,4}) (.*)/);
   const sectionTitle = headingMatch ? headingMatch[2].trim() : 'New Section';
+  const contentWithoutTitle = section.content.replace(/^(#{2,4}) .*\n?/, '');
 
   return (
       <Card className="mb-4">
@@ -58,7 +59,11 @@ const SectionEditor = ({ section, onContentChange, onDelete, onTitleChange, isOr
             </CardHeader>
           </div>
           <CardContent className="p-4" >
-            <MarkdownPreview content={section.content} getImage={getImage} />
+             <HighlightingTextarea 
+                value={contentWithoutTitle}
+                onValueChange={(newContent) => onContentChange(newContent)}
+                className="w-full min-h-[200px] font-code text-sm focus-visible:ring-0 focus-visible:ring-offset-0"
+              />
           </CardContent>
       </Card>
   )
@@ -206,9 +211,14 @@ export default function FindingEditorPage() {
 
   const handleSectionChange = (sectionId: string, newContent: string) => {
     setSections(prevSections =>
-      prevSections.map(sec => 
-        sec.id === sectionId ? { ...sec, content: newContent } : sec
-      )
+      prevSections.map(sec => {
+        if (sec.id === sectionId) {
+            const headingMatch = sec.content.match(/^(#{2,4}) .*\n?/);
+            const title = headingMatch ? headingMatch[0] : '';
+            return { ...sec, content: title + newContent };
+        }
+        return sec;
+      })
     );
     setSaveStatus('unsaved');
   };
@@ -446,6 +456,7 @@ export default function FindingEditorPage() {
                             onTitleChange={(newTitle: string) => handleTitleChange(section.id, newContent)}
                             onDelete={() => handleDeleteSection(section.id)}
                             getImage={getImage}
+                            isOrganizing={false}
                           />
                        );
                     })}

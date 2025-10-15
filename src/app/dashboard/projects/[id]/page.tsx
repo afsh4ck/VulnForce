@@ -27,7 +27,6 @@ import { useData } from '@/context/data-context';
 import { DateRange } from 'react-day-picker';
 import { DndContext, closestCenter, KeyboardSensor, PointerSensor, useSensor, useSensors, DragEndEvent } from '@dnd-kit/core';
 import { arrayMove, SortableContext, sortableKeyboardCoordinates, useSortable, verticalListSortingStrategy } from '@dnd-kit/sortable';
-import { CSS } from '@dnd-kit/utilities';
 import { translateText } from '@/ai/flows/translate-text-flow';
 import { HighlightingTextarea } from '@/components/ui/highlighting-textarea';
 import { MarkdownPreview } from '@/components/markdown-preview';
@@ -486,7 +485,7 @@ export default function ProjectDetailsPage() {
 
 
   return (
-    <div className="w-full grid grid-cols-1 gap-6 pt-6">
+    <div className="w-full pt-6">
        <div className="flex justify-between items-start px-4 sm:px-6 pt-6">
           <div className="flex items-center gap-4">
             <Button variant="outline" size="icon" className="h-10 w-10" asChild>
@@ -643,99 +642,101 @@ export default function ProjectDetailsPage() {
       
       <Separator />
       
-      <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full px-4 sm:px-6">
-        <div className="flex items-center justify-between">
-          <TabsList>
-            <TabsTrigger value="scope">{t[language].scopeAndDetails}</TabsTrigger>
-            <TabsTrigger value="findings">{t[language].findings} ({projectFindings.length})</TabsTrigger>
-          </TabsList>
-          {activeTab === 'scope' && (
-            <div className="flex items-center gap-2">
-              <Button size="sm" onClick={() => handleSaveScope(true)} disabled={saveStatus === 'saving' || saveStatus === 'saved'}>
-                {saveStatus === 'saving' ? (<><Save className="mr-2 h-4 w-4 animate-spin" />{t[language].saving}</>) : 
-                 saveStatus === 'saved' ? (<><CheckCircle className="mr-2 h-4 w-4" />{t[language].saved}</>) : 
-                 (<><Save className="mr-2 h-4 w-4" />{t[language].saveScope}</>)}
-              </Button>
+      <div className="w-full px-4 sm:px-6">
+        <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
+            <div className="flex items-center justify-between">
+            <TabsList>
+                <TabsTrigger value="scope">{t[language].scopeAndDetails}</TabsTrigger>
+                <TabsTrigger value="findings">{t[language].findings} ({projectFindings.length})</TabsTrigger>
+            </TabsList>
+            {activeTab === 'scope' && (
+                <div className="flex items-center gap-2">
+                <Button size="sm" onClick={() => handleSaveScope(true)} disabled={saveStatus === 'saving' || saveStatus === 'saved'}>
+                    {saveStatus === 'saving' ? (<><Save className="mr-2 h-4 w-4 animate-spin" />{t[language].saving}</>) : 
+                    saveStatus === 'saved' ? (<><CheckCircle className="mr-2 h-4 w-4" />{t[language].saved}</>) : 
+                    (<><Save className="mr-2 h-4 w-4" />{t[language].saveScope}</>)}
+                </Button>
+                </div>
+            )}
+            {activeTab === 'findings' && (
+                <Button size="sm" asChild>
+                    <Link href={`/dashboard/projects/${project.id}/findings/new`}>
+                        <PlusCircle className="mr-2 h-4 w-4" /> {t[language].addFinding}
+                    </Link>
+                </Button>
+            )}
             </div>
-          )}
-          {activeTab === 'findings' && (
-             <Button size="sm" asChild>
-                <Link href={`/dashboard/projects/${project.id}/findings/new`}>
-                    <PlusCircle className="mr-2 h-4 w-4" /> {t[language].addFinding}
-                </Link>
-            </Button>
-          )}
-        </div>
-        <TabsContent value="scope" className="mt-4">
-             <div className="w-full">
-                <DndContext sensors={sensors} collisionDetection={closestCenter} onDragEnd={handleDragEnd}>
-                  <SortableContext items={scopeSections.map(s => s.id)} strategy={verticalListSortingStrategy}>
-                    <div className="space-y-4">
-                      {scopeSections.map(section => {
-                        return (
-                          <SortableScopeSection
-                            key={section.id}
-                            section={section}
-                            onContentChange={(newContent: string) => handleSectionContentChange(section.id, newContent)}
-                            onTitleChange={(newTitle: string) => handleSectionTitleChange(section.id, newTitle)}
-                            onDelete={() => handleDeleteSection(section.id)}
-                            getImage={getImage}
-                          />
-                        )
-                      })}
-                    </div>
-                  </SortableContext>
-                </DndContext>
+            <TabsContent value="scope" className="mt-4">
+                <div className="w-full">
+                    <DndContext sensors={sensors} collisionDetection={closestCenter} onDragEnd={handleDragEnd}>
+                    <SortableContext items={scopeSections.map(s => s.id)} strategy={verticalListSortingStrategy}>
+                        <div className="space-y-4">
+                        {scopeSections.map(section => {
+                            return (
+                            <SortableScopeSection
+                                key={section.id}
+                                section={section}
+                                onContentChange={(newContent: string) => handleSectionContentChange(section.id, newContent)}
+                                onTitleChange={(newTitle: string) => handleSectionTitleChange(section.id, newTitle)}
+                                onDelete={() => handleDeleteSection(section.id)}
+                                getImage={getImage}
+                            />
+                            )
+                        })}
+                        </div>
+                    </SortableContext>
+                    </DndContext>
 
-                <div className="flex justify-center pt-4">
-                    <Button variant="outline" onClick={handleAddSection}>
-                        <Plus className="mr-2 h-4 w-4" />
-                        {t[language].addNewSection}
-                    </Button>
+                    <div className="flex justify-center pt-4">
+                        <Button variant="outline" onClick={handleAddSection}>
+                            <Plus className="mr-2 h-4 w-4" />
+                            {t[language].addNewSection}
+                        </Button>
+                    </div>
                 </div>
-            </div>
-        </TabsContent>
-        <TabsContent value="findings" className="mt-4">
-           <Card>
-            <CardHeader>
-                <div>
-                    <CardTitle>{t[language].findings}</CardTitle>
-                    <CardDescription>{projectFindings.length} {t[language].findings.toLowerCase()} {language === 'es' ? 'encontrados' : 'found'}</CardDescription>
-                </div>
-            </CardHeader>
-            <CardContent>
-                <Table>
-                <TableHeader>
-                    <TableRow>
-                    <TableHead onClick={() => requestSort('title')} className="cursor-pointer hover:bg-muted/50">
-                        <div className="flex flex-row items-center">{t[language].title} {getSortIcon('title')}</div>
-                    </TableHead>
-                    <TableHead onClick={() => requestSort('severity')} className="cursor-pointer hover:bg-muted/50">
-                        <div className="flex flex-row items-center">{t[language].severity} {getSortIcon('severity')}</div>
-                    </TableHead>
-                    <TableHead onClick={() => requestSort('cvss')} className="cursor-pointer hover:bg-muted/50">
-                        <div className="flex items-center">{t[language].cvss} {getSortIcon('cvss')}</div>
-                    </TableHead>
-                    </TableRow>
-                </TableHeader>
-                <TableBody>
-                    {sortedFindings.map(finding => (
-                    <TableRow key={finding.id}>
-                        <TableCell className="font-medium">
-                        <Link href={`/dashboard/projects/${project.id}/findings/${finding.id}`} className="hover:underline">{finding.title}</Link>
-                        </TableCell>
-                        <TableCell>
-                        <Badge variant={getSeverityVariant(finding.severity) as any}>{finding.severity}</Badge>
-                        </TableCell>
-                        <TableCell>{finding.cvss.toFixed(1)}</TableCell>
-                    </TableRow>
-                    ))}
-                </TableBody>
-                </Table>
-            </CardContent>
-            </Card>
-        </TabsContent>
-      </Tabs>
+            </TabsContent>
+            <TabsContent value="findings" className="mt-4">
+            <Card>
+                <CardHeader>
+                    <div>
+                        <CardTitle>{t[language].findings}</CardTitle>
+                        <CardDescription>{projectFindings.length} {t[language].findings.toLowerCase()} {language === 'es' ? 'encontrados' : 'found'}</CardDescription>
+                    </div>
+                </CardHeader>
+                <CardContent>
+                    <Table>
+                    <TableHeader>
+                        <TableRow>
+                        <TableHead onClick={() => requestSort('title')} className="cursor-pointer hover:bg-muted/50">
+                            <div className="flex flex-row items-center">{t[language].title} {getSortIcon('title')}</div>
+                        </TableHead>
+                        <TableHead onClick={() => requestSort('severity')} className="cursor-pointer hover:bg-muted/50">
+                            <div className="flex flex-row items-center">{t[language].severity} {getSortIcon('severity')}</div>
+                        </TableHead>
+                        <TableHead onClick={() => requestSort('cvss')} className="cursor-pointer hover:bg-muted/50">
+                            <div className="flex items-center">{t[language].cvss} {getSortIcon('cvss')}</div>
+                        </TableHead>
+                        </TableRow>
+                    </TableHeader>
+                    <TableBody>
+                        {sortedFindings.map(finding => (
+                        <TableRow key={finding.id}>
+                            <TableCell className="font-medium">
+                            <Link href={`/dashboard/projects/${project.id}/findings/${finding.id}`} className="hover:underline">{finding.title}</Link>
+                            </TableCell>
+                            <TableCell>
+                            <Badge variant={getSeverityVariant(finding.severity) as any}>{finding.severity}</Badge>
+                            </TableCell>
+                            <TableCell>{finding.cvss.toFixed(1)}</TableCell>
+                        </TableRow>
+                        ))}
+                    </TableBody>
+                    </Table>
+                </CardContent>
+                </Card>
+            </TabsContent>
+        </Tabs>
+      </div>
     </div>
   );
 }
