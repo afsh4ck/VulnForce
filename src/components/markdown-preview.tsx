@@ -111,28 +111,36 @@ export const MarkdownPreview = ({ content, getImage, isReport }: { content: stri
                     td: ({ node, ...props }) => <td className="border border-border px-4 py-2" {...props} />,
                     hr: () => isReport ? null : <hr className="my-8" />,
                     pre: ({ node, children, ...props }) => {
-                      const codeElement = React.Children.toArray(children).find(
-                        (child) => React.isValidElement(child) && child.type === 'code'
-                      ) as React.ReactElement | undefined;
-            
-                      if (codeElement) {
-                        const { className, children: codeChildren } = codeElement.props;
-                        const match = /language-(\w+)/.exec(className || '');
-                        const codeContent = String(codeChildren).replace(/\n$/, '');
+                        const codeElement = React.Children.toArray(children).find(
+                          (child) => React.isValidElement(child) && child.type === 'code'
+                        ) as React.ReactElement | undefined;
+              
+                        if (codeElement) {
+                          const { className, children: codeChildren } = codeElement.props;
+                          const match = /language-(\w+)/.exec(className || '');
+                          const codeContent = String(codeChildren).replace(/\n$/, '');
+                          
+                          if (match) {
+                            return (
+                              <div className="my-4">
+                                <CodeBlock
+                                  initialLanguage={match[1]}
+                                  code={codeContent}
+                                />
+                              </div>
+                            );
+                          }
+                          // Render as plain code block if no language is specified
+                          return (
+                            <div className="my-4 relative group rounded-md border border-border bg-muted/20">
+                                <pre className="p-4 text-sm text-foreground overflow-x-auto" {...props}>{codeChildren}</pre>
+                            </div>
+                          );
+                        }
                         
-                        return (
-                          <div className="my-4">
-                            <CodeBlock
-                              initialLanguage={match ? match[1] : 'bash'}
-                              code={codeContent}
-                            />
-                          </div>
-                        );
-                      }
-                      
-                      return <div className="overflow-x-auto my-4"><pre {...props} className="bg-muted p-4 rounded-md">{children}</pre></div>;
-                    },
-                    code({ node, className, children, ...props }) {
+                        return <div className="my-4 overflow-x-auto"><pre {...props} className="bg-muted p-4 rounded-md">{children}</pre></div>;
+                      },
+                      code({ node, className, children, ...props }) {
                         // This will be handled by the <pre> component override for block code.
                         // This renders inline code.
                         return (
