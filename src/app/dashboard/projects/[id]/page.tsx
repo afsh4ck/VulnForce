@@ -8,7 +8,7 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import Link from 'next/link';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
-import { PlusCircle, FileText, ArrowUpDown, Edit, Save, Trash2, CalendarIcon, Split, Eye, Plus, GripVertical, Rows, Languages, Bold, Italic, Code, List, ListOrdered, FileCode, Scan, Globe, Network, Smartphone, Wifi, Award, ChevronLeft, CheckCircle, Image } from "lucide-react";
+import { PlusCircle, FileText, ArrowUpDown, Edit, Save, Trash2, CalendarIcon, Plus, GripVertical, Languages, ChevronLeft, CheckCircle } from "lucide-react";
 import { Separator } from "@/components/ui/separator";
 import { useLanguage } from "@/context/language-context";
 import type { Finding, Project, ImageAsset } from '@/lib/types';
@@ -17,7 +17,7 @@ import { Dialog, DialogTrigger, DialogContent, DialogDescription, DialogFooter, 
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from "@/components/ui/alert-dialog";
+import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from "@/components/ui/alert-dialog";
 import { useToast } from "@/hooks/use-toast";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { Calendar } from "@/components/ui/calendar";
@@ -28,16 +28,16 @@ import { useData } from '@/context/data-context';
 import { DateRange } from 'react-day-picker';
 import { DndContext, closestCenter, KeyboardSensor, PointerSensor, useSensor, useSensors, DragEndEvent } from '@dnd-kit/core';
 import { arrayMove, SortableContext, sortableKeyboardCoordinates, useSortable, verticalListSortingStrategy } from '@dnd-kit/sortable';
-import { translateText } from '@/ai/flows/translate-text-flow';
-import { MarkdownPreview } from '@/components/markdown-preview';
 import { CSS } from '@dnd-kit/utilities';
-import { Textarea } from '@/components/ui/textarea';
+import { MarkdownPreview } from '@/components/markdown-preview';
+import { translateText } from '@/ai/flows/translate-text-flow';
 
 type SortKey = keyof Finding;
 type SaveStatus = 'unsaved' | 'saving' | 'saved';
 
-interface ScopeSection {
+interface ContentBlock {
   id: string;
+  tag: 'h2' | 'h3' | 'p' | 'pre';
   content: string;
 }
 
@@ -51,34 +51,84 @@ const iconOptions = [
     { value: 'Award', label: 'Award' },
 ];
 
-const ScopeSectionEditor = ({ section, onContentChange, getImage }: {
-  section: ScopeSection;
-  onContentChange: (content: string) => void;
-  getImage: (id: string) => ImageAsset | undefined
-}) => {
-    const [isEditing, setIsEditing] = useState(false);
-
-    if (isEditing) {
-        return (
-            <Textarea
-                value={section.content}
-                onChange={(e) => onContentChange(e.target.value)}
-                onBlur={() => setIsEditing(false)}
-                autoFocus
-                className="w-full min-h-[100px] p-2 bg-transparent border-none focus:outline-none focus:ring-0 resize-none"
-            />
-        )
+function parseHtmlToBlocks(html: string): ContentBlock[] {
+  if (!html) return [{ id: `block-${Date.now()}`, tag: 'p', content: '' }];
+  const el = document.createElement('div');
+  el.innerHTML = html;
+  const blocks: ContentBlock[] = [];
+  el.childNodes.forEach((node, index) => {
+    const id = `block-${index}-${Date.now()}`;
+    if (node.nodeType === Node.ELEMENT_NODE) {
+      const element = node as HTMLElement;
+      const tag = element.tagName.toLowerCase();
+      if (['h2', 'h3', 'p'].includes(tag)) {
+        blocks.push({ id, tag: tag as 'h2'|'h3'|'p', content: element.innerHTML });
+      } else if (tag === 'pre') {
+         blocks.push({ id, tag: 'pre', content: element.querySelector('code')?.textContent || '' });
+      }
+    } else if (node.nodeType === Node.TEXT_NODE && node.textContent?.trim()) {
+      blocks.push({ id, tag: 'p', content: node.textContent.trim() });
     }
-    
-    return (
-        <div className="py-2" onClick={() => setIsEditing(true)}>
-            <MarkdownPreview content={section.content} getImage={getImage} />
-        </div>
-    );
+  });
+  if (blocks.length === 0) return [{ id: `block-${Date.now()}`, tag: 'p', content: '' }];
+  return blocks;
 }
 
-const SortableScopeSection = ({ section, index, onAddSection, onDelete, ...props }: { section: ScopeSection, index: number, onAddSection: (index: number) => void, onDelete: () => void, [key: string]: any }) => {
-  const { attributes, listeners, setNodeRef, transform, transition, isDragging } = useSortable({ id: section.id });
+function blocksToHtml(blocks: ContentBlock[]): string {
+  return blocks.map(block => {
+    if (block.tag === 'pre') {
+        return `<pre><code>${block.content}</code></pre>`
+    }
+    return `<${block.tag}>${block.content}</${block.tag}>`
+  }).join('');
+}
+
+
+const EditableBlock = ({ block, onUpdate, onKeyDown }: { block: ContentBlock, onUpdate: (content: string) => void, onKeyDown: (e: React.KeyboardEvent<HTMLDivElement>) => void }) => {
+    const blockRef = useRef<HTMLDivElement>(null);
+
+    useEffect(() => {
+        if (blockRef.current && blockRef.current.innerHTML !== block.content) {
+            blockRef.current.innerHTML = block.content;
+        }
+    }, [block.content]);
+
+    const handleInput = (e: React.FormEvent<HTMLDivElement>) => {
+        onUpdate(e.currentTarget.innerHTML);
+    };
+    
+    const Tag = block.tag === 'pre' ? 'div' : block.tag;
+    const isCode = block.tag === 'pre';
+
+    return (
+        <Tag
+            ref={blockRef}
+            onInput={handleInput}
+            onKeyDown={onKeyDown}
+            contentEditable
+            suppressContentEditableWarning
+            className={cn(
+              "w-full outline-none focus:ring-2 focus:ring-primary/20 p-1 rounded-md",
+              {
+                'text-2xl font-semibold mb-3 border-b pb-2 mt-8 font-headline': block.tag === 'h2',
+                'text-xl font-semibold mb-3 mt-6 font-headline': block.tag === 'h3',
+                'my-2 leading-relaxed': block.tag === 'p',
+                'bg-muted font-code text-sm p-4 rounded-md overflow-x-auto my-4 whitespace-pre': isCode,
+              }
+            )}
+        />
+    );
+};
+
+
+const SortableBlock = ({ block, onUpdate, onKeyDown, onDelete, onAdd }: { 
+    block: ContentBlock, 
+    onUpdate: (id: string, content: string) => void, 
+    onKeyDown: (e: React.KeyboardEvent<HTMLDivElement>, id: string) => void,
+    onDelete: (id: string) => void,
+    onAdd: (id: string) => void
+}) => {
+  const { attributes, listeners, setNodeRef, transform, transition, isDragging } = useSortable({ id: block.id });
 
   const style = {
     transform: transform ? CSS.Transform.toString(transform) : undefined,
@@ -86,18 +136,22 @@ const SortableScopeSection = ({ section, index, onAddSection, onDelete, ...props
     opacity: isDragging ? 0.5 : 1,
     zIndex: isDragging ? 100 : 'auto',
   };
-  
+
   return (
     <div ref={setNodeRef} style={style} className="relative group/section">
-       <div className="absolute top-0 -left-12 h-full flex items-center gap-1 opacity-0 group-hover/section:opacity-100 transition-opacity">
-         <Button variant="ghost" size="icon" className="h-8 w-8 cursor-pointer" onClick={() => onAddSection(index + 1)}>
+      <div className="absolute top-0 -left-12 h-full flex items-center gap-1 opacity-0 group-hover/section:opacity-100 transition-opacity">
+        <Button variant="ghost" size="icon" className="h-8 w-8 cursor-pointer" onClick={() => onAdd(block.id)}>
           <Plus className="h-4 w-4"/>
         </Button>
         <div {...attributes} {...listeners} className="cursor-grab p-1">
           <GripVertical className="h-5 w-5 text-muted-foreground" />
         </div>
       </div>
-      <ScopeSectionEditor section={section} {...props} />
+      <EditableBlock 
+        block={block} 
+        onUpdate={(content) => onUpdate(block.id, content)} 
+        onKeyDown={(e) => onKeyDown(e, block.id)} 
+      />
     </div>
   );
 };
@@ -116,7 +170,7 @@ export default function ProjectDetailsPage() {
   
   const [activeTab, setActiveTab] = useState(searchParams.get('tab') || 'scope');
   
-  const [scopeSections, setScopeSections] = useState<ScopeSection[]>([]);
+  const [blocks, setBlocks] = useState<ContentBlock[]>([]);
   const [isTranslating, setIsTranslating] = useState(false);
 
   // Edit Dialog State
@@ -131,31 +185,11 @@ export default function ProjectDetailsPage() {
 
   const [saveStatus, setSaveStatus] = useState<SaveStatus>('saved');
 
-  const sensors = useSensors(
-    useSensor(PointerSensor),
-    useSensor(KeyboardSensor, {
-      coordinateGetter: sortableKeyboardCoordinates,
-    })
-  );
+  const sensors = useSensors( useSensor(PointerSensor), useSensor(KeyboardSensor, { coordinateGetter: sortableKeyboardCoordinates, }) );
 
   const projectFindings = useMemo(() => findings.filter(f => f.projectId === params.id), [findings, params.id]);
   const client = useMemo(() => clients.find(c => c.id === project?.clientId), [clients, project]);
   
-  const parseSections = useCallback((markdown: string): ScopeSection[] => {
-    if (!markdown) return [];
-    
-    const parts = markdown.split(/\n\s*---\s*\n/);
-    
-    return parts
-      .map((part, index) => {
-        return {
-          id: `section-${index}-${Math.random()}`,
-          content: part.trim()
-        };
-      })
-      .filter(p => p.content.trim() !== '');
-  }, []);
-
   useEffect(() => {
     const currentProject = projects.find(p => p.id === params.id);
     if (!currentProject) {
@@ -164,11 +198,12 @@ export default function ProjectDetailsPage() {
     }
     setProject(currentProject);
     
+    // Parse HTML content into blocks
     if (currentProject.reportBody) {
-      const sections = parseSections(currentProject.reportBody);
-      setScopeSections(sections);
+      setBlocks(parseHtmlToBlocks(currentProject.reportBody));
     }
 
+    // Set state for edit dialog
     setEditName(currentProject.name);
     setEditClientId(currentProject.clientId);
     setEditDate({ from: new Date(currentProject.startDate), to: new Date(currentProject.endDate) });
@@ -176,7 +211,7 @@ export default function ProjectDetailsPage() {
     setEditLanguage(currentProject.language);
     setEditIcon(currentProject.icon || 'FileText');
     setSaveStatus('saved');
-  }, [params.id, projects, router, parseSections]);
+  }, [params.id, projects, router]);
   
   useEffect(() => {
     if (saveStatus === 'unsaved') {
@@ -189,7 +224,7 @@ export default function ProjectDetailsPage() {
         };
     }
   // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [scopeSections, saveStatus]);
+  }, [blocks, saveStatus]);
 
 
   const handleUpdateProject = () => {
@@ -272,7 +307,7 @@ export default function ProjectDetailsPage() {
   const handleSaveScope = (showToast = true) => {
     if (project) {
         setSaveStatus('saving');
-        const newReportBody = scopeSections.map(s => s.content).join('\n\n---\n\n');
+        const newReportBody = blocksToHtml(blocks);
         updateProject({...project, reportBody: newReportBody});
         if (showToast) {
             toast({ title: language === 'es' ? 'Informe guardado' : 'Report saved' });
@@ -281,33 +316,42 @@ export default function ProjectDetailsPage() {
     }
   }
 
-  const handleSectionContentChange = (sectionId: string, newContent: string) => {
-    setScopeSections(prevSections =>
-      prevSections.map(sec => 
-        sec.id === sectionId ? { ...sec, content: newContent } : sec
-      )
+  const handleBlockUpdate = (id: string, content: string) => {
+    setBlocks(prevBlocks =>
+      prevBlocks.map(b => b.id === id ? { ...b, content } : b)
     );
     setSaveStatus('unsaved');
   };
 
-  const handleAddSection = (index?: number) => {
-      const newSection: ScopeSection = {
-          id: `section-${Date.now()}-${Math.random()}`,
-          content: '## ' + t[language].newSection
-      };
-      if (index !== undefined) {
-        const newSections = [...scopeSections];
-        newSections.splice(index, 0, newSection);
-        setScopeSections(newSections);
-      } else {
-        setScopeSections(prev => [...prev, newSection]);
-      }
-      setSaveStatus('unsaved');
+  const handleBlockKeyDown = (e: React.KeyboardEvent<HTMLDivElement>, id: string) => {
+    if (e.key === ' ' && (e.currentTarget.textContent === '##' || e.currentTarget.textContent === '###')) {
+        e.preventDefault();
+        const newTag = e.currentTarget.textContent === '##' ? 'h2' : 'h3';
+        setBlocks(prev => prev.map(b => b.id === id ? { ...b, tag: newTag, content: '' } : b));
+    } else if (e.key === 'Enter' && !e.shiftKey) {
+        e.preventDefault();
+        handleAddBlock(id);
+    } else if (e.key === 'Backspace' && e.currentTarget.textContent === '') {
+        e.preventDefault();
+        handleDeleteBlock(id);
+    }
+  }
+
+  const handleAddBlock = (afterId: string) => {
+    const newBlock: ContentBlock = { id: `block-${Date.now()}`, tag: 'p', content: '' };
+    const index = blocks.findIndex(b => b.id === afterId);
+    const newBlocks = [...blocks];
+    newBlocks.splice(index + 1, 0, newBlock);
+    setBlocks(newBlocks);
+    setSaveStatus('unsaved');
+    // TODO: Focus the new block
   };
 
-  const handleDeleteSection = (sectionId: string) => {
-      setScopeSections(prev => prev.filter(sec => sec.id !== sectionId));
-      setSaveStatus('unsaved');
+  const handleDeleteBlock = (id: string) => {
+    if (blocks.length > 1) {
+        setBlocks(prev => prev.filter(b => b.id !== id));
+        setSaveStatus('unsaved');
+    }
   };
   
   const handleLanguageChange = async (newLang: 'en' | 'es') => {
@@ -323,14 +367,10 @@ export default function ProjectDetailsPage() {
             targetLanguage: newLang,
         });
         
-        let newReportBody = translatedText;
-        
-        const updatedProject = { ...project, reportBody: newReportBody, language: newLang };
+        const updatedProject = { ...project, reportBody: translatedText, language: newLang };
         updateProject(updatedProject);
         setProject(updatedProject);
-
-        const sections = parseSections(newReportBody);
-        setScopeSections(sections);
+        setBlocks(parseHtmlToBlocks(translatedText));
         setSaveStatus('unsaved');
         
         toast({ title: t[language].translationSuccess });
@@ -343,12 +383,11 @@ export default function ProjectDetailsPage() {
     }
   };
 
-
   function handleDragEnd(event: DragEndEvent) {
     const { active, over } = event;
 
     if (over && active.id !== over.id) {
-      setScopeSections((items) => {
+      setBlocks((items) => {
         const oldIndex = items.findIndex((item) => item.id === active.id);
         const newIndex = items.findIndex((item) => item.id === over.id);
         const newItems = arrayMove(items, oldIndex, newIndex);
@@ -392,7 +431,7 @@ export default function ProjectDetailsPage() {
       selectLanguage: 'Select Language',
       english: 'English',
       spanish: 'Spanish',
-      addNewSection: 'Add New Section',
+      addNewSection: 'Add New Block',
       newSection: 'New Section',
       translatingTitle: 'Translating...',
       translatingDesc: 'AI is translating the report content. Please wait.',
@@ -436,7 +475,7 @@ export default function ProjectDetailsPage() {
       selectLanguage: 'Seleccionar Idioma',
       english: 'Inglés',
       spanish: 'Español',
-      addNewSection: 'Añadir Nueva Sección',
+      addNewSection: 'Añadir Nuevo Bloque',
       newSection: 'Nueva Sección',
       translatingTitle: 'Traduciendo...',
       translatingDesc: 'La IA está traduciendo el contenido del informe. Por favor, espera.',
@@ -648,31 +687,21 @@ export default function ProjectDetailsPage() {
             <TabsContent value="scope" className="mt-4">
                 <div className="w-full">
                     <DndContext sensors={sensors} collisionDetection={closestCenter} onDragEnd={handleDragEnd}>
-                    <SortableContext items={scopeSections.map(s => s.id)} strategy={verticalListSortingStrategy}>
-                        <div className="space-y-4">
-                        {scopeSections.map((section, index) => {
-                            return (
-                            <SortableScopeSection
-                                key={section.id}
-                                section={section}
-                                index={index}
-                                onAddSection={handleAddSection}
-                                onContentChange={(newContent: string) => handleSectionContentChange(section.id, newContent)}
-                                onDelete={() => handleDeleteSection(section.id)}
-                                getImage={getImage}
-                            />
-                            )
-                        })}
-                        </div>
-                    </SortableContext>
+                        <SortableContext items={blocks.map(b => b.id)} strategy={verticalListSortingStrategy}>
+                            <div className="space-y-1">
+                                {blocks.map(block => (
+                                    <SortableBlock
+                                        key={block.id}
+                                        block={block}
+                                        onUpdate={handleBlockUpdate}
+                                        onKeyDown={handleBlockKeyDown}
+                                        onDelete={handleDeleteBlock}
+                                        onAdd={handleAddBlock}
+                                    />
+                                ))}
+                            </div>
+                        </SortableContext>
                     </DndContext>
-
-                    <div className="flex justify-center pt-4">
-                        <Button variant="outline" onClick={() => handleAddSection()}>
-                            <Plus className="mr-2 h-4 w-4" />
-                            {t[language].addNewSection}
-                        </Button>
-                    </div>
                 </div>
             </TabsContent>
             <TabsContent value="findings" className="mt-4">
