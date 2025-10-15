@@ -986,7 +986,7 @@ export default function ProjectDetailsPage() {
       
       <Separator />
       
-      <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-4 px-4 sm:px-6">
+      <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full px-4 sm:px-6">
         <div className="flex items-center justify-between">
           <TabsList>
             <TabsTrigger value="scope">{t[language].scopeAndDetails}</TabsTrigger>
@@ -1013,8 +1013,8 @@ export default function ProjectDetailsPage() {
             </Button>
           )}
         </div>
-        <TabsContent value="scope" className="w-full">
-             <div className="space-y-4">
+        <TabsContent value="scope" className="mt-4">
+             <div className="grid grid-cols-1 gap-6 w-full">
                 <DndContext sensors={sensors} collisionDetection={closestCenter} onDragEnd={handleDragEnd}>
                   <SortableContext items={scopeSections.map(s => s.id)} strategy={verticalListSortingStrategy}>
                     <div className="space-y-4">
@@ -1048,7 +1048,7 @@ export default function ProjectDetailsPage() {
                  )}
             </div>
         </TabsContent>
-        <TabsContent value="findings">
+        <TabsContent value="findings" className="mt-4">
            <Card>
             <CardHeader>
                 <div>
