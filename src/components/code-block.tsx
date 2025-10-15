@@ -36,7 +36,7 @@ export const CodeBlock = ({ initialLanguage, code }: { initialLanguage: string; 
     }
 
     return (
-        <div className="relative group my-4 rounded-md border border-slate-700 bg-[#0F172A]">
+        <div className="relative group rounded-md border border-border bg-muted/20">
              <div className="absolute top-2 right-2 z-10 flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
                 <Combobox
                     options={languageOptions}
