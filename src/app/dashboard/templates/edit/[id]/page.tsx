@@ -248,8 +248,8 @@ const SectionEditor = ({ section, onContentChange, onDelete, view, onViewChange,
 
   return (
     <Card>
-      <div className="sticky top-[65px] z-10">
-        <CardHeader className="flex flex-row items-center justify-between bg-card px-4 py-3">
+      <div className="sticky top-[65px] z-10 bg-background">
+        <CardHeader className="flex flex-row items-center justify-between px-4 py-3">
             <div className="flex items-center gap-2 w-full">
               {isOrganizing && <div {...dragHandleProps} {...dragListeners} className="cursor-grab"><GripVertical className="h-5 w-5 text-muted-foreground" /></div>}
               <Input 
@@ -289,7 +289,7 @@ const SectionEditor = ({ section, onContentChange, onDelete, view, onViewChange,
           </div>
         </CardHeader>
         {!isOrganizing && view !== 'preview' && (
-          <div className="p-1 border-y bg-card flex gap-1">
+          <div className="p-1 border-y bg-background flex gap-1">
             <Button variant="ghost" size="icon" className="h-auto w-auto p-1" onClick={() => applyMarkdownSyntax('**')}><Bold className="h-3 w-3" /></Button>
             <Button variant="ghost" size="icon" className="h-auto w-auto p-1" onClick={() => applyMarkdownSyntax('*')}><Italic className="h-3 w-3" /></Button>
             <Button variant="ghost" size="icon" className="h-auto w-auto p-1" onClick={() => applyMarkdownSyntax('`')}><Code className="h-3 w-3" /></Button>

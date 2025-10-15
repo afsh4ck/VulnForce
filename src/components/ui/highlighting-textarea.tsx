@@ -9,9 +9,9 @@ const getHighlightedText = (text: string) => {
         .replace(/&/g, '&amp;')
         .replace(/</g, '&lt;')
         .replace(/>/g, '&gt;')
-        .replace(/(\[TODO:?.*?\])/g, '<span class="bg-destructive text-destructive-foreground font-bold px-1 rounded-sm">$1</span>')
         .replace(/^(#\s)(.*)/gm, '<span class="text-primary font-bold">$1$2</span>')
-        .replace(/^(#{2,4})\s(.*)/gm, '<span class="text-foreground font-bold">$1$2</span>');
+        .replace(/^(##|###|####)\s(.*)/gm, '<span class="text-foreground font-bold">$1 $2</span>')
+        .replace(/(\[TODO:?.*?\])/g, '<span class="bg-destructive text-destructive-foreground font-bold px-1 rounded-sm">$1</span>');
 };
 
 interface HighlightingTextareaProps extends Omit<React.TextareaHTMLAttributes<HTMLTextAreaElement>, 'onChange' | 'value'> {
