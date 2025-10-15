@@ -13,11 +13,11 @@ import { PlusCircle, FileText, ArrowUpDown, Edit, Save, Trash2, CalendarIcon, Pl
 import { useLanguage } from "@/context/language-context";
 import type { Finding, Project } from '@/lib/types';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from "@/components/ui/dialog";
+import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from "@/components/ui/alert-dialog";
+import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from "@/components/ui/alert-dialog";
 import { useToast } from "@/hooks/use-toast";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { Calendar } from "@/components/ui/calendar";
@@ -238,47 +238,57 @@ export default function ProjectDetailsPage() {
   const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
   const [isLeaveDialogOpen, setIsLeaveDialogOpen] = useState(false);
   const [nextPath, setNextPath] = useState('');
+  
+  const setHasUnsavedChanges = useCallback((hasChanges: boolean) => {
+    if (typeof (window as any).setHasUnsavedChanges === 'function') {
+        (window as any).setHasUnsavedChanges(hasChanges);
+    }
+  }, []);
+
+  const handleLeave = useLeavePage(setHasUnsavedChanges);
+
 
   const blockRefs = useRef<Record<string, HTMLDivElement | null>>({});
 
   const client = clients.find(c => c.id === project?.clientId);
   
   useEffect(() => {
-    (window as any).hasUnsavedChanges = saveStatus === 'unsaved';
-  }, [saveStatus]);
-
-  useEffect(() => {
-    const handleBeforeUnload = (e: BeforeUnloadEvent) => {
-      if ((window as any).hasUnsavedChanges) {
+    setHasUnsavedChanges(saveStatus === 'unsaved');
+    const handler = (e: BeforeUnloadEvent) => {
+      if (saveStatus === 'unsaved') {
         e.preventDefault();
         e.returnValue = '';
       }
     };
-
-    const handleRequestLeave = (e: CustomEvent) => {
-      if ((window as any).hasUnsavedChanges) {
-        setNextPath(e.detail);
-        setIsLeaveDialogOpen(true);
-      } else {
-        router.push(e.detail);
-      }
-    };
-    
-    window.addEventListener('beforeunload', handleBeforeUnload);
-    window.addEventListener('requestLeave', handleRequestLeave as EventListener);
-
+    window.addEventListener('beforeunload', handler);
     return () => {
-      window.removeEventListener('beforeunload', handleBeforeUnload);
-      window.removeEventListener('requestLeave', handleRequestLeave as EventListener);
-      (window as any).hasUnsavedChanges = false;
+      window.removeEventListener('beforeunload', handler);
+    };
+  }, [saveStatus, setHasUnsavedChanges]);
+
+  useEffect(() => {
+    const handleRequestLeave = (e: CustomEvent) => {
+        if (saveStatus === 'unsaved') {
+            setNextPath(e.detail);
+            setIsLeaveDialogOpen(true);
+        } else {
+            router.push(e.detail);
+        }
+    };
+    window.addEventListener('requestLeave', handleRequestLeave as EventListener);
+    return () => {
+        window.removeEventListener('requestLeave', handleRequestLeave as EventListener);
     };
   }, [saveStatus, router]);
 
+
   const handleLeaveConfirm = () => {
-    (window as any).hasUnsavedChanges = false;
-    if (nextPath) {
-      router.push(nextPath);
-    }
+    setSaveStatus('saved'); 
+    setTimeout(() => {
+        if (nextPath) {
+            router.push(nextPath);
+        }
+    }, 100);
   };
 
   const t = {
@@ -774,7 +784,7 @@ export default function ProjectDetailsPage() {
                   <TabsTrigger value="findings">{t[uiLanguage].findings}</TabsTrigger>
                   <TabsTrigger value="details">{t[uiLanguage].projectDetails}</TabsTrigger>
                 </TabsList>
-                 <Button onClick={() => handleSave(true)} disabled={saveStatus === 'saving' || saveStatus === 'saved'} variant="ghost" size="sm">
+                 <Button onClick={() => handleSave(true)} disabled={saveStatus === 'saving'} variant={saveStatus === 'unsaved' ? 'default' : 'ghost'} size="sm">
                     {saveStatus === 'saving' ? (<>{t[uiLanguage].saving}</>) : 
                      saveStatus === 'saved' ? (<><CheckCircle className="mr-2 h-4 w-4 text-green-500" />{t[uiLanguage].saved}</>) : 
                      (<>{t[uiLanguage].save}</>)}

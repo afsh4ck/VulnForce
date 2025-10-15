@@ -22,29 +22,54 @@ import { UserNav } from '@/components/user-nav';
 import { Logo } from '@/components/logo';
 import { useLanguage } from '@/context/language-context';
 
-type HandleLeaveFunction = (path: string) => (e: React.MouseEvent) => void;
-const LeaveContext = React.createContext<HandleLeaveFunction | null>(null);
+type SetHasUnsavedChanges = (hasChanges: boolean) => void;
+type UseLeavePageHook = (setHasUnsavedChanges: SetHasUnsavedChanges) => (path: string) => (e: React.MouseEvent) => void;
 
-export const useLeavePage = () => {
-    const context = React.useContext(LeaveContext);
+const LeavePageContext = React.createContext<UseLeavePageHook | null>(null);
+
+export const useLeavePage = (setHasUnsavedChanges: SetHasUnsavedChanges) => {
+    const context = React.useContext(LeavePageContext);
     if (!context) {
-        return (path: string) => (e: React.MouseEvent) => console.warn('LeavePage context not available');
+        // Return a dummy function if context is not available
+        return () => (path: string) => (e: React.MouseEvent) => {
+            console.warn('LeavePage context not available');
+        };
     }
-    return context;
+    return context(setHasUnsavedChanges);
 };
 
 function DashboardNav({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
   const { state, isMobile } = useSidebar();
   const { language } = useLanguage();
+  const router = useRouter();
   const isCollapsed = state === 'collapsed';
 
-  const handleLeave: HandleLeaveFunction = (path) => (e) => {
-    const hasUnsavedChanges = (window as any).hasUnsavedChanges;
-    if (hasUnsavedChanges) {
-      e.preventDefault();
-      window.dispatchEvent(new CustomEvent('requestLeave', { detail: path }));
-    }
+  // This ref will hold the latest state of unsaved changes from the child page
+  const hasUnsavedChangesRef = React.useRef(false);
+
+  const handleRequestLeave = (path: string) => {
+    window.dispatchEvent(new CustomEvent('requestLeave', { detail: path }));
+  }
+
+  const handleLeave: UseLeavePageHook = (setHasUnsavedChanges) => {
+    // This effect updates the ref whenever the child component's state changes.
+    React.useEffect(() => {
+        return () => {
+            hasUnsavedChangesRef.current = false;
+        };
+    }, []);
+
+    (window as any).setUnsavedChanges = (hasChanges: boolean) => {
+        hasUnsavedChangesRef.current = hasChanges;
+    };
+    
+    return (path) => (e) => {
+        if (hasUnsavedChangesRef.current) {
+            e.preventDefault();
+            handleRequestLeave(path);
+        }
+    };
   };
 
   const t = {
@@ -87,11 +112,41 @@ function DashboardNav({ children }: { children: React.ReactNode }) {
       { href: '/dashboard/settings', icon: Settings, label: t[language].settings },
   ]
 
+  const NavLink = ({ item }: { item: { href: string, icon: React.ElementType, label: string } }) => {
+    const handleLeaveClick = handleLeave(hasUnsavedChangesRef.current ? (v) => {} : () => {});
+    return (
+      <Link href={item.href} onClick={handleLeaveClick(item.href)}>
+        <item.icon />
+        <span>{item.label}</span>
+      </Link>
+    );
+  };
+
   return (
-    <LeaveContext.Provider value={handleLeave}>
+    <LeavePageContext.Provider value={(setHasUnsavedChanges: SetHasUnsavedChanges) => {
+        // This effect will be called by the child page that uses the hook
+        React.useEffect(() => {
+            (window as any).setHasUnsavedChanges = setHasUnsavedChanges;
+            // Cleanup on unmount
+            return () => {
+                if ((window as any).setHasUnsavedChanges === setHasUnsavedChanges) {
+                    (window as any).setHasUnsavedChanges = null;
+                }
+            };
+        }, [setHasUnsavedChanges]);
+
+        return (path) => (e) => {
+             if (hasUnsavedChangesRef.current) {
+                e.preventDefault();
+                handleRequestLeave(path);
+            } else {
+                 router.push(path);
+             }
+        };
+    }}>
       <Sidebar collapsible="icon" className="border-r border-sidebar-border">
         <SidebarHeader>
-          <Link href="/dashboard" onClick={handleLeave('/dashboard')}>
+          <Link href="/dashboard">
             <Logo isCollapsed={isCollapsed} />
           </Link>
         </SidebarHeader>
@@ -104,10 +159,7 @@ function DashboardNav({ children }: { children: React.ReactNode }) {
                   isActive={pathname === item.href || (item.href !== '/dashboard' && pathname.startsWith(item.href))}
                   tooltip={{ children: item.label }}
                 >
-                  <Link href={item.href} onClick={handleLeave(item.href)}>
-                    <item.icon />
-                    <span>{item.label}</span>
-                  </Link>
+                    <NavLink item={item} />
                 </SidebarMenuButton>
               </SidebarMenuItem>
             ))}
@@ -122,10 +174,7 @@ function DashboardNav({ children }: { children: React.ReactNode }) {
                   isActive={pathname === item.href}
                   tooltip={{ children: item.label }}
                 >
-                  <Link href={item.href} onClick={handleLeave(item.href)}>
-                    <item.icon />
-                    <span>{item.label}</span>
-                  </Link>
+                    <NavLink item={item} />
                 </SidebarMenuButton>
               </SidebarMenuItem>
             ))}
@@ -142,7 +191,7 @@ function DashboardNav({ children }: { children: React.ReactNode }) {
         </header>
         <main className="flex-1">{children}</main>
       </SidebarInset>
-    </LeaveContext.Provider>
+    </LeavePageContext.Provider>
   );
 }
 
