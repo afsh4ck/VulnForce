@@ -1,6 +1,6 @@
 
 'use client';
-import React from 'react';
+import React, { useMemo } from 'react';
 import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
 import type { ImageAsset } from '@/lib/types';
@@ -132,18 +132,18 @@ export const MarkdownPreview = ({ content, getImage, isReport }: { content: stri
                         );
                     },
                     img: ({node, src, alt, ...props}) => {
+                        let finalSrc = src;
                         if (src?.startsWith('image://')) {
                             const imageId = src.substring('image://'.length);
                             const image = getImage(imageId);
                             if (image) {
-                                // eslint-disable-next-line @next/next/no-img-element
-                                return <img src={image.dataUrl} alt={alt} {...props} style={{maxWidth: '100%', height: 'auto'}} className="rounded-md border" />;
+                                finalSrc = image.dataUrl;
                             } else {
-                                return null; // Or a placeholder for broken images
+                                return <span className="text-destructive">Image not found</span>;
                             }
                         }
                         // eslint-disable-next-line @next/next/no-img-element
-                        return <img src={src} alt={alt} {...props} style={{maxWidth: '100%', height: 'auto'}} className="rounded-md border" />;
+                        return <img src={finalSrc} alt={alt} {...props} style={{maxWidth: '100%', height: 'auto'}} className="rounded-md border" />;
                     },
                 }}
             >

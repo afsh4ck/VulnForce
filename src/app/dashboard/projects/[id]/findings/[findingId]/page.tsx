@@ -323,9 +323,9 @@ const SectionEditor = ({ section, onContentChange, onDelete, view, onViewChange,
                   </div>
                 )}
                  <div className="p-0">
-                    {view === 'split' && (
+                    {view === 'split' ? (
                         <div className="relative">
-                            <ResizablePanelGroup direction="horizontal" className="min-h-[300px] rounded-lg">
+                            <ResizablePanelGroup direction="horizontal" className="min-h-[300px] w-full rounded-lg border">
                                 <ResizablePanel defaultSize={50}>
                                     <div className="h-full">
                                     <HighlightingTextarea
@@ -344,8 +344,7 @@ const SectionEditor = ({ section, onContentChange, onDelete, view, onViewChange,
                                 </ResizablePanel>
                             </ResizablePanelGroup>
                         </div>
-                    )}
-                    {view === 'edit' && (
+                    ) : view === 'edit' ? (
                         <div>
                             <HighlightingTextarea
                                 ref={textareaRef}
@@ -354,8 +353,7 @@ const SectionEditor = ({ section, onContentChange, onDelete, view, onViewChange,
                                 onPaste={handlePaste}
                             />
                         </div>
-                    )}
-                    {view === 'preview' && (
+                    ) : (
                         <div className="rounded-md p-4 min-h-[300px] overflow-auto">
                             <MarkdownPreview content={section.content} getImage={getImage} />
                         </div>

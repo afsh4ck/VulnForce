@@ -362,9 +362,9 @@ const ScopeSectionEditor = ({ section, onContentChange, onDelete, view, onViewCh
                   </div>
                 )}
                  <CardContent className="p-0">
-                    {view === 'split' && (
-                        <div className="relative">
-                            <ResizablePanelGroup direction="horizontal" className="min-h-[300px] rounded-lg">
+                    {view === 'split' ? (
+                       <div className="relative">
+                            <ResizablePanelGroup direction="horizontal" className="min-h-[300px] w-full rounded-lg border">
                                 <ResizablePanel defaultSize={50}>
                                     <div className="h-full">
                                     <HighlightingTextarea
@@ -383,8 +383,7 @@ const ScopeSectionEditor = ({ section, onContentChange, onDelete, view, onViewCh
                                 </ResizablePanel>
                             </ResizablePanelGroup>
                         </div>
-                    )}
-                    {view === 'edit' && (
+                    ) : view === 'edit' ? (
                         <div>
                             <HighlightingTextarea
                                 ref={textareaRef}
@@ -393,8 +392,7 @@ const ScopeSectionEditor = ({ section, onContentChange, onDelete, view, onViewCh
                                 onPaste={handlePaste}
                             />
                         </div>
-                    )}
-                    {view === 'preview' && (
+                    ) : (
                         <div className="rounded-md p-4 min-h-[300px] overflow-auto">
                             <MarkdownPreview content={section.content} getImage={getImage} />
                         </div>
