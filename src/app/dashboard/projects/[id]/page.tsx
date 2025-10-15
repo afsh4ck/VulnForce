@@ -7,8 +7,7 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import Link from 'next/link';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
-import { PlusCircle, FileText, ArrowUpDown, Edit, Save, Trash2, CalendarIcon, Plus, GripVertical, Languages, ChevronLeft, CheckCircle, Heading2, Heading3, Code } from "lucide-react";
-import { Separator } from "@/components/ui/separator";
+import { PlusCircle, FileText, ArrowUpDown, Edit, Save, Trash2, CalendarIcon, Plus, GripVertical, Languages, ChevronLeft, CheckCircle, Heading2, Heading3, Code, File } from "lucide-react";
 import { useLanguage } from "@/context/language-context";
 import type { Finding, Project } from '@/lib/types';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
@@ -28,7 +27,6 @@ import { DateRange } from 'react-day-picker';
 import { DndContext, closestCenter, KeyboardSensor, PointerSensor, useSensor, useSensors, DragEndEvent } from '@dnd-kit/core';
 import { arrayMove, SortableContext, sortableKeyboardCoordinates, useSortable, verticalListSortingStrategy } from '@dnd-kit/sortable';
 import { CSS } from '@dnd-kit/utilities';
-import { translateText } from '@/ai/flows/translate-text-flow';
 import { Command, CommandEmpty, CommandGroup, CommandInput, CommandItem, CommandList } from "@/components/ui/command";
 
 type SortKey = keyof Finding;
@@ -36,8 +34,9 @@ type SaveStatus = 'unsaved' | 'saving' | 'saved';
 
 interface ContentBlock {
   id: string;
-  tag: 'h2' | 'h3' | 'p' | 'pre';
+  tag: 'h2' | 'h3' | 'p' | 'pre' | 'ul' | 'ol';
   content: string;
+  children?: ContentBlock[];
 }
 
 const iconOptions = [
@@ -57,15 +56,22 @@ function parseHtmlToBlocks(html: string): ContentBlock[] {
   const el = document.createElement('div');
   el.innerHTML = html;
   const blocks: ContentBlock[] = [];
-  el.childNodes.forEach((node, index) => {
-    const id = `block-${index}-${Date.now()}-${Math.random()}`;
+  el.childNodes.forEach((node) => {
+    const id = `block-${Date.now()}-${Math.random()}`;
     if (node.nodeType === Node.ELEMENT_NODE) {
       const element = node as HTMLElement;
       const tag = element.tagName.toLowerCase();
       if (['h2', 'h3', 'p'].includes(tag)) {
-        blocks.push({ id, tag: tag as 'h2'|'h3'|'p', content: element.innerHTML });
+        blocks.push({ id, tag: tag as 'h2'|'h3'|'p', content: element.innerHTML || '' });
       } else if (tag === 'pre') {
          blocks.push({ id, tag: 'pre', content: element.querySelector('code')?.textContent || '' });
+      } else if (['ul', 'ol'].includes(tag)) {
+        const items = Array.from(element.querySelectorAll('li')).map(li => ({
+          id: `block-${Date.now()}-${Math.random()}`,
+          tag: 'p' as 'p', // Treat li content as paragraphs for simplicity
+          content: li.innerHTML,
+        }));
+        blocks.push({ id, tag: tag as 'ul' | 'ol', content: '', children: items });
       }
     } else if (node.nodeType === Node.TEXT_NODE && node.textContent?.trim()) {
       blocks.push({ id, tag: 'p', content: node.textContent.trim() });
@@ -81,33 +87,73 @@ function blocksToHtml(blocks: ContentBlock[]): string {
         const escapedContent = block.content.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
         return `<pre><code>${escapedContent}</code></pre>`
     }
+    if (block.tag === 'ul' || block.tag === 'ol') {
+        const itemsHtml = block.children?.map(child => `<li>${child.content}</li>`).join('') || '';
+        return `<${block.tag}>${itemsHtml}</${block.tag}>`;
+    }
+    // For empty p tags, use a non-breaking space to ensure they are rendered
+    if (block.tag === 'p' && !block.content.trim()) {
+        return '<p><br></p>';
+    }
     return `<${block.tag}>${block.content}</${block.tag}>`
   }).join('');
 }
 
-const EditableBlock = ({ block, onUpdate, onKeyDown, onFocus, isFocused }: { 
+const EditableBlock = ({ block, onUpdate, onKeyDown, onFocus, isFocused, placeholder }: { 
   block: ContentBlock, 
   onUpdate: (content: string) => void, 
   onKeyDown: (e: React.KeyboardEvent<HTMLDivElement>) => void, 
   onFocus: () => void,
-  isFocused: boolean
+  isFocused: boolean,
+  placeholder: string
 }) => {
     const blockRef = useRef<HTMLDivElement>(null);
-
+    
     useEffect(() => {
-      if (blockRef.current && isFocused) {
-        blockRef.current.focus();
-      }
+        if (blockRef.current && isFocused) {
+            blockRef.current.focus();
+            // Move cursor to the end
+            const range = document.createRange();
+            const sel = window.getSelection();
+            range.selectNodeContents(blockRef.current);
+            range.collapse(false);
+            sel?.removeAllRanges();
+            sel?.addRange(range);
+        }
     }, [isFocused]);
 
     const handleBlur = (e: React.FocusEvent<HTMLDivElement>) => {
         onUpdate(e.currentTarget.innerHTML);
     };
 
-    const Tag = block.tag === 'pre' ? 'div' : block.tag;
+    const Tag = block.tag === 'pre' ? 'div' : (['ul', 'ol'].includes(block.tag) ? 'div' : block.tag);
     const isCode = block.tag === 'pre';
-    const isPlaceholder = !block.content;
-    const placeholderText = "Type '/' for commands";
+    const isList = ['ul', 'ol'].includes(block.tag);
+    const isPlaceholder = !block.content && !isList && !isCode;
+
+    if (isList) {
+      const ListTag = block.tag as 'ul' | 'ol';
+      return (
+        <ListTag className="my-2 ml-6 list-outside">
+          {block.children?.map((child, index) => (
+            <li key={child.id}>
+              <div
+                onInput={(e) => {
+                  onUpdate(e.currentTarget.innerHTML); // This needs to be smarter
+                }}
+                onKeyDown={onKeyDown}
+                contentEditable
+                suppressContentEditableWarning
+                dangerouslySetInnerHTML={{ __html: child.content }}
+                 className={cn(
+                  "w-full outline-none p-1 rounded-md"
+                )}
+              />
+            </li>
+          ))}
+        </ListTag>
+      )
+    }
     
     return (
         <div 
@@ -132,23 +178,14 @@ const EditableBlock = ({ block, onUpdate, onKeyDown, onFocus, isFocused }: {
               )}
               dangerouslySetInnerHTML={{ __html: block.content }}
           />
-           {isPlaceholder && !isCode && (
-              <div className="absolute top-1 left-1 text-muted-foreground/50 pointer-events-none">{placeholderText}</div>
+           {isPlaceholder && (
+              <div className="absolute top-1 left-1 text-muted-foreground/50 pointer-events-none">{placeholder}</div>
             )}
         </div>
     );
 };
 
-
-const SortableBlock = ({ block, onUpdate, onKeyDown, onDelete, onAdd, onFocus, isFocused }: { 
-    block: ContentBlock, 
-    onUpdate: (id: string, content: string) => void, 
-    onKeyDown: (e: React.KeyboardEvent<HTMLDivElement>, id: string, tag: ContentBlock['tag']) => void,
-    onDelete: (id: string) => void,
-    onAdd: (id: string) => void,
-    onFocus: (id: string) => void,
-    isFocused: boolean,
-}) => {
+const SortableBlock = ({ block, ...props }: { block: ContentBlock, [key: string]: any }) => {
   const { attributes, listeners, setNodeRef, transform, transition, isDragging } = useSortable({ id: block.id });
 
   const style = {
@@ -161,7 +198,7 @@ const SortableBlock = ({ block, onUpdate, onKeyDown, onDelete, onAdd, onFocus, i
   return (
     <div ref={setNodeRef} style={style} className="relative group/block">
       <div className="absolute top-0 -left-12 h-full flex items-center gap-1 opacity-0 group-hover/block:opacity-100 transition-opacity">
-        <Button variant="ghost" size="icon" className="h-8 w-8 cursor-pointer" onClick={() => onAdd(block.id)}>
+        <Button variant="ghost" size="icon" className="h-8 w-8 cursor-pointer" onClick={() => props.onAdd(block.id)}>
           <Plus className="h-4 w-4"/>
         </Button>
         <div {...attributes} {...listeners} className="cursor-grab p-1">
@@ -169,11 +206,8 @@ const SortableBlock = ({ block, onUpdate, onKeyDown, onDelete, onAdd, onFocus, i
         </div>
       </div>
       <EditableBlock 
-        block={block} 
-        onUpdate={(content) => onUpdate(block.id, content)} 
-        onKeyDown={(e) => onKeyDown(e, block.id, block.tag)} 
-        onFocus={() => onFocus(block.id)}
-        isFocused={isFocused}
+        block={block}
+        {...props}
       />
     </div>
   );
@@ -195,7 +229,6 @@ export default function ProjectDetailsPage() {
   const [sortConfig, setSortConfig] = useState<{ key: SortKey; direction: 'ascending' | 'descending' } | null>(null);
   const [findingToDelete, setFindingToDelete] = useState<Finding | null>(null);
   
-  // States for the details tab
   const [name, setName] = useState('');
   const [clientId, setClientId] = useState('');
   const [status, setStatus] = useState<Project['status']>('In Progress');
@@ -216,10 +249,10 @@ export default function ProjectDetailsPage() {
   const t = {
     en: {
       back: 'Back to Projects',
-      projectDetails: 'Project Details',
+      projectDetails: 'Details',
       findings: 'Findings',
       report: 'Report',
-      scope: 'Scope',
+      content: 'Content',
       projectName: 'Project Name',
       client: 'Client',
       status: 'Status',
@@ -257,13 +290,14 @@ export default function ProjectDetailsPage() {
       changesSavedDesc: "Your project details have been updated.",
       translateScope: "Translate Scope",
       translating: "Translating...",
+      commandPlaceholder: "Type '/' for commands",
     },
     es: {
       back: 'Volver a Proyectos',
-      projectDetails: 'Detalles del Proyecto',
+      projectDetails: 'Detalles',
       findings: 'Hallazgos',
       report: 'Informe',
-      scope: 'Alcance',
+      content: 'Contenido',
       projectName: 'Nombre del Proyecto',
       client: 'Cliente',
       status: 'Estado',
@@ -301,6 +335,7 @@ export default function ProjectDetailsPage() {
       changesSavedDesc: "Los detalles de tu proyecto han sido actualizados.",
       translateScope: "Traducir Alcance",
       translating: "Traduciendo...",
+      commandPlaceholder: "Escribe '/' para ver comandos",
     }
   }
 
@@ -335,6 +370,9 @@ export default function ProjectDetailsPage() {
       const filteredFindings = findings.filter(f => f.projectId === currentProject.id);
       setProjectFindings(filteredFindings);
       setBlocks(parseHtmlToBlocks(currentProject.reportBody));
+      if (currentProject.reportBody) {
+          setActiveBlockId(parseHtmlToBlocks(currentProject.reportBody)[0]?.id);
+      }
     } else {
       router.push('/dashboard/projects');
     }
@@ -419,7 +457,6 @@ export default function ProjectDetailsPage() {
     return sortConfig.direction === 'ascending' ? ' ▲' : ' ▼';
   };
   
-  // Block editor functions
   const sensors = useSensors(useSensor(PointerSensor), useSensor(KeyboardSensor, { coordinateGetter: sortableKeyboardCoordinates }));
   
   const handleBlockUpdate = (id: string, content: string) => {
@@ -433,9 +470,10 @@ export default function ProjectDetailsPage() {
       setBlocks((items) => {
         const oldIndex = items.findIndex((item) => item.id === active.id);
         const newIndex = items.findIndex((item) => item.id === over.id);
-        return arrayMove(items, oldIndex, newIndex);
+        const newItems = arrayMove(items, oldIndex, newIndex);
+        setSaveStatus('unsaved');
+        return newItems;
       });
-      setSaveStatus('unsaved');
     }
   };
   
@@ -448,39 +486,51 @@ export default function ProjectDetailsPage() {
     setActiveBlockId(newBlock.id);
     setSaveStatus('unsaved');
   };
-  
-  const handleKeyDown = (e: React.KeyboardEvent<HTMLDivElement>, id: string, tag: ContentBlock['tag']) => {
-    const currentBlockIndex = blocks.findIndex(b => b.id === id);
-    const currentBlock = blocks[currentBlockIndex];
 
-    if (e.key === 'Enter' && !e.shiftKey) {
-      e.preventDefault();
-      handleAddBlock(id);
-    } else if (e.key === 'Backspace' && currentBlock.content === '' && blocks.length > 1) {
-       e.preventDefault();
-       const newBlocks = blocks.filter(b => b.id !== id);
-       setBlocks(newBlocks);
-       if (currentBlockIndex > 0) {
-           setActiveBlockId(blocks[currentBlockIndex - 1].id);
-       }
-       setSaveStatus('unsaved');
-    } else if (e.key === ' ' && currentBlock.content.match(/^(##|###)$/)) {
-        e.preventDefault();
-        const newTag = currentBlock.content === '##' ? 'h2' : 'h3';
-        const newBlocks = blocks.map(b => b.id === id ? { ...b, tag: newTag, content: '' } : b);
-        setBlocks(newBlocks);
-        setSaveStatus('unsaved');
-    } else if (e.key === '/') {
-        setCommandMenuOpen(true);
-    }
+  const updateBlockTag = (id: string, newTag: ContentBlock['tag']) => {
+    setBlocks(blocks => {
+      const newBlocks = blocks.map(b => b.id === id ? { ...b, tag: newTag, content: '' } : b);
+      return newBlocks;
+    });
+    setSaveStatus('unsaved');
+    // We need to re-focus after the state update
+    setTimeout(() => setActiveBlockId(id), 0);
+  };
+  
+  const handleKeyDown = (e: React.KeyboardEvent<HTMLDivElement>, id: string) => {
+      const currentBlockIndex = blocks.findIndex(b => b.id === id);
+      const currentBlock = blocks[currentBlockIndex];
+      const target = e.target as HTMLDivElement;
+
+      if (e.key === 'Enter' && !e.shiftKey) {
+          e.preventDefault();
+          handleAddBlock(id);
+      } else if (e.key === 'Backspace' && target.innerHTML === '' && blocks.length > 1) {
+          e.preventDefault();
+          const newBlocks = blocks.filter(b => b.id !== id);
+          setBlocks(newBlocks);
+          if (currentBlockIndex > 0) {
+              setActiveBlockId(blocks[currentBlockIndex - 1].id);
+          }
+          setSaveStatus('unsaved');
+      } else if (e.key === ' ' && target.innerHTML.match(/^##\s*$/)) {
+          e.preventDefault();
+          updateBlockTag(id, 'h2');
+      } else if (e.key === ' ' && target.innerHTML.match(/^###\s*$/)) {
+          e.preventDefault();
+          updateBlockTag(id, 'h3');
+      } else if (e.key === '/') {
+          const selection = window.getSelection();
+          if (selection && selection.anchorOffset === 1 && target.innerHTML === '/') {
+              setCommandMenuOpen(true);
+          }
+      }
   };
 
   const handleCommandSelect = (command: 'h2' | 'h3' | 'pre') => {
     if (!activeBlockId) return;
-    const newBlocks = blocks.map(b => b.id === activeBlockId ? { ...b, tag: command, content: '' } : b);
-    setBlocks(newBlocks);
+    updateBlockTag(activeBlockId, command);
     setCommandMenuOpen(false);
-    setSaveStatus('unsaved');
   };
 
   if (!project || !client) {
@@ -501,27 +551,10 @@ export default function ProjectDetailsPage() {
               <h1 className="font-headline text-xl font-bold">{project.name}</h1>
               <p className="text-sm text-muted-foreground">{client.name}</p>
             </div>
-          </div>
-          <div className="flex items-center gap-2">
-            <Button onClick={() => router.push(`/dashboard/projects/${id}/report`)} variant="outline">
-              {t[uiLanguage].report}
-            </Button>
-             <Button onClick={() => handleSave(true)} disabled={saveStatus === 'saving' || saveStatus === 'saved'}>
-                {saveStatus === 'saving' ? (<><Save className="mr-2 h-4 w-4 animate-spin" />{t[uiLanguage].saving}</>) : 
-                 saveStatus === 'saved' ? (<><CheckCircle className="mr-2 h-4 w-4" />{t[uiLanguage].saved}</>) : 
-                 (<><Save className="mr-2 h-4 w-4" />{t[uiLanguage].save}</>)}
-            </Button>
-          </div>
-        </header>
-
-        <div className="w-full px-4 sm:px-6">
-          <Tabs defaultValue={searchParams.get('tab') || 'findings'} className="w-full">
-            <div className="flex items-center justify-between">
-                <TabsList>
-                  <TabsTrigger value="findings">{t[uiLanguage].findings}</TabsTrigger>
-                  <TabsTrigger value="scope">{t[uiLanguage].scope}</TabsTrigger>
-                  <TabsTrigger value="details">{t[uiLanguage].projectDetails}</TabsTrigger>
-                </TabsList>
+             <div className="flex items-center gap-2">
+                <Button onClick={() => router.push(`/dashboard/projects/${id}/report`)} variant="outline">
+                  <File className="mr-2 h-4 w-4" /> {t[uiLanguage].report}
+                </Button>
                  <AlertDialog open={isDeleteDialogOpen} onOpenChange={setIsDeleteDialogOpen}>
                     <AlertDialogTrigger asChild>
                         <Button variant="destructive" size="icon"><Trash2 className="h-4 w-4" /></Button>
@@ -537,6 +570,23 @@ export default function ProjectDetailsPage() {
                       </AlertDialogFooter>
                     </AlertDialogContent>
                 </AlertDialog>
+            </div>
+          </div>
+        </header>
+
+        <div className="w-full px-4 sm:px-6">
+          <Tabs defaultValue={searchParams.get('tab') || 'content'} className="w-full">
+            <div className="flex items-center justify-between">
+                <TabsList>
+                  <TabsTrigger value="content">{t[uiLanguage].content}</TabsTrigger>
+                  <TabsTrigger value="findings">{t[uiLanguage].findings}</TabsTrigger>
+                  <TabsTrigger value="details">{t[uiLanguage].projectDetails}</TabsTrigger>
+                </TabsList>
+                 <Button onClick={() => handleSave(true)} disabled={saveStatus === 'saving' || saveStatus === 'saved'} variant="ghost" size="sm">
+                    {saveStatus === 'saving' ? (<>{t[uiLanguage].saving}</>) : 
+                     saveStatus === 'saved' ? (<><CheckCircle className="mr-2 h-4 w-4 text-green-500" />{t[uiLanguage].saved}</>) : 
+                     (<>{t[uiLanguage].save}</>)}
+                </Button>
             </div>
             
             <TabsContent value="findings" className="pt-6">
@@ -591,10 +641,10 @@ export default function ProjectDetailsPage() {
               </Card>
             </TabsContent>
             
-            <TabsContent value="scope" className="pt-6">
+            <TabsContent value="content" className="pt-6">
                <Card>
                   <CardHeader>
-                     <CardTitle>{t[uiLanguage].scope}</CardTitle>
+                     <CardTitle>{t[uiLanguage].content}</CardTitle>
                   </CardHeader>
                   <CardContent className="max-w-4xl mx-auto">
                      <DndContext sensors={sensors} collisionDetection={closestCenter} onDragEnd={handleDragEnd}>
@@ -603,18 +653,17 @@ export default function ProjectDetailsPage() {
                                 <SortableBlock 
                                     key={block.id}
                                     block={block}
-                                    onUpdate={handleBlockUpdate}
-                                    onKeyDown={handleKeyDown}
-                                    onDelete={() => {}}
+                                    onUpdate={(content) => handleBlockUpdate(block.id, content)}
+                                    onKeyDown={(e) => handleKeyDown(e, block.id)}
                                     onAdd={handleAddBlock}
                                     onFocus={() => setActiveBlockId(block.id)}
                                     isFocused={activeBlockId === block.id}
+                                    placeholder={t[projectLanguage as 'en' | 'es'].commandPlaceholder}
                                 />
                             ))}
                         </SortableContext>
                      </DndContext>
-                     {commandMenuOpen && (
-                        <Popover open={commandMenuOpen} onOpenChange={setCommandMenuOpen}>
+                     <Popover open={commandMenuOpen} onOpenChange={setCommandMenuOpen}>
                             <PopoverTrigger asChild>
                                 <div />
                             </PopoverTrigger>
@@ -632,7 +681,6 @@ export default function ProjectDetailsPage() {
                                 </Command>
                             </PopoverContent>
                         </Popover>
-                     )}
                   </CardContent>
                </Card>
             </TabsContent>
