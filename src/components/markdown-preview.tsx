@@ -75,7 +75,7 @@ export const MarkdownPreview = ({ content, getImage, isReport }: { content: stri
     };
 
     return (
-        <div className="prose dark:prose-invert max-w-full break-words">
+        <div className="prose dark:prose-invert w-full break-words">
             <ReactMarkdown
                 remarkPlugins={[remarkGfm]}
                 components={{
@@ -121,7 +121,7 @@ export const MarkdownPreview = ({ content, getImage, isReport }: { content: stri
                         const codeContent = String(codeChildren).replace(/\n$/, '');
                         
                         return (
-                          <div className="overflow-x-auto my-4">
+                          <div className="overflow-x-auto">
                             <CodeBlock
                               initialLanguage={match ? match[1] : 'bash'}
                               code={codeContent}

@@ -61,6 +61,7 @@ export const HighlightingTextarea = React.forwardRef<HTMLTextAreaElement, Highli
                 <div 
                     ref={backdropRef} 
                     className="absolute inset-0 z-0 overflow-auto whitespace-pre-wrap break-words pointer-events-none p-4 font-code text-sm min-h-[300px] text-muted-foreground"
+                    style={{lineHeight: '1.5rem'}}
                 >
                     <div dangerouslySetInnerHTML={{ __html: highlightedHtml }} />
                 </div>
@@ -75,6 +76,7 @@ export const HighlightingTextarea = React.forwardRef<HTMLTextAreaElement, Highli
                         'font-code text-sm min-h-[300px]',
                         "p-4 ring-offset-background placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
                     )}
+                    style={{lineHeight: '1.5rem'}}
                     spellCheck="false"
                     {...props}
                 />

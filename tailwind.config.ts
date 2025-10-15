@@ -14,13 +14,14 @@ export default {
           css: {
             '--tw-prose-bullets': theme('colors.primary.DEFAULT'),
             '--tw-prose-counters': theme('colors.primary.DEFAULT'),
-            'maxWidth': 'none', 
+            'maxWidth': '100%', 
             pre: {
               'margin-top': '0',
               'margin-bottom': '0',
               'padding': '0',
               'max-width': '100%',
               'overflow-x': 'auto',
+              'background-color': 'transparent'
             },
             table: {
               'width': '100%',
