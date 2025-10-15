@@ -138,7 +138,7 @@ export const MarkdownPreview = ({ content, getImage, isReport }: { content: stri
                             if (image) {
                                 finalSrc = image.dataUrl;
                             } else {
-                                return null;
+                                return null; // Or a placeholder for broken images
                             }
                         }
                         // eslint-disable-next-line @next/next/no-img-element
