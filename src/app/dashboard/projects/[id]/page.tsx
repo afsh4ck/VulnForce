@@ -30,6 +30,7 @@ import { arrayMove, SortableContext, sortableKeyboardCoordinates, useSortable, v
 import { CSS } from '@dnd-kit/utilities';
 import { translateText } from '@/ai/flows/translate-text-flow';
 import { Textarea } from '@/components/ui/textarea';
+import { MarkdownPreview } from '@/components/markdown-preview';
 
 type SortKey = keyof Finding;
 type SaveStatus = 'unsaved' | 'saving' | 'saved';
@@ -66,41 +67,60 @@ const SortableScopeSection = ({ section, ...props }: { section: ScopeSection, [k
   );
 };
 
-const ScopeSectionEditor = ({ section, onContentChange, onDelete, onTitleChange, dragHandleProps, dragListeners }: {
+const ScopeSectionEditor = ({ section, onContentChange, onDelete, onTitleChange, dragHandleProps, dragListeners, getImage }: {
   section: ScopeSection;
   onContentChange: (content: string) => void;
   onDelete: () => void;
   onTitleChange: (newTitle: string) => void;
   dragHandleProps: any;
   dragListeners: any;
+  getImage: (id: string) => ImageAsset | undefined
 }) => {
-    const headingMatch = section.content.match(/^(#{2,4}) (.*)/);
-    const sectionTitle = headingMatch ? headingMatch[2].trim() : 'New Section';
-    const contentWithoutTitle = section.content.replace(/^(#{2,4}) .*\n?/, '');
+    const [isEditing, setIsEditing] = useState(false);
+    const [editableContent, setEditableContent] = useState(section.content);
 
+    const handleSave = () => {
+      onContentChange(editableContent);
+      setIsEditing(false);
+    }
+    
     return (
         <Card className="mb-4">
-            <CardHeader className="flex flex-row items-center gap-2 p-2 border-b">
-                <div {...dragHandleProps} {...dragListeners} className="cursor-grab p-2">
-                    <GripVertical className="h-5 w-5 text-muted-foreground" />
-                </div>
-                <Input 
-                  value={sectionTitle}
-                  onChange={(e) => onTitleChange(e.target.value)}
-                  className="font-semibold text-base border-none focus-visible:ring-0 focus-visible:ring-offset-0 bg-transparent h-auto p-0 flex-1"
-                />
-                <Button variant="ghost" size="icon" className="h-8 w-8 text-destructive" onClick={onDelete}>
-                  <Trash2 className="h-4 w-4" />
-                </Button>
-            </CardHeader>
-            <CardContent className="p-0">
-                <Textarea 
-                  value={contentWithoutTitle}
-                  onChange={(e) => onContentChange(e.target.value)}
-                  className="w-full min-h-[150px] border-0 rounded-t-none font-code text-sm focus-visible:ring-0 focus-visible:ring-offset-0"
-                  placeholder="Write your content here..."
-                />
+            <div className="sticky top-16 z-10 bg-background">
+                <CardHeader className="flex flex-row items-center gap-2 p-2 border-b">
+                    <div {...dragHandleProps} {...dragListeners} className="cursor-grab p-2">
+                        <GripVertical className="h-5 w-5 text-muted-foreground" />
+                    </div>
+                    <Input 
+                      value={section.content.match(/^(#{2,4}) (.*)/)?.[2].trim() || 'New Section'}
+                      onChange={(e) => onTitleChange(e.target.value)}
+                      className="font-semibold text-base border-none focus-visible:ring-0 focus-visible:ring-offset-0 bg-transparent h-auto p-0 flex-1"
+                      readOnly // For now, title editing will be handled differently
+                    />
+                    <Button variant="ghost" size="icon" className="h-8 w-8 text-destructive" onClick={onDelete}>
+                      <Trash2 className="h-4 w-4" />
+                    </Button>
+                </CardHeader>
+            </div>
+            <CardContent className="p-4" onClick={() => setIsEditing(true)}>
+                <MarkdownPreview content={section.content} getImage={getImage} />
             </CardContent>
+            <Dialog open={isEditing} onOpenChange={setIsEditing}>
+              <DialogContent className="sm:max-w-[825px]">
+                <DialogHeader>
+                  <DialogTitle>Edit Section</DialogTitle>
+                </DialogHeader>
+                <Textarea 
+                  value={editableContent}
+                  onChange={(e) => setEditableContent(e.target.value)}
+                  className="w-full min-h-[400px] font-code text-sm focus-visible:ring-0 focus-visible:ring-offset-0"
+                />
+                <DialogFooter>
+                  <Button onClick={() => setIsEditing(false)} variant="outline">Cancel</Button>
+                  <Button onClick={handleSave}>Save</Button>
+                </DialogFooter>
+              </DialogContent>
+            </Dialog>
         </Card>
     )
 }
@@ -285,14 +305,9 @@ export default function ProjectDetailsPage() {
 
   const handleSectionContentChange = (sectionId: string, newContent: string) => {
     setScopeSections(prevSections =>
-      prevSections.map(sec => {
-        if (sec.id === sectionId) {
-            const headingMatch = sec.content.match(/^(#{2,4}) .*\n?/);
-            const title = headingMatch ? headingMatch[0] : '';
-            return { ...sec, content: title + newContent };
-        }
-        return sec;
-      })
+      prevSections.map(sec => 
+        sec.id === sectionId ? { ...sec, content: newContent } : sec
+      )
     );
     setSaveStatus('unsaved');
   };
@@ -479,7 +494,7 @@ export default function ProjectDetailsPage() {
 
   return (
     <div className="w-full grid grid-cols-1 gap-6 pt-6">
-       <div className="flex justify-between items-start px-4 sm:px-6">
+       <div className="flex justify-between items-start px-4 sm:px-6 pt-6">
           <div className="flex items-center gap-4">
             <Button variant="outline" size="icon" className="h-10 w-10" asChild>
                 <Link href="/dashboard/projects">
@@ -626,7 +641,7 @@ export default function ProjectDetailsPage() {
                     </AlertDialogHeader>
                     <AlertDialogFooter>
                         <AlertDialogCancel>{t[language].cancel}</AlertDialogCancel>
-                        <AlertDialogAction onClick={handleDeleteProject} className="bg-destructive text-destructive-foreground hover:bg-destructive/90">{t[language].delete}</AlertDialogAction>
+                        <AlertDialogAction onClick={handleDeleteProject} className="bg-destructive text-destructive-foreground hover:bg-destructive/90">{t[language].deleteProject}</AlertDialogAction>
                     </AlertDialogFooter>
                 </AlertDialogContent>
             </AlertDialog>
@@ -671,6 +686,7 @@ export default function ProjectDetailsPage() {
                             onContentChange={(newContent: string) => handleSectionContentChange(section.id, newContent)}
                             onTitleChange={(newTitle: string) => handleSectionTitleChange(section.id, newTitle)}
                             onDelete={() => handleDeleteSection(section.id)}
+                            getImage={getImage}
                           />
                         )
                       })}

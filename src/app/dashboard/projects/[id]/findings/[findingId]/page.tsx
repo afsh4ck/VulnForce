@@ -1,14 +1,14 @@
 'use client';
 
-import React, { useState, useEffect, useMemo, useCallback, useRef } from 'react';
-import { useParams, useRouter, useSearchParams } from 'next/navigation';
+import React, { useState, useEffect, useCallback } from 'react';
+import { useParams, useRouter } from 'next/navigation';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import Link from 'next/link';
-import { ChevronLeft, Save, Plus, GripVertical, Rows, Bold, Italic, Code, List, ListOrdered, FileCode, Trash2, CheckCircle, Image } from 'lucide-react';
+import { ChevronLeft, Save, Plus, GripVertical, Trash2, CheckCircle } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import { useLanguage } from '@/context/language-context';
 import type { Vulnerability, Finding, Project, ImageAsset, Severity } from '@/lib/types';
@@ -18,9 +18,9 @@ import { DndContext, closestCenter, KeyboardSensor, PointerSensor, useSensor, us
 import { arrayMove, SortableContext, sortableKeyboardCoordinates, useSortable, verticalListSortingStrategy } from '@dnd-kit/sortable';
 import { CSS } from '@dnd-kit/utilities';
 import { Textarea } from '@/components/ui/textarea';
-import { Dialog, DialogContent, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
+import { Dialog, DialogContent, DialogFooter, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { Badge } from '@/components/ui/badge';
-import { ImageUploadDialog } from '@/components/image-upload-dialog';
+import { MarkdownPreview } from '@/components/markdown-preview';
 
 type SaveStatus = 'unsaved' | 'saving' | 'saved';
 
@@ -29,7 +29,7 @@ interface FindingSection {
   content: string;
 }
 
-const SortableSection = ({ section, isOrganizing, ...props }: { section: FindingSection, isOrganizing: boolean, [key: string]: any }) => {
+const SortableSection = ({ section, ...props }: { section: FindingSection, isOrganizing: boolean, [key: string]: any }) => {
   const { attributes, listeners, setNodeRef, transform, transition, isDragging } = useSortable({ id: section.id });
 
   const style = {
@@ -46,7 +46,7 @@ const SortableSection = ({ section, isOrganizing, ...props }: { section: Finding
   );
 };
 
-const SectionEditor = ({ section, onContentChange, onDelete, onTitleChange, isOrganizing, dragHandleProps, dragListeners }: {
+const SectionEditor = ({ section, onContentChange, onDelete, onTitleChange, isOrganizing, dragHandleProps, dragListeners, getImage }: {
   section: FindingSection;
   onContentChange: (content: string) => void;
   onDelete: () => void;
@@ -54,36 +54,58 @@ const SectionEditor = ({ section, onContentChange, onDelete, onTitleChange, isOr
   isOrganizing: boolean;
   dragHandleProps: any;
   dragListeners: any;
+  getImage: (id: string) => ImageAsset | undefined
 }) => {
   const { language } = useLanguage();
+  const [isEditing, setIsEditing] = useState(false);
+  const [editableContent, setEditableContent] = useState(section.content);
+
+  const handleSave = () => {
+    onContentChange(editableContent);
+    setIsEditing(false);
+  }
 
   const headingMatch = section.content.match(/^(#{2,4}) (.*)/);
   const sectionTitle = headingMatch ? headingMatch[2].trim() : 'New Section';
-  const contentWithoutTitle = section.content.replace(/^(#{2,4}) .*\n?/, '');
 
   return (
       <Card className="mb-4">
-          <CardHeader className="flex flex-row items-center gap-2 p-2 border-b">
-              <div {...dragHandleProps} {...dragListeners} className="cursor-grab p-2">
-                  <GripVertical className="h-5 w-5 text-muted-foreground" />
-              </div>
-              <Input 
-                value={sectionTitle}
-                onChange={(e) => onTitleChange(e.target.value)}
-                className="font-semibold text-base border-none focus-visible:ring-0 focus-visible:ring-offset-0 bg-transparent h-auto p-0 flex-1"
-              />
-              <Button variant="ghost" size="icon" className="h-8 w-8 text-destructive" onClick={onDelete}>
-                <Trash2 className="h-4 w-4" />
-              </Button>
-          </CardHeader>
-          <CardContent className="p-0">
-              <Textarea 
-                value={contentWithoutTitle}
-                onChange={(e) => onContentChange(e.target.value)}
-                className="w-full min-h-[150px] border-0 rounded-t-none font-code text-sm focus-visible:ring-0 focus-visible:ring-offset-0"
-                placeholder="Write your content here..."
-              />
+          <div className="sticky top-16 z-10 bg-background">
+            <CardHeader className="flex flex-row items-center gap-2 p-2 border-b">
+                <div {...dragHandleProps} {...dragListeners} className="cursor-grab p-2">
+                    <GripVertical className="h-5 w-5 text-muted-foreground" />
+                </div>
+                <Input 
+                  value={sectionTitle}
+                  onChange={(e) => onTitleChange(e.target.value)}
+                  className="font-semibold text-base border-none focus-visible:ring-0 focus-visible:ring-offset-0 bg-transparent h-auto p-0 flex-1"
+                  readOnly // Title editing will be handled differently.
+                />
+                <Button variant="ghost" size="icon" className="h-8 w-8 text-destructive" onClick={onDelete}>
+                  <Trash2 className="h-4 w-4" />
+                </Button>
+            </CardHeader>
+          </div>
+          <CardContent className="p-4" onClick={() => setIsEditing(true)}>
+              <MarkdownPreview content={section.content} getImage={getImage} />
           </CardContent>
+
+          <Dialog open={isEditing} onOpenChange={setIsEditing}>
+            <DialogContent className="sm:max-w-[825px]">
+              <DialogHeader>
+                <DialogTitle>Edit Section</DialogTitle>
+              </DialogHeader>
+              <Textarea 
+                value={editableContent}
+                onChange={(e) => setEditableContent(e.target.value)}
+                className="w-full min-h-[400px] font-code text-sm focus-visible:ring-0 focus-visible:ring-offset-0"
+              />
+              <DialogFooter>
+                <Button onClick={() => setIsEditing(false)} variant="outline">Cancel</Button>
+                <Button onClick={handleSave}>Save</Button>
+              </DialogFooter>
+            </DialogContent>
+          </Dialog>
       </Card>
   )
 }
@@ -91,7 +113,6 @@ const SectionEditor = ({ section, onContentChange, onDelete, onTitleChange, isOr
 export default function FindingEditorPage() {
   const params = useParams();
   const router = useRouter();
-  const searchParams = useSearchParams();
   const { id: projectId, findingId } = params;
   const { toast } = useToast();
   const { language: uiLanguage } = useLanguage();
@@ -213,14 +234,9 @@ export default function FindingEditorPage() {
 
   const handleSectionChange = (sectionId: string, newContent: string) => {
     setSections(prevSections =>
-      prevSections.map(sec => {
-        if (sec.id === sectionId) {
-          const headingMatch = sec.content.match(/^(#{2,4}) .*\n?/);
-          const title = headingMatch ? headingMatch[0] : '';
-          return { ...sec, content: title + newContent };
-        }
-        return sec;
-      })
+      prevSections.map(sec => 
+        sec.id === sectionId ? { ...sec, content: newContent } : sec
+      )
     );
     setSaveStatus('unsaved');
   };
@@ -343,7 +359,7 @@ export default function FindingEditorPage() {
     return projectLanguage === 'es' ? vuln.title_es : vuln.title_en;
   }
   
-  const vulnerabilityOptions = useMemo(() => vulnerabilities.map(v => ({
+  const vulnerabilityOptions = React.useMemo(() => vulnerabilities.map(v => ({
       value: v.id,
       label: getVulnTitle(v),
   })), [vulnerabilities, projectLanguage, getVulnTitle]);
@@ -377,7 +393,7 @@ export default function FindingEditorPage() {
 
   return (
     <div className="w-full grid grid-cols-1 gap-6 pt-6">
-      <header className="flex items-center justify-between px-4 sm:px-6">
+      <header className="flex items-center justify-between px-4 sm:px-6 pt-6">
         <div className="flex items-center gap-4">
           <Button variant="outline" size="icon" className="h-10 w-10" asChild>
             <Link href={`/dashboard/projects/${projectId}`}>
@@ -457,6 +473,7 @@ export default function FindingEditorPage() {
                             onContentChange={(newContent: string) => handleSectionChange(section.id, newContent)}
                             onTitleChange={(newTitle: string) => handleTitleChange(section.id, newTitle)}
                             onDelete={() => handleDeleteSection(section.id)}
+                            getImage={getImage}
                           />
                        );
                     })}
