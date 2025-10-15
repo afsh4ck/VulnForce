@@ -19,6 +19,7 @@ import { arrayMove, SortableContext, sortableKeyboardCoordinates, useSortable, v
 import { CSS } from '@dnd-kit/utilities';
 import { Badge } from '@/components/ui/badge';
 import { HighlightingTextarea } from '@/components/ui/highlighting-textarea';
+import { MarkdownPreview } from '@/components/markdown-preview';
 
 type SaveStatus = 'unsaved' | 'saving' | 'saved';
 
@@ -37,36 +38,43 @@ const SectionEditor = ({ section, onContentChange, onDelete, onTitleChange, isOr
   dragListeners: any;
   getImage: (id: string) => ImageAsset | undefined
 }) => {
-  const headingMatch = section.content.match(/^(#{2,4}) (.*)/);
-  const sectionTitle = headingMatch ? headingMatch[2].trim() : 'New Section';
-  const contentWithoutTitle = section.content.replace(/^(#{2,4}) .*\n?/, '');
+    const [isEditing, setIsEditing] = useState(false);
+    const headingMatch = section.content.match(/^(#{2,4}) (.*)/);
+    const sectionTitle = headingMatch ? headingMatch[2].trim() : 'New Section';
+    const contentWithoutTitle = section.content.replace(/^(#{2,4}) .*\n?/, '');
 
-  return (
-      <Card className="mb-4">
-          <div className="sticky top-16 z-10 bg-background">
-            <CardHeader className="flex flex-row items-center gap-2 p-2 border-b">
-                <div {...dragHandleProps} {...dragListeners} className="cursor-grab p-2">
-                    <GripVertical className="h-5 w-5 text-muted-foreground" />
-                </div>
-                <Input 
-                  value={sectionTitle}
-                  onChange={(e) => onTitleChange(e.target.value)}
-                  className="font-semibold text-base border-none focus-visible:ring-0 focus-visible:ring-offset-0 bg-transparent h-auto p-0 flex-1"
-                />
-                <Button variant="ghost" size="icon" className="h-8 w-8 text-destructive" onClick={onDelete}>
-                  <Trash2 className="h-4 w-4" />
-                </Button>
-            </CardHeader>
-          </div>
-          <CardContent className="p-4" >
-             <HighlightingTextarea 
-                value={contentWithoutTitle}
-                onValueChange={(newContent) => onContentChange(newContent)}
-                className="w-full min-h-[200px] font-code text-sm focus-visible:ring-0 focus-visible:ring-offset-0"
-              />
-          </CardContent>
-      </Card>
-  )
+    return (
+        <Card className="mb-4">
+            <div className="sticky top-16 z-10 bg-background">
+                <CardHeader className="flex flex-row items-center gap-2 p-2 border-b">
+                    <div {...dragHandleProps} {...dragListeners} className="cursor-grab p-2">
+                        <GripVertical className="h-5 w-5 text-muted-foreground" />
+                    </div>
+                    <Input
+                        value={sectionTitle}
+                        onChange={(e) => onTitleChange(e.target.value)}
+                        className="font-semibold text-base border-none focus-visible:ring-0 focus-visible:ring-offset-0 bg-transparent h-auto p-0 flex-1"
+                    />
+                    <Button variant="ghost" size="icon" className="h-8 w-8 text-destructive" onClick={onDelete}>
+                        <Trash2 className="h-4 w-4" />
+                    </Button>
+                </CardHeader>
+            </div>
+            <CardContent className="p-4" onClick={() => setIsEditing(true)}>
+                {isEditing ? (
+                    <HighlightingTextarea
+                        value={contentWithoutTitle}
+                        onValueChange={(newContent) => onContentChange(newContent)}
+                        onBlur={() => setIsEditing(false)}
+                        autoFocus
+                        className="w-full min-h-[200px] font-code text-sm focus-visible:ring-0 focus-visible:ring-offset-0"
+                    />
+                ) : (
+                    <MarkdownPreview content={section.content} getImage={getImage} />
+                )}
+            </CardContent>
+        </Card>
+    );
 }
 
 const SortableSection = ({ section, ...props }: { section: FindingSection, isOrganizing: boolean, [key: string]: any }) => {
