@@ -29,7 +29,7 @@ import { DndContext, closestCenter, KeyboardSensor, PointerSensor, useSensor, us
 import { arrayMove, SortableContext, sortableKeyboardCoordinates, useSortable, verticalListSortingStrategy } from '@dnd-kit/sortable';
 import { CSS } from '@dnd-kit/utilities';
 import { translateText } from '@/ai/flows/translate-text-flow';
-import { Textarea } from '@/components/ui/textarea';
+import { HighlightingTextarea } from '@/components/ui/highlighting-textarea';
 import { MarkdownPreview } from '@/components/markdown-preview';
 
 type SortKey = keyof Finding;
@@ -50,23 +50,6 @@ const iconOptions = [
     { value: 'Award', label: 'Award' },
 ];
 
-const SortableScopeSection = ({ section, ...props }: { section: ScopeSection, [key: string]: any }) => {
-  const { attributes, listeners, setNodeRef, transform, transition, isDragging } = useSortable({ id: section.id });
-
-  const style = {
-    transform: CSS.Transform.toString(transform),
-    transition,
-    opacity: isDragging ? 0.5 : 1,
-    zIndex: isDragging ? 100 : 'auto',
-  };
-  
-  return (
-    <div ref={setNodeRef} style={style}>
-      <ScopeSectionEditor section={section} dragHandleProps={attributes} dragListeners={listeners} {...props} />
-    </div>
-  );
-};
-
 const ScopeSectionEditor = ({ section, onContentChange, onDelete, onTitleChange, dragHandleProps, dragListeners, getImage }: {
   section: ScopeSection;
   onContentChange: (content: string) => void;
@@ -77,10 +60,8 @@ const ScopeSectionEditor = ({ section, onContentChange, onDelete, onTitleChange,
   getImage: (id: string) => ImageAsset | undefined
 }) => {
     const [isEditing, setIsEditing] = useState(false);
-    const [editableContent, setEditableContent] = useState(section.content);
 
     const handleSave = () => {
-      onContentChange(editableContent);
       setIsEditing(false);
     }
     
@@ -103,27 +84,39 @@ const ScopeSectionEditor = ({ section, onContentChange, onDelete, onTitleChange,
                 </CardHeader>
             </div>
             <CardContent className="p-4" onClick={() => setIsEditing(true)}>
-                <MarkdownPreview content={section.content} getImage={getImage} />
+                {isEditing ? (
+                    <HighlightingTextarea 
+                      value={section.content}
+                      onValueChange={onContentChange}
+                      onBlur={handleSave}
+                      autoFocus
+                      className="w-full min-h-[200px] font-code text-sm focus-visible:ring-0 focus-visible:ring-offset-0"
+                    />
+                ) : (
+                    <MarkdownPreview content={section.content} getImage={getImage} />
+                )}
             </CardContent>
-            <Dialog open={isEditing} onOpenChange={setIsEditing}>
-              <DialogContent className="sm:max-w-[825px]">
-                <DialogHeader>
-                  <DialogTitle>Edit Section</DialogTitle>
-                </DialogHeader>
-                <Textarea 
-                  value={editableContent}
-                  onChange={(e) => setEditableContent(e.target.value)}
-                  className="w-full min-h-[400px] font-code text-sm focus-visible:ring-0 focus-visible:ring-offset-0"
-                />
-                <DialogFooter>
-                  <Button onClick={() => setIsEditing(false)} variant="outline">Cancel</Button>
-                  <Button onClick={handleSave}>Save</Button>
-                </DialogFooter>
-              </DialogContent>
-            </Dialog>
         </Card>
     )
 }
+
+const SortableScopeSection = ({ section, ...props }: { section: ScopeSection, [key: string]: any }) => {
+  const { attributes, listeners, setNodeRef, transform, transition, isDragging } = useSortable({ id: section.id });
+
+  const style = {
+    transform: CSS.Transform.toString(transform),
+    transition,
+    opacity: isDragging ? 0.5 : 1,
+    zIndex: isDragging ? 100 : 'auto',
+  };
+  
+  return (
+    <div ref={setNodeRef} style={style}>
+      <ScopeSectionEditor section={section} dragHandleProps={attributes} dragListeners={listeners} {...props} />
+    </div>
+  );
+};
+
 
 export default function ProjectDetailsPage() {
   const params = useParams();

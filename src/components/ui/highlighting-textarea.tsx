@@ -2,6 +2,7 @@
 'use client';
 import React, { useRef, useEffect, useCallback, useImperativeHandle } from 'react';
 import { cn } from '@/lib/utils';
+import { useSelectionToolbar } from '@/hooks/use-selection-toolbar';
 
 const getHighlightedText = (text: string) => {
     if (!text) return '';
@@ -23,8 +24,51 @@ export const HighlightingTextarea = React.forwardRef<HTMLTextAreaElement, Highli
     ({ value, onValueChange, className, ...props }, ref) => {
         const backdropRef = useRef<HTMLDivElement>(null);
         const localTextareaRef = useRef<HTMLTextAreaElement>(null);
-
+        
         useImperativeHandle(ref, () => localTextareaRef.current as HTMLTextAreaElement);
+
+        const applyFormat = (format: 'bold' | 'italic' | 'code' | 'link') => {
+          if (localTextareaRef.current) {
+              const textarea = localTextareaRef.current;
+              const start = textarea.selectionStart;
+              const end = textarea.selectionEnd;
+              const selectedText = value.substring(start, end);
+
+              if (selectedText) {
+                  let formattedText = '';
+                  switch (format) {
+                      case 'bold':
+                          formattedText = `**${selectedText}**`;
+                          break;
+                      case 'italic':
+                          formattedText = `*${selectedText}*`;
+                          break;
+                      case 'code':
+                          formattedText = `\`${selectedText}\``;
+                          break;
+                      case 'link':
+                          const url = prompt("Enter URL:");
+                          if (url) {
+                              formattedText = `[${selectedText}](${url})`;
+                          } else {
+                              return;
+                          }
+                          break;
+                  }
+                  const newValue = value.substring(0, start) + formattedText + value.substring(end);
+                  onValueChange(newValue);
+                  
+                  // Reselect the newly formatted text
+                  setTimeout(() => {
+                      textarea.focus();
+                      textarea.setSelectionRange(start, start + formattedText.length);
+                  }, 0);
+              }
+          }
+      };
+
+
+        const { toolbarStyles, handleSelectionChange } = useSelectionToolbar(localTextareaRef);
 
         const syncScroll = useCallback(() => {
             if (backdropRef.current && localTextareaRef.current) {
@@ -58,9 +102,15 @@ export const HighlightingTextarea = React.forwardRef<HTMLTextAreaElement, Highli
 
         return (
             <div className={cn("relative w-full h-full", className)}>
+                 <div style={toolbarStyles.toolbar} className="bg-background border rounded-md shadow-lg flex gap-1 p-1">
+                    <button onClick={() => applyFormat('bold')} style={toolbarStyles.button}>B</button>
+                    <button onClick={() => applyFormat('italic')} style={toolbarStyles.button}>I</button>
+                    <button onClick={() => applyFormat('code')} style={toolbarStyles.button}>Code</button>
+                    <button onClick={() => applyFormat('link')} style={toolbarStyles.button}>Link</button>
+                </div>
                 <div 
                     ref={backdropRef} 
-                    className="absolute inset-0 z-0 overflow-auto whitespace-pre-wrap break-words pointer-events-none p-4 font-code text-sm min-h-[300px] text-muted-foreground"
+                    className="absolute inset-0 z-0 overflow-auto whitespace-pre-wrap break-words pointer-events-none p-2 font-code text-sm min-h-[200px] text-muted-foreground"
                     style={{lineHeight: '1.5rem'}}
                 >
                     <div dangerouslySetInnerHTML={{ __html: highlightedHtml }} />
@@ -71,10 +121,11 @@ export const HighlightingTextarea = React.forwardRef<HTMLTextAreaElement, Highli
                     onChange={handleChange}
                     onScroll={syncScroll}
                     onKeyDown={handleKeyDown}
+                    onSelect={handleSelectionChange}
                     className={cn(
-                        'relative block w-full h-full resize-none overflow-auto whitespace-pre-wrap break-words border-0 bg-transparent text-transparent caret-foreground',
-                        'font-code text-sm min-h-[300px]',
-                        "p-4 ring-offset-background placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
+                        'relative block w-full h-full resize-none overflow-auto whitespace-pre-wrap break-words border rounded-md bg-transparent text-transparent caret-foreground',
+                        'font-code text-sm min-h-[200px]',
+                        "p-2 ring-offset-background placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
                     )}
                     style={{lineHeight: '1.5rem'}}
                     spellCheck="false"

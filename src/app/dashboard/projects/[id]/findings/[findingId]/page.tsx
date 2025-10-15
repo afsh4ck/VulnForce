@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState, useEffect, useCallback, useRef } from 'react';
 import { useParams, useRouter } from 'next/navigation';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -8,7 +8,7 @@ import { Label } from '@/components/ui/label';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import Link from 'next/link';
-import { ChevronLeft, Save, Plus, GripVertical, Trash2, CheckCircle } from 'lucide-react';
+import { ChevronLeft, Save, Plus, GripVertical, Trash2, CheckCircle, Bold, Italic, Code, Link as LinkIcon, Image as ImageIcon } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import { useLanguage } from '@/context/language-context';
 import type { Vulnerability, Finding, Project, ImageAsset, Severity } from '@/lib/types';
@@ -18,15 +18,96 @@ import { DndContext, closestCenter, KeyboardSensor, PointerSensor, useSensor, us
 import { arrayMove, SortableContext, sortableKeyboardCoordinates, useSortable, verticalListSortingStrategy } from '@dnd-kit/sortable';
 import { CSS } from '@dnd-kit/utilities';
 import { Textarea } from '@/components/ui/textarea';
-import { Dialog, DialogContent, DialogFooter, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { Badge } from '@/components/ui/badge';
 import { MarkdownPreview } from '@/components/markdown-preview';
+import { HighlightingTextarea } from '@/components/ui/highlighting-textarea';
+import { ImageUploadDialog } from '@/components/image-upload-dialog';
 
 type SaveStatus = 'unsaved' | 'saving' | 'saved';
 
 interface FindingSection {
   id: string;
   content: string;
+}
+
+const SectionEditor = ({ section, onContentChange, onDelete, onTitleChange, isOrganizing, dragHandleProps, dragListeners, getImage }: {
+  section: FindingSection;
+  onContentChange: (content: string) => void;
+  onDelete: () => void;
+  onTitleChange: (newTitle: string) => void;
+  isOrganizing: boolean;
+  dragHandleProps: any;
+  dragListeners: any;
+  getImage: (id: string) => ImageAsset | undefined
+}) => {
+  const { language } = useLanguage();
+  const [isEditing, setIsEditing] = useState(false);
+  const textareaRef = useRef<HTMLTextAreaElement>(null);
+
+  const handleSave = () => {
+    setIsEditing(false);
+  }
+
+  const handleInsertLink = () => {
+    if (textareaRef.current) {
+        const start = textareaRef.current.selectionStart;
+        const end = textareaRef.current.selectionEnd;
+        const selectedText = textareaRef.current.value.substring(start, end);
+        const url = prompt("Enter the URL:");
+        if (url) {
+            const newText = `[${selectedText}](${url})`;
+            const updatedContent = textareaRef.current.value.substring(0, start) + newText + textareaRef.current.value.substring(end);
+            onContentChange(updatedContent);
+        }
+    }
+  };
+
+  const handleInsertImage = (markdown: string) => {
+    if(textareaRef.current){
+      const start = textareaRef.current.selectionStart;
+      const end = textareaRef.current.selectionEnd;
+      const updatedContent = textareaRef.current.value.substring(0, start) + markdown + textareaRef.current.value.substring(end);
+      onContentChange(updatedContent);
+    }
+  };
+
+  const headingMatch = section.content.match(/^(#{2,4}) (.*)/);
+  const sectionTitle = headingMatch ? headingMatch[2].trim() : 'New Section';
+  const contentWithoutTitle = section.content.replace(/^(#{2,4}) .*\n?/, '');
+
+  return (
+      <Card className="mb-4">
+          <div className="sticky top-16 z-10 bg-background">
+            <CardHeader className="flex flex-row items-center gap-2 p-2 border-b">
+                <div {...dragHandleProps} {...dragListeners} className="cursor-grab p-2">
+                    <GripVertical className="h-5 w-5 text-muted-foreground" />
+                </div>
+                <Input 
+                  value={sectionTitle}
+                  onChange={(e) => onTitleChange(e.target.value)}
+                  className="font-semibold text-base border-none focus-visible:ring-0 focus-visible:ring-offset-0 bg-transparent h-auto p-0 flex-1"
+                />
+                <Button variant="ghost" size="icon" className="h-8 w-8 text-destructive" onClick={onDelete}>
+                  <Trash2 className="h-4 w-4" />
+                </Button>
+            </CardHeader>
+          </div>
+          <CardContent className="p-4" onClick={() => setIsEditing(true)}>
+             {isEditing ? (
+                  <HighlightingTextarea
+                    ref={textareaRef}
+                    value={section.content}
+                    onValueChange={onContentChange}
+                    onBlur={handleSave}
+                    autoFocus
+                    className="w-full min-h-[200px] font-code text-sm focus-visible:ring-0 focus-visible:ring-offset-0"
+                  />
+              ) : (
+                  <MarkdownPreview content={section.content} getImage={getImage} />
+              )}
+          </CardContent>
+      </Card>
+  )
 }
 
 const SortableSection = ({ section, ...props }: { section: FindingSection, isOrganizing: boolean, [key: string]: any }) => {
@@ -46,69 +127,6 @@ const SortableSection = ({ section, ...props }: { section: FindingSection, isOrg
   );
 };
 
-const SectionEditor = ({ section, onContentChange, onDelete, onTitleChange, isOrganizing, dragHandleProps, dragListeners, getImage }: {
-  section: FindingSection;
-  onContentChange: (content: string) => void;
-  onDelete: () => void;
-  onTitleChange: (newTitle: string) => void;
-  isOrganizing: boolean;
-  dragHandleProps: any;
-  dragListeners: any;
-  getImage: (id: string) => ImageAsset | undefined
-}) => {
-  const { language } = useLanguage();
-  const [isEditing, setIsEditing] = useState(false);
-  const [editableContent, setEditableContent] = useState(section.content);
-
-  const handleSave = () => {
-    onContentChange(editableContent);
-    setIsEditing(false);
-  }
-
-  const headingMatch = section.content.match(/^(#{2,4}) (.*)/);
-  const sectionTitle = headingMatch ? headingMatch[2].trim() : 'New Section';
-
-  return (
-      <Card className="mb-4">
-          <div className="sticky top-16 z-10 bg-background">
-            <CardHeader className="flex flex-row items-center gap-2 p-2 border-b">
-                <div {...dragHandleProps} {...dragListeners} className="cursor-grab p-2">
-                    <GripVertical className="h-5 w-5 text-muted-foreground" />
-                </div>
-                <Input 
-                  value={sectionTitle}
-                  onChange={(e) => onTitleChange(e.target.value)}
-                  className="font-semibold text-base border-none focus-visible:ring-0 focus-visible:ring-offset-0 bg-transparent h-auto p-0 flex-1"
-                  readOnly // Title editing will be handled differently.
-                />
-                <Button variant="ghost" size="icon" className="h-8 w-8 text-destructive" onClick={onDelete}>
-                  <Trash2 className="h-4 w-4" />
-                </Button>
-            </CardHeader>
-          </div>
-          <CardContent className="p-4" onClick={() => setIsEditing(true)}>
-              <MarkdownPreview content={section.content} getImage={getImage} />
-          </CardContent>
-
-          <Dialog open={isEditing} onOpenChange={setIsEditing}>
-            <DialogContent className="sm:max-w-[825px]">
-              <DialogHeader>
-                <DialogTitle>Edit Section</DialogTitle>
-              </DialogHeader>
-              <Textarea 
-                value={editableContent}
-                onChange={(e) => setEditableContent(e.target.value)}
-                className="w-full min-h-[400px] font-code text-sm focus-visible:ring-0 focus-visible:ring-offset-0"
-              />
-              <DialogFooter>
-                <Button onClick={() => setIsEditing(false)} variant="outline">Cancel</Button>
-                <Button onClick={handleSave}>Save</Button>
-              </DialogFooter>
-            </DialogContent>
-          </Dialog>
-      </Card>
-  )
-}
 
 export default function FindingEditorPage() {
   const params = useParams();
