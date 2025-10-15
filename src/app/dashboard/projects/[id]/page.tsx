@@ -16,7 +16,7 @@ import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, D
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from "@/components/ui/alert-dialog";
+import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from "@/components/ui/alert-dialog";
 import { useToast } from "@/hooks/use-toast";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { Calendar } from "@/components/ui/calendar";
@@ -159,6 +159,7 @@ const EditableBlock = ({ block, onUpdate, onKeyDown, onFocus, isFocused, placeho
     
     return (
         <div 
+          dir="ltr"
           className="relative"
           onFocus={onFocus}
         >
@@ -488,9 +489,10 @@ export default function ProjectDetailsPage() {
   const handleDeleteBlock = useCallback((id: string) => {
       setBlocks(prev => {
           if (prev.length <= 1) return prev;
-          return prev.filter(b => b.id !== id)
+          const newBlocks = prev.filter(b => b.id !== id);
+          setSaveStatus('unsaved');
+          return newBlocks;
       });
-      setSaveStatus('unsaved');
   }, []);
 
   const handleDragEnd = useCallback((event: DragEndEvent) => {
@@ -533,11 +535,11 @@ export default function ProjectDetailsPage() {
         }
         return b;
       });
+      setSaveStatus('unsaved');
       return newBlocks;
     });
-    setSaveStatus('unsaved');
     setTimeout(() => setActiveBlockId(id), 0);
-  }, []);
+  }, [setSaveStatus]);
   
   const handleKeyDown = useCallback((e: React.KeyboardEvent<HTMLDivElement>, id: string) => {
       const currentIndex = blocks.findIndex(b => b.id === id);
@@ -549,21 +551,45 @@ export default function ProjectDetailsPage() {
           e.preventDefault();
           const selection = window.getSelection();
           if (selection && selection.anchorNode) {
-            const currentLi = selection.anchorNode.parentElement?.closest('li');
-            if (currentLi && currentLi.textContent?.trim() === '') {
-              // Exit list if Enter is pressed on an empty list item
-              updateBlockTag(id, 'p');
-            } else {
-              document.execCommand('insertLineBreak');
-              const newLi = document.createElement('li');
-              newLi.innerHTML = '<br>';
-              selection.getRangeAt(0).insertNode(newLi);
-              const range = document.createRange();
-              range.setStart(newLi, 0);
-              range.collapse(true);
-              selection.removeAllRanges();
-              selection.addRange(range);
-            }
+              const currentLi = selection.anchorNode.parentElement?.closest('li');
+              if (currentLi && currentLi.textContent?.trim() === '') {
+                  // Exit list if Enter is pressed on an empty list item
+                  const newBlocks = [...blocks];
+                  const listBlock = newBlocks[currentIndex];
+                  
+                  // Get content of all LIs except the current empty one
+                  const tempDiv = document.createElement('div');
+                  tempDiv.innerHTML = listBlock.content;
+                  const listItems = Array.from(tempDiv.querySelectorAll('li'));
+                  const currentLiIndex = listItems.findIndex(li => li.isSameNode(currentLi));
+
+                  if(currentLiIndex === 0 && listItems.length === 1) { // It's the only item
+                    updateBlockTag(id, 'p');
+                    return;
+                  }
+
+                  const beforeContent = listItems.slice(0, currentLiIndex).map(li => li.outerHTML).join('');
+                  const afterContent = listItems.slice(currentLiIndex + 1).map(li => li.outerHTML).join('');
+
+                  const newParagraphBlock: ContentBlock = { id: `block-new-${Date.now()}`, tag: 'p', content: '' };
+                  
+                  listBlock.content = beforeContent;
+                  
+                  if(afterContent){
+                     const newTag = listBlock.tag;
+                     const newListBlock: ContentBlock = { id: `block-new-${Date.now() + 1}`, tag: newTag, content: afterContent };
+                     newBlocks.splice(currentIndex + 1, 0, newParagraphBlock, newListBlock);
+                  } else {
+                     newBlocks.splice(currentIndex + 1, 0, newParagraphBlock);
+                  }
+                  
+                  setBlocks(newBlocks);
+                  setActiveBlockId(newParagraphBlock.id);
+                  setSaveStatus('unsaved');
+
+              } else {
+                document.execCommand('insertHTML', false, '</li><li><br>');
+              }
           }
           return;
         }
@@ -572,12 +598,10 @@ export default function ProjectDetailsPage() {
       } else if (e.key === 'Backspace' && (target.innerHTML === '' || target.innerHTML === '<br>')) {
            e.preventDefault();
            if(blocks.length > 1) {
-              const newBlocks = blocks.filter(b => b.id !== id);
-              setBlocks(newBlocks);
+              handleDeleteBlock(id);
               if (currentIndex > 0) {
                   setActiveBlockId(blocks[currentIndex - 1].id);
               }
-              setSaveStatus('unsaved');
            } else if (currentBlock.tag !== 'p') {
               updateBlockTag(id, 'p');
            }
@@ -596,11 +620,9 @@ export default function ProjectDetailsPage() {
       } else if (e.key === ' ' && target.textContent?.match(/^-\s$/)) {
           e.preventDefault();
           updateBlockTag(id, 'ul');
-          target.innerHTML = '<li></li>';
       } else if (e.key === ' ' && target.textContent?.match(/^1\.\s$/)) {
           e.preventDefault();
           updateBlockTag(id, 'ol');
-          target.innerHTML = '<li></li>';
       }
        else if (e.key === '/') {
           const selection = window.getSelection();
@@ -608,18 +630,14 @@ export default function ProjectDetailsPage() {
               setCommandMenuOpen(true);
           }
       }
-  }, [blocks, handleAddBlock, updateBlockTag]);
+  }, [blocks, handleAddBlock, updateBlockTag, handleDeleteBlock]);
 
-  const handleCommandSelect = (command: 'h2' | 'h3' | 'pre' | 'ul' | 'ol') => {
+  const handleCommandSelect = (command: 'h1' | 'h2' | 'h3' | 'pre' | 'ul' | 'ol') => {
     if (!activeBlockId) return;
     updateBlockTag(activeBlockId, command);
     const blockEl = document.querySelector(`[data-rbd-draggable-id="${activeBlockId}"] [contenteditable="true"]`) as HTMLElement;
     if(blockEl) {
-        if(command === 'ul' || command === 'ol') {
-            blockEl.innerHTML = '<li></li>';
-        } else {
-            blockEl.innerHTML = '';
-        }
+        blockEl.innerHTML = '';
     }
     setCommandMenuOpen(false);
   };
@@ -873,4 +891,3 @@ export default function ProjectDetailsPage() {
     </>
   );
 }
-
