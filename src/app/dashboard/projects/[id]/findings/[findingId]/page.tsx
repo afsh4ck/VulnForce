@@ -1,3 +1,4 @@
+
 'use client';
 
 import React, { useState, useEffect, useCallback } from 'react';
@@ -28,9 +29,10 @@ interface FindingSection {
   content: string;
 }
 
-const SectionEditor = ({ section, onContentChange }: {
+const SectionEditor = ({ section, onContentChange, getImage }: {
   section: FindingSection;
   onContentChange: (content: string) => void;
+  getImage: (id: string) => ImageAsset | undefined
 }) => {
     const [isEditing, setIsEditing] = useState(false);
 
@@ -48,12 +50,12 @@ const SectionEditor = ({ section, onContentChange }: {
     
     return (
         <div className="py-2" onClick={() => setIsEditing(true)}>
-            <MarkdownPreview content={section.content} getImage={() => undefined} />
+            <MarkdownPreview content={section.content} getImage={getImage} />
         </div>
     );
 }
 
-const SortableSection = ({ section, index, onAddSection, onDelete, ...props }: { section: FindingSection, index: number, onAddSection: (index: number) => void, onDelete: () => void, isOrganizing: boolean, [key: string]: any }) => {
+const SortableSection = ({ section, index, onAddSection, onDelete, ...props }: { section: FindingSection, index: number, onAddSection: (index: number) => void, onDelete: () => void, [key: string]: any }) => {
   const { attributes, listeners, setNodeRef, transform, transition, isDragging } = useSortable({ id: section.id });
 
   const style = {
@@ -172,7 +174,7 @@ export default function FindingEditorPage() {
             toast({
                 variant: 'destructive',
                 title: uiLanguage === 'es' ? 'Campos Incompletos' : 'Incomplete Fields',
-                description: uiLanguage === 'es'_es ? 'Por favor, rellena todos los detalles del hallazgo.' : 'Please fill in all finding details.',
+                description: uiLanguage === 'es' ? 'Por favor, rellena todos los detalles del hallazgo.' : 'Please fill in all finding details.',
             });
         }
       return;
@@ -441,7 +443,7 @@ export default function FindingEditorPage() {
                             onAddSection={handleAddSection}
                             onContentChange={(newContent: string) => handleSectionChange(section.id, newContent)}
                             onDelete={() => handleDeleteSection(section.id)}
-                            isOrganizing={false}
+                            getImage={getImage}
                           />
                        );
                     })}

@@ -57,21 +57,51 @@ const ScopeSectionEditor = ({ section, onContentChange, getImage }: {
   getImage: (id: string) => ImageAsset | undefined
 }) => {
     const [isEditing, setIsEditing] = useState(false);
+    const textareaRef = useRef<HTMLTextAreaElement>(null);
+    const divRef = useRef<HTMLDivElement>(null);
+
+    useEffect(() => {
+        if (isEditing && textareaRef.current) {
+            textareaRef.current.focus();
+            textareaRef.current.style.height = 'auto';
+            textareaRef.current.style.height = `${textareaRef.current.scrollHeight}px`;
+        }
+    }, [isEditing]);
+    
+    const handleContentChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
+        onContentChange(e.target.value);
+        if (textareaRef.current) {
+            textareaRef.current.style.height = 'auto';
+            textareaRef.current.style.height = `${e.target.scrollHeight}px`;
+        }
+    };
+
+    const handleBlur = () => {
+        setIsEditing(false);
+    };
 
     if (isEditing) {
+        const divHeight = divRef.current ? divRef.current.clientHeight : 'auto';
         return (
-             <Textarea
-                value={section.content}
-                onChange={(e) => onContentChange(e.target.value)}
-                onBlur={() => setIsEditing(false)}
-                autoFocus
-                className="w-full min-h-[150px] border-0 rounded-t-none font-code text-sm focus-visible:ring-0 focus-visible:ring-offset-0"
-            />
+             <div ref={divRef} className="relative w-full">
+                <Textarea
+                    ref={textareaRef}
+                    value={section.content}
+                    onChange={handleContentChange}
+                    onBlur={handleBlur}
+                    className="absolute inset-0 w-full h-full p-0 border-none resize-none bg-transparent focus-visible:ring-0 focus-visible:ring-offset-0 font-sans text-sm"
+                    style={{ minHeight: divHeight }}
+                />
+                 {/* This div is for height calculation and is invisible */}
+                <div className="invisible whitespace-pre-wrap font-sans text-sm p-0 w-full" aria-hidden="true">
+                  <MarkdownPreview content={section.content} getImage={getImage} />
+                </div>
+            </div>
         )
     }
 
     return (
-        <div className="py-2" onClick={() => setIsEditing(true)}>
+        <div ref={divRef} className="py-2" onClick={() => setIsEditing(true)}>
             <MarkdownPreview content={section.content} getImage={getImage} />
         </div>
     )
@@ -96,11 +126,6 @@ const SortableScopeSection = ({ section, index, onAddSection, onDelete, ...props
         <div {...attributes} {...listeners} className="cursor-grab p-1">
           <GripVertical className="h-5 w-5 text-muted-foreground" />
         </div>
-      </div>
-      <div className="absolute top-0 -right-12 h-full flex items-center opacity-0 group-hover/section:opacity-100 transition-opacity">
-        <Button variant="ghost" size="icon" className="h-8 w-8 text-destructive" onClick={onDelete}>
-            <Trash2 className="h-4 w-4" />
-        </Button>
       </div>
       <ScopeSectionEditor section={section} {...props} />
     </div>
@@ -725,3 +750,4 @@ export default function ProjectDetailsPage() {
     </div>
   );
 }
+
