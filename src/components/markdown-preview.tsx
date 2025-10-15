@@ -210,17 +210,18 @@ export const MarkdownPreview = ({ content, getImage, isReport }: { content: stri
                         );
                     },
                     img: ({node, src, alt, ...props}) => {
+                        let finalSrc = src;
                         if (src?.startsWith('image://')) {
                             const imageId = src.substring('image://'.length);
                             const image = getImage(imageId);
                             if (image) {
-                                // eslint-disable-next-line @next/next/no-img-element
-                                return <img src={image.dataUrl} alt={alt} {...props} className="max-w-full h-auto rounded-md border" />;
+                                finalSrc = image.dataUrl;
+                            } else {
+                                return null; // Or a placeholder for broken images
                             }
-                            return null;
                         }
                         // eslint-disable-next-line @next/next/no-img-element
-                        return <img src={src} alt={alt} {...props} className="max-w-full h-auto rounded-md border" />;
+                        return <img src={finalSrc} alt={alt} {...props} className="max-w-full h-auto rounded-md border" />;
                     },
                 }}
             >

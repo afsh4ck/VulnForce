@@ -725,7 +725,7 @@ export default function FindingEditorPage() {
         </div>
       </header>
 
-      <div className="grid grid-cols-1 gap-6">
+      <div className="grid grid-cols-1 gap-6 max-w-full overflow-x-hidden">
           <Card>
             <CardHeader className="flex flex-row items-center justify-between">
               <CardTitle>{t[uiLanguage].findingDetails}</CardTitle>
@@ -809,5 +809,3 @@ export default function FindingEditorPage() {
     </div>
   );
 }
-
-    
