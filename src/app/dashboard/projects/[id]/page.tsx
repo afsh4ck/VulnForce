@@ -1,4 +1,3 @@
-
 'use client';
 
 import React, { useState, useMemo, useEffect, useCallback, useRef } from 'react';
@@ -13,7 +12,6 @@ import { Separator } from "@/components/ui/separator";
 import { useLanguage } from "@/context/language-context";
 import type { Finding, Project, ImageAsset } from '@/lib/types';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { MarkdownPreview } from '@/components/markdown-preview';
 import { Dialog, DialogTrigger, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -31,14 +29,9 @@ import { DndContext, closestCenter, KeyboardSensor, PointerSensor, useSensor, us
 import { arrayMove, SortableContext, sortableKeyboardCoordinates, useSortable, verticalListSortingStrategy } from '@dnd-kit/sortable';
 import { CSS } from '@dnd-kit/utilities';
 import { translateText } from '@/ai/flows/translate-text-flow';
-import { HighlightingTextarea } from '@/components/ui/highlighting-textarea';
-import { ResizableHandle, ResizablePanel, ResizablePanelGroup } from '@/components/ui/resizable';
 import { Textarea } from '@/components/ui/textarea';
-import { Combobox } from '@/components/ui/combobox';
-import { ImageUploadDialog } from '@/components/image-upload-dialog';
 
 type SortKey = keyof Finding;
-type ScopeView = 'edit' | 'split' | 'preview';
 type SaveStatus = 'unsaved' | 'saving' | 'saved';
 
 interface ScopeSection {
@@ -56,352 +49,60 @@ const iconOptions = [
     { value: 'Award', label: 'Award' },
 ];
 
-const languageOptions = [
-    { value: 'bash', label: 'Bash' },
-    { value: 'c', label: 'C' },
-    { value: 'cpp', label: 'C++' },
-    { value: 'csharp', label: 'C#' },
-    { value: 'css', label: 'CSS' },
-    { value: 'diff', label: 'Diff' },
-    { value: 'go', label: 'Go' },
-    { value: 'graphql', label: 'GraphQL' },
-    { value: 'ini', label: 'INI' },
-    { value: 'java', label: 'Java' },
-    { value: 'javascript', label: 'JavaScript' },
-    { value: 'json', label: 'JSON' },
-    { value: 'kotlin', label: 'Kotlin' },
-    { value: 'less', label: 'Less' },
-    { value: 'lua', label: 'Lua' },
-    { value: 'makefile', label: 'Makefile' },
-    { value: 'markdown', label: 'Markdown' },
-    { value: 'objectivec', label: 'Objective-C' },
-    { value: 'perl', label: 'Perl' },
-    { value: 'php', label: 'PHP' },
-    { value: 'python', label: 'Python' },
-    { value: 'r', label: 'R' },
-    { value: 'ruby', label: 'Ruby' },
-    { value: 'rust', label: 'Rust' },
-    { value: 'scss', label: 'SCSS' },
-    { value: 'shell', label: 'Shell' },
-    { value: 'sql', label: 'SQL' },
-    { value: 'swift', label: 'Swift' },
-    { value: 'typescript', label: 'TypeScript' },
-    { value: 'vbnet', label: 'VB.Net' },
-    { value: 'wasm', label: 'WebAssembly' },
-    { value: 'xml', label: 'XML' },
-    { value: 'yaml', label: 'YAML' },
-];
-
-const CodeBlockDialog = ({ onInsert, children }: { onInsert: (lang: string, code: string) => void, children: React.ReactNode }) => {
-  const [open, setOpen] = useState(false);
-  const [lang, setLang] = useState('bash');
-  const [code, setCode] = useState('');
-  const { language } = useLanguage();
-
-  const t = {
-    en: { title: 'Insert Code Block', langLabel: 'Language', codeLabel: 'Code', insertBtn: 'Insert', searchLanguage: 'Search language...' },
-    es: { title: 'Insertar Bloque de Código', langLabel: 'Lenguaje', codeLabel: 'Código', insertBtn: 'Insertar', searchLanguage: 'Buscar lenguaje...' },
-  }
-
-  const handleInsert = () => {
-    onInsert(lang, code);
-    setOpen(false);
-    setCode('');
-  };
-
-  return (
-    <Dialog open={open} onOpenChange={setOpen}>
-      <DialogTrigger asChild>{children}</DialogTrigger>
-      <DialogContent>
-        <DialogHeader>
-          <DialogTitle>{t[language].title}</DialogTitle>
-        </DialogHeader>
-        <div className="grid gap-4 py-4">
-          <div className="space-y-2">
-            <Label htmlFor="lang-select">{t[language].langLabel}</Label>
-            <Combobox
-                options={languageOptions}
-                selectedValue={lang}
-                onSelect={setLang}
-                placeholder={t[language].searchLanguage}
-                searchPlaceholder={t[language].searchLanguage}
-            />
-          </div>
-          <div className="space-y-2">
-            <Label htmlFor="code-input">{t[language].codeLabel}</Label>
-            <Textarea id="code-input" value={code} onChange={e => setCode(e.target.value)} className="min-h-[200px] font-code" />
-          </div>
-        </div>
-        <DialogFooter>
-          <Button onClick={handleInsert}>{t[language].insertBtn}</Button>
-        </DialogFooter>
-      </DialogContent>
-    </Dialog>
-  );
-};
-
-
-const SortableScopeSection = ({ section, isOrganizing, ...props }: { section: ScopeSection, isOrganizing: boolean, [key: string]: any }) => {
+const SortableScopeSection = ({ section, ...props }: { section: ScopeSection, [key: string]: any }) => {
   const { attributes, listeners, setNodeRef, transform, transition, isDragging } = useSortable({ id: section.id });
 
   const style = {
     transform: CSS.Transform.toString(transform),
     transition,
     opacity: isDragging ? 0.5 : 1,
+    zIndex: isDragging ? 100 : 'auto',
   };
   
   return (
     <div ref={setNodeRef} style={style}>
-      <ScopeSectionEditor section={section} isOrganizing={isOrganizing} dragHandleProps={attributes} dragListeners={listeners} {...props} />
+      <ScopeSectionEditor section={section} dragHandleProps={attributes} dragListeners={listeners} {...props} />
     </div>
   );
 };
 
-const ScopeSectionEditor = ({ section, onContentChange, onDelete, view, onViewChange, onTitleChange, isOrganizing, getImage, dragHandleProps, dragListeners }: {
+const ScopeSectionEditor = ({ section, onContentChange, onDelete, onTitleChange, dragHandleProps, dragListeners }: {
   section: ScopeSection;
   onContentChange: (content: string) => void;
   onDelete: () => void;
-  view: ScopeView;
-  onViewChange: (view: ScopeView) => void;
   onTitleChange: (newTitle: string) => void;
-  isOrganizing: boolean;
-  getImage: (id: string) => ImageAsset | undefined;
   dragHandleProps: any;
   dragListeners: any;
 }) => {
-  const { language } = useLanguage();
-  const { addImage } = useData();
-  const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
-  const textareaRef = React.useRef<HTMLTextAreaElement>(null);
+    const headingMatch = section.content.match(/^(#{2,4}) (.*)/);
+    const sectionTitle = headingMatch ? headingMatch[2].trim() : 'New Section';
+    const contentWithoutTitle = section.content.replace(/^(#{2,4}) .*\n?/, '');
 
-
-  const t = {
-    en: {
-      viewEdit: 'Write',
-      viewSplit: 'Split',
-      viewPreview: 'Preview',
-      deleteSection: 'Delete Section',
-      newSection: 'New Section',
-      confirmDeleteTitle: "Are you sure?",
-      confirmDeleteDesc: "This will permanently delete this report section.",
-      cancel: "Cancel",
-      delete: "Delete",
-      upload: "Upload",
-    },
-    es: {
-      viewEdit: 'Edición',
-      viewSplit: 'Dividida',
-      viewPreview: 'Previsualización',
-      deleteSection: 'Eliminar Sección',
-      newSection: 'Nueva Sección',
-      confirmDeleteTitle: "¿Estás seguro?",
-      confirmDeleteDesc: "Esta acción eliminará permanentemente esta sección del informe.",
-      cancel: "Cancelar",
-      delete: "Eliminar",
-      upload: "Subir",
-    }
-  };
-  
-  const headingMatch = section.content.match(/^(#{2,4}) (.*)/);
-  const sectionTitle = headingMatch ? headingMatch[2].trim() : t[language].newSection;
-
-  const handleTitleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    onTitleChange(e.target.value);
-  }
-
-  const insertMarkdown = (markdown: string) => {
-    const textarea = textareaRef.current;
-    if (!textarea) return;
-
-    const start = textarea.selectionStart;
-    const end = textarea.selectionEnd;
-    const newContent =
-      section.content.substring(0, start) +
-      markdown +
-      section.content.substring(end);
-    onContentChange(newContent);
-
-    setTimeout(() => {
-        textarea.focus();
-        textarea.setSelectionRange(start + markdown.length, start + markdown.length);
-    }, 0);
-  };
-  
-  const handlePaste = (e: React.ClipboardEvent<HTMLTextAreaElement>) => {
-    const items = e.clipboardData.items;
-    for (let i = 0; i < items.length; i++) {
-        if (items[i].type.indexOf('image') !== -1) {
-            const blob = items[i].getAsFile();
-            if (blob) {
-                const reader = new FileReader();
-                reader.onload = (event) => {
-                    const dataUrl = event.target?.result as string;
-                    if (dataUrl) {
-                        const newImage = addImage(dataUrl);
-                        const markdownImage = `![Pasted Image](image://${newImage.id})`;
-                        insertMarkdown(markdownImage);
-                    }
-                };
-                reader.readAsDataURL(blob);
-            }
-            e.preventDefault();
-        }
-    }
-  };
-  
-  const applyMarkdownSyntax = (startSyntax: string, endSyntax = startSyntax) => {
-    const textarea = textareaRef.current;
-    if (!textarea) return;
-
-    const start = textarea.selectionStart;
-    const end = textarea.selectionEnd;
-    const selectedText = section.content.substring(start, end);
-    const newContent =
-      section.content.substring(0, start) +
-      startSyntax +
-      selectedText +
-      endSyntax +
-      section.content.substring(end);
-    onContentChange(newContent);
-
-    setTimeout(() => {
-        textarea.focus();
-        textarea.setSelectionRange(start + startSyntax.length, end + startSyntax.length);
-    }, 0);
-  };
-
-  const applyListSyntax = (type: 'bullet' | 'number') => {
-      const textarea = textareaRef.current;
-      if (!textarea) return;
-
-      const start = textarea.selectionStart;
-      const end = textarea.selectionEnd;
-      const selectedText = section.content.substring(start, end);
-      const lines = selectedText.split('\n');
-
-      const newList = lines.map((line, index) => {
-          if (type === 'bullet') return `- ${line}`;
-          return `${index + 1}. ${line}`;
-      }).join('\n');
-
-      const newContent =
-          section.content.substring(0, start) +
-          newList +
-          section.content.substring(end);
-      onContentChange(newContent);
-      setTimeout(() => {
-          textarea.focus();
-          textarea.setSelectionRange(start, start + newList.length);
-      }, 0);
-  };
-  
-  const handleInsertCode = (lang: string, code: string) => {
-    const codeBlock = '```' + lang + '\n' + code + '\n' + '```';
-    insertMarkdown(codeBlock);
-  };
-
-
-  return (
-    <>
-      <Card>
-        <div className="sticky top-16 z-10 bg-background">
-            <CardHeader className="flex flex-row items-center justify-between px-4 py-3">
-                <div className="flex items-center gap-2 w-full">
-                {isOrganizing && <div {...dragHandleProps} {...dragListeners} className="cursor-grab"><GripVertical className="h-5 w-5 text-muted-foreground" /></div>}
+    return (
+        <Card className="mb-4">
+            <CardHeader className="flex flex-row items-center gap-2 p-2 border-b">
+                <div {...dragHandleProps} {...dragListeners} className="cursor-grab p-2">
+                    <GripVertical className="h-5 w-5 text-muted-foreground" />
+                </div>
                 <Input 
-                    value={sectionTitle}
-                    onChange={handleTitleChange}
-                    className="font-semibold text-base border-none focus-visible:ring-0 focus-visible:ring-offset-0 bg-transparent h-auto p-0"
+                  value={sectionTitle}
+                  onChange={(e) => onTitleChange(e.target.value)}
+                  className="font-semibold text-base border-none focus-visible:ring-0 focus-visible:ring-offset-0 bg-transparent h-auto p-0 flex-1"
                 />
-            </div>
-            <div className="flex items-center gap-2">
-                {!isOrganizing && (
-                    <Tabs value={view} onValueChange={(value) => onViewChange(value as ScopeView)}>
-                        <TabsList className="h-8">
-                            <TabsTrigger value="edit" className="h-6 text-xs px-2">{t[language].viewEdit}</TabsTrigger>
-                            <TabsTrigger value="split" className="h-6 text-xs px-2">{t[language].viewSplit}</TabsTrigger>
-                            <TabsTrigger value="preview" className="h-6 text-xs px-2">{t[language].viewPreview}</TabsTrigger>
-                        </TabsList>
-                    </Tabs>
-                )}
-                <AlertDialog open={showDeleteConfirm} onOpenChange={setShowDeleteConfirm}>
-                  <AlertDialogTrigger asChild>
-                      <Button variant="ghost" size="icon" className="h-8 w-8 text-destructive hover:bg-destructive hover:text-destructive-foreground">
-                          <Trash2 className="h-4 w-4" />
-                          <span className="sr-only">{t[language].deleteSection}</span>
-                      </Button>
-                  </AlertDialogTrigger>
-                  <AlertDialogContent>
-                      <AlertDialogHeader>
-                          <AlertDialogTitle>{t[language].confirmDeleteTitle}</AlertDialogTitle>
-                          <AlertDialogDescription>{t[language].confirmDeleteDesc}</AlertDialogDescription>
-                      </AlertDialogHeader>
-                      <AlertDialogFooter>
-                          <AlertDialogCancel>{t[language].cancel}</AlertDialogCancel>
-                          <AlertDialogAction onClick={onDelete} className="bg-destructive text-destructive-foreground hover:bg-destructive/90">{t[language].delete}</AlertDialogAction>
-                      </AlertDialogFooter>
-                  </AlertDialogContent>
-                </AlertDialog>
-            </div>
+                <Button variant="ghost" size="icon" className="h-8 w-8 text-destructive" onClick={onDelete}>
+                  <Trash2 className="h-4 w-4" />
+                </Button>
             </CardHeader>
-            {!isOrganizing && view !== 'preview' && (
-            <div className="p-1 border-y bg-background flex gap-1">
-                <Button variant="ghost" size="icon" className="h-auto w-auto p-1" onClick={() => applyMarkdownSyntax('**')}><Bold className="h-3 w-3" /></Button>
-                <Button variant="ghost" size="icon" className="h-auto w-auto p-1" onClick={() => applyMarkdownSyntax('*')}><Italic className="h-3 w-3" /></Button>
-                <Button variant="ghost" size="icon" className="h-auto w-auto p-1" onClick={() => applyMarkdownSyntax('`')}><Code className="h-3 w-3" /></Button>
-                <Button variant="ghost" size="icon" className="h-auto w-auto p-1" onClick={() => applyListSyntax('bullet')}><List className="h-3 w-3" /></Button>
-                <Button variant="ghost" size="icon" className="h-auto w-auto p-1" onClick={() => applyListSyntax('number')}><ListOrdered className="h-3 w-3" /></Button>
-                <CodeBlockDialog onInsert={handleInsertCode}>
-                <Button variant="ghost" size="icon" className="h-auto w-auto p-1"><FileCode className="h-3 w-3" /></Button>
-                </CodeBlockDialog>
-                <ImageUploadDialog onInsert={insertMarkdown}>
-                <Button variant="ghost" size="icon" className="h-auto w-auto p-1"><Image className="h-3 w-3" /></Button>
-                </ImageUploadDialog>
-            </div>
-            )}
-        </div>
-        {!isOrganizing && (
-             <CardContent className="p-0">
-                {view === 'split' ? (
-                   <div className="relative w-full">
-                        <ResizablePanelGroup direction="horizontal" className="min-h-[300px] w-full rounded-b-lg border-t">
-                            <ResizablePanel defaultSize={50}>
-                                <div className="h-full">
-                                <HighlightingTextarea
-                                    ref={textareaRef}
-                                    value={section.content}
-                                    onValueChange={(newContent) => onContentChange(newContent)}
-                                    onPaste={handlePaste}
-                                />
-                                </div>
-                            </ResizablePanel>
-                            <ResizableHandle withHandle />
-                            <ResizablePanel defaultSize={50}>
-                            <div className="h-full overflow-auto rounded-md p-4">
-                                <MarkdownPreview content={section.content} getImage={getImage} />
-                            </div>
-                            </ResizablePanel>
-                        </ResizablePanelGroup>
-                    </div>
-                ) : view === 'edit' ? (
-                    <div className="relative w-full">
-                        <HighlightingTextarea
-                            ref={textareaRef}
-                            value={section.content}
-                            onValueChange={(newContent) => onContentChange(newContent)}
-                            onPaste={handlePaste}
-                        />
-                    </div>
-                ) : (
-                    <div className="rounded-b-lg p-4 min-h-[300px] overflow-auto border-t">
-                        <MarkdownPreview content={section.content} getImage={getImage} />
-                    </div>
-                )}
-             </CardContent>
-        )}
-      </Card>
-    </>
-  )
+            <CardContent className="p-0">
+                <Textarea 
+                  value={contentWithoutTitle}
+                  onChange={(e) => onContentChange(e.target.value)}
+                  className="w-full min-h-[150px] border-0 rounded-t-none font-code text-sm focus-visible:ring-0 focus-visible:ring-offset-0"
+                  placeholder="Write your content here..."
+                />
+            </CardContent>
+        </Card>
+    )
 }
 
 export default function ProjectDetailsPage() {
@@ -409,7 +110,7 @@ export default function ProjectDetailsPage() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const { toast } = useToast();
-  const { projects, clients, findings, updateProject, deleteProject: removeProject, getImage, addImage } = useData();
+  const { projects, clients, findings, updateProject, deleteProject: removeProject, getImage } = useData();
   const { language } = useLanguage();
   
   const [project, setProject] = useState<Project | undefined>();
@@ -417,10 +118,7 @@ export default function ProjectDetailsPage() {
   
   const [activeTab, setActiveTab] = useState(searchParams.get('tab') || 'scope');
   
-  // State for scope sections
   const [scopeSections, setScopeSections] = useState<ScopeSection[]>([]);
-  const [sectionViews, setSectionViews] = useState<Record<string, ScopeView>>({});
-  const [isOrganizing, setIsOrganizing] = useState(false);
   const [isTranslating, setIsTranslating] = useState(false);
 
   // Edit Dialog State
@@ -433,8 +131,6 @@ export default function ProjectDetailsPage() {
   const [editIcon, setEditIcon] = useState('FileText');
   const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
 
-  // Save state
-  const [isDirty, setIsDirty] = useState(false);
   const [saveStatus, setSaveStatus] = useState<SaveStatus>('saved');
 
   const sensors = useSensors(
@@ -450,13 +146,12 @@ export default function ProjectDetailsPage() {
   const parseSections = useCallback((markdown: string): ScopeSection[] => {
     if (!markdown) return [];
     
-    // This regex splits the text by '---' separators that are on their own line
     const parts = markdown.split(/\n\s*---\s*\n/);
     
     return parts
       .map((part, index) => {
         return {
-          id: `section-${index}-${Math.random()}`, // Generate a transient ID for the session
+          id: `section-${index}-${Math.random()}`,
           content: part.trim()
         };
       })
@@ -474,54 +169,22 @@ export default function ProjectDetailsPage() {
     if (currentProject.reportBody) {
       const sections = parseSections(currentProject.reportBody);
       setScopeSections(sections);
-      const initialViews = sections.reduce((acc, section) => {
-          acc[section.id] = 'split';
-          return acc;
-      }, {} as Record<string, ScopeView>);
-      setSectionViews(initialViews);
     }
 
-    // Set edit dialog fields
     setEditName(currentProject.name);
     setEditClientId(currentProject.clientId);
     setEditDate({ from: new Date(currentProject.startDate), to: new Date(currentProject.endDate) });
     setEditStatus(currentProject.status);
     setEditLanguage(currentProject.language);
     setEditIcon(currentProject.icon || 'FileText');
-    setIsDirty(false);
     setSaveStatus('saved');
   }, [params.id, projects, router, parseSections]);
   
   useEffect(() => {
-    const hash = window.location.hash.substring(1);
-    if (hash) {
-      const decodedHash = decodeURIComponent(hash);
-      // Timeout to allow DOM to render
-      setTimeout(() => {
-        const headings = Array.from(document.querySelectorAll('h1, h2, h3, h4, h5, h6'));
-        const targetHeading = headings.find(h => {
-          const id = h.textContent?.trim().replace(/\s+/g, '-').replace(/[^\w-]+/g, '') || '';
-          return id === decodedHash;
-        });
-
-        if (targetHeading) {
-          targetHeading.scrollIntoView({ behavior: 'smooth', block: 'start' });
-          const card = targetHeading.closest('.flashable-card');
-          if (card) {
-            card.classList.add('flash-highlight');
-            setTimeout(() => card.classList.remove('flash-highlight'), 2000);
-          }
-        }
-      }, 500); 
-    }
-  }, [scopeSections]);
-  
-  // Debounced auto-save
-  useEffect(() => {
     if (saveStatus === 'unsaved') {
         const handler = setTimeout(() => {
-            handleSaveScope(false); // Don't show toast on auto-save
-        }, 2000); // 2-second delay
+            handleSaveScope(false);
+        }, 2000); 
 
         return () => {
             clearTimeout(handler);
@@ -553,7 +216,7 @@ export default function ProjectDetailsPage() {
     };
     
     updateProject(updatedProjectData);
-    setProject(updatedProjectData); // Update local state as well
+    setProject(updatedProjectData); 
 
     toast({ title: t[language].projectUpdated });
     setIsEditDialogOpen(false);
@@ -616,17 +279,21 @@ export default function ProjectDetailsPage() {
         if (showToast) {
             toast({ title: language === 'es' ? 'Informe guardado' : 'Report saved' });
         }
-        setIsDirty(false);
-        setIsOrganizing(false);
-        setTimeout(() => setSaveStatus('saved'), 500); // Give a moment to show "Saving..."
+        setTimeout(() => setSaveStatus('saved'), 500);
     }
   }
 
   const handleSectionContentChange = (sectionId: string, newContent: string) => {
     setScopeSections(prevSections =>
-      prevSections.map(sec => sec.id === sectionId ? { ...sec, content: newContent } : sec)
+      prevSections.map(sec => {
+        if (sec.id === sectionId) {
+            const headingMatch = sec.content.match(/^(#{2,4}) .*\n?/);
+            const title = headingMatch ? headingMatch[0] : '';
+            return { ...sec, content: title + newContent };
+        }
+        return sec;
+      })
     );
-    setIsDirty(true);
     setSaveStatus('unsaved');
   };
   
@@ -634,15 +301,12 @@ export default function ProjectDetailsPage() {
     setScopeSections(prevSections =>
       prevSections.map(sec => {
         if (sec.id === sectionId) {
-            const oldContent = sec.content;
-            const contentWithoutTitle = oldContent.replace(/^(#{2,4}) .*\n?/, '');
-            const newContent = `## ${newTitle}\n${contentWithoutTitle}`;
-            return { ...sec, content: newContent };
+            const contentWithoutTitle = sec.content.replace(/^(#{2,4}) .*\n?/, '');
+            return { ...sec, content: `## ${newTitle}\n${contentWithoutTitle}` };
         }
         return sec;
       })
     );
-    setIsDirty(true);
     setSaveStatus('unsaved');
   }
 
@@ -652,19 +316,11 @@ export default function ProjectDetailsPage() {
           content: '## ' + t[language].newSection
       };
       setScopeSections(prev => [...prev, newSection]);
-      setSectionViews(prev => ({ ...prev, [newSection.id]: 'edit' }));
-      setIsDirty(true);
       setSaveStatus('unsaved');
   };
 
   const handleDeleteSection = (sectionId: string) => {
       setScopeSections(prev => prev.filter(sec => sec.id !== sectionId));
-      setSectionViews(prev => {
-          const newViews = { ...prev };
-          delete newViews[sectionId];
-          return newViews;
-      });
-      setIsDirty(true);
       setSaveStatus('unsaved');
   };
   
@@ -685,12 +341,10 @@ export default function ProjectDetailsPage() {
         
         const updatedProject = { ...project, reportBody: newReportBody, language: newLang };
         updateProject(updatedProject);
-        setProject(updatedProject); // Update local state immediately
+        setProject(updatedProject);
 
-        // Also update the sections in the editor
         const sections = parseSections(newReportBody);
         setScopeSections(sections);
-        setIsDirty(true);
         setSaveStatus('unsaved');
         
         toast({ title: t[language].translationSuccess });
@@ -712,7 +366,6 @@ export default function ProjectDetailsPage() {
         const oldIndex = items.findIndex((item) => item.id === active.id);
         const newIndex = items.findIndex((item) => item.id === over.id);
         const newItems = arrayMove(items, oldIndex, newIndex);
-        setIsDirty(true);
         setSaveStatus('unsaved');
         return newItems;
       });
@@ -755,8 +408,6 @@ export default function ProjectDetailsPage() {
       spanish: 'Spanish',
       addNewSection: 'Add New Section',
       newSection: 'New Section',
-      organizeSections: 'Organize Sections',
-      finishOrganizing: 'Finish Organizing',
       translatingTitle: 'Translating...',
       translatingDesc: 'AI is translating the report content. Please wait.',
       translationSuccess: 'Report translated successfully!',
@@ -801,8 +452,6 @@ export default function ProjectDetailsPage() {
       spanish: 'Español',
       addNewSection: 'Añadir Nueva Sección',
       newSection: 'Nueva Sección',
-      organizeSections: 'Organizar Secciones',
-      finishOrganizing: 'Finalizar Organización',
       translatingTitle: 'Traduciendo...',
       translatingDesc: 'La IA está traduciendo el contenido del informe. Por favor, espera.',
       translationSuccess: '¡Informe traducido correctamente!',
@@ -829,7 +478,7 @@ export default function ProjectDetailsPage() {
 
 
   return (
-    <div className="w-full space-y-6 pt-6">
+    <div className="w-full grid grid-cols-1 gap-6 pt-6">
        <div className="flex justify-between items-start px-4 sm:px-6">
           <div className="flex items-center gap-4">
             <Button variant="outline" size="icon" className="h-10 w-10" asChild>
@@ -994,10 +643,6 @@ export default function ProjectDetailsPage() {
           </TabsList>
           {activeTab === 'scope' && (
             <div className="flex items-center gap-2">
-              <Button variant="outline" size="sm" onClick={() => setIsOrganizing(!isOrganizing)}>
-                <Rows className="mr-2 h-4 w-4" />
-                {isOrganizing ? t[language].finishOrganizing : t[language].organizeSections}
-              </Button>
               <Button size="sm" onClick={() => handleSaveScope(true)} disabled={saveStatus === 'saving' || saveStatus === 'saved'}>
                 {saveStatus === 'saving' ? (<><Save className="mr-2 h-4 w-4 animate-spin" />{t[language].saving}</>) : 
                  saveStatus === 'saved' ? (<><CheckCircle className="mr-2 h-4 w-4" />{t[language].saved}</>) : 
@@ -1014,38 +659,31 @@ export default function ProjectDetailsPage() {
           )}
         </div>
         <TabsContent value="scope" className="mt-4">
-             <div className="grid grid-cols-1 gap-6 w-full">
+             <div className="w-full">
                 <DndContext sensors={sensors} collisionDetection={closestCenter} onDragEnd={handleDragEnd}>
                   <SortableContext items={scopeSections.map(s => s.id)} strategy={verticalListSortingStrategy}>
                     <div className="space-y-4">
                       {scopeSections.map(section => {
                         return (
-                          <div key={section.id} className="flashable-card">
-                              <SortableScopeSection
-                                section={section}
-                                isOrganizing={isOrganizing}
-                                onContentChange={(newContent: string) => handleSectionContentChange(section.id, newContent)}
-                                onTitleChange={(newTitle: string) => handleSectionTitleChange(section.id, newTitle)}
-                                onDelete={() => handleDeleteSection(section.id)}
-                                view={sectionViews[section.id] || 'split'}
-                                onViewChange={(newView: ScopeView) => setSectionViews(prev => ({ ...prev, [section.id]: newView }))}
-                                getImage={getImage}
-                              />
-                          </div>
+                          <SortableScopeSection
+                            key={section.id}
+                            section={section}
+                            onContentChange={(newContent: string) => handleSectionContentChange(section.id, newContent)}
+                            onTitleChange={(newTitle: string) => handleSectionTitleChange(section.id, newTitle)}
+                            onDelete={() => handleDeleteSection(section.id)}
+                          />
                         )
                       })}
                     </div>
                   </SortableContext>
                 </DndContext>
 
-                {!isOrganizing && (
-                    <div className="flex justify-center pt-4">
-                        <Button variant="outline" onClick={handleAddSection}>
-                            <Plus className="mr-2 h-4 w-4" />
-                            {t[language].addNewSection}
-                        </Button>
-                    </div>
-                 )}
+                <div className="flex justify-center pt-4">
+                    <Button variant="outline" onClick={handleAddSection}>
+                        <Plus className="mr-2 h-4 w-4" />
+                        {t[language].addNewSection}
+                    </Button>
+                </div>
             </div>
         </TabsContent>
         <TabsContent value="findings" className="mt-4">
