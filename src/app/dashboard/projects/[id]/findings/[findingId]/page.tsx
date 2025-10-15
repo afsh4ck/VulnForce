@@ -18,7 +18,6 @@ import { DndContext, closestCenter, KeyboardSensor, PointerSensor, useSensor, us
 import { arrayMove, SortableContext, sortableKeyboardCoordinates, useSortable, verticalListSortingStrategy } from '@dnd-kit/sortable';
 import { CSS } from '@dnd-kit/utilities';
 import { Badge } from '@/components/ui/badge';
-import { HighlightingTextarea } from '@/components/ui/highlighting-textarea';
 import { MarkdownPreview } from '@/components/markdown-preview';
 
 type SaveStatus = 'unsaved' | 'saving' | 'saved';

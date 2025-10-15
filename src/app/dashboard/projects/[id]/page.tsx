@@ -28,7 +28,6 @@ import { DateRange } from 'react-day-picker';
 import { DndContext, closestCenter, KeyboardSensor, PointerSensor, useSensor, useSensors, DragEndEvent } from '@dnd-kit/core';
 import { arrayMove, SortableContext, sortableKeyboardCoordinates, useSortable, verticalListSortingStrategy } from '@dnd-kit/sortable';
 import { translateText } from '@/ai/flows/translate-text-flow';
-import { HighlightingTextarea } from '@/components/ui/highlighting-textarea';
 import { MarkdownPreview } from '@/components/markdown-preview';
 import { CSS } from '@dnd-kit/utilities';
 
@@ -57,39 +56,8 @@ const ScopeSectionEditor = ({ section, onContentChange, onDelete, onTitleChange,
   onTitleChange: (newTitle: string) => void;
   getImage: (id: string) => ImageAsset | undefined
 }) => {
-    const [isEditing, setIsEditing] = useState(false);
-    
-    if (isEditing) {
-        return (
-            <Card className="mb-4">
-                 <div className="sticky top-16 z-10 bg-background">
-                    <CardHeader className="flex flex-row items-center gap-2 p-2 border-b">
-                        <Input 
-                            value={section.content.match(/^(#{2,4}) (.*)/)?.[2].trim() || 'New Section'}
-                            onChange={(e) => onTitleChange(e.target.value)}
-                            className="font-semibold text-base border-none focus-visible:ring-0 focus-visible:ring-offset-0 bg-transparent h-auto p-0 flex-1"
-                            readOnly // For now, title editing will be handled differently
-                        />
-                        <Button variant="ghost" size="icon" className="h-8 w-8 text-destructive" onClick={onDelete}>
-                            <Trash2 className="h-4 w-4" />
-                        </Button>
-                    </CardHeader>
-                </div>
-                <CardContent className="p-4">
-                    <HighlightingTextarea 
-                        value={section.content}
-                        onValueChange={onContentChange}
-                        onBlur={() => setIsEditing(false)}
-                        autoFocus
-                        className="w-full min-h-[200px] font-code text-sm focus-visible:ring-0 focus-visible:ring-offset-0"
-                    />
-                </CardContent>
-            </Card>
-        )
-    }
-
     return (
-        <div className="py-2" onClick={() => setIsEditing(true)}>
+        <div className="py-2">
             <MarkdownPreview content={section.content} getImage={getImage} />
         </div>
     )
