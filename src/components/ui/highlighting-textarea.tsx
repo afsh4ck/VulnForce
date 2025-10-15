@@ -1,19 +1,7 @@
-
 'use client';
 import React, { useRef, useEffect, useCallback, useImperativeHandle } from 'react';
 import { cn } from '@/lib/utils';
 import { useSelectionToolbar } from '@/hooks/use-selection-toolbar';
-
-const getHighlightedText = (text: string) => {
-    if (!text) return '';
-    return text
-        .replace(/&/g, '&amp;')
-        .replace(/</g, '&lt;')
-        .replace(/>/g, '&gt;')
-        .replace(/^(#\s)(.*)/gm, '<span class="text-primary font-bold">$1$2</span>')
-        .replace(/^(##|###|####)\s(.*)/gm, '<span class="text-foreground font-bold">$1 $2</span>')
-        .replace(/(\[TODO:?.*?\])/g, '<span class="bg-destructive text-destructive-foreground font-bold px-1 rounded-sm">$1</span>');
-};
 
 interface HighlightingTextareaProps extends Omit<React.TextareaHTMLAttributes<HTMLTextAreaElement>, 'onChange' | 'value'> {
   value: string;
@@ -22,7 +10,6 @@ interface HighlightingTextareaProps extends Omit<React.TextareaHTMLAttributes<HT
 
 export const HighlightingTextarea = React.forwardRef<HTMLTextAreaElement, HighlightingTextareaProps>(
     ({ value, onValueChange, className, ...props }, ref) => {
-        const backdropRef = useRef<HTMLDivElement>(null);
         const localTextareaRef = useRef<HTMLTextAreaElement>(null);
         
         useImperativeHandle(ref, () => localTextareaRef.current as HTMLTextAreaElement);
@@ -70,35 +57,9 @@ export const HighlightingTextarea = React.forwardRef<HTMLTextAreaElement, Highli
 
         const { toolbarStyles, handleSelectionChange } = useSelectionToolbar(localTextareaRef);
 
-        const syncScroll = useCallback(() => {
-            if (backdropRef.current && localTextareaRef.current) {
-                backdropRef.current.scrollTop = localTextareaRef.current.scrollTop;
-                backdropRef.current.scrollLeft = localTextareaRef.current.scrollLeft;
-            }
-        }, []);
-
-        useEffect(() => {
-            syncScroll();
-        }, [value, syncScroll]);
-
-        const handleKeyDown = (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
-            if (e.key === 'Tab') {
-                e.preventDefault();
-                const textarea = e.currentTarget;
-                const { selectionStart, selectionEnd, value } = textarea;
-                const newValue = value.substring(0, selectionStart) + '  ' + value.substring(selectionEnd);
-                onValueChange(newValue);
-                setTimeout(() => {
-                    textarea.selectionStart = textarea.selectionEnd = selectionStart + 2;
-                }, 0);
-            }
-        };
-
         const handleChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
             onValueChange(e.target.value);
         };
-        
-        const highlightedHtml = getHighlightedText(value) + '\n';
 
         return (
             <div className={cn("relative w-full h-full", className)}>
@@ -108,22 +69,13 @@ export const HighlightingTextarea = React.forwardRef<HTMLTextAreaElement, Highli
                     <button onClick={() => applyFormat('code')} style={toolbarStyles.button}>Code</button>
                     <button onClick={() => applyFormat('link')} style={toolbarStyles.button}>Link</button>
                 </div>
-                <div 
-                    ref={backdropRef} 
-                    className="absolute inset-0 z-0 overflow-auto whitespace-pre-wrap break-words pointer-events-none p-2 font-code text-sm min-h-[200px] text-muted-foreground"
-                    style={{lineHeight: '1.5rem'}}
-                >
-                    <div dangerouslySetInnerHTML={{ __html: highlightedHtml }} />
-                </div>
                 <textarea
                     ref={localTextareaRef}
                     value={value}
                     onChange={handleChange}
-                    onScroll={syncScroll}
-                    onKeyDown={handleKeyDown}
                     onSelect={handleSelectionChange}
                     className={cn(
-                        'relative block w-full h-full resize-none overflow-auto whitespace-pre-wrap break-words border rounded-md bg-transparent text-transparent caret-foreground',
+                        'relative block w-full h-full resize-none overflow-auto whitespace-pre-wrap break-words border rounded-md bg-transparent caret-foreground',
                         'font-code text-sm min-h-[200px]',
                         "p-2 ring-offset-background placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
                     )}

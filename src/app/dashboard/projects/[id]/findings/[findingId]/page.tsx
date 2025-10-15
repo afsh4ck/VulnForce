@@ -17,11 +17,8 @@ import { Combobox } from '@/components/ui/combobox';
 import { DndContext, closestCenter, KeyboardSensor, PointerSensor, useSensor, useSensors, DragEndEvent } from '@dnd-kit/core';
 import { arrayMove, SortableContext, sortableKeyboardCoordinates, useSortable, verticalListSortingStrategy } from '@dnd-kit/sortable';
 import { CSS } from '@dnd-kit/utilities';
-import { Textarea } from '@/components/ui/textarea';
 import { Badge } from '@/components/ui/badge';
 import { MarkdownPreview } from '@/components/markdown-preview';
-import { HighlightingTextarea } from '@/components/ui/highlighting-textarea';
-import { ImageUploadDialog } from '@/components/image-upload-dialog';
 
 type SaveStatus = 'unsaved' | 'saving' | 'saved';
 
@@ -40,40 +37,8 @@ const SectionEditor = ({ section, onContentChange, onDelete, onTitleChange, isOr
   dragListeners: any;
   getImage: (id: string) => ImageAsset | undefined
 }) => {
-  const { language } = useLanguage();
-  const [isEditing, setIsEditing] = useState(false);
-  const textareaRef = useRef<HTMLTextAreaElement>(null);
-
-  const handleSave = () => {
-    setIsEditing(false);
-  }
-
-  const handleInsertLink = () => {
-    if (textareaRef.current) {
-        const start = textareaRef.current.selectionStart;
-        const end = textareaRef.current.selectionEnd;
-        const selectedText = textareaRef.current.value.substring(start, end);
-        const url = prompt("Enter the URL:");
-        if (url) {
-            const newText = `[${selectedText}](${url})`;
-            const updatedContent = textareaRef.current.value.substring(0, start) + newText + textareaRef.current.value.substring(end);
-            onContentChange(updatedContent);
-        }
-    }
-  };
-
-  const handleInsertImage = (markdown: string) => {
-    if(textareaRef.current){
-      const start = textareaRef.current.selectionStart;
-      const end = textareaRef.current.selectionEnd;
-      const updatedContent = textareaRef.current.value.substring(0, start) + markdown + textareaRef.current.value.substring(end);
-      onContentChange(updatedContent);
-    }
-  };
-
   const headingMatch = section.content.match(/^(#{2,4}) (.*)/);
   const sectionTitle = headingMatch ? headingMatch[2].trim() : 'New Section';
-  const contentWithoutTitle = section.content.replace(/^(#{2,4}) .*\n?/, '');
 
   return (
       <Card className="mb-4">
@@ -92,19 +57,8 @@ const SectionEditor = ({ section, onContentChange, onDelete, onTitleChange, isOr
                 </Button>
             </CardHeader>
           </div>
-          <CardContent className="p-4" onClick={() => setIsEditing(true)}>
-             {isEditing ? (
-                  <HighlightingTextarea
-                    ref={textareaRef}
-                    value={section.content}
-                    onValueChange={onContentChange}
-                    onBlur={handleSave}
-                    autoFocus
-                    className="w-full min-h-[200px] font-code text-sm focus-visible:ring-0 focus-visible:ring-offset-0"
-                  />
-              ) : (
-                  <MarkdownPreview content={section.content} getImage={getImage} />
-              )}
+          <CardContent className="p-4" >
+            <MarkdownPreview content={section.content} getImage={getImage} />
           </CardContent>
       </Card>
   )
@@ -489,7 +443,7 @@ export default function FindingEditorPage() {
                             key={section.id}
                             section={section}
                             onContentChange={(newContent: string) => handleSectionChange(section.id, newContent)}
-                            onTitleChange={(newTitle: string) => handleTitleChange(section.id, newTitle)}
+                            onTitleChange={(newTitle: string) => handleTitleChange(section.id, newContent)}
                             onDelete={() => handleDeleteSection(section.id)}
                             getImage={getImage}
                           />
