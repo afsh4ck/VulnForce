@@ -696,8 +696,8 @@ export default function FindingEditorPage() {
 
 
   return (
-    <div className="space-y-6 w-full p-4 sm:p-6">
-      <header className="flex items-center justify-between">
+    <div className="space-y-6 w-full">
+      <header className="flex items-center justify-between p-4 sm:p-6">
         <div className="flex items-center gap-4">
           <Button variant="outline" size="icon" className="h-10 w-10" asChild>
             <Link href={`/dashboard/projects/${projectId}`}>
@@ -722,7 +722,7 @@ export default function FindingEditorPage() {
         </div>
       </header>
 
-      <div className="grid grid-cols-1 gap-6 w-full">
+      <div className="grid grid-cols-1 gap-6 w-full px-4 sm:px-6">
           <Card>
             <CardHeader className="flex flex-row items-center justify-between">
               <CardTitle>{t[uiLanguage].findingDetails}</CardTitle>

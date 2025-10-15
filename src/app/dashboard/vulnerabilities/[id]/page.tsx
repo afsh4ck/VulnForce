@@ -728,8 +728,8 @@ export default function VulnerabilityEditorPage() {
   }
 
   return (
-    <div className="space-y-6 w-full p-4 sm:p-6">
-      <header className="flex items-center justify-between">
+    <div className="space-y-6 w-full">
+      <header className="flex items-center justify-between p-4 sm:p-6">
         <div className="flex items-center gap-4">
             <Button variant="outline" size="icon" asChild>
                 <Link href="/dashboard/vulnerabilities">
@@ -748,7 +748,7 @@ export default function VulnerabilityEditorPage() {
         </Button>
       </header>
       
-        <div className="space-y-6">
+        <div className="space-y-6 px-4 sm:px-6">
           <Accordion type="multiple" className="w-full space-y-6" defaultValue={['details']} value={activeAccordion} onValueChange={setActiveAccordion}>
             <AccordionItem value="details" className="border bg-card rounded-lg data-[state=closed]:border">
               <AccordionTrigger className="p-4 hover:no-underline">

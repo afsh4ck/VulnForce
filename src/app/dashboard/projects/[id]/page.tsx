@@ -829,8 +829,8 @@ export default function ProjectDetailsPage() {
 
 
   return (
-    <div className="w-full space-y-6 p-4 sm:p-6">
-       <div className="flex justify-between items-start">
+    <div className="w-full space-y-6">
+       <div className="flex justify-between items-start p-4 sm:p-6">
           <div className="flex items-center gap-4">
             <Button variant="outline" size="icon" className="h-10 w-10" asChild>
                 <Link href="/dashboard/projects">
@@ -986,7 +986,7 @@ export default function ProjectDetailsPage() {
       
       <Separator />
       
-      <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-4">
+      <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-4 px-4 sm:px-6">
         <div className="flex items-center justify-between">
           <TabsList>
             <TabsTrigger value="scope">{t[language].scopeAndDetails}</TabsTrigger>

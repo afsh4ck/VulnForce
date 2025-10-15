@@ -585,8 +585,8 @@ export default function TemplateEditorPage() {
   }
 
   return (
-    <div className="space-y-6 w-full p-4 sm:p-6">
-       <header className="flex items-center justify-between">
+    <div className="w-full space-y-6">
+       <header className="flex items-center justify-between p-4 sm:p-6">
         <div className="flex items-center gap-4">
           <Button variant="outline" size="icon" asChild>
             <Link href="/dashboard/templates">
@@ -604,7 +604,7 @@ export default function TemplateEditorPage() {
              (<><Save className="mr-2 h-4 w-4" /> {isNew ? t[language].create : t[language].save}</>)}
         </Button>
       </header>
-       <Accordion type="multiple" className="w-full space-y-6" defaultValue={['details']} value={activeAccordion} onValueChange={setActiveAccordion}>
+       <Accordion type="multiple" className="w-full space-y-6 px-4 sm:px-6" defaultValue={['details']} value={activeAccordion} onValueChange={setActiveAccordion}>
           <AccordionItem value="details" className="border bg-card rounded-lg">
             <AccordionTrigger className="p-4 hover:no-underline"><span className="font-semibold text-base">Details</span></AccordionTrigger>
             <AccordionContent className="p-4 pt-0">
