@@ -12,11 +12,11 @@ import { PlusCircle, FileText, ArrowUpDown, Edit, Save, Trash2, CalendarIcon, Pl
 import { useLanguage } from "@/context/language-context";
 import type { Finding, Project } from '@/lib/types';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from "@/components/ui/dialog";
+import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from "@/components/ui/alert-dialog";
+import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from "@/components/ui/alert-dialog";
 import { useToast } from "@/hooks/use-toast";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { Calendar } from "@/components/ui/calendar";
@@ -66,12 +66,8 @@ function parseHtmlToBlocks(html: string): ContentBlock[] {
       } else if (tag === 'pre') {
          blocks.push({ id, tag: 'pre', content: element.querySelector('code')?.textContent || '' });
       } else if (tag === 'ul' || tag === 'ol') {
-        const items = Array.from(element.querySelectorAll('li')).map(li => ({
-          id: `block-${Date.now()}-${Math.random()}`,
-          tag: 'p' as 'p',
-          content: li.innerHTML,
-        }));
-        blocks.push({ id, tag: tag as 'ul' | 'ol', content: '' });
+        const itemsHtml = Array.from(element.querySelectorAll('li')).map(li => `<li>${li.innerHTML}</li>`).join('');
+        blocks.push({ id, tag: tag as 'ul' | 'ol', content: itemsHtml });
       }
     } else if (node.nodeType === Node.TEXT_NODE && node.textContent?.trim()) {
       blocks.push({ id, tag: 'p', content: node.textContent.trim() });
@@ -88,8 +84,7 @@ function blocksToHtml(blocks: ContentBlock[]): string {
         return `<pre><code>${escapedContent}</code></pre>`
     }
     if (block.tag === 'ul' || block.tag === 'ol') {
-        const itemsHtml = ''; // Handled by inner contentEditable logic now
-        return `<${block.tag}>${itemsHtml}</${block.tag}>`;
+        return `<${block.tag}>${block.content}</${block.tag}>`;
     }
     if (block.tag === 'p' && !block.content.trim()) {
         return '<p><br></p>';
@@ -124,11 +119,7 @@ const EditableBlock = ({ block, onUpdate, onKeyDown, onFocus, isFocused, placeho
     }, [isFocused]);
 
     const handleBlur = (e: React.FocusEvent<HTMLDivElement>) => {
-        if (props.onUpdateContent) {
-           props.onUpdateContent(e.currentTarget.innerHTML);
-        } else {
-           onUpdate(e.currentTarget.innerHTML);
-        }
+        onUpdate(e.currentTarget.innerHTML);
     };
     
     const Tag = block.tag === 'pre' ? 'div' : (['ul', 'ol'].includes(block.tag) ? block.tag : block.tag);
@@ -172,7 +163,6 @@ const EditableBlock = ({ block, onUpdate, onKeyDown, onFocus, isFocused, placeho
           onFocus={onFocus}
         >
           <div
-              dir="ltr"
               ref={blockRef}
               onBlur={handleBlur}
               onInput={(e: React.FormEvent<HTMLDivElement>) => onUpdate(e.currentTarget.innerHTML)}
@@ -445,7 +435,7 @@ export default function ProjectDetailsPage() {
       }, 2000);
       return () => clearTimeout(handler);
     }
-  }, [blocks, saveStatus, handleSave]);
+  }, [saveStatus, handleSave]);
 
   const handleFieldChange = (setter: React.Dispatch<React.SetStateAction<any>>, value: any) => {
     setter(value);
@@ -496,7 +486,10 @@ export default function ProjectDetailsPage() {
   }, [blocks]);
   
   const handleDeleteBlock = useCallback((id: string) => {
-      setBlocks(prev => prev.filter(b => b.id !== id));
+      setBlocks(prev => {
+          if (prev.length <= 1) return prev;
+          return prev.filter(b => b.id !== id)
+      });
       setSaveStatus('unsaved');
   }, []);
 
@@ -528,7 +521,9 @@ export default function ProjectDetailsPage() {
         if (b.id === id) {
           const newBlock = { ...b, tag: newTag };
           if(newTag === 'ul' || newTag === 'ol') {
-             newBlock.content = `<li>${b.content || '<br>'}</li>`;
+            const contentAsText = document.createElement('div');
+            contentAsText.innerHTML = b.content;
+            newBlock.content = `<li>${contentAsText.textContent || '<br>'}</li>`;
           } else if(b.tag === 'ul' || b.tag === 'ol') {
              const tempEl = document.createElement('div');
              tempEl.innerHTML = b.content;
@@ -548,12 +543,32 @@ export default function ProjectDetailsPage() {
       const currentIndex = blocks.findIndex(b => b.id === id);
       const currentBlock = blocks[currentIndex];
       const target = e.target as HTMLDivElement;
-
+      
       if (e.key === 'Enter' && !e.shiftKey) {
-          if (currentBlock.tag !== 'ul' && currentBlock.tag !== 'ol') {
-              e.preventDefault();
-              handleAddBlock(currentIndex, 'p', '<br>');
+        if (currentBlock.tag === 'ul' || currentBlock.tag === 'ol') {
+          e.preventDefault();
+          const selection = window.getSelection();
+          if (selection && selection.anchorNode) {
+            const currentLi = selection.anchorNode.parentElement?.closest('li');
+            if (currentLi && currentLi.textContent?.trim() === '') {
+              // Exit list if Enter is pressed on an empty list item
+              updateBlockTag(id, 'p');
+            } else {
+              document.execCommand('insertLineBreak');
+              const newLi = document.createElement('li');
+              newLi.innerHTML = '<br>';
+              selection.getRangeAt(0).insertNode(newLi);
+              const range = document.createRange();
+              range.setStart(newLi, 0);
+              range.collapse(true);
+              selection.removeAllRanges();
+              selection.addRange(range);
+            }
           }
+          return;
+        }
+        e.preventDefault();
+        handleAddBlock(currentIndex, 'p', '');
       } else if (e.key === 'Backspace' && (target.innerHTML === '' || target.innerHTML === '<br>')) {
            e.preventDefault();
            if(blocks.length > 1) {
@@ -563,22 +578,29 @@ export default function ProjectDetailsPage() {
                   setActiveBlockId(blocks[currentIndex - 1].id);
               }
               setSaveStatus('unsaved');
+           } else if (currentBlock.tag !== 'p') {
+              updateBlockTag(id, 'p');
            }
       } else if (e.key === ' ' && target.textContent?.match(/^#\s$/)) {
           e.preventDefault();
           updateBlockTag(id, 'h1');
+          target.innerHTML = '';
       } else if (e.key === ' ' && target.textContent?.match(/^##\s$/)) {
           e.preventDefault();
           updateBlockTag(id, 'h2');
+          target.innerHTML = '';
       } else if (e.key === ' ' && target.textContent?.match(/^###\s$/)) {
           e.preventDefault();
           updateBlockTag(id, 'h3');
+          target.innerHTML = '';
       } else if (e.key === ' ' && target.textContent?.match(/^-\s$/)) {
           e.preventDefault();
           updateBlockTag(id, 'ul');
+          target.innerHTML = '<li></li>';
       } else if (e.key === ' ' && target.textContent?.match(/^1\.\s$/)) {
           e.preventDefault();
           updateBlockTag(id, 'ol');
+          target.innerHTML = '<li></li>';
       }
        else if (e.key === '/') {
           const selection = window.getSelection();
@@ -591,8 +613,14 @@ export default function ProjectDetailsPage() {
   const handleCommandSelect = (command: 'h2' | 'h3' | 'pre' | 'ul' | 'ol') => {
     if (!activeBlockId) return;
     updateBlockTag(activeBlockId, command);
-    const block = document.querySelector(`[data-rbd-draggable-id="${activeBlockId}"] [contenteditable="true"]`) as HTMLElement;
-    if(block) block.innerHTML = '';
+    const blockEl = document.querySelector(`[data-rbd-draggable-id="${activeBlockId}"] [contenteditable="true"]`) as HTMLElement;
+    if(blockEl) {
+        if(command === 'ul' || command === 'ol') {
+            blockEl.innerHTML = '<li></li>';
+        } else {
+            blockEl.innerHTML = '';
+        }
+    }
     setCommandMenuOpen(false);
   };
 
@@ -665,7 +693,7 @@ export default function ProjectDetailsPage() {
                                     onUpdate={(content: string) => handleBlockUpdate(block.id, content)}
                                     onKeyDown={(e: React.KeyboardEvent<HTMLDivElement>) => handleKeyDown(e, block.id)}
                                     onAdd={handleAddBlock}
-                                    onDelete={handleDeleteBlock}
+                                    onDelete={() => handleDeleteBlock(block.id)}
                                     onFocus={() => setActiveBlockId(block.id)}
                                     isFocused={activeBlockId === block.id}
                                     placeholder={t[projectLanguage as 'en' | 'es'].commandPlaceholder}
@@ -684,6 +712,7 @@ export default function ProjectDetailsPage() {
                                     <CommandList>
                                         <CommandEmpty>No commands found.</CommandEmpty>
                                         <CommandGroup heading="Elements">
+                                            <CommandItem onSelect={() => handleCommandSelect('h1')}><Heading1 className="mr-2 h-4 w-4" />Title 1</CommandItem>
                                             <CommandItem onSelect={() => handleCommandSelect('h2')}><Heading2 className="mr-2 h-4 w-4" />Title 2</CommandItem>
                                             <CommandItem onSelect={() => handleCommandSelect('h3')}><Heading3 className="mr-2 h-4 w-4" />Title 3</CommandItem>
                                             <CommandItem onSelect={() => handleCommandSelect('pre')}><Code className="mr-2 h-4 w-4" />Code Block</CommandItem>
@@ -844,3 +873,4 @@ export default function ProjectDetailsPage() {
     </>
   );
 }
+
