@@ -16,7 +16,7 @@ import { Dialog, DialogTrigger, DialogContent, DialogDescription, DialogFooter, 
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from "@/components/ui/alert-dialog";
+import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from "@/components/ui/alert-dialog";
 import { useToast } from "@/hooks/use-toast";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { Calendar } from "@/components/ui/calendar";
@@ -180,4 +180,554 @@ const SortableBlock = ({ block, onUpdate, onKeyDown, onDelete, onAdd, onFocus, i
 };
 
 
-export default function ProjectDetailsPage()
+export default function ProjectDetailsPage() {
+  const { language: uiLanguage } = useLanguage();
+  const { toast } = useToast();
+  const router = useRouter();
+  const params = useParams();
+  const searchParams = useSearchParams();
+  const { id } = params;
+
+  const { projects, clients, findings, deleteFinding, updateProject } = useData();
+
+  const [project, setProject] = useState<Project | undefined>();
+  const [projectFindings, setProjectFindings] = useState<Finding[]>([]);
+  const [sortConfig, setSortConfig] = useState<{ key: SortKey; direction: 'ascending' | 'descending' } | null>(null);
+  const [findingToDelete, setFindingToDelete] = useState<Finding | null>(null);
+  
+  // States for the details tab
+  const [name, setName] = useState('');
+  const [clientId, setClientId] = useState('');
+  const [status, setStatus] = useState<Project['status']>('In Progress');
+  const [date, setDate] = useState<DateRange | undefined>();
+  const [icon, setIcon] = useState<string>('FileText');
+  const [projectLanguage, setProjectLanguage] = useState<Project['language']>('en');
+  
+  const [blocks, setBlocks] = useState<ContentBlock[]>([]);
+  const [activeBlockId, setActiveBlockId] = useState<string | null>(null);
+  const [commandMenuOpen, setCommandMenuOpen] = useState(false);
+  
+  const [saveStatus, setSaveStatus] = useState<SaveStatus>('saved');
+
+  const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
+
+  const client = clients.find(c => c.id === project?.clientId);
+
+  const t = {
+    en: {
+      back: 'Back to Projects',
+      projectDetails: 'Project Details',
+      findings: 'Findings',
+      report: 'Report',
+      scope: 'Scope',
+      projectName: 'Project Name',
+      client: 'Client',
+      status: 'Status',
+      dates: 'Project Dates',
+      language: 'Language',
+      icon: 'Icon',
+      save: 'Save Changes',
+      saving: 'Saving...',
+      saved: 'Saved',
+      inProgress: 'In Progress',
+      completed: 'Completed',
+      onHold: 'On Hold',
+      english: 'English',
+      spanish: 'Spanish',
+      newFinding: 'New Finding',
+      findingTitle: 'Finding Title',
+      severity: 'Severity',
+      cvss: 'CVSS',
+      lastUpdated: 'Last Updated',
+      actions: 'Actions',
+      edit: 'Edit',
+      delete: 'Delete',
+      confirmDeleteFindingTitle: "Are you sure?",
+      confirmDeleteFindingDesc: "This action cannot be undone. This will permanently delete the finding.",
+      cancel: "Cancel",
+      findingDeleted: "Finding deleted successfully.",
+      selectClient: "Select a client",
+      selectStatus: "Select status",
+      selectLanguage: "Select language",
+      selectIcon: "Select an icon",
+      deleteProject: "Delete Project",
+      confirmDeleteProjectTitle: "Delete Project?",
+      confirmDeleteProjectDesc: "This will permanently delete the project and all its findings. This action cannot be undone.",
+      changesSaved: "Changes Saved",
+      changesSavedDesc: "Your project details have been updated.",
+      translateScope: "Translate Scope",
+      translating: "Translating...",
+    },
+    es: {
+      back: 'Volver a Proyectos',
+      projectDetails: 'Detalles del Proyecto',
+      findings: 'Hallazgos',
+      report: 'Informe',
+      scope: 'Alcance',
+      projectName: 'Nombre del Proyecto',
+      client: 'Cliente',
+      status: 'Estado',
+      dates: 'Fechas',
+      language: 'Idioma',
+      icon: 'Icono',
+      save: 'Guardar Cambios',
+      saving: 'Guardando...',
+      saved: 'Guardado',
+      inProgress: 'En Progreso',
+      completed: 'Completado',
+      onHold: 'En Espera',
+      english: 'Inglés',
+      spanish: 'Español',
+      newFinding: 'Nuevo Hallazgo',
+      findingTitle: 'Título del Hallazgo',
+      severity: 'Severidad',
+      cvss: 'CVSS',
+      lastUpdated: 'Última Actualización',
+      actions: 'Acciones',
+      edit: 'Editar',
+      delete: 'Eliminar',
+      confirmDeleteFindingTitle: "¿Estás seguro?",
+      confirmDeleteFindingDesc: "Esta acción no se puede deshacer. Esto eliminará permanentemente el hallazgo.",
+      cancel: "Cancelar",
+      findingDeleted: "Hallazgo eliminado correctamente.",
+      selectClient: "Seleccionar un cliente",
+      selectStatus: "Seleccionar estado",
+      selectLanguage: "Seleccionar idioma",
+      selectIcon: "Seleccionar un icono",
+      deleteProject: "Eliminar Proyecto",
+      confirmDeleteProjectTitle: "¿Eliminar Proyecto?",
+      confirmDeleteProjectDesc: "Esto eliminará permanentemente el proyecto y todos sus hallazgos. Esta acción no puede deshacerse.",
+      changesSaved: "Cambios Guardados",
+      changesSavedDesc: "Los detalles de tu proyecto han sido actualizados.",
+      translateScope: "Traducir Alcance",
+      translating: "Traduciendo...",
+    }
+  }
+
+  const sortedFindings = useMemo(() => {
+    const findingsCopy = [...projectFindings];
+    if (sortConfig !== null) {
+      findingsCopy.sort((a, b) => {
+        const aValue = a[sortConfig.key];
+        const bValue = b[sortConfig.key];
+        if (aValue < bValue) {
+          return sortConfig.direction === 'ascending' ? -1 : 1;
+        }
+        if (aValue > bValue) {
+          return sortConfig.direction === 'ascending' ? 1 : -1;
+        }
+        return 0;
+      });
+    }
+    return findingsCopy;
+  }, [projectFindings, sortConfig]);
+
+  useEffect(() => {
+    const currentProject = projects.find(p => p.id === id);
+    if (currentProject) {
+      setProject(currentProject);
+      setName(currentProject.name);
+      setClientId(currentProject.clientId);
+      setStatus(currentProject.status);
+      setDate({ from: new Date(currentProject.startDate), to: new Date(currentProject.endDate) });
+      setIcon(currentProject.icon);
+      setProjectLanguage(currentProject.language);
+      const filteredFindings = findings.filter(f => f.projectId === currentProject.id);
+      setProjectFindings(filteredFindings);
+      setBlocks(parseHtmlToBlocks(currentProject.reportBody));
+    } else {
+      router.push('/dashboard/projects');
+    }
+  }, [id, projects, findings, router]);
+  
+  useEffect(() => {
+    if (saveStatus === 'unsaved') {
+      const handler = setTimeout(() => {
+        handleSave(false);
+      }, 2000);
+      return () => clearTimeout(handler);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [blocks, saveStatus]);
+
+
+  const handleSave = (showToast = true) => {
+    if (!project || !name || !clientId || !status || !date?.from || !date?.to) {
+      if(showToast){
+        toast({ variant: "destructive", title: "Incomplete fields", description: "Please fill in all project details." });
+      }
+      return;
+    }
+
+    setSaveStatus('saving');
+    
+    const updatedProjectData: Project = {
+      ...project,
+      name,
+      clientId,
+      status,
+      icon,
+      language: projectLanguage,
+      startDate: format(date.from, 'yyyy-MM-dd'),
+      endDate: format(date.to, 'yyyy-MM-dd'),
+      reportBody: blocksToHtml(blocks),
+    };
+
+    updateProject(updatedProjectData);
+    if (showToast) {
+        toast({ title: t[uiLanguage].changesSaved, description: t[uiLanguage].changesSavedDesc });
+    }
+
+    setTimeout(() => setSaveStatus('saved'), 500);
+  };
+  
+  const handleFieldChange = (setter: React.Dispatch<React.SetStateAction<any>>, value: any) => {
+    setter(value);
+    setSaveStatus('unsaved');
+  };
+  
+  const handleDeleteFinding = () => {
+    if (findingToDelete) {
+      deleteFinding(findingToDelete.id);
+      toast({ title: t[uiLanguage].findingDeleted });
+      setFindingToDelete(null);
+    }
+  };
+
+  const getSeverityVariant = (severity: string): 'destructive' | 'high' | 'medium' | 'low' | 'secondary' => {
+    switch (severity) {
+      case 'Critical': return 'destructive';
+      case 'High': return 'high';
+      case 'Medium': return 'medium';
+      case 'Low': return 'low';
+      default: return 'secondary';
+    }
+  };
+
+  const requestSort = (key: SortKey) => {
+    let direction: 'ascending' | 'descending' = 'ascending';
+    if (sortConfig && sortConfig.key === key && sortConfig.direction === 'ascending') {
+      direction = 'descending';
+    }
+    setSortConfig({ key, direction });
+  };
+  
+  const getSortIcon = (key: SortKey) => {
+    if (!sortConfig || sortConfig.key !== key) {
+      return <ArrowUpDown className="ml-2 h-4 w-4" />;
+    }
+    return sortConfig.direction === 'ascending' ? ' ▲' : ' ▼';
+  };
+  
+  // Block editor functions
+  const sensors = useSensors(useSensor(PointerSensor), useSensor(KeyboardSensor, { coordinateGetter: sortableKeyboardCoordinates }));
+  
+  const handleBlockUpdate = (id: string, content: string) => {
+    setBlocks(prev => prev.map(b => b.id === id ? { ...b, content } : b));
+    setSaveStatus('unsaved');
+  };
+
+  const handleDragEnd = (event: DragEndEvent) => {
+    const { active, over } = event;
+    if (over && active.id !== over.id) {
+      setBlocks((items) => {
+        const oldIndex = items.findIndex((item) => item.id === active.id);
+        const newIndex = items.findIndex((item) => item.id === over.id);
+        return arrayMove(items, oldIndex, newIndex);
+      });
+      setSaveStatus('unsaved');
+    }
+  };
+  
+  const handleAddBlock = (currentBlockId: string) => {
+    const newBlock: ContentBlock = { id: `block-new-${Date.now()}`, tag: 'p', content: '' };
+    const currentIndex = blocks.findIndex(b => b.id === currentBlockId);
+    const newBlocks = [...blocks];
+    newBlocks.splice(currentIndex + 1, 0, newBlock);
+    setBlocks(newBlocks);
+    setActiveBlockId(newBlock.id);
+    setSaveStatus('unsaved');
+  };
+  
+  const handleKeyDown = (e: React.KeyboardEvent<HTMLDivElement>, id: string, tag: ContentBlock['tag']) => {
+    const currentBlockIndex = blocks.findIndex(b => b.id === id);
+    const currentBlock = blocks[currentBlockIndex];
+
+    if (e.key === 'Enter' && !e.shiftKey) {
+      e.preventDefault();
+      handleAddBlock(id);
+    } else if (e.key === 'Backspace' && currentBlock.content === '' && blocks.length > 1) {
+       e.preventDefault();
+       const newBlocks = blocks.filter(b => b.id !== id);
+       setBlocks(newBlocks);
+       if (currentBlockIndex > 0) {
+           setActiveBlockId(blocks[currentBlockIndex - 1].id);
+       }
+       setSaveStatus('unsaved');
+    } else if (e.key === ' ' && currentBlock.content.match(/^(##|###)$/)) {
+        e.preventDefault();
+        const newTag = currentBlock.content === '##' ? 'h2' : 'h3';
+        const newBlocks = blocks.map(b => b.id === id ? { ...b, tag: newTag, content: '' } : b);
+        setBlocks(newBlocks);
+        setSaveStatus('unsaved');
+    } else if (e.key === '/') {
+        setCommandMenuOpen(true);
+    }
+  };
+
+  const handleCommandSelect = (command: 'h2' | 'h3' | 'pre') => {
+    if (!activeBlockId) return;
+    const newBlocks = blocks.map(b => b.id === activeBlockId ? { ...b, tag: command, content: '' } : b);
+    setBlocks(newBlocks);
+    setCommandMenuOpen(false);
+    setSaveStatus('unsaved');
+  };
+
+  if (!project || !client) {
+    return null;
+  }
+
+  return (
+    <>
+      <div className="w-full grid grid-cols-1 gap-6 pt-6">
+        <header className="flex items-center justify-between px-4 sm:px-6">
+          <div className="flex items-center gap-4">
+            <Button variant="outline" size="icon" className="h-10 w-10" asChild>
+              <Link href="/dashboard/projects">
+                <ChevronLeft className="h-5 w-5" />
+              </Link>
+            </Button>
+            <div>
+              <h1 className="font-headline text-xl font-bold">{project.name}</h1>
+              <p className="text-sm text-muted-foreground">{client.name}</p>
+            </div>
+          </div>
+          <div className="flex items-center gap-2">
+            <Button onClick={() => router.push(`/dashboard/projects/${id}/report`)} variant="outline">
+              {t[uiLanguage].report}
+            </Button>
+             <Button onClick={() => handleSave(true)} disabled={saveStatus === 'saving' || saveStatus === 'saved'}>
+                {saveStatus === 'saving' ? (<><Save className="mr-2 h-4 w-4 animate-spin" />{t[uiLanguage].saving}</>) : 
+                 saveStatus === 'saved' ? (<><CheckCircle className="mr-2 h-4 w-4" />{t[uiLanguage].saved}</>) : 
+                 (<><Save className="mr-2 h-4 w-4" />{t[uiLanguage].save}</>)}
+            </Button>
+          </div>
+        </header>
+
+        <div className="w-full px-4 sm:px-6">
+          <Tabs defaultValue={searchParams.get('tab') || 'findings'} className="w-full">
+            <div className="flex items-center justify-between">
+                <TabsList>
+                  <TabsTrigger value="findings">{t[uiLanguage].findings}</TabsTrigger>
+                  <TabsTrigger value="scope">{t[uiLanguage].scope}</TabsTrigger>
+                  <TabsTrigger value="details">{t[uiLanguage].projectDetails}</TabsTrigger>
+                </TabsList>
+                 <AlertDialog open={isDeleteDialogOpen} onOpenChange={setIsDeleteDialogOpen}>
+                    <AlertDialogTrigger asChild>
+                        <Button variant="destructive" size="icon"><Trash2 className="h-4 w-4" /></Button>
+                    </AlertDialogTrigger>
+                    <AlertDialogContent>
+                      <AlertDialogHeader>
+                        <AlertDialogTitle>{t[uiLanguage].confirmDeleteProjectTitle}</AlertDialogTitle>
+                        <AlertDialogDescription>{t[uiLanguage].confirmDeleteProjectDesc}</AlertDialogDescription>
+                      </AlertDialogHeader>
+                      <AlertDialogFooter>
+                        <AlertDialogCancel>{t[uiLanguage].cancel}</AlertDialogCancel>
+                        <AlertDialogAction className="bg-destructive hover:bg-destructive/90">{t[uiLanguage].delete}</AlertDialogAction>
+                      </AlertDialogFooter>
+                    </AlertDialogContent>
+                </AlertDialog>
+            </div>
+            
+            <TabsContent value="findings" className="pt-6">
+              <Card>
+                <CardHeader>
+                  <div className="flex items-center justify-between">
+                    <CardTitle>{t[uiLanguage].findings}</CardTitle>
+                    <Button asChild>
+                      <Link href={`/dashboard/projects/${id}/findings/new`}>
+                        <PlusCircle className="mr-2 h-4 w-4" /> {t[uiLanguage].newFinding}
+                      </Link>
+                    </Button>
+                  </div>
+                </CardHeader>
+                <CardContent>
+                  <Table>
+                    <TableHeader>
+                      <TableRow>
+                        <TableHead onClick={() => requestSort('title')} className="cursor-pointer hover:bg-muted/50"><div className="flex items-center">{t[uiLanguage].findingTitle}{getSortIcon('title')}</div></TableHead>
+                        <TableHead onClick={() => requestSort('severity')} className="cursor-pointer hover:bg-muted/50"><div className="flex items-center">{t[uiLanguage].severity}{getSortIcon('severity')}</div></TableHead>
+                        <TableHead onClick={() => requestSort('cvss')} className="cursor-pointer hover:bg-muted/50"><div className="flex items-center">{t[uiLanguage].cvss}{getSortIcon('cvss')}</div></TableHead>
+                        <TableHead onClick={() => requestSort('updatedAt')} className="cursor-pointer hover:bg-muted/50"><div className="flex items-center">{t[uiLanguage].lastUpdated}{getSortIcon('updatedAt')}</div></TableHead>
+                        <TableHead className="text-right">{t[uiLanguage].actions}</TableHead>
+                      </TableRow>
+                    </TableHeader>
+                    <TableBody>
+                      {sortedFindings.map(finding => (
+                        <TableRow key={finding.id}>
+                          <TableCell className="font-medium">
+                             <Link href={`/dashboard/projects/${id}/findings/${finding.id}`} className="hover:text-primary">
+                                {finding.title}
+                             </Link>
+                          </TableCell>
+                          <TableCell><Badge variant={getSeverityVariant(finding.severity)}>{finding.severity}</Badge></TableCell>
+                          <TableCell className="font-code">{finding.cvss.toFixed(1)}</TableCell>
+                          <TableCell>{format(new Date(finding.updatedAt), 'PP', { locale: uiLanguage === 'es' ? es : undefined })}</TableCell>
+                          <TableCell className="text-right">
+                             <div className="flex justify-end gap-2">
+                                <Button variant="ghost" size="icon" asChild>
+                                    <Link href={`/dashboard/projects/${id}/findings/${finding.id}`}><Edit className="h-4 w-4" /></Link>
+                                </Button>
+                                <Button variant="ghost" size="icon" className="text-destructive hover:text-destructive-foreground hover:bg-destructive" onClick={() => setFindingToDelete(finding)}>
+                                    <Trash2 className="h-4 w-4" />
+                                </Button>
+                             </div>
+                          </TableCell>
+                        </TableRow>
+                      ))}
+                    </TableBody>
+                  </Table>
+                </CardContent>
+              </Card>
+            </TabsContent>
+            
+            <TabsContent value="scope" className="pt-6">
+               <Card>
+                  <CardHeader>
+                     <CardTitle>{t[uiLanguage].scope}</CardTitle>
+                  </CardHeader>
+                  <CardContent className="max-w-4xl mx-auto">
+                     <DndContext sensors={sensors} collisionDetection={closestCenter} onDragEnd={handleDragEnd}>
+                        <SortableContext items={blocks.map(b => b.id)} strategy={verticalListSortingStrategy}>
+                            {blocks.map(block => (
+                                <SortableBlock 
+                                    key={block.id}
+                                    block={block}
+                                    onUpdate={handleBlockUpdate}
+                                    onKeyDown={handleKeyDown}
+                                    onDelete={() => {}}
+                                    onAdd={handleAddBlock}
+                                    onFocus={() => setActiveBlockId(block.id)}
+                                    isFocused={activeBlockId === block.id}
+                                />
+                            ))}
+                        </SortableContext>
+                     </DndContext>
+                     {commandMenuOpen && (
+                        <Popover open={commandMenuOpen} onOpenChange={setCommandMenuOpen}>
+                            <PopoverTrigger asChild>
+                                <div />
+                            </PopoverTrigger>
+                            <PopoverContent className="w-48 p-0">
+                                <Command>
+                                    <CommandInput placeholder="Search commands..." />
+                                    <CommandList>
+                                        <CommandEmpty>No commands found.</CommandEmpty>
+                                        <CommandGroup heading="Elements">
+                                            <CommandItem onSelect={() => handleCommandSelect('h2')}><Heading2 className="mr-2 h-4 w-4" />Title 2</CommandItem>
+                                            <CommandItem onSelect={() => handleCommandSelect('h3')}><Heading3 className="mr-2 h-4 w-4" />Title 3</CommandItem>
+                                            <CommandItem onSelect={() => handleCommandSelect('pre')}><Code className="mr-2 h-4 w-4" />Code Block</CommandItem>
+                                        </CommandGroup>
+                                    </CommandList>
+                                </Command>
+                            </PopoverContent>
+                        </Popover>
+                     )}
+                  </CardContent>
+               </Card>
+            </TabsContent>
+
+            <TabsContent value="details" className="pt-6">
+              <Card>
+                <CardHeader>
+                  <CardTitle>{t[uiLanguage].projectDetails}</CardTitle>
+                </CardHeader>
+                <CardContent className="space-y-4">
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div className="space-y-2">
+                      <Label htmlFor="name">{t[uiLanguage].projectName}</Label>
+                      <Input id="name" value={name} onChange={e => handleFieldChange(setName, e.target.value)} />
+                    </div>
+                    <div className="space-y-2">
+                      <Label htmlFor="client">{t[uiLanguage].client}</Label>
+                      <Select value={clientId} onValueChange={value => handleFieldChange(setClientId, value)}>
+                        <SelectTrigger id="client"><SelectValue placeholder={t[uiLanguage].selectClient} /></SelectTrigger>
+                        <SelectContent>
+                          {clients.map(c => <SelectItem key={c.id} value={c.id}>{c.name}</SelectItem>)}
+                        </SelectContent>
+                      </Select>
+                    </div>
+                  </div>
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div className="space-y-2">
+                      <Label htmlFor="status">{t[uiLanguage].status}</Label>
+                      <Select value={status} onValueChange={(value: Project['status']) => handleFieldChange(setStatus, value)}>
+                        <SelectTrigger id="status"><SelectValue placeholder={t[uiLanguage].selectStatus} /></SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="In Progress">{t[uiLanguage].inProgress}</SelectItem>
+                          <SelectItem value="Completed">{t[uiLanguage].completed}</SelectItem>
+                          <SelectItem value="On Hold">{t[uiLanguage].onHold}</SelectItem>
+                        </SelectContent>
+                      </Select>
+                    </div>
+                    <div className="space-y-2">
+                        <Label>{t[uiLanguage].dates}</Label>
+                        <Popover>
+                            <PopoverTrigger asChild>
+                            <Button id="date" variant={"outline"} className={cn("w-full justify-start text-left font-normal", !date && "text-muted-foreground")}>
+                                <CalendarIcon className="mr-2 h-4 w-4" />
+                                {date?.from ? ( date.to ? (
+                                    <>{format(date.from, "LLL dd, y")} - {format(date.to, "LLL dd, y")}</>
+                                ) : (format(date.from, "LLL dd, y"))
+                                ) : (<span>Pick a date</span>)}
+                            </Button>
+                            </PopoverTrigger>
+                            <PopoverContent className="w-auto p-0" align="start">
+                                <Calendar initialFocus mode="range" defaultMonth={date?.from} selected={date} onSelect={(newDate) => handleFieldChange(setDate, newDate)} numberOfMonths={2} />
+                            </PopoverContent>
+                        </Popover>
+                    </div>
+                  </div>
+                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                     <div className="space-y-2">
+                      <Label htmlFor="language">{t[uiLanguage].language}</Label>
+                      <Select value={projectLanguage} onValueChange={(value: 'en' | 'es') => handleFieldChange(setProjectLanguage, value)}>
+                        <SelectTrigger id="language"><SelectValue placeholder={t[uiLanguage].selectLanguage} /></SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="en">{t[uiLanguage].english}</SelectItem>
+                          <SelectItem value="es">{t[uiLanguage].spanish}</SelectItem>
+                        </SelectContent>
+                      </Select>
+                    </div>
+                    <div className="space-y-2">
+                      <Label htmlFor="icon">{t[uiLanguage].icon}</Label>
+                      <Select value={icon} onValueChange={value => handleFieldChange(setIcon, value)}>
+                        <SelectTrigger id="icon"><SelectValue placeholder={t[uiLanguage].selectIcon} /></SelectTrigger>
+                        <SelectContent>
+                           {iconOptions.map(o => <SelectItem key={o.value} value={o.value}>{o.label}</SelectItem>)}
+                        </SelectContent>
+                      </Select>
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
+            </TabsContent>
+          </Tabs>
+        </div>
+      </div>
+      
+      <AlertDialog open={!!findingToDelete} onOpenChange={() => setFindingToDelete(null)}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>{t[uiLanguage].confirmDeleteFindingTitle}</AlertDialogTitle>
+            <AlertDialogDescription>{t[uiLanguage].confirmDeleteFindingDesc}</AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel>{t[uiLanguage].cancel}</AlertDialogCancel>
+            <AlertDialogAction onClick={handleDeleteFinding} className="bg-destructive hover:bg-destructive/90">{t[uiLanguage].delete}</AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
+    </>
+  );
+}
