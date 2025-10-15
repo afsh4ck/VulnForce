@@ -1,3 +1,4 @@
+
 'use client';
 
 import React, { useState, useMemo, useEffect, useCallback, useRef } from 'react';
@@ -15,7 +16,7 @@ import { Dialog, DialogTrigger, DialogContent, DialogDescription, DialogFooter, 
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from "@/components/ui/alert-dialog";
+import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from "@/components/ui/alert-dialog";
 import { useToast } from "@/hooks/use-toast";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { Calendar } from "@/components/ui/calendar";
@@ -115,10 +116,12 @@ const EditableBlock = ({ block, onUpdate, onKeyDown, onFocus, isFocused, placeho
             // Move cursor to the end
             const range = document.createRange();
             const sel = window.getSelection();
-            range.selectNodeContents(blockRef.current);
-            range.collapse(false);
-            sel?.removeAllRanges();
-            sel?.addRange(range);
+            if (sel) {
+              range.selectNodeContents(blockRef.current);
+              range.collapse(false);
+              sel.removeAllRanges();
+              sel.addRange(range);
+            }
         }
     }, [isFocused]);
 
@@ -369,9 +372,10 @@ export default function ProjectDetailsPage() {
       setProjectLanguage(currentProject.language);
       const filteredFindings = findings.filter(f => f.projectId === currentProject.id);
       setProjectFindings(filteredFindings);
-      setBlocks(parseHtmlToBlocks(currentProject.reportBody));
-      if (currentProject.reportBody) {
-          setActiveBlockId(parseHtmlToBlocks(currentProject.reportBody)[0]?.id);
+      const initialBlocks = parseHtmlToBlocks(currentProject.reportBody);
+      setBlocks(initialBlocks);
+      if (initialBlocks.length > 0) {
+        setActiveBlockId(initialBlocks[0].id);
       }
     } else {
       router.push('/dashboard/projects');
@@ -489,7 +493,20 @@ export default function ProjectDetailsPage() {
 
   const updateBlockTag = (id: string, newTag: ContentBlock['tag']) => {
     setBlocks(blocks => {
-      const newBlocks = blocks.map(b => b.id === id ? { ...b, tag: newTag, content: '' } : b);
+      const newBlocks = blocks.map(b => {
+        if (b.id === id) {
+          const newBlock = { ...b, tag: newTag };
+          if(newTag !== 'p' && newTag !== 'h2' && newTag !== 'h3' && newTag !== 'pre') {
+             newBlock.content = '';
+             newBlock.children = [{id: `child-${Date.now()}`, tag: 'p', content: b.content}];
+          } else {
+            newBlock.content = b.children?.[0]?.content || b.content || '';
+            delete newBlock.children;
+          }
+          return newBlock;
+        }
+        return b;
+      });
       return newBlocks;
     });
     setSaveStatus('unsaved');
@@ -507,12 +524,16 @@ export default function ProjectDetailsPage() {
           handleAddBlock(id);
       } else if (e.key === 'Backspace' && target.innerHTML === '' && blocks.length > 1) {
           e.preventDefault();
-          const newBlocks = blocks.filter(b => b.id !== id);
-          setBlocks(newBlocks);
-          if (currentBlockIndex > 0) {
-              setActiveBlockId(blocks[currentBlockIndex - 1].id);
+          if (['h2', 'h3', 'pre'].includes(currentBlock.tag)) {
+            updateBlockTag(id, 'p');
+          } else {
+            const newBlocks = blocks.filter(b => b.id !== id);
+            setBlocks(newBlocks);
+            if (currentBlockIndex > 0) {
+                setActiveBlockId(blocks[currentBlockIndex - 1].id);
+            }
+            setSaveStatus('unsaved');
           }
-          setSaveStatus('unsaved');
       } else if (e.key === ' ' && target.innerHTML.match(/^##\s*$/)) {
           e.preventDefault();
           updateBlockTag(id, 'h2');
@@ -589,6 +610,50 @@ export default function ProjectDetailsPage() {
                 </Button>
             </div>
             
+            <TabsContent value="content" className="pt-6">
+               <Card>
+                  <CardHeader>
+                     <CardTitle>{t[uiLanguage].content}</CardTitle>
+                  </CardHeader>
+                  <CardContent className="max-w-4xl mx-auto">
+                     <DndContext sensors={sensors} collisionDetection={closestCenter} onDragEnd={handleDragEnd}>
+                        <SortableContext items={blocks.map(b => b.id)} strategy={verticalListSortingStrategy}>
+                            {blocks.map(block => (
+                                <SortableBlock 
+                                    key={block.id}
+                                    block={block}
+                                    onUpdate={(content) => handleBlockUpdate(block.id, content)}
+                                    onKeyDown={(e) => handleKeyDown(e, block.id)}
+                                    onAdd={handleAddBlock}
+                                    onFocus={() => setActiveBlockId(block.id)}
+                                    isFocused={activeBlockId === block.id}
+                                    placeholder={t[projectLanguage as 'en' | 'es'].commandPlaceholder}
+                                />
+                            ))}
+                        </SortableContext>
+                     </DndContext>
+                     <Popover open={commandMenuOpen} onOpenChange={setCommandMenuOpen}>
+                            <PopoverTrigger asChild>
+                                <div />
+                            </PopoverTrigger>
+                            <PopoverContent className="w-48 p-0">
+                                <Command>
+                                    <CommandInput placeholder="Search commands..." />
+                                    <CommandList>
+                                        <CommandEmpty>No commands found.</CommandEmpty>
+                                        <CommandGroup heading="Elements">
+                                            <CommandItem onSelect={() => handleCommandSelect('h2')}><Heading2 className="mr-2 h-4 w-4" />Title 2</CommandItem>
+                                            <CommandItem onSelect={() => handleCommandSelect('h3')}><Heading3 className="mr-2 h-4 w-4" />Title 3</CommandItem>
+                                            <CommandItem onSelect={() => handleCommandSelect('pre')}><Code className="mr-2 h-4 w-4" />Code Block</CommandItem>
+                                        </CommandGroup>
+                                    </CommandList>
+                                </Command>
+                            </PopoverContent>
+                        </Popover>
+                  </CardContent>
+               </Card>
+            </TabsContent>
+
             <TabsContent value="findings" className="pt-6">
               <Card>
                 <CardHeader>
@@ -641,50 +706,6 @@ export default function ProjectDetailsPage() {
               </Card>
             </TabsContent>
             
-            <TabsContent value="content" className="pt-6">
-               <Card>
-                  <CardHeader>
-                     <CardTitle>{t[uiLanguage].content}</CardTitle>
-                  </CardHeader>
-                  <CardContent className="max-w-4xl mx-auto">
-                     <DndContext sensors={sensors} collisionDetection={closestCenter} onDragEnd={handleDragEnd}>
-                        <SortableContext items={blocks.map(b => b.id)} strategy={verticalListSortingStrategy}>
-                            {blocks.map(block => (
-                                <SortableBlock 
-                                    key={block.id}
-                                    block={block}
-                                    onUpdate={(content) => handleBlockUpdate(block.id, content)}
-                                    onKeyDown={(e) => handleKeyDown(e, block.id)}
-                                    onAdd={handleAddBlock}
-                                    onFocus={() => setActiveBlockId(block.id)}
-                                    isFocused={activeBlockId === block.id}
-                                    placeholder={t[projectLanguage as 'en' | 'es'].commandPlaceholder}
-                                />
-                            ))}
-                        </SortableContext>
-                     </DndContext>
-                     <Popover open={commandMenuOpen} onOpenChange={setCommandMenuOpen}>
-                            <PopoverTrigger asChild>
-                                <div />
-                            </PopoverTrigger>
-                            <PopoverContent className="w-48 p-0">
-                                <Command>
-                                    <CommandInput placeholder="Search commands..." />
-                                    <CommandList>
-                                        <CommandEmpty>No commands found.</CommandEmpty>
-                                        <CommandGroup heading="Elements">
-                                            <CommandItem onSelect={() => handleCommandSelect('h2')}><Heading2 className="mr-2 h-4 w-4" />Title 2</CommandItem>
-                                            <CommandItem onSelect={() => handleCommandSelect('h3')}><Heading3 className="mr-2 h-4 w-4" />Title 3</CommandItem>
-                                            <CommandItem onSelect={() => handleCommandSelect('pre')}><Code className="mr-2 h-4 w-4" />Code Block</CommandItem>
-                                        </CommandGroup>
-                                    </CommandList>
-                                </Command>
-                            </PopoverContent>
-                        </Popover>
-                  </CardContent>
-               </Card>
-            </TabsContent>
-
             <TabsContent value="details" className="pt-6">
               <Card>
                 <CardHeader>
