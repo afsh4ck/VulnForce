@@ -3,7 +3,6 @@
 import React, { useRef, useEffect, useCallback, useImperativeHandle } from 'react';
 import { cn } from '@/lib/utils';
 
-// This function is simplified and might need adjustments based on the exact markdown-like syntax
 const getHighlightedText = (text: string) => {
     if (!text) return '';
     return text
@@ -11,9 +10,8 @@ const getHighlightedText = (text: string) => {
         .replace(/</g, '&lt;')
         .replace(/>/g, '&gt;')
         .replace(/(\[TODO:?.*?\])/g, '<span class="bg-destructive text-destructive-foreground font-bold px-1 rounded-sm">$1</span>')
-        .replace(/^(#{1,4})\s(.*)/gm, '<span class="text-primary font-bold">$1 $2</span>')
-        .replace(/(\*\*|__)(.*?)\1/g, '<strong>$2</strong>')
-        .replace(/(\*|_)(.*?)\1/g, '<em>$2</em>');
+        .replace(/^(#\s)(.*)/gm, '<span class="text-primary font-bold">$1 $2</span>') // H1 only
+        .replace(/^(#{2,4})\s(.*)/gm, '<span class="text-foreground font-bold">$1 $2</span>'); // H2, H3, H4
 };
 
 interface HighlightingTextareaProps extends Omit<React.TextareaHTMLAttributes<HTMLTextAreaElement>, 'onChange' | 'value'> {
@@ -60,7 +58,10 @@ export const HighlightingTextarea = React.forwardRef<HTMLTextAreaElement, Highli
 
         return (
             <div className={cn("relative w-full h-full", className)}>
-                <div ref={backdropRef} className="absolute inset-0 z-0 overflow-auto whitespace-pre-wrap break-words pointer-events-none p-4 font-code text-sm min-h-[300px]">
+                <div 
+                    ref={backdropRef} 
+                    className="absolute inset-0 z-0 overflow-auto whitespace-pre-wrap break-words pointer-events-none p-4 font-code text-sm min-h-[300px] text-muted-foreground"
+                >
                     <div dangerouslySetInnerHTML={{ __html: highlightedHtml }} />
                 </div>
                 <textarea
