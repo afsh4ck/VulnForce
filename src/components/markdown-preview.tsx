@@ -1,6 +1,6 @@
 
 'use client';
-import React from 'react';
+import React, { useMemo } from 'react';
 import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
 import type { ImageAsset } from '@/lib/types';
@@ -9,6 +9,7 @@ import { Badge } from './ui/badge';
 import { Separator } from './ui/separator';
 import { LinkPreviewCard } from './link-preview-card';
 import { CodeBlock } from './code-block';
+import Image from 'next/image';
 
 export const MarkdownPreview = ({ content, getImage, isReport }: { content: string, getImage: (id: string) => ImageAsset | undefined, isReport?: boolean }) => {
     
@@ -142,7 +143,7 @@ export const MarkdownPreview = ({ content, getImage, isReport }: { content: stri
                             }
                         }
                         // eslint-disable-next-line @next/next/no-img-element
-                        return <img src={finalSrc} alt={alt} {...props} className="max-w-full h-auto rounded-md border" />;
+                        return <img src={finalSrc} alt={alt} {...props} style={{maxWidth: '100%', height: 'auto'}} className="rounded-md border" />;
                     },
                 }}
             >
