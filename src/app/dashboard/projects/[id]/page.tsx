@@ -1,3 +1,4 @@
+
 'use client';
 
 import React, { useState, useMemo, useEffect, useCallback, useRef } from 'react';
@@ -17,10 +18,10 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from "@/components/ui/alert-dialog";
-import { useToast } from '@/hooks/use-toast';
-import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
-import { Calendar } from '@/components/ui/calendar';
-import { cn } from '@/lib/utils';
+import { useToast } from "@/hooks/use-toast";
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
+import { Calendar } from "@/components/ui/calendar";
+import { cn } from "@/lib/utils";
 import { format } from 'date-fns';
 import { es } from 'date-fns/locale';
 import { useData } from '@/context/data-context';
@@ -30,6 +31,7 @@ import { arrayMove, SortableContext, sortableKeyboardCoordinates, useSortable, v
 import { translateText } from '@/ai/flows/translate-text-flow';
 import { MarkdownPreview } from '@/components/markdown-preview';
 import { CSS } from '@dnd-kit/utilities';
+import { Textarea } from '@/components/ui/textarea';
 
 type SortKey = keyof Finding;
 type SaveStatus = 'unsaved' | 'saving' | 'saved';
@@ -49,21 +51,33 @@ const iconOptions = [
     { value: 'Award', label: 'Award' },
 ];
 
-const ScopeSectionEditor = ({ section, onContentChange, onDelete, onTitleChange, getImage }: {
+const ScopeSectionEditor = ({ section, onContentChange, getImage }: {
   section: ScopeSection;
   onContentChange: (content: string) => void;
-  onDelete: () => void;
-  onTitleChange: (newTitle: string) => void;
   getImage: (id: string) => ImageAsset | undefined
 }) => {
+    const [isEditing, setIsEditing] = useState(false);
+
+    if (isEditing) {
+        return (
+             <Textarea
+                value={section.content}
+                onChange={(e) => onContentChange(e.target.value)}
+                onBlur={() => setIsEditing(false)}
+                autoFocus
+                className="w-full min-h-[150px] border-0 rounded-t-none font-code text-sm focus-visible:ring-0 focus-visible:ring-offset-0"
+            />
+        )
+    }
+
     return (
-        <div className="py-2">
+        <div className="py-2" onClick={() => setIsEditing(true)}>
             <MarkdownPreview content={section.content} getImage={getImage} />
         </div>
     )
 }
 
-const SortableScopeSection = ({ section, index, onAddSection, ...props }: { section: ScopeSection, index: number, onAddSection: (index: number) => void, [key: string]: any }) => {
+const SortableScopeSection = ({ section, index, onAddSection, onDelete, ...props }: { section: ScopeSection, index: number, onAddSection: (index: number) => void, onDelete: () => void, [key: string]: any }) => {
   const { attributes, listeners, setNodeRef, transform, transition, isDragging } = useSortable({ id: section.id });
 
   const style = {
@@ -76,12 +90,17 @@ const SortableScopeSection = ({ section, index, onAddSection, ...props }: { sect
   return (
     <div ref={setNodeRef} style={style} className="relative group/section">
       <div className="absolute top-0 -left-12 h-full flex items-center gap-1 opacity-0 group-hover/section:opacity-100 transition-opacity">
-        <Button variant="ghost" size="icon" className="h-6 w-6 cursor-pointer" onClick={() => onAddSection(index + 1)}>
+        <Button variant="ghost" size="icon" className="h-8 w-8 cursor-pointer" onClick={() => onAddSection(index + 1)}>
           <Plus className="h-4 w-4"/>
         </Button>
         <div {...attributes} {...listeners} className="cursor-grab p-1">
           <GripVertical className="h-5 w-5 text-muted-foreground" />
         </div>
+      </div>
+      <div className="absolute top-0 -right-12 h-full flex items-center opacity-0 group-hover/section:opacity-100 transition-opacity">
+        <Button variant="ghost" size="icon" className="h-8 w-8 text-destructive" onClick={onDelete}>
+            <Trash2 className="h-4 w-4" />
+        </Button>
       </div>
       <ScopeSectionEditor section={section} {...props} />
     </div>
@@ -275,19 +294,6 @@ export default function ProjectDetailsPage() {
     );
     setSaveStatus('unsaved');
   };
-  
-  const handleSectionTitleChange = (sectionId: string, newTitle: string) => {
-    setScopeSections(prevSections =>
-      prevSections.map(sec => {
-        if (sec.id === sectionId) {
-            const contentWithoutTitle = sec.content.replace(/^(#{2,4}) .*\n?/, '');
-            return { ...sec, content: `## ${newTitle}\n${contentWithoutTitle}` };
-        }
-        return sec;
-      })
-    );
-    setSaveStatus('unsaved');
-  }
 
   const handleAddSection = (index?: number) => {
       const newSection: ScopeSection = {
@@ -464,7 +470,7 @@ export default function ProjectDetailsPage() {
 
   return (
     <div className="w-full grid grid-cols-1 gap-6 pt-6">
-       <header className="flex justify-between items-start px-4 sm:px-6 pt-6">
+       <header className="flex justify-between items-start px-4 sm:px-6">
           <div className="flex items-center gap-4">
             <Button variant="outline" size="icon" className="h-10 w-10" asChild>
                 <Link href="/dashboard/projects">
@@ -657,7 +663,6 @@ export default function ProjectDetailsPage() {
                                 index={index}
                                 onAddSection={handleAddSection}
                                 onContentChange={(newContent: string) => handleSectionContentChange(section.id, newContent)}
-                                onTitleChange={(newTitle: string) => handleSectionTitleChange(section.id, newTitle)}
                                 onDelete={() => handleDeleteSection(section.id)}
                                 getImage={getImage}
                             />

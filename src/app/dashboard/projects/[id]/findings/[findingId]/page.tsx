@@ -19,6 +19,7 @@ import { arrayMove, SortableContext, sortableKeyboardCoordinates, useSortable, v
 import { CSS } from '@dnd-kit/utilities';
 import { Badge } from '@/components/ui/badge';
 import { MarkdownPreview } from '@/components/markdown-preview';
+import { Textarea } from '@/components/ui/textarea';
 
 type SaveStatus = 'unsaved' | 'saving' | 'saved';
 
@@ -27,23 +28,32 @@ interface FindingSection {
   content: string;
 }
 
-const SectionEditor = ({ section, onContentChange, onDelete, onTitleChange, isOrganizing, getImage }: {
+const SectionEditor = ({ section, onContentChange }: {
   section: FindingSection;
   onContentChange: (content: string) => void;
-  onDelete: () => void;
-  onTitleChange: (newTitle: string) => void;
-  isOrganizing: boolean;
-  getImage: (id: string) => ImageAsset | undefined
 }) => {
+    const [isEditing, setIsEditing] = useState(false);
+
+    if (isEditing) {
+        return (
+            <Textarea
+                value={section.content}
+                onChange={(e) => onContentChange(e.target.value)}
+                onBlur={() => setIsEditing(false)}
+                autoFocus
+                className="w-full min-h-[150px] border-0 rounded-t-none font-code text-sm focus-visible:ring-0 focus-visible:ring-offset-0"
+            />
+        )
+    }
     
     return (
-        <div className="py-2">
-            <MarkdownPreview content={section.content} getImage={getImage} />
+        <div className="py-2" onClick={() => setIsEditing(true)}>
+            <MarkdownPreview content={section.content} getImage={() => undefined} />
         </div>
     );
 }
 
-const SortableSection = ({ section, index, onAddSection, ...props }: { section: FindingSection, index: number, onAddSection: (index: number) => void, isOrganizing: boolean, [key: string]: any }) => {
+const SortableSection = ({ section, index, onAddSection, onDelete, ...props }: { section: FindingSection, index: number, onAddSection: (index: number) => void, onDelete: () => void, isOrganizing: boolean, [key: string]: any }) => {
   const { attributes, listeners, setNodeRef, transform, transition, isDragging } = useSortable({ id: section.id });
 
   const style = {
@@ -56,12 +66,17 @@ const SortableSection = ({ section, index, onAddSection, ...props }: { section: 
   return (
     <div ref={setNodeRef} style={style} className="relative group/section">
       <div className="absolute top-0 -left-12 h-full flex items-center gap-1 opacity-0 group-hover/section:opacity-100 transition-opacity">
-         <Button variant="ghost" size="icon" className="h-6 w-6 cursor-pointer" onClick={() => onAddSection(index + 1)}>
+         <Button variant="ghost" size="icon" className="h-8 w-8 cursor-pointer" onClick={() => onAddSection(index + 1)}>
           <Plus className="h-4 w-4"/>
         </Button>
         <div {...attributes} {...listeners} className="cursor-grab p-1">
           <GripVertical className="h-5 w-5 text-muted-foreground" />
         </div>
+      </div>
+       <div className="absolute top-0 -right-12 h-full flex items-center opacity-0 group-hover/section:opacity-100 transition-opacity">
+        <Button variant="ghost" size="icon" className="h-8 w-8 text-destructive" onClick={onDelete}>
+            <Trash2 className="h-4 w-4" />
+        </Button>
       </div>
       <SectionEditor section={section} {...props} />
     </div>
@@ -157,7 +172,7 @@ export default function FindingEditorPage() {
             toast({
                 variant: 'destructive',
                 title: uiLanguage === 'es' ? 'Campos Incompletos' : 'Incomplete Fields',
-                description: uiLanguage === 'es' ? 'Por favor, rellena todos los detalles del hallazgo.' : 'Please fill in all finding details.',
+                description: uiLanguage === 'es'_es ? 'Por favor, rellena todos los detalles del hallazgo.' : 'Please fill in all finding details.',
             });
         }
       return;
@@ -193,27 +208,9 @@ export default function FindingEditorPage() {
 
   const handleSectionChange = (sectionId: string, newContent: string) => {
     setSections(prevSections =>
-      prevSections.map(sec => {
-        if (sec.id === sectionId) {
-            const headingMatch = sec.content.match(/^(#{2,4}) .*\n?/);
-            const title = headingMatch ? headingMatch[0] : '';
-            return { ...sec, content: title + newContent };
-        }
-        return sec;
-      })
-    );
-    setSaveStatus('unsaved');
-  };
-
-  const handleTitleChange = (sectionId: string, newTitle: string) => {
-    setSections(prevSections =>
-      prevSections.map(sec => {
-        if (sec.id === sectionId) {
-          const contentWithoutTitle = sec.content.replace(/^(#{2,4}) .*\n?/, '');
-          return { ...sec, content: `### ${newTitle}\n${contentWithoutTitle}` };
-        }
-        return sec;
-      })
+      prevSections.map(sec => 
+        sec.id === sectionId ? { ...sec, content: newContent } : sec
+      )
     );
     setSaveStatus('unsaved');
   };
@@ -443,9 +440,7 @@ export default function FindingEditorPage() {
                             index={index}
                             onAddSection={handleAddSection}
                             onContentChange={(newContent: string) => handleSectionChange(section.id, newContent)}
-                            onTitleChange={(newTitle: string) => handleTitleChange(section.id, newContent)}
                             onDelete={() => handleDeleteSection(section.id)}
-                            getImage={getImage}
                             isOrganizing={false}
                           />
                        );
