@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useEffect, useCallback, useRef } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { useParams, useRouter } from 'next/navigation';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -8,7 +8,7 @@ import { Label } from '@/components/ui/label';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import Link from 'next/link';
-import { ChevronLeft, Save, Plus, GripVertical, Trash2, CheckCircle, Bold, Italic, Code, Link as LinkIcon, Image as ImageIcon } from 'lucide-react';
+import { ChevronLeft, Save, Plus, GripVertical, Trash2, CheckCircle } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import { useLanguage } from '@/context/language-context';
 import type { Vulnerability, Finding, Project, ImageAsset, Severity } from '@/lib/types';
@@ -36,41 +36,9 @@ const SectionEditor = ({ section, onContentChange, onDelete, onTitleChange, isOr
   isOrganizing: boolean;
   getImage: (id: string) => ImageAsset | undefined
 }) => {
-    const [isEditing, setIsEditing] = useState(false);
-    const headingMatch = section.content.match(/^(#{2,4}) (.*)/);
-    const sectionTitle = headingMatch ? headingMatch[2].trim() : 'New Section';
-    const contentWithoutTitle = section.content.replace(/^(#{2,4}) .*\n?/, '');
-
-    if (isEditing) {
-        return (
-            <Card className="mb-4">
-                 <div className="sticky top-16 z-10 bg-background">
-                    <CardHeader className="flex flex-row items-center gap-2 p-2 border-b">
-                        <Input
-                            value={sectionTitle}
-                            onChange={(e) => onTitleChange(e.target.value)}
-                            className="font-semibold text-base border-none focus-visible:ring-0 focus-visible:ring-offset-0 bg-transparent h-auto p-0 flex-1"
-                        />
-                        <Button variant="ghost" size="icon" className="h-8 w-8 text-destructive" onClick={onDelete}>
-                            <Trash2 className="h-4 w-4" />
-                        </Button>
-                    </CardHeader>
-                </div>
-                <CardContent className="p-4">
-                    <HighlightingTextarea
-                        value={contentWithoutTitle}
-                        onValueChange={(newContent) => onContentChange(newContent)}
-                        onBlur={() => setIsEditing(false)}
-                        autoFocus
-                        className="w-full min-h-[200px] font-code text-sm focus-visible:ring-0 focus-visible:ring-offset-0"
-                    />
-                </CardContent>
-            </Card>
-        );
-    }
     
     return (
-        <div className="py-2" onClick={() => setIsEditing(true)}>
+        <div className="py-2">
             <MarkdownPreview content={section.content} getImage={getImage} />
         </div>
     );

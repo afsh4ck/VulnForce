@@ -76,10 +76,9 @@ export const HighlightingTextarea = React.forwardRef<HTMLTextAreaElement, Highli
                     onSelect={handleSelectionChange}
                     className={cn(
                         'relative block w-full h-full resize-none overflow-auto whitespace-pre-wrap break-words border-0 rounded-md bg-transparent caret-foreground',
-                        'font-code text-sm min-h-[200px]',
+                        'font-sans text-sm min-h-[200px] leading-relaxed',
                         "p-2 ring-offset-background placeholder:text-muted-foreground focus-visible:outline-none disabled:cursor-not-allowed disabled:opacity-50"
                     )}
-                    style={{lineHeight: '1.5rem'}}
                     spellCheck="false"
                     {...props}
                 />

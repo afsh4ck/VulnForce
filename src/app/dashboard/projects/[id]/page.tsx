@@ -495,8 +495,8 @@ export default function ProjectDetailsPage() {
 
 
   return (
-    <div className="w-full pt-6">
-       <div className="flex justify-between items-start px-4 sm:px-6 pt-6">
+    <div className="w-full grid grid-cols-1 gap-6 pt-6">
+       <header className="flex justify-between items-start px-4 sm:px-6 pt-6">
           <div className="flex items-center gap-4">
             <Button variant="outline" size="icon" className="h-10 w-10" asChild>
                 <Link href="/dashboard/projects">
@@ -648,11 +648,11 @@ export default function ProjectDetailsPage() {
                 </AlertDialogContent>
             </AlertDialog>
         </div>
-      </div>
+      </header>
       
       <Separator />
       
-      <div className="w-full px-4 sm:px-6">
+      <div className="w-full grid grid-cols-1 px-4 sm:px-6">
         <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
             <div className="flex items-center justify-between">
             <TabsList>
