@@ -1,4 +1,3 @@
-
 'use client';
 import React from 'react';
 import ReactMarkdown from 'react-markdown';
@@ -75,7 +74,7 @@ export const MarkdownPreview = ({ content, getImage, isReport }: { content: stri
     };
 
     return (
-        <div className="prose dark:prose-invert w-full max-w-full break-words">
+        <div className="prose dark:prose-invert max-w-full break-words">
             <ReactMarkdown
                 remarkPlugins={[remarkGfm]}
                 components={{
@@ -121,7 +120,7 @@ export const MarkdownPreview = ({ content, getImage, isReport }: { content: stri
                         const codeContent = String(codeChildren).replace(/\n$/, '');
                         
                         return (
-                          <div className="w-full overflow-x-auto">
+                          <div className="overflow-x-auto">
                             <CodeBlock
                               initialLanguage={match ? match[1] : ''}
                               code={codeContent}
@@ -130,7 +129,7 @@ export const MarkdownPreview = ({ content, getImage, isReport }: { content: stri
                         );
                       }
                       
-                      return <div className="w-full overflow-x-auto"><pre {...props} className="bg-muted p-4 rounded-md">{children}</pre></div>;
+                      return <div className="overflow-x-auto"><pre {...props} className="bg-muted p-4 rounded-md">{children}</pre></div>;
                     },
                     code({ node, className, children, ...props }) {
                         // This will be handled by the <pre> component override for block code.
@@ -142,15 +141,17 @@ export const MarkdownPreview = ({ content, getImage, isReport }: { content: stri
                         );
                     },
                     img: ({node, src, alt, ...props}) => {
+                        let finalSrc = src;
                         if (src?.startsWith('image://')) {
                             const imageId = src.replace('image://', '');
                             const image = getImage(imageId);
                             if (image) {
-                                return <Image src={image.dataUrl} alt={alt || 'Embedded image'} width={800} height={600} {...props} style={{maxWidth: '100%', height: 'auto'}} className="rounded-md border" />;
+                                finalSrc = image.dataUrl;
+                            } else {
+                                return <div className="w-full aspect-video bg-muted rounded-md flex items-center justify-center text-muted-foreground">Image not found</div>;
                             }
-                            return null; // Don't render broken image
                         }
-                        return <Image src={src || ''} alt={alt || 'Image'} width={800} height={600} {...props} style={{maxWidth: '100%', height: 'auto'}} className="rounded-md border" />;
+                        return <Image src={finalSrc || ''} alt={alt || 'Image'} width={800} height={600} {...props} style={{maxWidth: '100%', height: 'auto'}} className="rounded-md border" />;
                     },
                 }}
             >
