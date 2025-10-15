@@ -35,6 +35,20 @@ export const CodeBlock = ({ initialLanguage, code }: { initialLanguage: string; 
         en: { search: "Search language..." },
         es: { search: "Buscar lenguaje..." }
     }
+    
+    // If the language is 'text' or not found, render a simple block
+    if (language === 'text' || !languageOptions.some(opt => opt.value === language)) {
+        return (
+             <div className="relative group rounded-md border border-border bg-muted/20 my-4 text-white">
+                <div className="absolute top-2 right-2 z-10 flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
+                    <Button variant="ghost" size="icon" className="h-8 w-8 hover:bg-primary/20 hover:text-primary" onClick={handleCopy}>
+                        {isCopied ? <Check className="h-4 w-4 text-green-500" /> : <Copy className="h-4 w-4" />}
+                    </Button>
+                </div>
+                <pre className="p-4 text-sm overflow-x-auto whitespace-pre-wrap">{code}</pre>
+            </div>
+        )
+    }
 
     return (
         <div className="relative group rounded-md border border-border bg-muted/20 my-4">
