@@ -1,3 +1,4 @@
+
 import type {Config} from 'tailwindcss';
 
 export default {
@@ -14,6 +15,7 @@ export default {
           css: {
             '--tw-prose-bullets': theme('colors.primary.DEFAULT'),
             '--tw-prose-counters': theme('colors.primary.DEFAULT'),
+            'maxWidth': 'none', // Anula el ancho máximo por defecto de prose
             pre: {
               'margin-top': '0',
               'margin-bottom': '0',

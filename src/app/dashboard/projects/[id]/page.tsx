@@ -1014,7 +1014,7 @@ export default function ProjectDetailsPage() {
             </Button>
           )}
         </div>
-        <TabsContent value="scope" className="w-full max-w-full overflow-x-auto flex-shrink-0">
+        <TabsContent value="scope" className="w-full flex-shrink-0">
              <div className="space-y-4">
                 <DndContext sensors={sensors} collisionDetection={closestCenter} onDragEnd={handleDragEnd}>
                   <SortableContext items={scopeSections.map(s => s.id)} strategy={verticalListSortingStrategy}>

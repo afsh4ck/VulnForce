@@ -36,7 +36,7 @@ export const MarkdownPreview = ({ content, getImage, isReport }: { content: stri
         
         const match = textContent.match(/(.*) {#(.*)}/);
         const rawText = match ? match[1].trim() : textContent.trim();
-        const id = match ? match[2].trim() : undefined;
+        const id = match ? match[2].trim() : rawText.trim().replace(/\s+/g, '-').replace(/[^\w-]+/g, '');
 
         const severityRegex = /\[SEVERITY:(.*?),CVSS:(.*?)\]/;
         const severityMatch = rawText.match(severityRegex);
@@ -75,7 +75,7 @@ export const MarkdownPreview = ({ content, getImage, isReport }: { content: stri
     };
 
     return (
-        <div className="prose dark:prose-invert max-w-full break-words">
+        <div className="prose dark:prose-invert w-full max-w-full break-words">
             <ReactMarkdown
                 remarkPlugins={[remarkGfm]}
                 components={{
@@ -121,7 +121,7 @@ export const MarkdownPreview = ({ content, getImage, isReport }: { content: stri
                         const codeContent = String(codeChildren).replace(/\n$/, '');
                         
                         return (
-                          <div className="overflow-x-auto">
+                          <div className="w-full overflow-x-auto">
                             <CodeBlock
                               initialLanguage={match ? match[1] : ''}
                               code={codeContent}
@@ -130,7 +130,7 @@ export const MarkdownPreview = ({ content, getImage, isReport }: { content: stri
                         );
                       }
                       
-                      return <pre {...props} className="bg-muted p-4 rounded-md overflow-x-auto">{children}</pre>;
+                      return <div className="w-full overflow-x-auto"><pre {...props} className="bg-muted p-4 rounded-md">{children}</pre></div>;
                     },
                     code({ node, className, children, ...props }) {
                         // This will be handled by the <pre> component override for block code.
