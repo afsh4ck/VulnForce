@@ -11,7 +11,7 @@ import { Textarea } from '@/components/ui/textarea';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import Link from 'next/link';
-import { ChevronDown, ChevronLeft, Save, GripVertical, Plus, Trash2, Rows, Bold, Italic, Code, List, ListOrdered, FileCode, ChevronUp, CheckCircle } from 'lucide-react';
+import { ChevronDown, ChevronLeft, Save, GripVertical, Plus, Trash2, Rows, Bold, Italic, Code, List, ListOrdered, FileCode, ChevronUp, CheckCircle, Image } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import { useLanguage } from '@/context/language-context';
 import type { Vulnerability, CVSS, ImageAsset, Severity } from '@/lib/types';
@@ -35,7 +35,7 @@ import { Combobox } from '@/components/ui/combobox';
 import { getCVSS, getScore, getSeverity } from '@/lib/cvss';
 import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { cn } from '@/lib/utils';
-
+import { ImageUploadDialog } from '@/components/image-upload-dialog';
 
 const languageOptions = [
     { value: 'bash', label: 'Bash' }, { value: 'c', label: 'C' }, { value: 'cpp', label: 'C++' }, { value: 'csharp', label: 'C#' }, { value: 'css', label: 'CSS' }, { value: 'diff', label: 'Diff' }, { value: 'go', label: 'Go' }, { value: 'graphql', label: 'GraphQL' }, { value: 'ini', label: 'INI' }, { value: 'java', label: 'Java' }, { value: 'javascript', label: 'JavaScript' }, { value: 'json', label: 'JSON' }, { value: 'kotlin', label: 'Kotlin' }, { value: 'less', label: 'Less' }, { value: 'lua', label: 'Lua' }, { value: 'makefile', label: 'Makefile' }, { value: 'markdown', label: 'Markdown' }, { value: 'objectivec', label: 'Objective-C' }, { value: 'perl', label: 'Perl' }, { value: 'php', label: 'PHP' }, { value: 'python', label: 'Python' }, { value: 'r', label: 'R' }, { value: 'ruby', label: 'Ruby' }, { value: 'rust', label: 'Rust' }, { value: 'scss', label: 'SCSS' }, { value: 'shell', label: 'Shell' }, { value: 'sql', label: 'SQL' }, { value: 'swift', label: 'Swift' }, { value: 'typescript', label: 'TypeScript' }, { value: 'vbnet', label: 'VB.Net' }, { value: 'wasm', label: 'WebAssembly' }, { value: 'xml', label: 'XML' }, { value: 'yaml', label: 'YAML' },
@@ -162,6 +162,24 @@ const SectionEditor = ({ section, onContentChange, onDelete, view, onViewChange,
   const handleTitleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     onTitleChange(e.target.value);
   }
+  
+  const insertMarkdown = (markdown: string) => {
+    const textarea = textareaRef.current;
+    if (!textarea) return;
+
+    const start = textarea.selectionStart;
+    const end = textarea.selectionEnd;
+    const newContent =
+      section.content.substring(0, start) +
+      markdown +
+      section.content.substring(end);
+    onContentChange(newContent);
+
+    setTimeout(() => {
+        textarea.focus();
+        textarea.setSelectionRange(start + markdown.length, start + markdown.length);
+    }, 0);
+  };
 
   const handlePaste = (e: React.ClipboardEvent<HTMLTextAreaElement>) => {
     const items = e.clipboardData.items;
@@ -175,14 +193,7 @@ const SectionEditor = ({ section, onContentChange, onDelete, view, onViewChange,
                     if (dataUrl) {
                         const newImage = addImage(dataUrl);
                         const markdownImage = `![Pasted Image](image://${newImage.id})`;
-                        const textarea = e.target as HTMLTextAreaElement;
-                        const start = textarea.selectionStart;
-                        const end = textarea.selectionEnd;
-                        const newContent =
-                            section.content.substring(0, start) +
-                            markdownImage +
-                            section.content.substring(end);
-                        onContentChange(newContent);
+                        insertMarkdown(markdownImage);
                     }
                 };
                 reader.readAsDataURL(blob);
@@ -240,20 +251,7 @@ const SectionEditor = ({ section, onContentChange, onDelete, view, onViewChange,
   
   const handleInsertCode = (lang: string, code: string) => {
     const codeBlock = '```' + lang + '\n' + code + '\n' + '```';
-    const textarea = textareaRef.current;
-    if (!textarea) return;
-
-    const start = textarea.selectionStart;
-    const end = textarea.selectionEnd;
-    const newContent =
-      section.content.substring(0, start) +
-      codeBlock +
-      section.content.substring(end);
-    onContentChange(newContent);
-    setTimeout(() => {
-      textarea.focus();
-      textarea.setSelectionRange(start + codeBlock.length, start + codeBlock.length);
-    }, 0);
+    insertMarkdown(codeBlock);
   };
 
 
@@ -310,6 +308,9 @@ const SectionEditor = ({ section, onContentChange, onDelete, view, onViewChange,
                   <CodeBlockDialog onInsert={handleInsertCode}>
                     <Button variant="ghost" size="icon" className="h-auto w-auto p-1"><FileCode className="h-3 w-3" /></Button>
                   </CodeBlockDialog>
+                  <ImageUploadDialog onInsert={insertMarkdown}>
+                    <Button variant="ghost" size="icon" className="h-auto w-auto p-1"><Image className="h-3 w-3" /></Button>
+                  </ImageUploadDialog>
                 </div>
               )}
                <div className="p-0">
@@ -728,7 +729,7 @@ export default function VulnerabilityEditorPage() {
   }
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-6 max-w-full overflow-x-hidden">
       <header className="flex items-center justify-between">
         <div className="flex items-center gap-4">
             <Button variant="outline" size="icon" asChild>

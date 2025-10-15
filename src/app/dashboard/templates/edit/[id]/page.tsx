@@ -1,4 +1,5 @@
 
+
 'use client';
 
 import { useState, useEffect, useCallback, useRef } from 'react';
@@ -10,7 +11,7 @@ import { Textarea } from '@/components/ui/textarea';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import Link from 'next/link';
-import { ChevronLeft, Save, FileText, Scan, Globe, Network, Smartphone, Wifi, Award, Plus, Trash2, Rows, Bold, Italic, Code, List, ListOrdered, FileCode, GripVertical, CheckCircle } from 'lucide-react';
+import { ChevronLeft, Save, FileText, Scan, Globe, Network, Smartphone, Wifi, Award, Plus, Trash2, Rows, Bold, Italic, Code, List, ListOrdered, FileCode, GripVertical, CheckCircle, Image } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import { useLanguage } from '@/context/language-context';
 import type { ProjectTemplate, ImageAsset } from '@/lib/types';
@@ -26,7 +27,7 @@ import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, 
 import { Dialog, DialogContent, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
 import { Combobox } from '@/components/ui/combobox';
 import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs';
-
+import { ImageUploadDialog } from '@/components/image-upload-dialog';
 
 type ScopeView = 'edit' | 'split' | 'preview';
 type SaveStatus = 'unsaved' | 'saving' | 'saved';
@@ -153,6 +154,24 @@ const SectionEditor = ({ section, onContentChange, onDelete, view, onViewChange,
   const handleTitleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     onTitleChange(e.target.value);
   }
+  
+  const insertMarkdown = (markdown: string) => {
+    const textarea = textareaRef.current;
+    if (!textarea) return;
+
+    const start = textarea.selectionStart;
+    const end = textarea.selectionEnd;
+    const newContent =
+      section.content.substring(0, start) +
+      markdown +
+      section.content.substring(end);
+    onContentChange(newContent);
+
+    setTimeout(() => {
+        textarea.focus();
+        textarea.setSelectionRange(start + markdown.length, start + markdown.length);
+    }, 0);
+  };
 
   const handlePaste = (e: React.ClipboardEvent<HTMLTextAreaElement>) => {
     const items = e.clipboardData.items;
@@ -166,14 +185,7 @@ const SectionEditor = ({ section, onContentChange, onDelete, view, onViewChange,
                     if (dataUrl) {
                         const newImage = addImage(dataUrl);
                         const markdownImage = `![Pasted Image](image://${newImage.id})`;
-                        const textarea = e.target as HTMLTextAreaElement;
-                        const start = textarea.selectionStart;
-                        const end = textarea.selectionEnd;
-                        const newContent =
-                            section.content.substring(0, start) +
-                            markdownImage +
-                            section.content.substring(end);
-                        onContentChange(newContent);
+                        insertMarkdown(markdownImage);
                     }
                 };
                 reader.readAsDataURL(blob);
@@ -231,20 +243,7 @@ const SectionEditor = ({ section, onContentChange, onDelete, view, onViewChange,
   
   const handleInsertCode = (lang: string, code: string) => {
     const codeBlock = '```' + lang + '\n' + code + '\n' + '```';
-    const textarea = textareaRef.current;
-    if (!textarea) return;
-
-    const start = textarea.selectionStart;
-    const end = textarea.selectionEnd;
-    const newContent =
-      section.content.substring(0, start) +
-      codeBlock +
-      section.content.substring(end);
-    onContentChange(newContent);
-    setTimeout(() => {
-      textarea.focus();
-      textarea.setSelectionRange(start + codeBlock.length, start + codeBlock.length);
-    }, 0);
+    insertMarkdown(codeBlock);
   };
 
 
@@ -301,6 +300,9 @@ const SectionEditor = ({ section, onContentChange, onDelete, view, onViewChange,
                   <CodeBlockDialog onInsert={handleInsertCode}>
                     <Button variant="ghost" size="icon" className="h-auto w-auto p-1"><FileCode className="h-3 w-3" /></Button>
                   </CodeBlockDialog>
+                  <ImageUploadDialog onInsert={insertMarkdown}>
+                    <Button variant="ghost" size="icon" className="h-auto w-auto p-1"><Image className="h-3 w-3" /></Button>
+                  </ImageUploadDialog>
                 </div>
               )}
                <div className="p-0">

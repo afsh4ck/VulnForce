@@ -1,6 +1,6 @@
 
 'use client';
-import React, { useMemo } from 'react';
+import React from 'react';
 import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
 import type { ImageAsset } from '@/lib/types';
@@ -10,77 +10,7 @@ import { Separator } from './ui/separator';
 import { LinkPreviewCard } from './link-preview-card';
 import { CodeBlock } from './code-block';
 
-const highlightTodos = (text: string) => {
-    if (typeof text !== 'string') return text;
-    const todoRegex = /(\[TODO:?.*?\]|\bTODO\b)/gi;
-
-    return text
-        .replace(/&/g, '&amp;')
-        .replace(/</g, '&lt;')
-        .replace(/>/g, '&gt;')
-        .replace(todoRegex, (match) => {
-             if (match === 'TODO') {
-                return `<span class="bg-red-500 text-white font-bold px-1 rounded-sm">TODO</span>`;
-            }
-             const highlighted = match.replace('TODO', `<span class="bg-red-500 text-white font-bold px-0.5 rounded-sm">TODO</span>`);
-            return highlighted;
-        });
-};
-
-const renderWithTodos = (Component: React.ElementType, className?: string, props: any = {}) => {
-    const RenderComponent = ({ node, children, ...componentProps }: any) => {
-        const newChildren = React.Children.map(children, child => {
-            if (typeof child === 'string') {
-                return <span dangerouslySetInnerHTML={{ __html: highlightTodos(child) }} />;
-            }
-             if (React.isValidElement(child) && (child.props.node?.tagName === 'code' || child.props.node?.tagName === 'pre')) {
-                 return child;
-            }
-            return child;
-        });
-
-        const finalProps = { ...props, ...componentProps };
-        
-        return <Component className={className} {...finalProps}>{newChildren}</Component>;
-    };
-    RenderComponent.displayName = `renderWithTodos(${Component.displayName || Component.name || 'Component'})`;
-    return RenderComponent;
-};
-
-const addHeaderIds = (markdownContent: string) => {
-    if (!markdownContent) return '';
-    let idCounter = 0;
-    const seen = new Set<string>();
-
-    const generateId = (text: string) => {
-        idCounter++;
-        let baseSlug = text.toLowerCase().replace(/\[.*?\]/g, '').replace(/\s+/g, '-').replace(/[^\w-]+/g, '') || `section`;
-        let finalSlug = `${baseSlug}-${idCounter}`;
-        while (seen.has(finalSlug)) {
-            idCounter++
-            finalSlug = `${baseSlug}-${idCounter}`;
-        }
-        seen.add(finalSlug);
-        return finalSlug;
-    };
-
-    return markdownContent.replace(/^(#{1,6}) (.*)/gm, (match, hashes, text) => {
-        const existingIdMatch = text.match(/{#([^}]+)}/);
-        if (existingIdMatch) {
-            return match; 
-        }
-        const cleanText = text.replace(/\[.*?\]/g, '').trim();
-        const id = generateId(cleanText);
-        return `${hashes} ${text} {#${id}}`;
-    });
-};
-
 export const MarkdownPreview = ({ content, getImage, isReport }: { content: string, getImage: (id: string) => ImageAsset | undefined, isReport?: boolean }) => {
-    
-    const processedContent = useMemo(() => {
-        if (!content) return '';
-        return addHeaderIds(content);
-    }, [content]);
     
     const getSeverityVariant = (severity: string): 'destructive' | 'high' | 'medium' | 'low' | 'secondary' => {
         switch (severity) {
@@ -91,14 +21,17 @@ export const MarkdownPreview = ({ content, getImage, isReport }: { content: stri
           default: return 'secondary';
         }
     };
-
+    
     const CustomHeading = ({ level, children, ...props }: { level: number, children: React.ReactNode, [key: string]: any }) => {
         const childArray = React.Children.toArray(children);
-        const textContent = childArray.map(child => {
-            if (typeof child === 'string') return child;
-            if (React.isValidElement(child) && typeof child.props.children === 'string') return child.props.children;
-            return '';
-        }).join('');
+        let textContent = '';
+        React.Children.forEach(childArray, (child) => {
+            if (typeof child === 'string') {
+                textContent += child;
+            } else if (React.isValidElement(child) && typeof child.props.children === 'string') {
+                textContent += child.props.children;
+            }
+        });
         
         const match = textContent.match(/(.*) {#(.*)}/);
         const rawText = match ? match[1].trim() : textContent.trim();
@@ -115,7 +48,7 @@ export const MarkdownPreview = ({ content, getImage, isReport }: { content: stri
             <div id={id}>
                 <div className="flex justify-between items-center mb-2">
                 <h2 {...props} className={cn("text-2xl font-semibold border-b-0 pb-0", isReport && "mt-12 font-headline")}>
-                    {renderWithTodos('span', '')({ children: title })}
+                    {title}
                 </h2>
                 <Badge variant={getSeverityVariant(severity)} className="text-base px-3 py-1">{severity}</Badge>
                 </div>
@@ -135,13 +68,13 @@ export const MarkdownPreview = ({ content, getImage, isReport }: { content: stri
 
         return (
             <Tag id={id} {...props} className={classNames[level] || ''}>
-              {renderWithTodos('span', '')({ children: rawText })}
+              {rawText}
             </Tag>
         );
     };
 
     return (
-        <div className="prose dark:prose-invert max-w-full">
+        <div className="prose dark:prose-invert max-w-full break-words">
             <ReactMarkdown
                 remarkPlugins={[remarkGfm]}
                 components={{
@@ -169,29 +102,18 @@ export const MarkdownPreview = ({ content, getImage, isReport }: { content: stri
                     a: ({ node, children, ...props }) => {
                         return <a {...props} className="text-primary hover:underline">{children}</a>
                     },
-                    li: ({ node, children, ...props }: any) => (
-                        <li {...props}>{React.Children.map(children, child => {
-                            if (typeof child === 'string') {
-                                return <span dangerouslySetInnerHTML={{ __html: highlightTodos(child) }} />;
-                            }
-                            if (React.isValidElement(child) && child.props.node?.tagName === 'p') {
-                            return <>{renderWithTodos('p', '')(child.props)}</>;
-                            }
-                            return child;
-                        })}</li>
-                    ),
                     table: ({ node, ...props }) => <div className="overflow-x-auto"><table className="table-auto w-full my-4 border-collapse border border-border" {...props} /></div>,
                     thead: ({ node, ...props }) => <thead className="bg-muted" {...props} />,
                     tbody: ({ node, ...props }) => <tbody {...props} />,
                     tr: ({ node, ...props }) => <tr className="border-b border-border" {...props} />,
-                    th: renderWithTodos('th', "border border-border px-4 py-2 text-left font-semibold"),
-                    td: renderWithTodos('td', "border border-border px-4 py-2"),
+                    th: ({ node, ...props }) => <th className="border border-border px-4 py-2 text-left font-semibold" {...props} />,
+                    td: ({ node, ...props }) => <td className="border border-border px-4 py-2" {...props} />,
                     hr: () => isReport ? null : <hr className="my-8" />,
                     code({ node, className, children, ...props }) {
                         const match = /language-(\w+)/.exec(className || '');
                         const codeContent = String(children).replace(/\n$/, '');
                         
-                        if (match) { // Code block with language
+                        if (match) {
                             return (
                                <div className="overflow-x-auto">
                                     <CodeBlock
@@ -202,7 +124,6 @@ export const MarkdownPreview = ({ content, getImage, isReport }: { content: stri
                             );
                         }
                         
-                        // Inline code
                         return (
                         <code className="font-code bg-muted text-muted-foreground px-1.5 py-1 rounded-md break-words" {...props}>
                            {children}
@@ -217,7 +138,7 @@ export const MarkdownPreview = ({ content, getImage, isReport }: { content: stri
                             if (image) {
                                 finalSrc = image.dataUrl;
                             } else {
-                                return null; // Or a placeholder for broken images
+                                return null;
                             }
                         }
                         // eslint-disable-next-line @next/next/no-img-element
@@ -225,7 +146,7 @@ export const MarkdownPreview = ({ content, getImage, isReport }: { content: stri
                     },
                 }}
             >
-                {processedContent}
+                {content}
             </ReactMarkdown>
         </div>
     );
