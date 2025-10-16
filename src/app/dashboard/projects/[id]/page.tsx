@@ -382,7 +382,7 @@ export default function ProjectDetailsPage() {
       back: 'Back to Projects',
       projectDetails: 'Details',
       findings: 'Findings',
-      report: 'Report',
+      previewReport: 'Preview Report',
       content: 'Content',
       projectName: 'Project Name',
       client: 'Client',
@@ -436,7 +436,7 @@ export default function ProjectDetailsPage() {
       back: 'Volver a Proyectos',
       projectDetails: 'Detalles',
       findings: 'Hallazgos',
-      report: 'Informe',
+      previewReport: 'Previsualizar Informe',
       content: 'Contenido',
       projectName: 'Nombre del Proyecto',
       client: 'Cliente',
@@ -909,7 +909,7 @@ export default function ProjectDetailsPage() {
           </div>
           <div className="flex items-center gap-2">
               <Button onClick={() => router.push(`/dashboard/projects/${id}/report`)} variant="outline">
-                <File className="mr-2 h-4 w-4" /> {t[uiLanguage].report}
+                <FileText className="mr-2 h-4 w-4" /> {t[uiLanguage].previewReport}
               </Button>
                <AlertDialog open={isDeleteDialogOpen} onOpenChange={setIsDeleteDialogOpen}>
                   <AlertDialogTrigger asChild>
@@ -1147,3 +1147,4 @@ export default function ProjectDetailsPage() {
     
 
     
+

@@ -1,4 +1,5 @@
 
+
 'use client';
 import React from 'react';
 import ReactMarkdown from 'react-markdown';
@@ -79,92 +80,12 @@ export const MarkdownPreview = ({ content, getImage, isReport }: { content: stri
         );
     };
 
-    return (
-        <div className="prose dark:prose-invert w-full break-words">
-            <ReactMarkdown
-                remarkPlugins={[remarkGfm]}
-                components={{
-                    h1: (props) => <CustomHeading level={1} {...props} />,
-                    h2: (props) => <CustomHeading level={2} {...props} />,
-                    h3: (props) => <CustomHeading level={3} {...props} />,
-                    h4: (props) => <CustomHeading level={4} {...props} />,
-                    p: ({ node, children, ...props }) => {
-                        const isLinkOnly = 
-                            node &&
-                            node.children.length === 1 &&
-                            node.children[0].type === 'element' &&
-                            node.children[0].tagName === 'a' &&
-                            node.children[0].children.length === 1 &&
-                            node.children[0].children[0].type === 'text' &&
-                            node.children[0].children[0].value === node.children[0].properties?.href;
-                        
-                        if (isReport && isLinkOnly) {
-                            const href = node.children[0].properties?.href as string;
-                            return <LinkPreviewCard href={href} />;
-                        }
-                        
-                        return <p {...props}>{children}</p>;
-                    },
-                    a: ({ node, children, ...props }) => {
-                        return <a {...props} className="text-primary hover:underline">{children}</a>
-                    },
-                    table: ({ node, ...props }) => <div className="overflow-x-auto"><table className="table-auto w-full my-4 border-collapse border border-border" {...props} /></div>,
-                    thead: ({ node, ...props }) => <thead className="bg-muted" {...props} />,
-                    tbody: ({ node, ...props }) => <tbody {...props} />,
-                    tr: ({ node, ...props }) => <tr className="border-b border-border" {...props} />,
-                    th: ({ node, ...props }) => <th className="border border-border px-4 py-2 text-left font-semibold" {...props} />,
-                    td: ({ node, ...props }) => <td className="border border-border px-4 py-2" {...props} />,
-                    hr: () => isReport ? null : <hr className="my-8" />,
-                    pre: ({ node, children, ...props }) => {
-                        const codeElement = React.Children.toArray(children).find(
-                            (child): child is React.ReactElement =>
-                                React.isValidElement(child) && child.type === 'code'
-                        );
-                        
-                        if (codeElement) {
-                            const { className } = codeElement.props;
-                            const match = /language-(\w+)/.exec(className || '');
-                            const language = match ? match[1] : 'text'; // Default to 'text' if no language is specified
-                            const code = String(codeElement.props.children).replace(/\n$/, '');
+    const processContent = (markdown: string) => {
+        return markdown.replace(/\[TODO:(.*?)\]/g, '<span class="text-red-500 font-semibold">[TODO:$1]</span>');
+    };
 
-                            return (
-                                <div className="my-4">
-                                    <CodeBlock
-                                        initialLanguage={language}
-                                        code={code}
-                                    />
-                                </div>
-                            );
-                        }
-                        
-                        return <div className="my-4 overflow-x-auto"><pre {...props} className="bg-muted p-4 rounded-md">{children}</pre></div>;
-                    },
-                    code({ node, className, children, ...props }) {
-                        // This will be handled by the <pre> component override for block code.
-                        // This renders inline code.
-                        return (
-                        <code className="font-code bg-muted text-muted-foreground px-1.5 py-1 rounded-md break-words" {...props}>
-                           {children}
-                        </code>
-                        );
-                    },
-                    img: ({node, src, alt, ...props}) => {
-                        let finalSrc = src;
-                        if (src?.startsWith('image://')) {
-                            const imageId = src.replace('image://', '');
-                            const image = getImage(imageId);
-                            if (image) {
-                                finalSrc = image.dataUrl;
-                            } else {
-                                return <div className="w-full text-center text-xs aspect-video bg-muted rounded-md flex items-center justify-center text-muted-foreground">Image not found</div>;
-                            }
-                        }
-                        return <Image src={finalSrc || ''} alt={alt || 'Image'} width={800} height={600} {...props} style={{maxWidth: '100%', height: 'auto'}} className="rounded-md border" />;
-                    },
-                }}
-            >
-                {content}
-            </ReactMarkdown>
+    return (
+        <div className="prose dark:prose-invert w-full break-words" dangerouslySetInnerHTML={{ __html: processContent(content) }}>
         </div>
     );
 };
