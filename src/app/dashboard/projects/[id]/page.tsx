@@ -1,5 +1,3 @@
-
-
 'use client';
 
 import React, { useState, useMemo, useEffect, useCallback, useRef } from 'react';
@@ -31,13 +29,14 @@ import { arrayMove, SortableContext, sortableKeyboardCoordinates, useSortable, v
 import { CSS } from '@dnd-kit/utilities';
 import { CommandMenu } from '@/components/command-menu';
 import { useLeavePage } from '@/app/dashboard/layout';
+import { AddBlockMenu } from '@/components/add-block-menu';
 
 type SortKey = keyof Finding;
 type SaveStatus = 'unsaved' | 'saving' | 'saved';
 
 interface ContentBlock {
   id: string;
-  tag: 'h1' | 'h2' | 'h3' | 'p' | 'pre' | 'ul' | 'ol';
+  tag: 'h1' | 'h2' | 'h3' | 'p' | 'pre' | 'ul' | 'ol' | 'h4' | 'hr' | 'blockquote' | 'table';
   content: string;
 }
 
@@ -63,13 +62,17 @@ function parseHtmlToBlocks(html: string): ContentBlock[] {
     if (node.nodeType === Node.ELEMENT_NODE) {
       const element = node as HTMLElement;
       const tag = element.tagName.toLowerCase();
-      if (['h1', 'h2', 'h3', 'p'].includes(tag)) {
-        blocks.push({ id, tag: tag as 'h1' | 'h2'|'h3'|'p', content: element.innerHTML || '' });
+      if (['h1', 'h2', 'h3', 'h4', 'p', 'blockquote'].includes(tag)) {
+        blocks.push({ id, tag: tag as 'h1' | 'h2' |'h3' | 'h4' |'p' | 'blockquote', content: element.innerHTML || '' });
       } else if (tag === 'pre') {
          blocks.push({ id, tag: 'pre', content: element.querySelector('code')?.textContent || '' });
       } else if (tag === 'ul' || tag === 'ol') {
         const itemsHtml = Array.from(element.querySelectorAll('li')).map(li => `<li>${li.innerHTML}</li>`).join('');
         blocks.push({ id, tag: tag as 'ul' | 'ol', content: itemsHtml });
+      } else if (tag === 'hr') {
+        blocks.push({ id, tag: 'hr', content: '' });
+      } else if (tag === 'table') {
+        blocks.push({ id, tag: 'table', content: element.innerHTML });
       }
     } else if (node.nodeType === Node.TEXT_NODE && node.textContent?.trim()) {
       blocks.push({ id, tag: 'p', content: node.textContent.trim() });
@@ -81,6 +84,9 @@ function parseHtmlToBlocks(html: string): ContentBlock[] {
 
 function blocksToHtml(blocks: ContentBlock[]): string {
   return blocks.map(block => {
+    if (block.tag === 'hr') {
+        return '<hr>';
+    }
     if (block.tag === 'pre') {
         const escapedContent = block.content.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
         return `<pre><code>${escapedContent}</code></pre>`
@@ -90,6 +96,9 @@ function blocksToHtml(blocks: ContentBlock[]): string {
     }
     if (block.tag === 'p' && !block.content.trim()) {
         return '<p><br></p>';
+    }
+    if (block.tag === 'table') {
+        return `<table>${block.content}</table>`;
     }
     return `<${block.tag}>${block.content}</${block.tag}>`
   }).join('');
@@ -121,8 +130,23 @@ const EditableBlock = React.forwardRef<HTMLDivElement, {
     const handleBlur = (e: React.FocusEvent<HTMLDivElement>) => {
         onUpdate(e.currentTarget.innerHTML);
     };
+
+    if (block.tag === 'hr') {
+        return <hr className="my-4" />;
+    }
     
-    const Tag = block.tag === 'pre' ? 'div' : (['ul', 'ol'].includes(block.tag) ? block.tag : block.tag);
+    if (block.tag === 'table') {
+        // For simplicity, we'll render tables as non-editable blocks for now.
+        // A full table editor would be a complex component.
+        return (
+            <div
+                className="my-4 prose dark:prose-invert"
+                dangerouslySetInnerHTML={{ __html: `<table>${block.content}</table>` }}
+            />
+        );
+    }
+    
+    const Tag = block.tag === 'pre' ? 'div' : (['ul', 'ol', 'blockquote'].includes(block.tag) ? block.tag : block.tag);
     const isCode = block.tag === 'pre';
     const isList = ['ul', 'ol'].includes(block.tag);
 
@@ -130,7 +154,7 @@ const EditableBlock = React.forwardRef<HTMLDivElement, {
         if (isFocused && (!block.content || block.content === '<br>')) {
              if (block.tag.startsWith('h')) {
                 const level = block.tag.substring(1);
-                return t_editor.headings[level as '1' | '2' | '3'];
+                return t_editor.headings[level as '1' | '2' | '3' | '4'];
             }
             if (!isList && !isCode) {
                 return placeholder;
@@ -162,8 +186,10 @@ const EditableBlock = React.forwardRef<HTMLDivElement, {
                   'text-3xl font-bold mb-4 border-b-2 border-primary pb-2 mt-12 font-headline': block.tag === 'h1',
                   'text-2xl font-semibold mb-3 border-b pb-2 mt-8 font-headline': block.tag === 'h2',
                   'text-xl font-semibold mb-3 mt-6 font-headline': block.tag === 'h3',
+                  'text-lg font-semibold mb-2 mt-4 font-headline': block.tag === 'h4',
                   'my-2 leading-relaxed': block.tag === 'p',
                   'bg-muted font-code text-sm p-4 rounded-md overflow-x-auto my-4 whitespace-pre-wrap': isCode,
+                  'border-l-4 border-primary pl-4 italic text-muted-foreground my-4': block.tag === 'blockquote'
                 }
               )}
               dangerouslySetInnerHTML={{ __html: isCode ? block.content.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;") : block.content || (isList ? '<li><br></li>' : '') }}
@@ -178,6 +204,7 @@ EditableBlock.displayName = "EditableBlock";
 
 const SortableBlock = ({ block, ...props }: { block: ContentBlock, [key: string]: any }) => {
   const { attributes, listeners, setNodeRef, transform, transition, isDragging } = useSortable({ id: block.id });
+  const [menuOpen, setMenuOpen] = useState(false);
 
   const style = {
     transform: transform ? CSS.Transform.toString(transform) : undefined,
@@ -189,9 +216,11 @@ const SortableBlock = ({ block, ...props }: { block: ContentBlock, [key: string]
   return (
     <div ref={setNodeRef} style={style} className="relative group/block">
       <div className="absolute top-0 -left-12 h-full flex items-center gap-1 opacity-0 group-hover/block:opacity-100 transition-opacity">
-        <Button variant="ghost" size="icon" className="h-8 w-8 cursor-pointer" onClick={() => props.onAdd(props.index)}>
-          <Plus className="h-4 w-4"/>
-        </Button>
+        <AddBlockMenu onSelect={(tag) => props.onAdd(props.index, tag)} open={menuOpen} onOpenChange={setMenuOpen}>
+            <Button variant="ghost" size="icon" className="h-8 w-8 cursor-pointer">
+                <Plus className="h-4 w-4"/>
+            </Button>
+        </AddBlockMenu>
         <div {...attributes} {...listeners} className="cursor-grab p-1">
           <GripVertical className="h-5 w-5 text-muted-foreground" />
         </div>
@@ -333,6 +362,7 @@ export default function ProjectDetailsPage() {
         '1': 'Heading 1',
         '2': 'Heading 2',
         '3': 'Heading 3',
+        '4': 'Heading 4',
       },
       unsavedChangesTitle: "Unsaved Changes",
       unsavedChangesDesc: "You have unsaved changes. Are you sure you want to leave?",
@@ -386,6 +416,7 @@ export default function ProjectDetailsPage() {
         '1': 'Título 1',
         '2': 'Título 2',
         '3': 'Título 3',
+        '4': 'Título 4',
       },
       unsavedChangesTitle: "Cambios sin Guardar",
       unsavedChangesDesc: "¿Tienes cambios sin guardar. Estás seguro que quieres salir?",
@@ -510,22 +541,26 @@ export default function ProjectDetailsPage() {
 
   
   const handleDeleteBlock = useCallback((id: string) => {
-      setBlocks(prev => {
-          if (prev.length <= 1) {
-            const newBlock = { id: `block-empty-${Date.now()}`, tag: 'p' as const, content: '' };
-            setActiveBlockId(newBlock.id);
-            return [newBlock];
-          }
-          const index = prev.findIndex(b => b.id === id);
-          if (index > 0) {
-            setActiveBlockId(prev[index - 1].id);
-          } else {
-            setActiveBlockId(prev[1].id);
-          }
-          return prev.filter(b => b.id !== id);
-      });
+      const indexToDelete = blocks.findIndex(b => b.id === id);
+      if (indexToDelete === -1) return;
+
+      const newBlocks = blocks.filter(b => b.id !== id);
+
+      if (newBlocks.length === 0) {
+        const newBlock = { id: `block-empty-${Date.now()}`, tag: 'p' as const, content: '' };
+        setBlocks([newBlock]);
+        setActiveBlockId(newBlock.id);
+      } else {
+        setBlocks(newBlocks);
+        // Set focus to the previous or next block
+        if (indexToDelete > 0) {
+          setActiveBlockId(newBlocks[indexToDelete - 1].id);
+        } else if (newBlocks.length > 0) {
+          setActiveBlockId(newBlocks[0].id);
+        }
+      }
       setSaveStatus('unsaved');
-  }, []);
+  }, [blocks]);
 
   const handleDragEnd = useCallback((event: DragEndEvent) => {
     const { active, over } = event;
@@ -540,8 +575,23 @@ export default function ProjectDetailsPage() {
     }
   }, []);
   
-  const handleAddBlock = useCallback((index: number, tag: ContentBlock['tag'] = 'p', content = '') => {
-    const newBlock: ContentBlock = { id: `block-new-${Date.now()}`, tag, content };
+  const handleAddBlock = useCallback((index: number, tag: ContentBlock['tag'], content: string = '') => {
+    let newBlock: ContentBlock;
+    
+    switch(tag) {
+        case 'h1': newBlock = { id: `block-new-${Date.now()}`, tag: 'h1', content: '' }; break;
+        case 'h2': newBlock = { id: `block-new-${Date.now()}`, tag: 'h2', content: '' }; break;
+        case 'h3': newBlock = { id: `block-new-${Date.now()}`, tag: 'h3', content: '' }; break;
+        case 'h4': newBlock = { id: `block-new-${Date.now()}`, tag: 'h4', content: '' }; break;
+        case 'ul': newBlock = { id: `block-new-${Date.now()}`, tag: 'ul', content: '<li></li>' }; break;
+        case 'ol': newBlock = { id: `block-new-${Date.now()}`, tag: 'ol', content: '<li></li>' }; break;
+        case 'hr': newBlock = { id: `block-new-${Date.now()}`, tag: 'hr', content: '' }; break;
+        case 'blockquote': newBlock = { id: `block-new-${Date.now()}`, tag: 'blockquote', content: '' }; break;
+        case 'pre': newBlock = { id: `block-new-${Date.now()}`, tag: 'pre', content: '// Tu código aquí' }; break;
+        case 'table': newBlock = { id: `block-new-${Date.now()}`, tag: 'table', content: '<thead><tr><th>Header 1</th><th>Header 2</th></tr></thead><tbody><tr><td>Data 1</td><td>Data 2</td></tr></tbody>' }; break;
+        default: newBlock = { id: `block-new-${Date.now()}`, tag: 'p', content: '' };
+    }
+
     setBlocks(prev => {
         const newBlocks = [...prev];
         newBlocks.splice(index + 1, 0, newBlock);
@@ -631,60 +681,43 @@ export default function ProjectDetailsPage() {
           }
       }
       else if (e.key === 'Enter') {
-        if (e.shiftKey) return;
-        e.preventDefault();
-        
-        if (currentBlock.tag === 'ul' || currentBlock.tag === 'ol') {
-            const selection = window.getSelection();
-            if (selection && selection.anchorNode) {
-                const currentLi = selection.anchorNode.parentElement?.closest('li');
-                if (currentLi && currentLi.textContent?.trim() === '') {
-                     const newBlocks = [...blocks];
-                     const listBlock = newBlocks[currentIndex];
-                     const tempDiv = document.createElement('div');
-                     tempDiv.innerHTML = listBlock.content;
-                     const listItems = Array.from(tempDiv.querySelectorAll('li'));
-                     const currentLiIndex = listItems.findIndex(li => li.isSameNode(currentLi));
- 
-                     if(currentLiIndex === 0 && listItems.length === 1) { 
-                       updateBlockTag(id, 'p');
-                       return;
-                     }
- 
-                     const beforeContent = listItems.slice(0, currentLiIndex).map(li => li.outerHTML).join('');
-                     const afterContent = listItems.slice(currentLiIndex + 1).map(li => li.outerHTML).join('');
-                     const newParagraphBlock: ContentBlock = { id: `block-new-${Date.now()}`, tag: 'p', content: '' };
-                     listBlock.content = beforeContent;
-                     
-                     if(afterContent){
-                        const newTag = listBlock.tag;
-                        const newListBlock: ContentBlock = { id: `block-new-${Date.now() + 1}`, tag: newTag, content: afterContent };
-                        newBlocks.splice(currentIndex + 1, 0, newParagraphBlock, newListBlock);
-                     } else {
-                        newBlocks.splice(currentIndex + 1, 0, newParagraphBlock);
-                     }
-                     updateBlocks(newBlocks);
-                     setActiveBlockId(newParagraphBlock.id);
-                } else {
-                    document.execCommand('insertHTML', false, '</li><li><br></li>');
-                    const newContent = target.innerHTML;
-                    const newBlocks = [...blocks];
-                    const listBlock = newBlocks[currentIndex];
+          if (e.shiftKey) return;
+          e.preventDefault();
 
-                    const tempDiv = document.createElement('div');
-                    tempDiv.innerHTML = newContent;
-                    const items = Array.from(tempDiv.querySelectorAll('li'));
-                    if (items.length > 1 && items[items.length - 1].innerHTML === '<br>') {
-                        items.pop();
-                        listBlock.content = items.map(li => li.outerHTML).join('');
-                    }
-                    
-                    handleAddBlock(currentIndex, listBlock.tag, `<li><br></li>`);
-                }
-            }
-            return;
-        }
-        handleAddBlock(currentIndex, 'p', '');
+          if (currentBlock.tag === 'ul' || currentBlock.tag === 'ol') {
+              const selection = window.getSelection();
+              if (selection && selection.anchorNode) {
+                  const currentLi = selection.anchorNode.parentElement?.closest('li');
+                  if (currentLi && currentLi.textContent?.trim() === '') {
+                      const newBlocks = [...blocks];
+                      const listBlock = newBlocks[currentIndex];
+                      const tempDiv = document.createElement('div');
+                      tempDiv.innerHTML = listBlock.content;
+                      const listItems = Array.from(tempDiv.querySelectorAll('li'));
+                      const currentLiIndex = listItems.findIndex(li => li.isSameNode(currentLi));
+
+                      if (currentLiIndex === listItems.length - 1 && listItems.length > 0) {
+                          // Last item is empty, so we want to break out of the list
+                          listItems.pop(); // Remove the empty li
+                          listBlock.content = listItems.map(li => li.outerHTML).join('');
+                          if (listItems.length === 0) {
+                            // If list becomes empty, convert to paragraph
+                            newBlocks[currentIndex].tag = 'p';
+                            newBlocks[currentIndex].content = '';
+                            updateBlocks(newBlocks);
+                            setActiveBlockId(newBlocks[currentIndex].id);
+                          } else {
+                            handleAddBlock(currentIndex, 'p');
+                          }
+                      } else {
+                          // Regular enter in a list - handled by browser
+                      }
+                  }
+              }
+              return;
+          }
+
+          handleAddBlock(currentIndex, 'p', '');
 
       } else if (e.key === 'Backspace' && (target.innerHTML === '' || target.innerHTML === '<br>')) {
            e.preventDefault();
@@ -704,12 +737,18 @@ export default function ProjectDetailsPage() {
       } else if (e.key === ' ' && target.textContent?.match(/^###$/)) {
           e.preventDefault();
           updateBlockTag(id, 'h3');
+      } else if (e.key === ' ' && target.textContent?.match(/^####$/)) {
+          e.preventDefault();
+          updateBlockTag(id, 'h4');
       } else if (e.key === ' ' && target.textContent?.match(/^-$/)) {
           e.preventDefault();
           updateBlockTag(id, 'ul');
       } else if (e.key === ' ' && target.textContent?.match(/^1\.$/)) {
           e.preventDefault();
           updateBlockTag(id, 'ol');
+      } else if (e.key === ' ' && target.textContent?.match(/^>$/)) {
+          e.preventDefault();
+          updateBlockTag(id, 'blockquote');
       }
        else if (e.key === '/') {
           if (target.textContent === '' || target.textContent === '/') {
@@ -718,7 +757,7 @@ export default function ProjectDetailsPage() {
       }
   }, [blocks, handleAddBlock, updateBlockTag, handleDeleteBlock, updateBlocks]);
   
-  const handleCommandSelect = (command: 'h1' | 'h2' | 'h3' | 'pre' | 'ul' | 'ol') => {
+  const handleCommandSelect = (command: ContentBlock['tag']) => {
     if (!activeBlockId) return;
 
     const currentIndex = blocks.findIndex(b => b.id === activeBlockId);
@@ -991,5 +1030,3 @@ export default function ProjectDetailsPage() {
     </>
   );
 }
-
-    
