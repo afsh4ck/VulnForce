@@ -21,12 +21,13 @@ import {
   Minus,
   CheckSquare,
   Quote,
-  Image as ImageIcon,
+  ImageIcon,
   Link as LinkIcon,
   File as FileIcon,
   Table,
 } from "lucide-react";
 import React from "react";
+import { ScrollArea } from "./ui/scroll-area";
 
 type BlockType =
   | "h1"
@@ -86,25 +87,27 @@ export const AddBlockMenu = ({ children, onSelect, open, onOpenChange }: AddBloc
     <DropdownMenu open={open} onOpenChange={onOpenChange}>
       <DropdownMenuTrigger asChild>{children}</DropdownMenuTrigger>
       <DropdownMenuContent className="w-56" align="start">
-        <DropdownMenuLabel>Basic Blocks</DropdownMenuLabel>
-        <DropdownMenuGroup>
-          {blockOptions.basic.map((item) => (
-            <DropdownMenuItem key={item.type} onSelect={() => handleSelect(item.type as BlockType)}>
-              <item.icon className="mr-2 h-4 w-4" />
-              <span>{item.label}</span>
-            </DropdownMenuItem>
-          ))}
-        </DropdownMenuGroup>
-        <DropdownMenuSeparator />
-        <DropdownMenuLabel>Media & Embeds</DropdownMenuLabel>
-        <DropdownMenuGroup>
-            {blockOptions.advanced.map((item) => (
-                <DropdownMenuItem key={item.type} onSelect={() => handleSelect(item.type as any)}>
-                    <item.icon className="mr-2 h-4 w-4" />
-                    <span>{item.label}</span>
-                </DropdownMenuItem>
+        <ScrollArea className="h-[250px]">
+          <DropdownMenuLabel>Basic Blocks</DropdownMenuLabel>
+          <DropdownMenuGroup>
+            {blockOptions.basic.map((item) => (
+              <DropdownMenuItem key={item.type} onSelect={() => handleSelect(item.type as BlockType)}>
+                <item.icon className="mr-2 h-4 w-4" />
+                <span>{item.label}</span>
+              </DropdownMenuItem>
             ))}
-        </DropdownMenuGroup>
+          </DropdownMenuGroup>
+          <DropdownMenuSeparator />
+          <DropdownMenuLabel>Media & Embeds</DropdownMenuLabel>
+          <DropdownMenuGroup>
+              {blockOptions.advanced.map((item) => (
+                  <DropdownMenuItem key={item.type} onSelect={() => handleSelect(item.type as any)}>
+                      <item.icon className="mr-2 h-4 w-4" />
+                      <span>{item.label}</span>
+                  </DropdownMenuItem>
+              ))}
+          </DropdownMenuGroup>
+        </ScrollArea>
       </DropdownMenuContent>
     </DropdownMenu>
   );
