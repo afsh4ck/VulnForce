@@ -43,6 +43,8 @@ function DashboardNav({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
   const { language } = useLanguage();
   const router = useRouter();
+  const { state } = useSidebar();
+  const isCollapsed = state === 'collapsed';
 
   const hasUnsavedChangesRef = React.useRef(false);
   const setHasUnsavedChanges = (hasChanges: boolean) => {
@@ -104,14 +106,17 @@ function DashboardNav({ children }: { children: React.ReactNode }) {
   ]
 
   const NavLink = ({ item, isActive }: { item: { href: string, icon: React.ElementType, label: string }, isActive: boolean }) => {
-    const { state } = useSidebar();
-    const isCollapsed = state === 'collapsed';
-
     return (
-        <Link href={item.href} onClick={handleLeaveClick(item.href)} className="flex items-center gap-3">
+      <Link href={item.href} onClick={handleLeaveClick(item.href)}>
+        <SidebarMenuButton
+          isActive={isActive}
+          tooltip={{ children: item.label, side: 'right' }}
+          className={cn("justify-start h-9", isActive ? "bg-muted/50 text-primary" : "hover:bg-muted/50 hover:text-primary")}
+        >
             <item.icon className="h-5 w-5 shrink-0" />
             <span className={cn("truncate", isCollapsed && "hidden")}>{item.label}</span>
-        </Link>
+        </SidebarMenuButton>
+      </Link>
     );
   };
 
@@ -127,17 +132,7 @@ function DashboardNav({ children }: { children: React.ReactNode }) {
                  const isActive = pathname === item.href || (item.href !== '/dashboard' && pathname.startsWith(item.href));
                  return (
                     <SidebarMenuItem key={item.href}>
-                        <SidebarMenuButton
-                            asChild
-                            isActive={isActive}
-                            tooltip={{ children: item.label, side: 'right' }}
-                             className={cn(
-                                "justify-start h-9",
-                                isActive ? "bg-muted/50 text-primary" : "hover:bg-muted/50 hover:text-primary"
-                            )}
-                        >
-                           <NavLink item={item} isActive={isActive} />
-                        </SidebarMenuButton>
+                        <NavLink item={item} isActive={isActive} />
                     </SidebarMenuItem>
                  )
             })}
@@ -149,17 +144,7 @@ function DashboardNav({ children }: { children: React.ReactNode }) {
               const isActive = pathname === item.href;
               return (
               <SidebarMenuItem key={item.href}>
-                <SidebarMenuButton
-                  asChild
-                  isActive={isActive}
-                  tooltip={{ children: item.label, side: 'right' }}
-                   className={cn(
-                        "justify-start h-9", 
-                        isActive ? "bg-muted/50 text-primary" : "hover:bg-muted/50 hover:text-primary"
-                    )}
-                >
-                    <NavLink item={item} isActive={isActive} />
-                </SidebarMenuButton>
+                <NavLink item={item} isActive={isActive} />
               </SidebarMenuItem>
             )})}
           </SidebarMenu>
