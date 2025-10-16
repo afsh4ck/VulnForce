@@ -21,6 +21,7 @@ import { Button } from '@/components/ui/button';
 import { UserNav } from '@/components/user-nav';
 import { Logo } from '@/components/logo';
 import { useLanguage } from '@/context/language-context';
+import { cn } from '@/lib/utils';
 
 type UseLeavePageHook = (hasChanges: boolean) => void;
 
@@ -104,12 +105,18 @@ function DashboardNav({ children }: { children: React.ReactNode }) {
       { href: '/dashboard/settings', icon: Settings, label: t[language].settings },
   ]
 
-  const NavLink = ({ item }: { item: { href: string, icon: React.ElementType, label: string } }) => {
-    const isActive = pathname === item.href || (item.href !== '/dashboard' && pathname.startsWith(item.href));
+  const NavLink = ({ item, isActive }: { item: { href: string, icon: React.ElementType, label: string }, isActive: boolean }) => {
     return (
-      <Link href={item.href} onClick={handleLeaveClick(item.href)} className="flex items-center gap-2">
-        <item.icon />
-        <span>{item.label}</span>
+      <Link 
+        href={item.href} 
+        onClick={handleLeaveClick(item.href)} 
+        className={cn(
+            "flex items-center gap-3 rounded-md px-3 py-2 text-sidebar-foreground transition-all hover:bg-sidebar-accent hover:text-primary",
+            isActive && "bg-sidebar-accent text-primary"
+        )}
+      >
+        <item.icon className="h-4 w-4" />
+        <span className="truncate">{item.label}</span>
       </Link>
     );
   };
@@ -123,33 +130,40 @@ function DashboardNav({ children }: { children: React.ReactNode }) {
           </Link>
         </SidebarHeader>
         <SidebarContent>
-          <SidebarMenu className="mt-4">
-            {navItems.map((item) => (
-              <SidebarMenuItem key={item.href}>
-                <SidebarMenuButton
-                  asChild
-                  isActive={pathname === item.href || (item.href !== '/dashboard' && pathname.startsWith(item.href))}
-                  tooltip={{ children: item.label }}
-                >
-                    <NavLink item={item} />
-                </SidebarMenuButton>
-              </SidebarMenuItem>
-            ))}
+          <SidebarMenu className="mt-4 space-y-2">
+            {navItems.map((item) => {
+                 const isActive = pathname === item.href || (item.href !== '/dashboard' && pathname.startsWith(item.href));
+                 return (
+                    <SidebarMenuItem key={item.href}>
+                        <SidebarMenuButton
+                        asChild
+                        isActive={isActive}
+                        tooltip={{ children: item.label }}
+                        className={cn(isActive && "bg-sidebar-accent text-primary", "hover:bg-sidebar-accent hover:text-primary")}
+                        >
+                            <NavLink item={item} isActive={isActive} />
+                        </SidebarMenuButton>
+                    </SidebarMenuItem>
+                 )
+            })}
           </SidebarMenu>
         </SidebarContent>
          <SidebarHeader className="pb-20">
-          <SidebarMenu>
-            {bottomNavItems.map((item) => (
+          <SidebarMenu className="space-y-2">
+            {bottomNavItems.map((item) => {
+              const isActive = pathname === item.href;
+              return (
               <SidebarMenuItem key={item.href}>
                 <SidebarMenuButton
                   asChild
-                  isActive={pathname === item.href}
+                  isActive={isActive}
                   tooltip={{ children: item.label }}
+                   className={cn(isActive && "bg-sidebar-accent text-primary", "hover:bg-sidebar-accent hover:text-primary")}
                 >
-                    <NavLink item={item} />
+                    <NavLink item={item} isActive={isActive} />
                 </SidebarMenuButton>
               </SidebarMenuItem>
-            ))}
+            )})}
           </SidebarMenu>
         </SidebarHeader>
       </Sidebar>
