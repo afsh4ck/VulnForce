@@ -119,19 +119,29 @@ const EditableBlock = React.forwardRef<HTMLDivElement, {
 }>(({ block, onUpdate, onKeyDown, onFocus, isFocused, placeholder, t_editor, ...props }, ref) => {
     const blockRef = useRef<HTMLDivElement>(null);
     
-    useEffect(() => {
+     useEffect(() => {
         if (isFocused && blockRef.current) {
-            blockRef.current.focus();
+            const el = blockRef.current;
+            el.focus();
+            
             const selection = window.getSelection();
             if (selection) {
                 const range = document.createRange();
-                range.selectNodeContents(blockRef.current);
-                range.collapse(false);
+                
+                if (el.firstChild) {
+                    range.selectNodeContents(el);
+                    range.collapse(false); // false to collapse to the end
+                } else {
+                    range.setStart(el, 0);
+                    range.collapse(true);
+                }
+                
                 selection.removeAllRanges();
                 selection.addRange(range);
             }
         }
     }, [isFocused, block.id]);
+
 
     const handleBlur = (e: React.FocusEvent<HTMLDivElement>) => {
         onUpdate(e.currentTarget.innerHTML);
@@ -157,7 +167,7 @@ const EditableBlock = React.forwardRef<HTMLDivElement, {
     const isEmpty = !block.content || block.content === '<br>' || block.content === '<li><br></li>';
 
     const getPlaceholderText = () => {
-        if (!isEmpty) return null;
+        if (!isFocused || !isEmpty) return null;
 
         if (block.tag.startsWith('h')) {
             const level = block.tag.substring(1);
@@ -168,7 +178,7 @@ const EditableBlock = React.forwardRef<HTMLDivElement, {
         return null;
     };
     
-    const placeholderText = isFocused ? getPlaceholderText() : null;
+    const placeholderText = getPlaceholderText();
     const showPlaceholder = isFocused && isEmpty;
 
     return (

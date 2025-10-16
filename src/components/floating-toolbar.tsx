@@ -19,57 +19,7 @@ const formatText = (command: string) => {
     const selectedText = range.toString();
     if (!selectedText) return;
 
-    let newNode;
-    switch (command) {
-        case 'bold':
-            newNode = document.createElement('strong');
-            break;
-        case 'italic':
-            newNode = document.createElement('em');
-            break;
-        case 'strikethrough':
-            newNode = document.createElement('s');
-            break;
-        case 'code':
-            newNode = document.createElement('code');
-            break;
-        case 'link':
-            const url = prompt('Enter the URL:');
-            if (url) {
-                newNode = document.createElement('a');
-                newNode.setAttribute('href', url);
-                newNode.setAttribute('target', '_blank');
-                newNode.setAttribute('rel', 'noopener noreferrer');
-            }
-            break;
-        default:
-            return;
-    }
-    
-    if (newNode) {
-        const parentElement = range.commonAncestorContainer.parentElement;
-        if (parentElement && parentElement.tagName.toLowerCase() === command) {
-            // Already wrapped, so unwrap it
-            const grandparentElement = parentElement.parentElement;
-            if (grandparentElement) {
-                while (parentElement.firstChild) {
-                    grandparentElement.insertBefore(parentElement.firstChild, parentElement);
-                }
-                grandparentElement.removeChild(parentElement);
-            }
-        } else {
-             // Not wrapped, so wrap it
-            newNode.textContent = selectedText;
-            range.deleteContents();
-            range.insertNode(newNode);
-        }
-
-        // To keep the text selected after formatting
-        const newRange = document.createRange();
-        newRange.selectNodeContents(newNode);
-        selection.removeAllRanges();
-        selection.addRange(newRange);
-    }
+    document.execCommand(command, false);
 };
 
 export const FloatingToolbar = ({ position }: FloatingToolbarProps) => {
@@ -103,9 +53,28 @@ export const FloatingToolbar = ({ position }: FloatingToolbarProps) => {
   const toolbarOptions = [
     { name: t[language].bold, icon: Bold, action: () => formatText('bold') },
     { name: t[language].italic, icon: Italic, action: () => formatText('italic') },
-    { name: t[language].strikethrough, icon: Strikethrough, action: () => formatText('strikethrough') },
-    { name: t[language].code, icon: Code, action: () => formatText('code') },
-    { name: t[language].link, icon: LinkIcon, action: () => formatText('link') },
+    { name: t[language].strikethrough, icon: Strikethrough, action: () => formatText('strikeThrough') },
+    { name: t[language].code, icon: Code, action: () => {
+        // execCommand does not support inline code, so we handle it manually
+        const selection = window.getSelection();
+        if (selection && !selection.isCollapsed) {
+            const range = selection.getRangeAt(0);
+            const existingCode = range.startContainer.parentElement?.closest('code');
+            if (existingCode) {
+                 document.execCommand('removeFormat', false, 'code');
+            } else {
+                const code = document.createElement('code');
+                code.className = "font-code bg-muted text-muted-foreground px-1.5 py-1 rounded-md break-words";
+                range.surroundContents(code);
+            }
+        }
+    }},
+    { name: t[language].link, icon: LinkIcon, action: () => {
+        const url = prompt('Enter URL:');
+        if (url) {
+            document.execCommand('createLink', false, url);
+        }
+    }},
   ];
 
   return (
@@ -114,7 +83,7 @@ export const FloatingToolbar = ({ position }: FloatingToolbarProps) => {
         {toolbarOptions.map((option) => (
           <Tooltip key={option.name}>
             <TooltipTrigger asChild>
-              <Button variant="ghost" size="icon" className="h-8 w-8" onClick={option.action}>
+              <Button variant="ghost" size="icon" className="h-8 w-8" onMouseDown={(e) => e.preventDefault()} onClick={option.action}>
                 <option.icon className="h-4 w-4" />
               </Button>
             </TooltipTrigger>
@@ -127,5 +96,3 @@ export const FloatingToolbar = ({ position }: FloatingToolbarProps) => {
     </div>
   );
 };
-
-    
