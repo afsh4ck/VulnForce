@@ -123,10 +123,10 @@ export default function DashboardPage() {
       </div>
 
       <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
-        <Link href="/dashboard/projects">
+        <Link href="/dashboard/projects" className="group">
           <Card className="hover:border-primary hover:bg-muted/50 transition-colors">
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-medium">{t[language].totalProjects}</CardTitle>
+              <CardTitle className="text-sm font-medium group-hover:text-primary transition-colors">{t[language].totalProjects}</CardTitle>
               <FolderKanban className="h-4 w-4 text-muted-foreground" />
             </CardHeader>
             <CardContent>
@@ -135,10 +135,10 @@ export default function DashboardPage() {
             </CardContent>
           </Card>
         </Link>
-        <Link href="/dashboard/clients">
+        <Link href="/dashboard/clients" className="group">
           <Card className="hover:border-primary hover:bg-muted/50 transition-colors">
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-medium">{t[language].totalClients}</CardTitle>
+              <CardTitle className="text-sm font-medium group-hover:text-primary transition-colors">{t[language].totalClients}</CardTitle>
               <Users className="h-4 w-4 text-muted-foreground" />
             </CardHeader>
             <CardContent>
@@ -147,10 +147,10 @@ export default function DashboardPage() {
             </CardContent>
           </Card>
         </Link>
-        <Link href="/dashboard/findings">
+        <Link href="/dashboard/findings" className="group">
           <Card className="hover:border-primary hover:bg-muted/50 transition-colors">
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-medium">{t[language].totalFindings}</CardTitle>
+              <CardTitle className="text-sm font-medium group-hover:text-primary transition-colors">{t[language].totalFindings}</CardTitle>
               <Bomb className="h-4 w-4 text-muted-foreground" />
             </CardHeader>
             <CardContent>
@@ -159,10 +159,10 @@ export default function DashboardPage() {
             </CardContent>
           </Card>
         </Link>
-        <Link href="/dashboard/findings?severity=Critical">
+        <Link href="/dashboard/findings?severity=Critical" className="group">
           <Card className="border-destructive hover:bg-destructive/10 transition-colors">
               <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                  <CardTitle className="text-sm font-medium">{t[language].criticalFindings}</CardTitle>
+                  <CardTitle className="text-sm font-medium group-hover:text-primary transition-colors">{t[language].criticalFindings}</CardTitle>
                   <ShieldCheck className="h-4 w-4 text-destructive" />
               </CardHeader>
               <CardContent>
