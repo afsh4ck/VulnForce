@@ -746,26 +746,26 @@ export default function ProjectDetailsPage() {
               <h1 className="font-headline text-xl font-bold">{project.name}</h1>
               <p className="text-sm text-muted-foreground">{client.name}</p>
             </div>
-             <div className="flex items-center gap-2">
-                <Button onClick={() => router.push(`/dashboard/projects/${id}/report`)} variant="outline">
-                  <File className="mr-2 h-4 w-4" /> {t[uiLanguage].report}
-                </Button>
-                 <AlertDialog open={isDeleteDialogOpen} onOpenChange={setIsDeleteDialogOpen}>
-                    <AlertDialogTrigger asChild>
-                        <Button variant="destructive" size="icon"><Trash2 className="h-4 w-4" /></Button>
-                    </AlertDialogTrigger>
-                    <AlertDialogContent>
-                      <AlertDialogHeader>
-                        <AlertDialogTitle>{t[uiLanguage].confirmDeleteProjectTitle}</AlertDialogTitle>
-                        <AlertDialogDescription>{t[uiLanguage].confirmDeleteProjectDesc}</AlertDialogDescription>
-                      </AlertDialogHeader>
-                      <AlertDialogFooter>
-                        <AlertDialogCancel>{t[uiLanguage].cancel}</AlertDialogCancel>
-                        <AlertDialogAction onClick={handleDeleteProjectAndRedirect} className="bg-destructive hover:bg-destructive/90">{t[uiLanguage].delete}</AlertDialogAction>
-                      </AlertDialogFooter>
-                    </AlertDialogContent>
-                </AlertDialog>
-            </div>
+          </div>
+          <div className="flex items-center gap-2">
+              <Button onClick={() => router.push(`/dashboard/projects/${id}/report`)} variant="outline">
+                <File className="mr-2 h-4 w-4" /> {t[uiLanguage].report}
+              </Button>
+               <AlertDialog open={isDeleteDialogOpen} onOpenChange={setIsDeleteDialogOpen}>
+                  <AlertDialogTrigger asChild>
+                      <Button variant="destructive" size="icon"><Trash2 className="h-4 w-4" /></Button>
+                  </AlertDialogTrigger>
+                  <AlertDialogContent>
+                    <AlertDialogHeader>
+                      <AlertDialogTitle>{t[uiLanguage].confirmDeleteProjectTitle}</AlertDialogTitle>
+                      <AlertDialogDescription>{t[uiLanguage].confirmDeleteProjectDesc}</AlertDialogDescription>
+                    </AlertDialogHeader>
+                    <AlertDialogFooter>
+                      <AlertDialogCancel>{t[uiLanguage].cancel}</AlertDialogCancel>
+                      <AlertDialogAction onClick={handleDeleteProjectAndRedirect} className="bg-destructive hover:bg-destructive/90">{t[uiLanguage].delete}</AlertDialogAction>
+                    </AlertDialogFooter>
+                  </AlertDialogContent>
+              </AlertDialog>
           </div>
         </header>
 

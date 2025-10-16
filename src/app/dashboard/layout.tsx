@@ -117,7 +117,7 @@ function DashboardNav({ children }: { children: React.ReactNode }) {
     <LeavePageContext.Provider value={{ setHasUnsavedChanges, handleRequestLeave }}>
       <Sidebar collapsible="icon" className="border-r border-sidebar-border">
         <SidebarHeader>
-          <Link href="/dashboard">
+          <Link href="/dashboard" className="flex items-center gap-2 font-bold text-lg">
             <Logo isCollapsed={isCollapsed} />
           </Link>
         </SidebarHeader>
