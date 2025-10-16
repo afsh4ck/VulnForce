@@ -511,11 +511,15 @@ export default function ProjectDetailsPage() {
   
   const handleDeleteBlock = useCallback((id: string) => {
       setBlocks(prev => {
-          if (prev.length <= 1) return prev;
+          if (prev.length <= 1) {
+            const newBlock = { id: `block-empty-${Date.now()}`, tag: 'p' as const, content: '' };
+            setActiveBlockId(newBlock.id);
+            return [newBlock];
+          }
           const index = prev.findIndex(b => b.id === id);
           if (index > 0) {
             setActiveBlockId(prev[index - 1].id);
-          } else if (prev.length > 1) {
+          } else {
             setActiveBlockId(prev[1].id);
           }
           return prev.filter(b => b.id !== id);
@@ -662,10 +666,20 @@ export default function ProjectDetailsPage() {
                      updateBlocks(newBlocks);
                      setActiveBlockId(newParagraphBlock.id);
                 } else {
-                  document.execCommand('insertHTML', false, '</li><li><br></li>');
-                   if(blockRefs.current[id]) {
-                       updateBlocks(blocks.map(b => b.id === id ? { ...b, content: blockRefs.current[id]!.querySelector('[contenteditable=true]')!.innerHTML } : b));
-                   }
+                    document.execCommand('insertHTML', false, '</li><li><br></li>');
+                    const newContent = target.innerHTML;
+                    const newBlocks = [...blocks];
+                    const listBlock = newBlocks[currentIndex];
+
+                    const tempDiv = document.createElement('div');
+                    tempDiv.innerHTML = newContent;
+                    const items = Array.from(tempDiv.querySelectorAll('li'));
+                    if (items.length > 1 && items[items.length - 1].innerHTML === '<br>') {
+                        items.pop();
+                        listBlock.content = items.map(li => li.outerHTML).join('');
+                    }
+                    
+                    handleAddBlock(currentIndex, listBlock.tag, `<li><br></li>`);
                 }
             }
             return;

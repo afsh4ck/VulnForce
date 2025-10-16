@@ -16,7 +16,7 @@ export function Logo({ className }: LogoProps) {
       <div className={cn("flex items-center justify-center")}>
         <ShieldHalf className={cn(
           "text-primary transition-all duration-300 ease-in-out flex-none shrink-0",
-          isCollapsed ? "h-5 w-5" : "h-8 w-8"
+          isCollapsed ? "h-6 w-6" : "h-8 w-8"
         )} />
       </div>
       <span className={cn("whitespace-nowrap transition-opacity", isCollapsed ? "opacity-0 w-0" : "opacity-100")}>
