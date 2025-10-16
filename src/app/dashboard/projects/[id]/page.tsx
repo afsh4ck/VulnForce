@@ -674,11 +674,13 @@ export default function ProjectDetailsPage() {
 
       } else if (e.key === 'Backspace' && (target.innerHTML === '' || target.innerHTML === '<br>')) {
            e.preventDefault();
-           if(currentBlock.tag !== 'p' && (currentBlock.tag === 'h1' || currentBlock.tag === 'h2' || currentBlock.tag === 'h3')) {
+            if ((currentBlock.tag === 'ul' || currentBlock.tag === 'ol') && currentBlock.content.replace(/<li>(<br>)?<\/li>/g, '').trim() === '') {
                 updateBlockTag(id, 'p');
-           } else if (blocks.length > 1) {
-              handleDeleteBlock(id);
-           }
+            } else if (currentBlock.tag !== 'p') {
+                updateBlockTag(id, 'p');
+            } else if (blocks.length > 1) {
+                handleDeleteBlock(id);
+            }
       } else if (e.key === ' ' && target.textContent?.match(/^#$/)) {
           e.preventDefault();
           updateBlockTag(id, 'h1');

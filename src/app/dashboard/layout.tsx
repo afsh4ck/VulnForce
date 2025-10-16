@@ -107,29 +107,28 @@ function DashboardNav({ children }: { children: React.ReactNode }) {
 
   const NavLink = ({ item, isActive }: { item: { href: string, icon: React.ElementType, label: string }, isActive: boolean }) => {
     return (
-      <Link href={item.href} onClick={handleLeaveClick(item.href)}>
-        <SidebarMenuButton
+      <SidebarMenuButton
+          asChild
           isActive={isActive}
           tooltip={{ children: item.label, side: 'right' }}
           className={cn("justify-start h-9", isActive ? "bg-muted/50 text-primary" : "hover:bg-muted/50 hover:text-primary")}
         >
+          <Link href={item.href} onClick={handleLeaveClick(item.href)}>
             <item.icon className="h-5 w-5 shrink-0" />
             <span className={cn("truncate", isCollapsed && "hidden")}>{item.label}</span>
+          </Link>
         </SidebarMenuButton>
-      </Link>
     );
   };
 
   return (
     <LeavePageContext.Provider value={{ setHasUnsavedChanges, handleRequestLeave }}>
       <Sidebar collapsible="icon" className="border-r border-sidebar-border">
-        <SidebarHeader className={cn("p-2", isCollapsed && "p-2")}>
-          <div className={cn(isCollapsed && 'flex justify-center')}>
-            <Logo />
-          </div>
+        <SidebarHeader className={cn("p-2", isCollapsed && "p-2 justify-center")}>
+          <Logo />
         </SidebarHeader>
         <SidebarContent>
-          <SidebarMenu className="mt-4 space-y-[2px] px-2">
+          <SidebarMenu className="mt-4 space-y-px px-2">
             {navItems.map((item) => {
                  const isActive = pathname === item.href || (item.href !== '/dashboard' && pathname.startsWith(item.href));
                  return (
@@ -141,7 +140,7 @@ function DashboardNav({ children }: { children: React.ReactNode }) {
           </SidebarMenu>
         </SidebarContent>
          <SidebarHeader className="pb-20 px-2">
-          <SidebarMenu className="space-y-[2px]">
+          <SidebarMenu className="space-y-px">
             {bottomNavItems.map((item) => {
               const isActive = pathname === item.href;
               return (
