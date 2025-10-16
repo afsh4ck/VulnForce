@@ -105,8 +105,9 @@ function DashboardNav({ children }: { children: React.ReactNode }) {
   ]
 
   const NavLink = ({ item }: { item: { href: string, icon: React.ElementType, label: string } }) => {
+    const isActive = pathname === item.href || (item.href !== '/dashboard' && pathname.startsWith(item.href));
     return (
-      <Link href={item.href} onClick={handleLeaveClick(item.href)}>
+      <Link href={item.href} onClick={handleLeaveClick(item.href)} className="flex items-center gap-2">
         <item.icon />
         <span>{item.label}</span>
       </Link>
