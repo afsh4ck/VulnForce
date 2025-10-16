@@ -108,13 +108,13 @@ const EditableBlock = React.forwardRef<HTMLDivElement, {
     
     useEffect(() => {
         if (blockRef.current && isFocused) {
+            blockRef.current.focus();
             const range = document.createRange();
             const selection = window.getSelection();
             range.selectNodeContents(blockRef.current);
-            range.collapse(false);
+            range.collapse(false); // false to collapse to the end
             selection?.removeAllRanges();
             selection?.addRange(range);
-            blockRef.current.focus();
         }
     }, [isFocused]);
 
