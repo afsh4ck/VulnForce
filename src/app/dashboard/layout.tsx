@@ -111,8 +111,8 @@ function DashboardNav({ children }: { children: React.ReactNode }) {
         href={item.href} 
         onClick={handleLeaveClick(item.href)} 
         className={cn(
-            "flex items-center gap-3 rounded-md px-3 py-2 text-sidebar-foreground transition-all hover:bg-sidebar-accent hover:text-primary",
-            isActive && "bg-sidebar-accent text-primary"
+            "flex items-center gap-3 rounded-md px-3 py-2 text-sidebar-foreground transition-colors",
+            isActive ? "bg-sidebar-accent text-primary" : "hover:bg-sidebar-accent hover:text-primary"
         )}
       >
         <item.icon className="h-4 w-4" />
@@ -130,7 +130,7 @@ function DashboardNav({ children }: { children: React.ReactNode }) {
           </Link>
         </SidebarHeader>
         <SidebarContent>
-          <SidebarMenu className="mt-4 space-y-2">
+          <SidebarMenu className="mt-4 space-y-1">
             {navItems.map((item) => {
                  const isActive = pathname === item.href || (item.href !== '/dashboard' && pathname.startsWith(item.href));
                  return (
@@ -149,7 +149,7 @@ function DashboardNav({ children }: { children: React.ReactNode }) {
           </SidebarMenu>
         </SidebarContent>
          <SidebarHeader className="pb-20">
-          <SidebarMenu className="space-y-2">
+          <SidebarMenu className="space-y-1">
             {bottomNavItems.map((item) => {
               const isActive = pathname === item.href;
               return (
