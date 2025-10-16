@@ -18,7 +18,7 @@ import {
   Heading3,
   Trash2,
   Copy,
-  Check
+  Text,
 } from "lucide-react";
 import React from "react";
 import { useLanguage } from "@/context/language-context";
@@ -48,7 +48,8 @@ export const BlockOptionsMenu = ({ children, onSelect, open, onOpenChange, block
     }
   }
 
-  const headingOptions = [
+  const turnIntoOptions = [
+    { type: "p", label: "Paragraph", icon: Text },
     { type: "h1", label: "Heading 1", icon: Heading1 },
     { type: "h2", label: "Heading 2", icon: Heading2 },
     { type: "h3", label: "Heading 3", icon: Heading3 },
@@ -60,7 +61,7 @@ export const BlockOptionsMenu = ({ children, onSelect, open, onOpenChange, block
       <DropdownMenuContent className="w-56" align="start">
         <DropdownMenuRadioGroup value={blockTag} onValueChange={(value) => onSelect('turnInto', value)}>
             <DropdownMenuLabel>{t[language].turnInto}</DropdownMenuLabel>
-            {headingOptions.map((item) => (
+            {turnIntoOptions.map((item) => (
             <DropdownMenuRadioItem key={item.type} value={item.type}>
                 <item.icon className="mr-2 h-4 w-4" />
                 <span>{item.label}</span>
