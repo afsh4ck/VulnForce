@@ -33,6 +33,7 @@ import { CommandMenu } from '@/components/command-menu';
 import { useLeavePage } from '@/app/dashboard/layout';
 import { AddBlockMenu } from '@/components/add-block-menu';
 import { BlockOptionsMenu } from '@/components/block-options-menu';
+import { FloatingToolbar } from '@/components/floating-toolbar';
 
 type SortKey = keyof Finding;
 type SaveStatus = 'unsaved' | 'saving' | 'saved';
@@ -119,16 +120,15 @@ const EditableBlock = React.forwardRef<HTMLDivElement, {
     const blockRef = useRef<HTMLDivElement>(null);
     
     useEffect(() => {
-        if (isFocused) {
-            const element = blockRef.current;
-            if (element) {
-                element.focus();
-                const selection = window.getSelection();
+        if (isFocused && blockRef.current) {
+            blockRef.current.focus();
+            const selection = window.getSelection();
+            if (selection) {
                 const range = document.createRange();
-                range.selectNodeContents(element);
-                range.collapse(false); // to end
-                selection?.removeAllRanges();
-                selection?.addRange(range);
+                range.selectNodeContents(blockRef.current);
+                range.collapse(false);
+                selection.removeAllRanges();
+                selection.addRange(range);
             }
         }
     }, [isFocused, block.id]);
@@ -142,8 +142,6 @@ const EditableBlock = React.forwardRef<HTMLDivElement, {
     }
     
     if (block.tag === 'table') {
-        // For simplicity, we'll render tables as non-editable blocks for now.
-        // A full table editor would be a complex component.
         return (
             <div
                 className="my-4 prose dark:prose-invert"
@@ -156,7 +154,7 @@ const EditableBlock = React.forwardRef<HTMLDivElement, {
     const isCode = block.tag === 'pre';
     const isList = ['ul', 'ol'].includes(block.tag);
     
-    const isEmpty = !block.content || block.content === '<br>';
+    const isEmpty = !block.content || block.content === '<br>' || block.content === '<li><br></li>';
 
     const getPlaceholderText = () => {
         if (!isEmpty) return null;
@@ -171,6 +169,7 @@ const EditableBlock = React.forwardRef<HTMLDivElement, {
     };
     
     const placeholderText = isFocused ? getPlaceholderText() : null;
+    const showPlaceholder = isFocused && isEmpty;
 
     return (
         <div 
@@ -186,7 +185,7 @@ const EditableBlock = React.forwardRef<HTMLDivElement, {
               contentEditable
               suppressContentEditableWarning
               className={cn(
-                "w-full outline-none p-1 rounded-md",
+                "w-full outline-none p-1 rounded-md relative",
                 isList ? "list-outside my-2 " + (block.tag === 'ul' ? 'list-disc ml-6' : 'list-decimal ml-6') : "",
                 {
                   'text-3xl font-bold mb-4 border-b-2 border-primary pb-2 mt-12 font-headline': block.tag === 'h1',
@@ -198,10 +197,10 @@ const EditableBlock = React.forwardRef<HTMLDivElement, {
                   'border-l-4 border-primary pl-4 italic text-muted-foreground my-4': block.tag === 'blockquote'
                 }
               )}
-              dangerouslySetInnerHTML={{ __html: isCode ? block.content.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;") : block.content || (isList ? '<li></li>' : '') }}
+              dangerouslySetInnerHTML={{ __html: isCode ? block.content.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;") : block.content || (isList ? '<li><br></li>' : '<br>') }}
           />
-           {placeholderText && (
-                <div className={cn("absolute top-1 left-1 text-muted-foreground pointer-events-none", {
+           {showPlaceholder && (
+                <div className={cn("absolute top-1 left-1 text-muted-foreground pointer-events-none select-none", {
                     'text-3xl font-bold': block.tag === 'h1',
                     'text-2xl font-semibold': block.tag === 'h2',
                     'text-xl font-semibold': block.tag === 'h3',
@@ -282,7 +281,9 @@ export default function ProjectDetailsPage() {
   
   const [activeBlockId, setActiveBlockId] = useState<string | null>(null);
   const [commandMenuOpen, setCommandMenuOpen] = useState(false);
-  
+  const [isToolbarOpen, setIsToolbarOpen] = useState(false);
+  const [toolbarPosition, setToolbarPosition] = useState({ top: 0, left: 0 });
+
   const [saveStatus, setSaveStatus] = useState<SaveStatus>('saved');
 
   const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
@@ -359,7 +360,6 @@ export default function ProjectDetailsPage() {
     };
   }, [saveStatus]);
 
-
   const handleLeaveConfirm = () => {
     setSaveStatus('saved'); 
     setTimeout(() => {
@@ -413,7 +413,7 @@ export default function ProjectDetailsPage() {
       changesSavedDesc: "Your project details have been updated.",
       translateScope: "Translate Scope",
       translating: "Translating...",
-      commandPlaceholder: "Type / for commands",
+      commandPlaceholder: "Type / to add a block",
       headings: {
         '1': 'Heading 1',
         '2': 'Heading 2',
@@ -770,7 +770,7 @@ export default function ProjectDetailsPage() {
 
           handleAddBlock(currentIndex, 'p', '');
 
-      } else if (e.key === 'Backspace' && (target.innerHTML === '' || target.innerHTML === '<br>')) {
+      } else if (e.key === 'Backspace' && (target.innerHTML === '' || target.innerHTML === '<br>' || (currentBlock.tag.match(/^(ul|ol)$/) && target.innerHTML === '<li><br></li>'))) {
            e.preventDefault();
             if (blocks.length > 1) {
                 handleDeleteBlock(id);
@@ -823,6 +823,29 @@ export default function ProjectDetailsPage() {
     }
     setCommandMenuOpen(false);
   };
+
+  const handleSelectionChange = useCallback(() => {
+    const selection = window.getSelection();
+    if (selection && !selection.isCollapsed) {
+        const range = selection.getRangeAt(0);
+        const rect = range.getBoundingClientRect();
+        setToolbarPosition({
+            top: rect.top + window.scrollY - 50,
+            left: rect.left + window.scrollX + (rect.width / 2),
+        });
+        setIsToolbarOpen(true);
+    } else {
+        setIsToolbarOpen(false);
+    }
+  }, []);
+
+  useEffect(() => {
+      document.addEventListener("selectionchange", handleSelectionChange);
+      return () => {
+          document.removeEventListener("selectionchange", handleSelectionChange);
+      };
+  }, [handleSelectionChange]);
+
   
   const handleDeleteProjectAndRedirect = () => {
     if(project) {
@@ -916,6 +939,7 @@ export default function ProjectDetailsPage() {
             <TabsContent value="content" className="pt-6">
                <Card>
                   <CardContent className="max-w-4xl mx-auto pt-6" dir="ltr">
+                     {isToolbarOpen && <FloatingToolbar position={toolbarPosition} />}
                      <DndContext sensors={sensors} collisionDetection={closestCenter} onDragEnd={handleDragEnd}>
                         <SortableContext items={blocks.map(b => b.id)} strategy={verticalListSortingStrategy}>
                             {blocks.map((block, index) => (
@@ -1112,4 +1136,6 @@ export default function ProjectDetailsPage() {
     </>
   );
 }
+    
+
     
