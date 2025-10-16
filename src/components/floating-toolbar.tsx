@@ -11,7 +11,7 @@ interface FloatingToolbarProps {
   position: { top: number; left: number };
 }
 
-const formatText = (command: string) => {
+const formatText = (command: string, value?: string) => {
     const selection = window.getSelection();
     if (!selection || selection.rangeCount === 0) return;
 
@@ -19,7 +19,7 @@ const formatText = (command: string) => {
     const selectedText = range.toString();
     if (!selectedText) return;
 
-    document.execCommand(command, false);
+    document.execCommand(command, false, value);
 };
 
 export const FloatingToolbar = ({ position }: FloatingToolbarProps) => {
@@ -42,6 +42,20 @@ export const FloatingToolbar = ({ position }: FloatingToolbarProps) => {
     }
   }
 
+  const handleMouseDown = (e: React.MouseEvent, action: () => void) => {
+      e.preventDefault();
+      const selection = window.getSelection();
+      if (!selection || selection.rangeCount === 0) return;
+      const range = selection.getRangeAt(0);
+      
+      action();
+      
+      // Re-apply the selection after the format is applied
+      selection.removeAllRanges();
+      selection.addRange(range);
+  };
+
+
   const toolbarStyle: React.CSSProperties = {
     position: 'absolute',
     top: `${position.top}px`,
@@ -55,13 +69,17 @@ export const FloatingToolbar = ({ position }: FloatingToolbarProps) => {
     { name: t[language].italic, icon: Italic, action: () => formatText('italic') },
     { name: t[language].strikethrough, icon: Strikethrough, action: () => formatText('strikeThrough') },
     { name: t[language].code, icon: Code, action: () => {
-        // execCommand does not support inline code, so we handle it manually
         const selection = window.getSelection();
         if (selection && !selection.isCollapsed) {
             const range = selection.getRangeAt(0);
             const existingCode = range.startContainer.parentElement?.closest('code');
-            if (existingCode) {
-                 document.execCommand('removeFormat', false, 'code');
+            
+            const tempDiv = document.createElement('div');
+            tempDiv.appendChild(range.cloneContents());
+            const containsCode = tempDiv.querySelector('code');
+
+            if (existingCode || containsCode) {
+                 document.execCommand('removeFormat');
             } else {
                 const code = document.createElement('code');
                 code.className = "font-code bg-muted text-muted-foreground px-1.5 py-1 rounded-md break-words";
@@ -72,7 +90,7 @@ export const FloatingToolbar = ({ position }: FloatingToolbarProps) => {
     { name: t[language].link, icon: LinkIcon, action: () => {
         const url = prompt('Enter URL:');
         if (url) {
-            document.execCommand('createLink', false, url);
+            formatText('createLink', url);
         }
     }},
   ];
@@ -83,7 +101,7 @@ export const FloatingToolbar = ({ position }: FloatingToolbarProps) => {
         {toolbarOptions.map((option) => (
           <Tooltip key={option.name}>
             <TooltipTrigger asChild>
-              <Button variant="ghost" size="icon" className="h-8 w-8" onMouseDown={(e) => e.preventDefault()} onClick={option.action}>
+              <Button variant="ghost" size="icon" className="h-8 w-8" onMouseDown={(e) => handleMouseDown(e, option.action)}>
                 <option.icon className="h-4 w-4" />
               </Button>
             </TooltipTrigger>
