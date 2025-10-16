@@ -41,7 +41,6 @@ export const useLeavePage = () => {
 
 function DashboardNav({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
-  const { isMobile } = useSidebar();
   const { language } = useLanguage();
   const router = useRouter();
 
