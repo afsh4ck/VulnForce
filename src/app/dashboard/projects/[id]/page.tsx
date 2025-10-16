@@ -1,3 +1,4 @@
+
 'use client';
 
 import React, { useState, useMemo, useEffect, useCallback, useRef } from 'react';
@@ -151,20 +152,25 @@ const EditableBlock = React.forwardRef<HTMLDivElement, {
     const isCode = block.tag === 'pre';
     const isList = ['ul', 'ol'].includes(block.tag);
 
-    const getPlaceholder = () => {
-        if (!block.content || block.content === '<br>') {
-             if (block.tag.startsWith('h')) {
-                const level = block.tag.substring(1);
-                return t_editor.headings[level as '1' | '2' | '3' | '4'];
-            }
-            if (!isList && !isCode) {
-                return placeholder;
-            }
+    const getPlaceholderText = () => {
+        const tempDiv = document.createElement('div');
+        tempDiv.innerHTML = block.content;
+        const isEmpty = !tempDiv.textContent?.trim() && !tempDiv.querySelector('img');
+
+        if (!isEmpty) return null;
+
+        if (block.tag.startsWith('h')) {
+            const level = block.tag.substring(1);
+            return t_editor.headings[level as '1' | '2' | '3' | '4'];
         }
+        if (!isList && !isCode) {
+            return placeholder;
+        }
+        
         return null;
     }
 
-    const placeholderText = getPlaceholder();
+    const placeholderText = getPlaceholderText();
 
     return (
         <div 
@@ -192,7 +198,7 @@ const EditableBlock = React.forwardRef<HTMLDivElement, {
                   'border-l-4 border-primary pl-4 italic text-muted-foreground my-4': block.tag === 'blockquote'
                 }
               )}
-              dangerouslySetInnerHTML={{ __html: isCode ? block.content.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;") : block.content || (isList ? '<li><br></li>' : '') }}
+              dangerouslySetInnerHTML={{ __html: isCode ? block.content.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;") : block.content || (isList ? '<li></li>' : '') }}
           />
            {placeholderText && (
                 <div className={cn("absolute top-1 left-1 text-muted-foreground pointer-events-none", {
