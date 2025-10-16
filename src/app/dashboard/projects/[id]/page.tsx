@@ -32,11 +32,12 @@ import { CSS } from '@dnd-kit/utilities';
 import { CommandMenu } from '@/components/command-menu';
 import { useLeavePage } from '@/app/dashboard/layout';
 import { AddBlockMenu } from '@/components/add-block-menu';
+import { BlockOptionsMenu } from '@/components/block-options-menu';
 
 type SortKey = keyof Finding;
 type SaveStatus = 'unsaved' | 'saving' | 'saved';
 
-interface ContentBlock {
+export interface ContentBlock {
   id: string;
   tag: 'h1' | 'h2' | 'h3' | 'p' | 'pre' | 'ul' | 'ol' | 'h4' | 'hr' | 'blockquote' | 'table';
   content: string;
@@ -118,15 +119,17 @@ const EditableBlock = React.forwardRef<HTMLDivElement, {
     const blockRef = useRef<HTMLDivElement>(null);
     
     useEffect(() => {
-        const element = blockRef.current;
-        if (element && isFocused) {
-            element.focus();
-            const range = document.createRange();
-            const selection = window.getSelection();
-            range.selectNodeContents(element);
-            range.collapse(false); // false to collapse to the end
-            selection?.removeAllRanges();
-            selection?.addRange(range);
+        if (isFocused) {
+            const element = blockRef.current;
+            if (element) {
+                element.focus();
+                const selection = window.getSelection();
+                const range = document.createRange();
+                range.selectNodeContents(element);
+                range.collapse(false); // to end
+                selection?.removeAllRanges();
+                selection?.addRange(range);
+            }
         }
     }, [isFocused, block.id]);
 
@@ -152,27 +155,22 @@ const EditableBlock = React.forwardRef<HTMLDivElement, {
     const Tag = block.tag === 'pre' ? 'div' : (['ul', 'ol', 'blockquote'].includes(block.tag) ? block.tag : block.tag);
     const isCode = block.tag === 'pre';
     const isList = ['ul', 'ol'].includes(block.tag);
+    
+    const isEmpty = !block.content || block.content === '<br>';
 
     const getPlaceholderText = () => {
-        if (!isFocused) return null;
-
-        const tempDiv = document.createElement('div');
-        tempDiv.innerHTML = block.content;
-        const isEmpty = !tempDiv.textContent?.trim() && !tempDiv.querySelector('img');
-
         if (!isEmpty) return null;
-        
-        if (block.tag === 'p') return placeholder;
 
         if (block.tag.startsWith('h')) {
             const level = block.tag.substring(1);
             return t_editor.headings[level as '1' | '2' | '3' | '4'];
         }
-        
-        return null;
-    }
+        if (block.tag === 'p') return placeholder;
 
-    const placeholderText = getPlaceholderText();
+        return null;
+    };
+    
+    const placeholderText = isFocused ? getPlaceholderText() : null;
 
     return (
         <div 
@@ -219,7 +217,9 @@ EditableBlock.displayName = "EditableBlock";
 
 const SortableBlock = ({ block, ...props }: { block: ContentBlock, [key: string]: any }) => {
   const { attributes, listeners, setNodeRef, transform, transition, isDragging } = useSortable({ id: block.id });
-  const [menuOpen, setMenuOpen] = useState(false);
+  const [addMenuOpen, setAddMenuOpen] = useState(false);
+  const [optionsMenuOpen, setOptionsMenuOpen] = useState(false);
+
 
   const style = {
     transform: transform ? CSS.Transform.toString(transform) : undefined,
@@ -230,15 +230,22 @@ const SortableBlock = ({ block, ...props }: { block: ContentBlock, [key: string]
 
   return (
     <div ref={setNodeRef} style={style} className="relative group/block">
-      <div className="absolute top-0 -left-14 h-full flex items-center gap-1 opacity-0 group-hover/block:opacity-100 transition-opacity">
-        <AddBlockMenu onSelect={(tag) => props.onAdd(props.index, tag)} open={menuOpen} onOpenChange={setMenuOpen}>
+      <div className="absolute top-0 -left-16 h-full flex items-center gap-1 opacity-0 group-hover/block:opacity-100 transition-opacity">
+        <AddBlockMenu onSelect={(tag) => props.onAdd(props.index, tag)} open={addMenuOpen} onOpenChange={setAddMenuOpen}>
             <Button variant="ghost" size="icon" className="h-8 w-8 cursor-pointer">
                 <Plus className="h-4 w-4"/>
             </Button>
         </AddBlockMenu>
-        <div {...attributes} {...listeners} className="cursor-grab p-1">
-          <GripVertical className="h-5 w-5 text-muted-foreground" />
-        </div>
+        <BlockOptionsMenu 
+            onSelect={(action, value) => props.onAction(action, block.id, value)}
+            open={optionsMenuOpen}
+            onOpenChange={setOptionsMenuOpen}
+            blockTag={block.tag}
+        >
+            <Button {...attributes} {...listeners} variant="ghost" size="icon" className="h-8 w-8 cursor-grab">
+                <GripVertical className="h-5 w-5 text-muted-foreground" />
+            </Button>
+        </BlockOptionsMenu>
       </div>
       <EditableBlock 
         block={block}
@@ -406,7 +413,7 @@ export default function ProjectDetailsPage() {
       changesSavedDesc: "Your project details have been updated.",
       translateScope: "Translate Scope",
       translating: "Translating...",
-      commandPlaceholder: "Type / to add a block",
+      commandPlaceholder: "Type / for commands",
       headings: {
         '1': 'Heading 1',
         '2': 'Heading 2',
@@ -586,17 +593,19 @@ export default function ProjectDetailsPage() {
 
   const handleDeleteBlock = useCallback((id: string) => {
       const indexToDelete = blocks.findIndex(b => b.id === id);
-      if (indexToDelete === -1 || blocks.length <= 1) return;
+      if (indexToDelete === -1) return;
 
       const newBlocks = blocks.filter(b => b.id !== id);
       
       updateBlocks(newBlocks);
-      if (indexToDelete > 0) {
+       if (newBlocks.length === 0) {
+        const newBlock = { id: `block-${Date.now()}`, tag: 'p' as const, content: '' };
+        updateBlocks([newBlock]);
+        setActiveBlockId(newBlock.id);
+      } else if (indexToDelete > 0) {
         setActiveBlockId(newBlocks[indexToDelete - 1].id);
-      } else if (newBlocks.length > 0) {
-        setActiveBlockId(newBlocks[0].id);
       } else {
-        setActiveBlockId(null)
+        setActiveBlockId(newBlocks[0].id);
       }
   }, [blocks, updateBlocks]);
 
@@ -661,7 +670,7 @@ export default function ProjectDetailsPage() {
       const target = e.target as HTMLDivElement;
       
       if (e.ctrlKey || e.metaKey) {
-        if (e.key === 'z') {
+        if (e.key.toLowerCase() === 'z') {
             e.preventDefault();
             if (e.shiftKey) {
                 redo();
@@ -670,7 +679,7 @@ export default function ProjectDetailsPage() {
             }
             return;
         }
-        if (e.key === 'y') {
+        if (e.key.toLowerCase() === 'y') {
             e.preventDefault();
             redo();
             return;
@@ -711,7 +720,9 @@ export default function ProjectDetailsPage() {
         if (selection && selection.rangeCount > 0) {
             const range = selection.getRangeAt(0);
             const targetRect = target.getBoundingClientRect();
-            if (!rect || rect.bottom < targetRect.bottom - 5) {
+            const clientRects = target.getClientRects();
+            const lastLineRect = clientRects[clientRects.length -1];
+            if (!range.getClientRects()[0] || range.getClientRects()[0].bottom < lastLineRect.bottom - 5) {
                 moveCursor(currentIndex + 1, 'start');
             }
         }
@@ -722,38 +733,38 @@ export default function ProjectDetailsPage() {
           }
       } else if (e.key === 'ArrowRight') {
           const selection = window.getSelection();
-          if (selection?.anchorOffset === target.textContent?.length) {
+          if (selection && target.textContent && selection.anchorOffset === target.textContent.length) {
             moveCursor(currentIndex + 1, 'start');
           }
       }
       else if (e.key === 'Enter') {
           if (e.shiftKey) return;
           e.preventDefault();
-
+          const selection = window.getSelection();
+          if (!selection || !selection.anchorNode) {
+              handleAddBlock(currentIndex, 'p');
+              return;
+          }
+          
           if (currentBlock.tag === 'ul' || currentBlock.tag === 'ol') {
-            const selection = window.getSelection();
-            if (selection && selection.anchorNode) {
-                const currentLi = selection.anchorNode.parentElement?.closest('li');
-                if (currentLi && currentLi.textContent?.trim() === '') {
-                    const newBlocks = [...blocks];
-                    const listBlock = newBlocks[currentIndex];
-                    const tempDiv = document.createElement('div');
-                    tempDiv.innerHTML = listBlock.content;
-                    const listItems = Array.from(tempDiv.querySelectorAll('li'));
-
-                    listItems[listItems.length - 1].remove();
-                    listBlock.content = listItems.map(li => li.outerHTML).join('');
-
-                    if (listItems.length === 0 || listItems.length === 1 && !listItems[0].textContent?.trim()) {
-                        newBlocks[currentIndex] = { ...newBlocks[currentIndex], tag: 'p', content: '' };
-                        updateBlocks(newBlocks);
-                        setActiveBlockId(newBlocks[currentIndex].id);
-                    } else {
-                        updateBlocks(newBlocks);
-                        handleAddBlock(currentIndex, 'p');
-                    }
-                    return;
+            const currentLi = selection.anchorNode.parentElement?.closest('li');
+            if (currentLi && currentLi.textContent?.trim() === '') {
+                const newBlocks = [...blocks];
+                const listBlock = newBlocks[currentIndex];
+                const tempDiv = document.createElement('div');
+                tempDiv.innerHTML = listBlock.content;
+                const listItems = Array.from(tempDiv.querySelectorAll('li'));
+                listItems.pop();
+                listBlock.content = listItems.map(li => li.outerHTML).join('');
+                if (listItems.length === 0 || (listItems.length === 1 && !listItems[0].textContent?.trim())) {
+                    newBlocks[currentIndex] = { ...newBlocks[currentIndex], tag: 'p', content: '' };
+                    updateBlocks(newBlocks);
+                    setActiveBlockId(newBlocks[currentIndex].id);
+                } else {
+                    updateBlocks(newBlocks);
+                    handleAddBlock(currentIndex, 'p');
                 }
+                return;
             }
           }
 
@@ -821,6 +832,30 @@ export default function ProjectDetailsPage() {
     }
     setIsDeleteDialogOpen(false);
   }
+
+  const handleDuplicateBlock = useCallback((blockId: string) => {
+    const blockToDuplicate = blocks.find(b => b.id === blockId);
+    if (!blockToDuplicate) return;
+    
+    const index = blocks.findIndex(b => b.id === blockId);
+    const newBlock = { ...blockToDuplicate, id: `block-new-${Date.now()}` };
+    
+    const newBlocks = [...blocks];
+    newBlocks.splice(index + 1, 0, newBlock);
+    updateBlocks(newBlocks);
+    setActiveBlockId(newBlock.id);
+  }, [blocks, updateBlocks]);
+
+  const handleBlockAction = useCallback((action: string, blockId: string, value?: any) => {
+    if (action === 'delete') {
+      handleDeleteBlock(blockId);
+    } else if (action === 'duplicate') {
+      handleDuplicateBlock(blockId);
+    } else if (action === 'turnInto') {
+      updateBlockTag(blockId, value);
+    }
+  }, [handleDeleteBlock, handleDuplicateBlock, updateBlockTag]);
+
 
   if (!project || !client) {
     return null;
@@ -899,6 +934,7 @@ export default function ProjectDetailsPage() {
                                     }}
                                     onKeyDown={(e: React.KeyboardEvent<HTMLDivElement>) => handleKeyDown(e, block.id)}
                                     onAdd={handleAddBlock}
+                                    onAction={handleBlockAction}
                                     onFocus={() => setActiveBlockId(block.id)}
                                     isFocused={activeBlockId === block.id}
                                     placeholder={t[projectLanguage as 'en' | 'es'].commandPlaceholder}
@@ -1077,4 +1113,3 @@ export default function ProjectDetailsPage() {
   );
 }
     
-
