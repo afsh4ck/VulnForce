@@ -1,3 +1,4 @@
+
 import { ShieldHalf } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { useSidebar } from './ui/sidebar';
@@ -12,7 +13,9 @@ export function Logo({ className }: LogoProps) {
 
   return (
     <div className={cn("flex items-center gap-2 font-headline text-xl font-bold tracking-tight", className)}>
-      <ShieldHalf className={cn("text-primary transition-all duration-300 ease-in-out", isCollapsed ? "h-5 w-5" : "h-8 w-8")} />
+      <div className={cn("flex items-center justify-center", isCollapsed ? "h-8 w-8" : "h-8 w-8")}>
+        <ShieldHalf className={cn("text-primary transition-all duration-300 ease-in-out h-8 w-8 flex-none shrink-0")} />
+      </div>
       <span className={cn("whitespace-nowrap transition-opacity", isCollapsed ? "opacity-0 w-0" : "opacity-100")}>
         VulnForce
       </span>
