@@ -116,16 +116,17 @@ const EditableBlock = React.forwardRef<HTMLDivElement, {
     const blockRef = useRef<HTMLDivElement>(null);
     
     useEffect(() => {
-        if (blockRef.current && isFocused) {
-            blockRef.current.focus();
+        const element = blockRef.current;
+        if (element && isFocused) {
+            element.focus();
             const range = document.createRange();
             const selection = window.getSelection();
-            range.selectNodeContents(blockRef.current);
+            range.selectNodeContents(element);
             range.collapse(false); // false to collapse to the end
             selection?.removeAllRanges();
             selection?.addRange(range);
         }
-    }, [isFocused]);
+    }, [isFocused, block.id]);
 
     const handleBlur = (e: React.FocusEvent<HTMLDivElement>) => {
         onUpdate(e.currentTarget.innerHTML);
@@ -151,7 +152,7 @@ const EditableBlock = React.forwardRef<HTMLDivElement, {
     const isList = ['ul', 'ol'].includes(block.tag);
 
     const getPlaceholder = () => {
-        if (isFocused && (!block.content || block.content === '<br>')) {
+        if (!block.content || block.content === '<br>') {
              if (block.tag.startsWith('h')) {
                 const level = block.tag.substring(1);
                 return t_editor.headings[level as '1' | '2' | '3' | '4'];
@@ -175,7 +176,6 @@ const EditableBlock = React.forwardRef<HTMLDivElement, {
           <div
               ref={blockRef}
               onBlur={handleBlur}
-              onInput={(e: React.FormEvent<HTMLDivElement>) => onUpdate(e.currentTarget.innerHTML)}
               onKeyDown={onKeyDown}
               contentEditable
               suppressContentEditableWarning
@@ -195,7 +195,14 @@ const EditableBlock = React.forwardRef<HTMLDivElement, {
               dangerouslySetInnerHTML={{ __html: isCode ? block.content.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;") : block.content || (isList ? '<li><br></li>' : '') }}
           />
            {placeholderText && (
-              <div className="absolute top-1 left-1 text-muted-foreground pointer-events-none">{placeholderText}</div>
+                <div className={cn("absolute top-1 left-1 text-muted-foreground pointer-events-none", {
+                    'text-3xl font-bold': block.tag === 'h1',
+                    'text-2xl font-semibold': block.tag === 'h2',
+                    'text-xl font-semibold': block.tag === 'h3',
+                    'text-lg font-semibold': block.tag === 'h4',
+                })}>
+                    {placeholderText}
+                </div>
             )}
         </div>
     );
@@ -260,7 +267,6 @@ export default function ProjectDetailsPage() {
   
   const [activeBlockId, setActiveBlockId] = useState<string | null>(null);
   const [commandMenuOpen, setCommandMenuOpen] = useState(false);
-  const commandMenuRef = useRef<HTMLDivElement>(null);
   
   const [saveStatus, setSaveStatus] = useState<SaveStatus>('saved');
 
@@ -269,11 +275,46 @@ export default function ProjectDetailsPage() {
   const [nextPath, setNextPath] = useState('');
   
   const setHasUnsavedChanges = useLeavePage();
+  
+  const history = useRef<ContentBlock[][]>([]);
+  const historyIndex = useRef(-1);
 
 
   const blockRefs = useRef<Record<string, HTMLDivElement | null>>({});
 
   const client = clients.find(c => c.id === project?.clientId);
+  
+  const pushToHistory = useCallback((newBlocks: ContentBlock[]) => {
+      if (historyIndex.current < history.current.length - 1) {
+          history.current = history.current.slice(0, historyIndex.current + 1);
+      }
+      history.current.push(newBlocks);
+      historyIndex.current++;
+  }, []);
+
+  const updateBlocks = useCallback((newBlocks: ContentBlock[], saveToHistory = true) => {
+    setBlocks(newBlocks);
+    setSaveStatus('unsaved');
+    if (saveToHistory) {
+      pushToHistory(newBlocks);
+    }
+  }, [pushToHistory]);
+
+  const undo = useCallback(() => {
+      if (historyIndex.current > 0) {
+          historyIndex.current--;
+          const previousBlocks = history.current[historyIndex.current];
+          updateBlocks(previousBlocks, false);
+      }
+  }, [updateBlocks]);
+
+  const redo = useCallback(() => {
+      if (historyIndex.current < history.current.length - 1) {
+          historyIndex.current++;
+          const nextBlocks = history.current[historyIndex.current];
+          updateBlocks(nextBlocks, false);
+      }
+  }, [updateBlocks]);
   
   useEffect(() => {
     setHasUnsavedChanges(saveStatus === 'unsaved');
@@ -458,11 +499,12 @@ export default function ProjectDetailsPage() {
       setBlocks(initialBlocks);
       if (initialBlocks.length > 0) {
         setActiveBlockId(initialBlocks[0].id);
+        pushToHistory(initialBlocks);
       }
     } else {
       router.push('/dashboard/projects');
     }
-  }, [id, projects, findings, router]);
+  }, [id, projects, findings, router, pushToHistory]);
   
   const handleSave = useCallback((showToast = true) => {
     if (!project || !name || !clientId || !status || !date?.from || !date?.to) {
@@ -533,13 +575,7 @@ export default function ProjectDetailsPage() {
   };
   
   const sensors = useSensors(useSensor(PointerSensor), useSensor(KeyboardSensor, { coordinateGetter: sortableKeyboardCoordinates }));
-  
-  const updateBlocks = useCallback((newBlocks: ContentBlock[]) => {
-    setBlocks(newBlocks);
-    setSaveStatus('unsaved');
-  }, []);
 
-  
   const handleDeleteBlock = useCallback((id: string) => {
       const indexToDelete = blocks.findIndex(b => b.id === id);
       if (indexToDelete === -1) return;
@@ -548,32 +584,26 @@ export default function ProjectDetailsPage() {
 
       if (newBlocks.length === 0) {
         const newBlock = { id: `block-empty-${Date.now()}`, tag: 'p' as const, content: '' };
-        setBlocks([newBlock]);
+        updateBlocks([newBlock]);
         setActiveBlockId(newBlock.id);
       } else {
-        setBlocks(newBlocks);
-        // Set focus to the previous or next block
+        updateBlocks(newBlocks);
         if (indexToDelete > 0) {
           setActiveBlockId(newBlocks[indexToDelete - 1].id);
         } else if (newBlocks.length > 0) {
           setActiveBlockId(newBlocks[0].id);
         }
       }
-      setSaveStatus('unsaved');
-  }, [blocks]);
+  }, [blocks, updateBlocks]);
 
   const handleDragEnd = useCallback((event: DragEndEvent) => {
     const { active, over } = event;
     if (over && active.id !== over.id) {
-      setBlocks((items) => {
-        const oldIndex = items.findIndex((item) => item.id === active.id);
-        const newIndex = items.findIndex((item) => item.id === over.id);
-        const newItems = arrayMove(items, oldIndex, newIndex);
-        setSaveStatus('unsaved');
-        return newItems;
-      });
+        const oldIndex = blocks.findIndex((item) => item.id === active.id);
+        const newIndex = blocks.findIndex((item) => item.id === over.id);
+        updateBlocks(arrayMove(blocks, oldIndex, newIndex));
     }
-  }, []);
+  }, [blocks, updateBlocks]);
   
   const handleAddBlock = useCallback((index: number, tag: ContentBlock['tag'], content: string = '') => {
     let newBlock: ContentBlock;
@@ -587,49 +617,62 @@ export default function ProjectDetailsPage() {
         case 'ol': newBlock = { id: `block-new-${Date.now()}`, tag: 'ol', content: '<li></li>' }; break;
         case 'hr': newBlock = { id: `block-new-${Date.now()}`, tag: 'hr', content: '' }; break;
         case 'blockquote': newBlock = { id: `block-new-${Date.now()}`, tag: 'blockquote', content: '' }; break;
-        case 'pre': newBlock = { id: `block-new-${Date.now()}`, tag: 'pre', content: '// Tu código aquí' }; break;
+        case 'pre': newBlock = { id: `block-new-${Date.now()}`, tag: 'pre', content: '// Your code here' }; break;
         case 'table': newBlock = { id: `block-new-${Date.now()}`, tag: 'table', content: '<thead><tr><th>Header 1</th><th>Header 2</th></tr></thead><tbody><tr><td>Data 1</td><td>Data 2</td></tr></tbody>' }; break;
         default: newBlock = { id: `block-new-${Date.now()}`, tag: 'p', content: '' };
     }
 
-    setBlocks(prev => {
-        const newBlocks = [...prev];
-        newBlocks.splice(index + 1, 0, newBlock);
-        return newBlocks;
-    });
+    const newBlocks = [...blocks];
+    newBlocks.splice(index + 1, 0, newBlock);
+    updateBlocks(newBlocks);
     setActiveBlockId(newBlock.id);
-    setSaveStatus('unsaved');
-  }, []);
+  }, [blocks, updateBlocks]);
 
   const updateBlockTag = useCallback((id: string, newTag: ContentBlock['tag']) => {
-    setBlocks(blocks => {
-      const newBlocks = blocks.map(b => {
-        if (b.id === id) {
-          const newBlock = { ...b, tag: newTag };
-          if((newTag === 'ul' || newTag === 'ol') && (b.tag !== 'ul' && b.tag !== 'ol')) {
-            const contentAsText = document.createElement('div');
-            contentAsText.innerHTML = b.content;
-            newBlock.content = `<li>${contentAsText.textContent || '<br>'}</li>`;
-          } else if(newTag !== 'ul' && newTag !== 'ol' && (b.tag === 'ul' || b.tag === 'ol')) {
-             const tempEl = document.createElement('div');
-             tempEl.innerHTML = b.content;
-             newBlock.content = tempEl.textContent || '';
-          }
-          return newBlock;
+    const newBlocks = blocks.map(b => {
+      if (b.id === id) {
+        const newBlock = { ...b, tag: newTag };
+        if((newTag === 'ul' || newTag === 'ol') && (b.tag !== 'ul' && b.tag !== 'ol')) {
+          const contentAsText = document.createElement('div');
+          contentAsText.innerHTML = b.content;
+          newBlock.content = `<li>${contentAsText.textContent || '<br>'}</li>`;
+        } else if(newTag !== 'ul' && newTag !== 'ol' && (b.tag === 'ul' || b.tag === 'ol')) {
+           const tempEl = document.createElement('div');
+           tempEl.innerHTML = b.content;
+           newBlock.content = tempEl.textContent || '';
+        } else if (newTag === 'hr') {
+            newBlock.content = '';
         }
-        return b;
-      });
-      return newBlocks;
+        return newBlock;
+      }
+      return b;
     });
+    updateBlocks(newBlocks);
     setActiveBlockId(id);
-    setSaveStatus('unsaved');
-  }, []);
+  }, [blocks, updateBlocks]);
   
   const handleKeyDown = useCallback((e: React.KeyboardEvent<HTMLDivElement>, id: string) => {
       const currentIndex = blocks.findIndex(b => b.id === id);
       const currentBlock = blocks[currentIndex];
       const target = e.target as HTMLDivElement;
       
+      if (e.ctrlKey || e.metaKey) {
+        if (e.key === 'z') {
+            e.preventDefault();
+            if (e.shiftKey) {
+                redo();
+            } else {
+                undo();
+            }
+            return;
+        }
+        if (e.key === 'y') {
+            e.preventDefault();
+            redo();
+            return;
+        }
+      }
+
       const moveCursor = (index: number, position: 'start' | 'end') => {
         if (index >= 0 && index < blocks.length) {
             e.preventDefault();
@@ -685,47 +728,37 @@ export default function ProjectDetailsPage() {
           e.preventDefault();
 
           if (currentBlock.tag === 'ul' || currentBlock.tag === 'ol') {
-              const selection = window.getSelection();
-              if (selection && selection.anchorNode) {
-                  const currentLi = selection.anchorNode.parentElement?.closest('li');
-                  if (currentLi && currentLi.textContent?.trim() === '') {
-                      const newBlocks = [...blocks];
-                      const listBlock = newBlocks[currentIndex];
-                      const tempDiv = document.createElement('div');
-                      tempDiv.innerHTML = listBlock.content;
-                      const listItems = Array.from(tempDiv.querySelectorAll('li'));
-                      const currentLiIndex = listItems.findIndex(li => li.isSameNode(currentLi));
+            const selection = window.getSelection();
+            if (selection && selection.anchorNode) {
+                const currentLi = selection.anchorNode.parentElement?.closest('li');
+                if (currentLi && currentLi.textContent?.trim() === '') {
+                    const newBlocks = [...blocks];
+                    const listBlock = newBlocks[currentIndex];
+                    const tempDiv = document.createElement('div');
+                    tempDiv.innerHTML = listBlock.content;
+                    const listItems = Array.from(tempDiv.querySelectorAll('li'));
 
-                      if (currentLiIndex === listItems.length - 1 && listItems.length > 0) {
-                          // Last item is empty, so we want to break out of the list
-                          listItems.pop(); // Remove the empty li
-                          listBlock.content = listItems.map(li => li.outerHTML).join('');
-                          if (listItems.length === 0) {
-                            // If list becomes empty, convert to paragraph
-                            newBlocks[currentIndex].tag = 'p';
-                            newBlocks[currentIndex].content = '';
-                            updateBlocks(newBlocks);
-                            setActiveBlockId(newBlocks[currentIndex].id);
-                          } else {
-                            handleAddBlock(currentIndex, 'p');
-                          }
-                      } else {
-                          // Regular enter in a list - handled by browser
-                      }
-                  }
-              }
-              return;
+                    listItems[listItems.length - 1].remove();
+                    listBlock.content = listItems.map(li => li.outerHTML).join('');
+
+                    if (listItems.length === 0 || listItems.length === 1 && !listItems[0].textContent?.trim()) {
+                        newBlocks[currentIndex] = { ...newBlocks[currentIndex], tag: 'p', content: '' };
+                        updateBlocks(newBlocks);
+                        setActiveBlockId(newBlocks[currentIndex].id);
+                    } else {
+                        updateBlocks(newBlocks);
+                        handleAddBlock(currentIndex, 'p');
+                    }
+                    return;
+                }
+            }
           }
 
           handleAddBlock(currentIndex, 'p', '');
 
       } else if (e.key === 'Backspace' && (target.innerHTML === '' || target.innerHTML === '<br>')) {
            e.preventDefault();
-            if ((currentBlock.tag === 'ul' || currentBlock.tag === 'ol') && currentBlock.content.replace(/<li>(<br>)?<\/li>/g, '').trim() === '') {
-                updateBlockTag(id, 'p');
-            } else if (currentBlock.tag !== 'p') {
-                updateBlockTag(id, 'p');
-            } else if (blocks.length > 1) {
+            if (blocks.length > 1) {
                 handleDeleteBlock(id);
             }
       } else if (e.key === ' ' && target.textContent?.match(/^#$/)) {
@@ -749,13 +782,16 @@ export default function ProjectDetailsPage() {
       } else if (e.key === ' ' && target.textContent?.match(/^>$/)) {
           e.preventDefault();
           updateBlockTag(id, 'blockquote');
+      } else if (e.key === ' ' && target.textContent?.match(/^---$/)) {
+          e.preventDefault();
+          updateBlockTag(id, 'hr');
       }
        else if (e.key === '/') {
           if (target.textContent === '' || target.textContent === '/') {
               setCommandMenuOpen(true);
           }
       }
-  }, [blocks, handleAddBlock, updateBlockTag, handleDeleteBlock, updateBlocks]);
+  }, [blocks, handleAddBlock, updateBlockTag, handleDeleteBlock, updateBlocks, undo, redo]);
   
   const handleCommandSelect = (command: ContentBlock['tag']) => {
     if (!activeBlockId) return;
@@ -850,7 +886,7 @@ export default function ProjectDetailsPage() {
                                     ref={(el: any) => (blockRefs.current[block.id] = el)}
                                     block={block}
                                     index={index}
-                                    onUpdate={(content: string) => updateBlocks(blocks.map(b => b.id === block.id ? { ...b, content } : b))}
+                                    onUpdate={(newContent: string) => updateBlocks(blocks.map(b => b.id === block.id ? { ...b, content: newContent } : b))}
                                     onKeyDown={(e: React.KeyboardEvent<HTMLDivElement>) => handleKeyDown(e, block.id)}
                                     onAdd={handleAddBlock}
                                     onFocus={() => setActiveBlockId(block.id)}
@@ -1030,3 +1066,4 @@ export default function ProjectDetailsPage() {
     </>
   );
 }
+    
