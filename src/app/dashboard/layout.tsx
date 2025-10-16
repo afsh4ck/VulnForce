@@ -123,8 +123,10 @@ function DashboardNav({ children }: { children: React.ReactNode }) {
   return (
     <LeavePageContext.Provider value={{ setHasUnsavedChanges, handleRequestLeave }}>
       <Sidebar collapsible="icon" className="border-r border-sidebar-border">
-        <SidebarHeader className="p-4">
-          <Logo />
+        <SidebarHeader className={cn("p-2", isCollapsed && "p-2")}>
+          <div className={cn(isCollapsed && 'flex justify-center')}>
+            <Logo />
+          </div>
         </SidebarHeader>
         <SidebarContent>
           <SidebarMenu className="mt-4 space-y-[2px] px-2">
