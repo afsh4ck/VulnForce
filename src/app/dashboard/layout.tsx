@@ -112,7 +112,7 @@ function DashboardNav({ children }: { children: React.ReactNode }) {
         onClick={handleLeaveClick(item.href)} 
         className={cn(
             "flex items-center gap-3 rounded-md px-3 py-2 text-sidebar-foreground transition-colors",
-            isActive ? "bg-sidebar-accent text-primary" : "hover:bg-gray-800 hover:text-primary"
+            isActive ? "bg-muted/50 text-primary" : "hover:bg-muted/50 hover:text-primary"
         )}
       >
         <item.icon className="h-4 w-4" />
@@ -130,7 +130,7 @@ function DashboardNav({ children }: { children: React.ReactNode }) {
           </Link>
         </SidebarHeader>
         <SidebarContent>
-          <SidebarMenu className="mt-4 space-y-0.5">
+          <SidebarMenu className="mt-4 space-y-0.5 px-2">
             {navItems.map((item) => {
                  const isActive = pathname === item.href || (item.href !== '/dashboard' && pathname.startsWith(item.href));
                  return (
@@ -139,7 +139,7 @@ function DashboardNav({ children }: { children: React.ReactNode }) {
                         asChild
                         isActive={isActive}
                         tooltip={{ children: item.label }}
-                        className={cn(isActive ? "bg-sidebar-accent text-primary" : "hover:bg-gray-800 hover:text-primary", "justify-start")}
+                        className={cn(isActive ? "bg-muted/50 text-primary" : "hover:bg-muted/50 hover:text-primary", "justify-start")}
                         >
                             <NavLink item={item} isActive={isActive} />
                         </SidebarMenuButton>
@@ -148,7 +148,7 @@ function DashboardNav({ children }: { children: React.ReactNode }) {
             })}
           </SidebarMenu>
         </SidebarContent>
-         <SidebarHeader className="pb-20">
+         <SidebarHeader className="pb-20 px-2">
           <SidebarMenu className="space-y-0.5">
             {bottomNavItems.map((item) => {
               const isActive = pathname === item.href;
@@ -158,7 +158,7 @@ function DashboardNav({ children }: { children: React.ReactNode }) {
                   asChild
                   isActive={isActive}
                   tooltip={{ children: item.label }}
-                   className={cn(isActive ? "bg-sidebar-accent text-primary" : "hover:bg-gray-800 hover:text-primary", "justify-start")}
+                   className={cn(isActive ? "bg-muted/50 text-primary" : "hover:bg-muted/50 hover:text-primary", "justify-start")}
                 >
                     <NavLink item={item} isActive={isActive} />
                 </SidebarMenuButton>
