@@ -15,10 +15,6 @@ const formatText = (command: string, value?: string) => {
     const selection = window.getSelection();
     if (!selection || selection.rangeCount === 0) return;
 
-    const range = selection.getRangeAt(0);
-    const selectedText = range.toString();
-    if (!selectedText) return;
-
     document.execCommand(command, false, value);
 };
 
@@ -42,19 +38,10 @@ export const FloatingToolbar = ({ position }: FloatingToolbarProps) => {
     }
   }
 
-  const handleMouseDown = (e: React.MouseEvent, action: () => void) => {
+  const handleFormatAction = (action: () => void) => (e: React.MouseEvent) => {
       e.preventDefault();
-      const selection = window.getSelection();
-      if (!selection || selection.rangeCount === 0) return;
-      const range = selection.getRangeAt(0);
-      
       action();
-      
-      // Re-apply the selection after the format is applied
-      selection.removeAllRanges();
-      selection.addRange(range);
   };
-
 
   const toolbarStyle: React.CSSProperties = {
     position: 'absolute',
@@ -101,7 +88,7 @@ export const FloatingToolbar = ({ position }: FloatingToolbarProps) => {
         {toolbarOptions.map((option) => (
           <Tooltip key={option.name}>
             <TooltipTrigger asChild>
-              <Button variant="ghost" size="icon" className="h-8 w-8" onMouseDown={(e) => handleMouseDown(e, option.action)}>
+              <Button variant="ghost" size="icon" className="h-8 w-8" onMouseDown={handleFormatAction(option.action)}>
                 <option.icon className="h-4 w-4" />
               </Button>
             </TooltipTrigger>
