@@ -108,17 +108,10 @@ function DashboardNav({ children }: { children: React.ReactNode }) {
     const isCollapsed = state === 'collapsed';
 
     return (
-      <Link 
-        href={item.href} 
-        onClick={handleLeaveClick(item.href)} 
-        className={cn(
-            "flex items-center gap-3 rounded-md px-3 py-2 text-sidebar-foreground transition-colors h-9",
-            isActive ? "bg-muted/50 text-primary" : "hover:bg-muted/50 hover:text-primary"
-        )}
-      >
-        <item.icon className="h-5 w-5" />
-        <span className={cn("truncate", isCollapsed && "hidden")}>{item.label}</span>
-      </Link>
+        <Link href={item.href} onClick={handleLeaveClick(item.href)} className="flex items-center gap-3">
+            <item.icon className="h-5 w-5 shrink-0" />
+            <span className={cn("truncate", isCollapsed && "hidden")}>{item.label}</span>
+        </Link>
     );
   };
 
@@ -138,8 +131,8 @@ function DashboardNav({ children }: { children: React.ReactNode }) {
                             asChild
                             isActive={isActive}
                             tooltip={{ children: item.label, side: 'right' }}
-                            className={cn(
-                                "justify-start",
+                             className={cn(
+                                "justify-start h-9",
                                 isActive ? "bg-muted/50 text-primary" : "hover:bg-muted/50 hover:text-primary"
                             )}
                         >
@@ -160,7 +153,10 @@ function DashboardNav({ children }: { children: React.ReactNode }) {
                   asChild
                   isActive={isActive}
                   tooltip={{ children: item.label, side: 'right' }}
-                   className={cn("justify-start", isActive ? "bg-muted/50 text-primary" : "hover:bg-muted/50 hover:text-primary")}
+                   className={cn(
+                        "justify-start h-9", 
+                        isActive ? "bg-muted/50 text-primary" : "hover:bg-muted/50 hover:text-primary"
+                    )}
                 >
                     <NavLink item={item} isActive={isActive} />
                 </SidebarMenuButton>
