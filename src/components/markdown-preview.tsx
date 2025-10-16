@@ -24,19 +24,24 @@ export const MarkdownPreview = ({ content, getImage, isReport }: { content: stri
     };
     
     const CustomHeading = ({ level, children, ...props }: { level: number, children: React.ReactNode, [key: string]: any }) => {
-        const childArray = React.Children.toArray(children);
         let textContent = '';
-        React.Children.forEach(childArray, (child) => {
+        let rawContent: React.ReactNode[] = [];
+    
+        React.Children.forEach(children, (child) => {
             if (typeof child === 'string') {
+                rawContent.push(child);
                 textContent += child;
             } else if (React.isValidElement(child) && typeof child.props.children === 'string') {
+                rawContent.push(child.props.children);
                 textContent += child.props.children;
+            } else {
+                 rawContent.push(child);
             }
         });
         
         const match = textContent.match(/(.*) {#(.*)}/);
         const rawText = match ? match[1].trim() : textContent.trim();
-        const id = match ? match[2].trim() : rawText.trim().replace(/\s+/g, '-').replace(/[^\w-]+/g, '');
+        const id = match ? match[2].trim() : (rawText.trim().replace(/\s+/g, '-').replace(/[^\w-]+/g, '') || `section-${Math.random().toString(36).substr(2, 9)}`);
 
         const severityRegex = /\[SEVERITY:(.*?),CVSS:(.*?)\]/;
         const severityMatch = rawText.match(severityRegex);
