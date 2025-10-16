@@ -1,4 +1,5 @@
 
+
 'use client';
 
 import React, { useState, useMemo, useEffect, useCallback, useRef } from 'react';
@@ -153,18 +154,19 @@ const EditableBlock = React.forwardRef<HTMLDivElement, {
     const isList = ['ul', 'ol'].includes(block.tag);
 
     const getPlaceholderText = () => {
+        if (!isFocused) return null;
+
         const tempDiv = document.createElement('div');
         tempDiv.innerHTML = block.content;
         const isEmpty = !tempDiv.textContent?.trim() && !tempDiv.querySelector('img');
 
         if (!isEmpty) return null;
+        
+        if (block.tag === 'p') return placeholder;
 
         if (block.tag.startsWith('h')) {
             const level = block.tag.substring(1);
             return t_editor.headings[level as '1' | '2' | '3' | '4'];
-        }
-        if (!isList && !isCode) {
-            return placeholder;
         }
         
         return null;
@@ -228,7 +230,7 @@ const SortableBlock = ({ block, ...props }: { block: ContentBlock, [key: string]
 
   return (
     <div ref={setNodeRef} style={style} className="relative group/block">
-      <div className="absolute top-0 -left-12 h-full flex items-center gap-1 opacity-0 group-hover/block:opacity-100 transition-opacity">
+      <div className="absolute top-0 -left-14 h-full flex items-center gap-1 opacity-0 group-hover/block:opacity-100 transition-opacity">
         <AddBlockMenu onSelect={(tag) => props.onAdd(props.index, tag)} open={menuOpen} onOpenChange={setMenuOpen}>
             <Button variant="ghost" size="icon" className="h-8 w-8 cursor-pointer">
                 <Plus className="h-4 w-4"/>
@@ -404,7 +406,7 @@ export default function ProjectDetailsPage() {
       changesSavedDesc: "Your project details have been updated.",
       translateScope: "Translate Scope",
       translating: "Translating...",
-      commandPlaceholder: "Type '/' for commands",
+      commandPlaceholder: "Type / to add a block",
       headings: {
         '1': 'Heading 1',
         '2': 'Heading 2',
@@ -458,7 +460,7 @@ export default function ProjectDetailsPage() {
       changesSavedDesc: "Los detalles de tu proyecto han sido actualizados.",
       translateScope: "Traducir Alcance",
       translating: "Traduciendo...",
-      commandPlaceholder: "Escribe '/' para ver comandos",
+      commandPlaceholder: "Escribe / para añadir un bloque",
       headings: {
         '1': 'Título 1',
         '2': 'Título 2',
@@ -584,21 +586,17 @@ export default function ProjectDetailsPage() {
 
   const handleDeleteBlock = useCallback((id: string) => {
       const indexToDelete = blocks.findIndex(b => b.id === id);
-      if (indexToDelete === -1) return;
+      if (indexToDelete === -1 || blocks.length <= 1) return;
 
       const newBlocks = blocks.filter(b => b.id !== id);
-
-      if (newBlocks.length === 0) {
-        const newBlock = { id: `block-empty-${Date.now()}`, tag: 'p' as const, content: '' };
-        updateBlocks([newBlock]);
-        setActiveBlockId(newBlock.id);
+      
+      updateBlocks(newBlocks);
+      if (indexToDelete > 0) {
+        setActiveBlockId(newBlocks[indexToDelete - 1].id);
+      } else if (newBlocks.length > 0) {
+        setActiveBlockId(newBlocks[0].id);
       } else {
-        updateBlocks(newBlocks);
-        if (indexToDelete > 0) {
-          setActiveBlockId(newBlocks[indexToDelete - 1].id);
-        } else if (newBlocks.length > 0) {
-          setActiveBlockId(newBlocks[0].id);
-        }
+        setActiveBlockId(null)
       }
   }, [blocks, updateBlocks]);
 
@@ -615,17 +613,17 @@ export default function ProjectDetailsPage() {
     let newBlock: ContentBlock;
     
     switch(tag) {
-        case 'h1': newBlock = { id: `block-new-${Date.now()}`, tag: 'h1', content: '' }; break;
-        case 'h2': newBlock = { id: `block-new-${Date.now()}`, tag: 'h2', content: '' }; break;
-        case 'h3': newBlock = { id: `block-new-${Date.now()}`, tag: 'h3', content: '' }; break;
-        case 'h4': newBlock = { id: `block-new-${Date.now()}`, tag: 'h4', content: '' }; break;
-        case 'ul': newBlock = { id: `block-new-${Date.now()}`, tag: 'ul', content: '<li></li>' }; break;
-        case 'ol': newBlock = { id: `block-new-${Date.now()}`, tag: 'ol', content: '<li></li>' }; break;
+        case 'h1': newBlock = { id: `block-new-${Date.now()}`, tag: 'h1', content: content }; break;
+        case 'h2': newBlock = { id: `block-new-${Date.now()}`, tag: 'h2', content: content }; break;
+        case 'h3': newBlock = { id: `block-new-${Date.now()}`, tag: 'h3', content: content }; break;
+        case 'h4': newBlock = { id: `block-new-${Date.now()}`, tag: 'h4', content: content }; break;
+        case 'ul': newBlock = { id: `block-new-${Date.now()}`, tag: 'ul', content: `<li>${content}</li>` }; break;
+        case 'ol': newBlock = { id: `block-new-${Date.now()}`, tag: 'ol', content: `<li>${content}</li>` }; break;
         case 'hr': newBlock = { id: `block-new-${Date.now()}`, tag: 'hr', content: '' }; break;
-        case 'blockquote': newBlock = { id: `block-new-${Date.now()}`, tag: 'blockquote', content: '' }; break;
+        case 'blockquote': newBlock = { id: `block-new-${Date.now()}`, tag: 'blockquote', content: content }; break;
         case 'pre': newBlock = { id: `block-new-${Date.now()}`, tag: 'pre', content: '// Your code here' }; break;
         case 'table': newBlock = { id: `block-new-${Date.now()}`, tag: 'table', content: '<thead><tr><th>Header 1</th><th>Header 2</th></tr></thead><tbody><tr><td>Data 1</td><td>Data 2</td></tr></tbody>' }; break;
-        default: newBlock = { id: `block-new-${Date.now()}`, tag: 'p', content: '' };
+        default: newBlock = { id: `block-new-${Date.now()}`, tag: 'p', content: content };
     }
 
     const newBlocks = [...blocks];
@@ -712,7 +710,6 @@ export default function ProjectDetailsPage() {
         const selection = window.getSelection();
         if (selection && selection.rangeCount > 0) {
             const range = selection.getRangeAt(0);
-            const rect = range.getClientRects()[0];
             const targetRect = target.getBoundingClientRect();
             if (!rect || rect.bottom < targetRect.bottom - 5) {
                 moveCursor(currentIndex + 1, 'start');
@@ -892,7 +889,14 @@ export default function ProjectDetailsPage() {
                                     ref={(el: any) => (blockRefs.current[block.id] = el)}
                                     block={block}
                                     index={index}
-                                    onUpdate={(newContent: string) => updateBlocks(blocks.map(b => b.id === block.id ? { ...b, content: newContent } : b))}
+                                    onUpdate={(newContent: string) => {
+                                        const tempDiv = document.createElement('div');
+                                        tempDiv.innerHTML = newContent;
+                                        if (tempDiv.textContent === '/' && commandMenuOpen) {
+                                            return;
+                                        }
+                                        updateBlocks(blocks.map(b => b.id === block.id ? { ...b, content: newContent } : b));
+                                    }}
                                     onKeyDown={(e: React.KeyboardEvent<HTMLDivElement>) => handleKeyDown(e, block.id)}
                                     onAdd={handleAddBlock}
                                     onFocus={() => setActiveBlockId(block.id)}
@@ -1073,3 +1077,4 @@ export default function ProjectDetailsPage() {
   );
 }
     
+
