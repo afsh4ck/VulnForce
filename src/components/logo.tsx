@@ -12,7 +12,7 @@ export function Logo({ className }: LogoProps) {
 
   return (
     <div className={cn("flex items-center gap-2 font-headline text-xl font-bold tracking-tight", className)}>
-      <ShieldHalf className="h-8 w-8 text-primary transition-transform duration-300 ease-in-out" />
+      <ShieldHalf className={cn("text-primary transition-all duration-300 ease-in-out", isCollapsed ? "h-5 w-5" : "h-8 w-8")} />
       <span className={cn("whitespace-nowrap transition-opacity", isCollapsed ? "opacity-0 w-0" : "opacity-100")}>
         VulnForce
       </span>
