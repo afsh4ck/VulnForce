@@ -167,19 +167,16 @@ const EditableBlock = React.forwardRef<HTMLDivElement, {
     const isEmpty = !block.content || block.content === '<br>' || block.content === '<li><br></li>';
 
     const getPlaceholderText = () => {
-        if (!isFocused || !isEmpty) return null;
-
-        if (block.tag.startsWith('h')) {
-            const level = block.tag.substring(1);
-            return t_editor.headings[level as '1' | '2' | '3' | '4'];
-        }
-        if (block.tag === 'p') return placeholder;
-
-        return null;
+      if (block.tag.startsWith('h')) {
+        const level = block.tag.substring(1);
+        return t_editor.headings[level as '1' | '2' | '3' | '4'];
+      }
+      if (block.tag === 'p') return placeholder;
+      return null;
     };
     
     const placeholderText = getPlaceholderText();
-    const showPlaceholder = isFocused && isEmpty;
+    const showPlaceholder = isEmpty;
 
     return (
         <div 
@@ -215,6 +212,7 @@ const EditableBlock = React.forwardRef<HTMLDivElement, {
                     'text-2xl font-semibold': block.tag === 'h2',
                     'text-xl font-semibold': block.tag === 'h3',
                     'text-lg font-semibold': block.tag === 'h4',
+                    'opacity-0': !isFocused
                 })}>
                     {placeholderText}
                 </div>
@@ -251,9 +249,9 @@ const SortableBlock = ({ block, ...props }: { block: ContentBlock, [key: string]
             onOpenChange={setOptionsMenuOpen}
             blockTag={block.tag}
         >
-            <Button {...attributes} {...listeners} variant="ghost" size="icon" className="h-8 w-8 cursor-grab">
+            <div {...attributes} {...listeners} className="p-1 cursor-grab">
                 <GripVertical className="h-5 w-5 text-muted-foreground" />
-            </Button>
+            </div>
         </BlockOptionsMenu>
       </div>
       <EditableBlock 
