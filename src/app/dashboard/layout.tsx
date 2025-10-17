@@ -1,4 +1,5 @@
 
+
 'use client';
 import Link from 'next/link';
 import { usePathname, useRouter } from 'next/navigation';
@@ -125,7 +126,7 @@ function DashboardNav({ children }: { children: React.ReactNode }) {
     <LeavePageContext.Provider value={{ setHasUnsavedChanges, handleRequestLeave }}>
       <Sidebar collapsible="icon" className="border-r border-sidebar-border">
         <SidebarHeader className={cn("p-2", isCollapsed && "p-2 justify-center")}>
-          <Logo />
+          <Logo isCollapsed={isCollapsed} />
         </SidebarHeader>
         <SidebarContent>
           <SidebarMenu className="mt-4 space-y-px px-2">

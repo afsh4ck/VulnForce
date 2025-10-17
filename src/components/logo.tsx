@@ -5,12 +5,10 @@ import { useSidebar } from './ui/sidebar';
 
 interface LogoProps {
   className?: string;
+  isCollapsed?: boolean;
 }
 
-export function Logo({ className }: LogoProps) {
-  const { state } = useSidebar();
-  const isCollapsed = state === 'collapsed';
-
+export function Logo({ className, isCollapsed = false }: LogoProps) {
   return (
     <div className={cn("flex items-center gap-2 font-headline text-xl font-bold tracking-tight", className)}>
       <div className={cn("flex items-center justify-center")}>
