@@ -4,7 +4,7 @@ import React, { useState, useMemo } from 'react';
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
-import { PlusCircle, Search, ArrowUpDown, Edit, Trash2, FileText, Scan, Globe, Network, Smartphone, Wifi, Award } from "lucide-react";
+import { PlusCircle, Search, ArrowUpDown, Edit, Trash2, FileText, Scan, Globe, Network, Smartphone, Wifi, Award, Copy } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import Link from 'next/link';
 import { Input } from "@/components/ui/input";
@@ -14,6 +14,7 @@ import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, 
 import { useToast } from '@/hooks/use-toast';
 import { useRouter } from 'next/navigation';
 import { useData } from '@/context/data-context';
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
 
 type SortKey = keyof Project | 'clientName';
 
@@ -31,7 +32,7 @@ export default function ProjectsPage() {
   const { language } = useLanguage();
   const { toast } = useToast();
   const router = useRouter();
-  const { projects, clients, deleteProject } = useData();
+  const { projects, clients, deleteProject, duplicateProject } = useData();
   const [searchTerm, setSearchTerm] = useState('');
   const [sortConfig, setSortConfig] = useState<{ key: SortKey; direction: 'ascending' | 'descending' } | null>(null);
   const [projectToDelete, setProjectToDelete] = useState<Project | null>(null);
@@ -60,6 +61,11 @@ export default function ProjectsPage() {
     toast({ title: t[language].projectDeleted });
     setProjectToDelete(null);
   };
+  
+  const handleDuplicateProject = (projectId: string) => {
+    duplicateProject(projectId);
+    toast({ title: t[language].projectDuplicated });
+  }
 
   const handleEditProject = (projectId: string) => {
     router.push(`/dashboard/projects/${projectId}`);
@@ -118,11 +124,13 @@ export default function ProjectsPage() {
       endDateHeader: "End Date",
       actionsHeader: "Actions",
       edit: "Edit",
+      duplicate: "Duplicate",
       delete: "Delete",
       confirmDeleteTitle: "Are you sure?",
       confirmDeleteDesc: "This action cannot be undone. This will permanently delete the project and all its findings.",
       cancel: "Cancel",
-      projectDeleted: "Project deleted successfully."
+      projectDeleted: "Project deleted successfully.",
+      projectDuplicated: "Project duplicated successfully.",
     },
     es: {
       title: "Proyectos",
@@ -134,11 +142,13 @@ export default function ProjectsPage() {
       endDateHeader: "Fecha de Fin",
       actionsHeader: "Acciones",
       edit: "Editar",
+      duplicate: "Duplicar",
       delete: "Eliminar",
       confirmDeleteTitle: "¿Estás seguro?",
       confirmDeleteDesc: "Esta acción no se puede deshacer. Esto eliminará permanentemente el proyecto y todos sus hallazgos.",
       cancel: "Cancelar",
-      projectDeleted: "Proyecto eliminado correctamente."
+      projectDeleted: "Proyecto eliminado correctamente.",
+      projectDuplicated: "Proyecto duplicado correctamente.",
     }
   }
 
@@ -167,57 +177,81 @@ export default function ProjectsPage() {
 
       <Card>
         <CardContent className="pt-6">
-          <Table>
-            <TableHeader>
-              <TableRow>
-                <TableHead onClick={() => requestSort('name')} className="cursor-pointer hover:bg-muted/50">
-                  <div className="flex flex-row items-center">{t[language].projectNameHeader} {getSortIcon('name')}</div>
-                </TableHead>
-                <TableHead onClick={() => requestSort('clientName')} className="cursor-pointer hover:bg-muted/50">
-                  <div className="flex flex-row items-center">{t[language].clientHeader} {getSortIcon('clientName')}</div>
-                </TableHead>
-                <TableHead onClick={() => requestSort('status')} className="cursor-pointer hover:bg-muted/50">
-                  <div className="flex flex-row items-center">{t[language].statusHeader} {getSortIcon('status')}</div>
-                </TableHead>
-                <TableHead onClick={() => requestSort('endDate')} className="cursor-pointer hover:bg-muted/50">
-                  <div className="flex flex-row items-center">{t[language].endDateHeader} {getSortIcon('endDate')}</div>
-                </TableHead>
-                <TableHead className="text-right">{t[language].actionsHeader}</TableHead>
-              </TableRow>
-            </TableHeader>
-            <TableBody>
-              {sortedAndFilteredProjects.map(project => {
-                const Icon = iconComponents[project.icon] || FileText;
-                return (
-                  <TableRow key={project.id}>
-                    <TableCell className="font-medium">
-                      <Link href={`/dashboard/projects/${project.id}`} className="hover:text-primary flex items-center gap-2">
-                        <Icon className="h-5 w-5" />
-                        {project.name}
-                      </Link>
-                    </TableCell>
-                    <TableCell>{project.clientName}</TableCell>
-                    <TableCell>
-                      <Badge variant={getStatusVariant(project.status) as any}>{getStatus(project.status)}</Badge>
-                    </TableCell>
-                    <TableCell>{new Date(project.endDate).toLocaleDateString()}</TableCell>
-                    <TableCell className="text-right">
-                      <div className="flex justify-end gap-2">
-                          <Button variant="ghost" size="icon" onClick={() => handleEditProject(project.id)}>
-                            <Edit className="h-4 w-4" />
-                            <span className="sr-only">{t[language].edit}</span>
-                          </Button>
-                          <Button variant="ghost" size="icon" onClick={() => setProjectToDelete(project)} className="text-destructive hover:bg-destructive hover:text-destructive-foreground">
-                            <Trash2 className="h-4 w-4" />
-                            <span className="sr-only">{t[language].delete}</span>
-                          </Button>
-                      </div>
-                    </TableCell>
-                  </TableRow>
-                )
-              })}
-            </TableBody>
-          </Table>
+          <TooltipProvider>
+            <Table>
+              <TableHeader>
+                <TableRow>
+                  <TableHead onClick={() => requestSort('name')} className="cursor-pointer hover:bg-muted/50">
+                    <div className="flex flex-row items-center">{t[language].projectNameHeader} {getSortIcon('name')}</div>
+                  </TableHead>
+                  <TableHead onClick={() => requestSort('clientName')} className="cursor-pointer hover:bg-muted/50">
+                    <div className="flex flex-row items-center">{t[language].clientHeader} {getSortIcon('clientName')}</div>
+                  </TableHead>
+                  <TableHead onClick={() => requestSort('status')} className="cursor-pointer hover:bg-muted/50">
+                    <div className="flex flex-row items-center">{t[language].statusHeader} {getSortIcon('status')}</div>
+                  </TableHead>
+                  <TableHead onClick={() => requestSort('endDate')} className="cursor-pointer hover:bg-muted/50">
+                    <div className="flex flex-row items-center">{t[language].endDateHeader} {getSortIcon('endDate')}</div>
+                  </TableHead>
+                  <TableHead className="text-right">{t[language].actionsHeader}</TableHead>
+                </TableRow>
+              </TableHeader>
+              <TableBody>
+                {sortedAndFilteredProjects.map(project => {
+                  const Icon = iconComponents[project.icon] || FileText;
+                  return (
+                    <TableRow key={project.id}>
+                      <TableCell className="font-medium">
+                        <Link href={`/dashboard/projects/${project.id}`} className="hover:text-primary flex items-center gap-2">
+                          <Icon className="h-5 w-5" />
+                          {project.name}
+                        </Link>
+                      </TableCell>
+                      <TableCell>{project.clientName}</TableCell>
+                      <TableCell>
+                        <Badge variant={getStatusVariant(project.status) as any}>{getStatus(project.status)}</Badge>
+                      </TableCell>
+                      <TableCell>{new Date(project.endDate).toLocaleDateString()}</TableCell>
+                      <TableCell className="text-right">
+                        <div className="flex justify-end gap-2">
+                            <Tooltip>
+                              <TooltipTrigger asChild>
+                                <Button variant="ghost" size="icon" onClick={() => handleEditProject(project.id)}>
+                                  <Edit className="h-4 w-4" />
+                                </Button>
+                              </TooltipTrigger>
+                              <TooltipContent>
+                                <p>{t[language].edit}</p>
+                              </TooltipContent>
+                            </Tooltip>
+                            <Tooltip>
+                              <TooltipTrigger asChild>
+                                <Button variant="ghost" size="icon" onClick={() => handleDuplicateProject(project.id)}>
+                                  <Copy className="h-4 w-4" />
+                                </Button>
+                              </TooltipTrigger>
+                              <TooltipContent>
+                                <p>{t[language].duplicate}</p>
+                              </TooltipContent>
+                            </Tooltip>
+                            <Tooltip>
+                              <TooltipTrigger asChild>
+                                <Button variant="ghost" size="icon" onClick={() => setProjectToDelete(project)} className="text-destructive hover:bg-destructive hover:text-destructive-foreground">
+                                  <Trash2 className="h-4 w-4" />
+                                </Button>
+                              </TooltipTrigger>
+                              <TooltipContent>
+                                <p>{t[language].delete}</p>
+                              </TooltipContent>
+                            </Tooltip>
+                        </div>
+                      </TableCell>
+                    </TableRow>
+                  )
+                })}
+              </TableBody>
+            </Table>
+          </TooltipProvider>
         </CardContent>
       </Card>
     </div>

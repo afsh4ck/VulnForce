@@ -1,6 +1,7 @@
 
 
 
+
 'use client';
 
 import React, { createContext, useContext, useState, useEffect, ReactNode } from 'react';
@@ -26,6 +27,7 @@ interface DataContextType {
   addProject: (project: Omit<Project, 'id' | 'createdAt' | 'updatedAt' | 'reportBody'> & { scope: string; startDate: Date, endDate: Date }) => Project;
   updateProject: (project: Project) => void;
   deleteProject: (projectId: string) => void;
+  duplicateProject: (projectId: string) => void;
   addFinding: (finding: Omit<Finding, 'id' | 'createdAt' | 'updatedAt'>) => void;
   updateFinding: (finding: Omit<Finding, 'createdAt' | 'updatedAt'>) => void;
   deleteFinding: (findingId: string) => void;
@@ -141,6 +143,21 @@ export function DataProvider({ children }: { children: ReactNode }) {
         // Also delete associated findings
         setFindings(prev => prev.filter(f => f.projectId !== projectId));
     };
+    
+    const duplicateProject = (projectId: string) => {
+      const projectToDuplicate = projects.find(p => p.id === projectId);
+      if (projectToDuplicate) {
+        const now = new Date().toISOString();
+        const newProject = {
+          ...projectToDuplicate,
+          id: `proj-${Date.now()}`,
+          name: `${projectToDuplicate.name} (Copia)`,
+          createdAt: now,
+          updatedAt: now,
+        };
+        setProjects(prev => [...prev, newProject]);
+      }
+    }
 
     // Finding functions
     const addFinding = (finding: Omit<Finding, 'id' | 'createdAt' | 'updatedAt'>) => {
@@ -241,7 +258,7 @@ export function DataProvider({ children }: { children: ReactNode }) {
         <DataContext.Provider value={{
             clients, projects, findings, vulnerabilities, images, projectTemplates,
             addClient, updateClient, deleteClient,
-            addProject, updateProject, deleteProject,
+            addProject, updateProject, deleteProject, duplicateProject,
             addFinding, updateFinding, deleteFinding,
             addVulnerability, updateVulnerability, deleteVulnerability,
             addImage, getImage,
