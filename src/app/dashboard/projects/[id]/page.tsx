@@ -54,36 +54,102 @@ const iconOptions = [
     { value: 'Award', label: 'Award' },
 ];
 
-function parseHtmlToBlocks(html: string): ContentBlock[] {
-  if (typeof document === 'undefined' || !html) {
-    return [{ id: `block-${Date.now()}`, tag: 'p', content: '' }];
-  }
-  const el = document.createElement('div');
-  el.innerHTML = html;
-  const blocks: ContentBlock[] = [];
-  el.childNodes.forEach((node) => {
-    const id = `block-${Date.now()}-${Math.random()}`;
-    if (node.nodeType === Node.ELEMENT_NODE) {
-      const element = node as HTMLElement;
-      const tag = element.tagName.toLowerCase();
-      if (['h1', 'h2', 'h3', 'h4', 'p', 'blockquote'].includes(tag)) {
-        blocks.push({ id, tag: tag as 'h1' | 'h2' |'h3' | 'h4' |'p' | 'blockquote', content: element.innerHTML || '' });
-      } else if (tag === 'pre') {
-         blocks.push({ id, tag: 'pre', content: element.querySelector('code')?.textContent || '' });
-      } else if (tag === 'ul' || tag === 'ol') {
-        const itemsHtml = Array.from(element.querySelectorAll('li')).map(li => `<li>${li.innerHTML}</li>`).join('');
-        blocks.push({ id, tag: tag as 'ul' | 'ol', content: itemsHtml });
-      } else if (tag === 'hr') {
-        blocks.push({ id, tag: 'hr', content: '' });
-      } else if (tag === 'table') {
-        blocks.push({ id, tag: 'table', content: element.innerHTML });
-      }
-    } else if (node.nodeType === Node.TEXT_NODE && node.textContent?.trim()) {
-      blocks.push({ id, tag: 'p', content: node.textContent.trim() });
+function parseMarkdownToBlocks(markdown: string): ContentBlock[] {
+    if (typeof document === 'undefined' || !markdown) {
+        return [{ id: `block-${Date.now()}`, tag: 'p', content: '' }];
     }
-  });
-  if (blocks.length === 0) return [{ id: `block-${Date.now()}`, tag: 'p', content: '' }];
-  return blocks;
+
+    const blocks: ContentBlock[] = [];
+    const lines = markdown.split('\n');
+    let currentBlock: Partial<ContentBlock> = {};
+    let inCodeBlock = false;
+
+    function pushCurrentBlock() {
+        if (currentBlock.content) {
+            blocks.push({
+                id: currentBlock.id || `block-${Date.now()}-${Math.random()}`,
+                tag: currentBlock.tag || 'p',
+                content: currentBlock.content.trim()
+            } as ContentBlock);
+        }
+        currentBlock = {};
+    }
+
+    for (const line of lines) {
+        if (line.startsWith('```')) {
+            if (inCodeBlock) {
+                pushCurrentBlock();
+                inCodeBlock = false;
+            } else {
+                pushCurrentBlock();
+                inCodeBlock = true;
+                const lang = line.substring(3).trim();
+                currentBlock = { 
+                    id: `block-${Date.now()}-${Math.random()}`,
+                    tag: 'pre', 
+                    content: '' 
+                };
+            }
+            continue;
+        }
+
+        if (inCodeBlock) {
+            currentBlock.content = (currentBlock.content || '') + line + '\n';
+            continue;
+        }
+
+        if (line.trim() === '---') {
+            pushCurrentBlock();
+            blocks.push({ id: `block-${Date.now()}-${Math.random()}`, tag: 'hr', content: '' });
+            continue;
+        }
+
+        const headingMatch = line.match(/^(#{1,4})\s(.*)/);
+        if (headingMatch) {
+            pushCurrentBlock();
+            const level = headingMatch[1].length;
+            blocks.push({
+                id: `block-${Date.now()}-${Math.random()}`,
+                tag: `h${level}` as 'h1' | 'h2' | 'h3' | 'h4',
+                content: headingMatch[2]
+            });
+            continue;
+        }
+
+        const listMatch = line.match(/^(\s*)(-|\*|\d+\.)\s(.*)/);
+        if (listMatch) {
+            const listType = listMatch[2].includes('.') ? 'ol' : 'ul';
+            if (currentBlock.tag !== listType) {
+                pushCurrentBlock();
+                currentBlock = { id: `block-${Date.now()}-${Math.random()}`, tag: listType, content: '' };
+            }
+            currentBlock.content += `<li>${line.replace(/^(\s*)(-|\*|\d+\.)\s/, '')}</li>`;
+            continue;
+        }
+        
+        if (line.startsWith('>')) {
+            pushCurrentBlock();
+            blocks.push({ id: `block-${Date.now()}-${Math.random()}`, tag: 'blockquote', content: line.substring(1).trim() });
+            continue;
+        }
+
+        if (line.trim() === '' && currentBlock.content) {
+            pushCurrentBlock();
+        } else if (line.trim() !== '') {
+            if (currentBlock.tag !== 'p' && currentBlock.content) {
+                 pushCurrentBlock();
+            }
+            if (!currentBlock.tag) {
+                currentBlock = { id: `block-${Date.now()}-${Math.random()}`, tag: 'p', content: '' };
+            }
+            currentBlock.content = (currentBlock.content ? currentBlock.content + ' ' : '') + line;
+        }
+    }
+
+    pushCurrentBlock();
+
+    if (blocks.length === 0) return [{ id: `block-${Date.now()}`, tag: 'p', content: '' }];
+    return blocks;
 }
 
 function blocksToHtml(blocks: ContentBlock[]): string {
@@ -167,6 +233,7 @@ const EditableBlock = React.forwardRef<HTMLDivElement, {
     const isEmpty = !block.content || block.content === '<br>' || block.content === '<li><br></li>';
 
     const getPlaceholderText = () => {
+      if (!isFocused) return null;
       if (block.tag.startsWith('h')) {
         const level = block.tag.substring(1);
         return t_editor.headings[level as '1' | '2' | '3' | '4'];
@@ -176,7 +243,7 @@ const EditableBlock = React.forwardRef<HTMLDivElement, {
     };
     
     const placeholderText = getPlaceholderText();
-    const showPlaceholder = isEmpty;
+    const showPlaceholder = isEmpty && isFocused;
 
     return (
         <div 
@@ -212,7 +279,6 @@ const EditableBlock = React.forwardRef<HTMLDivElement, {
                     'text-2xl font-semibold': block.tag === 'h2',
                     'text-xl font-semibold': block.tag === 'h3',
                     'text-lg font-semibold': block.tag === 'h4',
-                    'opacity-0': !isFocused
                 })}>
                     {placeholderText}
                 </div>
@@ -420,7 +486,7 @@ export default function ProjectDetailsPage() {
       changesSaved: "Changes Saved",
       changesSavedDesc: "Your project details have been updated.",
       translateScope: "Translate Scope",
-      translating: "Translating...",
+      translating: "Traduciendo...",
       commandPlaceholder: "Type / to add a block",
       headings: {
         '1': 'Heading 1',
@@ -518,7 +584,7 @@ export default function ProjectDetailsPage() {
       setProjectLanguage(currentProject.language);
       const filteredFindings = findings.filter(f => f.projectId === currentProject.id);
       setProjectFindings(filteredFindings);
-      const initialBlocks = parseHtmlToBlocks(currentProject.reportBody);
+      const initialBlocks = parseMarkdownToBlocks(currentProject.reportBody);
       setBlocks(initialBlocks);
       if (initialBlocks.length > 0) {
         setActiveBlockId(initialBlocks[0].id);
@@ -1147,4 +1213,5 @@ export default function ProjectDetailsPage() {
     
 
     
+
 
