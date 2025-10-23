@@ -25,6 +25,9 @@ import { DndContext, closestCenter, KeyboardSensor, PointerSensor, useSensor, us
 import { arrayMove, SortableContext, sortableKeyboardCoordinates, useSortable, verticalListSortingStrategy } from '@dnd-kit/sortable';
 import { CSS } from '@dnd-kit/utilities';
 import { getCVSS, getScore, getSeverity } from '@/lib/cvss';
+import { MarkdownPreview } from '@/components/markdown-preview';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+
 
 type SaveStatus = 'unsaved' | 'saving' | 'saved';
 
@@ -37,7 +40,7 @@ const SortableSection = ({ section, ...props }: { section: FindingSection, [key:
   const { attributes, listeners, setNodeRef, transform, transition, isDragging } = useSortable({ id: section.id });
 
   const style = {
-    transform: transform ? CSS.Transform.toString(transform) : undefined,
+    transform: CSS.Transform.toString(transform),
     transition,
     opacity: isDragging ? 0.5 : 1,
     zIndex: isDragging ? 100 : 'auto',
@@ -50,13 +53,14 @@ const SortableSection = ({ section, ...props }: { section: FindingSection, [key:
   );
 };
 
-const SectionEditor = ({ section, onContentChange, onDelete, onTitleChange, dragHandleProps, dragListeners }: {
+const SectionEditor = ({ section, onContentChange, onDelete, onTitleChange, dragHandleProps, dragListeners, getImage }: {
   section: FindingSection;
   onContentChange: (content: string) => void;
   onDelete: () => void;
   onTitleChange: (newTitle: string) => void;
   dragHandleProps: any;
   dragListeners: any;
+  getImage: (id: string) => ImageAsset | undefined;
 }) => {
     const headingMatch = section.content.match(/^(#{2,4}) (.*)/);
     const sectionTitle = headingMatch ? headingMatch[2].trim() : 'New Section';
@@ -77,14 +81,27 @@ const SectionEditor = ({ section, onContentChange, onDelete, onTitleChange, drag
                   <Trash2 className="h-4 w-4" />
                 </Button>
             </CardHeader>
-            <CardContent className="p-0">
-                <Textarea 
-                  value={contentWithoutTitle}
-                  onChange={(e) => onContentChange(e.target.value)}
-                  className="w-full min-h-[150px] border-0 rounded-t-none font-code text-sm focus-visible:ring-0 focus-visible:ring-offset-0"
-                  placeholder="Write your content here..."
-                />
-            </CardContent>
+             <Tabs defaultValue="write" className="w-full">
+                <TabsList className="grid w-full grid-cols-3 rounded-t-none">
+                    <TabsTrigger value="write">Write</TabsTrigger>
+                    <TabsTrigger value="preview">Preview</TabsTrigger>
+                    <TabsTrigger value="diff">Diff</TabsTrigger>
+                </TabsList>
+                <TabsContent value="write">
+                     <Textarea 
+                      value={contentWithoutTitle}
+                      onChange={(e) => onContentChange(e.target.value)}
+                      className="w-full min-h-[150px] border-0 rounded-t-none font-code text-sm focus-visible:ring-0 focus-visible:ring-offset-0"
+                      placeholder="Write your content here..."
+                    />
+                </TabsContent>
+                <TabsContent value="preview" className="p-4">
+                    <MarkdownPreview content={contentWithoutTitle} getImage={getImage} />
+                </TabsContent>
+                 <TabsContent value="diff" className="p-4">
+                    <MarkdownPreview content={contentWithoutTitle} getImage={getImage} />
+                </TabsContent>
+            </Tabs>
         </Card>
     )
 }
@@ -116,7 +133,7 @@ export default function VulnerabilityEditorPage() {
   const { id } = params;
   const { toast } = useToast();
   const { language } = useLanguage();
-  const { vulnerabilities, updateVulnerability } = useData();
+  const { vulnerabilities, updateVulnerability, getImage } = useData();
   const sensors = useSensors( useSensor(PointerSensor), useSensor(KeyboardSensor, { coordinateGetter: sortableKeyboardCoordinates }) );
 
   const [vuln, setVuln] = useState<Vulnerability | null>(null);
@@ -606,8 +623,9 @@ export default function VulnerabilityEditorPage() {
                               key={section.id}
                               section={section}
                               onContentChange={(newContent: string) => handleSectionChange('en', section.id, newContent)}
-                              onTitleChange={(newTitle: string) => handleTitleChange('en', section.id, newContent)}
+                              onTitleChange={(newTitle: string) => handleTitleChange('en', section.id, newTitle)}
                               onDelete={() => handleDeleteSection('en', section.id)}
+                              getImage={getImage}
                             />
                           ))}
                         </div>
@@ -639,8 +657,9 @@ export default function VulnerabilityEditorPage() {
                                 key={section.id}
                                 section={section}
                                 onContentChange={(newContent: string) => handleSectionChange('es', section.id, newContent)}
-                                onTitleChange={(newTitle: string) => handleTitleChange('es', section.id, newContent)}
+                                onTitleChange={(newTitle: string) => handleTitleChange('es', section.id, newTitle)}
                                 onDelete={() => handleDeleteSection('es', section.id)}
+                                getImage={getImage}
                               />
                             ))}
                           </div>
