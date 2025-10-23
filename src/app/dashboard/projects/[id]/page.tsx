@@ -11,7 +11,7 @@ import Link from 'next/link';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { PlusCircle, FileText, ArrowUpDown, Edit, Save, Trash2, CalendarIcon, Plus, GripVertical, Languages, ChevronLeft, CheckCircle, Heading1, Heading2, Heading3, Code, File, List, ListOrdered, Copy } from "lucide-react";
 import { useLanguage } from "@/context/language-context";
-import type { Finding, Project } from '@/lib/types';
+import type { Finding, Project, ContentBlock } from '@/lib/types';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
@@ -40,12 +40,6 @@ import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/comp
 type SortKey = keyof Finding;
 type SaveStatus = 'unsaved' | 'saving' | 'saved';
 
-export interface ContentBlock {
-  id: string;
-  tag: 'h1' | 'h2' | 'h3' | 'p' | 'pre' | 'ul' | 'ol' | 'h4' | 'hr' | 'blockquote' | 'table';
-  content: string;
-}
-
 const iconOptions = [
     { value: 'FileText', label: 'FileText' },
     { value: 'Scan', label: 'Scan' },
@@ -67,11 +61,11 @@ function parseMarkdownToBlocks(markdown: string): ContentBlock[] {
     let inCodeBlock = false;
 
     function pushCurrentBlock() {
-        if (currentBlock.content) {
+        if (currentBlock.content || currentBlock.tag === 'hr') {
             blocks.push({
                 id: currentBlock.id || `block-${Date.now()}-${Math.random()}`,
                 tag: currentBlock.tag || 'p',
-                content: currentBlock.content.trimEnd()
+                content: (currentBlock.content || '').trimEnd()
             } as ContentBlock);
         }
         currentBlock = {};
@@ -878,8 +872,8 @@ export default function ProjectDetailsPage() {
           updateBlockTag(id, 'hr');
       } else if (e.key === '/') {
         if (target.textContent === '') {
-          e.preventDefault();
-          setCommandMenuOpen(true);
+            e.preventDefault();
+            setCommandMenuOpen(true);
         }
       }
   }, [blocks, handleAddBlock, updateBlockTag, handleDeleteBlock, updateBlocks, undo, redo]);
@@ -1228,6 +1222,7 @@ export default function ProjectDetailsPage() {
     
 
     
+
 
 
 
