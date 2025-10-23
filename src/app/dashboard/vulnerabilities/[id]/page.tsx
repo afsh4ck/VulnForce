@@ -1,3 +1,4 @@
+
 'use client';
 
 import { useState, useEffect, useCallback, useMemo, useRef } from 'react';
@@ -26,7 +27,9 @@ import { arrayMove, SortableContext, sortableKeyboardCoordinates, useSortable, v
 import { CSS } from '@dnd-kit/utilities';
 import { getCVSS, getScore, getSeverity } from '@/lib/cvss';
 import { MarkdownPreview } from '@/components/markdown-preview';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { ResizableHandle, ResizablePanel, ResizablePanelGroup } from '@/components/ui/resizable';
+import { cn } from '@/lib/utils';
+import { ToggleGroup, ToggleGroupItem } from '@/components/ui/toggle-group';
 
 
 type SaveStatus = 'unsaved' | 'saving' | 'saved';
@@ -53,7 +56,7 @@ const SortableSection = ({ section, ...props }: { section: FindingSection, [key:
   );
 };
 
-const SectionEditor = ({ section, onContentChange, onDelete, onTitleChange, dragHandleProps, dragListeners, getImage }: {
+const SectionEditor = ({ section, onContentChange, onDelete, onTitleChange, dragHandleProps, dragListeners, getImage, t }: {
   section: FindingSection;
   onContentChange: (content: string) => void;
   onDelete: () => void;
@@ -61,11 +64,51 @@ const SectionEditor = ({ section, onContentChange, onDelete, onTitleChange, drag
   dragHandleProps: any;
   dragListeners: any;
   getImage: (id: string) => ImageAsset | undefined;
+  t: any;
 }) => {
     const headingMatch = section.content.match(/^(#{2,4}) (.*)/);
-    const sectionTitle = headingMatch ? headingMatch[2].trim() : 'New Section';
+    const sectionTitle = headingMatch ? headingMatch[2].trim() : t.newSection;
     const contentWithoutTitle = section.content.replace(/^(#{2,4}) .*\n?/, '');
+    const [viewMode, setViewMode] = useState<'edit' | 'split' | 'preview'>('split');
+    const textareaRef = useRef<HTMLTextAreaElement>(null);
 
+    const applyFormat = (formatType: 'bold' | 'italic' | 'code' | 'ul' | 'ol') => {
+        const textarea = textareaRef.current;
+        if (!textarea) return;
+
+        const start = textarea.selectionStart;
+        const end = textarea.selectionEnd;
+        const selectedText = textarea.value.substring(start, end);
+        let newText;
+
+        switch (formatType) {
+            case 'bold':
+                newText = `**${selectedText}**`;
+                break;
+            case 'italic':
+                newText = `*${selectedText}*`;
+                break;
+            case 'code':
+                newText = `\`${selectedText}\``;
+                break;
+            case 'ul':
+                newText = selectedText.split('\n').map(line => `- ${line}`).join('\n');
+                break;
+             case 'ol':
+                newText = selectedText.split('\n').map((line, index) => `${index + 1}. ${line}`).join('\n');
+                break;
+        }
+
+        const updatedValue = textarea.value.substring(0, start) + newText + textarea.value.substring(end);
+        onContentChange(updatedValue);
+        
+        // This is a bit tricky, but we can try to reselect the text
+        setTimeout(() => {
+            textarea.focus();
+            textarea.setSelectionRange(start, start + newText.length);
+        }, 0);
+    }
+    
     return (
         <Card className="mb-4">
             <CardHeader className="flex flex-row items-center gap-2 p-2 border-b">
@@ -77,31 +120,47 @@ const SectionEditor = ({ section, onContentChange, onDelete, onTitleChange, drag
                   onChange={(e) => onTitleChange(e.target.value)}
                   className="font-semibold text-base border-none focus-visible:ring-0 focus-visible:ring-offset-0 bg-transparent h-auto p-0 flex-1"
                 />
+                 <ToggleGroup type="single" value={viewMode} onValueChange={(value) => value && setViewMode(value as any)} size="sm">
+                    <ToggleGroupItem value="edit">{t.edit}</ToggleGroupItem>
+                    <ToggleGroupItem value="split">{t.split}</ToggleGroupItem>
+                    <ToggleGroupItem value="preview">{t.preview}</ToggleGroupItem>
+                </ToggleGroup>
                 <Button variant="ghost" size="icon" className="h-8 w-8 text-destructive" onClick={onDelete}>
                   <Trash2 className="h-4 w-4" />
                 </Button>
             </CardHeader>
-             <Tabs defaultValue="write" className="w-full">
-                <TabsList className="grid w-full grid-cols-3 rounded-t-none">
-                    <TabsTrigger value="write">Write</TabsTrigger>
-                    <TabsTrigger value="preview">Preview</TabsTrigger>
-                    <TabsTrigger value="diff">Diff</TabsTrigger>
-                </TabsList>
-                <TabsContent value="write">
-                     <Textarea 
-                      value={contentWithoutTitle}
-                      onChange={(e) => onContentChange(e.target.value)}
-                      className="w-full min-h-[150px] border-0 rounded-t-none font-code text-sm focus-visible:ring-0 focus-visible:ring-offset-0"
-                      placeholder="Write your content here..."
-                    />
-                </TabsContent>
-                <TabsContent value="preview" className="p-4">
-                    <MarkdownPreview content={contentWithoutTitle} getImage={getImage} />
-                </TabsContent>
-                 <TabsContent value="diff" className="p-4">
-                    <MarkdownPreview content={contentWithoutTitle} getImage={getImage} />
-                </TabsContent>
-            </Tabs>
+            <CardContent className="p-0">
+                <ResizablePanelGroup direction="horizontal">
+                    {viewMode !== 'preview' && (
+                        <ResizablePanel defaultSize={viewMode === 'split' ? 50 : 100}>
+                            <div className="h-full">
+                                <div className="flex items-center gap-1 p-2 border-b">
+                                    <Button variant="ghost" size="icon" className="h-7 w-7" onClick={() => applyFormat('bold')}><Bold className="h-4 w-4" /></Button>
+                                    <Button variant="ghost" size="icon" className="h-7 w-7" onClick={() => applyFormat('italic')}><Italic className="h-4 w-4" /></Button>
+                                    <Button variant="ghost" size="icon" className="h-7 w-7" onClick={() => applyFormat('code')}><Code className="h-4 w-4" /></Button>
+                                    <Button variant="ghost" size="icon" className="h-7 w-7" onClick={() => applyFormat('ul')}><List className="h-4 w-4" /></Button>
+                                    <Button variant="ghost" size="icon" className="h-7 w-7" onClick={() => applyFormat('ol')}><ListOrdered className="h-4 w-4" /></Button>
+                                </div>
+                                <Textarea 
+                                    ref={textareaRef}
+                                    value={contentWithoutTitle}
+                                    onChange={(e) => onContentChange(e.target.value)}
+                                    className="w-full min-h-[200px] border-0 rounded-none font-code text-sm focus-visible:ring-0 focus-visible:ring-offset-0"
+                                    placeholder={t.writeContent}
+                                />
+                            </div>
+                        </ResizablePanel>
+                    )}
+                    {viewMode === 'split' && <ResizableHandle withHandle />}
+                    {viewMode !== 'edit' && (
+                        <ResizablePanel defaultSize={viewMode === 'split' ? 50 : 100}>
+                            <div className="p-4 h-full overflow-y-auto">
+                                <MarkdownPreview content={section.content} getImage={getImage} />
+                            </div>
+                        </ResizablePanel>
+                    )}
+                </ResizablePanelGroup>
+            </CardContent>
         </Card>
     )
 }
@@ -189,7 +248,11 @@ export default function VulnerabilityEditorPage() {
       impact: 'Impact',
       immediateActions: 'Immediate Actions',
       details: 'Proof of Concept',
-      recommendations: 'Recommendations'
+      recommendations: 'Recommendations',
+      edit: "Edit",
+      split: "Split",
+      preview: "Preview",
+      writeContent: "Write your content here...",
     },
     es: {
       back: 'Volver a Vulnerabilidades',
@@ -235,7 +298,11 @@ export default function VulnerabilityEditorPage() {
       impact: 'Impacto',
       immediateActions: 'Acciones Inmediatas',
       details: 'Prueba de Concepto',
-      recommendations: 'Recomendaciones'
+      recommendations: 'Recomendaciones',
+      edit: "Edición",
+      split: "Dividida",
+      preview: "Previsualización",
+      writeContent: "Escribe tu contenido aquí...",
     }
   };
 
@@ -626,6 +693,7 @@ export default function VulnerabilityEditorPage() {
                               onTitleChange={(newTitle: string) => handleTitleChange('en', section.id, newTitle)}
                               onDelete={() => handleDeleteSection('en', section.id)}
                               getImage={getImage}
+                              t={t[language]}
                             />
                           ))}
                         </div>
@@ -660,6 +728,7 @@ export default function VulnerabilityEditorPage() {
                                 onTitleChange={(newTitle: string) => handleTitleChange('es', section.id, newTitle)}
                                 onDelete={() => handleDeleteSection('es', section.id)}
                                 getImage={getImage}
+                                t={t[language]}
                               />
                             ))}
                           </div>
