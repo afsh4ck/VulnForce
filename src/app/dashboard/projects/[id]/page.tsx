@@ -739,6 +739,12 @@ export default function ProjectDetailsPage() {
       const currentIndex = blocks.findIndex(b => b.id === id);
       const currentBlock = blocks[currentIndex];
       const target = e.target as HTMLDivElement;
+
+      if (e.key === ' ' || e.key === 'Escape') {
+          if (commandMenuOpen) {
+              setCommandMenuOpen(false);
+          }
+      }
       
       if (e.ctrlKey || e.metaKey) {
         if (e.key.toLowerCase() === 'z') {
@@ -872,26 +878,23 @@ export default function ProjectDetailsPage() {
           updateBlockTag(id, 'hr');
       } else if (e.key === '/') {
         if (target.textContent === '') {
-            e.preventDefault();
             setCommandMenuOpen(true);
         }
       }
-  }, [blocks, handleAddBlock, updateBlockTag, handleDeleteBlock, updateBlocks, undo, redo]);
+  }, [blocks, handleAddBlock, updateBlockTag, handleDeleteBlock, updateBlocks, undo, redo, commandMenuOpen]);
   
   const handleCommandSelect = (command: ContentBlock['tag']) => {
     if (!activeBlockId) return;
 
     const currentIndex = blocks.findIndex(b => b.id === activeBlockId);
     
-    if(blocks[currentIndex].content.trim() !== '' && blocks[currentIndex].content !== '<br>') {
-        handleAddBlock(currentIndex, command);
-    } else {
-        updateBlockTag(activeBlockId, command);
-        const blockEl = blockRefs.current[activeBlockId]?.querySelector('[contenteditable="true"]') as HTMLElement;
-        if(blockEl) {
-            blockEl.innerHTML = '';
-        }
-    }
+    // Replace the '/' with the new block
+    const newBlocks = [...blocks];
+    newBlocks[currentIndex] = { ...newBlocks[currentIndex], tag: command, content: '' };
+    updateBlocks(newBlocks);
+
+    // Focus the new block
+    setActiveBlockId(newBlocks[currentIndex].id);
     setCommandMenuOpen(false);
   };
 
@@ -1020,9 +1023,7 @@ export default function ProjectDetailsPage() {
                                     block={block}
                                     index={index}
                                     onUpdate={(newContent: string) => {
-                                        const tempDiv = document.createElement('div');
-                                        tempDiv.innerHTML = newContent;
-                                        if (tempDiv.textContent === '/' && commandMenuOpen) {
+                                        if (commandMenuOpen) {
                                             return;
                                         }
                                         updateBlocks(blocks.map(b => b.id === block.id ? { ...b, content: newContent } : b));
@@ -1222,6 +1223,7 @@ export default function ProjectDetailsPage() {
     
 
     
+
 
 
 
