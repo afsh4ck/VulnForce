@@ -459,12 +459,13 @@ export default function NewVulnerabilityPage() {
     updater(prev => prev.map(s => {
         if (s.id === sectionId) {
           const headingMatch = s.content.match(/^(#{2,4}) .*\n?/);
-          const title = headingMatch ? headingMatch[0] : '';
+          const title = headingMatch ? headingMatch[0] : `### ${t.en.newSection}\n`;
           return { ...s, content: title + newContent };
         }
         return s;
     }));
   };
+  
 
   const handleTitleChange = (lang: 'en' | 'es', sectionId: string, newTitle: string) => {
     const updater = lang === 'en' ? setEnSections : setEsSections;
@@ -734,7 +735,7 @@ export default function NewVulnerabilityPage() {
                                 key={section.id}
                                 section={section}
                                 onContentChange={(newContent: string) => handleSectionChange('es', section.id, newContent)}
-                                onTitleChange={(newTitle: string) => handleTitleChange('es', section.id, newContent)}
+                                onTitleChange={(newTitle: string) => handleTitleChange('es', section.id, newTitle)}
                                 onDelete={() => handleDeleteSection('es', section.id)}
                                 getImage={getImage}
                                 t={t[language]}

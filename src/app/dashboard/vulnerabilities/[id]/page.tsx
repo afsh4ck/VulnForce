@@ -447,15 +447,16 @@ export default function VulnerabilityEditorPage() {
   const handleSectionChange = (lang: 'en' | 'es', sectionId: string, newContent: string) => {
     const updater = lang === 'en' ? setEnSections : setEsSections;
     updater(prev => prev.map(s => {
-        if (s.id === sectionId) {
-          const headingMatch = s.content.match(/^(#{2,4}) .*\n?/);
-          const title = headingMatch ? headingMatch[0] : '';
+      if (s.id === sectionId) {
+          const headingMatch = s.content.match(/^(#{2,4}) (.*)\n?/);
+          const title = headingMatch ? headingMatch[0] : `### ${t.en.newSection}\n`;
           return { ...s, content: title + newContent };
-        }
-        return s;
+      }
+      return s;
     }));
     setSaveStatus('unsaved');
   };
+  
 
   const handleTitleChange = (lang: 'en' | 'es', sectionId: string, newTitle: string) => {
     const updater = lang === 'en' ? setEnSections : setEsSections;
