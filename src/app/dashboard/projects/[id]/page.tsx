@@ -9,7 +9,7 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import Link from 'next/link';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
-import { PlusCircle, FileText, ArrowUpDown, Edit, Save, Trash2, CalendarIcon, Plus, GripVertical, Languages, ChevronLeft, CheckCircle, Heading1, Heading2, Heading3, Code, File, List, ListOrdered } from "lucide-react";
+import { PlusCircle, FileText, ArrowUpDown, Edit, Save, Trash2, CalendarIcon, Plus, GripVertical, Languages, ChevronLeft, CheckCircle, Heading1, Heading2, Heading3, Code, File, List, ListOrdered, Copy } from "lucide-react";
 import { useLanguage } from "@/context/language-context";
 import type { Finding, Project } from '@/lib/types';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
@@ -34,6 +34,8 @@ import { useLeavePage } from '@/app/dashboard/layout';
 import { AddBlockMenu } from '@/components/add-block-menu';
 import { BlockOptionsMenu } from '@/components/block-options-menu';
 import { FloatingToolbar } from '@/components/floating-toolbar';
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
+
 
 type SortKey = keyof Finding;
 type SaveStatus = 'unsaved' | 'saving' | 'saved';
@@ -69,7 +71,7 @@ function parseMarkdownToBlocks(markdown: string): ContentBlock[] {
             blocks.push({
                 id: currentBlock.id || `block-${Date.now()}-${Math.random()}`,
                 tag: currentBlock.tag || 'p',
-                content: currentBlock.content.trim()
+                content: currentBlock.content.trimEnd()
             } as ContentBlock);
         }
         currentBlock = {};
@@ -142,7 +144,7 @@ function parseMarkdownToBlocks(markdown: string): ContentBlock[] {
             if (!currentBlock.tag) {
                 currentBlock = { id: `block-${Date.now()}-${Math.random()}`, tag: 'p', content: '' };
             }
-            currentBlock.content = (currentBlock.content ? currentBlock.content + ' ' : '') + line;
+            currentBlock.content = (currentBlock.content ? currentBlock.content + '\n' : '') + line;
         }
     }
 
@@ -170,7 +172,8 @@ function blocksToHtml(blocks: ContentBlock[]): string {
     if (block.tag === 'table') {
         return `<table>${block.content}</table>`;
     }
-    return `<${block.tag}>${block.content}</${block.tag}>`
+    const contentWithBreaks = block.content.replace(/\n/g, '<br>');
+    return `<${block.tag}>${contentWithBreaks}</${block.tag}>`
   }).join('');
 }
 
@@ -337,7 +340,7 @@ export default function ProjectDetailsPage() {
   const searchParams = useSearchParams();
   const { id } = params;
 
-  const { projects, clients, findings, deleteFinding, updateProject, deleteProject } = useData();
+  const { projects, clients, findings, deleteFinding, updateProject, deleteProject, duplicateProject } = useData();
 
   const [project, setProject] = useState<Project | undefined>();
   const [projectFindings, setProjectFindings] = useState<Finding[]>([]);
@@ -873,11 +876,11 @@ export default function ProjectDetailsPage() {
       } else if (e.key === ' ' && target.textContent?.match(/^---$/)) {
           e.preventDefault();
           updateBlockTag(id, 'hr');
-      }
-       else if (e.key === '/') {
-          if (target.textContent === '' || target.textContent === '/') {
-              setCommandMenuOpen(true);
-          }
+      } else if (e.key === '/') {
+        if (target.textContent === '') {
+          e.preventDefault();
+          setCommandMenuOpen(true);
+        }
       }
   }, [blocks, handleAddBlock, updateBlockTag, handleDeleteBlock, updateBlocks, undo, redo]);
   
@@ -1064,41 +1067,53 @@ export default function ProjectDetailsPage() {
                   </div>
                 </CardHeader>
                 <CardContent>
-                  <Table>
-                    <TableHeader>
-                      <TableRow>
-                        <TableHead onClick={() => requestSort('title')} className="cursor-pointer hover:bg-muted/50"><div className="flex items-center">{t[uiLanguage].findingTitle}{getSortIcon('title')}</div></TableHead>
-                        <TableHead onClick={() => requestSort('severity')} className="cursor-pointer hover:bg-muted/50"><div className="flex items-center">{t[uiLanguage].severity}{getSortIcon('severity')}</div></TableHead>
-                        <TableHead onClick={() => requestSort('cvss')} className="cursor-pointer hover:bg-muted/50"><div className="flex items-center">{t[uiLanguage].cvss}{getSortIcon('cvss')}</div></TableHead>
-                        <TableHead onClick={() => requestSort('updatedAt')} className="cursor-pointer hover:bg-muted/50"><div className="flex items-center">{t[uiLanguage].lastUpdated}{getSortIcon('updatedAt')}</div></TableHead>
-                        <TableHead className="text-right">{t[uiLanguage].actions}</TableHead>
-                      </TableRow>
-                    </TableHeader>
-                    <TableBody>
-                      {sortedFindings.map(finding => (
-                        <TableRow key={finding.id}>
-                          <TableCell className="font-medium">
-                             <Link href={`/dashboard/projects/${id}/findings/${finding.id}`} className="hover:text-primary">
-                                {finding.title}
-                             </Link>
-                          </TableCell>
-                          <TableCell><Badge variant={getSeverityVariant(finding.severity)}>{finding.severity}</Badge></TableCell>
-                          <TableCell className="font-code">{finding.cvss.toFixed(1)}</TableCell>
-                          <TableCell>{format(new Date(finding.updatedAt), 'PP', { locale: uiLanguage === 'es' ? es : undefined })}</TableCell>
-                          <TableCell className="text-right">
-                             <div className="flex justify-end gap-2">
-                                <Button variant="ghost" size="icon" asChild>
-                                    <Link href={`/dashboard/projects/${id}/findings/${finding.id}`}><Edit className="h-4 w-4" /></Link>
-                                </Button>
-                                <Button variant="ghost" size="icon" className="text-destructive hover:text-destructive-foreground hover:bg-destructive" onClick={() => setFindingToDelete(finding)}>
-                                    <Trash2 className="h-4 w-4" />
-                                </Button>
-                             </div>
-                          </TableCell>
+                   <TooltipProvider>
+                    <Table>
+                      <TableHeader>
+                        <TableRow>
+                          <TableHead onClick={() => requestSort('title')} className="cursor-pointer hover:bg-muted/50"><div className="flex items-center">{t[uiLanguage].findingTitle}{getSortIcon('title')}</div></TableHead>
+                          <TableHead onClick={() => requestSort('severity')} className="cursor-pointer hover:bg-muted/50"><div className="flex items-center">{t[uiLanguage].severity}{getSortIcon('severity')}</div></TableHead>
+                          <TableHead onClick={() => requestSort('cvss')} className="cursor-pointer hover:bg-muted/50"><div className="flex items-center">{t[uiLanguage].cvss}{getSortIcon('cvss')}</div></TableHead>
+                          <TableHead onClick={() => requestSort('updatedAt')} className="cursor-pointer hover:bg-muted/50"><div className="flex items-center">{t[uiLanguage].lastUpdated}{getSortIcon('updatedAt')}</div></TableHead>
+                          <TableHead className="text-right">{t[uiLanguage].actions}</TableHead>
                         </TableRow>
-                      ))}
-                    </TableBody>
-                  </Table>
+                      </TableHeader>
+                      <TableBody>
+                        {sortedFindings.map(finding => (
+                          <TableRow key={finding.id}>
+                            <TableCell className="font-medium">
+                               <Link href={`/dashboard/projects/${id}/findings/${finding.id}`} className="hover:text-primary">
+                                  {finding.title}
+                               </Link>
+                            </TableCell>
+                            <TableCell><Badge variant={getSeverityVariant(finding.severity)}>{finding.severity}</Badge></TableCell>
+                            <TableCell className="font-code">{finding.cvss.toFixed(1)}</TableCell>
+                            <TableCell>{format(new Date(finding.updatedAt), 'PP', { locale: uiLanguage === 'es' ? es : undefined })}</TableCell>
+                            <TableCell className="text-right">
+                               <div className="flex justify-end gap-2">
+                                  <Tooltip>
+                                    <TooltipTrigger asChild>
+                                      <Button variant="ghost" size="icon" asChild>
+                                          <Link href={`/dashboard/projects/${id}/findings/${finding.id}`}><Edit className="h-4 w-4" /></Link>
+                                      </Button>
+                                    </TooltipTrigger>
+                                    <TooltipContent><p>{t[uiLanguage].edit}</p></TooltipContent>
+                                  </Tooltip>
+                                  <Tooltip>
+                                    <TooltipTrigger asChild>
+                                      <Button variant="ghost" size="icon" className="text-destructive hover:text-destructive-foreground hover:bg-destructive" onClick={() => setFindingToDelete(finding)}>
+                                          <Trash2 className="h-4 w-4" />
+                                      </Button>
+                                    </TooltipTrigger>
+                                    <TooltipContent><p>{t[uiLanguage].delete}</p></TooltipContent>
+                                  </Tooltip>
+                               </div>
+                            </TableCell>
+                          </TableRow>
+                        ))}
+                      </TableBody>
+                    </Table>
+                  </TooltipProvider>
                 </CardContent>
               </Card>
             </TabsContent>
@@ -1213,6 +1228,7 @@ export default function ProjectDetailsPage() {
     
 
     
+
 
 
 
