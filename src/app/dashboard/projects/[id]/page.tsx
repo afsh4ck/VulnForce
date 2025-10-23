@@ -268,7 +268,7 @@ const EditableBlock = React.forwardRef<HTMLDivElement, {
                   'border-l-4 border-primary pl-4 italic text-muted-foreground my-4': block.tag === 'blockquote'
                 }
               )}
-              dangerouslySetInnerHTML={{ __html: isCode ? block.content.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;") : block.content || (isList ? '<li><br></li>' : '<br>') }}
+              dangerouslySetInnerHTML={{ __html: isCode ? block.content.replace(/&/g, "&amp;").replace(/>/g, "&gt;").replace(/</g, "&lt;") : block.content || (isList ? '<li><br></li>' : '<br>') }}
           />
            {showPlaceholder && (
                 <div className={cn("absolute top-1 left-1 text-muted-foreground pointer-events-none select-none", {
@@ -740,6 +740,15 @@ export default function ProjectDetailsPage() {
       const currentBlock = blocks[currentIndex];
       const target = e.target as HTMLDivElement;
 
+      // Handle slash command menu opening
+      if (e.key === '/') {
+        if (target.textContent === '') {
+            e.preventDefault();
+            setCommandMenuOpen(true);
+            return;
+        }
+      }
+
       if (e.key === ' ' || e.key === 'Escape') {
           if (commandMenuOpen) {
               setCommandMenuOpen(false);
@@ -795,7 +804,6 @@ export default function ProjectDetailsPage() {
       } else if (e.key === 'ArrowDown') {
         const selection = window.getSelection();
         if (selection && selection.rangeCount > 0) {
-            const range = selection.getRangeAt(0);
             const targetRect = target.getBoundingClientRect();
             const clientRects = target.getClientRects();
             const lastLineRect = clientRects[clientRects.length -1];
@@ -816,35 +824,41 @@ export default function ProjectDetailsPage() {
       }
       else if (e.key === 'Enter') {
           if (e.shiftKey) return;
-          e.preventDefault();
-          const selection = window.getSelection();
-          if (!selection || !selection.anchorNode) {
-              handleAddBlock(currentIndex, 'p');
-              return;
-          }
           
           if (currentBlock.tag === 'ul' || currentBlock.tag === 'ol') {
-            const currentLi = selection.anchorNode.parentElement?.closest('li');
+            e.preventDefault();
+            const currentLi = window.getSelection()?.anchorNode?.parentElement?.closest('li');
             if (currentLi && currentLi.textContent?.trim() === '') {
+                // Exit list
                 const newBlocks = [...blocks];
                 const listBlock = newBlocks[currentIndex];
                 const tempDiv = document.createElement('div');
                 tempDiv.innerHTML = listBlock.content;
+                
+                // Remove the empty li
                 const listItems = Array.from(tempDiv.querySelectorAll('li'));
-                listItems.pop();
-                listBlock.content = listItems.map(li => li.outerHTML).join('');
-                if (listItems.length === 0 || (listItems.length === 1 && !listItems[0].textContent?.trim())) {
-                    newBlocks[currentIndex] = { ...newBlocks[currentIndex], tag: 'p', content: '' };
-                    updateBlocks(newBlocks);
-                    setActiveBlockId(newBlocks[currentIndex].id);
-                } else {
-                    updateBlocks(newBlocks);
-                    handleAddBlock(currentIndex, 'p');
+                const emptyLiIndex = listItems.findIndex(li => li === currentLi);
+                if (emptyLiIndex !== -1) {
+                  listItems.splice(emptyLiIndex, 1);
                 }
-                return;
+
+                listBlock.content = listItems.map(li => li.outerHTML).join('');
+
+                if(listBlock.content.trim() === '') {
+                   newBlocks.splice(currentIndex, 1);
+                }
+                
+                updateBlocks(newBlocks);
+                handleAddBlock(currentIndex - 1, 'p');
+
+            } else {
+              // Add new list item
+              document.execCommand('insertHTML', false, '</li><li><br>');
             }
+            return;
           }
 
+          e.preventDefault();
           handleAddBlock(currentIndex, 'p', '');
 
       } else if (e.key === 'Backspace' && (target.innerHTML === '' || target.innerHTML === '<br>' || (currentBlock.tag.match(/^(ul|ol)$/) && target.innerHTML === '<li><br></li>'))) {
@@ -876,11 +890,7 @@ export default function ProjectDetailsPage() {
       } else if (e.key === ' ' && target.textContent?.match(/^---$/)) {
           e.preventDefault();
           updateBlockTag(id, 'hr');
-      } else if (e.key === '/') {
-        if (target.textContent === '') {
-            setCommandMenuOpen(true);
-        }
-      }
+      } 
   }, [blocks, handleAddBlock, updateBlockTag, handleDeleteBlock, updateBlocks, undo, redo, commandMenuOpen]);
   
   const handleCommandSelect = (command: ContentBlock['tag']) => {
@@ -1223,6 +1233,7 @@ export default function ProjectDetailsPage() {
     
 
     
+
 
 
 
