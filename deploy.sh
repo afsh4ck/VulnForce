@@ -99,6 +99,7 @@ docker rm "$CONTAINER_NAME" >/dev/null 2>&1 || true
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 GIT_HASH="$(git -C "$SCRIPT_DIR" rev-parse --short HEAD 2>/dev/null || date +%s)"
+export NODE_OPTIONS="${NODE_OPTIONS:-}" 
 
 log "Building Docker image with pnpm..."
 # Try a quiet build to reduce console output. If it fails, capture verbose output to a temp file
