@@ -137,6 +137,53 @@ if [[ "$READY" -ne 1 ]]; then
   docker logs --tail 80 "$CONTAINER_NAME" || true
 fi
 
+open_browser() {
+  _BROWSER_USER="${SUDO_USER:-${USER}}"
+  _HOME="/home/${_BROWSER_USER}"
+  _URL="http://${HOST_BIND}:${PORT}"
+
+  # Prefer firefox, then chrome/chromium
+  _BROWSERS=(firefox firefox-esr google-chrome chromium-browser chromium chrome)
+  BROWSER_CMD=""
+  for b in "${_BROWSERS[@]}"; do
+    if command -v "$b" >/dev/null 2>&1; then
+      BROWSER_CMD="$b"
+      break
+    fi
+  done
+  if [[ -z "$BROWSER_CMD" ]]; then
+    warn "No supported browser found (firefox/chrome). Skipping automatic open."
+    return 0
+  fi
+
+  # Try to find an existing browser process for the target user
+  _PID=$(pgrep -u "${_BROWSER_USER}" -x "${BROWSER_CMD}" | head -1 || true)
+
+  _DISPLAY=":0"
+  _DBUS=""
+  if [[ -n "$_PID" ]] && [[ -r "/proc/$_PID/environ" ]]; then
+    _ENV_DUMP=$(tr '\0' '\n' < "/proc/$_PID/environ" 2>/dev/null || true)
+    _DISPLAY=$(printf '%s\n' "$_ENV_DUMP" | awk -F= '/^DISPLAY=/{print $2; exit}')
+    _DBUS=$(printf '%s\n' "$_ENV_DUMP" | awk -F= '/^DBUS_SESSION_BUS_ADDRESS=/{print substr($0,index($0,$2)); exit}')
+  fi
+
+  if [[ -n "$_PID" ]]; then
+    # Browser already running: open new tab in existing session
+    if [[ -n "$_DBUS" ]]; then
+      sudo -u "${_BROWSER_USER}" env DISPLAY="$_DISPLAY" DBUS_SESSION_BUS_ADDRESS="$_DBUS" HOME="${_HOME}" "$BROWSER_CMD" --new-tab "$_URL" >/dev/null 2>&1 &
+    else
+      sudo -u "${_BROWSER_USER}" env DISPLAY="$_DISPLAY" HOME="${_HOME}" "$BROWSER_CMD" --new-tab "$_URL" >/dev/null 2>&1 &
+    fi
+  else
+    # Browser not running: start it as the user
+    if [[ -n "$_DBUS" ]]; then
+      sudo -u "${_BROWSER_USER}" env DISPLAY="$_DISPLAY" DBUS_SESSION_BUS_ADDRESS="$_DBUS" HOME="${_home}" "$BROWSER_CMD" "$_URL" >/dev/null 2>&1 &
+    else
+      sudo -u "${_BROWSER_USER}" env DISPLAY="$_DISPLAY" HOME="${_HOME}" "$BROWSER_CMD" "$_URL" >/dev/null 2>&1 &
+    fi
+  fi
+}
+
 echo ""
 echo "  ${GREEN}====================================================${NC}"
 echo "  ${BOLD}${GREEN}  VulnForce is running${NC}"
