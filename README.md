@@ -2,6 +2,8 @@
 
 Aplicación web para gestionar proyectos, hallazgos y plantillas de informes de pentesting.
 
+<img width="3214" height="1458" alt="image" src="https://github.com/user-attachments/assets/16e48dd3-1bed-435b-ab6e-6df9815f47c4" />
+
 ## Descripción
 
 VulnForce es una herramienta diseñada para equipos de pentesting y seguridad ofensiva que simplifica la gestión de proyectos, el seguimiento de hallazgos y la generación de informes profesionales. Proporciona una interfaz organizada para mantener evidencias, plantillas de reporte y generar entregables técnicos y ejecutivos.
