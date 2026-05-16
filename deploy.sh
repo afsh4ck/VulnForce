@@ -102,9 +102,10 @@ GIT_HASH="$(git -C "$SCRIPT_DIR" rev-parse --short HEAD 2>/dev/null || date +%s)
 
 log "Building Docker image with pnpm (compact output)..."
 # Try a quiet build to reduce console output. If it fails, run a verbose build to show the error.
-if ! docker build -q -t "$IMAGE_NAME" --build-arg CACHEBUST="$GIT_HASH" "$SCRIPT_DIR" >/dev/null 2>&1; then
+# Use --force-rm to always remove intermediate build containers and help free disk space.
+if ! docker build -q --force-rm -t "$IMAGE_NAME" --build-arg CACHEBUST="$GIT_HASH" "$SCRIPT_DIR" >/dev/null 2>&1; then
   warn "Quiet build failed — re-running verbose build to show details."
-  docker build -t "$IMAGE_NAME" --build-arg CACHEBUST="$GIT_HASH" "$SCRIPT_DIR" || err "Docker image build failed (see output above)."
+  docker build --force-rm -t "$IMAGE_NAME" --build-arg CACHEBUST="$GIT_HASH" "$SCRIPT_DIR" || err "Docker image build failed (see output above)."
 else
   log "Docker image built successfully (compact)."
 fi
@@ -136,6 +137,19 @@ echo ""
 if [[ "$READY" -ne 1 ]]; then
   warn "Container started, but HTTP readiness check did not pass within 30 seconds."
   docker logs --tail 80 "$CONTAINER_NAME" || true
+fi
+
+# Prune Docker artefacts that commonly fill disk on developer machines.
+# This removes stopped containers and dangling images/build cache older than 24h by default.
+# Set SKIP_PRUNE=1 in the environment to skip this automatic cleanup.
+if [[ "${SKIP_PRUNE:-}" != "1" ]]; then
+  log "Pruning stopped containers and dangling images/build cache to free space..."
+  # remove stopped containers
+  docker container prune -f >/dev/null 2>&1 || true
+  # remove dangling images
+  docker image prune -f >/dev/null 2>&1 || true
+  # prune builder cache older than 24 hours (adjust filter if needed)
+  docker builder prune -f --filter "until=24h" >/dev/null 2>&1 || true
 fi
 
 open_browser() {
