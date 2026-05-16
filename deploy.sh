@@ -36,8 +36,7 @@ cleanup() {
   echo ""
   warn "Stopping VulnForce..."
   docker stop "$CONTAINER_NAME" >/dev/null 2>&1 || true
-  docker rm "$CONTAINER_NAME" >/dev/null 2>&1 || true
-  log "VulnForce stopped cleanly."
+  log "VulnForce stopped. Container preserved; data remains in Docker volume 'vulnforce_data'."
   echo ""
   exit 0
 }
@@ -100,9 +99,14 @@ docker rm "$CONTAINER_NAME" >/dev/null 2>&1 || true
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 GIT_HASH="$(git -C "$SCRIPT_DIR" rev-parse --short HEAD 2>/dev/null || date +%s)"
 
-log "Building Docker image with pnpm..."
-docker build -t "$IMAGE_NAME" --build-arg CACHEBUST="$GIT_HASH" "$SCRIPT_DIR" \
-  || err "Docker image build failed."
+log "Building Docker image with pnpm (compact output)..."
+# Try a quiet build to reduce console output. If it fails, run a verbose build to show the error.
+if ! docker build -q -t "$IMAGE_NAME" --build-arg CACHEBUST="$GIT_HASH" "$SCRIPT_DIR" >/dev/null 2>&1; then
+  warn "Quiet build failed — re-running verbose build to show details."
+  docker build -t "$IMAGE_NAME" --build-arg CACHEBUST="$GIT_HASH" "$SCRIPT_DIR" || err "Docker image build failed (see output above)."
+else
+  log "Docker image built successfully (compact)."
+fi
 
 log "Starting VulnForce container..."
 docker run -d \
@@ -142,7 +146,7 @@ echo "  ${CYAN}${BOLD}  URL: http://${HOST_BIND}:${PORT}${NC}"
 echo "  ${DIM}  Container: ${CONTAINER_NAME}${NC}"
 echo "  ${DIM}  Image:     ${IMAGE_NAME}${NC}"
 echo ""
-echo "  ${YELLOW}  Press Ctrl+C to stop and remove the container${NC}"
+echo "  ${YELLOW}  Press Ctrl+C to stop the container (data preserved in Docker volume 'vulnforce_data')${NC}"
 echo ""
 
 while true; do
