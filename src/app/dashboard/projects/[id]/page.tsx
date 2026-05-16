@@ -156,7 +156,7 @@ const EditableBlock = React.forwardRef(({ block, onUpdate, onKeyDown, onFocus, i
 
     return (
         <div 
-          ref={ref as React.Ref<HTMLDivElement>}
+          ref={ref}
           className="relative"
           onFocus={onFocus}
           dir="ltr"
