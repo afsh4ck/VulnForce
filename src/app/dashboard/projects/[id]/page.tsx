@@ -78,9 +78,10 @@ type EditableBlockExtra = {
 
 const EditableBlock = React.forwardRef<HTMLDivElement, EditableBlockProps & EditableBlockExtra>(({ block, onUpdate, onKeyDown, onFocus, isFocused, placeholder, t_editor, isSplit, onToggleSplit }, ref) => {
     const blockRef = useRef<HTMLDivElement>(null);
-  const [markdownValue, setMarkdownValue] = React.useState<string>('');
-  const [splitActive, setSplitActive] = React.useState<boolean>(!!isSplit);
-  useEffect(() => setSplitActive(!!isSplit), [isSplit]);
+    const [markdownValue, setMarkdownValue] = React.useState<string>('');
+    const [splitActive, setSplitActive] = React.useState<boolean>(!!isSplit);
+    const [viewMode, setViewMode] = React.useState<'split' | 'markdown' | 'preview'>(() => (!!isSplit ? 'split' : 'split'));
+    useEffect(() => setSplitActive(!!isSplit), [isSplit]);
     useEffect(() => {
       setMarkdownValue(block.content || '');
     }, [block.id]);
@@ -111,7 +112,7 @@ const EditableBlock = React.forwardRef<HTMLDivElement, EditableBlockProps & Edit
 
     const handleBlur = (e: React.FocusEvent<HTMLDivElement>) => {
         onUpdate(e.currentTarget.innerHTML);
-    };
+      };
 
     if (block.tag === 'hr') {
       return <hr className="my-4" />;
@@ -141,9 +142,19 @@ const EditableBlock = React.forwardRef<HTMLDivElement, EditableBlockProps & Edit
     
     const isList = block.tag === 'ul' || block.tag === 'ol';
     const isCode = block.tag === 'pre';
-    const isEmpty = !block.content || (typeof block.content === 'string' && block.content.trim() === '') || (isList && block.content.trim() === '<li><br></li>');
+    
+        const isList = block.tag === 'ul' || block.tag === 'ol';
+        const isCode = block.tag === 'pre';
+        const isEmpty = !block.content || (typeof block.content === 'string' && block.content.trim() === '') || (isList && block.content.trim() === '<li><br></li>');
 
-    const getPlaceholderText = () => {
+        const getPlaceholderText = () => {
+          if (placeholder) return placeholder;
+          if (t_editor && t_editor.headings && t_editor.headings['1']) return t_editor.headings['1'];
+          return '';
+        };
+
+        const placeholderText = getPlaceholderText();
+        const showPlaceholder = isEmpty && isFocused;
       if (placeholder) return placeholder;
       if (t_editor && t_editor.headings && t_editor.headings['1']) return t_editor.headings['1'];
       return '';
@@ -160,11 +171,11 @@ const EditableBlock = React.forwardRef<HTMLDivElement, EditableBlockProps & Edit
           dir="ltr"
         >
           <div className="absolute right-0 top-0 mr-2 mt-1 flex gap-1">
-            <button type="button" className="text-sm px-2 py-1 text-muted-foreground hover:text-foreground" onClick={() => {
-              const newState = !splitActive;
-              setSplitActive(newState);
-              onToggleSplit?.(block.id);
-            }}>{splitActive ? 'Split on' : 'Split'}</button>
+            <div className="flex items-center gap-1 bg-panel p-1 rounded-md">
+              <button type="button" title="Vista dividida" className={cn('text-xs px-2 py-1 rounded', viewMode === 'split' ? 'bg-muted/80 text-white' : 'text-muted-foreground')} onClick={() => { setViewMode('split'); setSplitActive(true); onToggleSplit?.(block.id); }}>Split</button>
+              <button type="button" title="Editor Markdown" className={cn('text-xs px-2 py-1 rounded', viewMode === 'markdown' ? 'bg-muted/80 text-white' : 'text-muted-foreground')} onClick={() => { setViewMode('markdown'); setSplitActive(false); onToggleSplit?.(block.id); }}>MD</button>
+              <button type="button" title="Preview HTML" className={cn('text-xs px-2 py-1 rounded', viewMode === 'preview' ? 'bg-muted/80 text-white' : 'text-muted-foreground')} onClick={() => { setViewMode('preview'); setSplitActive(false); onToggleSplit?.(block.id); }}>Preview</button>
+            </div>
           </div>
 
           {splitActive && block.tag !== 'pre' ? (
@@ -206,6 +217,21 @@ const EditableBlock = React.forwardRef<HTMLDivElement, EditableBlockProps & Edit
                   </div>
                 )}
               </div>
+            </div>
+          ) : viewMode === 'markdown' ? (
+            <div className="my-2">
+              <textarea
+                value={markdownValue}
+                onChange={(e) => {
+                  setMarkdownValue(e.target.value);
+                  onUpdate(e.target.value);
+                }}
+                className="p-3 resize-none outline-none w-full h-64"
+              />
+            </div>
+          ) : viewMode === 'preview' ? (
+            <div className="my-2">
+              <div className="w-full border rounded-md p-4 prose dark:prose-invert" dangerouslySetInnerHTML={{ __html: markdownValue || block.content || '' }} />
             </div>
           ) : (
             <div
@@ -303,7 +329,7 @@ export default function ProjectDetailsPage() {
   const searchParams = useSearchParams();
   const { id } = params;
 
-  const { projects, clients, findings, deleteFinding, updateProject, deleteProject, duplicateProject } = useData();
+  const { projects, clients, findings, deleteFinding, updateProject, deleteProject, duplicateProject, projectTemplates } = useData();
 
   const [project, setProject] = useState<Project | undefined>();
   const [projectFindings, setProjectFindings] = useState<Finding[]>([]);
@@ -326,6 +352,7 @@ export default function ProjectDetailsPage() {
   const [toolbarPosition, setToolbarPosition] = useState({ top: 0, left: 0 });
 
   const [saveStatus, setSaveStatus] = useState<SaveStatus>('saved');
+  const [selectedTemplateId, setSelectedTemplateId] = useState<string | null>(null);
 
   const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
   const [isLeaveDialogOpen, setIsLeaveDialogOpen] = useState(false);
@@ -1011,6 +1038,27 @@ export default function ProjectDetailsPage() {
                <Card>
                   <CardContent className="max-w-4xl mx-auto pt-6" dir="ltr">
                      {isToolbarOpen && <FloatingToolbar position={toolbarPosition} />}
+                     <div className="mb-4 flex items-center gap-3">
+                        <Label className="mr-2">Importar plantilla:</Label>
+                        <Select value={selectedTemplateId || ''} onValueChange={(v) => setSelectedTemplateId(v || null)}>
+                          <SelectTrigger className="w-72">
+                            <SelectValue placeholder={t[projectLanguage as 'en'|'es'].selectTemplate} />
+                          </SelectTrigger>
+                          <SelectContent>
+                            {projectTemplates.map(pt => (
+                              <SelectItem key={pt.id} value={pt.id}>{projectLanguage === 'es' ? pt.name_es : pt.name_en}</SelectItem>
+                            ))}
+                          </SelectContent>
+                        </Select>
+                        <Button onClick={() => {
+                          if (!selectedTemplateId) return toast({ variant: 'destructive', title: 'Seleccione una plantilla' });
+                          const tpl = projectTemplates.find(p => p.id === selectedTemplateId);
+                          if (!tpl) return toast({ variant: 'destructive', title: 'Plantilla no encontrada' });
+                          const md = projectLanguage === 'es' ? (tpl.scope_es || tpl.scope_en) : (tpl.scope_en || tpl.scope_es);
+                          const newBlocks = parseMarkdownToBlocks(md || '');
+                          updateBlocks(newBlocks);
+                        }}><Plus className="mr-2 h-4 w-4"/>Importar</Button>
+                     </div>
                      <DndContext sensors={sensors} collisionDetection={closestCenter} onDragEnd={handleDragEnd}>
                         <SortableContext items={blocks.map(b => b.id)} strategy={verticalListSortingStrategy}>
                             {blocks.map((block, index) => (
