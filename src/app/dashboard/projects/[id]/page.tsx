@@ -153,6 +153,8 @@ const EditableBlock = React.forwardRef(({ block, onUpdate, onKeyDown, onFocus, i
 
     const placeholderText = getPlaceholderText();
     const showPlaceholder = isEmpty && isFocused;
+    const showSplitEditor = splitActive && viewModeState === 'split' && block.tag !== 'pre';
+    const showPreview = viewModeState === 'preview';
 
     return (
         <div 
@@ -241,7 +243,7 @@ const EditableBlock = React.forwardRef(({ block, onUpdate, onKeyDown, onFocus, i
             </div>
           </div>
 
-          {splitActive && block.tag !== 'pre' ? (
+          {showSplitEditor ? (
             // render split editor
             <div className="my-2">
               {/* lazy load split editor to avoid SSR issues */}
@@ -281,7 +283,11 @@ const EditableBlock = React.forwardRef(({ block, onUpdate, onKeyDown, onFocus, i
                 )}
               </div>
             </div>
-          ) : viewModeState === 'markdown' || true ? (
+          ) : showPreview ? (
+            <div className="my-2">
+              <div className="w-full border rounded-md p-4 prose dark:prose-invert" dangerouslySetInnerHTML={{ __html: markdownValue || block.content || '' }} />
+            </div>
+          ) : (
             <div className="my-2">
               <textarea
                 value={markdownValue}
@@ -291,10 +297,6 @@ const EditableBlock = React.forwardRef(({ block, onUpdate, onKeyDown, onFocus, i
                 }}
                 className="p-3 resize-none outline-none w-full h-64 bg-white dark:bg-black text-black dark:text-white"
               />
-            </div>
-          ) : viewModeState === 'preview' ? (
-            <div className="my-2">
-              <div className="w-full border rounded-md p-4 prose dark:prose-invert" dangerouslySetInnerHTML={{ __html: markdownValue || block.content || '' }} />
             </div>
           )}
 
