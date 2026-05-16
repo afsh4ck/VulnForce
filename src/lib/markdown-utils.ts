@@ -26,7 +26,7 @@ export function parseMarkdownToBlocks(input: string): ContentBlock[] {
     if (inCode) return; // shouldn't happen
     if (buffer.length === 0 && currentTag !== 'hr') return;
     const content = buffer.join('\n').trim();
-    blocks.push({ id: `block-${Date.now()}-${Math.random()}`, tag: currentTag, content });
+    blocks.push({ id: `block-${Date.now()}-${Math.random()}`, tag: currentTag, content, meta: { viewMode: 'split' } });
     buffer = [];
     currentTag = 'p';
   }
@@ -57,19 +57,19 @@ export function parseMarkdownToBlocks(input: string): ContentBlock[] {
       flush();
       const level = line.match(/^(#{1,6})\s+/)![1].length;
       const tag = (`h${level}`) as ContentBlock['tag'];
-      blocks.push({ id: `block-${Date.now()}-${Math.random()}`, tag, content: line.replace(/^#{1,6}\s+/, '').trim() });
+        blocks.push({ id: `block-${Date.now()}-${Math.random()}`, tag, content: line.replace(/^#{1,6}\s+/, '').trim(), meta: { viewMode: 'split' } });
       continue;
     }
 
     if (/^---\s*$/.test(line)) {
       flush();
-      blocks.push({ id: `block-${Date.now()}-${Math.random()}`, tag: 'hr', content: '' });
+        blocks.push({ id: `block-${Date.now()}-${Math.random()}`, tag: 'hr', content: '', meta: { viewMode: 'split' } });
       continue;
     }
 
     if (/^>\s?/.test(line)) {
       flush();
-      blocks.push({ id: `block-${Date.now()}-${Math.random()}`, tag: 'blockquote', content: line.replace(/^>\s?/, '').trim() });
+        blocks.push({ id: `block-${Date.now()}-${Math.random()}`, tag: 'blockquote', content: line.replace(/^>\s?/, '').trim(), meta: { viewMode: 'split' } });
       continue;
     }
 
@@ -85,7 +85,7 @@ export function parseMarkdownToBlocks(input: string): ContentBlock[] {
       if (!/^(-|\*|\d+\.)\s+/.test(next)) {
         // convert buffer to markdown list
         const listMd = buffer.map(l => (currentTag === 'ol' ? `1. ${l}` : `- ${l}`)).join('\n');
-        blocks.push({ id: `block-${Date.now()}-${Math.random()}`, tag: currentTag, content: listMd });
+          blocks.push({ id: `block-${Date.now()}-${Math.random()}`, tag: currentTag, content: listMd, meta: { viewMode: 'split' } });
         buffer = [];
         currentTag = 'p';
       }
@@ -102,7 +102,7 @@ export function parseMarkdownToBlocks(input: string): ContentBlock[] {
 
   if (buffer.length > 0) flush();
 
-  if (blocks.length === 0) return [{ id: `block-${Date.now()}`, tag: 'p', content: '' }];
+  if (blocks.length === 0) return [{ id: `block-${Date.now()}`, tag: 'p', content: '', meta: { viewMode: 'split' } }];
   return blocks;
 }
 

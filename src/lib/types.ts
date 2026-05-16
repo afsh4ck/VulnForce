@@ -41,6 +41,9 @@ export interface ContentBlock {
   id: string;
   tag: ContentBlockTag;
   content: string;
+  meta?: {
+    viewMode?: 'split' | 'markdown' | 'preview';
+  };
 }
 
 export interface Finding {

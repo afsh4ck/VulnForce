@@ -25,6 +25,7 @@ import { cn } from "@/lib/utils";
 import { format } from 'date-fns';
 import { es } from 'date-fns/locale';
 import { useData } from '@/context/data-context';
+import { Combobox } from '@/components/ui/combobox';
 import { DateRange } from 'react-day-picker';
 import { DndContext, closestCenter, KeyboardSensor, PointerSensor, useSensor, useSensors, DragEndEvent } from '@dnd-kit/core';
 import { arrayMove, SortableContext, sortableKeyboardCoordinates, useSortable, verticalListSortingStrategy } from '@dnd-kit/sortable';
@@ -72,16 +73,16 @@ type EditableBlockProps = {
 };
 
 type EditableBlockExtra = {
-  isSplit?: boolean;
-  onToggleSplit?: (id: string) => void;
+  viewMode?: 'split' | 'markdown' | 'preview';
+  onToggleSplit?: (id: string, mode: 'split' | 'markdown' | 'preview') => void;
 };
 
-const EditableBlock = React.forwardRef<HTMLDivElement, EditableBlockProps & EditableBlockExtra>(({ block, onUpdate, onKeyDown, onFocus, isFocused, placeholder, t_editor, isSplit, onToggleSplit }, ref) => {
+const EditableBlock = React.forwardRef<HTMLDivElement, EditableBlockProps & EditableBlockExtra>(({ block, onUpdate, onKeyDown, onFocus, isFocused, placeholder, t_editor, viewMode, onToggleSplit }, ref) => {
     const blockRef = useRef<HTMLDivElement>(null);
     const [markdownValue, setMarkdownValue] = React.useState<string>('');
-    const [splitActive, setSplitActive] = React.useState<boolean>(!!isSplit);
-    const [viewMode, setViewMode] = React.useState<'split' | 'markdown' | 'preview'>(() => (!!isSplit ? 'split' : 'split'));
-    useEffect(() => setSplitActive(!!isSplit), [isSplit]);
+    const [splitActive, setSplitActive] = React.useState<boolean>(viewMode === 'split');
+    const [viewModeState, setViewModeState] = React.useState<'split' | 'markdown' | 'preview'>(() => viewMode || 'split');
+    useEffect(() => { setSplitActive(viewMode === 'split'); setViewModeState(viewMode || 'split'); }, [viewMode]);
     useEffect(() => {
       setMarkdownValue(block.content || '');
     }, [block.id]);
@@ -172,9 +173,9 @@ const EditableBlock = React.forwardRef<HTMLDivElement, EditableBlockProps & Edit
         >
           <div className="absolute right-0 top-0 mr-2 mt-1 flex gap-1">
             <div className="flex items-center gap-1 bg-panel p-1 rounded-md">
-              <button type="button" title="Vista dividida" className={cn('text-xs px-2 py-1 rounded', viewMode === 'split' ? 'bg-muted/80 text-white' : 'text-muted-foreground')} onClick={() => { setViewMode('split'); setSplitActive(true); onToggleSplit?.(block.id); }}>Split</button>
-              <button type="button" title="Editor Markdown" className={cn('text-xs px-2 py-1 rounded', viewMode === 'markdown' ? 'bg-muted/80 text-white' : 'text-muted-foreground')} onClick={() => { setViewMode('markdown'); setSplitActive(false); onToggleSplit?.(block.id); }}>MD</button>
-              <button type="button" title="Preview HTML" className={cn('text-xs px-2 py-1 rounded', viewMode === 'preview' ? 'bg-muted/80 text-white' : 'text-muted-foreground')} onClick={() => { setViewMode('preview'); setSplitActive(false); onToggleSplit?.(block.id); }}>Preview</button>
+              <button type="button" title="Vista dividida" className={cn('text-xs px-2 py-1 rounded', viewModeState === 'split' ? 'bg-muted/80 text-white' : 'text-muted-foreground')} onClick={() => { setViewModeState('split'); setSplitActive(true); onToggleSplit?.(block.id, 'split'); }}>Split</button>
+              <button type="button" title="Editor Markdown" className={cn('text-xs px-2 py-1 rounded', viewModeState === 'markdown' ? 'bg-muted/80 text-white' : 'text-muted-foreground')} onClick={() => { setViewModeState('markdown'); setSplitActive(false); onToggleSplit?.(block.id, 'markdown'); }}>MD</button>
+              <button type="button" title="Preview HTML" className={cn('text-xs px-2 py-1 rounded', viewModeState === 'preview' ? 'bg-muted/80 text-white' : 'text-muted-foreground')} onClick={() => { setViewModeState('preview'); setSplitActive(false); onToggleSplit?.(block.id, 'preview'); }}>Preview</button>
             </div>
           </div>
 
@@ -218,7 +219,7 @@ const EditableBlock = React.forwardRef<HTMLDivElement, EditableBlockProps & Edit
                 )}
               </div>
             </div>
-          ) : viewMode === 'markdown' ? (
+          ) : viewModeState === 'markdown' ? (
             <div className="my-2">
               <textarea
                 value={markdownValue}
@@ -229,7 +230,7 @@ const EditableBlock = React.forwardRef<HTMLDivElement, EditableBlockProps & Edit
                 className="p-3 resize-none outline-none w-full h-64"
               />
             </div>
-          ) : viewMode === 'preview' ? (
+          ) : viewModeState === 'preview' ? (
             <div className="my-2">
               <div className="w-full border rounded-md p-4 prose dark:prose-invert" dangerouslySetInnerHTML={{ __html: markdownValue || block.content || '' }} />
             </div>
@@ -329,7 +330,7 @@ export default function ProjectDetailsPage() {
   const searchParams = useSearchParams();
   const { id } = params;
 
-  const { projects, clients, findings, deleteFinding, updateProject, deleteProject, duplicateProject, projectTemplates } = useData();
+  const { projects, clients, findings, deleteFinding, updateProject, deleteProject, duplicateProject, projectTemplates, vulnerabilities } = useData();
 
   const [project, setProject] = useState<Project | undefined>();
   const [projectFindings, setProjectFindings] = useState<Finding[]>([]);
@@ -346,13 +347,40 @@ export default function ProjectDetailsPage() {
   const [blocks, setBlocks] = useState<ContentBlock[]>([]);
   
   const [activeBlockId, setActiveBlockId] = useState<string | null>(null);
-  const [splitBlocks, setSplitBlocks] = useState<Record<string, boolean>>({});
+  const [splitBlocks, setSplitBlocks] = useState<Record<string, 'split' | 'markdown' | 'preview'>>({});
   const [commandMenuOpen, setCommandMenuOpen] = useState(false);
   const [isToolbarOpen, setIsToolbarOpen] = useState(false);
   const [toolbarPosition, setToolbarPosition] = useState({ top: 0, left: 0 });
 
   const [saveStatus, setSaveStatus] = useState<SaveStatus>('saved');
   const [selectedTemplateId, setSelectedTemplateId] = useState<string | null>(null);
+  const [templateComboboxValue, setTemplateComboboxValue] = useState<string>('');
+  const [templatePreview, setTemplatePreview] = useState<string>('');
+
+  // Persist per-block view modes in localStorage per project
+  useEffect(() => {
+    if (typeof window === 'undefined' || !project) return;
+    const key = `vulnforce-viewmode-${project.id}`;
+    try {
+      const item = window.localStorage.getItem(key);
+      if (item) {
+        const parsed = JSON.parse(item) as Record<string, 'split' | 'markdown' | 'preview'>;
+        setSplitBlocks(parsed || {});
+      }
+    } catch (e) {
+      console.error('Failed to load view modes', e);
+    }
+  }, [project?.id]);
+
+  useEffect(() => {
+    if (typeof window === 'undefined' || !project) return;
+    const key = `vulnforce-viewmode-${project.id}`;
+    try {
+      window.localStorage.setItem(key, JSON.stringify(splitBlocks || {}));
+    } catch (e) {
+      console.error('Failed to save view modes', e);
+    }
+  }, [splitBlocks, project?.id]);
 
   const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
   const [isLeaveDialogOpen, setIsLeaveDialogOpen] = useState(false);
@@ -721,6 +749,7 @@ export default function ProjectDetailsPage() {
     newBlocks.splice(index + 1, 0, newBlock);
     updateBlocks(newBlocks);
     setActiveBlockId(newBlock.id);
+    setSplitBlocks(prev => ({ ...prev, [newBlock.id]: 'split' }));
   }, [blocks, updateBlocks]);
 
   const updateBlockTag = useCallback((id: string, newTag: ContentBlock['tag']) => {
@@ -973,7 +1002,11 @@ export default function ProjectDetailsPage() {
     } else if (action === 'turnInto') {
       updateBlockTag(blockId, value);
     } else if (action === 'split') {
-      setSplitBlocks(prev => ({ ...prev, [blockId]: !prev[blockId] }));
+      setSplitBlocks(prev => {
+        const cur = prev[blockId] || blocks.find(b => b.id === blockId)?.meta?.viewMode || 'split';
+        const next = cur === 'split' ? 'markdown' : cur === 'markdown' ? 'preview' : 'split';
+        return { ...prev, [blockId]: next };
+      });
     }
   }, [handleDeleteBlock, handleDuplicateBlock, updateBlockTag]);
 
@@ -1040,24 +1073,84 @@ export default function ProjectDetailsPage() {
                      {isToolbarOpen && <FloatingToolbar position={toolbarPosition} />}
                      <div className="mb-4 flex items-center gap-3">
                         <Label className="mr-2">Importar plantilla:</Label>
-                        <Select value={selectedTemplateId || ''} onValueChange={(v) => setSelectedTemplateId(v || null)}>
-                          <SelectTrigger className="w-72">
-                            <SelectValue placeholder={t[projectLanguage as 'en'|'es'].selectTemplate} />
-                          </SelectTrigger>
-                          <SelectContent>
-                            {projectTemplates.map(pt => (
-                              <SelectItem key={pt.id} value={pt.id}>{projectLanguage === 'es' ? pt.name_es : pt.name_en}</SelectItem>
-                            ))}
-                          </SelectContent>
-                        </Select>
-                        <Button onClick={() => {
-                          if (!selectedTemplateId) return toast({ variant: 'destructive', title: 'Seleccione una plantilla' });
-                          const tpl = projectTemplates.find(p => p.id === selectedTemplateId);
-                          if (!tpl) return toast({ variant: 'destructive', title: 'Plantilla no encontrada' });
-                          const md = projectLanguage === 'es' ? (tpl.scope_es || tpl.scope_en) : (tpl.scope_en || tpl.scope_es);
-                          const newBlocks = parseMarkdownToBlocks(md || '');
-                          updateBlocks(newBlocks);
-                        }}><Plus className="mr-2 h-4 w-4"/>Importar</Button>
+                        <div className="flex items-start gap-3">
+                          <div>
+                            <Combobox
+                              options={[
+                                ...projectTemplates.map(pt => ({ label: projectLanguage === 'es' ? pt.name_es : pt.name_en, value: `tpl:${pt.id}` })),
+                                ...vulnerabilities.map(v => ({ label: projectLanguage === 'es' ? (v.title_es || v.title_en) : v.title_en, value: `vul:${v.id}` })),
+                              ]}
+                              selectedValue={templateComboboxValue}
+                              onSelect={(val) => {
+                                setTemplateComboboxValue(val);
+                                if (!val) {
+                                  setTemplatePreview('');
+                                  return;
+                                }
+                                if (val.startsWith('tpl:')) {
+                                  const id = val.replace('tpl:', '');
+                                  const tpl = projectTemplates.find(p => p.id === id);
+                                  if (tpl) {
+                                    const md = projectLanguage === 'es' ? (tpl.scope_es || tpl.scope_en) : (tpl.scope_en || tpl.scope_es);
+                                    setTemplatePreview(md || '');
+                                  }
+                                } else if (val.startsWith('vul:')) {
+                                  const id = val.replace('vul:', '');
+                                  const vul = vulnerabilities.find(v => v.id === id);
+                                  if (vul) {
+                                    const title = projectLanguage === 'es' ? (vul.title_es || vul.title_en) : vul.title_en;
+                                    const overview = projectLanguage === 'es' ? (vul.overview_es || vul.overview_en) : (vul.overview_en || vul.overview_es);
+                                    const tech = projectLanguage === 'es' ? (vul.technicalDescription_es || vul.technicalDescription_en) : (vul.technicalDescription_en || vul.technicalDescription_es);
+                                    const actions = projectLanguage === 'es' ? (vul.immediateActions_es || vul.immediateActions_en) : (vul.immediateActions_en || vul.immediateActions_es);
+                                    const md = [`# ${title}`, overview || '', tech ? `## Technical Details\n${tech}` : '', actions ? `## Immediate Actions\n${actions}` : ''].filter(Boolean).join('\n\n');
+                                    setTemplatePreview(md);
+                                  }
+                                }
+                              }}
+                              placeholder={t[projectLanguage as 'en'|'es'].selectTemplate}
+                              searchPlaceholder="Buscar plantillas..."
+                            />
+                          </div>
+                          <div className="w-72">
+                            <div className="border rounded-md p-2 h-28 overflow-auto">
+                              {templatePreview ? <MarkdownPreview content={templatePreview} getImage={() => undefined} /> : <div className="text-sm text-muted-foreground">Vista previa de plantilla</div>}
+                            </div>
+                          </div>
+                          <div className="self-center">
+                            <Button onClick={() => {
+                              if (!templateComboboxValue) return toast({ variant: 'destructive', title: 'Seleccione una plantilla' });
+                              if (templateComboboxValue.startsWith('tpl:')) {
+                                const id = templateComboboxValue.replace('tpl:', '');
+                                const tpl = projectTemplates.find(p => p.id === id);
+                                if (!tpl) return toast({ variant: 'destructive', title: 'Plantilla no encontrada' });
+                                const md = projectLanguage === 'es' ? (tpl.scope_es || tpl.scope_en) : (tpl.scope_en || tpl.scope_es);
+                                const newBlocks = parseMarkdownToBlocks(md || '');
+                                updateBlocks(newBlocks);
+                                const mapping: Record<string, 'split'|'markdown'|'preview'> = {};
+                                newBlocks.forEach(b => mapping[b.id] = 'split');
+                                setSplitBlocks(prev => ({ ...prev, ...mapping }));
+                                setTemplateComboboxValue('');
+                                setTemplatePreview('');
+                              } else if (templateComboboxValue.startsWith('vul:')) {
+                                const id = templateComboboxValue.replace('vul:', '');
+                                const vul = vulnerabilities.find(v => v.id === id);
+                                if (!vul) return toast({ variant: 'destructive', title: 'Vulnerability not found' });
+                                const title = projectLanguage === 'es' ? (vul.title_es || vul.title_en) : vul.title_en;
+                                const overview = projectLanguage === 'es' ? (vul.overview_es || vul.overview_en) : (vul.overview_en || vul.overview_es);
+                                const tech = projectLanguage === 'es' ? (vul.technicalDescription_es || vul.technicalDescription_en) : (vul.technicalDescription_en || vul.technicalDescription_es);
+                                const actions = projectLanguage === 'es' ? (vul.immediateActions_es || vul.immediateActions_en) : (vul.immediateActions_en || vul.immediateActions_es);
+                                const md = [`# ${title}`, overview || '', tech ? `## Technical Details\n${tech}` : '', actions ? `## Immediate Actions\n${actions}` : ''].filter(Boolean).join('\n\n');
+                                const newBlocks = parseMarkdownToBlocks(md || '');
+                                updateBlocks(newBlocks);
+                                const mapping: Record<string, 'split'|'markdown'|'preview'> = {};
+                                newBlocks.forEach(b => mapping[b.id] = 'split');
+                                setSplitBlocks(prev => ({ ...prev, ...mapping }));
+                                setTemplateComboboxValue('');
+                                setTemplatePreview('');
+                              }
+                            }}><Plus className="mr-2 h-4 w-4"/>Importar</Button>
+                          </div>
+                        </div>
                      </div>
                      <DndContext sensors={sensors} collisionDetection={closestCenter} onDragEnd={handleDragEnd}>
                         <SortableContext items={blocks.map(b => b.id)} strategy={verticalListSortingStrategy}>
@@ -1076,8 +1169,8 @@ export default function ProjectDetailsPage() {
                                     onKeyDown={(e: React.KeyboardEvent<HTMLDivElement>) => handleKeyDown(e, block.id)}
                                     onAdd={handleAddBlock}
                                     onAction={handleBlockAction}
-                                isSplit={!!splitBlocks[block.id]}
-                                onToggleSplit={(id: string) => setSplitBlocks(prev => ({ ...prev, [id]: !prev[id] }))}
+                                viewMode={splitBlocks[block.id] || block.meta?.viewMode || 'split'}
+                                onToggleSplit={(id: string, mode: 'split' | 'markdown' | 'preview') => setSplitBlocks(prev => ({ ...prev, [id]: mode }))}
                                     onFocus={() => setActiveBlockId(block.id)}
                                     isFocused={activeBlockId === block.id}
                                     placeholder={t[projectLanguage as 'en' | 'es'].commandPlaceholder}
