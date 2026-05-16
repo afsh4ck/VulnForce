@@ -123,20 +123,3 @@ Si quieres contribuir:
 1. Abre un issue describiendo la propuesta o fallo.
 2. Crea una rama con un nombre descriptivo.
 3. Envía un pull request con cambios claros y pruebas cuando proceda.
-
-## Licencia
-
-Indica aquí la licencia del proyecto (por ejemplo, MIT). Si el repositorio ya incluye un archivo `LICENSE`, siga esa licencia.
-
-## Contacto
-
-Para soporte o consultas: equipo de desarrollo o maintainer del proyecto.
-
----
-
-Si quieres, puedo adaptar este README para incluir instrucciones de despliegue concreto (Docker, Vercel), variables de entorno requeridas, o ejemplos de plantillas de informe.
-# Firebase Studio
-
-This is a NextJS starter in Firebase Studio.
-
-To get started, take a look at src/app/page.tsx.
