@@ -77,7 +77,7 @@ type EditableBlockExtra = {
   onToggleSplit?: (id: string, mode: 'split' | 'markdown' | 'preview') => void;
 };
 
-const EditableBlock = React.forwardRef<HTMLDivElement, EditableBlockProps & EditableBlockExtra>(({ block, onUpdate, onKeyDown, onFocus, isFocused, placeholder, t_editor, viewMode, onToggleSplit }, ref) => {
+const EditableBlock = React.forwardRef(({ block, onUpdate, onKeyDown, onFocus, isFocused, placeholder, t_editor, viewMode, onToggleSplit }: EditableBlockProps & EditableBlockExtra, ref: React.Ref<HTMLDivElement>) => {
     const blockRef = useRef<HTMLDivElement>(null);
     const [markdownValue, setMarkdownValue] = React.useState<string>('');
     const [splitActive, setSplitActive] = React.useState<boolean>(viewMode === 'split');
@@ -319,7 +319,7 @@ type SortableBlockProps = EditableBlockProps & EditableBlockExtra & {
   onAction: (action: string, blockId: string, value?: any) => void;
 };
 
-const SortableBlock = React.forwardRef<HTMLDivElement, SortableBlockProps>(({ block, index, onAdd, onAction, ...editableProps }, ref) => {
+const SortableBlock = React.forwardRef(({ block, index, onAdd, onAction, ...editableProps }: SortableBlockProps, ref: React.Ref<HTMLDivElement>) => {
   const { attributes, listeners, setNodeRef, transform, transition, isDragging } = useSortable({ id: block.id });
   const [optionsMenuOpen, setOptionsMenuOpen] = useState(false);
 
