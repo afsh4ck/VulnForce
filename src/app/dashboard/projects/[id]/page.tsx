@@ -118,19 +118,26 @@ const EditableBlock = React.forwardRef<HTMLDivElement, EditableBlockProps & Edit
     }
     
     if (block.tag === 'table') {
-                        <textarea
-                          value={markdownValue}
-                          onChange={(e) => {
-                            setMarkdownValue(e.target.value);
-                            // pass markdown back to parent
-                            onUpdate(e.target.value);
-                          }}
-                          className="p-3 resize-none outline-none w-full"
-                          style={{ width: `50%`, borderRight: '1px solid rgba(0,0,0,0.06)' }}
-                        />
-                        <div style={{ width: `50%`, padding: '12px', overflow: 'auto' }}>
-                          <MarkdownPreview content={markdownValue || block.content || ''} getImage={() => undefined} />
-                        </div>
+      return (
+        <div className="w-full border rounded-md overflow-hidden">
+          <div style={{ display: 'flex', alignItems: 'stretch', height: '280px' }}>
+            <textarea
+              value={markdownValue}
+              onChange={(e) => {
+                setMarkdownValue(e.target.value);
+                // pass markdown back to parent
+                onUpdate(e.target.value);
+              }}
+              className="p-3 resize-none outline-none w-full"
+              style={{ width: `50%`, borderRight: '1px solid rgba(0,0,0,0.06)' }}
+            />
+            <div style={{ width: `50%`, padding: '12px', overflow: 'auto' }}>
+              <MarkdownPreview content={markdownValue || block.content || ''} getImage={() => undefined} />
+            </div>
+          </div>
+        </div>
+      );
+    }
     
     const placeholderText = getPlaceholderText();
     const showPlaceholder = isEmpty && isFocused;
