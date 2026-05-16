@@ -30,6 +30,7 @@ import { DndContext, closestCenter, KeyboardSensor, PointerSensor, useSensor, us
 import { arrayMove, SortableContext, sortableKeyboardCoordinates, useSortable, verticalListSortingStrategy } from '@dnd-kit/sortable';
 import { CSS } from '@dnd-kit/utilities';
 import { CommandMenu } from '@/components/command-menu';
+import { MarkdownPreview } from '@/components/markdown-preview';
 import { useLeavePage } from '@/app/dashboard/layout';
 import { AddBlockMenu } from '@/components/add-block-menu';
 import { BlockOptionsMenu } from '@/components/block-options-menu';
@@ -58,126 +59,7 @@ const iconOptions = [
     { value: 'Award', label: 'Award' },
 ];
 
-function parseMarkdownToBlocks(markdown: string): ContentBlock[] {
-    if (typeof document === 'undefined' || !markdown) {
-        return [{ id: `block-${Date.now()}`, tag: 'p', content: '' }];
-    }
-
-    const blocks: ContentBlock[] = [];
-    const lines = markdown.split('\n');
-    let currentBlock: Partial<ContentBlock> = {};
-    let inCodeBlock = false;
-
-    function pushCurrentBlock() {
-        if (currentBlock.content || currentBlock.tag === 'hr') {
-            blocks.push({
-                id: currentBlock.id || `block-${Date.now()}-${Math.random()}`,
-                tag: currentBlock.tag || 'p',
-                content: (currentBlock.content || '').trimEnd()
-            } as ContentBlock);
-        }
-        currentBlock = {};
-    }
-
-    for (const line of lines) {
-        if (line.startsWith('```')) {
-            if (inCodeBlock) {
-                pushCurrentBlock();
-                inCodeBlock = false;
-            } else {
-                pushCurrentBlock();
-                inCodeBlock = true;
-                const lang = line.substring(3).trim();
-                currentBlock = { 
-                    id: `block-${Date.now()}-${Math.random()}`,
-                    tag: 'pre', 
-                    content: '' 
-                };
-            }
-            continue;
-        }
-
-        if (inCodeBlock) {
-            currentBlock.content = (currentBlock.content || '') + line + '\n';
-            continue;
-        }
-
-        if (line.trim() === '---') {
-            pushCurrentBlock();
-            blocks.push({ id: `block-${Date.now()}-${Math.random()}`, tag: 'hr', content: '' });
-            continue;
-        }
-
-        const headingMatch = line.match(/^(#{1,4})\s(.*)/);
-        if (headingMatch) {
-            pushCurrentBlock();
-            const level = headingMatch[1].length;
-            blocks.push({
-                id: `block-${Date.now()}-${Math.random()}`,
-                tag: `h${level}` as 'h1' | 'h2' | 'h3' | 'h4',
-                content: headingMatch[2]
-            });
-            continue;
-        }
-
-        const listMatch = line.match(/^(\s*)(-|\*|\d+\.)\s(.*)/);
-        if (listMatch) {
-            const listType = listMatch[2].includes('.') ? 'ol' : 'ul';
-            if (currentBlock.tag !== listType) {
-                pushCurrentBlock();
-                currentBlock = { id: `block-${Date.now()}-${Math.random()}`, tag: listType, content: '' };
-            }
-            currentBlock.content += `<li>${line.replace(/^(\s*)(-|\*|\d+\.)\s/, '')}</li>`;
-            continue;
-        }
-        
-        if (line.startsWith('>')) {
-            pushCurrentBlock();
-            blocks.push({ id: `block-${Date.now()}-${Math.random()}`, tag: 'blockquote', content: line.substring(1).trim() });
-            continue;
-        }
-
-        if (line.trim() === '' && currentBlock.content) {
-            pushCurrentBlock();
-        } else if (line.trim() !== '') {
-            if (currentBlock.tag !== 'p' && currentBlock.content) {
-                 pushCurrentBlock();
-            }
-            if (!currentBlock.tag) {
-                currentBlock = { id: `block-${Date.now()}-${Math.random()}`, tag: 'p', content: '' };
-            }
-            currentBlock.content = (currentBlock.content ? currentBlock.content + '\n' : '') + line;
-        }
-    }
-
-    pushCurrentBlock();
-
-    if (blocks.length === 0) return [{ id: `block-${Date.now()}`, tag: 'p', content: '' }];
-    return blocks;
-}
-
-function blocksToHtml(blocks: ContentBlock[]): string {
-  return blocks.map(block => {
-    if (block.tag === 'hr') {
-        return '<hr>';
-    }
-    if (block.tag === 'pre') {
-        const escapedContent = block.content.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
-        return `<pre><code>${escapedContent}</code></pre>`
-    }
-    if (block.tag === 'ul' || block.tag === 'ol') {
-        return `<${block.tag}>${block.content}</${block.tag}>`;
-    }
-    if (block.tag === 'p' && !block.content.trim()) {
-        return '<p><br></p>';
-    }
-    if (block.tag === 'table') {
-        return `<table>${block.content}</table>`;
-    }
-    const contentWithBreaks = block.content.replace(/\n/g, '<br>');
-    return `<${block.tag}>${contentWithBreaks}</${block.tag}>`
-  }).join('');
-}
+import { parseMarkdownToBlocks, blocksToMarkdown } from '@/lib/markdown-utils';
 
 type EditableBlockProps = {
   block: ContentBlock, 
@@ -200,11 +82,7 @@ const EditableBlock = React.forwardRef<HTMLDivElement, EditableBlockProps & Edit
   const [splitActive, setSplitActive] = React.useState<boolean>(!!isSplit);
   useEffect(() => setSplitActive(!!isSplit), [isSplit]);
     useEffect(() => {
-      // initialize markdown value from html: basic conversion
-      const temp = document.createElement('div');
-      temp.innerHTML = block.content || '';
-      const text = temp.innerText.replace(/\u00A0/g, '');
-      setMarkdownValue(text);
+      setMarkdownValue(block.content || '');
     }, [block.id]);
     
      useEffect(() => {
@@ -240,29 +118,19 @@ const EditableBlock = React.forwardRef<HTMLDivElement, EditableBlockProps & Edit
     }
     
     if (block.tag === 'table') {
-        return (
-            <div
-                className="my-4 prose dark:prose-invert"
-                dangerouslySetInnerHTML={{ __html: `<table>${block.content}</table>` }}
-            />
-        );
-    }
-    
-    const Tag = block.tag === 'pre' ? 'div' : (['ul', 'ol', 'blockquote'].includes(block.tag) ? block.tag : block.tag);
-    const isCode = block.tag === 'pre';
-    const isList = ['ul', 'ol'].includes(block.tag);
-    
-    const isEmpty = !block.content || block.content === '<br>' || block.content === '<li><br></li>';
-
-    const getPlaceholderText = () => {
-      if (!isFocused) return null;
-      if (block.tag.startsWith('h')) {
-        const level = block.tag.substring(1);
-        return t_editor.headings[level as '1' | '2' | '3' | '4'];
-      }
-      if (block.tag === 'p') return placeholder;
-      return null;
-    };
+                        <textarea
+                          value={markdownValue}
+                          onChange={(e) => {
+                            setMarkdownValue(e.target.value);
+                            // pass markdown back to parent
+                            onUpdate(e.target.value);
+                          }}
+                          className="p-3 resize-none outline-none w-full"
+                          style={{ width: `50%`, borderRight: '1px solid rgba(0,0,0,0.06)' }}
+                        />
+                        <div style={{ width: `50%`, padding: '12px', overflow: 'auto' }}>
+                          <MarkdownPreview content={markdownValue || block.content || ''} getImage={() => undefined} />
+                        </div>
     
     const placeholderText = getPlaceholderText();
     const showPlaceholder = isEmpty && isFocused;
@@ -671,6 +539,25 @@ export default function ProjectDetailsPage() {
       router.push('/dashboard/projects');
     }
   }, [id, projects, findings, router, pushToHistory]);
+
+  // If navigated from report with a TODO param, focus the block that contains the TODO text
+  useEffect(() => {
+    const todo = searchParams.get('todo');
+    if (!todo) return;
+    const found = blocks.find(b => (b.content || '').includes(todo));
+    if (found) {
+      setActiveBlockId(found.id);
+      setTimeout(() => {
+        const el = blockRefs.current[found.id]?.querySelector('[contenteditable="true"]') as HTMLElement | null;
+        if (el) {
+          el.focus();
+        } else {
+          const wrapper = blockRefs.current[found.id] as HTMLElement | null;
+          wrapper?.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        }
+      }, 200);
+    }
+  }, [searchParams, blocks]);
   
   const handleSave = useCallback((showToast = true) => {
     if (!project || !name || !clientId || !status || !date?.from || !date?.to) {
@@ -691,7 +578,7 @@ export default function ProjectDetailsPage() {
       language: projectLanguage,
       startDate: format(date.from, 'yyyy-MM-dd'),
       endDate: format(date.to, 'yyyy-MM-dd'),
-      reportBody: blocksToHtml(blocks),
+      reportBody: blocksToMarkdown(blocks),
     };
 
     updateProject(updatedProjectData);

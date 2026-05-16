@@ -138,7 +138,16 @@ export default function ReportPreviewPage() {
       
     const findingsSection = `\n\n# ${langT.findings}\n\n${findingsContent}`;
 
-    return `${mainContent}${findingsSection}`;
+    const replaceTodosWithLinks = (src: string) => {
+      if (!projectId) return src;
+      return src.replace(/\[TODO:\s*([^\]]+)\]/gi, (m, p1) => {
+        const todoText = p1.trim();
+        const link = `/dashboard/projects/${projectId}?tab=content&todo=${encodeURIComponent(todoText)}`;
+        return `[TODO: ${todoText}](${link})`;
+      });
+    };
+
+    return `${replaceTodosWithLinks(mainContent)}${replaceTodosWithLinks(findingsSection)}`;
   }, [project, client, projectFindings, t]);
 
   useEffect(() => {

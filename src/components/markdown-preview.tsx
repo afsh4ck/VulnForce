@@ -1,6 +1,6 @@
 
 
-'use client';
+"use client";
 import React from 'react';
 import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
@@ -8,12 +8,10 @@ import type { ImageAsset } from '@/lib/types';
 import { cn } from '@/lib/utils';
 import { Badge } from './ui/badge';
 import { Separator } from './ui/separator';
-import { LinkPreviewCard } from './link-preview-card';
 import { CodeBlock } from './code-block';
-import Image from 'next/image';
 
-export const MarkdownPreview = ({ content, getImage, isReport }: { content: string, getImage: (id: string) => ImageAsset | undefined, isReport?: boolean }) => {
-    
+export const MarkdownPreview = ({ content, getImage, isReport }: { content: string, getImage?: (id: string) => ImageAsset | undefined, isReport?: boolean }) => {
+
     const getSeverityVariant = (severity: string): 'destructive' | 'high' | 'medium' | 'low' | 'secondary' => {
         switch (severity) {
           case 'Critical': return 'destructive';
@@ -23,23 +21,17 @@ export const MarkdownPreview = ({ content, getImage, isReport }: { content: stri
           default: return 'secondary';
         }
     };
-    
+
     const CustomHeading = ({ level, children, ...props }: { level: number, children: React.ReactNode, [key: string]: any }) => {
         let textContent = '';
-        let rawContent: React.ReactNode[] = [];
-    
         React.Children.forEach(children, (child) => {
             if (typeof child === 'string') {
-                rawContent.push(child);
                 textContent += child;
             } else if (React.isValidElement(child) && typeof child.props.children === 'string') {
-                rawContent.push(child.props.children);
                 textContent += child.props.children;
-            } else {
-                 rawContent.push(child);
             }
         });
-        
+
         const match = textContent.match(/(.*) {#(.*)}/);
         const rawText = match ? match[1].trim() : textContent.trim();
         const id = match ? match[2].trim() : (rawText.trim().replace(/\s+/g, '-').replace(/[^\w-]+/g, '') || `section-${Math.random().toString(36).substr(2, 9)}`);
@@ -64,7 +56,7 @@ export const MarkdownPreview = ({ content, getImage, isReport }: { content: stri
             </div>
             );
         }
-        
+
         const Tag = `h${level}` as keyof JSX.IntrinsicElements;
         const classNames: Record<number, string> = {
             1: cn("font-headline text-3xl font-bold mb-4 border-b-2 border-primary pb-2", isReport && "mt-12"),
@@ -80,12 +72,21 @@ export const MarkdownPreview = ({ content, getImage, isReport }: { content: stri
         );
     };
 
-    const processContent = (markdown: string) => {
-        return markdown.replace(/\[TODO:(.*?)\]/g, '<span class="text-red-500 font-semibold">[TODO:$1]</span>');
-    };
-
     return (
-        <div className="prose dark:prose-invert w-full break-words" dangerouslySetInnerHTML={{ __html: processContent(content) }}>
+        <div className="prose dark:prose-invert w-full break-words">
+            <ReactMarkdown remarkPlugins={[remarkGfm]} components={{
+                h1: ({node, children, ...props}) => <CustomHeading level={1} {...props}>{children as any}</CustomHeading>,
+                h2: ({node, children, ...props}) => <CustomHeading level={2} {...props}>{children as any}</CustomHeading>,
+                h3: ({node, children, ...props}) => <CustomHeading level={3} {...props}>{children as any}</CustomHeading>,
+                h4: ({node, children, ...props}) => <CustomHeading level={4} {...props}>{children as any}</CustomHeading>,
+                code: (mdProps: any) => {
+                    const { inline, className, children, ...props } = mdProps;
+                    if (inline) return <code className={className} {...props}>{children}</code>;
+                    return <CodeBlock initialLanguage={(className || '').replace('language-', '')} code={String(children)} />;
+                }
+            }}>
+                {content}
+            </ReactMarkdown>
         </div>
     );
 };
