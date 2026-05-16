@@ -1,125 +1,134 @@
 # VulnForce - Professional Hacking Reporting Platform
 
-Aplicación web para gestionar proyectos, hallazgos y plantillas de informes de pentesting.
+VulnForce is a self-hosted web platform for managing pentesting projects, findings, reusable report templates, vulnerability writeups, and final client-ready reports.
 
-<img width="3214" height="1458" alt="image" src="https://github.com/user-attachments/assets/16e48dd3-1bed-435b-ab6e-6df9815f47c4" />
+<img width="3214" height="1458" alt="VulnForce dashboard" src="https://github.com/user-attachments/assets/16e48dd3-1bed-435b-ab6e-6df9815f47c4" />
 
-## Descripción
+## Overview
 
-VulnForce es una herramienta diseñada para equipos de pentesting y seguridad ofensiva que simplifica la gestión de proyectos, el seguimiento de hallazgos y la generación de informes profesionales. Proporciona una interfaz organizada para mantener evidencias, plantillas de reporte y generar entregables técnicos y ejecutivos.
+VulnForce is designed for offensive security teams that need a structured workflow for technical reporting. It combines project management, vulnerability libraries, section-based Markdown editing, TODO tracking, and HTML report preview/export in one local-first application.
 
-## Características principales
+The reporting workflow is inspired by mature pentesting report platforms such as SysReptor: report content is edited as independent sections, templates can be imported directly into editable report sections, and reviewers can jump from pending TODO markers in the report preview back to the exact editable section.
 
-- Gestión de proyectos y clientes.
-- Registro y categorización de hallazgos (vulnerabilidades, pruebas, evidencias).
-- Plantillas de informe reutilizables y edición por hallazgo.
-- Generación de reportes en formatos listos para entregar.
-- Módulos de ayuda basados en AI para resumen y traducción de hallazgos.
-- Panel de administración y control de usuarios.
+## Key Features
 
-## Tecnologías
+- Project and client management for pentesting engagements.
+- Finding management with severity, CVSS score, evidence, and Markdown writeups.
+- Reusable project templates and vulnerability templates.
+- Section-based report editor with Markdown, preview, and split view modes.
+- Resizable split editor with live visual Markdown preview.
+- Formatting toolbar for bold, italic, code, and bullet lists.
+- TODO tracking: uppercase `TODO` markers are highlighted in red, shown as `TO DO` in report preview, and linked back to the editable source section.
+- HTML report preview with table of contents, finding severity badges, pending TODO panel, and dark/light mode readability.
+- HTML export for delivery or offline review.
+- Docker deployment script for isolated local environments.
 
-- Frontend y backend: Next.js con TypeScript.
-- Estilos: Tailwind CSS.
-- Arquitectura: App Router y componentes React.
-- Código y utilidades: TypeScript en `src/`.
+## Reporting Workflow
 
-## Requisitos
+1. Create a project and assign it to a client.
+2. Import a project template or vulnerability entry.
+3. The imported content is split into editable sections based on top-level Markdown headings (`#` and `##`).
+4. Edit each section in one of three modes:
+   - `Split`: Markdown editor and rendered preview side by side.
+   - `MD`: full-width Markdown editor.
+   - `Preview`: rendered visual preview.
+5. Add `TODO` anywhere in uppercase to mark pending work.
+6. Open the report preview to review the final HTML, pending TODOs, and table of contents.
+7. Click any pending `TO DO` item to jump back to the corresponding editable section.
+8. Export the report as HTML when ready.
 
-- Node.js 22.13+ y pnpm 11.
-- Entorno de desarrollo con acceso a variables de entorno necesarias para integraciones (p. ej. servicios de AI o almacenamiento), si aplica.
+## Technology Stack
 
-## Instalación (rápida)
+- Next.js 15 with the App Router.
+- React and TypeScript.
+- Tailwind CSS and shadcn-style UI primitives.
+- `react-markdown` with GFM support for report rendering.
+- `react-resizable-panels` for split-view editing.
+- Docker for local deployment.
 
-1. Clona el repositorio:
+## Requirements
+
+- Node.js 22.13+.
+- pnpm 11.
+- Docker, if using `deploy.sh`.
+
+## Quick Start
 
 ```bash
 git clone <repo-url>
 cd <repo-folder>
-```
-
-2. Instala dependencias con pnpm:
-
-```bash
 pnpm install
+pnpm dev
 ```
 
-3. Ejecuta en modo desarrollo:
+Open `http://localhost:9002`.
 
-```bash
-pnpm run dev
-```
+## Docker Deployment
 
-Visita `http://localhost:9002` para acceder a la aplicación en desarrollo.
-
-## Despliegue con Docker
-
-Se incluye soporte para desplegar VulnForce con Docker usando un bind local por defecto en `127.0.0.1:47474`.
-
-1. Asegúrate de tener Docker instalado y con el daemon accesible para tu usuario.
-
-2. Ejecución automática: desde la raíz del repositorio ejecuta:
+VulnForce includes `deploy.sh` for local Docker deployment. By default it binds to `127.0.0.1:47474`.
 
 ```bash
 bash deploy.sh
 ```
 
-El script realizará las siguientes acciones:
-- Construye la imagen Docker usando el `Dockerfile` del proyecto.
-- Instala dependencias y compila dentro del contenedor con `pnpm`.
-- Lanza el contenedor en `127.0.0.1:47474` salvo que configures `PORT` o `--port=NNNN`.
-- Crea volúmenes Docker nombrados para persistir datos: `vulnforce_data`, `vulnforce_uploads`, `vulnforce_logs`.
+Useful options:
 
-Si Docker no está instalado o el servicio debe iniciarse con `systemctl`, ejecuta el script con `sudo`.
+```bash
+bash deploy.sh --port=47474
+PORT=8080 bash deploy.sh
+HOST_BIND=0.0.0.0 bash deploy.sh
+SHOW_BUILD_LOGS=1 bash deploy.sh
+SKIP_PRUNE=1 bash deploy.sh
+```
 
-3. Persistencia de datos: la base de datos y archivos subidos se guardan en volúmenes Docker nombrados, por lo que sobreviven a reinicios y actualizaciones del contenedor.
+The deploy script:
 
-4. Nota de seguridad: este despliegue queda ligado a localhost por defecto. Si expones el servicio en una interfaz de red, hazlo solo en entornos controlados.
+- Checks Docker availability.
+- Removes any previous `vulnforce` container.
+- Builds the Docker image with BuildKit plain progress.
+- Shows a live build counter with elapsed time, completed/cached steps, and current build step.
+- Starts the app container on the selected bind address and port.
+- Stores persistent local data in project folders:
+  - `./data`
+  - `./uploads`
+  - `./logs`
 
-Si prefieres un despliegue con `docker-compose` o en plataformas como Vercel/Docker Swarm, dime y puedo añadir archivos y ejemplos adicionales.
+The default bind address is localhost for safer local use. Only set `HOST_BIND=0.0.0.0` in controlled environments.
 
-## Scripts útiles
+## Useful Scripts
 
-- `pnpm dev` - Arranca la app en desarrollo.
-- `pnpm build` - Compila para producción.
-- `pnpm start` - Inicia la versión construida.
+- `pnpm dev` - start the development server on port `9002`.
+- `pnpm build` - build for production.
+- `pnpm start` - start the production build.
+- `pnpm lint` - run ESLint.
+- `pnpm typecheck` - run TypeScript checks.
 
-Consulta `package.json` para ver otros scripts disponibles.
+## Project Structure
 
-## Estructura relevante del proyecto
+- `src/app/` - App Router pages and dashboard routes.
+- `src/components/` - Reusable UI and report rendering components.
+- `src/context/` - Application state providers.
+- `src/lib/` - Data models, template data, Markdown helpers, and utilities.
+- `deploy.sh` - Docker deployment helper.
+- `Dockerfile` - Production container build.
 
-- `src/app/` — Rutas y páginas principales (dashboard, proyectos, hallazgos, plantillas).
-- `src/components/` — Componentes reutilizables de UI.
-- `src/lib/` — Lógica utilitaria, modelos de datos y helpers.
-- `src/ai/` — Flujos y utilidades relacionadas con asistencia AI.
+## Main Areas
 
-## Secciones principales
+- **Dashboard:** project metrics, recent activity, and quick access.
+- **Projects:** project details, section-based report editor, findings, and settings.
+- **Findings:** detailed vulnerability findings with Markdown sections.
+- **Clients:** client and contact records.
+- **Vulnerabilities:** reusable vulnerability knowledge base with CVSS/CWE metadata.
+- **Templates:** reusable project report templates.
+- **Backup:** data export/import workflows.
 
-- **Dashboard:** Vista principal con métricas resumidas, actividad reciente, accesos rápidos a proyectos y hallazgos críticos.
-- **Proyectos:** Gestión de proyectos de pentesting; crear/editar proyectos, asignar miembros, ver progreso y fechas asociadas.
-- **Hallazgos:** Registro detallado de hallazgos por proyecto; cada entrada puede incluir descripción, severidad, evidencia, pasos para reproducir y estado.
-- **Clientes:** Catálogo de clientes y contactos asociados; histórico de entregas y relación con proyectos.
-- **Vulnerabilidades:** Biblioteca de vulnerabilidades con categorización (CVSS, CWE), estado y referencias; puede usarse para clasificar hallazgos y generar secciones técnicas del informe.
-- **Plantillas:** Gestor de plantillas de informe (técnico y ejecutivo) reutilizables; permite crear bloques reutilizables que luego se insertan por hallazgo o por proyecto.
-- **Backup:** Módulo para exportar e importar datos (proyectos, hallazgos y archivos) y para programar copias de seguridad; los backups se almacenan fuera del contenedor usando volúmenes persistentes.
+## Security Notes
 
-## Flujo de trabajo típico
+- Treat reports, findings, screenshots, payloads, and customer information as sensitive data.
+- Keep deployments bound to localhost unless the environment is explicitly controlled.
+- Use HTTPS, access control, and encrypted storage for real multi-user deployments.
+- Review exported HTML before delivery to ensure no pending `TO DO` items remain.
 
-1. Crear un `Proyecto` y registrar cliente.
-2. Añadir hallazgos con evidencias, severidad y contexto.
-3. Usar plantillas para componer secciones del informe.
-4. Generar el reporte final y exportarlo para entrega.
+## Changelog
 
-## Seguridad y privacidad
-
-- Tratar la información de hallazgos y evidencias como datos sensibles.
-- Asegurar el acceso a la aplicación con autenticación y control de acceso.
-- En despliegues reales, usar almacenamiento cifrado y conexiones seguras (HTTPS).
-
-## Contribuir
-
-Si quieres contribuir:
-
-1. Abre un issue describiendo la propuesta o fallo.
-2. Crea una rama con un nombre descriptivo.
-3. Envía un pull request con cambios claros y pruebas cuando proceda.
+See [CHANGELOG.md](CHANGELOG.md).

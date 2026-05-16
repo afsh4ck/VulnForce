@@ -19,6 +19,7 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@
 import { cn } from '@/lib/utils';
 import { useTheme } from '@/context/theme-context';
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '@/components/ui/dropdown-menu';
+import { hasTodoMarker, linkifyTodosInMarkdown, replaceTodoMarkers, stripMarkdownText } from '@/lib/todo-utils';
 
 interface TodoItem {
   location: string;
@@ -126,29 +127,45 @@ export default function ReportPreviewPage() {
 
     const reportLang = project.language;
     const langT = t[reportLang];
-    
-    const mainContent = project.reportBody || '';
+    const projectTodoHref = (_todoText: string, sectionTitle: string) => {
+      const params = new URLSearchParams({
+        tab: 'content',
+        todo: 'TODO',
+        section: sectionTitle,
+      });
+      return `/dashboard/projects/${projectId}?${params.toString()}`;
+    };
+
+    const findingTodoHref = (findingId: string, sectionTitle: string) => {
+      const params = new URLSearchParams({
+        todo: 'TODO',
+        section: sectionTitle,
+      });
+      return `/dashboard/projects/${projectId}/findings/${findingId}?${params.toString()}`;
+    };
+
+    const mainContent = linkifyTodosInMarkdown(
+      project.reportBody || '',
+      (marker, sectionTitle) => projectTodoHref(marker.detail, sectionTitle),
+      langT.scope
+    );
 
     const findingsContent = projectFindings
       .sort((a, b) => b.cvss - a.cvss)
       .map(f => {
-        return `## ${f.title} [SEVERITY:${f.severity},CVSS:${f.cvss.toFixed(1)}] {#finding-${f.id}}\n${f.markdown}`;
+        const findingMarkdown = linkifyTodosInMarkdown(
+          f.markdown,
+          (_marker, sectionTitle) => findingTodoHref(f.id, sectionTitle),
+          f.title
+        );
+        return `## ${f.title} [SEVERITY:${f.severity},CVSS:${f.cvss.toFixed(1)}] {#finding-${f.id}}\n${findingMarkdown}`;
       })
       .join('\n\n');
-      
+
     const findingsSection = `\n\n# ${langT.findings}\n\n${findingsContent}`;
 
-    const replaceTodosWithLinks = (src: string) => {
-      if (!projectId) return src;
-      return src.replace(/\[TODO:\s*([^\]]+)\]/gi, (m, p1) => {
-        const todoText = p1.trim();
-        const link = `/dashboard/projects/${projectId}?tab=content&todo=${encodeURIComponent(todoText)}`;
-        return `[TODO: ${todoText}](${link})`;
-      });
-    };
-
-    return `${replaceTodosWithLinks(mainContent)}${replaceTodosWithLinks(findingsSection)}`;
-  }, [project, client, projectFindings, t]);
+    return `${mainContent}${findingsSection}`;
+  }, [project, client, projectFindings, projectId, t]);
 
   useEffect(() => {
     const currentProject = projects.find(p => p.id === projectId);
@@ -218,57 +235,47 @@ export default function ReportPreviewPage() {
     const langT = t[reportLang];
     
     const foundTodos: TodoItem[] = [];
-    const todoRegex = /\[TODO:?.*?\]?/gi;
-    let idCounter = 0;
-    const seen = new Set<string>();
-    const generateId = (text: string) => {
-        idCounter++;
-        let baseSlug = text.toLowerCase().replace(/\s+/g, '-').replace(/[^\w-]+/g, '') || `section-${idCounter}`;
-        let finalSlug = baseSlug;
-        let counter = 1;
-        while (seen.has(finalSlug)) {
-            finalSlug = `${baseSlug}-${counter}`;
-            counter++;
-        }
-        seen.add(finalSlug);
-        return finalSlug;
+    const todoContext = (line: string) => replaceTodoMarkers(line, marker => marker.display).trim();
+    const projectTodoLink = (sectionTitle: string) => {
+      const params = new URLSearchParams({ tab: 'content', todo: 'TODO', section: sectionTitle });
+      return `/dashboard/projects/${projectId}?${params.toString()}`;
+    };
+    const findingTodoLink = (findingId: string, sectionTitle: string) => {
+      const params = new URLSearchParams({ todo: 'TODO', section: sectionTitle });
+      return `/dashboard/projects/${projectId}/findings/${findingId}?${params.toString()}`;
     };
   
     if (project.reportBody) {
-        const sections = project.reportBody.split(/\n\s*---\s*\n/);
-        sections.forEach((sectionContent) => {
-            const headingMatch = sectionContent.match(/^(?:#+)\s(.*)/m);
-            const sectionTitle = headingMatch ? headingMatch[1].trim() : langT.scope;
-            const sectionId = generateId(sectionTitle);
-            
-            const scopeMatches = sectionContent.match(todoRegex);
-            if (scopeMatches) {
-                scopeMatches.forEach(match => {
-                    foundTodos.push({
-                        location: sectionTitle,
-                        context: match,
-                        link: `/dashboard/projects/${projectId}?tab=scope#${sectionId}`,
-                    });
-                });
-            }
-        });
+      let currentSectionTitle = langT.scope;
+      project.reportBody.split('\n').forEach((line) => {
+        const headingMatch = line.match(/^#{1,6}\s+(.+)$/);
+        if (headingMatch) {
+          currentSectionTitle = stripMarkdownText(headingMatch[1]) || currentSectionTitle;
+        }
+
+        if (hasTodoMarker(line)) {
+          foundTodos.push({
+            location: currentSectionTitle,
+            context: todoContext(line),
+            link: projectTodoLink(currentSectionTitle),
+          });
+        }
+      });
     }
 
     projectFindings.forEach(finding => {
-      const findingSections = finding.markdown.split(/(?=^###\s)/gm);
-      findingSections.forEach((sectionContent) => {
-        const findingMatches = sectionContent.match(todoRegex);
-        if (findingMatches) {
-          findingMatches.forEach(match => {
-            const sectionTitleMatch = sectionContent.match(/^###\s(.*)/);
-            const locationName = sectionTitleMatch ? sectionTitleMatch[1].trim() : finding.title;
-            const sectionId = generateId(locationName);
-            
-            foundTodos.push({
-              location: `${langT.finding}: ${locationName}`,
-              context: match,
-              link: `/dashboard/projects/${projectId}/findings/${finding.id}#${sectionId}`,
-            });
+      let currentSectionTitle = finding.title;
+      finding.markdown.split('\n').forEach((line) => {
+        const headingMatch = line.match(/^#{1,6}\s+(.+)$/);
+        if (headingMatch) {
+          currentSectionTitle = stripMarkdownText(headingMatch[1]) || currentSectionTitle;
+        }
+
+        if (hasTodoMarker(line)) {
+          foundTodos.push({
+            location: `${langT.finding}: ${currentSectionTitle}`,
+            context: todoContext(line),
+            link: findingTodoLink(finding.id, currentSectionTitle),
           });
         }
       });
@@ -309,7 +316,8 @@ export default function ReportPreviewPage() {
     body { background-color: hsl(var(--background)); color: hsl(var(--foreground)); font-family: 'Inter', sans-serif; transition: background-color 0.2s ease-in-out, color 0.2s ease-in-out; }
     h1, h2, h3, h4, h5, h6 { font-family: 'Space Grotesk', sans-serif; }
     pre, code { font-family: 'Source Code Pro', monospace; }
-    .prose { color: hsl(var(--foreground)); max-width: 100% !important; } .prose h1, .prose h2, .prose h3, .prose h4, .prose h5, .prose h6 { color: hsl(var(--foreground)); } .prose a { color: hsl(var(--primary)); } .prose strong { color: hsl(var(--foreground)); } .prose blockquote { color: hsl(var(--muted-foreground)); border-left-color: hsl(var(--border)); } .prose code:not(pre code) { background-color: hsl(var(--muted)) !important; color: hsl(var(--muted-foreground)) !important; padding: 2px 5px; border-radius: 4px; } .prose pre { background-color: hsl(var(--muted)) !important; color: hsl(var(--muted-foreground)) !important; padding: 1em; border-radius: 8px; overflow-x: auto; } .prose table { width: 100%; } .prose th { background-color: hsl(var(--muted)); } .prose td, .prose th { border: 1px solid hsl(var(--border)); padding: 8px; } hr { border-top-color: hsl(var(--border)); }
+    .report-main { background: hsl(var(--card)); border: 1px solid hsl(var(--border)); border-radius: 8px; box-shadow: 0 18px 50px rgb(0 0 0 / 0.12); }
+    .prose { color: hsl(var(--foreground)); max-width: 100% !important; font-size: 1rem; line-height: 1.75; } .prose h1, .prose h2, .prose h3, .prose h4, .prose h5, .prose h6 { color: hsl(var(--foreground)); scroll-margin-top: 90px; } .prose a { color: hsl(var(--primary)); text-decoration-thickness: 1px; text-underline-offset: 3px; } .prose a[href*="todo=TODO"], .text-red-500 { color: #ef4444 !important; font-weight: 700; } .prose strong { color: hsl(var(--foreground)); } .prose blockquote { color: hsl(var(--muted-foreground)); border-left-color: hsl(var(--primary)); background: hsl(var(--muted) / 0.4); padding: 0.5rem 1rem; border-radius: 6px; } .prose code:not(pre code) { background-color: hsl(var(--muted)) !important; color: hsl(var(--foreground)) !important; padding: 2px 5px; border-radius: 4px; } .prose pre { background-color: hsl(var(--muted)) !important; color: hsl(var(--foreground)) !important; padding: 1em; border-radius: 8px; overflow-x: auto; border: 1px solid hsl(var(--border)); } .prose table { width: 100%; display: table; } .prose th { background-color: hsl(var(--muted)); color: hsl(var(--foreground)); } .prose td, .prose th { border: 1px solid hsl(var(--border)); padding: 10px 12px; vertical-align: top; } hr { border-top-color: hsl(var(--border)); }
     [id] { scroll-margin-top: 80px; }
     #toc-sidebar { transition: right 0.3s ease-in-out; }
     .toc-level-1 { font-weight: bold; } .toc-level-2 { padding-left: 1rem; } .toc-level-3 { padding-left: 2rem; }
@@ -337,7 +345,7 @@ export default function ReportPreviewPage() {
         <ul class="space-y-2 text-sm">${tocHtml}</ul>
       </div>
     </aside>
-    <main class="flex-1 max-w-4xl">${reportContentRef.current.innerHTML}</main>
+    <main class="report-main flex-1 max-w-5xl p-8 lg:p-10">${reportContentRef.current.innerHTML}</main>
   </div>
 
   <script>
@@ -413,6 +421,11 @@ export default function ReportPreviewPage() {
         [id] { scroll-margin-top: 80px; }
         @keyframes flash { 0% { background-color: transparent; } 25% { background-color: hsl(var(--primary) / 0.3); } 100% { background-color: transparent; } }
         .flash-highlight { animation: flash 2s ease-out; }
+        .prose { line-height: 1.75; }
+        .prose a[href*="todo=TODO"] { color: #ef4444 !important; font-weight: 700; }
+        .prose code:not(pre code) { color: hsl(var(--foreground)) !important; }
+        .prose blockquote { background: hsl(var(--muted) / 0.4); border-left-color: hsl(var(--primary)); border-radius: 6px; padding: 0.5rem 1rem; }
+        .prose th { color: hsl(var(--foreground)); }
       `}</style>
       
       <header className="sticky top-0 z-30 w-full bg-background/80 backdrop-blur-sm border-b no-print">
@@ -516,7 +529,7 @@ export default function ReportPreviewPage() {
           </div>
         </aside>
         
-        <main className={cn("flex-1 transition-all duration-300 printable-content max-w-4xl")}>
+        <main className={cn("flex-1 transition-all duration-300 printable-content max-w-5xl rounded-md border bg-card p-6 shadow-sm md:p-10")}>
           <div className="space-y-12" ref={reportContentRef}>
             <header className="flex justify-between items-start">
               <div>

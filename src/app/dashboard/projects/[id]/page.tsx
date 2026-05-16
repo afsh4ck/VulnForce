@@ -9,7 +9,7 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import Link from 'next/link';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
-import { PlusCircle, FileText, ArrowUpDown, Edit, Save, Trash2, CalendarIcon, Plus, GripVertical, Languages, ChevronLeft, CheckCircle, Heading1, Heading2, Heading3, Code, File, List, ListOrdered, Copy } from "lucide-react";
+import { PlusCircle, FileText, ArrowUpDown, Edit, Save, Trash2, CalendarIcon, Plus, GripVertical, Languages, ChevronLeft, CheckCircle, Heading1, Heading2, Heading3, Code, File, List, ListOrdered, Copy, Bold, Italic } from "lucide-react";
 import { useLanguage } from "@/context/language-context";
 import type { Finding, Project, ContentBlock } from '@/lib/types';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
@@ -37,6 +37,8 @@ import { useLeavePage } from '@/app/dashboard/layout';
 import { BlockOptionsMenu } from '@/components/block-options-menu';
 import { FloatingToolbar } from '@/components/floating-toolbar';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
+import { ResizableHandle, ResizablePanel, ResizablePanelGroup } from '@/components/ui/resizable';
+import { hasTodoMarker, stripMarkdownText } from '@/lib/todo-utils';
 
 
 type SortKey = keyof Finding;
@@ -62,6 +64,54 @@ const iconOptions = [
 
 import { parseMarkdownToBlocks, blocksToMarkdown } from '@/lib/markdown-utils';
 
+const blockToMarkdown = (block: ContentBlock, content = block.content) => {
+  if (/^#{1,6}\s+/m.test((content || '').trim())) {
+    return content || '';
+  }
+
+  switch (block.tag) {
+    case 'hr':
+      return '---';
+    case 'pre':
+      return `\`\`\`\n${content || ''}\n\`\`\``;
+    case 'ul':
+      return (content || '').split('\n').map(line => line.trim().startsWith('-') ? line : `- ${line}`).join('\n');
+    case 'ol':
+      return (content || '').split('\n').map(line => /^\d+\.\s/.test(line.trim()) ? line : `1. ${line}`).join('\n');
+    case 'blockquote':
+      return (content || '').split('\n').map(line => `> ${line}`).join('\n');
+    case 'table':
+      return content || '';
+    default:
+      if (block.tag.startsWith('h')) {
+        const level = Number(block.tag.replace('h', ''));
+        return `${'#'.repeat(level)} ${content || ''}`;
+      }
+      return content || '';
+  }
+};
+
+const getBlockHeadingTitle = (block: ContentBlock) => {
+  const headingMatch = block.content.match(/^#{1,2}\s+(.+)$/m);
+  if (headingMatch) {
+    return stripMarkdownText(headingMatch[1]);
+  }
+
+  if ((block.tag === 'h1' || block.tag === 'h2') && block.content.trim()) {
+    return stripMarkdownText(block.content.split('\n')[0]);
+  }
+  return '';
+};
+
+const getSectionTitleForBlock = (blocks: ContentBlock[], index: number) => {
+  for (let i = index; i >= 0; i--) {
+    const title = getBlockHeadingTitle(blocks[i]);
+    if (title) return title;
+  }
+
+  return stripMarkdownText(blocks[index]?.content || '') || 'Untitled section';
+};
+
 type EditableBlockProps = {
   block: ContentBlock, 
   onUpdate: (content: string) => void, 
@@ -75,6 +125,7 @@ type EditableBlockProps = {
 type EditableBlockExtra = {
   viewMode?: 'split' | 'markdown' | 'preview';
   onToggleSplit?: (id: string, mode: 'split' | 'markdown' | 'preview') => void;
+  sectionTitle?: string;
 };
 
 const EditableBlock = React.forwardRef(({ block, onUpdate, onKeyDown, onFocus, isFocused, placeholder, t_editor, viewMode, onToggleSplit }: EditableBlockProps & EditableBlockExtra, ref: React.Ref<HTMLDivElement>) => {
@@ -315,6 +366,169 @@ const EditableBlock = React.forwardRef(({ block, onUpdate, onKeyDown, onFocus, i
 });
 EditableBlock.displayName = "EditableBlock";
 
+const SectionEditableBlock = React.forwardRef(({ block, onUpdate, onKeyDown, onFocus, isFocused, placeholder, t_editor, viewMode, onToggleSplit, sectionTitle }: EditableBlockProps & EditableBlockExtra, ref: React.Ref<HTMLDivElement>) => {
+  const blockRef = useRef<HTMLDivElement | null>(null);
+  const textareaRef = useRef<HTMLTextAreaElement | null>(null);
+  const [markdownValue, setMarkdownValue] = React.useState<string>(block.content || '');
+  const [viewModeState, setViewModeState] = React.useState<'split' | 'markdown' | 'preview'>(() => viewMode || 'split');
+
+  const setRootRef = useCallback((node: HTMLDivElement | null) => {
+    blockRef.current = node;
+    if (typeof ref === 'function') {
+      ref(node);
+    } else if (ref) {
+      (ref as React.MutableRefObject<HTMLDivElement | null>).current = node;
+    }
+  }, [ref]);
+
+  useEffect(() => {
+    setViewModeState(viewMode || 'split');
+  }, [viewMode]);
+
+  useEffect(() => {
+    setMarkdownValue(block.content || '');
+  }, [block.id, block.content]);
+
+  useEffect(() => {
+    if (isFocused) {
+      textareaRef.current?.focus();
+    }
+  }, [isFocused, block.id]);
+
+  const placeholderText = placeholder || t_editor?.headings?.['1'] || '';
+  const previewMarkdown = blockToMarkdown(block, markdownValue);
+  const showSplitEditor = viewModeState === 'split' && block.tag !== 'pre';
+  const showPreview = viewModeState === 'preview';
+
+  const updateMarkdown = (value: string) => {
+    setMarkdownValue(value);
+    onUpdate(value);
+  };
+
+  const setViewMode = (mode: 'split' | 'markdown' | 'preview') => {
+    setViewModeState(mode);
+    onToggleSplit?.(block.id, mode);
+  };
+
+  const handleKeyDown = (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
+    onKeyDown(e as unknown as React.KeyboardEvent<HTMLDivElement>);
+  };
+
+  const applyMarkdownFormat = (formatType: 'bold' | 'italic' | 'code' | 'bullets') => {
+    const textarea = textareaRef.current;
+    if (!textarea) return;
+
+    const start = textarea.selectionStart;
+    const end = textarea.selectionEnd;
+    const selected = textarea.value.slice(start, end);
+    let replacement = selected;
+
+    if (formatType === 'bold') {
+      replacement = `**${selected || 'bold'}**`;
+    } else if (formatType === 'italic') {
+      replacement = `*${selected || 'italic'}*`;
+    } else if (formatType === 'code') {
+      replacement = selected.includes('\n')
+        ? `\`\`\`\n${selected || 'code'}\n\`\`\``
+        : `\`${selected || 'code'}\``;
+    } else {
+      replacement = selected
+        ? selected.split('\n').map(line => line.trim().startsWith('- ') ? line : `- ${line}`).join('\n')
+        : '- ';
+    }
+
+    textarea.setRangeText(replacement, start, end, 'end');
+    updateMarkdown(textarea.value);
+    textarea.focus();
+
+    if (!selected && formatType !== 'bullets') {
+      const innerStart = start + (formatType === 'bold' ? 2 : 1);
+      const innerEnd = innerStart + (formatType === 'bold' ? 4 : formatType === 'italic' ? 6 : 4);
+      textarea.setSelectionRange(innerStart, innerEnd);
+    }
+  };
+
+  const editorTextarea = (className?: string) => (
+    <textarea
+      ref={textareaRef}
+      value={markdownValue}
+      placeholder={placeholderText}
+      onFocus={onFocus}
+      onKeyDown={handleKeyDown}
+      onChange={(e) => updateMarkdown(e.target.value)}
+      className={cn(
+        "h-full min-h-[420px] w-full resize-none bg-background p-4 font-code text-sm leading-6 text-foreground outline-none",
+        "placeholder:text-muted-foreground focus-visible:ring-0",
+        className
+      )}
+    />
+  );
+
+  return (
+    <section
+      ref={setRootRef}
+      id={`section-${block.id}`}
+      data-section-title={sectionTitle}
+      className="w-full scroll-mt-24"
+      onFocus={onFocus}
+      dir="ltr"
+    >
+      <div className="mb-2 flex flex-col gap-3 border-b border-border pb-3 lg:flex-row lg:items-center lg:justify-between">
+        <div className="min-w-0">
+          <p className="text-[11px] font-medium uppercase tracking-wide text-muted-foreground">Section</p>
+          <h2 className="truncate font-headline text-lg font-semibold text-foreground">{sectionTitle || 'Untitled section'}</h2>
+        </div>
+
+        <div className="flex flex-wrap items-center gap-2">
+          <div className="flex items-center gap-1 rounded-md border bg-background p-1">
+            <Button type="button" variant="ghost" size="icon" className="h-8 w-8" title="Bold" onMouseDown={(e) => e.preventDefault()} onClick={() => applyMarkdownFormat('bold')}>
+              <Bold className="h-4 w-4" />
+            </Button>
+            <Button type="button" variant="ghost" size="icon" className="h-8 w-8" title="Italic" onMouseDown={(e) => e.preventDefault()} onClick={() => applyMarkdownFormat('italic')}>
+              <Italic className="h-4 w-4" />
+            </Button>
+            <Button type="button" variant="ghost" size="icon" className="h-8 w-8" title="Code" onMouseDown={(e) => e.preventDefault()} onClick={() => applyMarkdownFormat('code')}>
+              <Code className="h-4 w-4" />
+            </Button>
+            <Button type="button" variant="ghost" size="icon" className="h-8 w-8" title="Bulleted list" onMouseDown={(e) => e.preventDefault()} onClick={() => applyMarkdownFormat('bullets')}>
+              <List className="h-4 w-4" />
+            </Button>
+          </div>
+
+          <div className="flex items-center rounded-md border bg-background p-1">
+            <Button type="button" variant={viewModeState === 'split' ? 'default' : 'ghost'} size="sm" className="h-8" onClick={() => setViewMode('split')}>Split</Button>
+            <Button type="button" variant={viewModeState === 'markdown' ? 'default' : 'ghost'} size="sm" className="h-8" onClick={() => setViewMode('markdown')}>MD</Button>
+            <Button type="button" variant={viewModeState === 'preview' ? 'default' : 'ghost'} size="sm" className="h-8" onClick={() => setViewMode('preview')}>Preview</Button>
+          </div>
+        </div>
+      </div>
+
+      <div className="overflow-hidden rounded-md border bg-background">
+        {showSplitEditor ? (
+          <ResizablePanelGroup direction="horizontal" className="min-h-[520px]">
+            <ResizablePanel defaultSize={52} minSize={25}>
+              {editorTextarea("border-0")}
+            </ResizablePanel>
+            <ResizableHandle className="w-1 bg-border transition-colors hover:bg-primary data-[resize-handle-state=drag]:bg-primary" />
+            <ResizablePanel defaultSize={48} minSize={25}>
+              <div className="h-full min-h-[520px] overflow-auto p-5">
+                <MarkdownPreview content={previewMarkdown} getImage={() => undefined} />
+              </div>
+            </ResizablePanel>
+          </ResizablePanelGroup>
+        ) : showPreview ? (
+          <div className="min-h-[520px] overflow-auto p-5">
+            <MarkdownPreview content={previewMarkdown} getImage={() => undefined} />
+          </div>
+        ) : (
+          editorTextarea("min-h-[520px]")
+        )}
+      </div>
+    </section>
+  );
+});
+SectionEditableBlock.displayName = "SectionEditableBlock";
+
 type SortableBlockProps = EditableBlockProps & EditableBlockExtra & {
   index: number;
   onAdd: (index: number, tag: ContentBlock['tag']) => void;
@@ -347,7 +561,7 @@ const SortableBlock = React.forwardRef(({ block, index, onAdd, onAction, ...edit
           </div>
         </BlockOptionsMenu>
         </div>
-      <EditableBlock 
+      <SectionEditableBlock
         ref={ref}
         block={block}
         {...editableProps}
@@ -653,14 +867,23 @@ export default function ProjectDetailsPage() {
   // If navigated from report with a TODO param, focus the block that contains the TODO text
   useEffect(() => {
     const todo = searchParams.get('todo');
+    const section = searchParams.get('section');
     if (!todo) return;
-    const found = blocks.find(b => (b.content || '').includes(todo));
+    const foundIndex = blocks.findIndex((block, index) => {
+      const content = block.content || '';
+      const matchesTodo = content.includes(todo) || (todo === 'TODO' && hasTodoMarker(content));
+      if (!matchesTodo) return false;
+      if (!section) return true;
+      return getSectionTitleForBlock(blocks, index) === section;
+    });
+    const found = foundIndex >= 0 ? blocks[foundIndex] : blocks.find(b => (b.content || '').includes(todo) || (todo === 'TODO' && hasTodoMarker(b.content || '')));
     if (found) {
       setActiveBlockId(found.id);
       setTimeout(() => {
-        const el = blockRefs.current[found.id]?.querySelector('[contenteditable="true"]') as HTMLElement | null;
+        const el = blockRefs.current[found.id]?.querySelector('textarea') as HTMLElement | null;
         if (el) {
           el.focus();
+          blockRefs.current[found.id]?.scrollIntoView({ behavior: 'smooth', block: 'center' });
         } else {
           const wrapper = blockRefs.current[found.id] as HTMLElement | null;
           wrapper?.scrollIntoView({ behavior: 'smooth', block: 'center' });
@@ -1106,8 +1329,7 @@ export default function ProjectDetailsPage() {
             </div>
             
             <TabsContent value="content" className="pt-6">
-               <Card>
-                  <CardContent className="max-w-4xl mx-auto pt-6" dir="ltr">
+               <div className="w-full" dir="ltr">
                      {isToolbarOpen && <FloatingToolbar position={toolbarPosition} />}
                      <div className="mb-4 flex items-center gap-3">
                         <Label className="mr-2">Importar plantilla:</Label>
@@ -1188,8 +1410,7 @@ export default function ProjectDetailsPage() {
                      <DndContext sensors={sensors} collisionDetection={closestCenter} onDragEnd={handleDragEnd}>
                         <SortableContext items={blocks.map(b => b.id)} strategy={verticalListSortingStrategy}>
                             {blocks.map((block, index) => (
-                              <Card key={block.id} className="mb-4">
-                                <CardContent>
+                              <div key={block.id} className="mb-5 rounded-md border bg-card p-4 shadow-sm">
                                   <SortableBlock
                                     ref={(el: any) => (blockRefs.current[block.id] = el)}
                                     block={block}
@@ -1205,13 +1426,13 @@ export default function ProjectDetailsPage() {
                                     onAction={handleBlockAction}
                                     viewMode={splitBlocks[block.id] || block.meta?.viewMode || 'split'}
                                     onToggleSplit={(id: string, mode: 'split' | 'markdown' | 'preview') => setSplitBlocks(prev => ({ ...prev, [id]: mode }))}
+                                    sectionTitle={getSectionTitleForBlock(blocks, index)}
                                     onFocus={() => setActiveBlockId(block.id)}
                                     isFocused={activeBlockId === block.id}
                                     placeholder={t[projectLanguage as 'en' | 'es'].commandPlaceholder}
                                     t_editor={t[projectLanguage as 'en' | 'es']}
                                   />
-                                </CardContent>
-                              </Card>
+                              </div>
                             ))}
                         </SortableContext>
                      </DndContext>
@@ -1225,8 +1446,7 @@ export default function ProjectDetailsPage() {
                       <Button onClick={() => handleAddBlock(blocks.length - 1, 'h2', 'New Section') }><Plus className="mr-2 h-4 w-4"/>Añadir sección</Button>
                       <Button variant="destructive" onClick={() => activeBlockId && handleDeleteBlock(activeBlockId)}>Eliminar sección</Button>
                     </div>
-                  </CardContent>
-               </Card>
+               </div>
             </TabsContent>
 
             <TabsContent value="findings" className="pt-6">

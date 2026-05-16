@@ -2,7 +2,7 @@
 'use client';
 
 import React, { useState, useEffect, useCallback } from 'react';
-import { useParams, useRouter } from 'next/navigation';
+import { useParams, useRouter, useSearchParams } from 'next/navigation';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
@@ -21,6 +21,7 @@ import { CSS } from '@dnd-kit/utilities';
 import { Badge } from '@/components/ui/badge';
 import { MarkdownPreview } from '@/components/markdown-preview';
 import { Textarea } from '@/components/ui/textarea';
+import { hasTodoMarker, stripMarkdownText } from '@/lib/todo-utils';
 
 type SaveStatus = 'unsaved' | 'saving' | 'saved';
 
@@ -75,7 +76,7 @@ const SortableSection = ({ section, index, onAddSection, onDelete, ...props }: S
   };
   
   return (
-    <div ref={setNodeRef} style={style} className="relative group/section">
+    <div ref={setNodeRef} style={style} data-finding-section-id={section.id} className="relative group/section scroll-mt-24">
       <div className="absolute top-0 -left-12 h-full flex items-center gap-1 opacity-0 group-hover/section:opacity-100 transition-opacity">
          <Button variant="ghost" size="icon" className="h-8 w-8 cursor-pointer" onClick={() => onAddSection(index + 1)}>
           <Plus className="h-4 w-4"/>
@@ -98,6 +99,7 @@ const SortableSection = ({ section, index, onAddSection, onDelete, ...props }: S
 export default function FindingEditorPage() {
   const params = useParams();
   const router = useRouter();
+  const searchParams = useSearchParams();
   const rawProjectId = params.id;
   const rawFindingId = params.findingId;
   const projectId = (Array.isArray(rawProjectId) ? rawProjectId[0] : rawProjectId) ?? '';
@@ -119,6 +121,11 @@ export default function FindingEditorPage() {
   const [saveStatus, setSaveStatus] = useState<SaveStatus>('saved');
 
   const client = clients.find(c => c.id === project?.clientId);
+
+  const getFindingSectionTitle = useCallback((content: string) => {
+    const headingMatch = content.match(/^#{1,6}\s+(.+)$/m);
+    return headingMatch ? stripMarkdownText(headingMatch[1]) : '';
+  }, []);
 
   const parseMarkdownToSections = useCallback((markdown: string): FindingSection[] => {
     if (!markdown) return [];
@@ -178,6 +185,28 @@ export default function FindingEditorPage() {
     }
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [finding, sections, saveStatus]);
+
+  useEffect(() => {
+    const todo = searchParams.get('todo');
+    const section = searchParams.get('section');
+    if (!todo || sections.length === 0) return;
+
+    const found = sections.find((item) => {
+      const matchesTodo = item.content.includes(todo) || (todo === 'TODO' && hasTodoMarker(item.content));
+      if (!matchesTodo) return false;
+      if (!section) return true;
+      return getFindingSectionTitle(item.content) === section;
+    }) || sections.find(item => item.content.includes(todo) || (todo === 'TODO' && hasTodoMarker(item.content)));
+
+    if (!found) return;
+
+    setTimeout(() => {
+      const target = document.querySelector(`[data-finding-section-id="${found.id}"]`) as HTMLElement | null;
+      target?.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      const textarea = target?.querySelector('textarea') as HTMLTextAreaElement | null;
+      textarea?.focus();
+    }, 200);
+  }, [searchParams, sections, getFindingSectionTitle]);
 
 
   const handleSave = (showToast = true) => {

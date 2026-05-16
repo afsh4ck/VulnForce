@@ -14,6 +14,7 @@ IMAGE_NAME="vulnforce:latest"
 DEFAULT_PORT=47474
 HOST_BIND="${HOST_BIND:-127.0.0.1}"
 PORT="${PORT:-}"
+BUILD_PID=""
 
 for arg in "$@"; do
   case "$arg" in
@@ -28,12 +29,72 @@ fi
 log() { echo "${GREEN}[+]${NC} $1"; }
 warn() { echo "${YELLOW}[!]${NC} $1"; }
 err() { echo "${RED}[x]${NC} $1" >&2; exit 1; }
+format_duration() {
+  local total_seconds="${1:-0}"
+  printf '%02d:%02d' "$((total_seconds / 60))" "$((total_seconds % 60))"
+}
+truncate_text() {
+  local text="$1"
+  local max_length="${2:-90}"
+  if ((${#text} > max_length)); then
+    printf '%s...' "${text:0:max_length-3}"
+  else
+    printf '%s' "$text"
+  fi
+}
+is_running_job() {
+  local pid="${1:-}"
+  [[ -n "$pid" ]] && kill -0 "$pid" 2>/dev/null
+}
+completed_build_steps() {
+  local log_file="$1"
+  grep -E '^#[0-9]+ (DONE|CACHED)' "$log_file" 2>/dev/null | awk '{print $1}' | sort -u | wc -l | tr -d ' ' || true
+}
+seen_build_steps() {
+  local log_file="$1"
+  grep -E '^#[0-9]+ ' "$log_file" 2>/dev/null | awk '{print $1}' | sort -u | wc -l | tr -d ' ' || true
+}
+current_build_step() {
+  local log_file="$1"
+  local step
+  step="$(grep -E '^#[0-9]+ \[[^]]+\]' "$log_file" 2>/dev/null | tail -n 1 | sed -E 's/^#[0-9]+ //; s/[[:space:]]+/ /g' || true)"
+  if [[ -z "$step" ]]; then
+    step="$(grep -E '^#[0-9]+ ' "$log_file" 2>/dev/null | tail -n 1 | sed -E 's/[[:space:]]+/ /g' || true)"
+  fi
+  printf '%s' "${step:-preparing build context}"
+}
+render_build_progress() {
+  local log_file="$1"
+  local elapsed="$2"
+  local done_count seen_count step
+  done_count="$(completed_build_steps "$log_file")"
+  seen_count="$(seen_build_steps "$log_file")"
+  step="$(truncate_text "$(current_build_step "$log_file")" 86)"
+  printf '\r\033[K%s Docker build elapsed %s | steps done/cached: %s/%s seen | %s' \
+    "${GREEN}[+]${NC}" "$(format_duration "$elapsed")" "${done_count:-0}" "${seen_count:-0}" "$step"
+}
+show_build_failure() {
+  local log_file="$1"
+  if [[ "${SHOW_BUILD_LOGS:-}" == "1" ]]; then
+    warn "Build failed; full build log was shown above."
+  else
+    warn "Build failed. Showing short summary (set SHOW_BUILD_LOGS=1 to view full log)."
+    grep -E "error|failed|ERR|SyntaxError|Type error" -i "$log_file" | tail -n 40 || true
+  fi
+  echo "Full build log saved to: $log_file"
+  err "Docker image build failed."
+}
 require_root() {
   [[ "${EUID}" -eq 0 ]] || err "$1 Run with sudo or use a Docker-capable user."
 }
 
 cleanup() {
   echo ""
+  if is_running_job "$BUILD_PID"; then
+    warn "Stopping Docker image build..."
+    kill "$BUILD_PID" >/dev/null 2>&1 || true
+    wait "$BUILD_PID" >/dev/null 2>&1 || true
+  fi
   warn "Stopping VulnForce..."
   docker stop "$CONTAINER_NAME" >/dev/null 2>&1 || true
   log "VulnForce stopped. Container preserved; data remains in project 'data' directory (./data/vulnforce.db)."
@@ -102,28 +163,34 @@ GIT_HASH="$(git -C "$SCRIPT_DIR" rev-parse --short HEAD 2>/dev/null || date +%s)
 export NODE_OPTIONS="${NODE_OPTIONS:-}" 
 
 log "Building Docker image with pnpm..."
-# Try a quiet build to reduce console output. If it fails, capture verbose output to a temp file
-# and show only a short summary unless SHOW_BUILD_LOGS=1 is set.
+# Docker does not expose a reliable ETA, so keep the full build log hidden by default
+# and show a live elapsed-time counter with the current BuildKit step.
 TMP_LOG=$(mktemp -t vulnforce-build-XXXXXX.log)
-if ! docker build -q --force-rm -t "$IMAGE_NAME" --build-arg CACHEBUST="$GIT_HASH" "$SCRIPT_DIR" >/dev/null 2>&1; then
-  warn "Quiet build failed — collecting build output (hidden)."
-  if ! docker build --force-rm -t "$IMAGE_NAME" --build-arg CACHEBUST="$GIT_HASH" "$SCRIPT_DIR" >"$TMP_LOG" 2>&1; then
-    if [[ "${SHOW_BUILD_LOGS:-}" == "1" ]]; then
-      warn "Build failed; showing full build log."
-      sed -n '1,200p' "$TMP_LOG" >&2 || true
-    else
-      warn "Build failed. Showing short summary (set SHOW_BUILD_LOGS=1 to view full log)."
-      grep -E "error|failed|ERR|SyntaxError|Type error" -i "$TMP_LOG" | tail -n 40 || true
-    fi
-    echo "Full build log saved to: $TMP_LOG"
-    err "Docker image build failed."
-  else
-    log "Docker image built successfully."
-    rm -f "$TMP_LOG"
+BUILD_CMD=(docker build --progress=plain --force-rm -t "$IMAGE_NAME" --build-arg "CACHEBUST=$GIT_HASH" "$SCRIPT_DIR")
+BUILD_STARTED_AT=$(date +%s)
+
+if [[ "${SHOW_BUILD_LOGS:-}" == "1" ]]; then
+  if ! "${BUILD_CMD[@]}" 2>&1 | tee "$TMP_LOG"; then
+    show_build_failure "$TMP_LOG"
   fi
 else
-  log "Docker image built successfully."
+  "${BUILD_CMD[@]}" >"$TMP_LOG" 2>&1 &
+  BUILD_PID=$!
+  while is_running_job "$BUILD_PID"; do
+    render_build_progress "$TMP_LOG" "$(($(date +%s) - BUILD_STARTED_AT))"
+    sleep 1
+  done
+  render_build_progress "$TMP_LOG" "$(($(date +%s) - BUILD_STARTED_AT))"
+  if ! wait "$BUILD_PID"; then
+    printf '\r\033[K'
+    BUILD_PID=""
+    show_build_failure "$TMP_LOG"
+  fi
+  printf '\r\033[K'
+  BUILD_PID=""
 fi
+log "Docker image built successfully in $(format_duration "$(($(date +%s) - BUILD_STARTED_AT))")."
+rm -f "$TMP_LOG"
 
 log "Preparing host data folders and ensuring vulnforce.db exists..."
 # Create host-side directories to avoid Docker named volumes and keep data in project folder
