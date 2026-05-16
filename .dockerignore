@@ -25,5 +25,4 @@ logs
 .idea
 .DS_Store
 .cache
-pnpm-lock.yaml
 package-lock.json
