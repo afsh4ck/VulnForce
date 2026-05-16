@@ -51,6 +51,7 @@ printf '%s\n' "${RED}|___/ \\__,_//_//_/ /_//_/     \\____//_/    \\___/ \\___/ 
 echo ""
 echo "  ${BOLD}VulnForce - Professional Hacking Reporting Platform${NC}"
 echo "  ${DIM}Docker deployment for isolated and controlled environments${NC}"
+echo "  ${GREEN}developed by afsh4ck${NC}"
 echo ""
 
 if ! command -v docker >/dev/null 2>&1; then
