@@ -139,6 +139,16 @@ const EditableBlock = React.forwardRef<HTMLDivElement, EditableBlockProps & Edit
       );
     }
     
+    const isList = block.tag === 'ul' || block.tag === 'ol';
+    const isCode = block.tag === 'pre';
+    const isEmpty = !block.content || (typeof block.content === 'string' && block.content.trim() === '') || (isList && block.content.trim() === '<li><br></li>');
+
+    const getPlaceholderText = () => {
+      if (placeholder) return placeholder;
+      if (t_editor && t_editor.headings && t_editor.headings['1']) return t_editor.headings['1'];
+      return '';
+    };
+
     const placeholderText = getPlaceholderText();
     const showPlaceholder = isEmpty && isFocused;
 

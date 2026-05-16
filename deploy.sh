@@ -100,14 +100,28 @@ docker rm "$CONTAINER_NAME" >/dev/null 2>&1 || true
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 GIT_HASH="$(git -C "$SCRIPT_DIR" rev-parse --short HEAD 2>/dev/null || date +%s)"
 
-log "Building Docker image with pnpm (compact output)..."
-# Try a quiet build to reduce console output. If it fails, run a verbose build to show the error.
-# Use --force-rm to always remove intermediate build containers and help free disk space.
+log "Building Docker image with pnpm..."
+# Try a quiet build to reduce console output. If it fails, capture verbose output to a temp file
+# and show only a short summary unless SHOW_BUILD_LOGS=1 is set.
+TMP_LOG=$(mktemp -t vulnforce-build-XXXXXX.log)
 if ! docker build -q --force-rm -t "$IMAGE_NAME" --build-arg CACHEBUST="$GIT_HASH" "$SCRIPT_DIR" >/dev/null 2>&1; then
-  warn "Quiet build failed — re-running verbose build to show details."
-  docker build --force-rm -t "$IMAGE_NAME" --build-arg CACHEBUST="$GIT_HASH" "$SCRIPT_DIR" || err "Docker image build failed (see output above)."
+  warn "Quiet build failed — collecting build output (hidden)."
+  if ! docker build --force-rm -t "$IMAGE_NAME" --build-arg CACHEBUST="$GIT_HASH" "$SCRIPT_DIR" >"$TMP_LOG" 2>&1; then
+    if [[ "${SHOW_BUILD_LOGS:-}" == "1" ]]; then
+      warn "Build failed; showing full build log."
+      sed -n '1,200p' "$TMP_LOG" >&2 || true
+    else
+      warn "Build failed. Showing short summary (set SHOW_BUILD_LOGS=1 to view full log)."
+      grep -E "error|failed|ERR|SyntaxError|Type error" -i "$TMP_LOG" | tail -n 40 || true
+    fi
+    echo "Full build log saved to: $TMP_LOG"
+    err "Docker image build failed."
+  else
+    log "Docker image built successfully."
+    rm -f "$TMP_LOG"
+  fi
 else
-  log "Docker image built successfully (compact)."
+  log "Docker image built successfully."
 fi
 
 log "Starting VulnForce container..."
