@@ -199,6 +199,13 @@ const EditableBlock = React.forwardRef<HTMLDivElement, EditableBlockProps & Edit
   const [markdownValue, setMarkdownValue] = React.useState<string>('');
   const [splitActive, setSplitActive] = React.useState<boolean>(!!isSplit);
   useEffect(() => setSplitActive(!!isSplit), [isSplit]);
+    useEffect(() => {
+      // initialize markdown value from html: basic conversion
+      const temp = document.createElement('div');
+      temp.innerHTML = block.content || '';
+      const text = temp.innerText.replace(/\u00A0/g, '');
+      setMarkdownValue(text);
+    }, [block.id]);
     
      useEffect(() => {
         if (isFocused && blockRef.current) {
@@ -260,14 +267,6 @@ const EditableBlock = React.forwardRef<HTMLDivElement, EditableBlockProps & Edit
     const placeholderText = getPlaceholderText();
     const showPlaceholder = isEmpty && isFocused;
 
-    useEffect(() => {
-      // initialize markdown value from html: basic conversion
-      const temp = document.createElement('div');
-      temp.innerHTML = block.content || '';
-      const text = temp.innerText.replace(/\u00A0/g, '');
-      setMarkdownValue(text);
-    }, [block.id]);
-
     return (
         <div 
           ref={ref as React.Ref<HTMLDivElement>}
@@ -288,7 +287,6 @@ const EditableBlock = React.forwardRef<HTMLDivElement, EditableBlockProps & Edit
             <div className="my-2">
               {/* lazy load split editor to avoid SSR issues */}
               <div className="">
-                {/* @ts-ignore */}
                 {typeof window !== 'undefined' && (
                   // dynamic import-like usage without adding bundling complexity
                   <div>

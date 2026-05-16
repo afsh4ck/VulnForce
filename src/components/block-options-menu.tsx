@@ -27,7 +27,7 @@ import type { ContentBlock } from "@/lib/types";
 
 interface BlockOptionsMenuProps {
   children: React.ReactNode;
-  onSelect: (action: 'turnInto' | 'delete' | 'duplicate', value?: any) => void;
+  onSelect: (action: 'turnInto' | 'delete' | 'duplicate' | 'split', value?: any) => void;
   open: boolean;
   onOpenChange: (open: boolean) => void;
   blockTag: ContentBlock['tag'];
