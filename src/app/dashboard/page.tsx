@@ -4,23 +4,14 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import Link from 'next/link';
-import { PlusCircle, Users, FolderKanban, ShieldCheck, ChevronLeft, ChevronRight, CalendarClock, FileText, Scan, Globe, Network, Smartphone, Wifi, Award, Bomb } from "lucide-react";
+import { PlusCircle, Users, FolderKanban, ShieldCheck, ChevronLeft, ChevronRight, CalendarClock, Bomb } from "@/components/icons";
 import { useLanguage } from "@/context/language-context";
 import { useData } from "@/context/data-context";
 import { useMemo, useState } from "react";
 import { Badge } from "@/components/ui/badge";
 import { formatDistanceToNow } from 'date-fns';
 import { es } from 'date-fns/locale';
-
-const iconComponents: { [key: string]: React.ElementType } = {
-  FileText,
-  Scan,
-  Globe,
-  Network,
-  Smartphone,
-  Wifi,
-  Award,
-};
+import { ProjectIcon, projectIconComponents } from "@/components/project-icon";
 
 export default function DashboardPage() {
   const { language } = useLanguage();
@@ -182,7 +173,7 @@ export default function DashboardPage() {
             {recentProjects.length > 0 ? (
             <div className="space-y-4">
               {recentProjects.map(p => {
-                const Icon = iconComponents[p.icon] || FileText;
+                const Icon = projectIconComponents[p.icon] || ProjectIcon;
                 return (
                   <Link key={p.id} href={`/dashboard/projects/${p.id}`} className="block rounded-lg p-4 transition-colors hover:bg-muted/50 group">
                     <div className="flex items-center justify-between">

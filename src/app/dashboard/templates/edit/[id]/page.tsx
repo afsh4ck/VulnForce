@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect, useCallback, useRef } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { useParams, useRouter } from 'next/navigation';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -9,7 +9,7 @@ import { Textarea } from '@/components/ui/textarea';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import Link from 'next/link';
-import { ChevronLeft, Save, FileText, Scan, Globe, Network, Smartphone, Wifi, Award, Plus, Trash2, Rows, Bold, Italic, Code, List, ListOrdered, FileCode, GripVertical, CheckCircle, Image } from 'lucide-react';
+import { ChevronLeft, Save, Plus, CheckCircle } from '@/components/icons';
 import { useToast } from '@/hooks/use-toast';
 import { useLanguage } from '@/context/language-context';
 import type { ProjectTemplate } from '@/lib/types';
@@ -18,6 +18,8 @@ import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@/
 import { DndContext, closestCenter, KeyboardSensor, PointerSensor, useSensor, useSensors, DragEndEvent } from '@dnd-kit/core';
 import { arrayMove, SortableContext, sortableKeyboardCoordinates, useSortable, verticalListSortingStrategy } from '@dnd-kit/sortable';
 import { CSS } from '@dnd-kit/utilities';
+import { ProjectIconSelectItem, projectIconOptions } from '@/components/project-icon';
+import { SectionMarkdownEditor } from '@/components/section-markdown-editor';
 
 type SaveStatus = 'unsaved' | 'saving' | 'saved';
 
@@ -30,7 +32,6 @@ type SortableSectionProps = {
   section: TemplateSection;
   onContentChange: (content: string) => void;
   onDelete: () => void;
-  onTitleChange: (newTitle: string) => void;
 };
 
 const SortableSection = ({ section, ...props }: SortableSectionProps) => {
@@ -50,54 +51,30 @@ const SortableSection = ({ section, ...props }: SortableSectionProps) => {
   );
 };
 
-const SectionEditor = ({ section, onContentChange, onDelete, onTitleChange, dragHandleProps, dragListeners }: {
+const SectionEditor = ({ section, onContentChange, onDelete, dragHandleProps, dragListeners }: {
   section: TemplateSection;
   onContentChange: (content: string) => void;
   onDelete: () => void;
-  onTitleChange: (newTitle: string) => void;
   dragHandleProps: any;
   dragListeners: any;
 }) => {
-    const headingMatch = section.content.match(/^(#{2,4}) (.*)/);
-    const sectionTitle = headingMatch ? headingMatch[2].trim() : 'New Section';
-    const contentWithoutTitle = section.content.replace(/^(#{2,4}) .*\n?/, '');
-
     return (
-        <Card className="mb-4">
-            <CardHeader className="flex flex-row items-center gap-2 p-2 border-b">
-                <div {...dragHandleProps} {...dragListeners} className="cursor-grab p-2">
-                    <GripVertical className="h-5 w-5 text-muted-foreground" />
-                </div>
-                <Input 
-                  value={sectionTitle}
-                  onChange={(e) => onTitleChange(e.target.value)}
-                  className="font-semibold text-base border-none focus-visible:ring-0 focus-visible:ring-offset-0 bg-transparent h-auto p-0 flex-1"
-                />
-                <Button variant="ghost" size="icon" className="h-8 w-8 text-destructive" onClick={onDelete}>
-                  <Trash2 className="h-4 w-4" />
-                </Button>
-            </CardHeader>
-            <CardContent className="p-0">
-                <Textarea 
-                  value={contentWithoutTitle}
-                  onChange={(e) => onContentChange(e.target.value)}
-                  className="w-full min-h-[150px] border-0 rounded-t-none font-code text-sm focus-visible:ring-0 focus-visible:ring-offset-0"
-                  placeholder="Write your content here..."
-                />
-            </CardContent>
-        </Card>
-    )
+      <SectionMarkdownEditor
+        content={section.content}
+        onChange={onContentChange}
+        onDelete={onDelete}
+        dragHandleProps={dragHandleProps}
+        dragListeners={dragListeners}
+        titleFallback="New Section"
+        labels={{
+          section: 'Template section',
+          untitled: 'New Section',
+          writeContent: 'Write reusable project template content...',
+          delete: 'Delete section',
+        }}
+      />
+    );
 }
-
-const iconOptions = [
-    { value: 'FileText', label: 'FileText' },
-    { value: 'Scan', label: 'Scan' },
-    { value: 'Globe', label: 'Globe' },
-    { value: 'Network', label: 'Network' },
-    { value: 'Smartphone', label: 'Smartphone' },
-    { value: 'Wifi', label: 'Wifi' },
-    { value: 'Award', label: 'Award' },
-];
 
 export default function TemplateEditorPage() {
   const params = useParams();
@@ -249,28 +226,9 @@ export default function TemplateEditorPage() {
 
   const handleSectionChange = (lang: 'en' | 'es', sectionId: string, newContent: string) => {
     const updater = lang === 'en' ? setEnSections : setEsSections;
-    updater(prev => prev.map(s => {
-      if (s.id === sectionId) {
-          const headingMatch = s.content.match(/^(#{2,4}) .*\n?/);
-          const title = headingMatch ? headingMatch[0] : '';
-          return { ...s, content: title + newContent };
-      }
-      return s;
-    }));
+    updater(prev => prev.map(s => s.id === sectionId ? { ...s, content: newContent } : s));
     setSaveStatus('unsaved');
   };
-
-  const handleTitleChange = (lang: 'en' | 'es', sectionId: string, newTitle: string) => {
-    const updater = lang === 'en' ? setEnSections : setEsSections;
-    updater(prev => prev.map(sec => {
-        if (sec.id === sectionId) {
-            const contentWithoutTitle = sec.content.replace(/^(#{1,4}) .*\n?/, '');
-            return { ...sec, content: `### ${newTitle}\n${contentWithoutTitle}` };
-        }
-        return sec;
-    }));
-    setSaveStatus('unsaved');
-  }
 
   const handleAddSection = (lang: 'en' | 'es') => {
     const newSection: TemplateSection = { id: `new-${lang}-${Date.now()}`, content: `### ${t[language].newSection}` };
@@ -360,8 +318,10 @@ export default function TemplateEditorPage() {
                             <SelectValue placeholder={t[language].selectIcon} />
                         </SelectTrigger>
                         <SelectContent>
-                            {iconOptions.map(option => (
-                                <SelectItem key={option.value} value={option.value}>{option.label}</SelectItem>
+                            {projectIconOptions.map(option => (
+                                <SelectItem key={option.value} value={option.value}>
+                                  <ProjectIconSelectItem value={option.value} label={option.label} />
+                                </SelectItem>
                             ))}
                         </SelectContent>
                     </Select>
@@ -385,7 +345,6 @@ export default function TemplateEditorPage() {
                             key={section.id}
                             section={section}
                             onContentChange={(newContent: string) => handleSectionChange('en', section.id, newContent)}
-                            onTitleChange={(newTitle: string) => handleTitleChange('en', section.id, newTitle)}
                             onDelete={() => handleDeleteSection('en', section.id)}
                           />
                         ))}
@@ -417,7 +376,6 @@ export default function TemplateEditorPage() {
                             key={section.id}
                             section={section}
                             onContentChange={(newContent: string) => handleSectionChange('es', section.id, newContent)}
-                            onTitleChange={(newTitle: string) => handleTitleChange('es', section.id, newTitle)}
                             onDelete={() => handleDeleteSection('es', section.id)}
                           />
                         ))}

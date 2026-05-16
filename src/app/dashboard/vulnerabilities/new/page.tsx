@@ -1,15 +1,14 @@
 
 'use client';
 
-import { useState, useMemo, useCallback, useRef, useEffect } from 'react';
+import { useState, useMemo, useCallback, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { Textarea } from '@/components/ui/textarea';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import Link from 'next/link';
-import { ChevronDown, ChevronLeft, Save, GripVertical, Plus, Trash2, Rows, Bold, Italic, Code, List, ListOrdered, FileCode, ChevronUp, Image } from 'lucide-react';
+import { ChevronLeft, Save, Plus, Trash2 } from '@/components/icons';
 import { useToast } from '@/hooks/use-toast';
 import { useLanguage } from '@/context/language-context';
 import type { Vulnerability, CVSS, ImageAsset, Severity } from '@/lib/types';
@@ -27,9 +26,7 @@ import { arrayMove, SortableContext, sortableKeyboardCoordinates, useSortable, v
 import { CSS } from '@dnd-kit/utilities';
 import { getCVSS, getScore, getSeverity } from '@/lib/cvss';
 import { cn } from '@/lib/utils';
-import { MarkdownPreview } from '@/components/markdown-preview';
-import { ResizableHandle, ResizablePanel, ResizablePanelGroup } from '@/components/ui/resizable';
-import { ToggleGroup, ToggleGroupItem } from '@/components/ui/toggle-group';
+import { SectionMarkdownEditor } from '@/components/section-markdown-editor';
 
 
 interface FindingSection {
@@ -41,7 +38,6 @@ type SortableSectionProps = {
   section: FindingSection;
   onContentChange: (content: string) => void;
   onDelete: () => void;
-  onTitleChange: (newTitle: string) => void;
   getImage: (id: string) => ImageAsset | undefined;
   t: any;
 };
@@ -63,112 +59,34 @@ const SortableSection = ({ section, ...props }: SortableSectionProps) => {
   );
 };
 
-const SectionEditor = ({ section, onContentChange, onDelete, onTitleChange, dragHandleProps, dragListeners, getImage, t }: {
+const SectionEditor = ({ section, onContentChange, onDelete, dragHandleProps, dragListeners, getImage, t }: {
   section: FindingSection;
   onContentChange: (content: string) => void;
   onDelete: () => void;
-  onTitleChange: (newTitle: string) => void;
   dragHandleProps: any;
   dragListeners: any;
   getImage: (id: string) => ImageAsset | undefined;
   t: any;
 }) => {
-    const headingMatch = section.content.match(/^(#{2,4}) (.*)/);
-    const sectionTitle = headingMatch ? headingMatch[2].trim() : t.newSection;
-    const contentWithoutTitle = section.content.replace(/^(#{2,4}) .*\n?/, '');
-    const [viewMode, setViewMode] = useState<'edit' | 'split' | 'preview'>('split');
-    const textareaRef = useRef<HTMLTextAreaElement>(null);
-    
-    const applyFormat = (formatType: 'bold' | 'italic' | 'code' | 'ul' | 'ol') => {
-        const textarea = textareaRef.current;
-        if (!textarea) return;
-
-        const start = textarea.selectionStart;
-        const end = textarea.selectionEnd;
-        const selectedText = textarea.value.substring(start, end);
-        let newText;
-
-        switch (formatType) {
-            case 'bold':
-                newText = `**${selectedText}**`;
-                break;
-            case 'italic':
-                newText = `*${selectedText}*`;
-                break;
-            case 'code':
-                newText = `\`${selectedText}\``;
-                break;
-            case 'ul':
-                newText = selectedText.split('\n').map(line => `- ${line}`).join('\n');
-                break;
-             case 'ol':
-                newText = selectedText.split('\n').map((line, index) => `${index + 1}. ${line}`).join('\n');
-                break;
-        }
-
-        const updatedValue = textarea.value.substring(0, start) + newText + textarea.value.substring(end);
-        onContentChange(updatedValue);
-        
-        setTimeout(() => {
-            textarea.focus();
-            textarea.setSelectionRange(start, start + newText.length);
-        }, 0);
-    }
-    
     return (
-        <Card className="mb-4">
-            <CardHeader className="flex flex-row items-center gap-2 p-2 border-b">
-                <div {...dragHandleProps} {...dragListeners} className="cursor-grab p-2">
-                    <GripVertical className="h-5 w-5 text-muted-foreground" />
-                </div>
-                <Input 
-                  value={sectionTitle}
-                  onChange={(e) => onTitleChange(e.target.value)}
-                  className="font-semibold text-base border-none focus-visible:ring-0 focus-visible:ring-offset-0 bg-transparent h-auto p-0 flex-1"
-                />
-                 <ToggleGroup type="single" value={viewMode} onValueChange={(value) => value && setViewMode(value as any)} size="sm">
-                    <ToggleGroupItem value="edit">{t.edit}</ToggleGroupItem>
-                    <ToggleGroupItem value="split">{t.split}</ToggleGroupItem>
-                    <ToggleGroupItem value="preview">{t.preview}</ToggleGroupItem>
-                </ToggleGroup>
-                <Button variant="ghost" size="icon" className="h-8 w-8 text-destructive" onClick={onDelete}>
-                  <Trash2 className="h-4 w-4" />
-                </Button>
-            </CardHeader>
-            <CardContent className="p-0">
-                <ResizablePanelGroup direction="horizontal">
-                    {viewMode !== 'preview' && (
-                        <ResizablePanel defaultSize={viewMode === 'split' ? 50 : 100}>
-                            <div className="h-full">
-                                <div className="flex items-center gap-1 p-2 border-b">
-                                    <Button variant="ghost" size="icon" className="h-7 w-7" onClick={() => applyFormat('bold')}><Bold className="h-4 w-4" /></Button>
-                                    <Button variant="ghost" size="icon" className="h-7 w-7" onClick={() => applyFormat('italic')}><Italic className="h-4 w-4" /></Button>
-                                    <Button variant="ghost" size="icon" className="h-7 w-7" onClick={() => applyFormat('code')}><Code className="h-4 w-4" /></Button>
-                                    <Button variant="ghost" size="icon" className="h-7 w-7" onClick={() => applyFormat('ul')}><List className="h-4 w-4" /></Button>
-                                    <Button variant="ghost" size="icon" className="h-7 w-7" onClick={() => applyFormat('ol')}><ListOrdered className="h-4 w-4" /></Button>
-                                </div>
-                                <Textarea 
-                                    ref={textareaRef}
-                                    value={contentWithoutTitle}
-                                    onChange={(e) => onContentChange(e.target.value)}
-                                    className="w-full min-h-[200px] border-0 rounded-none font-code text-sm focus-visible:ring-0 focus-visible:ring-offset-0"
-                                    placeholder={t.writeContent}
-                                />
-                            </div>
-                        </ResizablePanel>
-                    )}
-                    {viewMode === 'split' && <ResizableHandle withHandle />}
-                    {viewMode !== 'edit' && (
-                        <ResizablePanel defaultSize={viewMode === 'split' ? 50 : 100}>
-                            <div className="p-4 h-full overflow-y-auto">
-                                <MarkdownPreview content={section.content} getImage={getImage} />
-                            </div>
-                        </ResizablePanel>
-                    )}
-                </ResizablePanelGroup>
-            </CardContent>
-        </Card>
-    )
+      <SectionMarkdownEditor
+        content={section.content}
+        onChange={onContentChange}
+        onDelete={onDelete}
+        dragHandleProps={dragHandleProps}
+        dragListeners={dragListeners}
+        getImage={getImage}
+        titleFallback={t.newSection}
+        labels={{
+          section: t.section || t.newSection,
+          untitled: t.newSection,
+          split: t.split,
+          preview: t.preview,
+          writeContent: t.writeContent,
+          delete: t.deleteSection || t.newSection,
+        }}
+      />
+    );
 }
 
 const emptyVulnerability: Omit<Vulnerability, 'id'> = {
@@ -465,27 +383,9 @@ export default function NewVulnerabilityPage() {
   
   const handleSectionChange = (lang: 'en' | 'es', sectionId: string, newContent: string) => {
     const updater = lang === 'en' ? setEnSections : setEsSections;
-    updater(prev => prev.map(s => {
-        if (s.id === sectionId) {
-          const headingMatch = s.content.match(/^(#{2,4}) .*\n?/);
-          const title = headingMatch ? headingMatch[0] : `### ${t.en.newSection}\n`;
-          return { ...s, content: title + newContent };
-        }
-        return s;
-    }));
+    updater(prev => prev.map(s => s.id === sectionId ? { ...s, content: newContent } : s));
   };
   
-
-  const handleTitleChange = (lang: 'en' | 'es', sectionId: string, newTitle: string) => {
-    const updater = lang === 'en' ? setEnSections : setEsSections;
-    updater(prev => prev.map(sec => {
-        if (sec.id === sectionId) {
-            const contentWithoutTitle = sec.content.replace(/^(#{1,4}) .*\n?/, '');
-            return { ...sec, content: `### ${newTitle}\n${contentWithoutTitle}` };
-        }
-        return sec;
-    }));
-  }
 
   const handleAddSection = (lang: 'en' | 'es') => {
     const newSection: FindingSection = { id: `new-${lang}-${Date.now()}`, content: `### ${t[language].newSection}` };
@@ -709,7 +609,6 @@ export default function NewVulnerabilityPage() {
                               key={section.id}
                               section={section}
                               onContentChange={(newContent: string) => handleSectionChange('en', section.id, newContent)}
-                              onTitleChange={(newTitle: string) => handleTitleChange('en', section.id, newTitle)}
                               onDelete={() => handleDeleteSection('en', section.id)}
                               getImage={getImage}
                               t={t[language]}
@@ -744,7 +643,6 @@ export default function NewVulnerabilityPage() {
                                 key={section.id}
                                 section={section}
                                 onContentChange={(newContent: string) => handleSectionChange('es', section.id, newContent)}
-                                onTitleChange={(newTitle: string) => handleTitleChange('es', section.id, newTitle)}
                                 onDelete={() => handleDeleteSection('es', section.id)}
                                 getImage={getImage}
                                 t={t[language]}

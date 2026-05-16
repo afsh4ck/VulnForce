@@ -3,7 +3,7 @@
 
 import React from 'react';
 import { Button } from './ui/button';
-import { Bold, Italic, Strikethrough, Code, Link as LinkIcon } from 'lucide-react';
+import { Bold, Italic, Strikethrough, Code, Link as LinkIcon } from '@/components/icons';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from './ui/tooltip';
 import { useLanguage } from '@/context/language-context';
 

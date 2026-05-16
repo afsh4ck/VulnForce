@@ -3,7 +3,7 @@
 
 import React, { useState, useEffect } from 'react';
 import { Skeleton } from './ui/skeleton';
-import { Globe } from 'lucide-react';
+import { Globe } from '@/components/icons';
 import { cn } from '@/lib/utils';
 
 interface LinkPreviewData {

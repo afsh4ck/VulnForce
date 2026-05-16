@@ -25,7 +25,7 @@ import {
   Link as LinkIcon,
   File as FileIcon,
   Table,
-} from "lucide-react";
+} from "@/components/icons";
 import React from "react";
 import { ScrollArea } from "./ui/scroll-area";
 import { useLanguage } from "@/context/language-context";

@@ -12,7 +12,7 @@ import {
 } from "@/components/ui/table";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent } from "@/components/ui/card";
-import { Search, PlusCircle, ArrowUpDown, Edit, Trash2 } from "lucide-react";
+import { Search, PlusCircle, ArrowUpDown, Edit, Trash2 } from "@/components/icons";
 import { useLanguage } from "@/context/language-context";
 import Link from 'next/link';
 import { Button } from "@/components/ui/button";

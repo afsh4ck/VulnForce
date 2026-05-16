@@ -4,7 +4,7 @@ import React, { useState, useMemo } from 'react';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { useLanguage } from '@/context/language-context';
-import { FileText, Scan, Globe, Network, Smartphone, Wifi, Award, PlusCircle, Edit, Trash2, ArrowUpDown, FilePlus2 } from 'lucide-react';
+import { PlusCircle, Edit, Trash2, ArrowUpDown, FilePlus2 } from '@/components/icons';
 import Link from 'next/link';
 import { useData } from '@/context/data-context';
 import { Input } from '@/components/ui/input';
@@ -13,16 +13,7 @@ import type { ProjectTemplate } from '@/lib/types';
 import { AlertDialog, AlertDialogTrigger, AlertDialogContent, AlertDialogHeader, AlertDialogTitle, AlertDialogDescription, AlertDialogFooter, AlertDialogCancel, AlertDialogAction } from '@/components/ui/alert-dialog';
 import { useToast } from '@/hooks/use-toast';
 import { useRouter } from 'next/navigation';
-
-const iconComponents: { [key: string]: React.ElementType } = {
-  FileText,
-  Scan,
-  Globe,
-  Network,
-  Smartphone,
-  Wifi,
-  Award,
-};
+import { ProjectIcon, projectIconComponents } from '@/components/project-icon';
 
 type SortKey = keyof ProjectTemplate;
 
@@ -155,7 +146,7 @@ export default function TemplatesPage() {
               </TableHeader>
               <TableBody>
                 {sortedAndFilteredTemplates.map((template) => {
-                  const Icon = iconComponents[template.icon] || FileText;
+                  const Icon = projectIconComponents[template.icon] || ProjectIcon;
                   const isDeletable = template.id.startsWith('ptpl-');
                   return (
                     <TableRow key={template.id}>

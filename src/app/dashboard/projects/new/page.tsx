@@ -11,7 +11,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Textarea } from "@/components/ui/textarea";
 import { Calendar } from "@/components/ui/calendar";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
-import { CalendarIcon, FilePlus2, FileText, Scan, Globe, Network, Smartphone, Wifi, Award, PlusCircle, Upload } from "lucide-react";
+import { CalendarIcon, FilePlus2, PlusCircle, Upload } from "@/components/icons";
 import { cn } from "@/lib/utils";
 import { format } from "date-fns";
 import { es } from "date-fns/locale";
@@ -24,16 +24,7 @@ import type { Project, Client } from "@/lib/types";
 import { DateRange } from "react-day-picker";
 import { Dialog, DialogTrigger, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-
-const iconOptions = [
-    { value: 'FileText', label: 'FileText' },
-    { value: 'Scan', label: 'Scan' },
-    { value: 'Globe', label: 'Globe' },
-    { value: 'Network', label: 'Network' },
-    { value: 'Smartphone', label: 'Smartphone' },
-    { value: 'Wifi', label: 'Wifi' },
-    { value: 'Award', label: 'Award' },
-];
+import { ProjectIconSelectItem, projectIconOptions } from "@/components/project-icon";
 
 export default function NewProjectPage() {
   const { language: uiLanguage } = useLanguage();
@@ -288,8 +279,10 @@ export default function NewProjectPage() {
                             <SelectValue placeholder={t[uiLanguage].selectIcon} />
                         </SelectTrigger>
                         <SelectContent>
-                            {iconOptions.map(option => (
-                                <SelectItem key={option.value} value={option.value}>{option.label}</SelectItem>
+                            {projectIconOptions.map(option => (
+                                <SelectItem key={option.value} value={option.value}>
+                                  <ProjectIconSelectItem value={option.value} label={option.label} />
+                                </SelectItem>
                             ))}
                         </SelectContent>
                     </Select>

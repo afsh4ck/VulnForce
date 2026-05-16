@@ -1,58 +1,84 @@
-# VulnForce - Professional Hacking Reporting Platform
+# VulnForce - Plataforma profesional para informes de pentesting
 
-VulnForce is a self-hosted web platform for managing pentesting projects, findings, reusable report templates, vulnerability writeups, and final client-ready reports.
+VulnForce es una plataforma web autoalojada para gestionar proyectos de pentesting, clientes, hallazgos, plantillas reutilizables, biblioteca de vulnerabilidades y reportes finales listos para entregar.
 
-<img width="3214" height="1458" alt="VulnForce dashboard" src="https://github.com/user-attachments/assets/16e48dd3-1bed-435b-ab6e-6df9815f47c4" />
+<img width="3214" height="1458" alt="Panel principal de VulnForce" src="https://github.com/user-attachments/assets/16e48dd3-1bed-435b-ab6e-6df9815f47c4" />
 
-## Overview
+## Índice
 
-VulnForce is designed for offensive security teams that need a structured workflow for technical reporting. It combines project management, vulnerability libraries, section-based Markdown editing, TODO tracking, and HTML report preview/export in one local-first application.
+- [Descripción](#descripción)
+- [Características principales](#características-principales)
+- [Flujo de trabajo de reporting](#flujo-de-trabajo-de-reporting)
+- [Tecnologías](#tecnologías)
+- [Requisitos](#requisitos)
+- [Inicio rápido en desarrollo](#inicio-rápido-en-desarrollo)
+- [Despliegue](#despliegue)
+- [Linux recomendado](#linux-recomendado)
+- [Windows](#windows)
+- [macOS](#macos)
+- [Opciones de deploy.sh](#opciones-de-deploysh)
+- [Scripts útiles](#scripts-útiles)
+- [Estructura del proyecto](#estructura-del-proyecto)
+- [Secciones principales](#secciones-principales)
+- [Notas de seguridad](#notas-de-seguridad)
+- [Changelog](#changelog)
 
-The reporting workflow is inspired by mature pentesting report platforms such as SysReptor: report content is edited as independent sections, templates can be imported directly into editable report sections, and reviewers can jump from pending TODO markers in the report preview back to the exact editable section.
+## Descripción
 
-## Key Features
+VulnForce está diseñada para equipos de seguridad ofensiva que necesitan un flujo estructurado para generar informes técnicos y ejecutivos. Combina gestión de proyectos, base de conocimiento de vulnerabilidades, editor Markdown por secciones, seguimiento de pendientes `TODO` y previsualización/exportación HTML.
 
-- Project and client management for pentesting engagements.
-- Finding management with severity, CVSS score, evidence, and Markdown writeups.
-- Reusable project templates and vulnerability templates.
-- Section-based report editor with Markdown, preview, and split view modes.
-- Resizable split editor with live visual Markdown preview.
-- Formatting toolbar for bold, italic, code, and bullet lists.
-- TODO tracking: uppercase `TODO` markers are highlighted in red, shown as `TO DO` in report preview, and linked back to the editable source section.
-- HTML report preview with table of contents, finding severity badges, pending TODO panel, and dark/light mode readability.
-- HTML export for delivery or offline review.
-- Docker deployment script for isolated local environments.
+El flujo de reporting está inspirado en plataformas maduras como SysReptor: el contenido se trabaja como secciones independientes, las plantillas se importan directamente como secciones editables y los revisores pueden saltar desde los pendientes del informe a la sección exacta donde deben corregir contenido.
 
-## Reporting Workflow
+## Características principales
 
-1. Create a project and assign it to a client.
-2. Import a project template or vulnerability entry.
-3. The imported content is split into editable sections based on top-level Markdown headings (`#` and `##`).
-4. Edit each section in one of three modes:
-   - `Split`: Markdown editor and rendered preview side by side.
-   - `MD`: full-width Markdown editor.
-   - `Preview`: rendered visual preview.
-5. Add `TODO` anywhere in uppercase to mark pending work.
-6. Open the report preview to review the final HTML, pending TODOs, and table of contents.
-7. Click any pending `TO DO` item to jump back to the corresponding editable section.
-8. Export the report as HTML when ready.
+- Gestión de proyectos y clientes.
+- Gestión de hallazgos con severidad, CVSS, evidencias y contenido Markdown.
+- Plantillas reutilizables de proyecto y vulnerabilidades.
+- Editor de reporte por secciones con modos `Split`, `MD` y `Preview`.
+- El mismo editor Markdown por secciones en informes, hallazgos, plantillas de proyecto y plantillas de vulnerabilidades.
+- Vista dividida redimensionable con previsualización visual de Markdown.
+- Barra de formato para negrita, cursiva, código y listas.
+- Seguimiento de `TODO` en mayúsculas:
+  - Se resaltan en rojo dentro del editor Markdown.
+  - Se resaltan en rojo en las previsualizaciones.
+  - En el informe se muestran como `TO DO`.
+  - Cada pendiente enlaza de vuelta a la sección editable correspondiente.
+- Previsualización HTML del informe con índice, panel de pendientes, badges de severidad y legibilidad en modo claro/oscuro.
+- Iconografía basada en Phosphor Icons y selectores de icono con miniaturas visuales.
+- Exportación HTML para entrega o revisión offline.
+- Despliegue Docker local con contador de progreso durante la construcción de la imagen.
 
-## Technology Stack
+## Flujo de trabajo de reporting
 
-- Next.js 15 with the App Router.
-- React and TypeScript.
-- Tailwind CSS and shadcn-style UI primitives.
-- `react-markdown` with GFM support for report rendering.
-- `react-resizable-panels` for split-view editing.
-- Docker for local deployment.
+1. Crear un proyecto y asociarlo a un cliente.
+2. Importar una plantilla de proyecto o una vulnerabilidad desde la biblioteca.
+3. El contenido importado se divide automáticamente en secciones editables usando titulares Markdown de primer y segundo nivel (`#` y `##`).
+4. Editar cada sección en uno de estos modos:
+   - `Split`: editor Markdown y previsualización renderizada lado a lado.
+   - `MD`: editor Markdown a ancho completo.
+   - `Preview`: vista visual renderizada.
+5. Escribir `TODO` en mayúsculas en cualquier punto para marcar trabajo pendiente.
+6. Abrir la previsualización del informe para revisar HTML final, índice y pendientes.
+7. Pulsar cualquier `TO DO` pendiente para volver a la sección editable exacta.
+8. Exportar el informe como HTML cuando no queden pendientes.
 
-## Requirements
+## Tecnologías
+
+- Next.js 15 con App Router.
+- React y TypeScript.
+- Tailwind CSS y componentes UI estilo shadcn.
+- Phosphor Icons para la iconografía de la interfaz.
+- `react-markdown` con soporte GFM para renderizado de informes.
+- `react-resizable-panels` para edición en vista dividida.
+- Docker para despliegue local.
+
+## Requisitos
 
 - Node.js 22.13+.
 - pnpm 11.
-- Docker, if using `deploy.sh`.
+- Docker, si se usa el despliegue con `deploy.sh`.
 
-## Quick Start
+## Inicio rápido en desarrollo
 
 ```bash
 git clone <repo-url>
@@ -61,17 +87,124 @@ pnpm install
 pnpm dev
 ```
 
-Open `http://localhost:9002`.
+Abre `http://localhost:9002`.
 
-## Docker Deployment
+## Despliegue
 
-VulnForce includes `deploy.sh` for local Docker deployment. By default it binds to `127.0.0.1:47474`.
+El despliegue recomendado es Linux con Docker y `deploy.sh`. El script construye la imagen, muestra progreso en tiempo real, elimina el contenedor anterior y arranca VulnForce en `127.0.0.1:47474` por defecto.
+
+Los datos persistentes se guardan en carpetas locales del proyecto:
+
+- `./data`
+- `./uploads`
+- `./logs`
+
+## Linux recomendado
+
+1. Instala Docker y Git.
+
+```bash
+sudo apt-get update
+sudo apt-get install -y git docker.io
+sudo systemctl enable --now docker
+```
+
+2. Clona el repositorio.
+
+```bash
+git clone <repo-url>
+cd <repo-folder>
+```
+
+3. Ejecuta el despliegue.
 
 ```bash
 bash deploy.sh
 ```
 
-Useful options:
+4. Abre la aplicación.
+
+```text
+http://127.0.0.1:47474
+```
+
+Si tu usuario no tiene acceso al socket de Docker, ejecuta el script con `sudo` o añade tu usuario al grupo `docker`.
+
+```bash
+sudo usermod -aG docker "$USER"
+newgrp docker
+```
+
+## Windows
+
+El flujo recomendado en Windows es usar Docker Desktop con WSL2 habilitado.
+
+1. Instala:
+
+- Docker Desktop para Windows.
+- Git for Windows.
+- Node.js 22.13+ si quieres ejecutar la app en desarrollo.
+- WSL2, recomendado para usar `deploy.sh` con Bash.
+
+2. Clona el repositorio desde PowerShell, Git Bash o WSL.
+
+```powershell
+git clone <repo-url>
+cd <repo-folder>
+```
+
+3. Para desarrollo local en Windows:
+
+```powershell
+corepack enable
+corepack pnpm install
+corepack pnpm dev
+```
+
+Abre `http://localhost:9002`.
+
+4. Para despliegue Docker, ejecuta el script desde WSL o Git Bash con Docker Desktop iniciado:
+
+```bash
+bash deploy.sh
+```
+
+Abre `http://127.0.0.1:47474`.
+
+## macOS
+
+1. Instala:
+
+- Docker Desktop para macOS.
+- Git.
+- Node.js 22.13+ si quieres ejecutar la app en desarrollo.
+
+2. Clona el repositorio.
+
+```bash
+git clone <repo-url>
+cd <repo-folder>
+```
+
+3. Para desarrollo local:
+
+```bash
+corepack enable
+corepack pnpm install
+corepack pnpm dev
+```
+
+Abre `http://localhost:9002`.
+
+4. Para despliegue Docker:
+
+```bash
+bash deploy.sh
+```
+
+Abre `http://127.0.0.1:47474`.
+
+## Opciones de deploy.sh
 
 ```bash
 bash deploy.sh --port=47474
@@ -81,54 +214,53 @@ SHOW_BUILD_LOGS=1 bash deploy.sh
 SKIP_PRUNE=1 bash deploy.sh
 ```
 
-The deploy script:
+Opciones relevantes:
 
-- Checks Docker availability.
-- Removes any previous `vulnforce` container.
-- Builds the Docker image with BuildKit plain progress.
-- Shows a live build counter with elapsed time, completed/cached steps, and current build step.
-- Starts the app container on the selected bind address and port.
-- Stores persistent local data in project folders:
-  - `./data`
-  - `./uploads`
-  - `./logs`
+- `--port=NNNN` o `PORT=NNNN`: cambia el puerto local.
+- `HOST_BIND=0.0.0.0`: expone el servicio en todas las interfaces de red.
+- `SHOW_BUILD_LOGS=1`: muestra el log completo de construcción Docker.
+- `SKIP_PRUNE=1`: evita la limpieza automática de contenedores detenidos e imágenes/cache colgantes.
 
-The default bind address is localhost for safer local use. Only set `HOST_BIND=0.0.0.0` in controlled environments.
+El script muestra durante el build:
 
-## Useful Scripts
+- Tiempo transcurrido.
+- Pasos completados o cacheados.
+- Paso actual de BuildKit.
 
-- `pnpm dev` - start the development server on port `9002`.
-- `pnpm build` - build for production.
-- `pnpm start` - start the production build.
-- `pnpm lint` - run ESLint.
-- `pnpm typecheck` - run TypeScript checks.
+## Scripts útiles
 
-## Project Structure
+- `pnpm dev`: arranca el servidor de desarrollo en el puerto `9002`.
+- `pnpm build`: compila para producción.
+- `pnpm start`: arranca la versión compilada.
+- `pnpm lint`: ejecuta ESLint.
+- `pnpm typecheck`: ejecuta la comprobación de tipos.
 
-- `src/app/` - App Router pages and dashboard routes.
-- `src/components/` - Reusable UI and report rendering components.
-- `src/context/` - Application state providers.
-- `src/lib/` - Data models, template data, Markdown helpers, and utilities.
-- `deploy.sh` - Docker deployment helper.
-- `Dockerfile` - Production container build.
+## Estructura del proyecto
 
-## Main Areas
+- `src/app/`: rutas principales del App Router y dashboard.
+- `src/components/`: componentes reutilizables de UI y renderizado.
+- `src/context/`: proveedores de estado de la aplicación.
+- `src/lib/`: modelos, datos base, helpers Markdown y utilidades.
+- `deploy.sh`: script de despliegue Docker.
+- `Dockerfile`: construcción del contenedor de producción.
 
-- **Dashboard:** project metrics, recent activity, and quick access.
-- **Projects:** project details, section-based report editor, findings, and settings.
-- **Findings:** detailed vulnerability findings with Markdown sections.
-- **Clients:** client and contact records.
-- **Vulnerabilities:** reusable vulnerability knowledge base with CVSS/CWE metadata.
-- **Templates:** reusable project report templates.
-- **Backup:** data export/import workflows.
+## Secciones principales
 
-## Security Notes
+- **Dashboard:** métricas, actividad reciente y accesos rápidos.
+- **Proyectos:** detalles del proyecto, editor de informe por secciones, hallazgos y configuración.
+- **Hallazgos:** vulnerabilidades documentadas con secciones Markdown.
+- **Clientes:** clientes y datos de contacto.
+- **Vulnerabilidades:** biblioteca reutilizable con CVSS, CWE, referencias y texto técnico.
+- **Plantillas:** plantillas reutilizables para informes.
+- **Backup:** flujos de exportación e importación de datos.
 
-- Treat reports, findings, screenshots, payloads, and customer information as sensitive data.
-- Keep deployments bound to localhost unless the environment is explicitly controlled.
-- Use HTTPS, access control, and encrypted storage for real multi-user deployments.
-- Review exported HTML before delivery to ensure no pending `TO DO` items remain.
+## Notas de seguridad
+
+- Trata informes, hallazgos, capturas, payloads y datos de clientes como información sensible.
+- Mantén el servicio ligado a localhost salvo que estés en un entorno controlado.
+- Usa HTTPS, control de acceso y almacenamiento cifrado en despliegues multiusuario reales.
+- Revisa el HTML exportado antes de entregarlo y asegúrate de que no quedan elementos `TO DO`.
 
 ## Changelog
 
-See [CHANGELOG.md](CHANGELOG.md).
+Consulta [CHANGELOG.md](CHANGELOG.md).

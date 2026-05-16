@@ -6,7 +6,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger, Dialog
 import { Button } from './ui/button';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from './ui/tabs';
 import { Input } from './ui/input';
-import { Upload, Link, GalleryHorizontal } from 'lucide-react';
+import { Upload, Link, GalleryHorizontal } from '@/components/icons';
 import { useLanguage } from '@/context/language-context';
 import { useData } from '@/context/data-context';
 import type { ImageAsset } from '@/lib/types';

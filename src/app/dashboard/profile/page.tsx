@@ -8,7 +8,7 @@ import { Label } from '@/components/ui/label';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { useToast } from '@/hooks/use-toast';
 import { useLanguage } from '@/context/language-context';
-import { Upload } from 'lucide-react';
+import { Upload } from '@/components/icons';
 import { useUser } from '@/context/user-context';
 
 export default function ProfilePage() {

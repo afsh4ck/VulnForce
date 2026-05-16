@@ -9,7 +9,7 @@ import { Label } from '@/components/ui/label';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import Link from 'next/link';
-import { ChevronLeft, Save, Plus, GripVertical, Trash2, CheckCircle } from 'lucide-react';
+import { ChevronLeft, Save, Plus, CheckCircle } from '@/components/icons';
 import { useToast } from '@/hooks/use-toast';
 import { useLanguage } from '@/context/language-context';
 import type { Vulnerability, Finding, Project, ImageAsset, Severity } from '@/lib/types';
@@ -19,41 +19,14 @@ import { DndContext, closestCenter, KeyboardSensor, PointerSensor, useSensor, us
 import { arrayMove, SortableContext, sortableKeyboardCoordinates, useSortable, verticalListSortingStrategy } from '@dnd-kit/sortable';
 import { CSS } from '@dnd-kit/utilities';
 import { Badge } from '@/components/ui/badge';
-import { MarkdownPreview } from '@/components/markdown-preview';
-import { Textarea } from '@/components/ui/textarea';
 import { hasTodoMarker, stripMarkdownText } from '@/lib/todo-utils';
+import { SectionMarkdownEditor } from '@/components/section-markdown-editor';
 
 type SaveStatus = 'unsaved' | 'saving' | 'saved';
 
 interface FindingSection {
   id: string;
   content: string;
-}
-
-const SectionEditor = ({ section, onContentChange, getImage }: {
-  section: FindingSection;
-  onContentChange: (content: string) => void;
-  getImage: (id: string) => ImageAsset | undefined
-}) => {
-    const [isEditing, setIsEditing] = useState(false);
-
-    if (isEditing) {
-        return (
-            <Textarea
-                value={section.content}
-                onChange={(e) => onContentChange(e.target.value)}
-                onBlur={() => setIsEditing(false)}
-                autoFocus
-                className="w-full min-h-[150px] border-0 rounded-t-none font-code text-sm focus-visible:ring-0 focus-visible:ring-offset-0"
-            />
-        )
-    }
-    
-    return (
-        <div className="py-2" onClick={() => setIsEditing(true)}>
-            <MarkdownPreview content={section.content} getImage={getImage} />
-        </div>
-    );
 }
 
 type SortableSectionProps = {
@@ -81,16 +54,23 @@ const SortableSection = ({ section, index, onAddSection, onDelete, ...props }: S
          <Button variant="ghost" size="icon" className="h-8 w-8 cursor-pointer" onClick={() => onAddSection(index + 1)}>
           <Plus className="h-4 w-4"/>
         </Button>
-        <div {...attributes} {...listeners} className="cursor-grab p-1">
-          <GripVertical className="h-5 w-5 text-muted-foreground" />
-        </div>
       </div>
-       <div className="absolute top-0 -right-12 h-full flex items-center opacity-0 group-hover/section:opacity-100 transition-opacity">
-        <Button variant="ghost" size="icon" className="h-8 w-8 text-destructive" onClick={onDelete}>
-            <Trash2 className="h-4 w-4" />
-        </Button>
-      </div>
-      <SectionEditor section={section} {...props} />
+      <SectionMarkdownEditor
+        id={`finding-section-${section.id}`}
+        content={section.content}
+        onChange={props.onContentChange}
+        onDelete={onDelete}
+        dragHandleProps={attributes}
+        dragListeners={listeners}
+        getImage={props.getImage}
+        titleFallback="Finding section"
+        labels={{
+          section: 'Finding section',
+          untitled: 'Finding section',
+          writeContent: 'Write finding evidence, impact, remediation or notes...',
+          delete: 'Delete section',
+        }}
+      />
     </div>
   );
 };

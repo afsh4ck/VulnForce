@@ -9,7 +9,7 @@ import { Separator } from '@/components/ui/separator';
 import { Logo } from '@/components/logo';
 import React, { useEffect, useMemo, useState, useCallback, useRef } from 'react';
 import { Button } from '@/components/ui/button';
-import { AlertCircle, ArrowRight, CheckCircle, ChevronLeft, Printer, Globe, X } from 'lucide-react';
+import { AlertCircle, ArrowRight, CheckCircle, ChevronLeft, Printer, Globe, X } from '@/components/icons';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import Link from 'next/link';
 import { useLanguage } from '@/context/language-context';

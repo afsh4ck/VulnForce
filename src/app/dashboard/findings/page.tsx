@@ -6,7 +6,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import Link from 'next/link';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
-import { ArrowUpDown, Bomb } from "lucide-react";
+import { ArrowUpDown, Bomb } from "@/components/icons";
 import { useLanguage } from "@/context/language-context";
 import type { Finding } from '@/lib/types';
 import { useData } from '@/context/data-context';

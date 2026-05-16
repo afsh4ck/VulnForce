@@ -10,7 +10,7 @@ import {
   CommandItem,
   CommandList,
 } from '@/components/ui/command';
-import { Heading1, Heading2, Heading3, Code, List, ListOrdered } from 'lucide-react';
+import { Heading1, Heading2, Heading3, Code, List, ListOrdered } from '@/components/icons';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
 import { useLanguage } from '@/context/language-context';
 

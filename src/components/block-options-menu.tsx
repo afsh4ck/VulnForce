@@ -20,7 +20,7 @@ import {
   Copy,
   Text,
   Code,
-} from "lucide-react";
+} from "@/components/icons";
 import React from "react";
 import { useLanguage } from "@/context/language-context";
 import type { ContentBlock } from "@/lib/types";

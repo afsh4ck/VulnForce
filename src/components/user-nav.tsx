@@ -15,7 +15,7 @@ import { useLanguage } from "@/context/language-context";
 import Link from "next/link";
 import { useUser } from "@/context/user-context";
 import { useRouter } from "next/navigation";
-import { User } from "lucide-react";
+import { User } from "@/components/icons";
 
 export function UserNav() {
     const { language } = useLanguage();

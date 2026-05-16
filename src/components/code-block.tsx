@@ -4,7 +4,7 @@ import React, { useState } from 'react';
 import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter';
 import { vscDarkPlus } from 'react-syntax-highlighter/dist/esm/styles/prism';
 import { Button } from './ui/button';
-import { Check, Copy, WrapText } from 'lucide-react';
+import { Check, Copy, WrapText } from '@/components/icons';
 import { cn } from '@/lib/utils';
 import { Combobox } from './ui/combobox';
 import { useLanguage } from '@/context/language-context';

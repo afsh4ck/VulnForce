@@ -4,7 +4,7 @@ import React, { useState, useMemo } from 'react';
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
-import { PlusCircle, Search, ArrowUpDown, Edit, Trash2, FileText, Scan, Globe, Network, Smartphone, Wifi, Award, Copy } from "lucide-react";
+import { PlusCircle, Search, ArrowUpDown, Edit, Trash2, Copy } from "@/components/icons";
 import { Badge } from "@/components/ui/badge";
 import Link from 'next/link';
 import { Input } from "@/components/ui/input";
@@ -15,18 +15,9 @@ import { useToast } from '@/hooks/use-toast';
 import { useRouter } from 'next/navigation';
 import { useData } from '@/context/data-context';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
+import { ProjectIcon, projectIconComponents } from '@/components/project-icon';
 
 type SortKey = keyof Project | 'clientName';
-
-const iconComponents: { [key: string]: React.ElementType } = {
-  FileText,
-  Scan,
-  Globe,
-  Network,
-  Smartphone,
-  Wifi,
-  Award,
-};
 
 export default function ProjectsPage() {
   const { language } = useLanguage();
@@ -198,7 +189,7 @@ export default function ProjectsPage() {
               </TableHeader>
               <TableBody>
                 {sortedAndFilteredProjects.map(project => {
-                  const Icon = iconComponents[project.icon] || FileText;
+                  const Icon = projectIconComponents[project.icon] || ProjectIcon;
                   return (
                     <TableRow key={project.id}>
                       <TableCell className="font-medium">

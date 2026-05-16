@@ -9,7 +9,7 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import Link from 'next/link';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
-import { PlusCircle, FileText, ArrowUpDown, Edit, Save, Trash2, CalendarIcon, Plus, GripVertical, Languages, ChevronLeft, CheckCircle, Heading1, Heading2, Heading3, Code, File, List, ListOrdered, Copy, Bold, Italic } from "lucide-react";
+import { PlusCircle, FileText, ArrowUpDown, Edit, Save, Trash2, CalendarIcon, Plus, GripVertical, Languages, ChevronLeft, CheckCircle, Heading1, Heading2, Heading3, Code, File, List, ListOrdered, Copy, Bold, Italic } from "@/components/icons";
 import { useLanguage } from "@/context/language-context";
 import type { Finding, Project, ContentBlock } from '@/lib/types';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
@@ -39,6 +39,8 @@ import { FloatingToolbar } from '@/components/floating-toolbar';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
 import { ResizableHandle, ResizablePanel, ResizablePanelGroup } from '@/components/ui/resizable';
 import { hasTodoMarker, stripMarkdownText } from '@/lib/todo-utils';
+import { ProjectIconSelectItem, projectIconOptions } from '@/components/project-icon';
+import { HighlightedMarkdownTextarea } from '@/components/section-markdown-editor';
 
 
 type SortKey = keyof Finding;
@@ -51,16 +53,6 @@ const compareValues = (aValue: string | number | undefined, bValue: string | num
   if (aComparable > bComparable) return 1;
   return 0;
 };
-
-const iconOptions = [
-    { value: 'FileText', label: 'FileText' },
-    { value: 'Scan', label: 'Scan' },
-    { value: 'Globe', label: 'Globe' },
-    { value: 'Network', label: 'Network' },
-    { value: 'Smartphone', label: 'Smartphone' },
-    { value: 'Wifi', label: 'Wifi' },
-    { value: 'Award', label: 'Award' },
-];
 
 import { parseMarkdownToBlocks, blocksToMarkdown } from '@/lib/markdown-utils';
 
@@ -449,18 +441,15 @@ const SectionEditableBlock = React.forwardRef(({ block, onUpdate, onKeyDown, onF
   };
 
   const editorTextarea = (className?: string) => (
-    <textarea
-      ref={textareaRef}
+    <HighlightedMarkdownTextarea
+      textareaRef={textareaRef}
       value={markdownValue}
       placeholder={placeholderText}
       onFocus={onFocus}
       onKeyDown={handleKeyDown}
-      onChange={(e) => updateMarkdown(e.target.value)}
-      className={cn(
-        "h-full min-h-[420px] w-full resize-none bg-background p-4 font-code text-sm leading-6 text-foreground outline-none",
-        "placeholder:text-muted-foreground focus-visible:ring-0",
-        className
-      )}
+      onChange={updateMarkdown}
+      minHeightClassName="min-h-[520px]"
+      className={className}
     />
   );
 
@@ -509,7 +498,7 @@ const SectionEditableBlock = React.forwardRef(({ block, onUpdate, onKeyDown, onF
             <ResizablePanel defaultSize={52} minSize={25}>
               {editorTextarea("border-0")}
             </ResizablePanel>
-            <ResizableHandle className="w-1 bg-border transition-colors hover:bg-primary data-[resize-handle-state=drag]:bg-primary" />
+            <ResizableHandle className="w-1 bg-border transition-colors hover:bg-yellow-400 data-[resize-handle-state=drag]:bg-yellow-400" />
             <ResizablePanel defaultSize={48} minSize={25}>
               <div className="h-full min-h-[520px] overflow-auto p-5">
                 <MarkdownPreview content={previewMarkdown} getImage={() => undefined} />
@@ -1580,7 +1569,11 @@ export default function ProjectDetailsPage() {
                       <Select value={icon} onValueChange={value => handleFieldChange(setIcon, value)}>
                         <SelectTrigger id="icon"><SelectValue placeholder={t[uiLanguage].selectIcon} /></SelectTrigger>
                         <SelectContent>
-                           {iconOptions.map(o => <SelectItem key={o.value} value={o.value}>{o.label}</SelectItem>)}
+                           {projectIconOptions.map(o => (
+                            <SelectItem key={o.value} value={o.value}>
+                              <ProjectIconSelectItem value={o.value} label={o.label} />
+                            </SelectItem>
+                           ))}
                         </SelectContent>
                       </Select>
                     </div>

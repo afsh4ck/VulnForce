@@ -1,7 +1,7 @@
 'use client';
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { Languages, Moon, Sun, KeyRound, Eye, EyeOff, Trash2 } from "lucide-react";
+import { Languages, Moon, Sun, KeyRound, Eye, EyeOff, Trash2 } from "@/components/icons";
 import { useToast } from "@/hooks/use-toast";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";

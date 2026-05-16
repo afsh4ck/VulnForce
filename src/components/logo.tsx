@@ -1,5 +1,5 @@
 
-import { ShieldHalf } from 'lucide-react';
+import { ShieldHalf } from '@/components/icons';
 import { cn } from '@/lib/utils';
 import { useSidebar } from './ui/sidebar';
 
