@@ -189,8 +189,16 @@ type EditableBlockProps = {
   t_editor: any
 };
 
-const EditableBlock = React.forwardRef<HTMLDivElement, EditableBlockProps>(({ block, onUpdate, onKeyDown, onFocus, isFocused, placeholder, t_editor }, ref) => {
+type EditableBlockExtra = {
+  isSplit?: boolean;
+  onToggleSplit?: (id: string) => void;
+};
+
+const EditableBlock = React.forwardRef<HTMLDivElement, EditableBlockProps & EditableBlockExtra>(({ block, onUpdate, onKeyDown, onFocus, isFocused, placeholder, t_editor, isSplit, onToggleSplit }, ref) => {
     const blockRef = useRef<HTMLDivElement>(null);
+  const [markdownValue, setMarkdownValue] = React.useState<string>('');
+  const [splitActive, setSplitActive] = React.useState<boolean>(!!isSplit);
+  useEffect(() => setSplitActive(!!isSplit), [isSplit]);
     
      useEffect(() => {
         if (isFocused && blockRef.current) {
@@ -221,7 +229,7 @@ const EditableBlock = React.forwardRef<HTMLDivElement, EditableBlockProps>(({ bl
     };
 
     if (block.tag === 'hr') {
-        return <hr className="my-4" />;
+      return <hr className="my-4" />;
     }
     
     if (block.tag === 'table') {
@@ -252,6 +260,14 @@ const EditableBlock = React.forwardRef<HTMLDivElement, EditableBlockProps>(({ bl
     const placeholderText = getPlaceholderText();
     const showPlaceholder = isEmpty && isFocused;
 
+    useEffect(() => {
+      // initialize markdown value from html: basic conversion
+      const temp = document.createElement('div');
+      temp.innerHTML = block.content || '';
+      const text = temp.innerText.replace(/\u00A0/g, '');
+      setMarkdownValue(text);
+    }, [block.id]);
+
     return (
         <div 
           ref={ref as React.Ref<HTMLDivElement>}
@@ -259,7 +275,57 @@ const EditableBlock = React.forwardRef<HTMLDivElement, EditableBlockProps>(({ bl
           onFocus={onFocus}
           dir="ltr"
         >
-          <div
+          <div className="absolute right-0 top-0 mr-2 mt-1 flex gap-1">
+            <button type="button" className="text-sm px-2 py-1 text-muted-foreground hover:text-foreground" onClick={() => {
+              const newState = !splitActive;
+              setSplitActive(newState);
+              onToggleSplit?.(block.id);
+            }}>{splitActive ? 'Split on' : 'Split'}</button>
+          </div>
+
+          {splitActive && block.tag !== 'pre' ? (
+            // render split editor
+            <div className="my-2">
+              {/* lazy load split editor to avoid SSR issues */}
+              <div className="">
+                {/* @ts-ignore */}
+                {typeof window !== 'undefined' && (
+                  // dynamic import-like usage without adding bundling complexity
+                  <div>
+                    {/* Inline simple split editor to avoid imports in SSR */}
+                    <div className="w-full border rounded-md overflow-hidden">
+                      <div style={{ display: 'flex', alignItems: 'stretch', height: '280px' }}>
+                        <textarea
+                          value={markdownValue}
+                          onChange={(e) => {
+                            setMarkdownValue(e.target.value);
+                            // convert simple markdown to html: very basic
+                            const lines = e.target.value.split('\n');
+                            const html = lines.map(l => {
+                              if (/^#{1}\s/.test(l)) return `<h1>${l.replace(/^#\s/, '')}</h1>`;
+                              if (/^##\s/.test(l)) return `<h2>${l.replace(/^##\s/, '')}</h2>`;
+                              if (/^###\s/.test(l)) return `<h3>${l.replace(/^###\s/, '')}</h3>`;
+                              if (/^-\s/.test(l)) return `<li>${l.replace(/^-\s/, '')}</li>`;
+                              return l.replace(/</g, '&lt;').replace(/>/g, '&gt;');
+                            }).join('\n');
+                            // if list items exist wrap
+                            const final = /<li>/.test(html) ? `<ul>${html}</ul>` : `<p>${html.replace(/\n/g, '<br>')}</p>`;
+                            onUpdate(final);
+                          }}
+                          className="p-3 resize-none outline-none w-full"
+                          style={{ width: `50%`, borderRight: '1px solid rgba(0,0,0,0.06)' }}
+                        />
+                        <div style={{ width: `50%`, padding: '12px', overflow: 'auto' }}>
+                          <div className="prose dark:prose-invert" dangerouslySetInnerHTML={{ __html: markdownValue ? markdownValue.split('\n').map(l => l.replace(/</g,'&lt;').replace(/>/g,'&gt;')).join('<br>') : block.content }} />
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                )}
+              </div>
+            </div>
+          ) : (
+            <div
               ref={blockRef}
               onBlur={handleBlur}
               onKeyDown={onKeyDown}
@@ -280,6 +346,8 @@ const EditableBlock = React.forwardRef<HTMLDivElement, EditableBlockProps>(({ bl
               )}
               dangerouslySetInnerHTML={{ __html: isCode ? block.content.replace(/&/g, "&amp;").replace(/>/g, "&gt;").replace(/</g, "&lt;") : block.content || (isList ? '<li><br></li>' : '<br>') }}
           />
+          )}
+
            {showPlaceholder && (
                 <div className={cn("absolute top-1 left-1 text-muted-foreground pointer-events-none select-none", {
                     'text-3xl font-bold': block.tag === 'h1',
@@ -295,7 +363,7 @@ const EditableBlock = React.forwardRef<HTMLDivElement, EditableBlockProps>(({ bl
 });
 EditableBlock.displayName = "EditableBlock";
 
-type SortableBlockProps = EditableBlockProps & {
+type SortableBlockProps = EditableBlockProps & EditableBlockExtra & {
   index: number;
   onAdd: (index: number, tag: ContentBlock['tag']) => void;
   onAction: (action: string, blockId: string, value?: any) => void;
@@ -369,6 +437,7 @@ export default function ProjectDetailsPage() {
   const [blocks, setBlocks] = useState<ContentBlock[]>([]);
   
   const [activeBlockId, setActiveBlockId] = useState<string | null>(null);
+  const [splitBlocks, setSplitBlocks] = useState<Record<string, boolean>>({});
   const [commandMenuOpen, setCommandMenuOpen] = useState(false);
   const [isToolbarOpen, setIsToolbarOpen] = useState(false);
   const [toolbarPosition, setToolbarPosition] = useState({ top: 0, left: 0 });
@@ -974,6 +1043,8 @@ export default function ProjectDetailsPage() {
       handleDuplicateBlock(blockId);
     } else if (action === 'turnInto') {
       updateBlockTag(blockId, value);
+    } else if (action === 'split') {
+      setSplitBlocks(prev => ({ ...prev, [blockId]: !prev[blockId] }));
     }
   }, [handleDeleteBlock, handleDuplicateBlock, updateBlockTag]);
 
@@ -1055,6 +1126,8 @@ export default function ProjectDetailsPage() {
                                     onKeyDown={(e: React.KeyboardEvent<HTMLDivElement>) => handleKeyDown(e, block.id)}
                                     onAdd={handleAddBlock}
                                     onAction={handleBlockAction}
+                                isSplit={!!splitBlocks[block.id]}
+                                onToggleSplit={(id: string) => setSplitBlocks(prev => ({ ...prev, [id]: !prev[id] }))}
                                     onFocus={() => setActiveBlockId(block.id)}
                                     isFocused={activeBlockId === block.id}
                                     placeholder={t[projectLanguage as 'en' | 'es'].commandPlaceholder}
@@ -1069,6 +1142,10 @@ export default function ProjectDetailsPage() {
                         onSelect={handleCommandSelect}
                         triggerRef={activeBlockId ? blockRefs.current[activeBlockId] : null}
                      />
+                    <div className="mt-4 flex gap-2">
+                      <Button onClick={() => handleAddBlock(blocks.length - 1, 'h2', 'New Section') }><Plus className="mr-2 h-4 w-4"/>Añadir sección</Button>
+                      <Button variant="destructive" onClick={() => activeBlockId && handleDeleteBlock(activeBlockId)}>Eliminar sección</Button>
+                    </div>
                   </CardContent>
                </Card>
             </TabsContent>

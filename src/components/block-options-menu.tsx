@@ -19,6 +19,7 @@ import {
   Trash2,
   Copy,
   Text,
+  Code,
 } from "lucide-react";
 import React from "react";
 import { useLanguage } from "@/context/language-context";
@@ -72,6 +73,10 @@ export const BlockOptionsMenu = ({ children, onSelect, open, onOpenChange, block
         <DropdownMenuItem onSelect={() => onSelect('duplicate')}>
           <Copy className="mr-2 h-4 w-4" />
           <span>{t[language].duplicate}</span>
+        </DropdownMenuItem>
+        <DropdownMenuItem onSelect={() => onSelect('split')}>
+          <Code className="mr-2 h-4 w-4" />
+          <span>Split view</span>
         </DropdownMenuItem>
         <DropdownMenuItem onSelect={() => onSelect('delete')} className="text-destructive focus:text-destructive">
           <Trash2 className="mr-2 h-4 w-4" />
