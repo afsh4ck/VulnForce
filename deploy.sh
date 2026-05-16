@@ -1,155 +1,156 @@
 #!/usr/bin/env bash
-# ─────────────────────────────────────────────────────────────────
-# VulnForce – Despliegue Docker al estilo HackLabs
-# Uso: sudo bash deploy.sh
-# ─────────────────────────────────────────────────────────────────
+set -Eeuo pipefail
 
-# ── Colores (usando $'…' para que los escapes se resuelvan al asignar) ──
-RED=$'\033[0;31m'; GREEN=$'\033[0;32m'; YELLOW=$'\033[1;33m'
-CYAN=$'\033[0;36m'; BOLD=$'\033[1m'; DIM=$'\033[2m'; NC=$'\033[0m'
+RED=$'\033[0;31m'
+GREEN=$'\033[0;32m'
+YELLOW=$'\033[1;33m'
+CYAN=$'\033[0;36m'
+BOLD=$'\033[1m'
+DIM=$'\033[2m'
+NC=$'\033[0m'
 
 CONTAINER_NAME="vulnforce"
 IMAGE_NAME="vulnforce:latest"
-
-# Puerto en el host (no estándar) y bind a localhost por defecto
-# Se acepta: PORT env, primer argumento posicional, o --port=NNNN
 DEFAULT_PORT=47474
+HOST_BIND="${HOST_BIND:-127.0.0.1}"
 PORT="${PORT:-}"
+
 for arg in "$@"; do
-    case $arg in
-        --port=*) PORT="${arg#*=}"; shift ;;
-    esac
+  case "$arg" in
+    --port=*) PORT="${arg#*=}" ;;
+  esac
 done
+
 if [[ -z "$PORT" ]]; then
-    PORT="${1:-}"
-fi
-if [[ -z "$PORT" ]]; then
-    PORT="$DEFAULT_PORT"
+  PORT="${1:-$DEFAULT_PORT}"
 fi
 
-# Host bind fijo a localhost
-HOST_BIND="127.0.0.1"
-
-log()  { echo "${GREEN}[+]${NC} $1"; }
+log() { echo "${GREEN}[+]${NC} $1"; }
 warn() { echo "${YELLOW}[!]${NC} $1"; }
-err()  { echo "${RED}[✗] $1${NC}"; exit 1; }
+err() { echo "${RED}[x]${NC} $1" >&2; exit 1; }
+require_root() {
+  [[ "${EUID}" -eq 0 ]] || err "$1 Run with sudo or use a Docker-capable user."
+}
 
-# ── Banner ──
+cleanup() {
+  echo ""
+  warn "Stopping VulnForce..."
+  docker stop "$CONTAINER_NAME" >/dev/null 2>&1 || true
+  docker rm "$CONTAINER_NAME" >/dev/null 2>&1 || true
+  log "VulnForce stopped cleanly."
+  echo ""
+  exit 0
+}
+
 clear
 echo ""
-echo "${RED} __     __           _    ______                          ${NC}"
-echo "${RED} \ \   / /  _   _   | |  |  ____|  _ __    ___   _ __    ${NC}"
-echo "${RED}  \ \ / /  | | | |  | |  | |__   | '__ \  / _ \ | '_ \   ${NC}"
-echo "${RED}   \ V /   | |_| |  | |  |  __|  | | | ||  __/ | | | |  ${NC}"
-echo "${RED}    \_/     \__,_|  |_|  |_|     |_| |_| \___| |_| |_|  ${NC}"
+printf '%s\n' "${RED} _    __        __        ______                       ${NC}"
+printf '%s\n' "${RED}| |  / /__  __ / /____   / ____/____   _____ _____ ___ ${NC}"
+printf '%s\n' "${RED}| | / // / / // // __ \\ / /_   / __ \\ / ___// ___// _ \\${NC}"
+printf '%s\n' "${RED}| |/ // /_/ // // / / // __/  / /_/ // /   / /__ /  __/${NC}"
+printf '%s\n' "${RED}|___/ \\__,_//_//_/ /_//_/     \\____//_/    \\___/ \\___/ ${NC}"
 echo ""
-echo "  ${DIM}VulnForce · Despliegue Docker${NC}"
-echo "  ${RED}[!] ADVERTENCIA: Solo usar en entornos aislados y controlados${NC}"
+echo "  ${BOLD}VulnForce - Professional Hacking Reporting Platform${NC}"
+echo "  ${DIM}Docker deployment for isolated and controlled environments${NC}"
 echo ""
 
-# ── Verificar root ──
-[[ $EUID -ne 0 ]] && err "Ejecuta con privilegios root: ${YELLOW}sudo bash deploy.sh${NC}"
-
-# ── Verificar Docker ──
-if ! command -v docker &>/dev/null; then
-    echo "${YELLOW}[!]${NC} Docker no está instalado en el sistema."
-    read -rp "    ¿Deseas instalar Docker ahora? (y/n): " INSTALL_DOCKER
-    if [[ "$INSTALL_DOCKER" =~ ^[yYsS]$ ]]; then
-        log "Instalando Docker..."
-        apt-get update -qq
-        apt-get install -y -qq docker.io > /dev/null 2>&1 || err "Error al instalar Docker."
-        systemctl enable --now docker > /dev/null 2>&1
-        log "Docker instalado correctamente."
-    else
-        err "Docker es necesario para desplegar VulnForce."
-    fi
+if ! command -v docker >/dev/null 2>&1; then
+  warn "Docker is not installed."
+  read -rp "    Install Docker now? (y/n): " INSTALL_DOCKER
+  if [[ "$INSTALL_DOCKER" =~ ^[yYsS]$ ]]; then
+    require_root "Installing Docker requires root privileges."
+    command -v apt-get >/dev/null 2>&1 || err "Automatic Docker installation requires apt-get. Install Docker manually and rerun this script."
+    log "Installing Docker..."
+    apt-get update -qq
+    apt-get install -y -qq docker.io >/dev/null 2>&1 || err "Docker installation failed."
+    systemctl enable --now docker >/dev/null 2>&1
+    log "Docker installed."
+  else
+    err "Docker is required to deploy VulnForce."
+  fi
 fi
 
-if ! docker info &>/dev/null; then
-    echo "${YELLOW}[!]${NC} El servicio Docker no está activo."
-    read -rp "    ¿Deseas iniciar Docker ahora? (y/n): " START_DOCKER
-    if [[ "$START_DOCKER" =~ ^[yYsS]$ ]]; then
-        systemctl start docker
-        sleep 2
-        docker info &>/dev/null || err "No se pudo iniciar Docker."
-        log "Docker iniciado correctamente."
-    else
-        err "Docker debe estar activo para desplegar VulnForce."
-    fi
+if ! DOCKER_INFO_OUTPUT="$(docker info 2>&1 >/dev/null)"; then
+  if grep -qi "permission denied" <<<"$DOCKER_INFO_OUTPUT"; then
+    err "Docker is installed, but this user cannot access the Docker socket. Add the user to the docker group or rerun with sudo."
+  fi
+
+  warn "Docker service is not running."
+  read -rp "    Start Docker now? (y/n): " START_DOCKER
+  if [[ "$START_DOCKER" =~ ^[yYsS]$ ]]; then
+    require_root "Starting the Docker service requires root privileges."
+    command -v systemctl >/dev/null 2>&1 || err "systemctl is not available. Start Docker manually and rerun this script."
+    systemctl start docker
+    sleep 2
+    docker info >/dev/null 2>&1 || err "Docker could not be started."
+    log "Docker started."
+  else
+    err "Docker must be running to deploy VulnForce."
+  fi
 fi
 
-# Bind a localhost y mostrar información básica
-log "Bind a ${BOLD}${HOST_BIND}:${PORT}${NC} (solo accesible desde el host)."
-
-# ── Limpiar instancias previas ──
-warn "Limpiando instancias previas si existen..."
-docker stop  "$CONTAINER_NAME" &>/dev/null || true
-docker rm    "$CONTAINER_NAME" &>/dev/null || true
-
-# ── Función de limpieza (Ctrl+C) ──
-cleanup() {
-    echo ""
-    warn "Deteniendo VulnForce..."
-    docker stop  "$CONTAINER_NAME" &>/dev/null || true
-    docker rm    "$CONTAINER_NAME" &>/dev/null || true
-    echo "${GREEN}[+] VulnForce eliminado correctamente.${NC}"
-    echo ""
-    exit 0
-}
 trap cleanup SIGINT SIGTERM
 
-# ── Construir imagen Docker ──
+log "Binding to ${BOLD}${HOST_BIND}:${PORT}${NC}."
+
+warn "Removing previous VulnForce container if it exists..."
+docker stop "$CONTAINER_NAME" >/dev/null 2>&1 || true
+docker rm "$CONTAINER_NAME" >/dev/null 2>&1 || true
+
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-GIT_HASH=$(git -C "$SCRIPT_DIR" rev-parse --short HEAD 2>/dev/null || date +%s)
-log "Construyendo imagen Docker..."
-docker build -t "$IMAGE_NAME" --build-arg CACHEBUST="$GIT_HASH" "$SCRIPT_DIR" --quiet \
-    || err "Error al construir la imagen Docker."
+GIT_HASH="$(git -C "$SCRIPT_DIR" rev-parse --short HEAD 2>/dev/null || date +%s)"
 
-# ── Iniciar contenedor (mapeo de puertos a localhost) ──
-log "Iniciando contenedor VulnForce (mapeo de puertos a ${HOST_BIND}:${PORT})..."
+log "Building Docker image with pnpm..."
+docker build -t "$IMAGE_NAME" --build-arg CACHEBUST="$GIT_HASH" "$SCRIPT_DIR" \
+  || err "Docker image build failed."
+
+log "Starting VulnForce container..."
 docker run -d \
-    --name "$CONTAINER_NAME" \
-    --hostname vulnforce \
-    -v vulnforce_db:/app/data \
-    -v vulnforce_uploads:/app/uploads \
-    -v vulnforce_logs:/app/logs \
-    -e PORT=3000 \
-    -p ${HOST_BIND}:${PORT}:3000 \
-    "$IMAGE_NAME" > /dev/null \
-    || err "No se pudo iniciar el contenedor."
+  --name "$CONTAINER_NAME" \
+  --hostname vulnforce \
+  -v vulnforce_data:/app/data \
+  -v vulnforce_uploads:/app/uploads \
+  -v vulnforce_logs:/app/logs \
+  -e PORT=3000 \
+  -p "${HOST_BIND}:${PORT}:3000" \
+  "$IMAGE_NAME" >/dev/null \
+  || err "Container start failed."
 
-# ── Esperar que el servicio HTTP esté listo ──
-echo -n "${GREEN}[+]${NC} Esperando que el servicio arranque"
-sleep 5
+echo -n "${GREEN}[+]${NC} Waiting for HTTP service"
+READY=0
 for _ in $(seq 1 30); do
-    curl -sf --connect-timeout 1 "http://${HOST_BIND}:${PORT}" &>/dev/null && break
-    echo -n "."
-    sleep 1
+  if curl -sf --connect-timeout 1 "http://${HOST_BIND}:${PORT}" >/dev/null 2>&1; then
+    READY=1
+    break
+  fi
+  echo -n "."
+  sleep 1
 done
 echo ""
 
-# ── Panel de información ──
+if [[ "$READY" -ne 1 ]]; then
+  warn "Container started, but HTTP readiness check did not pass within 30 seconds."
+  docker logs --tail 80 "$CONTAINER_NAME" || true
+fi
+
 echo ""
-echo "  ${GREEN}════════════════════════════════════════════════════${NC}"
-echo "  ${BOLD}${GREEN}  ✓  VulnForce desplegado correctamente${NC}"
-echo "  ${GREEN}════════════════════════════════════════════════════${NC}"
+echo "  ${GREEN}====================================================${NC}"
+echo "  ${BOLD}${GREEN}  VulnForce is running${NC}"
+echo "  ${GREEN}====================================================${NC}"
 echo ""
-echo "  ${CYAN}${BOLD}  Localhost bind:   ${HOST_BIND}:${PORT}${NC}"
+echo "  ${CYAN}${BOLD}  URL: http://${HOST_BIND}:${PORT}${NC}"
+echo "  ${DIM}  Container: ${CONTAINER_NAME}${NC}"
+echo "  ${DIM}  Image:     ${IMAGE_NAME}${NC}"
 echo ""
-echo "  ${DIM}  HTTP  →  http://${HOST_BIND}:${PORT}${NC}"
-echo ""
-echo "  ${GREEN}════════════════════════════════════════════════════${NC}"
-echo ""
-echo "  ${YELLOW}  Presiona Ctrl+C para detener el despliegue${NC}"
+echo "  ${YELLOW}  Press Ctrl+C to stop and remove the container${NC}"
 echo ""
 
-# ── Mantener el script activo hasta Ctrl+C ──
 while true; do
-    # Verificar que el contenedor sigue corriendo
-    if ! docker inspect -f '{{.State.Running}}' "$CONTAINER_NAME" &>/dev/null 2>&1; then
-        echo ""
-        warn "El contenedor se ha detenido inesperadamente."
-        break
-    fi
-    sleep 5
+  if ! docker inspect -f '{{.State.Running}}' "$CONTAINER_NAME" >/dev/null 2>&1; then
+    echo ""
+    warn "The container stopped unexpectedly."
+    docker logs --tail 120 "$CONTAINER_NAME" || true
+    exit 1
+  fi
+  sleep 5
 done

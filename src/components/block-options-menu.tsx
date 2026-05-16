@@ -22,7 +22,7 @@ import {
 } from "lucide-react";
 import React from "react";
 import { useLanguage } from "@/context/language-context";
-import type { ContentBlock } from "@/app/dashboard/projects/[id]/page";
+import type { ContentBlock } from "@/lib/types";
 
 interface BlockOptionsMenuProps {
   children: React.ReactNode;

@@ -40,6 +40,14 @@ import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/comp
 type SortKey = keyof Finding;
 type SaveStatus = 'unsaved' | 'saving' | 'saved';
 
+const compareValues = (aValue: string | number | undefined, bValue: string | number | undefined) => {
+  const aComparable = aValue ?? '';
+  const bComparable = bValue ?? '';
+  if (aComparable < bComparable) return -1;
+  if (aComparable > bComparable) return 1;
+  return 0;
+};
+
 const iconOptions = [
     { value: 'FileText', label: 'FileText' },
     { value: 'Scan', label: 'Scan' },
@@ -171,7 +179,7 @@ function blocksToHtml(blocks: ContentBlock[]): string {
   }).join('');
 }
 
-const EditableBlock = React.forwardRef<HTMLDivElement, { 
+type EditableBlockProps = {
   block: ContentBlock, 
   onUpdate: (content: string) => void, 
   onKeyDown: (e: React.KeyboardEvent<HTMLDivElement>) => void, 
@@ -179,7 +187,9 @@ const EditableBlock = React.forwardRef<HTMLDivElement, {
   isFocused: boolean,
   placeholder: string,
   t_editor: any
-}>(({ block, onUpdate, onKeyDown, onFocus, isFocused, placeholder, t_editor, ...props }, ref) => {
+};
+
+const EditableBlock = React.forwardRef<HTMLDivElement, EditableBlockProps>(({ block, onUpdate, onKeyDown, onFocus, isFocused, placeholder, t_editor }, ref) => {
     const blockRef = useRef<HTMLDivElement>(null);
     
      useEffect(() => {
@@ -285,7 +295,13 @@ const EditableBlock = React.forwardRef<HTMLDivElement, {
 });
 EditableBlock.displayName = "EditableBlock";
 
-const SortableBlock = ({ block, ...props }: { block: ContentBlock, [key: string]: any }) => {
+type SortableBlockProps = EditableBlockProps & {
+  index: number;
+  onAdd: (index: number, tag: ContentBlock['tag']) => void;
+  onAction: (action: string, blockId: string, value?: any) => void;
+};
+
+const SortableBlock = React.forwardRef<HTMLDivElement, SortableBlockProps>(({ block, index, onAdd, onAction, ...editableProps }, ref) => {
   const { attributes, listeners, setNodeRef, transform, transition, isDragging } = useSortable({ id: block.id });
   const [addMenuOpen, setAddMenuOpen] = useState(false);
   const [optionsMenuOpen, setOptionsMenuOpen] = useState(false);
@@ -301,13 +317,13 @@ const SortableBlock = ({ block, ...props }: { block: ContentBlock, [key: string]
   return (
     <div ref={setNodeRef} style={style} className="relative group/block">
       <div className="absolute top-0 -left-16 h-full flex items-center gap-1 opacity-0 group-hover/block:opacity-100 transition-opacity">
-        <AddBlockMenu onSelect={(tag) => props.onAdd(props.index, tag)} open={addMenuOpen} onOpenChange={setAddMenuOpen}>
+        <AddBlockMenu onSelect={(tag) => onAdd(index, tag)} open={addMenuOpen} onOpenChange={setAddMenuOpen}>
             <Button variant="ghost" size="icon" className="h-8 w-8 cursor-pointer">
                 <Plus className="h-4 w-4"/>
             </Button>
         </AddBlockMenu>
         <BlockOptionsMenu 
-            onSelect={(action, value) => props.onAction(action, block.id, value)}
+            onSelect={(action, value) => onAction(action, block.id, value)}
             open={optionsMenuOpen}
             onOpenChange={setOptionsMenuOpen}
             blockTag={block.tag}
@@ -318,12 +334,14 @@ const SortableBlock = ({ block, ...props }: { block: ContentBlock, [key: string]
         </BlockOptionsMenu>
       </div>
       <EditableBlock 
+        ref={ref}
         block={block}
-        {...props}
+        {...editableProps}
       />
     </div>
   );
-};
+});
+SortableBlock.displayName = "SortableBlock";
 
 
 export default function ProjectDetailsPage() {
@@ -557,13 +575,8 @@ export default function ProjectDetailsPage() {
       findingsCopy.sort((a, b) => {
         const aValue = a[sortConfig.key];
         const bValue = b[sortConfig.key];
-        if (aValue < bValue) {
-          return sortConfig.direction === 'ascending' ? -1 : 1;
-        }
-        if (aValue > bValue) {
-          return sortConfig.direction === 'ascending' ? 1 : -1;
-        }
-        return 0;
+        const comparison = compareValues(aValue, bValue);
+        return sortConfig.direction === 'ascending' ? comparison : -comparison;
       });
     }
     return findingsCopy;
@@ -804,6 +817,7 @@ export default function ProjectDetailsPage() {
       } else if (e.key === 'ArrowDown') {
         const selection = window.getSelection();
         if (selection && selection.rangeCount > 0) {
+            const range = selection.getRangeAt(0);
             const targetRect = target.getBoundingClientRect();
             const clientRects = target.getClientRects();
             const lastLineRect = clientRects[clientRects.length -1];

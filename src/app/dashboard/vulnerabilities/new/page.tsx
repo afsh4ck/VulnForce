@@ -37,11 +37,20 @@ interface FindingSection {
   content: string;
 }
 
-const SortableSection = ({ section, ...props }: { section: FindingSection, [key: string]: any }) => {
+type SortableSectionProps = {
+  section: FindingSection;
+  onContentChange: (content: string) => void;
+  onDelete: () => void;
+  onTitleChange: (newTitle: string) => void;
+  getImage: (id: string) => ImageAsset | undefined;
+  t: any;
+};
+
+const SortableSection = ({ section, ...props }: SortableSectionProps) => {
   const { attributes, listeners, setNodeRef, transform, transition, isDragging } = useSortable({ id: section.id });
 
   const style = {
-    transform: CSS.Transform.toString(transform),
+    transform: transform ? CSS.Transform.toString(transform) : undefined,
     transition,
     opacity: isDragging ? 0.5 : 1,
     zIndex: isDragging ? 100 : 'auto',
@@ -533,11 +542,11 @@ export default function NewVulnerabilityPage() {
   };
 
   useEffect(() => {
-    const initialEnSections = parseMarkdownToSections(getFullContent(vuln, 'en'));
-    const initialEsSections = parseMarkdownToSections(getFullContent(vuln, 'es'));
+    const initialEnSections = parseMarkdownToSections(getFullContent(emptyVulnerability, 'en'));
+    const initialEsSections = parseMarkdownToSections(getFullContent(emptyVulnerability, 'es'));
     setEnSections(initialEnSections);
     setEsSections(initialEsSections);
-}, [vuln, parseMarkdownToSections, getFullContent]);
+  }, [parseMarkdownToSections, getFullContent]);
 
   return (
     <div className="space-y-6 w-full">

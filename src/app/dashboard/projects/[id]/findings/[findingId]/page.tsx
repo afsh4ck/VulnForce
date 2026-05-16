@@ -55,7 +55,16 @@ const SectionEditor = ({ section, onContentChange, getImage }: {
     );
 }
 
-const SortableSection = ({ section, index, onAddSection, onDelete, ...props }: { section: FindingSection, index: number, onAddSection: (index: number) => void, onDelete: () => void, [key: string]: any }) => {
+type SortableSectionProps = {
+  section: FindingSection;
+  index: number;
+  onAddSection: (index: number) => void;
+  onDelete: () => void;
+  onContentChange: (content: string) => void;
+  getImage: (id: string) => ImageAsset | undefined;
+};
+
+const SortableSection = ({ section, index, onAddSection, onDelete, ...props }: SortableSectionProps) => {
   const { attributes, listeners, setNodeRef, transform, transition, isDragging } = useSortable({ id: section.id });
 
   const style = {
@@ -89,7 +98,10 @@ const SortableSection = ({ section, index, onAddSection, onDelete, ...props }: {
 export default function FindingEditorPage() {
   const params = useParams();
   const router = useRouter();
-  const { id: projectId, findingId } = params;
+  const rawProjectId = params.id;
+  const rawFindingId = params.findingId;
+  const projectId = (Array.isArray(rawProjectId) ? rawProjectId[0] : rawProjectId) ?? '';
+  const findingId = (Array.isArray(rawFindingId) ? rawFindingId[0] : rawFindingId) ?? 'new';
   const { toast } = useToast();
   const { language: uiLanguage } = useLanguage();
   const { projects, clients, findings, vulnerabilities, addFinding, updateFinding, getImage } = useData();
@@ -151,7 +163,7 @@ export default function FindingEditorPage() {
             severity: 'Informational',
             cvss: 0,
             markdown: '',
-            projectId: Array.isArray(projectId) ? projectId[0] : projectId,
+            projectId,
         });
       setSections([]);
     }
@@ -194,7 +206,7 @@ export default function FindingEditorPage() {
       router.push(`/dashboard/projects/${projectId}`);
     } else {
       updateFinding({
-        id: Array.isArray(findingId) ? findingId[0] : findingId,
+        id: findingId,
         ...findingData,
       });
       if (showToast) toast({ title: t[uiLanguage].saveSuccessTitle, description: `${finding.title} ${t[uiLanguage].saveSuccessUpdate}` });

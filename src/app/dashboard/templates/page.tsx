@@ -14,7 +14,7 @@ import { AlertDialog, AlertDialogTrigger, AlertDialogContent, AlertDialogHeader,
 import { useToast } from '@/hooks/use-toast';
 import { useRouter } from 'next/navigation';
 
-export const iconComponents: { [key: string]: React.ElementType } = {
+const iconComponents: { [key: string]: React.ElementType } = {
   FileText,
   Scan,
   Globe,

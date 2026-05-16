@@ -26,7 +26,14 @@ interface TemplateSection {
   content: string;
 }
 
-const SortableSection = ({ section, ...props }: { section: TemplateSection, [key: string]: any }) => {
+type SortableSectionProps = {
+  section: TemplateSection;
+  onContentChange: (content: string) => void;
+  onDelete: () => void;
+  onTitleChange: (newTitle: string) => void;
+};
+
+const SortableSection = ({ section, ...props }: SortableSectionProps) => {
   const { attributes, listeners, setNodeRef, transform, transition, isDragging } = useSortable({ id: section.id });
 
   const style = {
@@ -378,7 +385,7 @@ export default function TemplateEditorPage() {
                             key={section.id}
                             section={section}
                             onContentChange={(newContent: string) => handleSectionChange('en', section.id, newContent)}
-                            onTitleChange={(newTitle: string) => handleTitleChange('en', section.id, newContent)}
+                            onTitleChange={(newTitle: string) => handleTitleChange('en', section.id, newTitle)}
                             onDelete={() => handleDeleteSection('en', section.id)}
                           />
                         ))}
@@ -410,7 +417,7 @@ export default function TemplateEditorPage() {
                             key={section.id}
                             section={section}
                             onContentChange={(newContent: string) => handleSectionChange('es', section.id, newContent)}
-                            onTitleChange={(newTitle: string) => handleTitleChange('es', section.id, newContent)}
+                            onTitleChange={(newTitle: string) => handleTitleChange('es', section.id, newTitle)}
                             onDelete={() => handleDeleteSection('es', section.id)}
                           />
                         ))}

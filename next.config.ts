@@ -1,13 +1,10 @@
 import type {NextConfig} from 'next';
 
+const standaloneOutput =
+  process.env.NEXT_STANDALONE === 'true' || process.platform !== 'win32';
+
 const nextConfig: NextConfig = {
-  /* config options here */
-  typescript: {
-    ignoreBuildErrors: true,
-  },
-  eslint: {
-    ignoreDuringBuilds: true,
-  },
+  ...(standaloneOutput ? {output: 'standalone'} : {}),
   images: {
     remotePatterns: [
       {
@@ -34,7 +31,6 @@ const nextConfig: NextConfig = {
       }
     ],
   },
-  // Forcing a recompilation to solve chunk loading errors.
 };
 
 export default nextConfig;

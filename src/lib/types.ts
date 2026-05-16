@@ -24,6 +24,25 @@ export interface Project {
   updatedAt: string;
 }
 
+export type ContentBlockTag =
+  | 'h1'
+  | 'h2'
+  | 'h3'
+  | 'h4'
+  | 'p'
+  | 'ul'
+  | 'ol'
+  | 'hr'
+  | 'blockquote'
+  | 'pre'
+  | 'table';
+
+export interface ContentBlock {
+  id: string;
+  tag: ContentBlockTag;
+  content: string;
+}
+
 export interface Finding {
   id:string;
   projectId: string;

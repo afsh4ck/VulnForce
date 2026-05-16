@@ -25,6 +25,16 @@ interface CommandMenuProps {
 
 export const CommandMenu = ({ open, onOpenChange, onSelect, triggerRef }: CommandMenuProps) => {
   const { language } = useLanguage();
+  const virtualTriggerRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const virtualTrigger = virtualTriggerRef.current;
+    if (!virtualTrigger || !triggerRef) return;
+
+    const rect = triggerRef.getBoundingClientRect();
+    virtualTrigger.style.top = `${rect.bottom}px`;
+    virtualTrigger.style.left = `${rect.left}px`;
+  }, [triggerRef, open]);
 
   const t = {
     en: {
@@ -54,7 +64,7 @@ export const CommandMenu = ({ open, onOpenChange, onSelect, triggerRef }: Comman
   return (
     <Popover open={open} onOpenChange={onOpenChange}>
       <PopoverTrigger asChild>
-        <div ref={triggerRef} />
+        <div ref={virtualTriggerRef} className="fixed h-1 w-1 pointer-events-none" />
       </PopoverTrigger>
       <PopoverContent className="w-64 p-0" side="bottom" align="start">
         <Command>

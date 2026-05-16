@@ -1,4 +1,4 @@
-# VulnForce — Herramienta de reportes para Pentesting
+# VulnForce - Professional Hacking Reporting Platform
 
 Aplicación web para gestionar proyectos, hallazgos y plantillas de informes de pentesting.
 
@@ -24,7 +24,7 @@ VulnForce es una herramienta diseñada para equipos de pentesting y seguridad of
 
 ## Requisitos
 
-- Node.js 18+ y npm / pnpm / yarn.
+- Node.js 22.13+ y pnpm 11.
 - Entorno de desarrollo con acceso a variables de entorno necesarias para integraciones (p. ej. servicios de AI o almacenamiento), si aplica.
 
 ## Instalación (rápida)
@@ -36,54 +36,51 @@ git clone <repo-url>
 cd <repo-folder>
 ```
 
-2. Instala dependencias:
+2. Instala dependencias con pnpm:
 
 ```bash
 pnpm install
-# o: pnpm install
-# o: yarn install
 ```
 
 3. Ejecuta en modo desarrollo:
 
 ```bash
 pnpm run dev
-# o: pnpm dev
-# o: yarn dev
 ```
 
-Visita `http://localhost:3000` (o el puerto configurado) para acceder a la aplicación.
+Visita `http://localhost:9002` para acceder a la aplicación en desarrollo.
 
 ## Despliegue con Docker
 
-Se incluye soporte para desplegar VulnForce en una máquina dentro de la red local mediante Docker y una red `macvlan`, al estilo del script HackLabs.
+Se incluye soporte para desplegar VulnForce con Docker usando un bind local por defecto en `127.0.0.1:47474`.
 
-1. Asegúrate de tener Docker instalado y el sistema con privilegios `root` para crear interfaces macvlan.
+1. Asegúrate de tener Docker instalado y con el daemon accesible para tu usuario.
 
 2. Ejecución automática: desde la raíz del repositorio ejecuta:
 
 ```bash
-sudo bash deploy.sh
+bash deploy.sh
 ```
 
 El script realizará las siguientes acciones:
-- Detecta la interfaz de red y la subred local.
 - Construye la imagen Docker usando el `Dockerfile` del proyecto.
-- Crea una red `macvlan` y un "shim" para permitir que el host alcance el contenedor.
-- Asigna una IP libre en el rango `.100–.199` y lanza el contenedor con esa IP.
-- Crea volúmenes Docker nombrados para persistir datos: `vulnforce_db`, `vulnforce_uploads`, `vulnforce_logs`.
+- Instala dependencias y compila dentro del contenedor con `pnpm`.
+- Lanza el contenedor en `127.0.0.1:47474` salvo que configures `PORT` o `--port=NNNN`.
+- Crea volúmenes Docker nombrados para persistir datos: `vulnforce_data`, `vulnforce_uploads`, `vulnforce_logs`.
+
+Si Docker no está instalado o el servicio debe iniciarse con `systemctl`, ejecuta el script con `sudo`.
 
 3. Persistencia de datos: la base de datos y archivos subidos se guardan en volúmenes Docker nombrados, por lo que sobreviven a reinicios y actualizaciones del contenedor.
 
-4. Nota de seguridad: este despliegue usa `macvlan` y cambios de red — solo usar en entornos controlados.
+4. Nota de seguridad: este despliegue queda ligado a localhost por defecto. Si expones el servicio en una interfaz de red, hazlo solo en entornos controlados.
 
 Si prefieres un despliegue con `docker-compose` o en plataformas como Vercel/Docker Swarm, dime y puedo añadir archivos y ejemplos adicionales.
 
 ## Scripts útiles
 
-- `npm run dev` — Arranca la app en desarrollo.
-- `npm run build` — Compila para producción.
-- `npm run start` — Inicia la versión construida.
+- `pnpm dev` - Arranca la app en desarrollo.
+- `pnpm build` - Compila para producción.
+- `pnpm start` - Inicia la versión construida.
 
 Consulta `package.json` para ver otros scripts disponibles.
 

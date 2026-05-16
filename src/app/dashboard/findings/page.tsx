@@ -17,6 +17,14 @@ import { es } from 'date-fns/locale';
 type SortKey = keyof EnrichedFinding;
 type EnrichedFinding = Finding & { projectName: string, clientName: string };
 
+const compareValues = (aValue: string | number | undefined, bValue: string | number | undefined) => {
+  const aComparable = aValue ?? '';
+  const bComparable = bValue ?? '';
+  if (aComparable < bComparable) return -1;
+  if (aComparable > bComparable) return 1;
+  return 0;
+};
+
 export default function AllFindingsPage() {
   const { language } = useLanguage();
   const { findings, projects, clients } = useData();
@@ -59,13 +67,8 @@ export default function AllFindingsPage() {
       filtered.sort((a, b) => {
         const aValue = a[sortConfig.key];
         const bValue = b[sortConfig.key];
-        if (aValue < bValue) {
-          return sortConfig.direction === 'ascending' ? -1 : 1;
-        }
-        if (aValue > bValue) {
-          return sortConfig.direction === 'ascending' ? 1 : -1;
-        }
-        return 0;
+        const comparison = compareValues(aValue, bValue);
+        return sortConfig.direction === 'ascending' ? comparison : -comparison;
       });
     }
 

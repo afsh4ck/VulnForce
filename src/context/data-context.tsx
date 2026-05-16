@@ -24,7 +24,7 @@ interface DataContextType {
   addClient: (client: Omit<Client, 'id'>) => void;
   updateClient: (client: Client) => void;
   deleteClient: (clientId: string) => void;
-  addProject: (project: Omit<Project, 'id' | 'createdAt' | 'updatedAt' | 'reportBody'> & { scope: string; startDate: Date, endDate: Date }) => Project;
+  addProject: (project: Omit<Project, 'id' | 'createdAt' | 'updatedAt' | 'reportBody' | 'startDate' | 'endDate'> & { scope: string; startDate: Date, endDate: Date }) => Project;
   updateProject: (project: Project) => void;
   deleteProject: (projectId: string) => void;
   duplicateProject: (projectId: string) => void;
@@ -112,7 +112,7 @@ export function DataProvider({ children }: { children: ReactNode }) {
     }
 
     // Project functions
-    const addProject = (project: Omit<Project, 'id' | 'createdAt' | 'updatedAt' | 'reportBody'> & { scope: string; startDate: Date, endDate: Date }): Project => {
+    const addProject = (project: Omit<Project, 'id' | 'createdAt' | 'updatedAt' | 'reportBody' | 'startDate' | 'endDate'> & { scope: string; startDate: Date, endDate: Date }): Project => {
         const now = new Date().toISOString();
         let reportBody = project.scope;
 
