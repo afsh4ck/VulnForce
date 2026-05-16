@@ -143,23 +143,13 @@ const EditableBlock = React.forwardRef<HTMLDivElement, EditableBlockProps & Edit
     
     const isList = block.tag === 'ul' || block.tag === 'ol';
     const isCode = block.tag === 'pre';
-    
-        const isList = block.tag === 'ul' || block.tag === 'ol';
-        const isCode = block.tag === 'pre';
-        const isEmpty = !block.content || (typeof block.content === 'string' && block.content.trim() === '') || (isList && block.content.trim() === '<li><br></li>');
+    const isEmpty = !block.content || (typeof block.content === 'string' && block.content.trim() === '') || (isList && block.content.trim() === '<li><br></li>');
 
         const getPlaceholderText = () => {
           if (placeholder) return placeholder;
           if (t_editor && t_editor.headings && t_editor.headings['1']) return t_editor.headings['1'];
           return '';
         };
-
-        const placeholderText = getPlaceholderText();
-        const showPlaceholder = isEmpty && isFocused;
-      if (placeholder) return placeholder;
-      if (t_editor && t_editor.headings && t_editor.headings['1']) return t_editor.headings['1'];
-      return '';
-    };
 
     const placeholderText = getPlaceholderText();
     const showPlaceholder = isEmpty && isFocused;
@@ -510,6 +500,7 @@ export default function ProjectDetailsPage() {
       translateScope: "Translate Scope",
       translating: "Traduciendo...",
       commandPlaceholder: "Type / to add a block",
+      selectTemplate: 'Select a template',
       headings: {
         '1': 'Heading 1',
         '2': 'Heading 2',
@@ -564,6 +555,7 @@ export default function ProjectDetailsPage() {
       translateScope: "Traducir Alcance",
       translating: "Traduciendo...",
       commandPlaceholder: "Escribe / para añadir un bloque",
+      selectTemplate: 'Seleccionar plantilla',
       headings: {
         '1': 'Título 1',
         '2': 'Título 2',
