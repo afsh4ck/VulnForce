@@ -36,7 +36,7 @@ cleanup() {
   echo ""
   warn "Stopping VulnForce..."
   docker stop "$CONTAINER_NAME" >/dev/null 2>&1 || true
-  log "VulnForce stopped. Container preserved; data remains in Docker volume 'vulnforce_data'."
+  log "VulnForce stopped. Container preserved; data remains in project 'data' directory (./data/vulnforce.db)."
   echo ""
   exit 0
 }
@@ -125,13 +125,24 @@ else
   log "Docker image built successfully."
 fi
 
-log "Starting VulnForce container..."
+log "Preparing host data folders and ensuring vulnforce.db exists..."
+# Create host-side directories to avoid Docker named volumes and keep data in project folder
+HOST_DATA_DIR="$SCRIPT_DIR/data"
+HOST_UPLOADS_DIR="$SCRIPT_DIR/uploads"
+HOST_LOGS_DIR="$SCRIPT_DIR/logs"
+mkdir -p "$HOST_DATA_DIR" "$HOST_UPLOADS_DIR" "$HOST_LOGS_DIR"
+# ensure vulnforce.db exists
+if [[ ! -f "$HOST_DATA_DIR/vulnforce.db" ]]; then
+  touch "$HOST_DATA_DIR/vulnforce.db" || warn "Could not create $HOST_DATA_DIR/vulnforce.db"
+fi
+
+log "Starting VulnForce container (data mounted from project folder)..."
 docker run -d \
   --name "$CONTAINER_NAME" \
   --hostname vulnforce \
-  -v vulnforce_data:/app/data \
-  -v vulnforce_uploads:/app/uploads \
-  -v vulnforce_logs:/app/logs \
+  -v "$HOST_DATA_DIR":/app/data \
+  -v "$HOST_UPLOADS_DIR":/app/uploads \
+  -v "$HOST_LOGS_DIR":/app/logs \
   -e PORT=3000 \
   -p "${HOST_BIND}:${PORT}:3000" \
   "$IMAGE_NAME" >/dev/null \
@@ -223,7 +234,7 @@ echo "  ${CYAN}${BOLD}  URL: http://${HOST_BIND}:${PORT}${NC}"
 echo "  ${DIM}  Container: ${CONTAINER_NAME}${NC}"
 echo "  ${DIM}  Image:     ${IMAGE_NAME}${NC}"
 echo ""
-echo "  ${YELLOW}  Press Ctrl+C to stop the container (data preserved in Docker volume 'vulnforce_data')${NC}"
+  echo "  ${YELLOW}  Press Ctrl+C to stop the container (data persisted to ./data/vulnforce.db in the project folder)${NC}"
 echo ""
 
 while true; do
