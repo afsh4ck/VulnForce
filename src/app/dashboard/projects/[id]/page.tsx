@@ -33,7 +33,7 @@ import { CSS } from '@dnd-kit/utilities';
 import { CommandMenu } from '@/components/command-menu';
 import { MarkdownPreview } from '@/components/markdown-preview';
 import { useLeavePage } from '@/app/dashboard/layout';
-import { AddBlockMenu } from '@/components/add-block-menu';
+// AddBlockMenu removed: editing is done directly in markdown per-section
 import { BlockOptionsMenu } from '@/components/block-options-menu';
 import { FloatingToolbar } from '@/components/floating-toolbar';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
@@ -163,6 +163,78 @@ const EditableBlock = React.forwardRef<HTMLDivElement, EditableBlockProps & Edit
         >
           <div className="absolute right-0 top-0 mr-2 mt-1 flex gap-1">
             <div className="flex items-center gap-1 bg-panel p-1 rounded-md">
+              {/* Formatting controls: bold, italic, code, bullets */}
+              <button type="button" title="Bold" className="text-xs px-2 py-1 rounded" onClick={() => {
+                if (typeof window === 'undefined') return;
+                const ta = blockRef.current?.querySelector('textarea') as HTMLTextAreaElement | null;
+                if (ta) {
+                  const start = ta.selectionStart;
+                  const end = ta.selectionEnd;
+                  const sel = ta.value.slice(start, end) || '';
+                  const wrapped = `**${sel}**`;
+                  ta.setRangeText(wrapped, start, end, 'end');
+                  setMarkdownValue(ta.value);
+                  onUpdate(ta.value);
+                  ta.focus();
+                  return;
+                }
+                document.execCommand('bold');
+              }}>B</button>
+              <button type="button" title="Italic" className="text-xs px-2 py-1 rounded" onClick={() => {
+                if (typeof window === 'undefined') return;
+                const ta = blockRef.current?.querySelector('textarea') as HTMLTextAreaElement | null;
+                if (ta) {
+                  const start = ta.selectionStart;
+                  const end = ta.selectionEnd;
+                  const sel = ta.value.slice(start, end) || '';
+                  const wrapped = `*${sel}*`;
+                  ta.setRangeText(wrapped, start, end, 'end');
+                  setMarkdownValue(ta.value);
+                  onUpdate(ta.value);
+                  ta.focus();
+                  return;
+                }
+                document.execCommand('italic');
+              }}>I</button>
+              <button type="button" title="Code" className="text-xs px-2 py-1 rounded" onClick={() => {
+                if (typeof window === 'undefined') return;
+                const ta = blockRef.current?.querySelector('textarea') as HTMLTextAreaElement | null;
+                if (ta) {
+                  const start = ta.selectionStart;
+                  const end = ta.selectionEnd;
+                  const sel = ta.value.slice(start, end) || '';
+                  const wrapped = `\`${sel}\``;
+                  ta.setRangeText(wrapped, start, end, 'end');
+                  setMarkdownValue(ta.value);
+                  onUpdate(ta.value);
+                  ta.focus();
+                  return;
+                }
+                const sel = window.getSelection();
+                if (sel && !sel.isCollapsed) {
+                  const range = sel.getRangeAt(0);
+                  const code = document.createElement('code');
+                  code.appendChild(range.extractContents());
+                  range.insertNode(code);
+                }
+              }}>{"</>"}</button>
+              <button type="button" title="Bulleted list" className="text-xs px-2 py-1 rounded" onClick={() => {
+                if (typeof window === 'undefined') return;
+                const ta = blockRef.current?.querySelector('textarea') as HTMLTextAreaElement | null;
+                if (ta) {
+                  const start = ta.selectionStart;
+                  const end = ta.selectionEnd;
+                  const sel = ta.value.slice(start, end) || '';
+                  const lines = sel.split(/\n/).map(l => (l.trim() ? `- ${l}` : l)).join('\n');
+                  ta.setRangeText(lines, start, end, 'end');
+                  setMarkdownValue(ta.value);
+                  onUpdate(ta.value);
+                  ta.focus();
+                  return;
+                }
+                document.execCommand('insertUnorderedList');
+              }}>•</button>
+              <div className="w-px bg-muted/30 mx-1" />
               <button type="button" title="Vista dividida" className={cn('text-xs px-2 py-1 rounded', viewModeState === 'split' ? 'bg-muted/80 text-white' : 'text-muted-foreground')} onClick={() => { setViewModeState('split'); setSplitActive(true); onToggleSplit?.(block.id, 'split'); }}>Split</button>
               <button type="button" title="Editor Markdown" className={cn('text-xs px-2 py-1 rounded', viewModeState === 'markdown' ? 'bg-muted/80 text-white' : 'text-muted-foreground')} onClick={() => { setViewModeState('markdown'); setSplitActive(false); onToggleSplit?.(block.id, 'markdown'); }}>MD</button>
               <button type="button" title="Preview HTML" className={cn('text-xs px-2 py-1 rounded', viewModeState === 'preview' ? 'bg-muted/80 text-white' : 'text-muted-foreground')} onClick={() => { setViewModeState('preview'); setSplitActive(false); onToggleSplit?.(block.id, 'preview'); }}>Preview</button>
@@ -197,7 +269,7 @@ const EditableBlock = React.forwardRef<HTMLDivElement, EditableBlockProps & Edit
                             const final = /<li>/.test(html) ? `<ul>${html}</ul>` : `<p>${html.replace(/\n/g, '<br>')}</p>`;
                             onUpdate(final);
                           }}
-                          className="p-3 resize-none outline-none w-full"
+                          className="p-3 resize-none outline-none w-full bg-white dark:bg-black text-black dark:text-white"
                           style={{ width: `50%`, borderRight: '1px solid rgba(0,0,0,0.06)' }}
                         />
                         <div style={{ width: `50%`, padding: '12px', overflow: 'auto' }}>
@@ -209,7 +281,7 @@ const EditableBlock = React.forwardRef<HTMLDivElement, EditableBlockProps & Edit
                 )}
               </div>
             </div>
-          ) : viewModeState === 'markdown' ? (
+          ) : viewModeState === 'markdown' || true ? (
             <div className="my-2">
               <textarea
                 value={markdownValue}
@@ -217,35 +289,13 @@ const EditableBlock = React.forwardRef<HTMLDivElement, EditableBlockProps & Edit
                   setMarkdownValue(e.target.value);
                   onUpdate(e.target.value);
                 }}
-                className="p-3 resize-none outline-none w-full h-64"
+                className="p-3 resize-none outline-none w-full h-64 bg-white dark:bg-black text-black dark:text-white"
               />
             </div>
           ) : viewModeState === 'preview' ? (
             <div className="my-2">
               <div className="w-full border rounded-md p-4 prose dark:prose-invert" dangerouslySetInnerHTML={{ __html: markdownValue || block.content || '' }} />
             </div>
-          ) : (
-            <div
-              ref={blockRef}
-              onBlur={handleBlur}
-              onKeyDown={onKeyDown}
-              contentEditable
-              suppressContentEditableWarning
-              className={cn(
-                "w-full outline-none p-1 rounded-md relative",
-                isList ? "list-outside my-2 " + (block.tag === 'ul' ? 'list-disc ml-6' : 'list-decimal ml-6') : "",
-                {
-                  'text-3xl font-bold mb-4 border-b-2 border-primary pb-2 mt-12 font-headline': block.tag === 'h1',
-                  'text-2xl font-semibold mb-3 border-b pb-2 mt-8 font-headline': block.tag === 'h2',
-                  'text-xl font-semibold mb-3 mt-6 font-headline': block.tag === 'h3',
-                  'text-lg font-semibold mb-2 mt-4 font-headline': block.tag === 'h4',
-                  'my-2 leading-relaxed': block.tag === 'p',
-                  'bg-muted font-code text-sm p-4 rounded-md overflow-x-auto my-4 whitespace-pre-wrap': isCode,
-                  'border-l-4 border-primary pl-4 italic text-muted-foreground my-4': block.tag === 'blockquote'
-                }
-              )}
-              dangerouslySetInnerHTML={{ __html: isCode ? block.content.replace(/&/g, "&amp;").replace(/>/g, "&gt;").replace(/</g, "&lt;") : block.content || (isList ? '<li><br></li>' : '<br>') }}
-          />
           )}
 
            {showPlaceholder && (
@@ -271,7 +321,6 @@ type SortableBlockProps = EditableBlockProps & EditableBlockExtra & {
 
 const SortableBlock = React.forwardRef<HTMLDivElement, SortableBlockProps>(({ block, index, onAdd, onAction, ...editableProps }, ref) => {
   const { attributes, listeners, setNodeRef, transform, transition, isDragging } = useSortable({ id: block.id });
-  const [addMenuOpen, setAddMenuOpen] = useState(false);
   const [optionsMenuOpen, setOptionsMenuOpen] = useState(false);
 
 
@@ -284,23 +333,18 @@ const SortableBlock = React.forwardRef<HTMLDivElement, SortableBlockProps>(({ bl
 
   return (
     <div ref={setNodeRef} style={style} className="relative group/block">
-      <div className="absolute top-0 -left-16 h-full flex items-center gap-1 opacity-0 group-hover/block:opacity-100 transition-opacity">
-        <AddBlockMenu onSelect={(tag) => onAdd(index, tag)} open={addMenuOpen} onOpenChange={setAddMenuOpen}>
-            <Button variant="ghost" size="icon" className="h-8 w-8 cursor-pointer">
-                <Plus className="h-4 w-4"/>
-            </Button>
-        </AddBlockMenu>
+        <div className="absolute top-0 -left-16 h-full flex items-center gap-1 opacity-0 group-hover/block:opacity-100 transition-opacity">
         <BlockOptionsMenu 
-            onSelect={(action, value) => onAction(action, block.id, value)}
-            open={optionsMenuOpen}
-            onOpenChange={setOptionsMenuOpen}
-            blockTag={block.tag}
+          onSelect={(action, value) => onAction(action, block.id, value)}
+          open={optionsMenuOpen}
+          onOpenChange={setOptionsMenuOpen}
+          blockTag={block.tag}
         >
-            <div {...attributes} {...listeners} className="p-1 cursor-grab">
-                <GripVertical className="h-5 w-5 text-muted-foreground" />
-            </div>
+          <div {...attributes} {...listeners} className="p-1 cursor-grab">
+            <GripVertical className="h-5 w-5 text-muted-foreground" />
+          </div>
         </BlockOptionsMenu>
-      </div>
+        </div>
       <EditableBlock 
         ref={ref}
         block={block}
@@ -1103,11 +1147,6 @@ export default function ProjectDetailsPage() {
                               searchPlaceholder="Buscar plantillas..."
                             />
                           </div>
-                          <div className="w-72">
-                            <div className="border rounded-md p-2 h-28 overflow-auto">
-                              {templatePreview ? <MarkdownPreview content={templatePreview} getImage={() => undefined} /> : <div className="text-sm text-muted-foreground">Vista previa de plantilla</div>}
-                            </div>
-                          </div>
                           <div className="self-center">
                             <Button onClick={() => {
                               if (!templateComboboxValue) return toast({ variant: 'destructive', title: 'Seleccione una plantilla' });
@@ -1147,8 +1186,9 @@ export default function ProjectDetailsPage() {
                      <DndContext sensors={sensors} collisionDetection={closestCenter} onDragEnd={handleDragEnd}>
                         <SortableContext items={blocks.map(b => b.id)} strategy={verticalListSortingStrategy}>
                             {blocks.map((block, index) => (
-                                <SortableBlock
-                                    key={block.id}
+                              <Card key={block.id} className="mb-4">
+                                <CardContent>
+                                  <SortableBlock
                                     ref={(el: any) => (blockRefs.current[block.id] = el)}
                                     block={block}
                                     index={index}
@@ -1161,13 +1201,15 @@ export default function ProjectDetailsPage() {
                                     onKeyDown={(e: React.KeyboardEvent<HTMLDivElement>) => handleKeyDown(e, block.id)}
                                     onAdd={handleAddBlock}
                                     onAction={handleBlockAction}
-                                viewMode={splitBlocks[block.id] || block.meta?.viewMode || 'split'}
-                                onToggleSplit={(id: string, mode: 'split' | 'markdown' | 'preview') => setSplitBlocks(prev => ({ ...prev, [id]: mode }))}
+                                    viewMode={splitBlocks[block.id] || block.meta?.viewMode || 'split'}
+                                    onToggleSplit={(id: string, mode: 'split' | 'markdown' | 'preview') => setSplitBlocks(prev => ({ ...prev, [id]: mode }))}
                                     onFocus={() => setActiveBlockId(block.id)}
                                     isFocused={activeBlockId === block.id}
                                     placeholder={t[projectLanguage as 'en' | 'es'].commandPlaceholder}
                                     t_editor={t[projectLanguage as 'en' | 'es']}
-                                />
+                                  />
+                                </CardContent>
+                              </Card>
                             ))}
                         </SortableContext>
                      </DndContext>
