@@ -93,6 +93,16 @@ Consulta `package.json` para ver otros scripts disponibles.
 - `src/lib/` — Lógica utilitaria, modelos de datos y helpers.
 - `src/ai/` — Flujos y utilidades relacionadas con asistencia AI.
 
+## Secciones principales
+
+- **Dashboard:** Vista principal con métricas resumidas, actividad reciente, accesos rápidos a proyectos y hallazgos críticos.
+- **Proyectos:** Gestión de proyectos de pentesting; crear/editar proyectos, asignar miembros, ver progreso y fechas asociadas.
+- **Hallazgos:** Registro detallado de hallazgos por proyecto; cada entrada puede incluir descripción, severidad, evidencia, pasos para reproducir y estado.
+- **Clientes:** Catálogo de clientes y contactos asociados; histórico de entregas y relación con proyectos.
+- **Vulnerabilidades:** Biblioteca de vulnerabilidades con categorización (CVSS, CWE), estado y referencias; puede usarse para clasificar hallazgos y generar secciones técnicas del informe.
+- **Plantillas:** Gestor de plantillas de informe (técnico y ejecutivo) reutilizables; permite crear bloques reutilizables que luego se insertan por hallazgo o por proyecto.
+- **Backup:** Módulo para exportar e importar datos (proyectos, hallazgos y archivos) y para programar copias de seguridad; los backups se almacenan fuera del contenedor usando volúmenes persistentes.
+
 ## Flujo de trabajo típico
 
 1. Crear un `Proyecto` y registrar cliente.
