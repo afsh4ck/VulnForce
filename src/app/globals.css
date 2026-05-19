@@ -37,6 +37,19 @@
     --sidebar-accent-foreground: 0 0% 98%;
     --sidebar-border: 224 71% 6%;
     --sidebar-ring: 76 100% 50%;
+    --code-background: 220 28% 96%;
+    --code-foreground: 222 47% 11%;
+    --code-comment: 215 16% 47%;
+    --code-punctuation: 215 20% 35%;
+    --code-keyword: 258 70% 42%;
+    --code-string: 150 72% 26%;
+    --code-function: 221 83% 40%;
+    --code-number: 24 95% 39%;
+    --code-attr: 197 95% 32%;
+    --code-tag: 0 72% 42%;
+    --code-operator: 222 47% 25%;
+    --code-regex: 330 80% 38%;
+    --code-selection: 220 14% 86%;
   }
 
   .dark {
@@ -72,6 +85,19 @@
     --sidebar-accent-foreground: 210 40% 98%;
     --sidebar-border: 224 71% 6%;
     --sidebar-ring: 76 100% 50%;
+    --code-background: 222 47% 8%;
+    --code-foreground: 210 40% 96%;
+    --code-comment: 215 20% 68%;
+    --code-punctuation: 210 30% 84%;
+    --code-keyword: 272 90% 80%;
+    --code-string: 142 76% 72%;
+    --code-function: 199 89% 76%;
+    --code-number: 36 100% 72%;
+    --code-attr: 185 85% 72%;
+    --code-tag: 0 90% 76%;
+    --code-operator: 210 40% 90%;
+    --code-regex: 330 86% 78%;
+    --code-selection: 224 40% 22%;
   }
 }
 
