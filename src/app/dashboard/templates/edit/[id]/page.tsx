@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect, useCallback, type SetStateAction } from 'react';
 import { useParams, useRouter } from 'next/navigation';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -22,6 +22,7 @@ import { ProjectIconSelectItem, projectIconOptions } from '@/components/project-
 import { SectionMarkdownEditor } from '@/components/section-markdown-editor';
 import { joinMarkdownSections, splitMarkdownIntoSections } from '@/lib/markdown-utils';
 import { stripMarkdownText } from '@/lib/todo-utils';
+import { useUndoableState } from '@/hooks/use-undoable-state';
 
 type SaveStatus = 'unsaved' | 'saving' | 'saved';
 
@@ -121,8 +122,27 @@ export default function TemplateEditorPage() {
   const [isNew, setIsNew] = useState(id === 'new');
   const [template, setTemplate] = useState<Omit<ProjectTemplate, 'id'> | ProjectTemplate | null>(null);
 
-  const [enSections, setEnSections] = useState<TemplateSection[]>([]);
-  const [esSections, setEsSections] = useState<TemplateSection[]>([]);
+  const {
+    state: sectionState,
+    setState: setSectionState,
+    resetState: resetSectionState,
+    undo: undoSections,
+    redo: redoSections,
+  } = useUndoableState<{ en: TemplateSection[]; es: TemplateSection[] }>({ en: [], es: [] });
+  const enSections = sectionState.en;
+  const esSections = sectionState.es;
+  const setEnSections = useCallback((action: SetStateAction<TemplateSection[]>) => {
+    setSectionState(prev => ({
+      ...prev,
+      en: typeof action === 'function' ? (action as (items: TemplateSection[]) => TemplateSection[])(prev.en) : action,
+    }));
+  }, [setSectionState]);
+  const setEsSections = useCallback((action: SetStateAction<TemplateSection[]>) => {
+    setSectionState(prev => ({
+      ...prev,
+      es: typeof action === 'function' ? (action as (items: TemplateSection[]) => TemplateSection[])(prev.es) : action,
+    }));
+  }, [setSectionState]);
   const [activeAccordion, setActiveAccordion] = useState<string[]>(['details', 'en-content']);
   const [sectionSplitLayout, setSectionSplitLayout] = useState<number[]>([52, 48]);
   const [collapsedSections, setCollapsedSections] = useState<Record<string, boolean>>({});
@@ -150,22 +170,39 @@ export default function TemplateEditorPage() {
       setTemplate(newTemplate);
       const initialEnSections = [...parseContentToSections(newTemplate.scope_en), ...parseContentToSections(newTemplate.appendix_en)];
       const initialEsSections = [...parseContentToSections(newTemplate.scope_es), ...parseContentToSections(newTemplate.appendix_es)];
-      setEnSections(initialEnSections);
-      setEsSections(initialEsSections);
+      resetSectionState({ en: initialEnSections, es: initialEsSections });
     } else {
       const existingTemplate = projectTemplates.find(t => t.id === id);
       if (existingTemplate) {
         setTemplate(JSON.parse(JSON.stringify(existingTemplate)));
         const fullEnContent = joinMarkdownSections([existingTemplate.scope_en, existingTemplate.appendix_en]);
         const fullEsContent = joinMarkdownSections([existingTemplate.scope_es, existingTemplate.appendix_es]);
-        setEnSections(parseContentToSections(fullEnContent));
-        setEsSections(parseContentToSections(fullEsContent));
+        resetSectionState({ en: parseContentToSections(fullEnContent), es: parseContentToSections(fullEsContent) });
       } else {
         toast({ variant: 'destructive', title: 'Template not found' });
         router.push('/dashboard/templates');
       }
     }
-  }, [id, isNew, projectTemplates, router, toast, parseContentToSections]);
+  }, [id, isNew, projectTemplates, router, toast, parseContentToSections, resetSectionState]);
+
+  useEffect(() => {
+    const handleGlobalUndoRedo = (event: KeyboardEvent) => {
+      if (event.defaultPrevented || (!event.ctrlKey && !event.metaKey)) return;
+      const key = event.key.toLowerCase();
+
+      if (key === 'z') {
+        event.preventDefault();
+        const changed = event.shiftKey ? redoSections() : undoSections();
+        if (changed) setSaveStatus('unsaved');
+      } else if (key === 'y') {
+        event.preventDefault();
+        if (redoSections()) setSaveStatus('unsaved');
+      }
+    };
+
+    window.addEventListener('keydown', handleGlobalUndoRedo);
+    return () => window.removeEventListener('keydown', handleGlobalUndoRedo);
+  }, [redoSections, undoSections]);
 
   useEffect(() => {
     if (saveStatus === 'unsaved') {

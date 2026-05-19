@@ -1,7 +1,7 @@
 
 'use client';
 
-import { useState, useMemo, useCallback, useEffect } from 'react';
+import { useState, useMemo, useCallback, useEffect, type SetStateAction } from 'react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
@@ -28,6 +28,7 @@ import { getCVSS, getScore, getSeverity } from '@/lib/cvss';
 import { cn } from '@/lib/utils';
 import { SectionMarkdownEditor } from '@/components/section-markdown-editor';
 import { joinMarkdownSections, splitMarkdownIntoSections } from '@/lib/markdown-utils';
+import { useUndoableState } from '@/hooks/use-undoable-state';
 
 
 interface FindingSection {
@@ -182,8 +183,27 @@ export default function NewVulnerabilityPage() {
   const [references, setReferences] = useState<string[]>([]);
   const sensors = useSensors( useSensor(PointerSensor), useSensor(KeyboardSensor, { coordinateGetter: sortableKeyboardCoordinates }) );
   
-  const [enSections, setEnSections] = useState<FindingSection[]>([]);
-  const [esSections, setEsSections] = useState<FindingSection[]>([]);
+  const {
+    state: sectionState,
+    setState: setSectionState,
+    resetState: resetSectionState,
+    undo: undoSections,
+    redo: redoSections,
+  } = useUndoableState<{ en: FindingSection[]; es: FindingSection[] }>({ en: [], es: [] });
+  const enSections = sectionState.en;
+  const esSections = sectionState.es;
+  const setEnSections = useCallback((action: SetStateAction<FindingSection[]>) => {
+    setSectionState(prev => ({
+      ...prev,
+      en: typeof action === 'function' ? (action as (items: FindingSection[]) => FindingSection[])(prev.en) : action,
+    }));
+  }, [setSectionState]);
+  const setEsSections = useCallback((action: SetStateAction<FindingSection[]>) => {
+    setSectionState(prev => ({
+      ...prev,
+      es: typeof action === 'function' ? (action as (items: FindingSection[]) => FindingSection[])(prev.es) : action,
+    }));
+  }, [setSectionState]);
   const [activeAccordion, setActiveAccordion] = useState<string[]>([]);
   const [sectionSplitLayout, setSectionSplitLayout] = useState<number[]>([52, 48]);
   const [collapsedSections, setCollapsedSections] = useState<Record<string, boolean>>({});
@@ -475,9 +495,30 @@ export default function NewVulnerabilityPage() {
   useEffect(() => {
     const initialEnSections = parseMarkdownToSections(getFullContent(emptyVulnerability, 'en'));
     const initialEsSections = parseMarkdownToSections(getFullContent(emptyVulnerability, 'es'));
-    setEnSections(initialEnSections);
-    setEsSections(initialEsSections);
-  }, [parseMarkdownToSections, getFullContent]);
+    resetSectionState({ en: initialEnSections, es: initialEsSections });
+  }, [parseMarkdownToSections, getFullContent, resetSectionState]);
+
+  useEffect(() => {
+    const handleGlobalUndoRedo = (event: KeyboardEvent) => {
+      if (event.defaultPrevented || (!event.ctrlKey && !event.metaKey)) return;
+      const key = event.key.toLowerCase();
+
+      if (key === 'z') {
+        event.preventDefault();
+        if (event.shiftKey) {
+          redoSections();
+        } else {
+          undoSections();
+        }
+      } else if (key === 'y') {
+        event.preventDefault();
+        redoSections();
+      }
+    };
+
+    window.addEventListener('keydown', handleGlobalUndoRedo);
+    return () => window.removeEventListener('keydown', handleGlobalUndoRedo);
+  }, [redoSections, undoSections]);
 
   return (
     <div className="space-y-6 w-full">

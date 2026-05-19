@@ -22,6 +22,7 @@ import { Badge } from '@/components/ui/badge';
 import { hasTodoMarker, stripMarkdownText } from '@/lib/todo-utils';
 import { SectionMarkdownEditor } from '@/components/section-markdown-editor';
 import { joinMarkdownSections, splitMarkdownIntoSections } from '@/lib/markdown-utils';
+import { useUndoableState } from '@/hooks/use-undoable-state';
 
 type SaveStatus = 'unsaved' | 'saving' | 'saved';
 
@@ -108,7 +109,13 @@ export default function FindingEditorPage() {
   const [project, setProject] = useState<Project | undefined>();
   const [projectLanguage, setProjectLanguage] = useState<Project['language']>('en');
   
-  const [sections, setSections] = useState<FindingSection[]>([]);
+  const {
+    state: sections,
+    setState: setSections,
+    resetState: resetSections,
+    undo: undoSections,
+    redo: redoSections,
+  } = useUndoableState<FindingSection[]>([]);
   const [saveStatus, setSaveStatus] = useState<SaveStatus>('saved');
   const [sectionSplitLayout, setSectionSplitLayout] = useState<number[]>([52, 48]);
   const [collapsedSections, setCollapsedSections] = useState<Record<string, boolean>>({});
@@ -153,7 +160,7 @@ export default function FindingEditorPage() {
           projectId: currentFinding.projectId
         });
         const initialSections = parseMarkdownToSections(currentFinding.markdown);
-        setSections(initialSections);
+        resetSections(initialSections);
       } else {
         router.push(`/dashboard/projects/${projectId}`);
       }
@@ -165,9 +172,28 @@ export default function FindingEditorPage() {
             markdown: '',
             projectId,
         });
-      setSections([]);
+      resetSections([]);
     }
-  }, [findingId, projectId, projectLanguage, findings, router, projects, parseMarkdownToSections]);
+  }, [findingId, projectId, projectLanguage, findings, router, projects, parseMarkdownToSections, resetSections]);
+
+  useEffect(() => {
+    const handleGlobalUndoRedo = (event: KeyboardEvent) => {
+      if (event.defaultPrevented || (!event.ctrlKey && !event.metaKey)) return;
+      const key = event.key.toLowerCase();
+
+      if (key === 'z') {
+        event.preventDefault();
+        const changed = event.shiftKey ? redoSections() : undoSections();
+        if (changed) setSaveStatus('unsaved');
+      } else if (key === 'y') {
+        event.preventDefault();
+        if (redoSections()) setSaveStatus('unsaved');
+      }
+    };
+
+    window.addEventListener('keydown', handleGlobalUndoRedo);
+    return () => window.removeEventListener('keydown', handleGlobalUndoRedo);
+  }, [redoSections, undoSections]);
   
   useEffect(() => {
     if (saveStatus === 'unsaved') {

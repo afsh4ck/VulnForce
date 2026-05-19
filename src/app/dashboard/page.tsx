@@ -4,7 +4,7 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import Link from 'next/link';
-import { PlusCircle, Users, FolderKanban, ShieldCheck, ChevronLeft, ChevronRight, CalendarClock, Bomb } from "@/components/icons";
+import { PlusCircle, Users, FolderKanban, ShieldCheck, ChevronLeft, ChevronRight, Bomb, ArrowUpDown } from "@/components/icons";
 import { useLanguage } from "@/context/language-context";
 import { useData } from "@/context/data-context";
 import { useMemo, useState } from "react";
@@ -12,6 +12,9 @@ import { Badge } from "@/components/ui/badge";
 import { formatDistanceToNow } from 'date-fns';
 import { es } from 'date-fns/locale';
 import { ProjectIcon, projectIconComponents } from "@/components/project-icon";
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
+
+type SortKey = 'name' | 'clientName' | 'findingCount' | 'status' | 'updatedAt';
 
 export default function DashboardPage() {
   const { language } = useLanguage();
@@ -19,19 +22,31 @@ export default function DashboardPage() {
   const criticalFindings = findings.filter(f => f.severity === 'Critical').length;
   
   const [currentPage, setCurrentPage] = useState(1);
+  const [sortConfig, setSortConfig] = useState<{ key: SortKey; direction: 'ascending' | 'descending' }>({ key: 'updatedAt', direction: 'descending' });
   const projectsPerPage = 10;
   
   const enrichedProjects = useMemo(() => {
     return projects.map(p => ({
         ...p,
+        clientName: clients.find(c => c.id === p.clientId)?.name || '',
         findingCount: findings.filter(f => f.projectId === p.id).length
     }))
-  }, [projects, findings]);
+  }, [projects, clients, findings]);
 
   const sortedProjects = useMemo(() => {
-    return [...enrichedProjects]
-      .sort((a, b) => new Date(b.updatedAt).getTime() - new Date(a.updatedAt).getTime());
-  }, [enrichedProjects]);
+    return [...enrichedProjects].sort((a, b) => {
+      const aValue = sortConfig.key === 'updatedAt'
+        ? new Date(a.updatedAt).getTime()
+        : a[sortConfig.key];
+      const bValue = sortConfig.key === 'updatedAt'
+        ? new Date(b.updatedAt).getTime()
+        : b[sortConfig.key];
+
+      if (aValue < bValue) return sortConfig.direction === 'ascending' ? -1 : 1;
+      if (aValue > bValue) return sortConfig.direction === 'ascending' ? 1 : -1;
+      return 0;
+    });
+  }, [enrichedProjects, sortConfig]);
 
   const recentProjects = useMemo(() => {
     const startIndex = (currentPage - 1) * projectsPerPage;
@@ -40,6 +55,19 @@ export default function DashboardPage() {
   }, [sortedProjects, currentPage, projectsPerPage]);
 
   const totalPages = Math.ceil(sortedProjects.length / projectsPerPage);
+
+  const requestSort = (key: SortKey) => {
+    const direction = sortConfig.key === key && sortConfig.direction === 'ascending' ? 'descending' : 'ascending';
+    setSortConfig({ key, direction });
+    setCurrentPage(1);
+  };
+
+  const getSortIcon = (key: SortKey) => {
+    if (sortConfig.key !== key) {
+      return <ArrowUpDown className="ml-2 h-4 w-4" />;
+    }
+    return sortConfig.direction === 'ascending' ? ' ▲' : ' ▼';
+  };
 
   const getStatusVariant = (status: string) => {
     switch (status) {
@@ -72,6 +100,9 @@ export default function DashboardPage() {
       criticalFindings: "Critical Findings",
       immediateAttention: "Requiring immediate attention",
       recentProjects: "Recent Projects",
+      project: "Project",
+      client: "Client",
+      status: "Status",
       previous: "Previous",
       next: "Next",
       page: "Page",
@@ -91,6 +122,9 @@ export default function DashboardPage() {
       criticalFindings: "Hallazgos Críticos",
       immediateAttention: "Requieren atención inmediata",
       recentProjects: "Proyectos Recientes",
+      project: "Proyecto",
+      client: "Cliente",
+      status: "Estado",
       previous: "Anterior",
       next: "Siguiente",
       page: "Página",
@@ -151,9 +185,9 @@ export default function DashboardPage() {
           </Card>
         </Link>
         <Link href="/dashboard/findings?severity=Critical" className="group">
-          <Card className="border-destructive hover:bg-destructive/10 transition-colors">
+          <Card className="border-destructive hover:border-destructive hover:bg-destructive/10 transition-colors">
               <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                  <CardTitle className="text-sm font-medium group-hover:text-primary transition-colors">{t[language].criticalFindings}</CardTitle>
+                  <CardTitle className="text-sm font-medium group-hover:text-destructive transition-colors">{t[language].criticalFindings}</CardTitle>
                   <ShieldCheck className="h-4 w-4 text-destructive" />
               </CardHeader>
               <CardContent>
@@ -171,35 +205,50 @@ export default function DashboardPage() {
           </CardHeader>
           <CardContent>
             {recentProjects.length > 0 ? (
-            <div className="space-y-4">
-              {recentProjects.map(p => {
-                const Icon = projectIconComponents[p.icon] || ProjectIcon;
-                return (
-                  <Link key={p.id} href={`/dashboard/projects/${p.id}`} className="block rounded-lg p-4 transition-colors hover:bg-muted/50 group">
-                    <div className="flex items-center justify-between">
-                      <div className="flex items-center gap-4">
-                        <Icon className="h-6 w-6 text-primary" />
-                        <div>
-                          <p className="font-medium group-hover:text-primary transition-colors">{p.name}</p>
-                          <p className="text-sm text-muted-foreground">{clients.find(c => c.id === p.clientId)?.name}</p>
-                        </div>
-                      </div>
-                      <Badge variant={getStatusVariant(p.status)}>{getStatus(p.status)}</Badge>
-                    </div>
-                    <div className="mt-4 flex items-center justify-between text-sm text-muted-foreground">
-                       <div className="flex items-center gap-2">
-                         <ShieldCheck className="h-4 w-4" />
-                         <span>{p.findingCount} {t[language].findings}</span>
-                       </div>
-                       <div className="flex items-center gap-2">
-                         <CalendarClock className="h-4 w-4" />
-                          <span>{t[language].lastUpdated} {formatDistanceToNow(new Date(p.updatedAt), { addSuffix: true, locale: language === 'es' ? es : undefined })}</span>
-                       </div>
-                    </div>
-                  </Link>
-                )
-              })}
-            </div>
+              <Table>
+                <TableHeader>
+                  <TableRow>
+                    <TableHead onClick={() => requestSort('name')} className="cursor-pointer hover:bg-muted/50">
+                      <div className="flex items-center">{t[language].project}{getSortIcon('name')}</div>
+                    </TableHead>
+                    <TableHead onClick={() => requestSort('clientName')} className="cursor-pointer hover:bg-muted/50">
+                      <div className="flex items-center">{t[language].client}{getSortIcon('clientName')}</div>
+                    </TableHead>
+                    <TableHead onClick={() => requestSort('findingCount')} className="cursor-pointer hover:bg-muted/50">
+                      <div className="flex items-center">{t[language].findings}{getSortIcon('findingCount')}</div>
+                    </TableHead>
+                    <TableHead onClick={() => requestSort('status')} className="cursor-pointer hover:bg-muted/50">
+                      <div className="flex items-center">{t[language].status}{getSortIcon('status')}</div>
+                    </TableHead>
+                    <TableHead onClick={() => requestSort('updatedAt')} className="cursor-pointer hover:bg-muted/50">
+                      <div className="flex items-center">{t[language].lastUpdated}{getSortIcon('updatedAt')}</div>
+                    </TableHead>
+                  </TableRow>
+                </TableHeader>
+                <TableBody>
+                  {recentProjects.map(p => {
+                    const Icon = projectIconComponents[p.icon] || ProjectIcon;
+                    return (
+                      <TableRow key={p.id}>
+                        <TableCell className="font-medium">
+                          <Link href={`/dashboard/projects/${p.id}`} className="flex items-center gap-2 hover:text-primary">
+                            <Icon className="h-5 w-5 text-primary" />
+                            {p.name}
+                          </Link>
+                        </TableCell>
+                        <TableCell>{p.clientName}</TableCell>
+                        <TableCell>{p.findingCount}</TableCell>
+                        <TableCell>
+                          <Badge variant={getStatusVariant(p.status)}>{getStatus(p.status)}</Badge>
+                        </TableCell>
+                        <TableCell className="text-muted-foreground">
+                          {formatDistanceToNow(new Date(p.updatedAt), { addSuffix: true, locale: language === 'es' ? es : undefined })}
+                        </TableCell>
+                      </TableRow>
+                    );
+                  })}
+                </TableBody>
+              </Table>
             ) : (
               <p className="text-sm text-muted-foreground">No projects found.</p>
             )}

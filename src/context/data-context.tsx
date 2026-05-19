@@ -28,7 +28,7 @@ interface DataContextType {
   updateProject: (project: Project) => void;
   deleteProject: (projectId: string) => void;
   duplicateProject: (projectId: string) => void;
-  addFinding: (finding: Omit<Finding, 'id' | 'createdAt' | 'updatedAt'>) => void;
+  addFinding: (finding: Omit<Finding, 'id' | 'createdAt' | 'updatedAt'>) => Finding;
   updateFinding: (finding: Omit<Finding, 'createdAt' | 'updatedAt'>) => void;
   deleteFinding: (findingId: string) => void;
   addVulnerability: (vulnerability: Omit<Vulnerability, 'id'>) => void;
@@ -170,7 +170,7 @@ export function DataProvider({ children }: { children: ReactNode }) {
     }
 
     // Finding functions
-    const addFinding = (finding: Omit<Finding, 'id' | 'createdAt' | 'updatedAt'>) => {
+    const addFinding = (finding: Omit<Finding, 'id' | 'createdAt' | 'updatedAt'>): Finding => {
         const now = new Date().toISOString();
         const newFinding = {
             ...finding,
@@ -180,6 +180,7 @@ export function DataProvider({ children }: { children: ReactNode }) {
         }
         setFindings(prev => [...prev, newFinding]);
         touchProject(finding.projectId);
+        return newFinding;
     };
     const updateFinding = (finding: Omit<Finding, 'createdAt' | 'updatedAt'>) => {
         const now = new Date().toISOString();

@@ -687,12 +687,14 @@ export default function ProjectDetailsPage() {
   const searchParams = useSearchParams();
   const { id } = params;
 
-  const { projects, clients, findings, deleteFinding, updateProject, deleteProject, duplicateProject, projectTemplates, vulnerabilities, addImage, getImage } = useData();
+  const { projects, clients, findings, addFinding, deleteFinding, updateProject, deleteProject, duplicateProject, projectTemplates, vulnerabilities, addImage, getImage } = useData();
 
   const [project, setProject] = useState<Project | undefined>();
   const [projectFindings, setProjectFindings] = useState<Finding[]>([]);
   const [sortConfig, setSortConfig] = useState<{ key: SortKey; direction: 'ascending' | 'descending' } | null>(null);
   const [findingToDelete, setFindingToDelete] = useState<Finding | null>(null);
+  const [findingTemplatePickerOpen, setFindingTemplatePickerOpen] = useState(false);
+  const [findingTemplateComboboxValue, setFindingTemplateComboboxValue] = useState('');
   
   const [name, setName] = useState('');
   const [clientId, setClientId] = useState('');
@@ -712,9 +714,7 @@ export default function ProjectDetailsPage() {
   const [toolbarPosition, setToolbarPosition] = useState({ top: 0, left: 0 });
 
   const [saveStatus, setSaveStatus] = useState<SaveStatus>('saved');
-  const [selectedTemplateId, setSelectedTemplateId] = useState<string | null>(null);
   const [templateComboboxValue, setTemplateComboboxValue] = useState<string>('');
-  const [templatePreview, setTemplatePreview] = useState<string>('');
 
   // Persist per-block view modes in localStorage per project
   useEffect(() => {
@@ -786,6 +786,28 @@ export default function ProjectDetailsPage() {
           updateBlocks(nextBlocks, false);
       }
   }, [updateBlocks]);
+
+  useEffect(() => {
+    const handleGlobalUndoRedo = (event: KeyboardEvent) => {
+      if (event.defaultPrevented || (!event.ctrlKey && !event.metaKey)) return;
+      const key = event.key.toLowerCase();
+
+      if (key === 'z') {
+        event.preventDefault();
+        if (event.shiftKey) {
+          redo();
+        } else {
+          undo();
+        }
+      } else if (key === 'y') {
+        event.preventDefault();
+        redo();
+      }
+    };
+
+    window.addEventListener('keydown', handleGlobalUndoRedo);
+    return () => window.removeEventListener('keydown', handleGlobalUndoRedo);
+  }, [redo, undo]);
   
   useEffect(() => {
     setHasUnsavedChanges(saveStatus === 'unsaved');
@@ -846,6 +868,9 @@ export default function ProjectDetailsPage() {
       english: 'English',
       spanish: 'Spanish',
       newFinding: 'New Finding',
+      loadFromTemplate: 'Load from template',
+      selectVulnerabilityTemplate: 'Select vulnerability template',
+      findingCreatedFromTemplate: 'Finding created from template',
       findingTitle: 'Finding Title',
       severity: 'Severity',
       cvss: 'CVSS',
@@ -901,6 +926,9 @@ export default function ProjectDetailsPage() {
       english: 'Inglés',
       spanish: 'Español',
       newFinding: 'Nuevo Hallazgo',
+      loadFromTemplate: 'Cargar de plantilla',
+      selectVulnerabilityTemplate: 'Seleccionar plantilla de vulnerabilidad',
+      findingCreatedFromTemplate: 'Hallazgo creado desde plantilla',
       findingTitle: 'Título del Hallazgo',
       severity: 'Severidad',
       cvss: 'CVSS',
@@ -949,6 +977,35 @@ export default function ProjectDetailsPage() {
     }
     return findingsCopy;
   }, [projectFindings, sortConfig]);
+
+  const handleLoadFindingFromTemplate = useCallback((templateId: string) => {
+    setFindingTemplateComboboxValue(templateId);
+    if (!templateId || !project) return;
+
+    const vulnerability = vulnerabilities.find(v => v.id === templateId);
+    if (!vulnerability) {
+      toast({ variant: 'destructive', title: t[uiLanguage].selectVulnerabilityTemplate });
+      return;
+    }
+
+    const title = projectLanguage === 'es'
+      ? (vulnerability.title_es || vulnerability.title_en)
+      : (vulnerability.title_en || vulnerability.title_es);
+    const markdown = getVulnerabilityTemplateMarkdown(vulnerability, projectLanguage);
+    const newFinding = addFinding({
+      projectId: project.id,
+      vulnerabilityId: vulnerability.id,
+      title,
+      severity: vulnerability.severity,
+      cvss: vulnerability.cvss.score,
+      markdown,
+    });
+
+    setFindingTemplatePickerOpen(false);
+    setFindingTemplateComboboxValue('');
+    toast({ title: t[uiLanguage].findingCreatedFromTemplate, description: title });
+    router.push(`/dashboard/projects/${project.id}/findings/${newFinding.id}`);
+  }, [addFinding, project, projectLanguage, router, toast, t, uiLanguage, vulnerabilities]);
 
   useEffect(() => {
     const currentProject = projects.find(p => p.id === id);
@@ -1083,16 +1140,18 @@ export default function ProjectDetailsPage() {
       const indexToDelete = blocks.findIndex(b => b.id === id);
       if (indexToDelete === -1) return;
 
-      const newBlocks = blocks.filter(b => b.id !== id);
-      
-      updateBlocks(newBlocks);
-       if (newBlocks.length === 0) {
+      let newBlocks = blocks.filter(b => b.id !== id);
+
+      if (newBlocks.length === 0) {
         const newBlock = { id: `block-${Date.now()}`, tag: 'p' as const, content: '' };
-        updateBlocks([newBlock]);
+        newBlocks = [newBlock];
+        updateBlocks(newBlocks);
         setActiveBlockId(newBlock.id);
       } else if (indexToDelete > 0) {
+        updateBlocks(newBlocks);
         setActiveBlockId(newBlocks[indexToDelete - 1].id);
       } else {
+        updateBlocks(newBlocks);
         setActiveBlockId(newBlocks[0].id);
       }
   }, [blocks, updateBlocks]);
@@ -1164,7 +1223,32 @@ export default function ProjectDetailsPage() {
   const handleKeyDown = useCallback((e: React.KeyboardEvent<HTMLDivElement>, id: string) => {
       const currentIndex = blocks.findIndex(b => b.id === id);
       const currentBlock = blocks[currentIndex];
-      const target = e.target as HTMLDivElement;
+      const targetElement = e.target as HTMLElement;
+
+      if (targetElement instanceof HTMLTextAreaElement || targetElement instanceof HTMLInputElement) {
+        if (e.ctrlKey || e.metaKey) {
+          const key = e.key.toLowerCase();
+          if (key === 'z') {
+            e.preventDefault();
+            e.stopPropagation();
+            if (e.shiftKey) {
+              redo();
+            } else {
+              undo();
+            }
+            return;
+          }
+          if (key === 'y') {
+            e.preventDefault();
+            e.stopPropagation();
+            redo();
+            return;
+          }
+        }
+        return;
+      }
+
+      const target = targetElement as HTMLDivElement;
 
       // Handle slash command menu opening
       if (e.key === '/') {
@@ -1184,6 +1268,7 @@ export default function ProjectDetailsPage() {
       if (e.ctrlKey || e.metaKey) {
         if (e.key.toLowerCase() === 'z') {
             e.preventDefault();
+            e.stopPropagation();
             if (e.shiftKey) {
                 redo();
             } else {
@@ -1193,6 +1278,7 @@ export default function ProjectDetailsPage() {
         }
         if (e.key.toLowerCase() === 'y') {
             e.preventDefault();
+            e.stopPropagation();
             redo();
             return;
         }
@@ -1456,71 +1542,37 @@ export default function ProjectDetailsPage() {
             <TabsContent value="content" className="pt-6">
                <div className="w-full" dir="ltr">
                      {isToolbarOpen && <FloatingToolbar position={toolbarPosition} />}
-                     <div className="mb-4 flex items-center gap-3">
-                        <Label className="mr-2">Importar plantilla:</Label>
-                        <div className="flex items-start gap-3">
-                          <div>
-                            <Combobox
-                              options={[
-                                ...projectTemplates.map(pt => ({ label: projectLanguage === 'es' ? pt.name_es : pt.name_en, value: `tpl:${pt.id}` })),
-                                ...vulnerabilities.map(v => ({ label: projectLanguage === 'es' ? (v.title_es || v.title_en) : v.title_en, value: `vul:${v.id}` })),
-                              ]}
-                              selectedValue={templateComboboxValue}
-                              onSelect={(val) => {
-                                setTemplateComboboxValue(val);
-                                if (!val) {
-                                  setTemplatePreview('');
-                                  return;
-                                }
-                                if (val.startsWith('tpl:')) {
-                                  const id = val.replace('tpl:', '');
-                                  const tpl = projectTemplates.find(p => p.id === id);
-                                  if (tpl) {
-                                    setTemplatePreview(getProjectTemplateMarkdown(tpl, projectLanguage));
-                                  }
-                                } else if (val.startsWith('vul:')) {
-                                  const id = val.replace('vul:', '');
-                                  const vul = vulnerabilities.find(v => v.id === id);
-                                  if (vul) {
-                                    setTemplatePreview(getVulnerabilityTemplateMarkdown(vul, projectLanguage));
-                                  }
-                                }
-                              }}
-                              placeholder={t[projectLanguage as 'en'|'es'].selectTemplate}
-                              searchPlaceholder="Buscar plantillas..."
-                            />
-                          </div>
-                          <div className="self-center">
-                            <Button onClick={() => {
-                              if (!templateComboboxValue) return toast({ variant: 'destructive', title: 'Seleccione una plantilla' });
-                              if (templateComboboxValue.startsWith('tpl:')) {
-                                const id = templateComboboxValue.replace('tpl:', '');
-                                const tpl = projectTemplates.find(p => p.id === id);
-                                if (!tpl) return toast({ variant: 'destructive', title: 'Plantilla no encontrada' });
-                                const md = getProjectTemplateMarkdown(tpl, projectLanguage);
-                                const newBlocks = parseMarkdownToBlocks(md || '');
-                                updateBlocks(newBlocks);
-                                const mapping: Record<string, 'split'|'markdown'|'preview'> = {};
-                                newBlocks.forEach(b => mapping[b.id] = 'split');
-                                setSplitBlocks(prev => ({ ...prev, ...mapping }));
-                                setTemplateComboboxValue('');
-                                setTemplatePreview('');
-                              } else if (templateComboboxValue.startsWith('vul:')) {
-                                const id = templateComboboxValue.replace('vul:', '');
-                                const vul = vulnerabilities.find(v => v.id === id);
-                                if (!vul) return toast({ variant: 'destructive', title: 'Vulnerability not found' });
-                                const md = getVulnerabilityTemplateMarkdown(vul, projectLanguage);
-                                const newBlocks = parseMarkdownToBlocks(md || '');
-                                updateBlocks(newBlocks);
-                                const mapping: Record<string, 'split'|'markdown'|'preview'> = {};
-                                newBlocks.forEach(b => mapping[b.id] = 'split');
-                                setSplitBlocks(prev => ({ ...prev, ...mapping }));
-                                setTemplateComboboxValue('');
-                                setTemplatePreview('');
-                              }
-                            }}><Plus className="mr-2 h-4 w-4"/>Importar</Button>
-                          </div>
-                        </div>
+                     <div className="mb-6 max-w-sm space-y-2">
+                        <Label>{t[projectLanguage as 'en'|'es'].selectTemplate}</Label>
+                        <Combobox
+                          options={projectTemplates.map(pt => ({
+                            label: projectLanguage === 'es' ? (pt.name_es || pt.name_en) : (pt.name_en || pt.name_es),
+                            value: pt.id,
+                          }))}
+                          selectedValue={templateComboboxValue}
+                          onSelect={(val) => {
+                            setTemplateComboboxValue(val);
+                            if (!val) return;
+
+                            const tpl = projectTemplates.find(p => p.id === val);
+                            if (!tpl) {
+                              toast({ variant: 'destructive', title: 'Plantilla no encontrada' });
+                              return;
+                            }
+
+                            const md = getProjectTemplateMarkdown(tpl, projectLanguage);
+                            const newBlocks = parseMarkdownToBlocks(md || '');
+                            updateBlocks(newBlocks);
+                            const mapping: Record<string, 'split'|'markdown'|'preview'> = {};
+                            newBlocks.forEach(b => mapping[b.id] = 'split');
+                            setSplitBlocks(prev => ({ ...prev, ...mapping }));
+                            setCollapsedSections({});
+                            setActiveBlockId(newBlocks[0]?.id ?? null);
+                            setTemplateComboboxValue('');
+                          }}
+                          placeholder={t[projectLanguage as 'en'|'es'].selectTemplate}
+                          searchPlaceholder="Buscar plantillas..."
+                        />
                      </div>
                      <DndContext sensors={sensors} collisionDetection={closestCenter} onDragEnd={handleDragEnd}>
                         <SortableContext items={blocks.map(b => b.id)} strategy={verticalListSortingStrategy}>
@@ -1564,9 +1616,10 @@ export default function ProjectDetailsPage() {
                         onSelect={handleCommandSelect}
                         triggerRef={activeBlockId ? blockRefs.current[activeBlockId] : null}
                      />
-                    <div className="mt-4 flex gap-2">
-                      <Button onClick={() => handleAddBlock(blocks.length - 1, 'h2', 'New Section') }><Plus className="mr-2 h-4 w-4"/>Añadir sección</Button>
-                      <Button variant="destructive" onClick={() => activeBlockId && handleDeleteBlock(activeBlockId)}>Eliminar sección</Button>
+                    <div className="flex justify-center pt-4 pb-10">
+                      <Button variant="outline" onClick={() => handleAddBlock(blocks.length - 1, 'h2', 'New Section') }>
+                        <Plus className="mr-2 h-4 w-4"/>Añadir sección
+                      </Button>
                     </div>
                </div>
             </TabsContent>
@@ -1574,13 +1627,36 @@ export default function ProjectDetailsPage() {
             <TabsContent value="findings" className="pt-6">
               <Card>
                 <CardHeader>
-                  <div className="flex items-center justify-between">
+                  <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
                     <CardTitle>{t[uiLanguage].findings}</CardTitle>
-                    <Button asChild>
-                      <Link href={`/dashboard/projects/${id}/findings/new`}>
-                        <PlusCircle className="mr-2 h-4 w-4" /> {t[uiLanguage].newFinding}
-                      </Link>
-                    </Button>
+                    <div className="flex flex-wrap items-center gap-2">
+                      {findingTemplatePickerOpen ? (
+                        <div className="w-72">
+                          <Combobox
+                            options={vulnerabilities.map(vulnerability => ({
+                              label: projectLanguage === 'es'
+                                ? (vulnerability.title_es || vulnerability.title_en)
+                                : (vulnerability.title_en || vulnerability.title_es),
+                              value: vulnerability.id,
+                            }))}
+                            selectedValue={findingTemplateComboboxValue}
+                            onSelect={handleLoadFindingFromTemplate}
+                            placeholder={t[uiLanguage].selectVulnerabilityTemplate}
+                            searchPlaceholder="Buscar plantillas..."
+                            openOnMount
+                          />
+                        </div>
+                      ) : (
+                        <Button variant="outline" onClick={() => setFindingTemplatePickerOpen(true)}>
+                          <FileText className="mr-2 h-4 w-4" /> {t[uiLanguage].loadFromTemplate}
+                        </Button>
+                      )}
+                      <Button asChild>
+                        <Link href={`/dashboard/projects/${id}/findings/new`}>
+                          <PlusCircle className="mr-2 h-4 w-4" /> {t[uiLanguage].newFinding}
+                        </Link>
+                      </Button>
+                    </div>
                   </div>
                 </CardHeader>
                 <CardContent>

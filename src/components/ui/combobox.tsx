@@ -26,10 +26,15 @@ interface ComboboxProps {
     onSelect: (value: string) => void;
     placeholder?: string;
     searchPlaceholder?: string;
+    openOnMount?: boolean;
 }
 
-export function Combobox({ options, selectedValue, onSelect, placeholder, searchPlaceholder }: ComboboxProps) {
+export function Combobox({ options, selectedValue, onSelect, placeholder, searchPlaceholder, openOnMount }: ComboboxProps) {
   const [open, setOpen] = React.useState(false)
+
+  React.useEffect(() => {
+    if (openOnMount) setOpen(true)
+  }, [openOnMount])
 
   return (
     <Popover open={open} onOpenChange={setOpen}>

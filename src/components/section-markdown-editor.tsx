@@ -6,6 +6,16 @@ import { Bold, ChevronRight, Code, GripVertical, ImageIcon, Italic, List, Trash2
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { ResizableHandle, ResizablePanel, ResizablePanelGroup } from '@/components/ui/resizable';
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from '@/components/ui/alert-dialog';
 import { MarkdownPreview } from '@/components/markdown-preview';
 import { cn } from '@/lib/utils';
 import { stripMarkdownText } from '@/lib/todo-utils';
@@ -28,6 +38,10 @@ type SectionEditorLabels = {
   bullets?: string;
   image?: string;
   delete?: string;
+  confirmDeleteTitle?: string;
+  confirmDeleteDescription?: string;
+  cancel?: string;
+  confirmDelete?: string;
   expand?: string;
   collapse?: string;
 };
@@ -85,6 +99,10 @@ const defaultLabels: Required<SectionEditorLabels> = {
   bullets: 'Bulleted list',
   image: 'Insert image',
   delete: 'Delete section',
+  confirmDeleteTitle: 'Delete section?',
+  confirmDeleteDescription: 'This section will be removed from the editor. You can undo the change with Control+Z.',
+  cancel: 'Cancel',
+  confirmDelete: 'Delete',
   expand: 'Expand section',
   collapse: 'Collapse sections',
 };
@@ -232,6 +250,7 @@ export function SectionMarkdownEditor({
   const textareaRef = externalTextareaRef || localTextareaRef;
   const mergedLabels = { ...defaultLabels, ...labels };
   const [localMode, setLocalMode] = useState<SectionEditorMode>(defaultMode);
+  const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
   const currentMode = mode || localMode;
   const normalizedSplitLayout = splitLayout && splitLayout.length >= 2 ? splitLayout : [52, 48];
 
@@ -322,36 +341,79 @@ export function SectionMarkdownEditor({
     const start = textarea.selectionStart;
     const end = textarea.selectionEnd;
     const selected = textarea.value.slice(start, end);
-    let replacement = selected;
+    const value = textarea.value;
+
+    const applyReplacement = (
+      replacement: string,
+      replaceStart = start,
+      replaceEnd = end,
+      selectionStart = replaceStart,
+      selectionEnd = replaceStart + replacement.length
+    ) => {
+      textarea.setRangeText(replacement, replaceStart, replaceEnd, 'end');
+      onChange(textarea.value);
+      textarea.focus();
+      window.setTimeout(() => {
+        if (!textarea.isConnected) return;
+        textarea.setSelectionRange(selectionStart, selectionEnd);
+      }, 0);
+    };
+
+    const wrapOrUnwrap = (prefix: string, suffix: string, fallback: string) => {
+      const isSingleAsterisk = prefix === '*' && suffix === '*';
+      const selectedHasOwnWrapper = selected.startsWith(prefix)
+        && selected.endsWith(suffix)
+        && selected.length >= prefix.length + suffix.length
+        && (!isSingleAsterisk || !(selected.startsWith('**') && selected.endsWith('**')));
+
+      if (selectedHasOwnWrapper) {
+        const inner = selected.slice(prefix.length, selected.length - suffix.length);
+        applyReplacement(inner, start, end, start, start + inner.length);
+        return;
+      }
+
+      const hasWrappedSelection = start >= prefix.length
+        && value.slice(start - prefix.length, start) === prefix
+        && value.slice(end, end + suffix.length) === suffix
+        && (!isSingleAsterisk || (value.slice(start - 2, start) !== '**' && value.slice(end, end + 2) !== '**'));
+
+      if (hasWrappedSelection) {
+        applyReplacement(selected, start - prefix.length, end + suffix.length, start - prefix.length, start - prefix.length + selected.length);
+        return;
+      }
+
+      const inner = selected || fallback;
+      const replacement = `${prefix}${inner}${suffix}`;
+      const innerStart = start + prefix.length;
+      applyReplacement(replacement, start, end, innerStart, innerStart + inner.length);
+    };
 
     if (formatType === 'bold') {
-      replacement = `**${selected || 'bold'}**`;
+      wrapOrUnwrap('**', '**', 'bold');
+      return;
     } else if (formatType === 'italic') {
-      replacement = `*${selected || 'italic'}*`;
+      wrapOrUnwrap('*', '*', 'italic');
+      return;
     } else if (formatType === 'code') {
-      replacement = selected.includes('\n')
-        ? `\`\`\`\n${selected || 'code'}\n\`\`\``
-        : `\`${selected || 'code'}\``;
-    } else {
-      replacement = selected
-        ? selected.split('\n').map(line => line.trim().startsWith('- ') ? line : `- ${line}`).join('\n')
-        : '- ';
+      if (selected.includes('\n')) {
+        wrapOrUnwrap('```\n', '\n```', 'code');
+      } else {
+        wrapOrUnwrap('`', '`', 'code');
+      }
+      return;
     }
 
-    textarea.setRangeText(replacement, start, end, 'end');
-    onChange(textarea.value);
-    textarea.focus();
+    if (!selected) {
+      applyReplacement('- ', start, end, start + 2, start + 2);
+      return;
+    }
 
-    window.setTimeout(() => {
-      if (!textarea.isConnected) return;
-      if (!selected && formatType !== 'bullets') {
-        const innerStart = start + (formatType === 'bold' ? 2 : 1);
-        const fallbackLength = formatType === 'bold' ? 4 : formatType === 'italic' ? 6 : 4;
-        textarea.setSelectionRange(innerStart, innerStart + fallbackLength);
-      } else {
-        textarea.setSelectionRange(start, start + replacement.length);
-      }
-    }, 0);
+    const lines = selected.split('\n');
+    const allListItems = lines.filter(line => line.trim()).every(line => /^\s*[-*]\s+/.test(line));
+    const replacement = allListItems
+      ? lines.map(line => line.replace(/^(\s*)[-*]\s+/, '$1')).join('\n')
+      : lines.map(line => (line.trim() ? (line.trim().startsWith('- ') ? line : `- ${line}`) : line)).join('\n');
+    applyReplacement(replacement, start, end, start, start + replacement.length);
   };
 
   const editor = (extraClassName?: string) => (
@@ -369,10 +431,11 @@ export function SectionMarkdownEditor({
   );
 
   const renderedPreviewContent = previewContent ?? content;
-  const handleDragHandleClick = () => {
+  const collapseForDrag = () => {
     onDragHandleClick?.();
-    onCollapsedChange?.(!collapsed);
+    onCollapsedChange?.(true);
   };
+  const dragListenerProps = dragListeners || {};
 
   return (
     <section
@@ -388,10 +451,13 @@ export function SectionMarkdownEditor({
             <button
               type="button"
               {...dragHandleProps}
-              {...dragListeners}
+              {...dragListenerProps}
               className="cursor-grab rounded-md p-2 text-muted-foreground hover:bg-muted hover:text-foreground"
               title={mergedLabels.collapse}
-              onClick={handleDragHandleClick}
+              onPointerDown={(event) => {
+                dragListenerProps.onPointerDown?.(event);
+                collapseForDrag();
+              }}
             >
               <GripVertical className="h-5 w-5" />
             </button>
@@ -456,9 +522,30 @@ export function SectionMarkdownEditor({
           </div>
 
           {onDelete && (
-            <Button type="button" variant="ghost" size="icon" className="h-9 w-9 text-destructive" title={mergedLabels.delete} onClick={onDelete}>
-              <Trash2 className="h-4 w-4" />
-            </Button>
+            <AlertDialog open={deleteDialogOpen} onOpenChange={setDeleteDialogOpen}>
+              <Button
+                type="button"
+                variant="ghost"
+                size="icon"
+                className="h-9 w-9 text-destructive hover:bg-destructive hover:text-destructive-foreground"
+                title={mergedLabels.delete}
+                onClick={() => setDeleteDialogOpen(true)}
+              >
+                <Trash2 className="h-4 w-4" />
+              </Button>
+              <AlertDialogContent>
+                <AlertDialogHeader>
+                  <AlertDialogTitle>{mergedLabels.confirmDeleteTitle}</AlertDialogTitle>
+                  <AlertDialogDescription>{mergedLabels.confirmDeleteDescription}</AlertDialogDescription>
+                </AlertDialogHeader>
+                <AlertDialogFooter>
+                  <AlertDialogCancel>{mergedLabels.cancel}</AlertDialogCancel>
+                  <AlertDialogAction className="bg-destructive text-destructive-foreground hover:bg-destructive/90" onClick={onDelete}>
+                    {mergedLabels.confirmDelete}
+                  </AlertDialogAction>
+                </AlertDialogFooter>
+              </AlertDialogContent>
+            </AlertDialog>
           )}
         </div>
         )}

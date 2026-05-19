@@ -78,7 +78,7 @@ export const BlockOptionsMenu = ({ children, onSelect, open, onOpenChange, block
           <Code className="mr-2 h-4 w-4" />
           <span>Split view</span>
         </DropdownMenuItem>
-        <DropdownMenuItem onSelect={() => onSelect('delete')} className="text-destructive focus:text-destructive">
+        <DropdownMenuItem onSelect={() => onSelect('delete')} className="text-destructive hover:bg-destructive hover:text-destructive-foreground focus:bg-destructive focus:text-destructive-foreground">
           <Trash2 className="mr-2 h-4 w-4" />
           <span>{t[language].delete}</span>
         </DropdownMenuItem>

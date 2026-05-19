@@ -1,7 +1,7 @@
 
 'use client';
 
-import { useState, useEffect, useCallback, useMemo } from 'react';
+import { useState, useEffect, useCallback, useMemo, type SetStateAction } from 'react';
 import { useParams, useRouter } from 'next/navigation';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -27,6 +27,7 @@ import { CSS } from '@dnd-kit/utilities';
 import { getCVSS, getScore, getSeverity } from '@/lib/cvss';
 import { SectionMarkdownEditor } from '@/components/section-markdown-editor';
 import { joinMarkdownSections, splitMarkdownIntoSections } from '@/lib/markdown-utils';
+import { useUndoableState } from '@/hooks/use-undoable-state';
 
 
 type SaveStatus = 'unsaved' | 'saving' | 'saved';
@@ -141,8 +142,27 @@ export default function VulnerabilityEditorPage() {
   const [activeAccordion, setActiveAccordion] = useState<string[]>(['details']);
   const [saveStatus, setSaveStatus] = useState<SaveStatus>('saved');
 
-  const [enSections, setEnSections] = useState<FindingSection[]>([]);
-  const [esSections, setEsSections] = useState<FindingSection[]>([]);
+  const {
+    state: sectionState,
+    setState: setSectionState,
+    resetState: resetSectionState,
+    undo: undoSections,
+    redo: redoSections,
+  } = useUndoableState<{ en: FindingSection[]; es: FindingSection[] }>({ en: [], es: [] });
+  const enSections = sectionState.en;
+  const esSections = sectionState.es;
+  const setEnSections = useCallback((action: SetStateAction<FindingSection[]>) => {
+    setSectionState(prev => ({
+      ...prev,
+      en: typeof action === 'function' ? (action as (items: FindingSection[]) => FindingSection[])(prev.en) : action,
+    }));
+  }, [setSectionState]);
+  const setEsSections = useCallback((action: SetStateAction<FindingSection[]>) => {
+    setSectionState(prev => ({
+      ...prev,
+      es: typeof action === 'function' ? (action as (items: FindingSection[]) => FindingSection[])(prev.es) : action,
+    }));
+  }, [setSectionState]);
   const [sectionSplitLayout, setSectionSplitLayout] = useState<number[]>([52, 48]);
   const [collapsedSections, setCollapsedSections] = useState<Record<string, boolean>>({});
   
@@ -284,13 +304,31 @@ export default function VulnerabilityEditorPage() {
       const initialEnSections = parseMarkdownToSections(fullEnContent);
       const initialEsSections = parseMarkdownToSections(fullEsContent);
       
-      setEnSections(initialEnSections);
-      setEsSections(initialEsSections);
+      resetSectionState({ en: initialEnSections, es: initialEsSections });
       
     } else {
       router.push('/dashboard/vulnerabilities');
     }
-  }, [id, vulnerabilities, router, parseMarkdownToSections, getFullContent]);
+  }, [id, vulnerabilities, router, parseMarkdownToSections, getFullContent, resetSectionState]);
+
+  useEffect(() => {
+    const handleGlobalUndoRedo = (event: KeyboardEvent) => {
+      if (event.defaultPrevented || (!event.ctrlKey && !event.metaKey)) return;
+      const key = event.key.toLowerCase();
+
+      if (key === 'z') {
+        event.preventDefault();
+        const changed = event.shiftKey ? redoSections() : undoSections();
+        if (changed) setSaveStatus('unsaved');
+      } else if (key === 'y') {
+        event.preventDefault();
+        if (redoSections()) setSaveStatus('unsaved');
+      }
+    };
+
+    window.addEventListener('keydown', handleGlobalUndoRedo);
+    return () => window.removeEventListener('keydown', handleGlobalUndoRedo);
+  }, [redoSections, undoSections]);
 
   useEffect(() => {
     if (saveStatus === 'unsaved') {
