@@ -47,6 +47,7 @@ type SortableSectionProps = {
   collapsed: boolean;
   onCollapseAll: () => void;
   onCollapsedChange: (sectionId: string, collapsed: boolean) => void;
+  dragging?: boolean;
 };
 
 const SortableSection = ({ section, ...props }: SortableSectionProps) => {
@@ -61,12 +62,12 @@ const SortableSection = ({ section, ...props }: SortableSectionProps) => {
   
   return (
     <div ref={setNodeRef} style={style}>
-      <SectionEditor section={section} dragHandleProps={attributes} dragListeners={listeners} {...props} />
+      <SectionEditor section={section} dragHandleProps={attributes} dragListeners={listeners} dragging={isDragging} {...props} />
     </div>
   );
 };
 
-const SectionEditor = ({ section, onContentChange, onDelete, dragHandleProps, dragListeners, getImage, t, splitLayout, onSplitLayoutChange, collapsed, onCollapseAll, onCollapsedChange }: {
+const SectionEditor = ({ section, onContentChange, onDelete, dragHandleProps, dragListeners, getImage, t, splitLayout, onSplitLayoutChange, collapsed, onCollapseAll, onCollapsedChange, dragging }: {
   section: FindingSection;
   onContentChange: (content: string) => void;
   onDelete: () => void;
@@ -79,6 +80,7 @@ const SectionEditor = ({ section, onContentChange, onDelete, dragHandleProps, dr
   collapsed: boolean;
   onCollapseAll: () => void;
   onCollapsedChange: (sectionId: string, collapsed: boolean) => void;
+  dragging?: boolean;
 }) => {
     return (
       <SectionMarkdownEditor
@@ -92,6 +94,7 @@ const SectionEditor = ({ section, onContentChange, onDelete, dragHandleProps, dr
         onSplitLayoutChange={onSplitLayoutChange}
         collapsed={collapsed}
         onDragHandleClick={onCollapseAll}
+        dragging={dragging}
         onCollapsedChange={(nextCollapsed) => onCollapsedChange(section.id, nextCollapsed)}
         titleFallback={t.newSection}
         labels={{
@@ -101,6 +104,12 @@ const SectionEditor = ({ section, onContentChange, onDelete, dragHandleProps, dr
           preview: t.preview,
           writeContent: t.writeContent,
           delete: t.deleteSection || t.newSection,
+          confirmDeleteTitle: t.confirmDeleteTitle,
+          confirmDeleteDescription: t.confirmDeleteDescription,
+          cancel: t.cancel,
+          confirmDelete: t.confirmDelete,
+          expand: t.expand,
+          collapse: t.collapse,
         }}
       />
     );
@@ -248,6 +257,13 @@ export default function NewVulnerabilityPage() {
       informational: 'Informational',
       newSection: 'New Section',
       addNewSection: 'Add New Section',
+      deleteSection: 'Delete section',
+      confirmDeleteTitle: 'Delete section?',
+      confirmDeleteDescription: 'This section will be removed from the editor. You can undo the change with Control+Z.',
+      cancel: 'Cancel',
+      confirmDelete: 'Delete',
+      expand: 'Expand section',
+      collapse: 'Collapse sections',
       validationErrorTitle: 'Required Fields Missing',
       validationErrorDescription: 'Please fill in the English title, Spanish title, and category.',
       overview: 'Overview',
@@ -300,6 +316,13 @@ export default function NewVulnerabilityPage() {
       informational: 'Informativa',
       newSection: 'Nueva Sección',
       addNewSection: 'Añadir Nueva Sección',
+      deleteSection: 'Eliminar sección',
+      confirmDeleteTitle: '¿Eliminar sección?',
+      confirmDeleteDescription: 'Esta sección se eliminará del editor. Puedes deshacer el cambio con Control+Z.',
+      cancel: 'Cancelar',
+      confirmDelete: 'Eliminar',
+      expand: 'Expandir sección',
+      collapse: 'Colapsar secciones',
       validationErrorTitle: 'Faltan Campos Obligatorios',
       validationErrorDescription: 'Por favor, rellena el título en inglés, el título en español y la categoría.',
       overview: 'Resumen',
@@ -451,6 +474,10 @@ export default function NewVulnerabilityPage() {
     setCollapsedSections(Object.fromEntries([...enSections, ...esSections].map(section => [section.id, true])));
   }, [enSections, esSections]);
 
+  const expandAllSections = useCallback(() => {
+    setCollapsedSections({});
+  }, []);
+
   const setSectionCollapsed = useCallback((sectionId: string, collapsed: boolean) => {
     setCollapsedSections(prev => ({ ...prev, [sectionId]: collapsed }));
   }, []);
@@ -465,6 +492,7 @@ export default function NewVulnerabilityPage() {
             return arrayMove(items, oldIndex, newIndex);
         });
     }
+    expandAllSections();
   };
 
   const handleReferenceChange = (index: number, value: string) => {
@@ -673,7 +701,13 @@ export default function NewVulnerabilityPage() {
                 </AccordionTrigger>
                 <AccordionContent className="p-4 pt-0">
                   <div className="space-y-4 pt-4 border-t">
-                    <DndContext sensors={sensors} collisionDetection={closestCenter} onDragEnd={(e) => handleDragEnd(e, 'en')}>
+                    <DndContext
+                      sensors={sensors}
+                      collisionDetection={closestCenter}
+                      onDragStart={collapseAllSections}
+                      onDragCancel={expandAllSections}
+                      onDragEnd={(e) => handleDragEnd(e, 'en')}
+                    >
                       <SortableContext items={enSections.map(s => s.id)} strategy={verticalListSortingStrategy}>
                         <div className="space-y-4">
                           {enSections.map(section => (
@@ -712,7 +746,13 @@ export default function NewVulnerabilityPage() {
                   </AccordionTrigger>
                   <AccordionContent className="p-4 pt-0">
                     <div className="space-y-4 pt-4 border-t">
-                      <DndContext sensors={sensors} collisionDetection={closestCenter} onDragEnd={(e) => handleDragEnd(e, 'es')}>
+                      <DndContext
+                        sensors={sensors}
+                        collisionDetection={closestCenter}
+                        onDragStart={collapseAllSections}
+                        onDragCancel={expandAllSections}
+                        onDragEnd={(e) => handleDragEnd(e, 'es')}
+                      >
                         <SortableContext items={esSections.map(s => s.id)} strategy={verticalListSortingStrategy}>
                           <div className="space-y-4">
                             {esSections.map(section => (

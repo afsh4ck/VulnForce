@@ -56,6 +56,19 @@ type SortableSectionProps = {
   collapsed: boolean;
   onCollapseAll: () => void;
   onCollapsedChange: (sectionId: string, collapsed: boolean) => void;
+  dragging?: boolean;
+  labels: {
+    section: string;
+    untitled: string;
+    writeContent: string;
+    deleteSection: string;
+    confirmDeleteTitle: string;
+    confirmDeleteDescription: string;
+    cancel: string;
+    confirmDelete: string;
+    expand: string;
+    collapse: string;
+  };
 };
 
 const SortableSection = ({ section, ...props }: SortableSectionProps) => {
@@ -70,12 +83,12 @@ const SortableSection = ({ section, ...props }: SortableSectionProps) => {
   
   return (
     <div ref={setNodeRef} style={style}>
-      <SectionEditor section={section} dragHandleProps={attributes} dragListeners={listeners} {...props} />
+      <SectionEditor section={section} dragHandleProps={attributes} dragListeners={listeners} dragging={isDragging} {...props} />
     </div>
   );
 };
 
-const SectionEditor = ({ section, onContentChange, onDelete, dragHandleProps, dragListeners, splitLayout, onSplitLayoutChange, collapsed, onCollapseAll, onCollapsedChange }: {
+const SectionEditor = ({ section, onContentChange, onDelete, dragHandleProps, dragListeners, splitLayout, onSplitLayoutChange, collapsed, onCollapseAll, onCollapsedChange, dragging, labels }: {
   section: TemplateSection;
   onContentChange: (content: string) => void;
   onDelete: () => void;
@@ -86,6 +99,8 @@ const SectionEditor = ({ section, onContentChange, onDelete, dragHandleProps, dr
   collapsed: boolean;
   onCollapseAll: () => void;
   onCollapsedChange: (sectionId: string, collapsed: boolean) => void;
+  dragging?: boolean;
+  labels: SortableSectionProps['labels'];
 }) => {
     return (
       <SectionMarkdownEditor
@@ -94,6 +109,7 @@ const SectionEditor = ({ section, onContentChange, onDelete, dragHandleProps, dr
         onDelete={onDelete}
         dragHandleProps={dragHandleProps}
         dragListeners={dragListeners}
+        dragging={dragging}
         splitLayout={splitLayout}
         onSplitLayoutChange={onSplitLayoutChange}
         collapsed={collapsed}
@@ -101,10 +117,16 @@ const SectionEditor = ({ section, onContentChange, onDelete, dragHandleProps, dr
         onCollapsedChange={(nextCollapsed) => onCollapsedChange(section.id, nextCollapsed)}
         titleFallback="New Section"
         labels={{
-          section: 'Template section',
-          untitled: 'New Section',
-          writeContent: 'Write reusable project template content...',
-          delete: 'Delete section',
+          section: labels.section,
+          untitled: labels.untitled,
+          writeContent: labels.writeContent,
+          delete: labels.deleteSection,
+          confirmDeleteTitle: labels.confirmDeleteTitle,
+          confirmDeleteDescription: labels.confirmDeleteDescription,
+          cancel: labels.cancel,
+          confirmDelete: labels.confirmDelete,
+          expand: labels.expand,
+          collapse: labels.collapse,
         }}
       />
     );
@@ -275,6 +297,14 @@ export default function TemplateEditorPage() {
         spanishContent: 'Spanish Content',
         newSection: 'New Section',
         addNewSection: 'Add New Section',
+        writeContent: 'Write reusable project template content...',
+        deleteSection: 'Delete section',
+        confirmDeleteTitle: 'Delete section?',
+        confirmDeleteDescription: 'This section will be removed from the editor. You can undo the change with Control+Z.',
+        cancel: 'Cancel',
+        confirmDelete: 'Delete',
+        expand: 'Expand section',
+        collapse: 'Collapse sections',
     },
     es: {
         back: 'Volver a Plantillas',
@@ -296,6 +326,14 @@ export default function TemplateEditorPage() {
         spanishContent: 'Contenido en Español',
         newSection: 'Nueva Sección',
         addNewSection: 'Añadir Nueva Sección',
+        writeContent: 'Escribe contenido reutilizable para la plantilla del proyecto...',
+        deleteSection: 'Eliminar sección',
+        confirmDeleteTitle: '¿Eliminar sección?',
+        confirmDeleteDescription: 'Esta sección se eliminará del editor. Puedes deshacer el cambio con Control+Z.',
+        cancel: 'Cancelar',
+        confirmDelete: 'Eliminar',
+        expand: 'Expandir sección',
+        collapse: 'Colapsar secciones',
     },
   };
 
@@ -333,6 +371,10 @@ export default function TemplateEditorPage() {
     setCollapsedSections(Object.fromEntries([...enSections, ...esSections].map(section => [section.id, true])));
   }, [enSections, esSections]);
 
+  const expandAllSections = useCallback(() => {
+    setCollapsedSections({});
+  }, []);
+
   const setSectionCollapsed = useCallback((sectionId: string, collapsed: boolean) => {
     setCollapsedSections(prev => ({ ...prev, [sectionId]: collapsed }));
   }, []);
@@ -348,6 +390,7 @@ export default function TemplateEditorPage() {
             return arrayMove(items, oldIndex, newIndex);
         });
     }
+    expandAllSections();
   };
 
   if (!template) {
@@ -425,7 +468,13 @@ export default function TemplateEditorPage() {
             </AccordionTrigger>
             <AccordionContent className="p-4 pt-0">
                <div className="space-y-4 pt-4 border-t">
-                  <DndContext sensors={sensors} collisionDetection={closestCenter} onDragEnd={(e) => handleDragEnd(e, 'en')}>
+                  <DndContext
+                    sensors={sensors}
+                    collisionDetection={closestCenter}
+                    onDragStart={collapseAllSections}
+                    onDragCancel={expandAllSections}
+                    onDragEnd={(e) => handleDragEnd(e, 'en')}
+                  >
                     <SortableContext items={enSections.map(s => s.id)} strategy={verticalListSortingStrategy}>
                       <div className="space-y-4">
                         {enSections.map(section => (
@@ -439,6 +488,18 @@ export default function TemplateEditorPage() {
                             collapsed={Boolean(collapsedSections[section.id])}
                             onCollapseAll={collapseAllSections}
                             onCollapsedChange={setSectionCollapsed}
+                            labels={{
+                              section: t[language].englishContent,
+                              untitled: t[language].newSection,
+                              writeContent: t[language].writeContent,
+                              deleteSection: t[language].deleteSection,
+                              confirmDeleteTitle: t[language].confirmDeleteTitle,
+                              confirmDeleteDescription: t[language].confirmDeleteDescription,
+                              cancel: t[language].cancel,
+                              confirmDelete: t[language].confirmDelete,
+                              expand: t[language].expand,
+                              collapse: t[language].collapse,
+                            }}
                           />
                         ))}
                       </div>
@@ -461,7 +522,13 @@ export default function TemplateEditorPage() {
             </AccordionTrigger>
             <AccordionContent className="p-4 pt-0">
                <div className="space-y-4 pt-4 border-t">
-                  <DndContext sensors={sensors} collisionDetection={closestCenter} onDragEnd={(e) => handleDragEnd(e, 'es')}>
+                  <DndContext
+                    sensors={sensors}
+                    collisionDetection={closestCenter}
+                    onDragStart={collapseAllSections}
+                    onDragCancel={expandAllSections}
+                    onDragEnd={(e) => handleDragEnd(e, 'es')}
+                  >
                     <SortableContext items={esSections.map(s => s.id)} strategy={verticalListSortingStrategy}>
                       <div className="space-y-4">
                         {esSections.map(section => (
@@ -475,6 +542,18 @@ export default function TemplateEditorPage() {
                             collapsed={Boolean(collapsedSections[section.id])}
                             onCollapseAll={collapseAllSections}
                             onCollapsedChange={setSectionCollapsed}
+                            labels={{
+                              section: t[language].spanishContent,
+                              untitled: t[language].newSection,
+                              writeContent: t[language].writeContent,
+                              deleteSection: t[language].deleteSection,
+                              confirmDeleteTitle: t[language].confirmDeleteTitle,
+                              confirmDeleteDescription: t[language].confirmDeleteDescription,
+                              cancel: t[language].cancel,
+                              confirmDelete: t[language].confirmDelete,
+                              expand: t[language].expand,
+                              collapse: t[language].collapse,
+                            }}
                           />
                         ))}
                       </div>

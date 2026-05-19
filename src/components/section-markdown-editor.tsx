@@ -70,6 +70,7 @@ type SectionMarkdownEditorProps = {
   collapsed?: boolean;
   onCollapsedChange?: (collapsed: boolean) => void;
   onDragHandleClick?: () => void;
+  dragging?: boolean;
 };
 
 type HighlightedMarkdownTextareaProps = {
@@ -243,6 +244,7 @@ export function SectionMarkdownEditor({
   collapsed = false,
   onCollapsedChange,
   onDragHandleClick,
+  dragging = false,
 }: SectionMarkdownEditorProps) {
   const { addImage, getImage: getStoredImage } = useData();
   const localTextareaRef = useRef<HTMLTextAreaElement>(null);
@@ -395,10 +397,18 @@ export function SectionMarkdownEditor({
       wrapOrUnwrap('*', '*', 'italic');
       return;
     } else if (formatType === 'code') {
-      if (selected.includes('\n')) {
-        wrapOrUnwrap('```\n', '\n```', 'code');
-      } else {
+      if (selected) {
         wrapOrUnwrap('`', '`', 'code');
+      } else {
+        const lineStart = value.lastIndexOf('\n', start - 1) + 1;
+        const lineEnd = value.indexOf('\n', start);
+        const currentLine = value.slice(lineStart, lineEnd === -1 ? value.length : lineEnd);
+        if (!currentLine.trim()) {
+          const blockReplacement = '```\ncode\n```';
+          applyReplacement(blockReplacement, lineStart, lineEnd === -1 ? currentLine.length + lineStart : lineEnd, lineStart + 4, lineStart + 8);
+        } else {
+          wrapOrUnwrap('`', '`', 'code');
+        }
       }
       return;
     }
@@ -431,6 +441,7 @@ export function SectionMarkdownEditor({
   );
 
   const renderedPreviewContent = previewContent ?? content;
+  const isCompact = collapsed || dragging;
   const collapseForDrag = () => {
     onDragHandleClick?.();
     onCollapsedChange?.(true);
@@ -445,7 +456,7 @@ export function SectionMarkdownEditor({
       onFocus={onFocus}
       dir="ltr"
     >
-      <div className="mb-2 flex flex-col gap-3 border-b border-border pb-3 lg:flex-row lg:items-center lg:justify-between">
+      <div className={cn('flex flex-col gap-3 lg:flex-row lg:items-center lg:justify-between', isCompact ? 'mb-0' : 'mb-2 border-b border-border pb-3')}>
         <div className="flex min-w-0 flex-1 items-center gap-2">
           {dragHandleProps && dragListeners && (
             <button
@@ -464,7 +475,7 @@ export function SectionMarkdownEditor({
           )}
           <div className="min-w-0 flex-1">
             <p className="text-[11px] font-medium uppercase tracking-wide text-muted-foreground">{mergedLabels.section}</p>
-            {collapsed ? (
+            {isCompact ? (
               <button
                 type="button"
                 className="block max-w-full truncate text-left font-headline text-lg font-semibold text-foreground"
@@ -483,11 +494,11 @@ export function SectionMarkdownEditor({
           </div>
         </div>
 
-        {collapsed ? (
+        {collapsed && !dragging ? (
           <Button type="button" variant="ghost" size="icon" className="h-8 w-8" title={mergedLabels.expand} onClick={() => onCollapsedChange?.(false)}>
             <ChevronRight className="h-4 w-4" />
           </Button>
-        ) : (
+        ) : !isCompact ? (
         <div className="flex flex-wrap items-center gap-2">
           <div className="flex items-center gap-1 rounded-md border bg-background p-1">
             <Button type="button" variant="ghost" size="icon" className="h-8 w-8" title={mergedLabels.bold} onMouseDown={(e) => e.preventDefault()} onClick={() => applyMarkdownFormat('bold')}>
@@ -548,10 +559,10 @@ export function SectionMarkdownEditor({
             </AlertDialog>
           )}
         </div>
-        )}
+        ) : null}
       </div>
 
-      {!collapsed && (
+      {!isCompact && (
       <div className="overflow-hidden rounded-md border bg-background">
         {currentMode === 'split' ? (
           <ResizablePanelGroup

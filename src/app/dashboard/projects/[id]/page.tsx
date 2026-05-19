@@ -665,12 +665,19 @@ const SortableBlock = React.forwardRef(({ block, index, onAdd, onAction, ...edit
         onSplitLayoutChange={onSplitLayoutChange}
         collapsed={collapsed}
         onDragHandleClick={onCollapseAll}
+        dragging={isDragging}
         onCollapsedChange={(nextCollapsed) => onCollapsedChange(block.id, nextCollapsed)}
         labels={{
           section: 'Section',
           untitled: sectionTitle || 'Untitled section',
           writeContent: placeholder || t_editor?.writeContent || 'Write Markdown content...',
-          delete: 'Delete section',
+          delete: t_editor?.deleteSection || 'Delete section',
+          confirmDeleteTitle: t_editor?.sectionDeleteConfirmTitle || 'Delete section?',
+          confirmDeleteDescription: t_editor?.sectionDeleteConfirmDescription || 'This section will be removed from the editor. You can undo the change with Control+Z.',
+          cancel: t_editor?.sectionDeleteCancel || 'Cancel',
+          confirmDelete: t_editor?.sectionDeleteConfirm || 'Delete',
+          expand: t_editor?.expand || 'Expand section',
+          collapse: t_editor?.collapse || 'Collapse sections',
         }}
       />
     </div>
@@ -895,6 +902,15 @@ export default function ProjectDetailsPage() {
       translating: "Traduciendo...",
       commandPlaceholder: "Type / to add a block",
       selectTemplate: 'Select a template',
+      newSection: 'New Section',
+      addNewSection: 'Add New Section',
+      deleteSection: 'Delete section',
+      sectionDeleteConfirmTitle: 'Delete section?',
+      sectionDeleteConfirmDescription: 'This section will be removed from the editor. You can undo the change with Control+Z.',
+      sectionDeleteCancel: 'Cancel',
+      sectionDeleteConfirm: 'Delete',
+      expand: 'Expand section',
+      collapse: 'Collapse sections',
       headings: {
         '1': 'Heading 1',
         '2': 'Heading 2',
@@ -953,6 +969,15 @@ export default function ProjectDetailsPage() {
       translating: "Traduciendo...",
       commandPlaceholder: "Escribe / para añadir un bloque",
       selectTemplate: 'Seleccionar plantilla',
+      newSection: 'Nueva Sección',
+      addNewSection: 'Añadir Nueva Sección',
+      deleteSection: 'Eliminar sección',
+      sectionDeleteConfirmTitle: '¿Eliminar sección?',
+      sectionDeleteConfirmDescription: 'Esta sección se eliminará del editor. Puedes deshacer el cambio con Control+Z.',
+      sectionDeleteCancel: 'Cancelar',
+      sectionDeleteConfirm: 'Eliminar',
+      expand: 'Expandir sección',
+      collapse: 'Colapsar secciones',
       headings: {
         '1': 'Título 1',
         '2': 'Título 2',
@@ -1163,11 +1188,16 @@ export default function ProjectDetailsPage() {
         const newIndex = blocks.findIndex((item) => item.id === over.id);
         updateBlocks(arrayMove(blocks, oldIndex, newIndex));
     }
+    setCollapsedSections({});
   }, [blocks, updateBlocks]);
 
   const collapseAllSections = useCallback(() => {
     setCollapsedSections(Object.fromEntries(blocks.map(block => [block.id, true])));
   }, [blocks]);
+
+  const expandAllSections = useCallback(() => {
+    setCollapsedSections({});
+  }, []);
 
   const setSectionCollapsed = useCallback((blockId: string, collapsed: boolean) => {
     setCollapsedSections(prev => ({ ...prev, [blockId]: collapsed }));
@@ -1574,7 +1604,13 @@ export default function ProjectDetailsPage() {
                           searchPlaceholder="Buscar plantillas..."
                         />
                      </div>
-                     <DndContext sensors={sensors} collisionDetection={closestCenter} onDragEnd={handleDragEnd}>
+                     <DndContext
+                       sensors={sensors}
+                       collisionDetection={closestCenter}
+                       onDragStart={collapseAllSections}
+                       onDragCancel={expandAllSections}
+                       onDragEnd={handleDragEnd}
+                     >
                         <SortableContext items={blocks.map(b => b.id)} strategy={verticalListSortingStrategy}>
                             {blocks.map((block, index) => (
                               <div key={block.id} className="mb-5">
@@ -1617,8 +1653,8 @@ export default function ProjectDetailsPage() {
                         triggerRef={activeBlockId ? blockRefs.current[activeBlockId] : null}
                      />
                     <div className="flex justify-center pt-4 pb-10">
-                      <Button variant="outline" onClick={() => handleAddBlock(blocks.length - 1, 'h2', 'New Section') }>
-                        <Plus className="mr-2 h-4 w-4"/>Añadir sección
+                      <Button variant="outline" onClick={() => handleAddBlock(blocks.length - 1, 'h2', t[projectLanguage as 'en' | 'es'].newSection) }>
+                        <Plus className="mr-2 h-4 w-4"/>{t[projectLanguage as 'en' | 'es'].addNewSection}
                       </Button>
                     </div>
                </div>

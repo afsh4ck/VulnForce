@@ -146,7 +146,7 @@ export const MarkdownPreview = ({ content, getImage, isReport }: { content: stri
     };
 
     return (
-        <div className="prose dark:prose-invert w-full break-words">
+        <div className="prose prose-slate dark:prose-invert max-w-none w-full break-words">
             <ReactMarkdown remarkPlugins={[remarkGfm]} urlTransform={(url) => url} components={{
                 h1: ({node, children, ...props}) => <CustomHeading level={1} {...props}>{children as any}</CustomHeading>,
                 h2: ({node, children, ...props}) => <CustomHeading level={2} {...props}>{children as any}</CustomHeading>,

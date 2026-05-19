@@ -2,7 +2,7 @@
 'use client';
 import React, { useState } from 'react';
 import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter';
-import { vscDarkPlus } from 'react-syntax-highlighter/dist/esm/styles/prism';
+import { oneLight } from 'react-syntax-highlighter/dist/esm/styles/prism';
 import { Button } from './ui/button';
 import { Check, Copy, WrapText } from '@/components/icons';
 import { cn } from '@/lib/utils';
@@ -39,19 +39,19 @@ export const CodeBlock = ({ initialLanguage, code }: { initialLanguage: string; 
     // If the language is 'text' or not found, render a simple block
     if (language === 'text' || !languageOptions.some(opt => opt.value === language)) {
         return (
-             <div className="relative group rounded-md border border-border bg-muted/20 my-4 text-white">
+             <div className="relative group my-4 overflow-x-auto rounded-md border border-border bg-muted/30">
                 <div className="absolute top-2 right-2 z-10 flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
                     <Button variant="ghost" size="icon" className="h-8 w-8 hover:bg-primary/20 hover:text-primary" onClick={handleCopy}>
                         {isCopied ? <Check className="h-4 w-4 text-green-500" /> : <Copy className="h-4 w-4" />}
                     </Button>
                 </div>
-                <pre className="p-4 text-sm overflow-x-auto whitespace-pre-wrap">{code}</pre>
+                <pre className="p-4 text-sm overflow-x-auto whitespace-pre text-foreground">{code}</pre>
             </div>
         )
     }
 
     return (
-        <div className="relative group rounded-md border border-border bg-muted/20 my-4">
+        <div className="relative group my-4 overflow-x-auto rounded-md border border-border bg-muted/30">
              <div className="absolute top-2 right-2 z-10 flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
                 <Combobox
                     options={languageOptions}
@@ -70,11 +70,15 @@ export const CodeBlock = ({ initialLanguage, code }: { initialLanguage: string; 
             </div>
             <SyntaxHighlighter
                 language={language}
-                style={vscDarkPlus}
+                style={oneLight as any}
                 customStyle={{
                     margin: 0,
                     padding: '1em',
                     backgroundColor: 'transparent',
+                    overflowX: isWrapped ? 'hidden' : 'auto',
+                    whiteSpace: isWrapped ? 'pre-wrap' : 'pre',
+                    width: isWrapped ? '100%' : 'max-content',
+                    minWidth: '100%',
                 }}
                 codeTagProps={{
                     style: {

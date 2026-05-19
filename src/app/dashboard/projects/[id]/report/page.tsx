@@ -10,7 +10,7 @@ import { Separator } from '@/components/ui/separator';
 import { Logo } from '@/components/logo';
 import React, { useEffect, useMemo, useState, useCallback, useRef } from 'react';
 import { Button } from '@/components/ui/button';
-import { AlertCircle, ArrowRight, CheckCircle, ChevronLeft, Printer, Globe, X } from '@/components/icons';
+import { AlertCircle, ArrowRight, CheckCircle, ChevronLeft, Printer, Globe, X, PanelLeft } from '@/components/icons';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import Link from 'next/link';
 import { useLanguage } from '@/context/language-context';
@@ -18,8 +18,6 @@ import { useData } from '@/context/data-context';
 import type { Finding, Project, Client } from '@/lib/types';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { cn } from '@/lib/utils';
-import { useTheme } from '@/context/theme-context';
-import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '@/components/ui/dropdown-menu';
 import { hasTodoMarker, linkifyTodosInMarkdown, replaceTodoMarkers, stripMarkdownText } from '@/lib/todo-utils';
 
 interface TodoItem {
@@ -40,7 +38,6 @@ export default function ReportPreviewPage() {
   const { language: uiLanguage } = useLanguage();
   const { id: projectId } = params;
   const { projects, clients, findings, getImage } = useData();
-  const { theme, setTheme } = useTheme();
 
   const [project, setProject] = useState<Project | undefined>();
   const [client, setClient] = useState<Client | undefined>();
@@ -51,6 +48,16 @@ export default function ReportPreviewPage() {
   const [activeHeading, setActiveHeading] = useState<string>('');
   
   const reportContentRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const root = document.documentElement;
+    const originalClassName = root.className;
+    root.className = 'light';
+
+    return () => {
+      root.className = originalClassName;
+    };
+  }, []);
 
   const t = {
     en: {
@@ -295,18 +302,18 @@ export default function ReportPreviewPage() {
     return foundTodos;
   }, [project, projectFindings, projectId, t]);
   
-  const handlePrint = (printTheme: 'light' | 'dark') => {
+  const handlePrint = () => {
     const originalTheme = document.documentElement.className;
-    document.documentElement.className = printTheme;
-    // Timeout to allow theme to apply before printing
+    document.documentElement.className = 'light';
     setTimeout(() => {
       window.print();
       document.documentElement.className = originalTheme;
-    }, 500); 
+    }, 250);
   };
   
   const handleDownloadHTML = () => {
-    if (reportContentRef.current && project) {
+    if (reportContentRef.current && project && client) {
+      const currentClient = client;
       const reportLang = project.language;
       const tocHtml = headings.map(h => `<li class="toc-level-${h.level}"><a href="#${h.id}">${h.text}</a></li>`).join('');
 
@@ -323,87 +330,94 @@ export default function ReportPreviewPage() {
     @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700&display=swap');
     @import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;700&display=swap');
     @import url('https://fonts.googleapis.com/css2?family=Source+Code+Pro:wght@400;500&display=swap');
-    :root { --background: 0 0% 94.1%; --foreground: 240 10% 3.9%; --card: 0 0% 100%; --card-foreground: 240 10% 3.9%; --popover: 0 0% 100%; --popover-foreground: 240 10% 3.9%; --primary: 76 100% 50%; --primary-foreground: 76 100% 5%; --secondary: 240 4.8% 95.9%; --secondary-foreground: 240 5.9% 10%; --muted: 240 4.8% 95.9%; --muted-foreground: 240 3.8% 46.1%; --accent: 76 100% 60%; --accent-foreground: 76 100% 10%; --destructive: 0 80% 50%; --destructive-foreground: 0 0% 98%; --border: 240 5.9% 90%; --input: 240 5.9% 90%; --ring: 76 100% 50%; }
-    .dark { --background: 224 71% 4%; --foreground: 210 40% 98%; --card: 224 71% 6%; --card-foreground: 210 40% 98%; --popover: 224 71% 4%; --popover-foreground: 210 40% 98%; --primary: 76 100% 50%; --primary-foreground: 76 100% 5%; --secondary: 220 15% 15%; --secondary-foreground: 210 40% 98%; --muted: 220 15% 15%; --muted-foreground: 215 20% 65%; --accent: 76 100% 60%; --accent-foreground: 76 100% 10%; --destructive: 0 72% 51%; --destructive-foreground: 210 40% 98%; --border: 220 15% 15%; --input: 220 15% 15%; --ring: 76 100% 50%; }
+    :root { --background: 0 0% 98%; --foreground: 222 47% 11%; --card: 0 0% 100%; --card-foreground: 222 47% 11%; --popover: 0 0% 100%; --popover-foreground: 222 47% 11%; --primary: 76 100% 40%; --primary-foreground: 76 100% 5%; --secondary: 210 20% 96%; --secondary-foreground: 222 47% 11%; --muted: 210 20% 96%; --muted-foreground: 215 16% 47%; --accent: 76 100% 55%; --accent-foreground: 76 100% 10%; --destructive: 0 84% 60%; --destructive-foreground: 0 0% 98%; --border: 214 32% 91%; --input: 214 32% 91%; --ring: 76 100% 40%; }
+    .dark { --background: 0 0% 98%; --foreground: 222 47% 11%; --card: 0 0% 100%; --card-foreground: 222 47% 11%; --popover: 0 0% 100%; --popover-foreground: 222 47% 11%; --primary: 76 100% 40%; --primary-foreground: 76 100% 5%; --secondary: 210 20% 96%; --secondary-foreground: 222 47% 11%; --muted: 210 20% 96%; --muted-foreground: 215 16% 47%; --accent: 76 100% 55%; --accent-foreground: 76 100% 10%; --destructive: 0 84% 60%; --destructive-foreground: 0 0% 98%; --border: 214 32% 91%; --input: 214 32% 91%; --ring: 76 100% 40%; }
     html { scroll-behavior: smooth; }
-    body { background: radial-gradient(circle at top left, hsl(var(--primary) / 0.14), transparent 34rem), hsl(var(--background)); color: hsl(var(--foreground)); font-family: 'Inter', sans-serif; transition: background-color 0.2s ease-in-out, color 0.2s ease-in-out; }
+    body { background: #f8fafc; color: #0f172a; font-family: 'Inter', sans-serif; }
     h1, h2, h3, h4, h5, h6 { font-family: 'Space Grotesk', sans-serif; }
     pre, code { font-family: 'Source Code Pro', monospace; }
-    .report-main { background: hsl(var(--card)); border: 1px solid hsl(var(--border)); border-radius: 16px; box-shadow: 0 22px 70px rgb(0 0 0 / 0.28); overflow: hidden; }
-    .report-page { padding: 2.5rem 3rem; }
-    .report-cover { min-height: 620px; background: linear-gradient(135deg, hsl(var(--card)) 0%, hsl(var(--muted) / 0.75) 100%); border-bottom: 1px solid hsl(var(--border)); }
-    .prose { color: hsl(var(--foreground)); max-width: 100% !important; font-size: 1rem; line-height: 1.75; } .prose h1, .prose h2, .prose h3, .prose h4, .prose h5, .prose h6 { color: hsl(var(--foreground)); scroll-margin-top: 90px; } .prose a { color: hsl(var(--primary)); text-decoration-thickness: 1px; text-underline-offset: 3px; } .prose a[href*="todo=TODO"], .text-red-500 { color: #ef4444 !important; font-weight: 700; } .prose strong { color: hsl(var(--foreground)); } .prose blockquote { color: hsl(var(--muted-foreground)); border-left-color: hsl(var(--primary)); background: hsl(var(--muted) / 0.4); padding: 0.5rem 1rem; border-radius: 6px; } .prose code:not(pre code) { background-color: hsl(var(--muted)) !important; color: hsl(var(--foreground)) !important; padding: 2px 5px; border-radius: 4px; } .prose pre { background-color: hsl(var(--muted)) !important; color: hsl(var(--foreground)) !important; padding: 1em; border-radius: 8px; overflow-x: auto; border: 1px solid hsl(var(--border)); } .prose table { width: 100%; display: table; } .prose th { background-color: hsl(var(--muted)); color: hsl(var(--foreground)); } .prose td, .prose th { border: 1px solid hsl(var(--border)); padding: 10px 12px; vertical-align: top; } hr { border-top-color: hsl(var(--border)); }
-    .prose img { max-width: 100%; height: auto; border-radius: 8px; border: 1px solid hsl(var(--border)); }
+    .report-main { background: #ffffff; border: 1px solid #e2e8f0; border-radius: 16px; box-shadow: 0 16px 40px rgb(15 23 42 / 0.08); overflow: hidden; }
+    .report-page { padding: 2.25rem 2.5rem; }
+    .report-cover { min-height: 620px; background: linear-gradient(180deg, #ffffff 0%, #f8fafc 100%); border-bottom: 1px solid #e2e8f0; }
+    .prose { color: #0f172a; max-width: 100% !important; font-size: 1rem; line-height: 1.75; }
+    .prose h1, .prose h2, .prose h3, .prose h4, .prose h5, .prose h6 { color: #0f172a; scroll-margin-top: 90px; }
+    .prose a { color: hsl(var(--primary)); text-decoration-thickness: 1px; text-underline-offset: 3px; }
+    .prose a[href*="todo=TODO"], .text-red-500 { color: #ef4444 !important; font-weight: 700; }
+    .prose strong { color: #0f172a; }
+    .prose blockquote { color: #475569; border-left-color: hsl(var(--primary)); background: #f8fafc; padding: 0.5rem 1rem; border-radius: 6px; }
+    .prose code:not(pre code) { background-color: #e2e8f0 !important; color: #0f172a !important; padding: 2px 5px; border-radius: 4px; }
+    .prose pre { background-color: #f8fafc !important; color: #0f172a !important; padding: 1em; border-radius: 8px; overflow-x: auto; border: 1px solid #e2e8f0; }
+    .prose table { width: 100%; display: table; }
+    .prose th { background-color: #f8fafc; color: #0f172a; }
+    .prose td, .prose th { border: 1px solid #e2e8f0; padding: 10px 12px; vertical-align: top; }
+    hr { border-top-color: #e2e8f0; }
+    .prose img { max-width: 100%; height: auto; border-radius: 8px; border: 1px solid #e2e8f0; }
     [id] { scroll-margin-top: 80px; }
-    #toc-sidebar { transition: right 0.3s ease-in-out; }
+    #toc-sidebar { transition: opacity 0.2s ease-in-out, transform 0.2s ease-in-out; }
     .toc-level-1 { font-weight: bold; } .toc-level-2 { padding-left: 1rem; } .toc-level-3 { padding-left: 2rem; }
-    #toc-sidebar a { display: block; padding: 4px 8px; border-radius: 4px; transition: background-color 0.2s ease-in-out, color 0.2s ease-in-out; } #toc-sidebar a:hover { background-color: hsl(var(--muted)); color: hsl(var(--primary)); }
+    #toc-sidebar a { display: block; padding: 4px 8px; border-radius: 4px; transition: background-color 0.2s ease-in-out, color 0.2s ease-in-out; } #toc-sidebar a:hover { background-color: #f1f5f9; color: hsl(var(--primary)); }
     @media print {
       html, body { background: white !important; }
       body { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
-      header, #toc-sidebar, #theme-switcher, #toc-toggler { display: none !important; }
+      header, #toc-sidebar, #theme-switcher, #toc-toggler, #sidebar-toggle { display: none !important; }
       @page { size: A4; margin: 0; }
       .report-main { max-width: none !important; border: 0 !important; border-radius: 0 !important; box-shadow: none !important; }
       .report-page { padding: 1.6cm !important; page-break-inside: avoid; }
-      .report-cover { min-height: 100vh; border-radius: 0 !important; }
+      .report-cover { min-height: 100vh; border-radius: 0 !important; margin: 0 !important; }
       .break-after-page { page-break-after: always; }
+      .print-header { display: flex !important; position: fixed; top: 0; left: 0; right: 0; z-index: 50; align-items: center; justify-content: space-between; gap: 1rem; padding: 0.9cm 1.4cm; background: white; border-bottom: 1px solid #e2e8f0; }
+      .print-header-spacer { display: block !important; height: 2.2cm; }
       .print-toc a::after { content: leader('.') target-counter(attr(href), page); }
     }
   </style>
 </head>
-<body class="bg-background text-foreground">
-  <header class="sticky top-0 z-30 w-full bg-background/80 backdrop-blur-sm border-b border-border">
+<body class="bg-slate-50 text-slate-900">
+  <header class="sticky top-0 z-30 w-full bg-white/90 backdrop-blur-sm border-b border-border">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-3 flex justify-between items-center h-16">
       <div class="flex items-center gap-2 font-bold text-lg" style="font-family: 'Space Grotesk', sans-serif;">
-          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="hsl(var(--primary))" viewBox="0 0 256 256"><path d="M216,44.45l-80-29.09a23.94,23.94,0,0,0-16,0L40,44.45A24,24,0,0,0,24,67V116.7c0,82,69.41,117.81,90.69,126.74a23.85,23.85,0,0,0,18.62,0C154.59,234.51,224,198.7,224,116.7V67A24,24,0,0,0,216,44.45ZM168,136H136v32a8,8,0,0,1-16,0V136H88a8,8,0,0,1,0-16h32V88a8,8,0,0,1,16,0v32h32a8,8,0,0,1,0,16Z"/></svg>
-          <span>VulnForce</span>
+          ${currentClient.logoUrl ? `<img src="${currentClient.logoUrl}" alt="${currentClient.name} logo" class="h-7 w-auto object-contain" />` : `<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="hsl(var(--primary))" viewBox="0 0 256 256"><path d="M216,44.45l-80-29.09a23.94,23.94,0,0,0-16,0L40,44.45A24,24,0,0,0,24,67V116.7c0,82,69.41,117.81,90.69,126.74a23.85,23.85,0,0,0,18.62,0C154.59,234.51,224,198.7,224,116.7V67A24,24,0,0,0,216,44.45ZM168,136H136v32a8,8,0,0,1-16,0V136H88a8,8,0,0,1,0-16h32V88a8,8,0,0,1,16,0v32h32a8,8,0,0,1,0,16Z"/></svg>`}
+          <span>${currentClient.name}</span>
       </div>
-      <div class="flex items-center gap-4">
-        <button id="theme-switcher" class="p-2 rounded-md hover:bg-muted"><svg id="sun-icon" style="display:none;" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="4"/><path d="M12 2v2"/><path d="M12 20v2"/><path d="m4.93 4.93 1.41 1.41"/><path d="m17.66 17.66 1.41 1.41"/><path d="M2 12h2"/><path d="M20 12h2"/><path d="m6.34 17.66-1.41 1.41"/><path d="m19.07 4.93-1.41 1.41"/></svg><svg id="moon-icon" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9z"/></svg></button>
-        <button id="toc-toggler" class="p-2 rounded-md hover:bg-muted md:hidden"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="4" x2="20" y1="12" y2="12"/><line x1="4" x2="20" y1="6" y2="6"/><line x1="4" x2="20" y1="18" y2="18"/></svg></button>
+      <div class="flex items-center gap-2">
+        <button id="sidebar-toggle" class="inline-flex items-center gap-2 rounded-md border border-border bg-white px-3 py-2 text-sm hover:bg-muted md:hidden">
+          <span>${t[reportLang].tableOfContents}</span>
+        </button>
       </div>
     </div>
   </header>
-  
-  <div class="max-w-7xl mx-auto p-4 md:p-8 flex flex-row-reverse relative">
-    <aside id="toc-sidebar" class="w-72 pl-8 shrink-0 hidden md:block md:sticky top-20 h-[calc(100vh-6rem)]">
-      <div class="h-full overflow-y-auto">
-        <h3 class="text-lg font-semibold mb-4">${t[reportLang].tableOfContents}</h3>
+  <div class="print-header hidden">
+    <div class="flex items-center gap-3">
+      ${currentClient.logoUrl ? `<img src="${currentClient.logoUrl}" alt="${currentClient.name} logo" class="h-8 w-auto object-contain" />` : `<svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" fill="hsl(var(--primary))" viewBox="0 0 256 256"><path d="M216,44.45l-80-29.09a23.94,23.94,0,0,0-16,0L40,44.45A24,24,0,0,0,24,67V116.7c0,82,69.41,117.81,90.69,126.74a23.85,23.85,0,0,0,18.62,0C154.59,234.51,224,198.7,224,116.7V67A24,24,0,0,0,216,44.45ZM168,136H136v32a8,8,0,0,1-16,0V136H88a8,8,0,0,1,0-16h32V88a8,8,0,0,1,16,0v32h32a8,8,0,0,1,0,16Z"/></svg>`}
+      <div>
+        <div class="text-sm font-semibold">VulnForce</div>
+        <div class="text-xs text-slate-500">${project.name}</div>
+      </div>
+    </div>
+  </div>
+  <div class="print-header-spacer hidden"></div>
+  <div class="max-w-7xl mx-auto p-4 md:p-8 flex flex-col lg:flex-row gap-8 relative">
+    <aside id="toc-sidebar" class="no-print ${isSidebarOpen ? 'lg:block' : 'hidden'} w-full lg:w-72 lg:shrink-0 lg:sticky lg:top-20 lg:h-[calc(100vh-6rem)]">
+      <div class="rounded-xl border border-border bg-white p-4 shadow-sm h-full overflow-y-auto">
+        <div class="flex items-center justify-between gap-3 mb-4">
+          <h3 class="text-sm font-semibold uppercase tracking-wide text-slate-500">${t[reportLang].tableOfContents}</h3>
+        </div>
         <ul class="space-y-2 text-sm">${tocHtml}</ul>
       </div>
     </aside>
-    <main class="report-main flex-1 max-w-5xl p-8 lg:p-10">${reportContentRef.current.innerHTML}</main>
+    <main class="report-main flex-1 min-w-0 p-6 md:p-8 lg:p-10">${reportContentRef.current.innerHTML}</main>
   </div>
 
   <script>
-    const switcher = document.getElementById('theme-switcher');
-    const sunIcon = document.getElementById('sun-icon');
-    const moonIcon = document.getElementById('moon-icon');
-    const tocToggler = document.getElementById('toc-toggler');
+    const tocToggler = document.getElementById('sidebar-toggle');
     const tocSidebar = document.getElementById('toc-sidebar');
-    const html = document.documentElement;
-
-    switcher.addEventListener('click', () => {
-      html.classList.toggle('dark');
-      updateIcons();
-    });
 
     let tocOpen = false;
     tocToggler.addEventListener('click', () => {
         tocOpen = !tocOpen;
-        tocSidebar.style.display = tocOpen ? 'block' : 'none';
-    });
-
-    function updateIcons() {
-      if (html.classList.contains('dark')) {
-        sunIcon.style.display = 'none';
-        moonIcon.style.display = 'block';
-      } else {
-        sunIcon.style.display = 'block';
-        moonIcon.style.display = 'none';
+        if (tocSidebar) {
+          tocSidebar.style.display = tocOpen ? 'block' : 'none';
       }
-    }
-    updateIcons();
+    });
   </script>
 </body>
 </html>`;
@@ -445,7 +459,7 @@ export default function ReportPreviewPage() {
   );
 
   return (
-    <div className={cn("report-shell bg-background text-foreground min-h-screen", theme)}>
+    <div className="report-shell bg-slate-50 text-slate-900 min-h-screen">
       <style jsx global>{`
         @media print {
           html, body { background: white !important; }
@@ -468,11 +482,11 @@ export default function ReportPreviewPage() {
         .prose code:not(pre code) { color: hsl(var(--foreground)) !important; }
         .prose blockquote { background: hsl(var(--muted) / 0.4); border-left-color: hsl(var(--primary)); border-radius: 6px; padding: 0.5rem 1rem; }
         .prose th { color: hsl(var(--foreground)); }
-        .report-shell { background: radial-gradient(circle at top left, hsl(var(--primary) / 0.14), transparent 34rem), hsl(var(--background)); }
-        .report-cover { background: linear-gradient(135deg, hsl(var(--card)) 0%, hsl(var(--muted) / 0.75) 100%); }
+        .report-shell { background: #f8fafc; }
+        .report-cover { background: linear-gradient(180deg, #ffffff 0%, #f8fafc 100%); }
       `}</style>
       
-      <header className="sticky top-0 z-30 w-full bg-background/80 backdrop-blur-sm border-b no-print">
+      <header className="sticky top-0 z-30 w-full bg-white/90 backdrop-blur-sm border-b no-print">
         <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-3 flex justify-between items-center h-16">
             <div className="flex items-center gap-4">
               <Button variant="outline" size="icon" asChild>
@@ -484,29 +498,24 @@ export default function ReportPreviewPage() {
               <h1 className="font-headline text-xl md:text-2xl font-bold">{t[uiLanguage].reportPreview}</h1>
             </div>
              <div className="flex items-center gap-2">
+                <Button variant="outline" size="icon" onClick={() => setIsSidebarOpen((value) => !value)} className="hidden md:inline-flex">
+                  <PanelLeft className="h-4 w-4" />
+                </Button>
                 <Button variant="outline" onClick={handleDownloadHTML}>
                     <Globe className="mr-2 h-4 w-4" />
                     {t[uiLanguage].downloadHTML}
                 </Button>
-                <DropdownMenu>
-                  <DropdownMenuTrigger asChild>
-                    <Button disabled={todos.length > 0}>
-                      <Printer className="mr-2 h-4 w-4" />
-                      {t[uiLanguage].downloadPDF}
-                    </Button>
-                  </DropdownMenuTrigger>
-                  <DropdownMenuContent>
-                    <DropdownMenuItem onClick={() => handlePrint('light')}>{langT.lightMode}</DropdownMenuItem>
-                    <DropdownMenuItem onClick={() => handlePrint('dark')}>{langT.darkMode}</DropdownMenuItem>
-                  </DropdownMenuContent>
-                </DropdownMenu>
+                <Button disabled={todos.length > 0} onClick={handlePrint}>
+                  <Printer className="mr-2 h-4 w-4" />
+                  {t[uiLanguage].downloadPDF}
+                </Button>
             </div>
         </div>
       </header>
 
-      <div className="max-w-7xl mx-auto p-4 md:p-8 flex flex-row-reverse">
-        <aside className={cn("no-print w-72 pl-8 shrink-0 hidden md:block", isSidebarOpen ? "md:sticky top-20 h-[calc(100vh-6rem)]" : "hidden")}>
-          <div className="h-full overflow-y-auto space-y-6">
+      <div className="max-w-7xl mx-auto p-4 md:p-8 flex flex-col lg:flex-row gap-8">
+        <aside className={cn("no-print w-full lg:w-72 lg:shrink-0", isSidebarOpen ? "block" : "hidden")}>
+          <div className="h-full overflow-y-auto space-y-6 rounded-xl border border-border bg-white p-4 shadow-sm lg:sticky lg:top-20 lg:h-[calc(100vh-6rem)]">
             {showTodos && todos.length > 0 && (
                 <Card>
                   <CardHeader className="flex-row items-center justify-between p-4">
@@ -573,7 +582,7 @@ export default function ReportPreviewPage() {
           </div>
         </aside>
         
-        <main className={cn("flex-1 transition-all duration-300 printable-content max-w-5xl overflow-hidden rounded-xl border bg-card shadow-xl")}>
+        <main className="report-main flex-1 min-w-0 transition-all duration-300 printable-content overflow-hidden rounded-xl">
           <div className="space-y-12" ref={reportContentRef}>
             <header className="report-cover report-page break-after-page flex min-h-[620px] flex-col justify-between border-b p-8 md:p-12">
               <div className="flex items-start justify-between gap-8">

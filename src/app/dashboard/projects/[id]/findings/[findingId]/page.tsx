@@ -43,9 +43,21 @@ type SortableSectionProps = {
   collapsed: boolean;
   onCollapseAll: () => void;
   onCollapsedChange: (sectionId: string, collapsed: boolean) => void;
+  labels: {
+    section: string;
+    untitled: string;
+    writeContent: string;
+    deleteSection: string;
+    confirmDeleteTitle: string;
+    confirmDeleteDescription: string;
+    cancel: string;
+    confirmDelete: string;
+    expand: string;
+    collapse: string;
+  };
 };
 
-const SortableSection = ({ section, index, onAddSection, onDelete, ...props }: SortableSectionProps) => {
+const SortableSection = ({ section, index, onAddSection, onDelete, labels, ...props }: SortableSectionProps) => {
   const { attributes, listeners, setNodeRef, transform, transition, isDragging } = useSortable({ id: section.id });
 
   const style = {
@@ -74,13 +86,20 @@ const SortableSection = ({ section, index, onAddSection, onDelete, ...props }: S
         onSplitLayoutChange={props.onSplitLayoutChange}
         collapsed={props.collapsed}
         onDragHandleClick={props.onCollapseAll}
+        dragging={isDragging}
         onCollapsedChange={(collapsed) => props.onCollapsedChange(section.id, collapsed)}
         titleFallback="Finding section"
         labels={{
-          section: 'Finding section',
-          untitled: 'Finding section',
-          writeContent: 'Write finding evidence, impact, remediation or notes...',
-          delete: 'Delete section',
+          section: labels.section,
+          untitled: labels.untitled,
+          writeContent: labels.writeContent,
+          delete: labels.deleteSection,
+          confirmDeleteTitle: labels.confirmDeleteTitle,
+          confirmDeleteDescription: labels.confirmDeleteDescription,
+          cancel: labels.cancel,
+          confirmDelete: labels.confirmDelete,
+          expand: labels.expand,
+          collapse: labels.collapse,
         }}
       />
     </div>
@@ -306,6 +325,10 @@ export default function FindingEditorPage() {
     setCollapsedSections(Object.fromEntries(sections.map(section => [section.id, true])));
   }, [sections]);
 
+  const expandAllSections = useCallback(() => {
+    setCollapsedSections({});
+  }, []);
+
   const setSectionCollapsed = useCallback((sectionId: string, collapsed: boolean) => {
     setCollapsedSections(prev => ({ ...prev, [sectionId]: collapsed }));
   }, []);
@@ -320,6 +343,7 @@ export default function FindingEditorPage() {
         return arrayMove(items, oldIndex, newIndex);
       });
     }
+    expandAllSections();
   }
 
   const handleSeverityChange = (newSeverity: Severity) => {
@@ -369,7 +393,14 @@ export default function FindingEditorPage() {
       saveSuccessUpdate: 'has been updated.',
       addNewSection: 'Add New Section',
       newSection: 'New Section',
-      searchVulnerability: 'Search vulnerability...'
+      searchVulnerability: 'Search vulnerability...',
+      deleteSection: 'Delete section',
+      confirmDeleteTitle: 'Delete section?',
+      confirmDeleteDescription: 'This section will be removed from the editor. You can undo the change with Control+Z.',
+      cancel: 'Cancel',
+      confirmDelete: 'Delete',
+      expand: 'Expand section',
+      collapse: 'Collapse sections',
     },
     es: {
       backToProject: 'Volver al Proyecto',
@@ -393,7 +424,14 @@ export default function FindingEditorPage() {
       saveSuccessUpdate: 'ha sido actualizado.',
       addNewSection: 'Añadir Nueva Sección',
       newSection: 'Nueva Sección',
-      searchVulnerability: 'Buscar vulnerabilidad...'
+      searchVulnerability: 'Buscar vulnerabilidad...',
+      deleteSection: 'Eliminar sección',
+      confirmDeleteTitle: '¿Eliminar sección?',
+      confirmDeleteDescription: 'Esta sección se eliminará del editor. Puedes deshacer el cambio con Control+Z.',
+      cancel: 'Cancelar',
+      confirmDelete: 'Eliminar',
+      expand: 'Expandir sección',
+      collapse: 'Colapsar secciones',
     }
   }
 
@@ -505,12 +543,18 @@ export default function FindingEditorPage() {
           </Card>
 
           <div className="space-y-4 mt-6">
-              <DndContext sensors={sensors} collisionDetection={closestCenter} onDragEnd={handleDragEnd}>
+              <DndContext
+                sensors={sensors}
+                collisionDetection={closestCenter}
+                onDragStart={collapseAllSections}
+                onDragCancel={expandAllSections}
+                onDragEnd={handleDragEnd}
+              >
                 <SortableContext items={sections.map(s => s.id)} strategy={verticalListSortingStrategy}>
                   <div className="space-y-4">
-                    {sections.map((section, index) => {
-                       return (
-                          <SortableSection
+                        {sections.map((section, index) => {
+                           return (
+                              <SortableSection
                             key={section.id}
                             section={section}
                             index={index}
@@ -523,6 +567,18 @@ export default function FindingEditorPage() {
                             collapsed={Boolean(collapsedSections[section.id])}
                             onCollapseAll={collapseAllSections}
                             onCollapsedChange={setSectionCollapsed}
+                            labels={{
+                              section: 'Finding section',
+                              untitled: 'Finding section',
+                              writeContent: 'Write finding evidence, impact, remediation or notes...',
+                              deleteSection: t[uiLanguage].deleteSection,
+                              confirmDeleteTitle: t[uiLanguage].confirmDeleteTitle,
+                              confirmDeleteDescription: t[uiLanguage].confirmDeleteDescription,
+                              cancel: t[uiLanguage].cancel,
+                              confirmDelete: t[uiLanguage].confirmDelete,
+                              expand: t[uiLanguage].expand,
+                              collapse: t[uiLanguage].collapse,
+                            }}
                           />
                        );
                     })}
