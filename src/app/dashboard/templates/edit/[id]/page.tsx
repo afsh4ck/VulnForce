@@ -20,6 +20,8 @@ import { arrayMove, SortableContext, sortableKeyboardCoordinates, useSortable, v
 import { CSS } from '@dnd-kit/utilities';
 import { ProjectIconSelectItem, projectIconOptions } from '@/components/project-icon';
 import { SectionMarkdownEditor } from '@/components/section-markdown-editor';
+import { joinMarkdownSections, splitMarkdownIntoSections } from '@/lib/markdown-utils';
+import { stripMarkdownText } from '@/lib/todo-utils';
 
 type SaveStatus = 'unsaved' | 'saving' | 'saved';
 
@@ -28,10 +30,31 @@ interface TemplateSection {
   content: string;
 }
 
+const getSectionHeadingTitle = (content: string) => {
+  const headingMatch = content.match(/^\s{0,3}#{1,6}\s+(.+)$/m);
+  return headingMatch ? stripMarkdownText(headingMatch[1]).toLocaleLowerCase() : '';
+};
+
+const splitTemplateSectionsForStorage = (sections: TemplateSection[], appendixTitles: string[]) => {
+  const appendixIndex = sections.findIndex(section => appendixTitles.includes(getSectionHeadingTitle(section.content)));
+  const scopeSections = appendixIndex >= 0 ? sections.slice(0, appendixIndex) : sections;
+  const appendixSections = appendixIndex >= 0 ? sections.slice(appendixIndex) : [];
+
+  return {
+    scope: joinMarkdownSections(scopeSections.map(section => section.content)),
+    appendix: joinMarkdownSections(appendixSections.map(section => section.content)),
+  };
+};
+
 type SortableSectionProps = {
   section: TemplateSection;
   onContentChange: (content: string) => void;
   onDelete: () => void;
+  splitLayout: number[];
+  onSplitLayoutChange: (layout: number[]) => void;
+  collapsed: boolean;
+  onCollapseAll: () => void;
+  onCollapsedChange: (sectionId: string, collapsed: boolean) => void;
 };
 
 const SortableSection = ({ section, ...props }: SortableSectionProps) => {
@@ -51,12 +74,17 @@ const SortableSection = ({ section, ...props }: SortableSectionProps) => {
   );
 };
 
-const SectionEditor = ({ section, onContentChange, onDelete, dragHandleProps, dragListeners }: {
+const SectionEditor = ({ section, onContentChange, onDelete, dragHandleProps, dragListeners, splitLayout, onSplitLayoutChange, collapsed, onCollapseAll, onCollapsedChange }: {
   section: TemplateSection;
   onContentChange: (content: string) => void;
   onDelete: () => void;
   dragHandleProps: any;
   dragListeners: any;
+  splitLayout: number[];
+  onSplitLayoutChange: (layout: number[]) => void;
+  collapsed: boolean;
+  onCollapseAll: () => void;
+  onCollapsedChange: (sectionId: string, collapsed: boolean) => void;
 }) => {
     return (
       <SectionMarkdownEditor
@@ -65,6 +93,11 @@ const SectionEditor = ({ section, onContentChange, onDelete, dragHandleProps, dr
         onDelete={onDelete}
         dragHandleProps={dragHandleProps}
         dragListeners={dragListeners}
+        splitLayout={splitLayout}
+        onSplitLayoutChange={onSplitLayoutChange}
+        collapsed={collapsed}
+        onDragHandleClick={onCollapseAll}
+        onCollapsedChange={(nextCollapsed) => onCollapsedChange(section.id, nextCollapsed)}
         titleFallback="New Section"
         labels={{
           section: 'Template section',
@@ -91,11 +124,13 @@ export default function TemplateEditorPage() {
   const [enSections, setEnSections] = useState<TemplateSection[]>([]);
   const [esSections, setEsSections] = useState<TemplateSection[]>([]);
   const [activeAccordion, setActiveAccordion] = useState<string[]>(['details', 'en-content']);
+  const [sectionSplitLayout, setSectionSplitLayout] = useState<number[]>([52, 48]);
+  const [collapsedSections, setCollapsedSections] = useState<Record<string, boolean>>({});
   const [saveStatus, setSaveStatus] = useState<SaveStatus>('saved');
 
   const parseContentToSections = useCallback((content: string): TemplateSection[] => {
     if (!content || typeof content !== 'string') return [];
-    const parts = content.split(/\n\s*---\s*\n/);
+    const parts = splitMarkdownIntoSections(content, { maxHeadingLevel: 2 });
     return parts.map((part, index) => ({
       id: `section-${index}-${Date.now()}-${Math.random()}`,
       content: part.trim()
@@ -108,8 +143,8 @@ export default function TemplateEditorPage() {
         name_en: '', name_es: '', description_en: '', description_es: '',
         scope_en: '## Scope\n\n[TODO: Define scope]', 
         scope_es: '## Alcance\n\n[TODO: Definir alcance]', 
-        appendix_en: '### Appendix\n\n[TODO: Add appendix]', 
-        appendix_es: '### Apéndice\n\n[TODO: Añadir apéndice]', 
+        appendix_en: '## Appendix\n\n[TODO: Add appendix]',
+        appendix_es: '## Apéndice\n\n[TODO: Añadir apéndice]',
         icon: 'FileText'
       };
       setTemplate(newTemplate);
@@ -121,8 +156,8 @@ export default function TemplateEditorPage() {
       const existingTemplate = projectTemplates.find(t => t.id === id);
       if (existingTemplate) {
         setTemplate(JSON.parse(JSON.stringify(existingTemplate)));
-        const fullEnContent = `${existingTemplate.scope_en}\n\n---\n\n${existingTemplate.appendix_en || ''}`;
-        const fullEsContent = `${existingTemplate.scope_es}\n\n---\n\n${existingTemplate.appendix_es || ''}`;
+        const fullEnContent = joinMarkdownSections([existingTemplate.scope_en, existingTemplate.appendix_en]);
+        const fullEsContent = joinMarkdownSections([existingTemplate.scope_es, existingTemplate.appendix_es]);
         setEnSections(parseContentToSections(fullEnContent));
         setEsSections(parseContentToSections(fullEsContent));
       } else {
@@ -160,13 +195,16 @@ export default function TemplateEditorPage() {
     
     setSaveStatus('saving');
 
-    const [scope_en, ...appendix_en_parts] = enSections.map(s => s.content).join('\n\n---\n\n').split('### Appendix');
-    const appendix_en = appendix_en_parts.length > 0 ? '### Appendix' + appendix_en_parts.join('### Appendix') : '';
+    const enContent = splitTemplateSectionsForStorage(enSections, ['appendix']);
+    const esContent = splitTemplateSectionsForStorage(esSections, ['apéndice', 'apendice']);
 
-    const [scope_es, ...appendix_es_parts] = esSections.map(s => s.content).join('\n\n---\n\n').split('### Apéndice');
-    const appendix_es = appendix_es_parts.length > 0 ? '### Apéndice' + appendix_es_parts.join('### Apéndice') : '';
-
-    const finalTemplate = { ...template, scope_en, appendix_en, scope_es, appendix_es };
+    const finalTemplate = {
+      ...template,
+      scope_en: enContent.scope,
+      appendix_en: enContent.appendix,
+      scope_es: esContent.scope,
+      appendix_es: esContent.appendix,
+    };
 
     if (isNew) {
       addProjectTemplate(finalTemplate as Omit<ProjectTemplate, 'id'>);
@@ -246,8 +284,21 @@ export default function TemplateEditorPage() {
     } else {
         setEsSections(prev => prev.filter(s => s.id !== sectionId));
     }
+    setCollapsedSections(prev => {
+      const next = { ...prev };
+      delete next[sectionId];
+      return next;
+    });
     setSaveStatus('unsaved');
   };
+
+  const collapseAllSections = useCallback(() => {
+    setCollapsedSections(Object.fromEntries([...enSections, ...esSections].map(section => [section.id, true])));
+  }, [enSections, esSections]);
+
+  const setSectionCollapsed = useCallback((sectionId: string, collapsed: boolean) => {
+    setCollapsedSections(prev => ({ ...prev, [sectionId]: collapsed }));
+  }, []);
 
   const handleDragEnd = (event: DragEndEvent, lang: 'en' | 'es') => {
     const { active, over } = event;
@@ -346,6 +397,11 @@ export default function TemplateEditorPage() {
                             section={section}
                             onContentChange={(newContent: string) => handleSectionChange('en', section.id, newContent)}
                             onDelete={() => handleDeleteSection('en', section.id)}
+                            splitLayout={sectionSplitLayout}
+                            onSplitLayoutChange={setSectionSplitLayout}
+                            collapsed={Boolean(collapsedSections[section.id])}
+                            onCollapseAll={collapseAllSections}
+                            onCollapsedChange={setSectionCollapsed}
                           />
                         ))}
                       </div>
@@ -377,6 +433,11 @@ export default function TemplateEditorPage() {
                             section={section}
                             onContentChange={(newContent: string) => handleSectionChange('es', section.id, newContent)}
                             onDelete={() => handleDeleteSection('es', section.id)}
+                            splitLayout={sectionSplitLayout}
+                            onSplitLayoutChange={setSectionSplitLayout}
+                            collapsed={Boolean(collapsedSections[section.id])}
+                            onCollapseAll={collapseAllSections}
+                            onCollapsedChange={setSectionCollapsed}
                           />
                         ))}
                       </div>

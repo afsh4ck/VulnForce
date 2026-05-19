@@ -26,6 +26,7 @@ import { arrayMove, SortableContext, sortableKeyboardCoordinates, useSortable, v
 import { CSS } from '@dnd-kit/utilities';
 import { getCVSS, getScore, getSeverity } from '@/lib/cvss';
 import { SectionMarkdownEditor } from '@/components/section-markdown-editor';
+import { joinMarkdownSections, splitMarkdownIntoSections } from '@/lib/markdown-utils';
 
 
 type SaveStatus = 'unsaved' | 'saving' | 'saved';
@@ -41,6 +42,11 @@ type SortableSectionProps = {
   onDelete: () => void;
   getImage: (id: string) => ImageAsset | undefined;
   t: any;
+  splitLayout: number[];
+  onSplitLayoutChange: (layout: number[]) => void;
+  collapsed: boolean;
+  onCollapseAll: () => void;
+  onCollapsedChange: (sectionId: string, collapsed: boolean) => void;
 };
 
 const SortableSection = ({ section, ...props }: SortableSectionProps) => {
@@ -60,7 +66,7 @@ const SortableSection = ({ section, ...props }: SortableSectionProps) => {
   );
 };
 
-const SectionEditor = ({ section, onContentChange, onDelete, dragHandleProps, dragListeners, getImage, t }: {
+const SectionEditor = ({ section, onContentChange, onDelete, dragHandleProps, dragListeners, getImage, t, splitLayout, onSplitLayoutChange, collapsed, onCollapseAll, onCollapsedChange }: {
   section: FindingSection;
   onContentChange: (content: string) => void;
   onDelete: () => void;
@@ -68,6 +74,11 @@ const SectionEditor = ({ section, onContentChange, onDelete, dragHandleProps, dr
   dragListeners: any;
   getImage: (id: string) => ImageAsset | undefined;
   t: any;
+  splitLayout: number[];
+  onSplitLayoutChange: (layout: number[]) => void;
+  collapsed: boolean;
+  onCollapseAll: () => void;
+  onCollapsedChange: (sectionId: string, collapsed: boolean) => void;
 }) => {
     return (
       <SectionMarkdownEditor
@@ -77,6 +88,11 @@ const SectionEditor = ({ section, onContentChange, onDelete, dragHandleProps, dr
         dragHandleProps={dragHandleProps}
         dragListeners={dragListeners}
         getImage={getImage}
+        splitLayout={splitLayout}
+        onSplitLayoutChange={onSplitLayoutChange}
+        collapsed={collapsed}
+        onDragHandleClick={onCollapseAll}
+        onCollapsedChange={(nextCollapsed) => onCollapsedChange(section.id, nextCollapsed)}
         titleFallback={t.newSection}
         labels={{
           section: t.section || t.newSection,
@@ -122,11 +138,13 @@ export default function VulnerabilityEditorPage() {
 
   const [vuln, setVuln] = useState<Vulnerability | null>(null);
   const [references, setReferences] = useState<string[]>([]);
-  const [activeAccordion, setActiveAccordion] = useState<string[]>(['details', 'en-content']);
+  const [activeAccordion, setActiveAccordion] = useState<string[]>(['details']);
   const [saveStatus, setSaveStatus] = useState<SaveStatus>('saved');
 
   const [enSections, setEnSections] = useState<FindingSection[]>([]);
   const [esSections, setEsSections] = useState<FindingSection[]>([]);
+  const [sectionSplitLayout, setSectionSplitLayout] = useState<number[]>([52, 48]);
+  const [collapsedSections, setCollapsedSections] = useState<Record<string, boolean>>({});
   
   const t = {
     en: {
@@ -241,12 +259,12 @@ export default function VulnerabilityEditorPage() {
       vuln[`details_${lang}`],
       vuln[`recommendations_${lang}`]
     ];
-    return sections.filter(Boolean).join('\n\n---\n\n');
+    return joinMarkdownSections(sections);
   }, []);
 
   const parseMarkdownToSections = useCallback((markdown: string): FindingSection[] => {
     if (!markdown || typeof markdown !== 'string') return [];
-    const parts = markdown.split(/\n\s*---\s*\n/);
+    const parts = splitMarkdownIntoSections(markdown, { maxHeadingLevel: 3 });
     return parts.map((part, index) => ({
         id: `section-${index}-${Date.now()}-${Math.random()}`,
         content: part.trim()
@@ -392,8 +410,21 @@ export default function VulnerabilityEditorPage() {
     } else {
         setEsSections(prev => prev.filter(s => s.id !== sectionId));
     }
+    setCollapsedSections(prev => {
+      const next = { ...prev };
+      delete next[sectionId];
+      return next;
+    });
     setSaveStatus('unsaved');
   };
+
+  const collapseAllSections = useCallback(() => {
+    setCollapsedSections(Object.fromEntries([...enSections, ...esSections].map(section => [section.id, true])));
+  }, [enSections, esSections]);
+
+  const setSectionCollapsed = useCallback((sectionId: string, collapsed: boolean) => {
+    setCollapsedSections(prev => ({ ...prev, [sectionId]: collapsed }));
+  }, []);
   
   const handleDragEnd = (event: DragEndEvent, lang: 'en' | 'es') => {
     const { active, over } = event;
@@ -600,6 +631,11 @@ export default function VulnerabilityEditorPage() {
                               onDelete={() => handleDeleteSection('en', section.id)}
                               getImage={getImage}
                               t={t[language]}
+                              splitLayout={sectionSplitLayout}
+                              onSplitLayoutChange={setSectionSplitLayout}
+                              collapsed={Boolean(collapsedSections[section.id])}
+                              onCollapseAll={collapseAllSections}
+                              onCollapsedChange={setSectionCollapsed}
                             />
                           ))}
                         </div>
@@ -634,6 +670,11 @@ export default function VulnerabilityEditorPage() {
                                 onDelete={() => handleDeleteSection('es', section.id)}
                                 getImage={getImage}
                                 t={t[language]}
+                                splitLayout={sectionSplitLayout}
+                                onSplitLayoutChange={setSectionSplitLayout}
+                                collapsed={Boolean(collapsedSections[section.id])}
+                                onCollapseAll={collapseAllSections}
+                                onCollapsedChange={setSectionCollapsed}
                               />
                             ))}
                           </div>

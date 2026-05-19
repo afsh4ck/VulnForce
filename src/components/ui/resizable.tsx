@@ -1,7 +1,9 @@
 
 "use client"
 
+import * as React from "react"
 import {
+  type ImperativePanelGroupHandle,
   PanelGroup,
   Panel as ResizablePrimitivePanel,
   PanelResizeHandle,
@@ -9,18 +11,21 @@ import {
 
 import { cn } from "@/lib/utils"
 
-const ResizablePanelGroup = ({
-  className,
-  ...props
-}: React.ComponentProps<typeof PanelGroup>) => (
-  <PanelGroup
-    className={cn(
-      "flex h-full w-full data-[panel-group-direction=vertical]:flex-col",
-      className
-    )}
-    {...props}
-  />
+const ResizablePanelGroup = React.forwardRef<
+  ImperativePanelGroupHandle,
+  React.ComponentProps<typeof PanelGroup>
+>(({ className, ...props }, ref) => (
+    <PanelGroup
+      ref={ref}
+      className={cn(
+        "flex h-full w-full data-[panel-group-direction=vertical]:flex-col",
+        className
+      )}
+      {...props}
+    />
+  )
 )
+ResizablePanelGroup.displayName = "ResizablePanelGroup"
 
 const ResizablePanel = ResizablePrimitivePanel
 

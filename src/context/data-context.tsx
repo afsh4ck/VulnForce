@@ -48,11 +48,15 @@ const DataContext = createContext<DataContextType | undefined>(undefined);
 
 function usePersistedState<T>(key: string, initialValue: T): [T, React.Dispatch<React.SetStateAction<T>>] {
     const [state, setState] = useState<T>(() => {
-        if (typeof window === 'undefined') {
+        const storage = typeof window !== 'undefined' && typeof window.localStorage?.getItem === 'function'
+            ? window.localStorage
+            : null;
+
+        if (!storage) {
             return initialValue;
         }
         try {
-            const item = window.localStorage.getItem(key);
+            const item = storage.getItem(key);
             return item ? JSON.parse(item) : initialValue;
         } catch (error) {
             console.error(`Error reading localStorage key “${key}”:`, error);
@@ -61,8 +65,14 @@ function usePersistedState<T>(key: string, initialValue: T): [T, React.Dispatch<
     });
 
     useEffect(() => {
+        const storage = typeof window !== 'undefined' && typeof window.localStorage?.setItem === 'function'
+            ? window.localStorage
+            : null;
+
+        if (!storage) return;
+
         try {
-            window.localStorage.setItem(key, JSON.stringify(state));
+            storage.setItem(key, JSON.stringify(state));
         } catch (error) {
             console.error(`Error setting localStorage key “${key}”:`, error);
         }

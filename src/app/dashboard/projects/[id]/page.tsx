@@ -9,9 +9,9 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import Link from 'next/link';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
-import { PlusCircle, FileText, ArrowUpDown, Edit, Save, Trash2, CalendarIcon, Plus, GripVertical, Languages, ChevronLeft, CheckCircle, Heading1, Heading2, Heading3, Code, File, List, ListOrdered, Copy, Bold, Italic } from "@/components/icons";
+import { PlusCircle, FileText, ArrowUpDown, Edit, Save, Trash2, CalendarIcon, Plus, GripVertical, Languages, ChevronLeft, CheckCircle, Heading1, Heading2, Heading3, Code, File, List, ListOrdered, Copy, Bold, Italic, ImageIcon } from "@/components/icons";
 import { useLanguage } from "@/context/language-context";
-import type { Finding, Project, ContentBlock } from '@/lib/types';
+import type { Finding, Project, ContentBlock, ProjectTemplate, Vulnerability, ImageAsset } from '@/lib/types';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
@@ -32,7 +32,7 @@ import { arrayMove, SortableContext, sortableKeyboardCoordinates, useSortable, v
 import { CSS } from '@dnd-kit/utilities';
 import { CommandMenu } from '@/components/command-menu';
 import { MarkdownPreview } from '@/components/markdown-preview';
-import { useLeavePage } from '@/app/dashboard/layout';
+import { useLeavePage } from '@/context/leave-page-context';
 // AddBlockMenu removed: editing is done directly in markdown per-section
 import { BlockOptionsMenu } from '@/components/block-options-menu';
 import { FloatingToolbar } from '@/components/floating-toolbar';
@@ -40,7 +40,9 @@ import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/comp
 import { ResizableHandle, ResizablePanel, ResizablePanelGroup } from '@/components/ui/resizable';
 import { hasTodoMarker, stripMarkdownText } from '@/lib/todo-utils';
 import { ProjectIconSelectItem, projectIconOptions } from '@/components/project-icon';
-import { HighlightedMarkdownTextarea } from '@/components/section-markdown-editor';
+import { HighlightedMarkdownTextarea, SectionMarkdownEditor } from '@/components/section-markdown-editor';
+import { parseMarkdownToBlocks, blocksToMarkdown, joinMarkdownSections } from '@/lib/markdown-utils';
+import { ImageUploadDialog } from '@/components/image-upload-dialog';
 
 
 type SortKey = keyof Finding;
@@ -54,7 +56,29 @@ const compareValues = (aValue: string | number | undefined, bValue: string | num
   return 0;
 };
 
-import { parseMarkdownToBlocks, blocksToMarkdown } from '@/lib/markdown-utils';
+const getProjectTemplateMarkdown = (template: ProjectTemplate, language: Project['language']) => {
+  return language === 'es'
+    ? joinMarkdownSections([template.scope_es || template.scope_en, template.appendix_es || template.appendix_en])
+    : joinMarkdownSections([template.scope_en || template.scope_es, template.appendix_en || template.appendix_es]);
+};
+
+const normalizeFirstHeadingLevel = (markdown: string, level: 2 | 3) => {
+  return markdown.replace(/^(\s{0,3})#{1,6}\s+/m, `${'#'.repeat(level)} `);
+};
+
+const getVulnerabilityTemplateMarkdown = (vulnerability: Vulnerability, language: Project['language']) => {
+  const sections = [
+    vulnerability[`overview_${language}`],
+    vulnerability[`technicalDescription_${language}`],
+    vulnerability[`affectedComponents_${language}`],
+    vulnerability[`impact_${language}`],
+    vulnerability[`immediateActions_${language}`],
+    vulnerability[`details_${language}`],
+    vulnerability[`recommendations_${language}`],
+  ];
+
+  return joinMarkdownSections(sections.map(section => normalizeFirstHeadingLevel(section || '', 2)));
+};
 
 const blockToMarkdown = (block: ContentBlock, content = block.content) => {
   if (/^#{1,6}\s+/m.test((content || '').trim())) {
@@ -118,6 +142,8 @@ type EditableBlockExtra = {
   viewMode?: 'split' | 'markdown' | 'preview';
   onToggleSplit?: (id: string, mode: 'split' | 'markdown' | 'preview') => void;
   sectionTitle?: string;
+  getImage?: (id: string) => ImageAsset | undefined;
+  addImage?: (dataUrl: string) => ImageAsset;
 };
 
 const EditableBlock = React.forwardRef(({ block, onUpdate, onKeyDown, onFocus, isFocused, placeholder, t_editor, viewMode, onToggleSplit }: EditableBlockProps & EditableBlockExtra, ref: React.Ref<HTMLDivElement>) => {
@@ -358,7 +384,7 @@ const EditableBlock = React.forwardRef(({ block, onUpdate, onKeyDown, onFocus, i
 });
 EditableBlock.displayName = "EditableBlock";
 
-const SectionEditableBlock = React.forwardRef(({ block, onUpdate, onKeyDown, onFocus, isFocused, placeholder, t_editor, viewMode, onToggleSplit, sectionTitle }: EditableBlockProps & EditableBlockExtra, ref: React.Ref<HTMLDivElement>) => {
+const SectionEditableBlock = React.forwardRef(({ block, onUpdate, onKeyDown, onFocus, isFocused, placeholder, t_editor, viewMode, onToggleSplit, sectionTitle, getImage, addImage }: EditableBlockProps & EditableBlockExtra, ref: React.Ref<HTMLDivElement>) => {
   const blockRef = useRef<HTMLDivElement | null>(null);
   const textareaRef = useRef<HTMLTextAreaElement | null>(null);
   const [markdownValue, setMarkdownValue] = React.useState<string>(block.content || '');
@@ -395,6 +421,57 @@ const SectionEditableBlock = React.forwardRef(({ block, onUpdate, onKeyDown, onF
   const updateMarkdown = (value: string) => {
     setMarkdownValue(value);
     onUpdate(value);
+  };
+
+  const insertMarkdownAtCursor = (markdown: string) => {
+    const textarea = textareaRef.current;
+    const currentValue = textarea?.value ?? markdownValue;
+    const start = textarea?.selectionStart ?? currentValue.length;
+    const end = textarea?.selectionEnd ?? currentValue.length;
+    const before = currentValue.slice(0, start);
+    const after = currentValue.slice(end);
+    const trimmedMarkdown = markdown.trim();
+    const prefix = before.trim() && !before.endsWith('\n\n') ? (before.endsWith('\n') ? '\n' : '\n\n') : '';
+    const suffix = after.trim() && !after.startsWith('\n\n') ? (after.startsWith('\n') ? '\n' : '\n\n') : '';
+    const nextValue = `${before}${prefix}${trimmedMarkdown}${suffix}${after}`;
+    const nextCursor = before.length + prefix.length + trimmedMarkdown.length;
+
+    updateMarkdown(nextValue);
+    window.setTimeout(() => {
+      textarea?.focus();
+      textarea?.setSelectionRange(nextCursor, nextCursor);
+    }, 0);
+  };
+
+  const readFileAsDataUrl = (file: File) => {
+    return new Promise<string>((resolve, reject) => {
+      const reader = new FileReader();
+      reader.onload = () => resolve(String(reader.result));
+      reader.onerror = () => reject(reader.error);
+      reader.readAsDataURL(file);
+    });
+  };
+
+  const handlePaste = async (event: React.ClipboardEvent<HTMLTextAreaElement>) => {
+    if (!addImage) return;
+
+    const files = Array.from(event.clipboardData.items)
+      .filter(item => item.kind === 'file' && item.type.startsWith('image/'))
+      .map(item => item.getAsFile())
+      .filter((file): file is File => Boolean(file));
+
+    if (files.length === 0) return;
+
+    event.preventDefault();
+
+    const markdownImages = await Promise.all(files.map(async (file, index) => {
+      const dataUrl = await readFileAsDataUrl(file);
+      const image = addImage(dataUrl);
+      const alt = file.name || `Pasted image ${index + 1}`;
+      return `![${alt}](image://${image.id})`;
+    }));
+
+    insertMarkdownAtCursor(markdownImages.join('\n\n'));
   };
 
   const setViewMode = (mode: 'split' | 'markdown' | 'preview') => {
@@ -447,6 +524,7 @@ const SectionEditableBlock = React.forwardRef(({ block, onUpdate, onKeyDown, onF
       placeholder={placeholderText}
       onFocus={onFocus}
       onKeyDown={handleKeyDown}
+      onPaste={handlePaste}
       onChange={updateMarkdown}
       minHeightClassName="min-h-[520px]"
       className={className}
@@ -482,6 +560,11 @@ const SectionEditableBlock = React.forwardRef(({ block, onUpdate, onKeyDown, onF
             <Button type="button" variant="ghost" size="icon" className="h-8 w-8" title="Bulleted list" onMouseDown={(e) => e.preventDefault()} onClick={() => applyMarkdownFormat('bullets')}>
               <List className="h-4 w-4" />
             </Button>
+            <ImageUploadDialog onInsert={insertMarkdownAtCursor}>
+              <Button type="button" variant="ghost" size="icon" className="h-8 w-8" title="Insert image" onMouseDown={(e) => e.preventDefault()}>
+                <ImageIcon className="h-4 w-4" />
+              </Button>
+            </ImageUploadDialog>
           </div>
 
           <div className="flex items-center rounded-md border bg-background p-1">
@@ -501,13 +584,13 @@ const SectionEditableBlock = React.forwardRef(({ block, onUpdate, onKeyDown, onF
             <ResizableHandle className="w-1 bg-border transition-colors hover:bg-yellow-400 data-[resize-handle-state=drag]:bg-yellow-400" />
             <ResizablePanel defaultSize={48} minSize={25}>
               <div className="h-full min-h-[520px] overflow-auto p-5">
-                <MarkdownPreview content={previewMarkdown} getImage={() => undefined} />
+                <MarkdownPreview content={previewMarkdown} getImage={getImage} />
               </div>
             </ResizablePanel>
           </ResizablePanelGroup>
         ) : showPreview ? (
           <div className="min-h-[520px] overflow-auto p-5">
-            <MarkdownPreview content={previewMarkdown} getImage={() => undefined} />
+            <MarkdownPreview content={previewMarkdown} getImage={getImage} />
           </div>
         ) : (
           editorTextarea("min-h-[520px]")
@@ -522,12 +605,30 @@ type SortableBlockProps = EditableBlockProps & EditableBlockExtra & {
   index: number;
   onAdd: (index: number, tag: ContentBlock['tag']) => void;
   onAction: (action: string, blockId: string, value?: any) => void;
+  splitLayout: number[];
+  onSplitLayoutChange: (layout: number[]) => void;
+  collapsed: boolean;
+  onCollapseAll: () => void;
+  onCollapsedChange: (blockId: string, collapsed: boolean) => void;
 };
 
 const SortableBlock = React.forwardRef(({ block, index, onAdd, onAction, ...editableProps }: SortableBlockProps, ref: React.Ref<HTMLDivElement>) => {
   const { attributes, listeners, setNodeRef, transform, transition, isDragging } = useSortable({ id: block.id });
-  const [optionsMenuOpen, setOptionsMenuOpen] = useState(false);
-
+  const {
+    onUpdate,
+    onFocus,
+    placeholder,
+    t_editor,
+    viewMode,
+    onToggleSplit,
+    sectionTitle,
+    getImage,
+    splitLayout,
+    onSplitLayoutChange,
+    collapsed,
+    onCollapseAll,
+    onCollapsedChange,
+  } = editableProps;
 
   const style = {
     transform: transform ? CSS.Transform.toString(transform) : undefined,
@@ -536,24 +637,41 @@ const SortableBlock = React.forwardRef(({ block, index, onAdd, onAction, ...edit
     zIndex: isDragging ? 100 : 'auto',
   };
 
+  const setRefs = (node: HTMLDivElement | null) => {
+    setNodeRef(node);
+    if (typeof ref === 'function') {
+      ref(node);
+    } else if (ref) {
+      (ref as React.MutableRefObject<HTMLDivElement | null>).current = node;
+    }
+  };
+
   return (
-    <div ref={setNodeRef} style={style} className="relative group/block">
-        <div className="absolute top-0 -left-16 h-full flex items-center gap-1 opacity-0 group-hover/block:opacity-100 transition-opacity">
-        <BlockOptionsMenu 
-          onSelect={(action, value) => onAction(action, block.id, value)}
-          open={optionsMenuOpen}
-          onOpenChange={setOptionsMenuOpen}
-          blockTag={block.tag}
-        >
-          <div {...attributes} {...listeners} className="p-1 cursor-grab">
-            <GripVertical className="h-5 w-5 text-muted-foreground" />
-          </div>
-        </BlockOptionsMenu>
-        </div>
-      <SectionEditableBlock
-        ref={ref}
-        block={block}
-        {...editableProps}
+    <div ref={setRefs} style={style} className="relative group/block rounded-md border bg-card p-4 shadow-sm">
+      <SectionMarkdownEditor
+        id={`project-section-${block.id}`}
+        content={blockToMarkdown(block)}
+        previewContent={blockToMarkdown(block)}
+        onChange={onUpdate}
+        onFocus={onFocus}
+        onDelete={() => onAction('delete', block.id)}
+        dragHandleProps={attributes}
+        dragListeners={listeners}
+        getImage={getImage}
+        titleFallback={sectionTitle}
+        mode={viewMode}
+        onModeChange={(mode) => onToggleSplit?.(block.id, mode)}
+        splitLayout={splitLayout}
+        onSplitLayoutChange={onSplitLayoutChange}
+        collapsed={collapsed}
+        onDragHandleClick={onCollapseAll}
+        onCollapsedChange={(nextCollapsed) => onCollapsedChange(block.id, nextCollapsed)}
+        labels={{
+          section: 'Section',
+          untitled: sectionTitle || 'Untitled section',
+          writeContent: placeholder || t_editor?.writeContent || 'Write Markdown content...',
+          delete: 'Delete section',
+        }}
       />
     </div>
   );
@@ -569,7 +687,7 @@ export default function ProjectDetailsPage() {
   const searchParams = useSearchParams();
   const { id } = params;
 
-  const { projects, clients, findings, deleteFinding, updateProject, deleteProject, duplicateProject, projectTemplates, vulnerabilities } = useData();
+  const { projects, clients, findings, deleteFinding, updateProject, deleteProject, duplicateProject, projectTemplates, vulnerabilities, addImage, getImage } = useData();
 
   const [project, setProject] = useState<Project | undefined>();
   const [projectFindings, setProjectFindings] = useState<Finding[]>([]);
@@ -587,6 +705,8 @@ export default function ProjectDetailsPage() {
   
   const [activeBlockId, setActiveBlockId] = useState<string | null>(null);
   const [splitBlocks, setSplitBlocks] = useState<Record<string, 'split' | 'markdown' | 'preview'>>({});
+  const [sectionSplitLayout, setSectionSplitLayout] = useState<number[]>([52, 48]);
+  const [collapsedSections, setCollapsedSections] = useState<Record<string, boolean>>({});
   const [commandMenuOpen, setCommandMenuOpen] = useState(false);
   const [isToolbarOpen, setIsToolbarOpen] = useState(false);
   const [toolbarPosition, setToolbarPosition] = useState({ top: 0, left: 0 });
@@ -909,7 +1029,15 @@ export default function ProjectDetailsPage() {
     }
 
     setTimeout(() => setSaveStatus('saved'), 500);
+    return true;
   }, [project, name, clientId, status, date, icon, projectLanguage, blocks, updateProject, toast, t, uiLanguage]);
+
+  const handlePreviewReport = useCallback(() => {
+    const saved = handleSave(false);
+    if (saved) {
+      window.setTimeout(() => router.push(`/dashboard/projects/${id}/report`), 0);
+    }
+  }, [handleSave, router, id]);
 
   const handleFieldChange = (setter: React.Dispatch<React.SetStateAction<any>>, value: any) => {
     setter(value);
@@ -977,6 +1105,14 @@ export default function ProjectDetailsPage() {
         updateBlocks(arrayMove(blocks, oldIndex, newIndex));
     }
   }, [blocks, updateBlocks]);
+
+  const collapseAllSections = useCallback(() => {
+    setCollapsedSections(Object.fromEntries(blocks.map(block => [block.id, true])));
+  }, [blocks]);
+
+  const setSectionCollapsed = useCallback((blockId: string, collapsed: boolean) => {
+    setCollapsedSections(prev => ({ ...prev, [blockId]: collapsed }));
+  }, []);
   
   const handleAddBlock = useCallback((index: number, tag: ContentBlock['tag'], content: string = '') => {
     let newBlock: ContentBlock;
@@ -1281,7 +1417,7 @@ export default function ProjectDetailsPage() {
             </div>
           </div>
           <div className="flex items-center gap-2">
-              <Button onClick={() => router.push(`/dashboard/projects/${id}/report`)} variant="outline">
+              <Button onClick={handlePreviewReport} variant="outline">
                 <FileText className="mr-2 h-4 w-4" /> {t[uiLanguage].previewReport}
               </Button>
                <AlertDialog open={isDeleteDialogOpen} onOpenChange={setIsDeleteDialogOpen}>
@@ -1340,19 +1476,13 @@ export default function ProjectDetailsPage() {
                                   const id = val.replace('tpl:', '');
                                   const tpl = projectTemplates.find(p => p.id === id);
                                   if (tpl) {
-                                    const md = projectLanguage === 'es' ? (tpl.scope_es || tpl.scope_en) : (tpl.scope_en || tpl.scope_es);
-                                    setTemplatePreview(md || '');
+                                    setTemplatePreview(getProjectTemplateMarkdown(tpl, projectLanguage));
                                   }
                                 } else if (val.startsWith('vul:')) {
                                   const id = val.replace('vul:', '');
                                   const vul = vulnerabilities.find(v => v.id === id);
                                   if (vul) {
-                                    const title = projectLanguage === 'es' ? (vul.title_es || vul.title_en) : vul.title_en;
-                                    const overview = projectLanguage === 'es' ? (vul.overview_es || vul.overview_en) : (vul.overview_en || vul.overview_es);
-                                    const tech = projectLanguage === 'es' ? (vul.technicalDescription_es || vul.technicalDescription_en) : (vul.technicalDescription_en || vul.technicalDescription_es);
-                                    const actions = projectLanguage === 'es' ? (vul.immediateActions_es || vul.immediateActions_en) : (vul.immediateActions_en || vul.immediateActions_es);
-                                    const md = [`# ${title}`, overview || '', tech ? `## Technical Details\n${tech}` : '', actions ? `## Immediate Actions\n${actions}` : ''].filter(Boolean).join('\n\n');
-                                    setTemplatePreview(md);
+                                    setTemplatePreview(getVulnerabilityTemplateMarkdown(vul, projectLanguage));
                                   }
                                 }
                               }}
@@ -1367,7 +1497,7 @@ export default function ProjectDetailsPage() {
                                 const id = templateComboboxValue.replace('tpl:', '');
                                 const tpl = projectTemplates.find(p => p.id === id);
                                 if (!tpl) return toast({ variant: 'destructive', title: 'Plantilla no encontrada' });
-                                const md = projectLanguage === 'es' ? (tpl.scope_es || tpl.scope_en) : (tpl.scope_en || tpl.scope_es);
+                                const md = getProjectTemplateMarkdown(tpl, projectLanguage);
                                 const newBlocks = parseMarkdownToBlocks(md || '');
                                 updateBlocks(newBlocks);
                                 const mapping: Record<string, 'split'|'markdown'|'preview'> = {};
@@ -1379,11 +1509,7 @@ export default function ProjectDetailsPage() {
                                 const id = templateComboboxValue.replace('vul:', '');
                                 const vul = vulnerabilities.find(v => v.id === id);
                                 if (!vul) return toast({ variant: 'destructive', title: 'Vulnerability not found' });
-                                const title = projectLanguage === 'es' ? (vul.title_es || vul.title_en) : vul.title_en;
-                                const overview = projectLanguage === 'es' ? (vul.overview_es || vul.overview_en) : (vul.overview_en || vul.overview_es);
-                                const tech = projectLanguage === 'es' ? (vul.technicalDescription_es || vul.technicalDescription_en) : (vul.technicalDescription_en || vul.technicalDescription_es);
-                                const actions = projectLanguage === 'es' ? (vul.immediateActions_es || vul.immediateActions_en) : (vul.immediateActions_en || vul.immediateActions_es);
-                                const md = [`# ${title}`, overview || '', tech ? `## Technical Details\n${tech}` : '', actions ? `## Immediate Actions\n${actions}` : ''].filter(Boolean).join('\n\n');
+                                const md = getVulnerabilityTemplateMarkdown(vul, projectLanguage);
                                 const newBlocks = parseMarkdownToBlocks(md || '');
                                 updateBlocks(newBlocks);
                                 const mapping: Record<string, 'split'|'markdown'|'preview'> = {};
@@ -1399,28 +1525,35 @@ export default function ProjectDetailsPage() {
                      <DndContext sensors={sensors} collisionDetection={closestCenter} onDragEnd={handleDragEnd}>
                         <SortableContext items={blocks.map(b => b.id)} strategy={verticalListSortingStrategy}>
                             {blocks.map((block, index) => (
-                              <div key={block.id} className="mb-5 rounded-md border bg-card p-4 shadow-sm">
-                                  <SortableBlock
-                                    ref={(el: any) => (blockRefs.current[block.id] = el)}
-                                    block={block}
-                                    index={index}
-                                    onUpdate={(newContent: string) => {
-                                        if (commandMenuOpen) {
-                                            return;
-                                        }
-                                        updateBlocks(blocks.map(b => b.id === block.id ? { ...b, content: newContent } : b));
-                                    }}
-                                    onKeyDown={(e: React.KeyboardEvent<HTMLDivElement>) => handleKeyDown(e, block.id)}
-                                    onAdd={handleAddBlock}
-                                    onAction={handleBlockAction}
-                                    viewMode={splitBlocks[block.id] || block.meta?.viewMode || 'split'}
-                                    onToggleSplit={(id: string, mode: 'split' | 'markdown' | 'preview') => setSplitBlocks(prev => ({ ...prev, [id]: mode }))}
-                                    sectionTitle={getSectionTitleForBlock(blocks, index)}
-                                    onFocus={() => setActiveBlockId(block.id)}
-                                    isFocused={activeBlockId === block.id}
-                                    placeholder={t[projectLanguage as 'en' | 'es'].commandPlaceholder}
-                                    t_editor={t[projectLanguage as 'en' | 'es']}
-                                  />
+                              <div key={block.id} className="mb-5">
+                                <SortableBlock
+                                  ref={(el: any) => (blockRefs.current[block.id] = el)}
+                                  block={block}
+                                  index={index}
+                                  onUpdate={(newContent: string) => {
+                                      if (commandMenuOpen) {
+                                          return;
+                                      }
+                                      updateBlocks(blocks.map(b => b.id === block.id ? { ...b, content: newContent } : b));
+                                  }}
+                                  onKeyDown={(e: React.KeyboardEvent<HTMLDivElement>) => handleKeyDown(e, block.id)}
+                                  onAdd={handleAddBlock}
+                                  onAction={handleBlockAction}
+                                  viewMode={splitBlocks[block.id] || block.meta?.viewMode || 'split'}
+                                  onToggleSplit={(blockId: string, mode: 'split' | 'markdown' | 'preview') => setSplitBlocks(prev => ({ ...prev, [blockId]: mode }))}
+                                  sectionTitle={getSectionTitleForBlock(blocks, index)}
+                                  getImage={getImage}
+                                  addImage={addImage}
+                                  onFocus={() => setActiveBlockId(block.id)}
+                                  isFocused={activeBlockId === block.id}
+                                  placeholder={t[projectLanguage as 'en' | 'es'].commandPlaceholder}
+                                  t_editor={t[projectLanguage as 'en' | 'es']}
+                                  splitLayout={sectionSplitLayout}
+                                  onSplitLayoutChange={setSectionSplitLayout}
+                                  collapsed={Boolean(collapsedSections[block.id])}
+                                  onCollapseAll={collapseAllSections}
+                                  onCollapsedChange={setSectionCollapsed}
+                                />
                               </div>
                             ))}
                         </SortableContext>
@@ -1616,10 +1749,3 @@ export default function ProjectDetailsPage() {
     
 
     
-
-
-
-
-
-
-

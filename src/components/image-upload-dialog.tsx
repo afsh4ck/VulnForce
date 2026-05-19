@@ -1,5 +1,6 @@
 
 'use client';
+/* eslint-disable @next/next/no-img-element */
 
 import React, { useState, useCallback, useRef } from 'react';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger, DialogFooter } from './ui/dialog';
@@ -10,7 +11,6 @@ import { Upload, Link, GalleryHorizontal } from '@/components/icons';
 import { useLanguage } from '@/context/language-context';
 import { useData } from '@/context/data-context';
 import type { ImageAsset } from '@/lib/types';
-import Image from 'next/image';
 
 export const ImageUploadDialog = ({ onInsert, children }: { onInsert: (markdown: string) => void, children: React.ReactNode }) => {
     const { language } = useLanguage();
@@ -128,7 +128,7 @@ export const ImageUploadDialog = ({ onInsert, children }: { onInsert: (markdown:
                                 className="flex flex-col items-center justify-center w-full h-64 border-2 border-dashed rounded-lg cursor-pointer bg-muted hover:bg-muted/80"
                             >
                                 {previewUrl ? (
-                                    <Image src={previewUrl} alt="Preview" width={400} height={200} className="max-h-full w-auto rounded-lg object-contain" />
+                                    <img src={previewUrl} alt="Preview" className="max-h-full w-auto rounded-lg object-contain" />
                                 ) : (
                                     <div className="flex flex-col items-center justify-center pt-5 pb-6">
                                         <Upload className="w-8 h-8 mb-4 text-muted-foreground" />
@@ -147,7 +147,7 @@ export const ImageUploadDialog = ({ onInsert, children }: { onInsert: (markdown:
                          </div>
                          {url && (
                              <div className="flex justify-center p-4 border rounded-lg bg-muted">
-                                 <Image src={url} alt="URL Preview" width={400} height={200} className="max-h-64 w-auto rounded object-contain" />
+                                 <img src={url} alt="URL Preview" className="max-h-64 w-auto rounded object-contain" />
                              </div>
                          )}
                     </TabsContent>
@@ -156,7 +156,7 @@ export const ImageUploadDialog = ({ onInsert, children }: { onInsert: (markdown:
                            <div className="grid grid-cols-4 gap-4 max-h-80 overflow-y-auto p-1">
                              {images.map((image: ImageAsset) => (
                                <div key={image.id} className="relative aspect-square cursor-pointer group" onClick={() => handleGalleryInsert(image)}>
-                                 <Image src={image.dataUrl} alt="Gallery image" layout="fill" className="object-cover rounded-md" />
+                                 <img src={image.dataUrl} alt="Gallery image" className="h-full w-full rounded-md object-cover" />
                                  <div className="absolute inset-0 bg-black/40 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
                                    <p className="text-white text-xs text-center">Insert</p>
                                  </div>

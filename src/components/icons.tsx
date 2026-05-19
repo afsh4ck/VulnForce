@@ -64,6 +64,7 @@ export {
   Gear as Settings,
   ShieldCheck,
   Shield as ShieldHalf,
+  ShieldPlus,
   DeviceMobile as Smartphone,
   TextStrikethrough as Strikethrough,
   Sun,

@@ -1,7 +1,8 @@
 'use client';
 
 import React, { useEffect, useMemo, useRef, useState } from 'react';
-import { Bold, Code, GripVertical, Italic, List, Trash2 } from '@/components/icons';
+import type { ImperativePanelGroupHandle } from 'react-resizable-panels';
+import { Bold, ChevronRight, Code, GripVertical, ImageIcon, Italic, List, Trash2 } from '@/components/icons';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { ResizableHandle, ResizablePanel, ResizablePanelGroup } from '@/components/ui/resizable';
@@ -9,6 +10,8 @@ import { MarkdownPreview } from '@/components/markdown-preview';
 import { cn } from '@/lib/utils';
 import { stripMarkdownText } from '@/lib/todo-utils';
 import type { ImageAsset } from '@/lib/types';
+import { ImageUploadDialog } from '@/components/image-upload-dialog';
+import { useData } from '@/context/data-context';
 
 type SectionEditorMode = 'split' | 'markdown' | 'preview';
 
@@ -23,7 +26,10 @@ type SectionEditorLabels = {
   italic?: string;
   code?: string;
   bullets?: string;
+  image?: string;
   delete?: string;
+  expand?: string;
+  collapse?: string;
 };
 
 type SectionMarkdownEditorProps = {
@@ -45,6 +51,11 @@ type SectionMarkdownEditorProps = {
   className?: string;
   minHeightClassName?: string;
   textareaRef?: React.RefObject<HTMLTextAreaElement>;
+  splitLayout?: number[];
+  onSplitLayoutChange?: (layout: number[]) => void;
+  collapsed?: boolean;
+  onCollapsedChange?: (collapsed: boolean) => void;
+  onDragHandleClick?: () => void;
 };
 
 type HighlightedMarkdownTextareaProps = {
@@ -52,6 +63,7 @@ type HighlightedMarkdownTextareaProps = {
   onChange: (value: string) => void;
   onFocus?: () => void;
   onKeyDown?: (event: React.KeyboardEvent<HTMLTextAreaElement>) => void;
+  onPaste?: (event: React.ClipboardEvent<HTMLTextAreaElement>) => void;
   placeholder?: string;
   textareaRef?: React.RefObject<HTMLTextAreaElement>;
   className?: string;
@@ -71,7 +83,10 @@ const defaultLabels: Required<SectionEditorLabels> = {
   italic: 'Italic',
   code: 'Code',
   bullets: 'Bulleted list',
+  image: 'Insert image',
   delete: 'Delete section',
+  expand: 'Expand section',
+  collapse: 'Collapse sections',
 };
 
 const getHeading = (content: string) => {
@@ -129,7 +144,7 @@ const renderHighlightedMarkdown = (value: string) => {
 };
 
 export const HighlightedMarkdownTextarea = React.forwardRef<HTMLTextAreaElement, HighlightedMarkdownTextareaProps>(
-  ({ value, onChange, onFocus, onKeyDown, placeholder, textareaRef, className, minHeightClassName = 'min-h-[420px]' }, forwardedRef) => {
+  ({ value, onChange, onFocus, onKeyDown, onPaste, placeholder, textareaRef, className, minHeightClassName = 'min-h-[420px]' }, forwardedRef) => {
     const highlightRef = useRef<HTMLPreElement | null>(null);
 
     const setTextareaRef = (node: HTMLTextAreaElement | null) => {
@@ -170,6 +185,7 @@ export const HighlightedMarkdownTextarea = React.forwardRef<HTMLTextAreaElement,
           spellCheck={false}
           onFocus={onFocus}
           onKeyDown={onKeyDown}
+          onPaste={onPaste}
           onScroll={handleScroll}
           onChange={(event) => onChange(event.target.value)}
           className={cn(
@@ -204,12 +220,20 @@ export function SectionMarkdownEditor({
   className,
   minHeightClassName = 'min-h-[520px]',
   textareaRef: externalTextareaRef,
+  splitLayout,
+  onSplitLayoutChange,
+  collapsed = false,
+  onCollapsedChange,
+  onDragHandleClick,
 }: SectionMarkdownEditorProps) {
+  const { addImage, getImage: getStoredImage } = useData();
   const localTextareaRef = useRef<HTMLTextAreaElement>(null);
+  const panelGroupRef = useRef<ImperativePanelGroupHandle | null>(null);
   const textareaRef = externalTextareaRef || localTextareaRef;
   const mergedLabels = { ...defaultLabels, ...labels };
   const [localMode, setLocalMode] = useState<SectionEditorMode>(defaultMode);
   const currentMode = mode || localMode;
+  const normalizedSplitLayout = splitLayout && splitLayout.length >= 2 ? splitLayout : [52, 48];
 
   useEffect(() => {
     if (!mode) {
@@ -227,8 +251,68 @@ export function SectionMarkdownEditor({
     onModeChange?.(nextMode);
   };
 
+  useEffect(() => {
+    if (currentMode !== 'split' || !panelGroupRef.current || !splitLayout || splitLayout.length < 2) return;
+    const currentLayout = panelGroupRef.current.getLayout();
+    const changed = currentLayout.length !== splitLayout.length
+      || currentLayout.some((size, index) => Math.abs(size - splitLayout[index]) > 0.5);
+
+    if (changed) {
+      panelGroupRef.current.setLayout(splitLayout);
+    }
+  }, [currentMode, splitLayout]);
+
   const updateTitle = (title: string) => {
     onChange(replaceSectionTitle(content, title));
+  };
+
+  const insertMarkdownAtCursor = (markdown: string) => {
+    const textarea = textareaRef.current;
+    const currentValue = textarea?.value ?? content;
+    const start = textarea?.selectionStart ?? currentValue.length;
+    const end = textarea?.selectionEnd ?? currentValue.length;
+    const before = currentValue.slice(0, start);
+    const after = currentValue.slice(end);
+    const trimmedMarkdown = markdown.trim();
+    const prefix = before.trim() && !before.endsWith('\n\n') ? (before.endsWith('\n') ? '\n' : '\n\n') : '';
+    const suffix = after.trim() && !after.startsWith('\n\n') ? (after.startsWith('\n') ? '\n' : '\n\n') : '';
+    const nextValue = `${before}${prefix}${trimmedMarkdown}${suffix}${after}`;
+    const nextCursor = before.length + prefix.length + trimmedMarkdown.length;
+
+    onChange(nextValue);
+    window.setTimeout(() => {
+      textarea?.focus();
+      textarea?.setSelectionRange(nextCursor, nextCursor);
+    }, 0);
+  };
+
+  const readFileAsDataUrl = (file: File) => {
+    return new Promise<string>((resolve, reject) => {
+      const reader = new FileReader();
+      reader.onload = () => resolve(String(reader.result));
+      reader.onerror = () => reject(reader.error);
+      reader.readAsDataURL(file);
+    });
+  };
+
+  const handlePaste = async (event: React.ClipboardEvent<HTMLTextAreaElement>) => {
+    const files = Array.from(event.clipboardData.items)
+      .filter(item => item.kind === 'file' && item.type.startsWith('image/'))
+      .map(item => item.getAsFile())
+      .filter((file): file is File => Boolean(file));
+
+    if (files.length === 0) return;
+
+    event.preventDefault();
+
+    const markdownImages = await Promise.all(files.map(async (file, index) => {
+      const dataUrl = await readFileAsDataUrl(file);
+      const image = addImage(dataUrl);
+      const alt = file.name || `Pasted image ${index + 1}`;
+      return `![${alt}](image://${image.id})`;
+    }));
+
+    insertMarkdownAtCursor(markdownImages.join('\n\n'));
   };
 
   const applyMarkdownFormat = (formatType: 'bold' | 'italic' | 'code' | 'bullets') => {
@@ -276,6 +360,7 @@ export function SectionMarkdownEditor({
       onChange={onChange}
       onFocus={onFocus}
       onKeyDown={onKeyDown}
+      onPaste={handlePaste}
       placeholder={mergedLabels.writeContent}
       textareaRef={textareaRef}
       minHeightClassName={minHeightClassName}
@@ -284,6 +369,10 @@ export function SectionMarkdownEditor({
   );
 
   const renderedPreviewContent = previewContent ?? content;
+  const handleDragHandleClick = () => {
+    onDragHandleClick?.();
+    onCollapsedChange?.(!collapsed);
+  };
 
   return (
     <section
@@ -296,20 +385,43 @@ export function SectionMarkdownEditor({
       <div className="mb-2 flex flex-col gap-3 border-b border-border pb-3 lg:flex-row lg:items-center lg:justify-between">
         <div className="flex min-w-0 flex-1 items-center gap-2">
           {dragHandleProps && dragListeners && (
-            <div {...dragHandleProps} {...dragListeners} className="cursor-grab rounded-md p-2 text-muted-foreground hover:bg-muted hover:text-foreground">
+            <button
+              type="button"
+              {...dragHandleProps}
+              {...dragListeners}
+              className="cursor-grab rounded-md p-2 text-muted-foreground hover:bg-muted hover:text-foreground"
+              title={mergedLabels.collapse}
+              onClick={handleDragHandleClick}
+            >
               <GripVertical className="h-5 w-5" />
-            </div>
+            </button>
           )}
           <div className="min-w-0 flex-1">
             <p className="text-[11px] font-medium uppercase tracking-wide text-muted-foreground">{mergedLabels.section}</p>
-            <Input
-              value={sectionTitle}
-              onChange={(event) => updateTitle(event.target.value)}
-              className="h-auto truncate border-0 bg-transparent p-0 font-headline text-lg font-semibold text-foreground shadow-none focus-visible:ring-0 focus-visible:ring-offset-0"
-            />
+            {collapsed ? (
+              <button
+                type="button"
+                className="block max-w-full truncate text-left font-headline text-lg font-semibold text-foreground"
+                onClick={() => onCollapsedChange?.(false)}
+                title={mergedLabels.expand}
+              >
+                {sectionTitle}
+              </button>
+            ) : (
+              <Input
+                value={sectionTitle}
+                onChange={(event) => updateTitle(event.target.value)}
+                className="h-auto truncate border-0 bg-transparent p-0 font-headline text-lg font-semibold text-foreground shadow-none focus-visible:ring-0 focus-visible:ring-offset-0"
+              />
+            )}
           </div>
         </div>
 
+        {collapsed ? (
+          <Button type="button" variant="ghost" size="icon" className="h-8 w-8" title={mergedLabels.expand} onClick={() => onCollapsedChange?.(false)}>
+            <ChevronRight className="h-4 w-4" />
+          </Button>
+        ) : (
         <div className="flex flex-wrap items-center gap-2">
           <div className="flex items-center gap-1 rounded-md border bg-background p-1">
             <Button type="button" variant="ghost" size="icon" className="h-8 w-8" title={mergedLabels.bold} onMouseDown={(e) => e.preventDefault()} onClick={() => applyMarkdownFormat('bold')}>
@@ -324,6 +436,11 @@ export function SectionMarkdownEditor({
             <Button type="button" variant="ghost" size="icon" className="h-8 w-8" title={mergedLabels.bullets} onMouseDown={(e) => e.preventDefault()} onClick={() => applyMarkdownFormat('bullets')}>
               <List className="h-4 w-4" />
             </Button>
+            <ImageUploadDialog onInsert={insertMarkdownAtCursor}>
+              <Button type="button" variant="ghost" size="icon" className="h-8 w-8" title={mergedLabels.image} onMouseDown={(e) => e.preventDefault()}>
+                <ImageIcon className="h-4 w-4" />
+              </Button>
+            </ImageUploadDialog>
           </div>
 
           <div className="flex items-center rounded-md border bg-background p-1">
@@ -344,29 +461,37 @@ export function SectionMarkdownEditor({
             </Button>
           )}
         </div>
+        )}
       </div>
 
+      {!collapsed && (
       <div className="overflow-hidden rounded-md border bg-background">
         {currentMode === 'split' ? (
-          <ResizablePanelGroup direction="horizontal" className={minHeightClassName}>
-            <ResizablePanel defaultSize={52} minSize={25}>
+          <ResizablePanelGroup
+            ref={panelGroupRef}
+            direction="horizontal"
+            className={minHeightClassName}
+            onLayout={(layout) => onSplitLayoutChange?.(layout)}
+          >
+            <ResizablePanel defaultSize={normalizedSplitLayout[0]} minSize={25}>
               {editor('border-0')}
             </ResizablePanel>
             <ResizableHandle className="w-1 bg-border transition-colors hover:bg-yellow-400 data-[resize-handle-state=drag]:bg-yellow-400" />
-            <ResizablePanel defaultSize={48} minSize={25}>
+            <ResizablePanel defaultSize={normalizedSplitLayout[1]} minSize={25}>
               <div className={cn('h-full overflow-auto p-5', minHeightClassName)}>
-                <MarkdownPreview content={renderedPreviewContent} getImage={getImage} />
+                <MarkdownPreview content={renderedPreviewContent} getImage={getImage ?? getStoredImage} />
               </div>
             </ResizablePanel>
           </ResizablePanelGroup>
         ) : currentMode === 'preview' ? (
           <div className={cn('overflow-auto p-5', minHeightClassName)}>
-            <MarkdownPreview content={renderedPreviewContent} getImage={getImage} />
+            <MarkdownPreview content={renderedPreviewContent} getImage={getImage ?? getStoredImage} />
           </div>
         ) : (
           editor()
         )}
       </div>
+      )}
     </section>
   );
 }

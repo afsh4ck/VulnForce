@@ -1,6 +1,7 @@
 
 
 'use client';
+/* eslint-disable @next/next/no-img-element */
 
 import { useParams, useRouter } from 'next/navigation';
 import { MarkdownPreview } from '@/components/markdown-preview';
@@ -80,6 +81,11 @@ export default function ReportPreviewPage() {
       informational: 'Informational',
       lightMode: 'Light Mode',
       darkMode: 'Dark Mode',
+      reportType: 'Security Assessment Report',
+      generatedOn: 'Generated on',
+      assessmentWindow: 'Assessment window',
+      client: 'Client',
+      totalFindings: 'Total findings',
     },
     es: {
       findingsSummary: 'Resumen de Hallazgos',
@@ -109,6 +115,11 @@ export default function ReportPreviewPage() {
       informational: 'Informativo',
       lightMode: 'Modo Claro',
       darkMode: 'Modo Oscuro',
+      reportType: 'Informe de Evaluación de Seguridad',
+      generatedOn: 'Generado el',
+      assessmentWindow: 'Ventana de evaluación',
+      client: 'Cliente',
+      totalFindings: 'Hallazgos totales',
     },
   };
 
@@ -306,6 +317,7 @@ export default function ReportPreviewPage() {
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>${project.name}</title>
+  <link rel="icon" href="/favicon.svg" type="image/svg+xml">
   <script src="https://cdn.tailwindcss.com"></script>
   <style>
     @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700&display=swap');
@@ -313,22 +325,37 @@ export default function ReportPreviewPage() {
     @import url('https://fonts.googleapis.com/css2?family=Source+Code+Pro:wght@400;500&display=swap');
     :root { --background: 0 0% 94.1%; --foreground: 240 10% 3.9%; --card: 0 0% 100%; --card-foreground: 240 10% 3.9%; --popover: 0 0% 100%; --popover-foreground: 240 10% 3.9%; --primary: 76 100% 50%; --primary-foreground: 76 100% 5%; --secondary: 240 4.8% 95.9%; --secondary-foreground: 240 5.9% 10%; --muted: 240 4.8% 95.9%; --muted-foreground: 240 3.8% 46.1%; --accent: 76 100% 60%; --accent-foreground: 76 100% 10%; --destructive: 0 80% 50%; --destructive-foreground: 0 0% 98%; --border: 240 5.9% 90%; --input: 240 5.9% 90%; --ring: 76 100% 50%; }
     .dark { --background: 224 71% 4%; --foreground: 210 40% 98%; --card: 224 71% 6%; --card-foreground: 210 40% 98%; --popover: 224 71% 4%; --popover-foreground: 210 40% 98%; --primary: 76 100% 50%; --primary-foreground: 76 100% 5%; --secondary: 220 15% 15%; --secondary-foreground: 210 40% 98%; --muted: 220 15% 15%; --muted-foreground: 215 20% 65%; --accent: 76 100% 60%; --accent-foreground: 76 100% 10%; --destructive: 0 72% 51%; --destructive-foreground: 210 40% 98%; --border: 220 15% 15%; --input: 220 15% 15%; --ring: 76 100% 50%; }
-    body { background-color: hsl(var(--background)); color: hsl(var(--foreground)); font-family: 'Inter', sans-serif; transition: background-color 0.2s ease-in-out, color 0.2s ease-in-out; }
+    html { scroll-behavior: smooth; }
+    body { background: radial-gradient(circle at top left, hsl(var(--primary) / 0.14), transparent 34rem), hsl(var(--background)); color: hsl(var(--foreground)); font-family: 'Inter', sans-serif; transition: background-color 0.2s ease-in-out, color 0.2s ease-in-out; }
     h1, h2, h3, h4, h5, h6 { font-family: 'Space Grotesk', sans-serif; }
     pre, code { font-family: 'Source Code Pro', monospace; }
-    .report-main { background: hsl(var(--card)); border: 1px solid hsl(var(--border)); border-radius: 8px; box-shadow: 0 18px 50px rgb(0 0 0 / 0.12); }
+    .report-main { background: hsl(var(--card)); border: 1px solid hsl(var(--border)); border-radius: 16px; box-shadow: 0 22px 70px rgb(0 0 0 / 0.28); overflow: hidden; }
+    .report-page { padding: 2.5rem 3rem; }
+    .report-cover { min-height: 620px; background: linear-gradient(135deg, hsl(var(--card)) 0%, hsl(var(--muted) / 0.75) 100%); border-bottom: 1px solid hsl(var(--border)); }
     .prose { color: hsl(var(--foreground)); max-width: 100% !important; font-size: 1rem; line-height: 1.75; } .prose h1, .prose h2, .prose h3, .prose h4, .prose h5, .prose h6 { color: hsl(var(--foreground)); scroll-margin-top: 90px; } .prose a { color: hsl(var(--primary)); text-decoration-thickness: 1px; text-underline-offset: 3px; } .prose a[href*="todo=TODO"], .text-red-500 { color: #ef4444 !important; font-weight: 700; } .prose strong { color: hsl(var(--foreground)); } .prose blockquote { color: hsl(var(--muted-foreground)); border-left-color: hsl(var(--primary)); background: hsl(var(--muted) / 0.4); padding: 0.5rem 1rem; border-radius: 6px; } .prose code:not(pre code) { background-color: hsl(var(--muted)) !important; color: hsl(var(--foreground)) !important; padding: 2px 5px; border-radius: 4px; } .prose pre { background-color: hsl(var(--muted)) !important; color: hsl(var(--foreground)) !important; padding: 1em; border-radius: 8px; overflow-x: auto; border: 1px solid hsl(var(--border)); } .prose table { width: 100%; display: table; } .prose th { background-color: hsl(var(--muted)); color: hsl(var(--foreground)); } .prose td, .prose th { border: 1px solid hsl(var(--border)); padding: 10px 12px; vertical-align: top; } hr { border-top-color: hsl(var(--border)); }
+    .prose img { max-width: 100%; height: auto; border-radius: 8px; border: 1px solid hsl(var(--border)); }
     [id] { scroll-margin-top: 80px; }
     #toc-sidebar { transition: right 0.3s ease-in-out; }
     .toc-level-1 { font-weight: bold; } .toc-level-2 { padding-left: 1rem; } .toc-level-3 { padding-left: 2rem; }
     #toc-sidebar a { display: block; padding: 4px 8px; border-radius: 4px; transition: background-color 0.2s ease-in-out, color 0.2s ease-in-out; } #toc-sidebar a:hover { background-color: hsl(var(--muted)); color: hsl(var(--primary)); }
+    @media print {
+      html, body { background: white !important; }
+      body { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+      header, #toc-sidebar, #theme-switcher, #toc-toggler { display: none !important; }
+      @page { size: A4; margin: 0; }
+      .report-main { max-width: none !important; border: 0 !important; border-radius: 0 !important; box-shadow: none !important; }
+      .report-page { padding: 1.6cm !important; page-break-inside: avoid; }
+      .report-cover { min-height: 100vh; border-radius: 0 !important; }
+      .break-after-page { page-break-after: always; }
+      .print-toc a::after { content: leader('.') target-counter(attr(href), page); }
+    }
   </style>
 </head>
 <body class="bg-background text-foreground">
   <header class="sticky top-0 z-30 w-full bg-background/80 backdrop-blur-sm border-b border-border">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-3 flex justify-between items-center h-16">
       <div class="flex items-center gap-2 font-bold text-lg" style="font-family: 'Space Grotesk', sans-serif;">
-          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="hsl(var(--primary))" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path><path d="M12 22V2"></path></svg>
+          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="hsl(var(--primary))" viewBox="0 0 256 256"><path d="M216,44.45l-80-29.09a23.94,23.94,0,0,0-16,0L40,44.45A24,24,0,0,0,24,67V116.7c0,82,69.41,117.81,90.69,126.74a23.85,23.85,0,0,0,18.62,0C154.59,234.51,224,198.7,224,116.7V67A24,24,0,0,0,216,44.45ZM168,136H136v32a8,8,0,0,1-16,0V136H88a8,8,0,0,1,0-16h32V88a8,8,0,0,1,16,0v32h32a8,8,0,0,1,0,16Z"/></svg>
           <span>VulnForce</span>
       </div>
       <div class="flex items-center gap-4">
@@ -404,16 +431,31 @@ export default function ReportPreviewPage() {
       severityCounts[f.severity]++;
     }
   });
+  const severityOrder = ['Critical', 'High', 'Medium', 'Low', 'Informational'] as const;
+  const generatedDate = new Date().toLocaleDateString(reportLang === 'es' ? 'es-ES' : 'en-US', {
+    year: 'numeric',
+    month: 'long',
+    day: 'numeric',
+  });
+  const assessmentWindow = `${project.startDate} - ${project.endDate}`;
+  const clientLogo = client.logoUrl ? (
+    <img src={client.logoUrl} alt={`${client.name} logo`} className="h-16 max-w-[220px] rounded-md object-contain" />
+  ) : (
+    <Logo />
+  );
 
   return (
-    <div className={cn("bg-background text-foreground min-h-screen", theme)}>
+    <div className={cn("report-shell bg-background text-foreground min-h-screen", theme)}>
       <style jsx global>{`
         @media print {
+          html, body { background: white !important; }
           body { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
           .no-print { display: none !important; }
-          main, .printable-content { scroll-behavior: auto !important; }
+          main, .printable-content { scroll-behavior: auto !important; max-width: none !important; border: 0 !important; border-radius: 0 !important; box-shadow: none !important; }
           [id] { scroll-margin-top: 0 !important; }
-          @page { size: A4; margin: 1.5cm; }
+          @page { size: A4; margin: 0; }
+          .report-page { padding: 1.6cm !important; page-break-inside: avoid; }
+          .report-cover { min-height: 100vh; border-radius: 0 !important; margin: 0 !important; }
           .break-after-page { page-break-after: always; }
           .print-toc a::after { content: leader('.') target-counter(attr(href), page); }
         }
@@ -426,6 +468,8 @@ export default function ReportPreviewPage() {
         .prose code:not(pre code) { color: hsl(var(--foreground)) !important; }
         .prose blockquote { background: hsl(var(--muted) / 0.4); border-left-color: hsl(var(--primary)); border-radius: 6px; padding: 0.5rem 1rem; }
         .prose th { color: hsl(var(--foreground)); }
+        .report-shell { background: radial-gradient(circle at top left, hsl(var(--primary) / 0.14), transparent 34rem), hsl(var(--background)); }
+        .report-cover { background: linear-gradient(135deg, hsl(var(--card)) 0%, hsl(var(--muted) / 0.75) 100%); }
       `}</style>
       
       <header className="sticky top-0 z-30 w-full bg-background/80 backdrop-blur-sm border-b no-print">
@@ -529,17 +573,51 @@ export default function ReportPreviewPage() {
           </div>
         </aside>
         
-        <main className={cn("flex-1 transition-all duration-300 printable-content max-w-5xl rounded-md border bg-card p-6 shadow-sm md:p-10")}>
+        <main className={cn("flex-1 transition-all duration-300 printable-content max-w-5xl overflow-hidden rounded-xl border bg-card shadow-xl")}>
           <div className="space-y-12" ref={reportContentRef}>
-            <header className="flex justify-between items-start">
-              <div>
-                <h1 className="font-headline text-4xl font-bold text-primary">{project.name}</h1>
-                <p className="text-xl text-muted-foreground">{client?.name}</p>
+            <header className="report-cover report-page break-after-page flex min-h-[620px] flex-col justify-between border-b p-8 md:p-12">
+              <div className="flex items-start justify-between gap-8">
+                <div className="space-y-5">
+                  <p className="text-sm font-semibold uppercase tracking-[0.18em] text-primary">{langT.reportType}</p>
+                  <div>
+                    <h1 className="font-headline text-4xl font-bold tracking-tight text-foreground md:text-6xl">{project.name}</h1>
+                    <p className="mt-3 text-xl text-muted-foreground">{client.name}</p>
+                  </div>
+                </div>
+                <div className="flex min-w-[160px] justify-end">{clientLogo}</div>
               </div>
-              <Logo />
+              <div className="grid gap-4 md:grid-cols-4">
+                <div className="rounded-lg border bg-background/70 p-4">
+                  <p className="text-xs uppercase tracking-wide text-muted-foreground">{langT.client}</p>
+                  <p className="mt-1 font-semibold">{client.name}</p>
+                </div>
+                <div className="rounded-lg border bg-background/70 p-4 md:col-span-2">
+                  <p className="text-xs uppercase tracking-wide text-muted-foreground">{langT.assessmentWindow}</p>
+                  <p className="mt-1 font-semibold">{assessmentWindow}</p>
+                </div>
+                <div className="rounded-lg border bg-background/70 p-4">
+                  <p className="text-xs uppercase tracking-wide text-muted-foreground">{langT.generatedOn}</p>
+                  <p className="mt-1 font-semibold">{generatedDate}</p>
+                </div>
+              </div>
             </header>
+
+            <section className="report-page px-8 md:px-12">
+              <div className="grid gap-4 md:grid-cols-6">
+                <div className="rounded-lg border bg-muted/30 p-5 md:col-span-2">
+                  <p className="text-sm text-muted-foreground">{langT.totalFindings}</p>
+                  <p className="mt-2 text-4xl font-bold text-primary">{projectFindings.length}</p>
+                </div>
+                {severityOrder.map(severity => (
+                  <div key={severity} className="rounded-lg border bg-background p-5">
+                    <p className="text-sm text-muted-foreground">{langT[severity.toLowerCase() as keyof typeof langT]}</p>
+                    <p className="mt-2 text-3xl font-semibold">{severityCounts[severity]}</p>
+                  </div>
+                ))}
+              </div>
+            </section>
             
-            <section className="hidden print:block break-after-page">
+            <section className="report-page hidden break-after-page print:block">
               <h1 className="font-headline text-2xl font-bold border-b-2 border-primary pb-2 mb-4 mt-12">{langT.tableOfContents}</h1>
               <ul className="list-none space-y-2 print-toc">
                 {headings.map((h) => (
@@ -554,7 +632,9 @@ export default function ReportPreviewPage() {
               </ul>
             </section>
             
-            <MarkdownPreview content={fullReportContent} getImage={getImage} isReport />
+            <section className="report-page px-8 pb-10 md:px-12">
+              <MarkdownPreview content={fullReportContent} getImage={getImage} isReport />
+            </section>
 
           </div>
         </main>
@@ -562,5 +642,3 @@ export default function ReportPreviewPage() {
     </div>
   );
 }
-
-

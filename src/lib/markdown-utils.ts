@@ -2,28 +2,118 @@ import TurndownService from 'turndown';
 import type { ContentBlock } from './types';
 
 const turndown = new TurndownService({ codeBlockStyle: 'fenced' });
+const horizontalRulePattern = /^\s*(?:-{3,}|\*{3,}|_{3,})\s*$/;
+
+type SplitMarkdownIntoSectionsOptions = {
+  maxHeadingLevel?: 1 | 2 | 3 | 4 | 5 | 6;
+  fallbackToHorizontalRules?: boolean;
+};
 
 export function htmlToMarkdown(html: string): string {
   if (!html) return '';
   return turndown.turndown(html);
 }
 
-export function parseMarkdownToBlocks(input: string): ContentBlock[] {
-  if (!input) return [{ id: `block-${Date.now()}`, tag: 'p', content: '' }];
+function normalizeMarkdownInput(input: string): string {
+  const hasHtmlTags = /<\/?[a-z][\s\S]*>/i.test(input);
+  const hasMarkdownStructure = /(^|\n)\s{0,3}#{1,6}\s+/.test(input)
+    || /(^|\n)\s*[-*]\s+/.test(input)
+    || /(^|\n)\s*\|.+\|\s*$/.test(input)
+    || /```/.test(input);
 
-  // If input looks like HTML, convert to markdown first
-  const looksLikeHtml = /<[^>]+>/g.test(input);
-  const md = (looksLikeHtml ? htmlToMarkdown(input) : input).replace(/\r\n/g, '\n');
+  return (hasHtmlTags && !hasMarkdownStructure ? htmlToMarkdown(input) : input).replace(/\r\n/g, '\n');
+}
 
+function trimBoundarySeparators(lines: string[]) {
+  const nextLines = [...lines];
+
+  while (nextLines.length > 0 && (!nextLines[0].trim() || horizontalRulePattern.test(nextLines[0]))) {
+    nextLines.shift();
+  }
+
+  while (nextLines.length > 0 && (!nextLines[nextLines.length - 1].trim() || horizontalRulePattern.test(nextLines[nextLines.length - 1]))) {
+    nextLines.pop();
+  }
+
+  return nextLines;
+}
+
+function hasSectionContent(lines: string[]) {
+  return trimBoundarySeparators(lines).some(line => line.trim());
+}
+
+function cleanMarkdownSection(content: string) {
+  return trimBoundarySeparators(content.replace(/\r\n/g, '\n').split('\n')).join('\n').trim();
+}
+
+export function joinMarkdownSections(sections: Array<string | null | undefined>): string {
+  return sections
+    .map(section => cleanMarkdownSection(section || ''))
+    .filter(Boolean)
+    .join('\n\n---\n\n');
+}
+
+export function splitMarkdownIntoSections(input: string, options: SplitMarkdownIntoSectionsOptions = {}): string[] {
+  if (!input || typeof input !== 'string') return [];
+
+  const md = normalizeMarkdownInput(input);
+  if (!md.trim()) return [];
+
+  const maxHeadingLevel = options.maxHeadingLevel ?? 2;
+  const fallbackToHorizontalRules = options.fallbackToHorizontalRules ?? true;
+  const headingPattern = new RegExp(`^\\s{0,3}#{1,${maxHeadingLevel}}\\s+`);
   const lines = md.split('\n');
-  const blocks: ContentBlock[] = [];
+  const sections: string[] = [];
   let buffer: string[] = [];
   let inCode = false;
 
+  const flush = () => {
+    const content = cleanMarkdownSection(buffer.join('\n'));
+    if (content) {
+      sections.push(content);
+    }
+    buffer = [];
+  };
+
+  for (const line of lines) {
+    const isSectionHeading = !inCode && headingPattern.test(line);
+
+    if (isSectionHeading && hasSectionContent(buffer)) {
+      flush();
+    }
+
+    buffer.push(line);
+
+    if (line.startsWith('```')) {
+      inCode = !inCode;
+    }
+  }
+
+  if (hasSectionContent(buffer)) {
+    flush();
+  }
+
+  if (fallbackToHorizontalRules && sections.length <= 1) {
+    const horizontalRuleSections = md
+      .split(/\n\s*(?:-{3,}|\*{3,}|_{3,})\s*\n/g)
+      .map(cleanMarkdownSection)
+      .filter(Boolean);
+
+    if (horizontalRuleSections.length > sections.length) {
+      return horizontalRuleSections;
+    }
+  }
+
+  return sections;
+}
+
+export function parseMarkdownToBlocks(input: string): ContentBlock[] {
+  if (!input) return [{ id: `block-${Date.now()}`, tag: 'p', content: '' }];
+
   function inferTag(content: string): ContentBlock['tag'] {
-    const headingMatch = content.match(/^#{1,6}\s+/m);
+    const headingMatch = content.match(/^\s{0,3}(#{1,6})\s+/m);
     if (headingMatch) {
-      const level = headingMatch[0].trim().length;
+      const level = Math.min(headingMatch[1].length, 4);
       return (`h${level}`) as ContentBlock['tag'];
     }
 
@@ -36,38 +126,13 @@ export function parseMarkdownToBlocks(input: string): ContentBlock[] {
     return 'p';
   }
 
-  function flush() {
-    const content = buffer.join('\n').trim();
-    if (!content) {
-      buffer = [];
-      return;
-    }
-
-    blocks.push({
+  const blocks: ContentBlock[] = splitMarkdownIntoSections(input, { maxHeadingLevel: 2 })
+    .map((content): ContentBlock => ({
       id: `block-${Date.now()}-${Math.random()}`,
       tag: inferTag(content),
       content,
       meta: { viewMode: 'split' },
-    });
-    buffer = [];
-  }
-
-  for (let i = 0; i < lines.length; i++) {
-    const line = lines[i];
-    if (line.startsWith('```')) {
-      inCode = !inCode;
-      buffer.push(line);
-      continue;
-    }
-
-    if (!inCode && /^#{1,2}\s+/.test(line) && buffer.length > 0) {
-      flush();
-    }
-
-    buffer.push(line);
-  }
-
-  if (buffer.length > 0) flush();
+    }));
 
   if (blocks.length === 0) return [{ id: `block-${Date.now()}`, tag: 'p', content: '', meta: { viewMode: 'split' } }];
   return blocks;

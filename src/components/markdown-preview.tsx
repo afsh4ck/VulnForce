@@ -1,6 +1,7 @@
 
 
 "use client";
+/* eslint-disable @next/next/no-img-element */
 import React from 'react';
 import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
@@ -13,6 +14,7 @@ import { stripMarkdownText } from '@/lib/todo-utils';
 
 export const MarkdownPreview = ({ content, getImage, isReport }: { content: string, getImage?: (id: string) => ImageAsset | undefined, isReport?: boolean }) => {
     const todoTextRegex = /\b(TODO|TO DO)\b/g;
+    const SMALL_IMAGE_WIDTH = 360;
 
     const getTextFromChildren = (children: React.ReactNode): string => {
         let textContent = '';
@@ -110,9 +112,42 @@ export const MarkdownPreview = ({ content, getImage, isReport }: { content: stri
         );
     };
 
+    const CustomImage = ({ src, alt, className, ...props }: { src?: string, alt?: string, className?: string, [key: string]: any }) => {
+        const [isSmall, setIsSmall] = React.useState(false);
+        const rawSrc = src || '';
+        const imageId = rawSrc.startsWith('image://') ? rawSrc.replace('image://', '') : '';
+        const resolvedSrc = imageId ? getImage?.(imageId)?.dataUrl : rawSrc;
+
+        if (!resolvedSrc) {
+            return (
+                <span className="my-4 block rounded-md border border-dashed p-3 text-sm text-muted-foreground">
+                    {alt || 'Image not found'}
+                </span>
+            );
+        }
+
+        return (
+            <img
+                {...props}
+                src={resolvedSrc}
+                alt={alt || ''}
+                loading="lazy"
+                data-markdown-image
+                onLoad={(event) => {
+                    setIsSmall(event.currentTarget.naturalWidth > 0 && event.currentTarget.naturalWidth <= SMALL_IMAGE_WIDTH);
+                }}
+                className={cn(
+                    'my-4 block h-auto max-w-full rounded-md border object-contain',
+                    isSmall ? 'w-auto' : 'w-full',
+                    className
+                )}
+            />
+        );
+    };
+
     return (
         <div className="prose dark:prose-invert w-full break-words">
-            <ReactMarkdown remarkPlugins={[remarkGfm]} components={{
+            <ReactMarkdown remarkPlugins={[remarkGfm]} urlTransform={(url) => url} components={{
                 h1: ({node, children, ...props}) => <CustomHeading level={1} {...props}>{children as any}</CustomHeading>,
                 h2: ({node, children, ...props}) => <CustomHeading level={2} {...props}>{children as any}</CustomHeading>,
                 h3: ({node, children, ...props}) => <CustomHeading level={3} {...props}>{children as any}</CustomHeading>,
@@ -136,7 +171,8 @@ export const MarkdownPreview = ({ content, getImage, isReport }: { content: stri
                     const { inline, className, children, ...props } = mdProps;
                     if (inline) return <code className={className} {...props}>{renderTodoNodes(children)}</code>;
                     return <CodeBlock initialLanguage={(className || '').replace('language-', '')} code={String(children)} />;
-                }
+                },
+                img: ({node, ...props}) => <CustomImage {...props} />
             }}>
                 {content}
             </ReactMarkdown>

@@ -23,21 +23,7 @@ import { UserNav } from '@/components/user-nav';
 import { Logo } from '@/components/logo';
 import { useLanguage } from '@/context/language-context';
 import { cn } from '@/lib/utils';
-
-type UseLeavePageHook = (hasChanges: boolean) => void;
-
-const LeavePageContext = React.createContext<{
-    setHasUnsavedChanges: UseLeavePageHook;
-    handleRequestLeave: (path: string) => void;
-} | null>(null);
-
-export const useLeavePage = () => {
-    const context = React.useContext(LeavePageContext);
-    if (!context) {
-        throw new Error('useLeavePage must be used within a LeavePageProvider');
-    }
-    return context.setHasUnsavedChanges;
-};
+import { LeavePageContext } from '@/context/leave-page-context';
 
 
 function DashboardNav({ children }: { children: React.ReactNode }) {

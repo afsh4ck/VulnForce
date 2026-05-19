@@ -25,6 +25,13 @@ import { DateRange } from "react-day-picker";
 import { Dialog, DialogTrigger, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { ProjectIconSelectItem, projectIconOptions } from "@/components/project-icon";
+import { joinMarkdownSections } from "@/lib/markdown-utils";
+
+const getTemplateReportContent = (template: { scope_en: string; scope_es: string; appendix_en?: string; appendix_es?: string }, language: Project['language']) => {
+  return language === 'es'
+    ? joinMarkdownSections([template.scope_es || template.scope_en, template.appendix_es || template.appendix_en])
+    : joinMarkdownSections([template.scope_en || template.scope_es, template.appendix_en || template.appendix_es]);
+};
 
 export default function NewProjectPage() {
   const { language: uiLanguage } = useLanguage();
@@ -55,7 +62,7 @@ export default function NewProjectPage() {
       const template = projectTemplates.find(t => t.id === templateId);
       if (template) {
         setName(projectLanguage === 'es' ? template.name_es : template.name_en);
-        setScope(projectLanguage === 'es' ? template.scope_es : template.scope_en);
+        setScope(getTemplateReportContent(template, projectLanguage));
         setIcon(template.icon);
       }
     }
@@ -66,7 +73,7 @@ export default function NewProjectPage() {
     if (template) {
         setTemplateId(newTemplateId);
         setName(projectLanguage === 'es' ? template.name_es : template.name_en);
-        setScope(projectLanguage === 'es' ? template.scope_es : template.scope_en);
+        setScope(getTemplateReportContent(template, projectLanguage));
         setIcon(template.icon);
     }
   }

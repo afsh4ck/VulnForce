@@ -21,6 +21,7 @@ import { CSS } from '@dnd-kit/utilities';
 import { Badge } from '@/components/ui/badge';
 import { hasTodoMarker, stripMarkdownText } from '@/lib/todo-utils';
 import { SectionMarkdownEditor } from '@/components/section-markdown-editor';
+import { joinMarkdownSections, splitMarkdownIntoSections } from '@/lib/markdown-utils';
 
 type SaveStatus = 'unsaved' | 'saving' | 'saved';
 
@@ -36,6 +37,11 @@ type SortableSectionProps = {
   onDelete: () => void;
   onContentChange: (content: string) => void;
   getImage: (id: string) => ImageAsset | undefined;
+  splitLayout: number[];
+  onSplitLayoutChange: (layout: number[]) => void;
+  collapsed: boolean;
+  onCollapseAll: () => void;
+  onCollapsedChange: (sectionId: string, collapsed: boolean) => void;
 };
 
 const SortableSection = ({ section, index, onAddSection, onDelete, ...props }: SortableSectionProps) => {
@@ -63,6 +69,11 @@ const SortableSection = ({ section, index, onAddSection, onDelete, ...props }: S
         dragHandleProps={attributes}
         dragListeners={listeners}
         getImage={props.getImage}
+        splitLayout={props.splitLayout}
+        onSplitLayoutChange={props.onSplitLayoutChange}
+        collapsed={props.collapsed}
+        onDragHandleClick={props.onCollapseAll}
+        onCollapsedChange={(collapsed) => props.onCollapsedChange(section.id, collapsed)}
         titleFallback="Finding section"
         labels={{
           section: 'Finding section',
@@ -99,6 +110,8 @@ export default function FindingEditorPage() {
   
   const [sections, setSections] = useState<FindingSection[]>([]);
   const [saveStatus, setSaveStatus] = useState<SaveStatus>('saved');
+  const [sectionSplitLayout, setSectionSplitLayout] = useState<number[]>([52, 48]);
+  const [collapsedSections, setCollapsedSections] = useState<Record<string, boolean>>({});
 
   const client = clients.find(c => c.id === project?.clientId);
 
@@ -110,7 +123,7 @@ export default function FindingEditorPage() {
   const parseMarkdownToSections = useCallback((markdown: string): FindingSection[] => {
     if (!markdown) return [];
     
-    const parts = markdown.split(/\n\s*---\s*\n/);
+    const parts = splitMarkdownIntoSections(markdown, { maxHeadingLevel: 3 });
     
     return parts
       .map((part, index) => {
@@ -202,7 +215,7 @@ export default function FindingEditorPage() {
     }
     
     setSaveStatus('saving');
-    const markdownContent = sections.map(s => s.content).join('\n\n---\n\n');
+    const markdownContent = joinMarkdownSections(sections.map(s => s.content));
 
     const findingData = {
       ...finding,
@@ -255,8 +268,21 @@ export default function FindingEditorPage() {
 
   const handleDeleteSection = (sectionId: string) => {
       setSections(prev => prev.filter(sec => sec.id !== sectionId));
+      setCollapsedSections(prev => {
+        const next = { ...prev };
+        delete next[sectionId];
+        return next;
+      });
       setSaveStatus('unsaved');
   };
+
+  const collapseAllSections = useCallback(() => {
+    setCollapsedSections(Object.fromEntries(sections.map(section => [section.id, true])));
+  }, [sections]);
+
+  const setSectionCollapsed = useCallback((sectionId: string, collapsed: boolean) => {
+    setCollapsedSections(prev => ({ ...prev, [sectionId]: collapsed }));
+  }, []);
 
   function handleDragEnd(event: DragEndEvent) {
     const { active, over } = event;
@@ -366,11 +392,12 @@ export default function FindingEditorPage() {
         vuln[`technicalDescription_${projectLanguage}`],
         vuln[`affectedComponents_${projectLanguage}`],
         vuln[`impact_${projectLanguage}`],
-        vuln[`recommendations_${projectLanguage}`],
+        vuln[`immediateActions_${projectLanguage}`],
         vuln[`details_${projectLanguage}`],
+        vuln[`recommendations_${projectLanguage}`],
       ];
 
-      const newSections = newSectionsContent.map(content => ({
+      const newSections = splitMarkdownIntoSections(joinMarkdownSections(newSectionsContent), { maxHeadingLevel: 3 }).map(content => ({
         id: `section-imported-${Date.now()}-${Math.random()}`,
         content: content || ''
       }));
@@ -465,6 +492,11 @@ export default function FindingEditorPage() {
                             onContentChange={(newContent: string) => handleSectionChange(section.id, newContent)}
                             onDelete={() => handleDeleteSection(section.id)}
                             getImage={getImage}
+                            splitLayout={sectionSplitLayout}
+                            onSplitLayoutChange={setSectionSplitLayout}
+                            collapsed={Boolean(collapsedSections[section.id])}
+                            onCollapseAll={collapseAllSections}
+                            onCollapsedChange={setSectionCollapsed}
                           />
                        );
                     })}
