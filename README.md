@@ -37,17 +37,19 @@ VulnForce está diseñada para equipos de seguridad ofensiva que necesitan un fl
 - 📤 Exportación de informes a HTML y PDF
 
 ## Flujo de trabajo
+1. Crear un cliente e introducir sus datos
+<img width="3450" height="1206" alt="image" src="https://github.com/user-attachments/assets/f6649aa0-ee3d-4d10-8255-41cfd2fd4264" />
 
-1. Crear un proyecto y asociarlo a un cliente.
-<img width="2332" height="1628" alt="image" src="https://github.com/user-attachments/assets/461f45cd-b3e0-4809-8abc-636631940379" />
+2. Crear un proyecto y asociarlo a un cliente.
+<img width="2504" height="1606" alt="image" src="https://github.com/user-attachments/assets/d151bb0e-e3c1-48bd-a046-5ed0b45f3073" />
 
-2. Importar una plantilla de proyecto o de vulnerabilidad.
+3. Importar una plantilla de proyecto o de vulnerabilidad.
 <img width="3344" height="1326" alt="image" src="https://github.com/user-attachments/assets/d35c06b2-e1cf-45f8-b272-639f20e8336e" />
 
-3. Escribir contenido y marcar pendientes con `TODO` (se resaltan y vinculan).
+4. Escribir contenido y marcar pendientes con `TODO` (se resaltan y vinculan).
 <img width="2918" height="838" alt="image" src="https://github.com/user-attachments/assets/b07a2bc0-8af6-40ae-8dfb-e489c2a5ff24" />
 
-4. Revisar en la previsualización HTML y exportar cuando esté listo.
+5. Revisar en la previsualización HTML y exportar cuando esté listo.
 <img width="3364" height="1772" alt="image" src="https://github.com/user-attachments/assets/bffdf8f1-323a-4f3f-af96-a45351759dd7" />
 
 ## Tecnologías
