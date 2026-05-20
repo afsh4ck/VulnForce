@@ -143,6 +143,7 @@ export default function FindingEditorPage() {
   const [sectionSplitLayout, setSectionSplitLayout] = useState<number[]>([52, 48]);
   const [collapsedSections, setCollapsedSections] = useState<Record<string, boolean>>({});
   const initializedFindingRef = useRef<string | null>(null);
+  const [importedVulnTemplateId, setImportedVulnTemplateId] = useState<string>('');
 
   const client = clients.find(c => c.id === project?.clientId);
 
@@ -460,8 +461,13 @@ export default function FindingEditorPage() {
 
 
   const handleImport = (vulnId: string) => {
+    if (!vulnId) {
+      setImportedVulnTemplateId('');
+      return;
+    }
     const vuln = vulnerabilities.find(v => v.id === vulnId);
     if (vuln) {
+      setImportedVulnTemplateId(vulnId);
       handleFieldChange('title', getVulnTitle(vuln));
       handleSeverityChange(vuln.severity);
       
@@ -511,28 +517,25 @@ export default function FindingEditorPage() {
 
       <div className="w-full px-4 sm:px-6">
           <Card>
-            <CardHeader className="flex flex-row items-center justify-between">
+            <CardHeader className="flex flex-row items-center justify-between gap-3">
               <CardTitle>{t[uiLanguage].findingDetails}</CardTitle>
-              {finding?.severity && <Badge variant={getSeverityVariant(finding.severity)}>{finding.severity}</Badge>}
+              <div className="flex items-center gap-2">
+                <Combobox
+                    options={vulnerabilityOptions}
+                    selectedValue={importedVulnTemplateId}
+                    onSelect={handleImport}
+                    placeholder={t[uiLanguage].selectTemplate}
+                    searchPlaceholder={t[uiLanguage].searchVulnerability}
+                />
+                {finding?.severity && <Badge variant={getSeverityVariant(finding.severity)}>{finding.severity}</Badge>}
+              </div>
             </CardHeader>
             <CardContent className="space-y-4">
-              <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
-                  <div className="space-y-2">
-                    <Label htmlFor="title">{t[uiLanguage].titleLabel}</Label>
-                    <Input id="title" value={finding?.title || ''} onChange={e => handleFieldChange('title', e.target.value)} />
-                  </div>
-                  <div className="space-y-2">
-                    <Label htmlFor="vuln-template">{t[uiLanguage].importFromDB}</Label>
-                    <Combobox
-                        options={vulnerabilityOptions}
-                        selectedValue=""
-                        onSelect={handleImport}
-                        placeholder={t[uiLanguage].selectTemplate}
-                        searchPlaceholder={t[uiLanguage].searchVulnerability}
-                    />
-                  </div>
-              </div>
-              <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
+              <div className="grid grid-cols-1 gap-4 md:grid-cols-3">
+                <div className="space-y-2">
+                  <Label htmlFor="title">{t[uiLanguage].titleLabel}</Label>
+                  <Input id="title" value={finding?.title || ''} onChange={e => handleFieldChange('title', e.target.value)} />
+                </div>
                 <div className="space-y-2">
                   <Label htmlFor="severity">{t[uiLanguage].severityLabel}</Label>
                   <Select value={finding?.severity} onValueChange={(value) => handleSeverityChange(value as Severity)}>

@@ -5,6 +5,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { useLanguage } from "@/context/language-context";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { Combobox } from "@/components/ui/combobox";
 import { Textarea } from "@/components/ui/textarea";
 import { Calendar } from "@/components/ui/calendar";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
@@ -267,18 +268,16 @@ export function NewProjectDialog({ open, onOpenChange, onCreated }: NewProjectDi
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div className="space-y-2">
               <Label>{t[uiLanguage].importTemplate}</Label>
-              <Select onValueChange={handleTemplateChange} value={templateId || ''}>
-                <SelectTrigger>
-                  <SelectValue placeholder={t[uiLanguage].selectTemplate} />
-                </SelectTrigger>
-                <SelectContent>
-                  {projectTemplates.map(template => (
-                    <SelectItem key={template.id} value={template.id}>
-                      {projectLanguage === 'es' ? template.name_es : template.name_en}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
+              <Combobox
+                options={projectTemplates.map(template => ({
+                  value: template.id,
+                  label: projectLanguage === 'es' ? template.name_es : template.name_en,
+                }))}
+                selectedValue={templateId || ''}
+                onSelect={handleTemplateChange}
+                placeholder={t[uiLanguage].selectTemplate}
+                searchPlaceholder={uiLanguage === 'es' ? 'Buscar plantillas...' : 'Search templates...'}
+              />
             </div>
             <div className="space-y-2">
               <Label htmlFor="language">{t[uiLanguage].languageLabel}</Label>

@@ -1626,8 +1626,7 @@ export default function ProjectDetailsPage() {
             <TabsContent value="content" className="pt-6">
                <div className="w-full" dir="ltr">
                      {isToolbarOpen && <FloatingToolbar position={toolbarPosition} />}
-                     <div className="mb-6 max-w-sm space-y-2">
-                        <Label>{t[projectLanguage as 'en'|'es'].selectTemplate}</Label>
+                     <div className="mb-6 max-w-sm">
                         <Combobox
                           options={projectTemplates.map(pt => ({
                             label: projectLanguage === 'es' ? (pt.name_es || pt.name_en) : (pt.name_en || pt.name_es),
