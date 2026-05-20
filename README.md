@@ -1,4 +1,4 @@
-# VulnForce — Plataforma para informes de pentesting
+# VulnForce — Professional Hacking Reporting Platform
 
 🚀 VulnForce es una aplicación web autoalojada para gestionar proyectos de pentesting, clientes y reportes. Facilita la creación de informes técnicos y ejecutivos mediante edición por secciones, plantillas reutilizables y exportación a HTML/PDF.
 
