@@ -1,7 +1,7 @@
 
 'use client';
 
-import { useState, useEffect, useCallback, useMemo, type SetStateAction } from 'react';
+import { useState, useEffect, useCallback, useMemo, useRef, type SetStateAction } from 'react';
 import { useParams, useRouter } from 'next/navigation';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -150,6 +150,7 @@ export default function VulnerabilityEditorPage() {
   const [references, setReferences] = useState<string[]>([]);
   const [activeAccordion, setActiveAccordion] = useState<string[]>(['details']);
   const [saveStatus, setSaveStatus] = useState<SaveStatus>('saved');
+  const initializedIdRef = useRef<string | null>(null);
 
   const {
     state: sectionState,
@@ -315,21 +316,32 @@ export default function VulnerabilityEditorPage() {
   }, []);
 
   useEffect(() => {
-    const vulnerability = vulnerabilities.find(v => v.id === id);
+    const currentId = typeof id === 'string' ? id : Array.isArray(id) ? id[0] : '';
+    // Inicializar el editor una sola vez por id. Sin este guard, cada autosave
+    // crea una nueva referencia en `vulnerabilities` (data-context hace
+    // prev.map(...)), el effect se vuelve a disparar y regenera los IDs de
+    // sección, lo que desmonta los <SortableSection> y hace perder el foco
+    // del cursor en plena edición.
+    if (initializedIdRef.current === currentId) return;
+
+    const vulnerability = vulnerabilities.find(v => v.id === currentId);
     if (vulnerability) {
       const vulnCopy = JSON.parse(JSON.stringify(vulnerability));
       setVuln(vulnCopy);
       setReferences(vulnCopy.references || []);
-      
+
       const fullEnContent = getFullContent(vulnCopy, 'en');
       const fullEsContent = getFullContent(vulnCopy, 'es');
 
       const initialEnSections = parseMarkdownToSections(fullEnContent);
       const initialEsSections = parseMarkdownToSections(fullEsContent);
-      
+
       resetSectionState({ en: initialEnSections, es: initialEsSections });
-      
-    } else {
+      initializedIdRef.current = currentId;
+
+    } else if (vulnerabilities.length > 0) {
+      // Solo redirigimos cuando el store ya ha cargado y la vuln no existe;
+      // si está vacío puede ser hidratación inicial.
       router.push('/dashboard/vulnerabilities');
     }
   }, [id, vulnerabilities, router, parseMarkdownToSections, getFullContent, resetSectionState]);

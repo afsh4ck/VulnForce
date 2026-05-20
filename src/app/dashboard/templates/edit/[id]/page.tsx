@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect, useCallback, type SetStateAction } from 'react';
+import { useState, useEffect, useCallback, useRef, type SetStateAction } from 'react';
 import { useParams, useRouter } from 'next/navigation';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -169,6 +169,7 @@ export default function TemplateEditorPage() {
   const [sectionSplitLayout, setSectionSplitLayout] = useState<number[]>([52, 48]);
   const [collapsedSections, setCollapsedSections] = useState<Record<string, boolean>>({});
   const [saveStatus, setSaveStatus] = useState<SaveStatus>('saved');
+  const initializedIdRef = useRef<string | null>(null);
 
   const parseContentToSections = useCallback((content: string): TemplateSection[] => {
     if (!content || typeof content !== 'string') return [];
@@ -180,11 +181,18 @@ export default function TemplateEditorPage() {
   }, []);
 
   useEffect(() => {
+    const currentId = typeof id === 'string' ? id : Array.isArray(id) ? id[0] : '';
+    // Inicializar el editor una sola vez por id. Cada autosave hace que
+    // data-context devuelva un nuevo array `projectTemplates` (prev.map),
+    // y sin este guard el effect se re-ejecutaría regenerando todos los
+    // IDs de sección y desmontando los <SortableSection> en plena edición.
+    if (initializedIdRef.current === currentId) return;
+
     if (isNew) {
       const newTemplate = {
         name_en: '', name_es: '', description_en: '', description_es: '',
-        scope_en: '## Scope\n\n[TODO: Define scope]', 
-        scope_es: '## Alcance\n\n[TODO: Definir alcance]', 
+        scope_en: '## Scope\n\n[TODO: Define scope]',
+        scope_es: '## Alcance\n\n[TODO: Definir alcance]',
         appendix_en: '## Appendix\n\n[TODO: Add appendix]',
         appendix_es: '## Apéndice\n\n[TODO: Añadir apéndice]',
         icon: 'FileText'
@@ -193,14 +201,16 @@ export default function TemplateEditorPage() {
       const initialEnSections = [...parseContentToSections(newTemplate.scope_en), ...parseContentToSections(newTemplate.appendix_en)];
       const initialEsSections = [...parseContentToSections(newTemplate.scope_es), ...parseContentToSections(newTemplate.appendix_es)];
       resetSectionState({ en: initialEnSections, es: initialEsSections });
+      initializedIdRef.current = currentId;
     } else {
-      const existingTemplate = projectTemplates.find(t => t.id === id);
+      const existingTemplate = projectTemplates.find(t => t.id === currentId);
       if (existingTemplate) {
         setTemplate(JSON.parse(JSON.stringify(existingTemplate)));
         const fullEnContent = joinMarkdownSections([existingTemplate.scope_en, existingTemplate.appendix_en]);
         const fullEsContent = joinMarkdownSections([existingTemplate.scope_es, existingTemplate.appendix_es]);
         resetSectionState({ en: parseContentToSections(fullEnContent), es: parseContentToSections(fullEsContent) });
-      } else {
+        initializedIdRef.current = currentId;
+      } else if (projectTemplates.length > 0) {
         toast({ variant: 'destructive', title: 'Template not found' });
         router.push('/dashboard/templates');
       }

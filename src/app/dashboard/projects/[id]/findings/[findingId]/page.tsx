@@ -1,7 +1,7 @@
 
 'use client';
 
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState, useEffect, useCallback, useRef } from 'react';
 import { useParams, useRouter, useSearchParams } from 'next/navigation';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -142,6 +142,7 @@ export default function FindingEditorPage() {
   const [saveStatus, setSaveStatus] = useState<SaveStatus>('saved');
   const [sectionSplitLayout, setSectionSplitLayout] = useState<number[]>([52, 48]);
   const [collapsedSections, setCollapsedSections] = useState<Record<string, boolean>>({});
+  const initializedFindingRef = useRef<string | null>(null);
 
   const client = clients.find(c => c.id === project?.clientId);
 
@@ -171,7 +172,14 @@ export default function FindingEditorPage() {
     if(currentProject){
       setProjectLanguage(currentProject.language)
     }
-    
+
+    // Inicializar el editor una sola vez por findingId. Cada autosave crea
+    // una nueva referencia en `findings` (prev.map), lo que volvería a
+    // ejecutar este effect y regeneraría los IDs de las secciones (perdiendo
+    // el foco del textarea durante la edición).
+    const initKey = `${projectId}::${findingId}`;
+    if (initializedFindingRef.current === initKey) return;
+
     if (findingId !== 'new') {
       const currentFinding = findings.find(f => f.id === findingId && f.projectId === projectId);
       if (currentFinding) {
@@ -184,7 +192,8 @@ export default function FindingEditorPage() {
         });
         const initialSections = parseMarkdownToSections(currentFinding.markdown);
         resetSections(initialSections);
-      } else {
+        initializedFindingRef.current = initKey;
+      } else if (findings.length > 0) {
         router.push(`/dashboard/projects/${projectId}`);
       }
     } else {
@@ -196,6 +205,7 @@ export default function FindingEditorPage() {
             projectId,
         });
       resetSections([]);
+      initializedFindingRef.current = initKey;
     }
   }, [findingId, projectId, projectLanguage, findings, router, projects, parseMarkdownToSections, resetSections]);
 
