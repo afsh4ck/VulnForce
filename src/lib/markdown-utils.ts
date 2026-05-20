@@ -1,6 +1,22 @@
 import TurndownService from 'turndown';
 import type { ContentBlock } from './types';
 
+export type VariableContext = {
+  client?: { name?: string; contact?: string; phone?: string };
+  project?: { name?: string; startDate?: string; endDate?: string; language?: string };
+  pentester?: { name?: string; email?: string; phone?: string };
+};
+
+export function resolveVariables(input: string, ctx: VariableContext = {}): string {
+  if (!input) return input;
+  return input.replace(/\{\{\s*([a-zA-Z]+)\.([a-zA-Z]+)\s*\}\}/g, (raw, group, key) => {
+    const groupValue = (ctx as any)[group];
+    if (!groupValue) return raw;
+    const value = groupValue[key];
+    return value == null ? raw : String(value);
+  });
+}
+
 const turndown = new TurndownService({ codeBlockStyle: 'fenced' });
 const horizontalRulePattern = /^\s*(?:-{3,}|\*{3,}|_{3,})\s*$/;
 

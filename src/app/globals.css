@@ -10,8 +10,12 @@
     --card-foreground: 240 10% 3.9%;
     --popover: 0 0% 100%;
     --popover-foreground: 240 10% 3.9%;
-    --primary: 76 100% 50%; /* #CEFF00 */
-    --primary-foreground: 76 100% 5%;
+    /* In light mode we use a darkened brand green so foreground/hover usages reach WCAG AA
+       contrast on white backgrounds. Solid neon green (76 100% 50%) is preserved in dark mode. */
+    --primary: 86 95% 22%;
+    --primary-foreground: 0 0% 100%;
+    --primary-accessible: 86 95% 22%;
+    --primary-accessible-foreground: 0 0% 100%;
     --secondary: 240 4.8% 95.9%;
     --secondary-foreground: 240 5.9% 10%;
     --muted: 240 4.8% 95.9%;
@@ -22,7 +26,7 @@
     --destructive-foreground: 0 0% 98%;
     --border: 240 5.9% 90%;
     --input: 240 5.9% 90%;
-    --ring: 76 100% 50%;
+    --ring: 86 95% 22%;
     --radius: 0.5rem;
     --chart-1: 12 76% 61%;
     --chart-2: 173 58% 39%;
@@ -61,6 +65,9 @@
     --popover-foreground: 210 40% 98%;
     --primary: 76 100% 50%; /* #CEFF00 */
     --primary-foreground: 76 100% 5%;
+    /* In dark mode the neon green stays accessible against dark backgrounds. */
+    --primary-accessible: 76 100% 50%;
+    --primary-accessible-foreground: 76 100% 5%;
     --secondary: 220 15% 15%;
     --secondary-foreground: 210 40% 98%;
     --muted: 220 15% 15%;

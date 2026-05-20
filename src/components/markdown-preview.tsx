@@ -11,8 +11,10 @@ import { Badge } from './ui/badge';
 import { Separator } from './ui/separator';
 import { CodeBlock } from './code-block';
 import { stripMarkdownText } from '@/lib/todo-utils';
+import { resolveVariables, type VariableContext } from '@/lib/markdown-utils';
 
-export const MarkdownPreview = ({ content, getImage, isReport }: { content: string, getImage?: (id: string) => ImageAsset | undefined, isReport?: boolean }) => {
+export const MarkdownPreview = ({ content, getImage, isReport, variables }: { content: string, getImage?: (id: string) => ImageAsset | undefined, isReport?: boolean, variables?: VariableContext }) => {
+    const resolvedContent = variables ? resolveVariables(content, variables) : content;
     const todoTextRegex = /\b(TODO|TO DO)\b/g;
     const SMALL_IMAGE_WIDTH = 360;
 
@@ -174,7 +176,7 @@ export const MarkdownPreview = ({ content, getImage, isReport }: { content: stri
                 },
                 img: ({node, ...props}) => <CustomImage {...props} />
             }}>
-                {content}
+                {resolvedContent}
             </ReactMarkdown>
         </div>
     );

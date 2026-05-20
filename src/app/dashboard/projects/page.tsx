@@ -16,6 +16,7 @@ import { useRouter } from 'next/navigation';
 import { useData } from '@/context/data-context';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
 import { ProjectIcon, projectIconComponents } from '@/components/project-icon';
+import { NewProjectDialog } from '@/components/new-project-dialog';
 
 type SortKey = keyof Project | 'clientName';
 
@@ -27,6 +28,7 @@ export default function ProjectsPage() {
   const [searchTerm, setSearchTerm] = useState('');
   const [sortConfig, setSortConfig] = useState<{ key: SortKey; direction: 'ascending' | 'descending' } | null>(null);
   const [projectToDelete, setProjectToDelete] = useState<Project | null>(null);
+  const [newProjectOpen, setNewProjectOpen] = useState(false);
   
   const getStatusVariant = (status: string) => {
     switch (status) {
@@ -158,10 +160,8 @@ export default function ProjectsPage() {
               onChange={e => setSearchTerm(e.target.value)}
             />
           </div>
-           <Button asChild>
-            <Link href="/dashboard/projects/new">
-                <PlusCircle className="mr-2 h-4 w-4" /> {t[language].newProject}
-            </Link>
+           <Button onClick={() => setNewProjectOpen(true)}>
+            <PlusCircle className="mr-2 h-4 w-4" /> {t[language].newProject}
           </Button>
         </div>
       </div>
@@ -259,6 +259,12 @@ export default function ProjectsPage() {
             </AlertDialogFooter>
         </AlertDialogContent>
     </AlertDialog>
+
+    <NewProjectDialog
+      open={newProjectOpen}
+      onOpenChange={setNewProjectOpen}
+      onCreated={(id) => router.push(`/dashboard/projects/${id}`)}
+    />
     </>
   )
 }

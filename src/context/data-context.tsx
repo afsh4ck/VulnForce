@@ -4,7 +4,7 @@
 
 'use client';
 
-import React, { createContext, useContext, useState, useEffect, ReactNode } from 'react';
+import React, { createContext, useContext, useState, useEffect, useRef, ReactNode } from 'react';
 import type { Client, Project, Finding, Vulnerability, ImageAsset, ProjectTemplate } from '@/lib/types';
 import { initialClients } from '@/lib/clients-data';
 import { initialProjects } from '@/lib/projects-data';
@@ -12,6 +12,17 @@ import { initialFindings } from '@/lib/findings-data';
 import { initialVulnerabilities } from '@/lib/vulnerabilities-data';
 import { initialProjectTemplates } from '@/lib/project-templates-data';
 import { format } from 'date-fns';
+
+const STATE_ENDPOINT = '/api/state';
+const STATE_DEBOUNCE_MS = 500;
+type PersistedStateShape = {
+    clients?: Client[];
+    projects?: Project[];
+    findings?: Finding[];
+    vulnerabilities?: Vulnerability[];
+    images?: ImageAsset[];
+    projectTemplates?: ProjectTemplate[];
+};
 
 
 interface DataContextType {
@@ -89,6 +100,58 @@ export function DataProvider({ children }: { children: ReactNode }) {
     const [vulnerabilities, setVulnerabilities] = usePersistedState<Vulnerability[]>('vulnforce-vulnerabilities-v4', initialVulnerabilities);
     const [images, setImages] = usePersistedState<ImageAsset[]>('vulnforce-images-v4', []);
     const [projectTemplates, setProjectTemplates] = usePersistedState<ProjectTemplate[]>('vulnforce-project-templates-v4', initialProjectTemplates);
+
+    const remoteHydratedRef = useRef(false);
+    const writeTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+
+    // On mount, hydrate from server-side state file if available.
+    useEffect(() => {
+        let cancelled = false;
+        (async () => {
+            try {
+                const res = await fetch(STATE_ENDPOINT, { cache: 'no-store' });
+                if (!res.ok) return;
+                const remote = (await res.json()) as PersistedStateShape | null;
+                if (cancelled || !remote || typeof remote !== 'object') return;
+
+                if (Array.isArray(remote.clients)) setClients(remote.clients);
+                if (Array.isArray(remote.projects)) setProjects(remote.projects);
+                if (Array.isArray(remote.findings)) setFindings(remote.findings);
+                if (Array.isArray(remote.vulnerabilities)) setVulnerabilities(remote.vulnerabilities);
+                if (Array.isArray(remote.images)) setImages(remote.images);
+                if (Array.isArray(remote.projectTemplates)) setProjectTemplates(remote.projectTemplates);
+            } catch {
+                // Network or server error - keep using localStorage values.
+            } finally {
+                if (!cancelled) {
+                    remoteHydratedRef.current = true;
+                }
+            }
+        })();
+        return () => { cancelled = true; };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, []);
+
+    // Debounced sync of all collections to the server-side state file.
+    useEffect(() => {
+        if (!remoteHydratedRef.current) return;
+        if (writeTimerRef.current) clearTimeout(writeTimerRef.current);
+        writeTimerRef.current = setTimeout(() => {
+            const payload: PersistedStateShape = {
+                clients, projects, findings, vulnerabilities, images, projectTemplates,
+            };
+            fetch(STATE_ENDPOINT, {
+                method: 'PUT',
+                headers: { 'content-type': 'application/json' },
+                body: JSON.stringify(payload),
+            }).catch(() => {
+                // Best-effort sync; localStorage still holds the data.
+            });
+        }, STATE_DEBOUNCE_MS);
+        return () => {
+            if (writeTimerRef.current) clearTimeout(writeTimerRef.current);
+        };
+    }, [clients, projects, findings, vulnerabilities, images, projectTemplates]);
 
     const wipeAllData = () => {
         // This function will clear the data from localStorage,

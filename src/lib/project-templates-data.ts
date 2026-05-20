@@ -10,7 +10,7 @@ export const initialProjectTemplates: ProjectTemplate[] = [
     description_es: 'Una evaluación de seguridad completa para aplicaciones web, cubriendo el OWASP Top 10 y otras vulnerabilidades comunes.',
     icon: 'Scan',
     scope_en: `## Executive Summary
-This report outlines the results of an external penetration test performed on the internet-facing assets of **[TODO: Client Name]**. The assessment aimed to identify vulnerabilities that could be exploited by a remote attacker to compromise the security of the organization's perimeter. The assessment was conducted between **[TODO Start Date]** and **[TODO End Date]** from the perspective of an external, unauthenticated attacker (black-box).
+This report outlines the results of an external penetration test performed on the internet-facing assets of **{{client.name}}**. The assessment aimed to identify vulnerabilities that could be exploited by a remote attacker to compromise the security of the organization's perimeter. The assessment was conducted between **{{project.startDate}}** and **{{project.endDate}}** from the perspective of an external, unauthenticated attacker (black-box).
 
 ---
 ## Attack Narrative
@@ -33,7 +33,7 @@ A combination of automated tools and manual techniques were used to perform this
 - **Scanners:** Nessus, Nuclei
 - **Reconnaissance:** Amass, Subfinder`,
     scope_es: `## Resumen Ejecutivo
-Este informe describe los resultados de una prueba de penetración externa realizada en los activos de **[TODO: Nombre del Cliente]** expuestos a Internet. La evaluación tuvo como objetivo identificar vulnerabilidades que un atacante remoto podría explotar para comprometer la seguridad del perímetro de la organización. La evaluación se realizó entre el **[TODO: Fecha de Inicio]** y el **[TODO: Fecha de Fin]** desde la perspectiva de un atacante externo no autenticado (caja negra).
+Este informe describe los resultados de una prueba de penetración externa realizada en los activos de **{{client.name}}** expuestos a Internet. La evaluación tuvo como objetivo identificar vulnerabilidades que un atacante remoto podría explotar para comprometer la seguridad del perímetro de la organización. La evaluación se realizó entre el **{{project.startDate}}** y el **{{project.endDate}}** desde la perspectiva de un atacante externo no autenticado (caja negra).
 
 ---
 ## Narrativa del Ataque
@@ -65,7 +65,7 @@ Se utilizó una combinación de herramientas automatizadas y técnicas manuales 
     icon: 'Network',
     scope_en: `## Scope
 - **IP Ranges:** [TODO: Add IP ranges, e.g., 192.168.1.0/24]
-- **Testing Period:** [TODO Start Date] to [TODO End Date]
+- **Testing Period:** {{project.startDate}} to {{project.endDate}}
 - **Assumptions:** The assessment is performed from the perspective of an attacker who has gained a foothold on the internal network (e.g., a compromised workstation).
 - **Exclusions:** [TODO: Specify any out-of-scope systems]`,
     appendix_en: `---
@@ -76,7 +76,7 @@ Se utilizó una combinación de herramientas automatizadas y técnicas manuales 
 - **Manual Exploitation:** Metasploit Framework, CrackMapExec`,
     scope_es: `## Alcance
 - **Rangos IP:** [TODO: Añadir rangos IP, p.ej., 192.168.1.0/24]
-- **Periodo de Pruebas:** [TODO Start Date] a [TODO End Date]
+- **Periodo de Pruebas:** {{project.startDate}} a {{project.endDate}}
 - **Supuestos:** La evaluación se realiza desde la perspectiva de un atacante que ha obtenido un punto de apoyo en la red interna (p.ej., una estación de trabajo comprometida).
 - **Exclusiones:** [TODO: Especificar sistemas fuera de alcance]`,
     appendix_es: `---
@@ -96,7 +96,7 @@ Se utilizó una combinación de herramientas automatizadas y técnicas manuales 
     scope_en: `## Scope
 - **Application:** [TODO: Add application name and package/bundle ID]
 - **Platform:** iOS / Android
-- **Testing Period:** [TODO Start Date] to [TODO End Date]
+- **Testing Period:** {{project.startDate}} to {{project.endDate}}
 - **Backend APIs:** [TODO: List backend API endpoints in scope]`,
     appendix_en: `---
 ## Appendix
@@ -106,7 +106,7 @@ Se utilizó una combinación de herramientas automatizadas y técnicas manuales 
     scope_es: `## Alcance
 - **Aplicación:** [TODO: Añadir nombre de la aplicación y ID del paquete/bundle]
 - **Plataforma:** iOS / Android
-- **Periodo de Pruebas:** [TODO Start Date] a [TODO End Date]
+- **Periodo de Pruebas:** {{project.startDate}} a {{project.endDate}}
 - **APIs de Backend:** [TODO: Listar endpoints de API de backend en el alcance]`,
     appendix_es: `---
 ## Apéndice
@@ -129,7 +129,7 @@ The objective was to perform a penetration test, identifying and exploiting vuln
 
 ## Scope
 - **Target Network:** [TODO: e.g., 10.10.10.0/24]
-- **Exam Duration:** [TODO Start Date] to [TODO End Date]`,
+- **Exam Duration:** {{project.startDate}} to {{project.endDate}}`,
     appendix_en: `---
 ## Appendix
 | Hostname / IP | Location | Value |
@@ -144,7 +144,7 @@ El objetivo fue realizar una prueba de penetración, identificando y explotando 
 
 ## Alcance
 - **Red Objetivo:** [TODO: p. ej., 10.10.10.0/24]
-- **Duración del Examen:** [TODO Start Date] a [TODO End Date]`,
+- **Duración del Examen:** {{project.startDate}} a {{project.endDate}}`,
     appendix_es: `---
 ## Apéndice
 | Hostname / IP | Ubicación | Valor |

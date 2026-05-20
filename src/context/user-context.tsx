@@ -21,6 +21,7 @@ interface User {
   name: string;
   email: string;
   avatar: string;
+  phone?: string;
   passwordHash?: string;
 }
 

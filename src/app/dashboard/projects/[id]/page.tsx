@@ -25,6 +25,7 @@ import { cn } from "@/lib/utils";
 import { format } from 'date-fns';
 import { es } from 'date-fns/locale';
 import { useData } from '@/context/data-context';
+import { useUser } from '@/context/user-context';
 import { Combobox } from '@/components/ui/combobox';
 import { DateRange } from 'react-day-picker';
 import { DndContext, closestCenter, KeyboardSensor, PointerSensor, useSensor, useSensors, DragEndEvent } from '@dnd-kit/core';
@@ -610,6 +611,7 @@ type SortableBlockProps = EditableBlockProps & EditableBlockExtra & {
   collapsed: boolean;
   onCollapseAll: () => void;
   onCollapsedChange: (blockId: string, collapsed: boolean) => void;
+  variables?: import('@/lib/markdown-utils').VariableContext;
 };
 
 const SortableBlock = React.forwardRef(({ block, index, onAdd, onAction, ...editableProps }: SortableBlockProps, ref: React.Ref<HTMLDivElement>) => {
@@ -628,6 +630,7 @@ const SortableBlock = React.forwardRef(({ block, index, onAdd, onAction, ...edit
     collapsed,
     onCollapseAll,
     onCollapsedChange,
+    variables,
   } = editableProps;
 
   const style = {
@@ -667,6 +670,7 @@ const SortableBlock = React.forwardRef(({ block, index, onAdd, onAction, ...edit
         onDragHandleClick={onCollapseAll}
         dragging={isDragging}
         onCollapsedChange={(nextCollapsed) => onCollapsedChange(block.id, nextCollapsed)}
+        variables={variables}
         labels={{
           section: 'Section',
           untitled: sectionTitle || 'Untitled section',
@@ -695,13 +699,15 @@ export default function ProjectDetailsPage() {
   const { id } = params;
 
   const { projects, clients, findings, addFinding, deleteFinding, updateProject, deleteProject, duplicateProject, projectTemplates, vulnerabilities, addImage, getImage } = useData();
+  const { user } = useUser();
 
   const [project, setProject] = useState<Project | undefined>();
   const [projectFindings, setProjectFindings] = useState<Finding[]>([]);
   const [sortConfig, setSortConfig] = useState<{ key: SortKey; direction: 'ascending' | 'descending' } | null>(null);
   const [findingToDelete, setFindingToDelete] = useState<Finding | null>(null);
-  const [findingTemplatePickerOpen, setFindingTemplatePickerOpen] = useState(false);
   const [findingTemplateComboboxValue, setFindingTemplateComboboxValue] = useState('');
+  const [activeTemplateId, setActiveTemplateId] = useState<string>('');
+  const [pendingTemplateId, setPendingTemplateId] = useState<string | null>(null);
   
   const [name, setName] = useState('');
   const [clientId, setClientId] = useState('');
@@ -1026,7 +1032,6 @@ export default function ProjectDetailsPage() {
       markdown,
     });
 
-    setFindingTemplatePickerOpen(false);
     setFindingTemplateComboboxValue('');
     toast({ title: t[uiLanguage].findingCreatedFromTemplate, description: title });
     router.push(`/dashboard/projects/${project.id}/findings/${newFinding.id}`);
@@ -1050,10 +1055,59 @@ export default function ProjectDetailsPage() {
         setActiveBlockId(initialBlocks[0].id);
         pushToHistory(initialBlocks);
       }
+      // Detect active template by matching the saved report body against known template markdowns.
+      const detected = projectTemplates.find(pt => {
+        const md = getProjectTemplateMarkdown(pt, currentProject.language);
+        return md && currentProject.reportBody && currentProject.reportBody.trim() === md.trim();
+      });
+      setActiveTemplateId(detected?.id || '');
     } else {
       router.push('/dashboard/projects');
     }
-  }, [id, projects, findings, router, pushToHistory]);
+  }, [id, projects, findings, router, pushToHistory, projectTemplates]);
+
+  const mergeTemplateWithBlocks = useCallback((templateMarkdown: string) => {
+    const templateBlocks = parseMarkdownToBlocks(templateMarkdown || '');
+    const headingFromContent = (content: string) => {
+      const match = (content || '').match(/^#{1,6}\s+(.+)$/m);
+      return match ? stripMarkdownText(match[1]).toLowerCase() : '';
+    };
+    const existingByTitle = new Map<string, ContentBlock>();
+    blocks.forEach(b => {
+      const title = headingFromContent(b.content);
+      if (title && !existingByTitle.has(title)) existingByTitle.set(title, b);
+    });
+    return templateBlocks.map(tb => {
+      const title = headingFromContent(tb.content);
+      if (title && existingByTitle.has(title)) {
+        const existing = existingByTitle.get(title)!;
+        return { ...tb, content: existing.content };
+      }
+      return tb;
+    });
+  }, [blocks]);
+
+  const applyTemplateById = useCallback((templateId: string) => {
+    const tpl = projectTemplates.find(p => p.id === templateId);
+    if (!tpl) {
+      toast({ variant: 'destructive', title: uiLanguage === 'es' ? 'Plantilla no encontrada' : 'Template not found' });
+      return;
+    }
+    const md = getProjectTemplateMarkdown(tpl, projectLanguage);
+    const newBlocks = mergeTemplateWithBlocks(md || '');
+    updateBlocks(newBlocks);
+    const mapping: Record<string, 'split' | 'markdown' | 'preview'> = {};
+    newBlocks.forEach(b => mapping[b.id] = 'split');
+    setSplitBlocks(prev => ({ ...prev, ...mapping }));
+    setCollapsedSections({});
+    setActiveBlockId(newBlocks[0]?.id ?? null);
+    setActiveTemplateId(templateId);
+    setTemplateComboboxValue('');
+  }, [projectTemplates, projectLanguage, mergeTemplateWithBlocks, updateBlocks, toast, uiLanguage]);
+
+  const hasMeaningfulContent = useMemo(() => {
+    return blocks.some(b => (b.content || '').trim().length > 0);
+  }, [blocks]);
 
   // If navigated from report with a TODO param, focus the block that contains the TODO text
   useEffect(() => {
@@ -1579,29 +1633,17 @@ export default function ProjectDetailsPage() {
                             label: projectLanguage === 'es' ? (pt.name_es || pt.name_en) : (pt.name_en || pt.name_es),
                             value: pt.id,
                           }))}
-                          selectedValue={templateComboboxValue}
+                          selectedValue={activeTemplateId}
                           onSelect={(val) => {
-                            setTemplateComboboxValue(val);
-                            if (!val) return;
-
-                            const tpl = projectTemplates.find(p => p.id === val);
-                            if (!tpl) {
-                              toast({ variant: 'destructive', title: 'Plantilla no encontrada' });
+                            if (!val || val === activeTemplateId) return;
+                            if (hasMeaningfulContent && activeTemplateId !== val) {
+                              setPendingTemplateId(val);
                               return;
                             }
-
-                            const md = getProjectTemplateMarkdown(tpl, projectLanguage);
-                            const newBlocks = parseMarkdownToBlocks(md || '');
-                            updateBlocks(newBlocks);
-                            const mapping: Record<string, 'split'|'markdown'|'preview'> = {};
-                            newBlocks.forEach(b => mapping[b.id] = 'split');
-                            setSplitBlocks(prev => ({ ...prev, ...mapping }));
-                            setCollapsedSections({});
-                            setActiveBlockId(newBlocks[0]?.id ?? null);
-                            setTemplateComboboxValue('');
+                            applyTemplateById(val);
                           }}
                           placeholder={t[projectLanguage as 'en'|'es'].selectTemplate}
-                          searchPlaceholder="Buscar plantillas..."
+                          searchPlaceholder={uiLanguage === 'es' ? 'Buscar plantillas...' : 'Search templates...'}
                         />
                      </div>
                      <DndContext
@@ -1641,6 +1683,11 @@ export default function ProjectDetailsPage() {
                                   collapsed={Boolean(collapsedSections[block.id])}
                                   onCollapseAll={collapseAllSections}
                                   onCollapsedChange={setSectionCollapsed}
+                                  variables={{
+                                    client: { name: client?.name, contact: client?.contact, phone: client?.phone },
+                                    project: { name: project.name, startDate: project.startDate, endDate: project.endDate, language: project.language },
+                                    pentester: { name: user.name, email: user.email, phone: user.phone },
+                                  }}
                                 />
                               </div>
                             ))}
@@ -1665,28 +1712,22 @@ export default function ProjectDetailsPage() {
                 <CardHeader>
                   <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
                     <CardTitle>{t[uiLanguage].findings}</CardTitle>
-                    <div className="flex flex-wrap items-center gap-2">
-                      {findingTemplatePickerOpen ? (
-                        <div className="w-72">
-                          <Combobox
-                            options={vulnerabilities.map(vulnerability => ({
-                              label: projectLanguage === 'es'
-                                ? (vulnerability.title_es || vulnerability.title_en)
-                                : (vulnerability.title_en || vulnerability.title_es),
-                              value: vulnerability.id,
-                            }))}
-                            selectedValue={findingTemplateComboboxValue}
-                            onSelect={handleLoadFindingFromTemplate}
-                            placeholder={t[uiLanguage].selectVulnerabilityTemplate}
-                            searchPlaceholder="Buscar plantillas..."
-                            openOnMount
-                          />
-                        </div>
-                      ) : (
-                        <Button variant="outline" onClick={() => setFindingTemplatePickerOpen(true)}>
-                          <FileText className="mr-2 h-4 w-4" /> {t[uiLanguage].loadFromTemplate}
-                        </Button>
-                      )}
+                    <div className="flex flex-wrap items-end gap-3">
+                      <div className="w-72 space-y-1.5">
+                        <Label className="text-xs text-muted-foreground">{t[uiLanguage].loadFromTemplate}</Label>
+                        <Combobox
+                          options={vulnerabilities.map(vulnerability => ({
+                            label: projectLanguage === 'es'
+                              ? (vulnerability.title_es || vulnerability.title_en)
+                              : (vulnerability.title_en || vulnerability.title_es),
+                            value: vulnerability.id,
+                          }))}
+                          selectedValue={findingTemplateComboboxValue}
+                          onSelect={handleLoadFindingFromTemplate}
+                          placeholder={t[uiLanguage].selectVulnerabilityTemplate}
+                          searchPlaceholder={uiLanguage === 'es' ? 'Buscar plantillas...' : 'Search templates...'}
+                        />
+                      </div>
                       <Button asChild>
                         <Link href={`/dashboard/projects/${id}/findings/new`}>
                           <PlusCircle className="mr-2 h-4 w-4" /> {t[uiLanguage].newFinding}
@@ -1852,6 +1893,34 @@ export default function ProjectDetailsPage() {
           <AlertDialogFooter>
             <AlertDialogCancel onClick={() => setNextPath('')}>{t[uiLanguage].cancel}</AlertDialogCancel>
             <AlertDialogAction onClick={handleLeaveConfirm}>{t[uiLanguage].leave}</AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
+
+      <AlertDialog open={!!pendingTemplateId} onOpenChange={(open) => { if (!open) setPendingTemplateId(null); }}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>
+              {uiLanguage === 'es' ? '¿Cambiar plantilla?' : 'Change template?'}
+            </AlertDialogTitle>
+            <AlertDialogDescription>
+              {uiLanguage === 'es'
+                ? 'El contenido actual se reemplazará por el de la nueva plantilla. Las secciones cuyo título coincida conservarán el contenido que ya has editado.'
+                : 'The current content will be replaced with the new template. Sections whose title matches will keep the content you already edited.'}
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel onClick={() => setPendingTemplateId(null)}>
+              {uiLanguage === 'es' ? 'Cancelar' : 'Cancel'}
+            </AlertDialogCancel>
+            <AlertDialogAction
+              onClick={() => {
+                if (pendingTemplateId) applyTemplateById(pendingTemplateId);
+                setPendingTemplateId(null);
+              }}
+            >
+              {uiLanguage === 'es' ? 'Aplicar plantilla' : 'Apply template'}
+            </AlertDialogAction>
           </AlertDialogFooter>
         </AlertDialogContent>
       </AlertDialog>

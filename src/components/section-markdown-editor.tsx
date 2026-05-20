@@ -2,9 +2,10 @@
 
 import React, { useEffect, useMemo, useRef, useState } from 'react';
 import type { ImperativePanelGroupHandle } from 'react-resizable-panels';
-import { Bold, ChevronRight, Code, GripVertical, ImageIcon, Italic, List, Trash2 } from '@/components/icons';
+import { Bold, ChevronRight, Code, GripVertical, ImageIcon, Italic, List, ListOrdered, Table, Trash2 } from '@/components/icons';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
+import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
 import { ResizableHandle, ResizablePanel, ResizablePanelGroup } from '@/components/ui/resizable';
 import {
   AlertDialog,
@@ -17,6 +18,7 @@ import {
   AlertDialogTitle,
 } from '@/components/ui/alert-dialog';
 import { MarkdownPreview } from '@/components/markdown-preview';
+import type { VariableContext } from '@/lib/markdown-utils';
 import { cn } from '@/lib/utils';
 import { stripMarkdownText } from '@/lib/todo-utils';
 import type { ImageAsset } from '@/lib/types';
@@ -36,6 +38,11 @@ type SectionEditorLabels = {
   italic?: string;
   code?: string;
   bullets?: string;
+  numbered?: string;
+  table?: string;
+  tableRows?: string;
+  tableCols?: string;
+  tableInsert?: string;
   image?: string;
   delete?: string;
   confirmDeleteTitle?: string;
@@ -71,6 +78,7 @@ type SectionMarkdownEditorProps = {
   onCollapsedChange?: (collapsed: boolean) => void;
   onDragHandleClick?: () => void;
   dragging?: boolean;
+  variables?: VariableContext;
 };
 
 type HighlightedMarkdownTextareaProps = {
@@ -98,6 +106,11 @@ const defaultLabels: Required<SectionEditorLabels> = {
   italic: 'Italic',
   code: 'Code',
   bullets: 'Bulleted list',
+  numbered: 'Numbered list',
+  table: 'Insert table',
+  tableRows: 'Rows',
+  tableCols: 'Columns',
+  tableInsert: 'Insert',
   image: 'Insert image',
   delete: 'Delete section',
   confirmDeleteTitle: 'Delete section?',
@@ -245,6 +258,7 @@ export function SectionMarkdownEditor({
   onCollapsedChange,
   onDragHandleClick,
   dragging = false,
+  variables,
 }: SectionMarkdownEditorProps) {
   const { addImage, getImage: getStoredImage } = useData();
   const localTextareaRef = useRef<HTMLTextAreaElement>(null);
@@ -336,7 +350,131 @@ export function SectionMarkdownEditor({
     insertMarkdownAtCursor(markdownImages.join('\n\n'));
   };
 
-  const applyMarkdownFormat = (formatType: 'bold' | 'italic' | 'code' | 'bullets') => {
+  const [tableOpen, setTableOpen] = useState(false);
+  const [tableRows, setTableRows] = useState(2);
+  const [tableCols, setTableCols] = useState(2);
+
+  const buildTableMarkdown = (rows: number, cols: number) => {
+    const safeRows = Math.max(1, Math.floor(rows) || 1);
+    const safeCols = Math.max(1, Math.floor(cols) || 1);
+    const header = `| ${Array.from({ length: safeCols }, (_, i) => `Col ${i + 1}`).join(' | ')} |`;
+    const separator = `| ${Array.from({ length: safeCols }, () => '---').join(' | ')} |`;
+    const body = Array.from({ length: safeRows }, () => `| ${Array.from({ length: safeCols }, () => '   ').join(' | ')} |`).join('\n');
+    return `${header}\n${separator}\n${body}`;
+  };
+
+  const insertTable = () => {
+    insertMarkdownAtCursor(buildTableMarkdown(tableRows, tableCols));
+    setTableOpen(false);
+  };
+
+  const handleListKeyDown = (event: React.KeyboardEvent<HTMLTextAreaElement>) => {
+    const textarea = event.currentTarget;
+    if (event.defaultPrevented) return;
+    if (event.metaKey || event.ctrlKey || event.altKey) return;
+
+    const value = textarea.value;
+    const start = textarea.selectionStart;
+    const end = textarea.selectionEnd;
+    const lineStart = value.lastIndexOf('\n', start - 1) + 1;
+    const lineEndIdx = value.indexOf('\n', start);
+    const lineEnd = lineEndIdx === -1 ? value.length : lineEndIdx;
+    const currentLine = value.slice(lineStart, lineEnd);
+    const beforeCursorOnLine = value.slice(lineStart, start);
+
+    const emptyBulletMatch = /^(\s*)([-*])\s*$/.exec(currentLine);
+    const emptyNumberedMatch = /^(\s*)(\d+)\.\s*$/.exec(currentLine);
+    const bulletMatch = /^(\s*)([-*])\s+(.*)$/.exec(currentLine);
+    const numberedMatch = /^(\s*)(\d+)\.\s+(.*)$/.exec(currentLine);
+
+    if (event.key === 'Enter' && !event.shiftKey && start === end) {
+      if (emptyBulletMatch || emptyNumberedMatch) {
+        event.preventDefault();
+        textarea.setRangeText('', lineStart, lineEnd, 'end');
+        onChange(textarea.value);
+        return;
+      }
+      if (bulletMatch && bulletMatch[3].length > 0) {
+        event.preventDefault();
+        const insertion = `\n${bulletMatch[1]}${bulletMatch[2]} `;
+        textarea.setRangeText(insertion, start, end, 'end');
+        onChange(textarea.value);
+        return;
+      }
+      if (numberedMatch && numberedMatch[3].length > 0) {
+        event.preventDefault();
+        const next = parseInt(numberedMatch[2], 10) + 1;
+        const insertion = `\n${numberedMatch[1]}${next}. `;
+        textarea.setRangeText(insertion, start, end, 'end');
+        onChange(textarea.value);
+        return;
+      }
+    }
+
+    if (event.key === 'Tab' && !event.shiftKey) {
+      const selectionStartLine = value.lastIndexOf('\n', start - 1) + 1;
+      const selectionEndLineIdxRaw = value.indexOf('\n', end === start ? end : Math.max(end - 1, start));
+      const selectionEndLine = selectionEndLineIdxRaw === -1 ? value.length : selectionEndLineIdxRaw;
+      const block = value.slice(selectionStartLine, selectionEndLine);
+      const lines = block.split('\n');
+      const allListItems = lines.length > 0 && lines.every((line) => /^\s*([-*]|\d+\.)\s+/.test(line) || /^\s*([-*]|\d+\.)\s*$/.test(line));
+      if (!allListItems) return;
+      event.preventDefault();
+      const replacement = lines.map((line) => `  ${line}`).join('\n');
+      textarea.setRangeText(replacement, selectionStartLine, selectionEndLine, 'preserve');
+      const newStart = start + 2;
+      const newEnd = end + 2 * lines.length;
+      textarea.setSelectionRange(newStart, newEnd);
+      onChange(textarea.value);
+      return;
+    }
+
+    if (event.key === 'Tab' && event.shiftKey) {
+      const selectionStartLine = value.lastIndexOf('\n', start - 1) + 1;
+      const selectionEndLineIdxRaw = value.indexOf('\n', end === start ? end : Math.max(end - 1, start));
+      const selectionEndLine = selectionEndLineIdxRaw === -1 ? value.length : selectionEndLineIdxRaw;
+      const block = value.slice(selectionStartLine, selectionEndLine);
+      const lines = block.split('\n');
+      if (!lines.some((line) => line.startsWith('  '))) return;
+      event.preventDefault();
+      let removedFirst = 0;
+      let removedTotal = 0;
+      const replacement = lines.map((line, idx) => {
+        if (line.startsWith('  ')) {
+          if (idx === 0) removedFirst = 2;
+          removedTotal += 2;
+          return line.slice(2);
+        }
+        return line;
+      }).join('\n');
+      textarea.setRangeText(replacement, selectionStartLine, selectionEndLine, 'preserve');
+      const newStart = Math.max(selectionStartLine, start - removedFirst);
+      const newEnd = Math.max(newStart, end - removedTotal);
+      textarea.setSelectionRange(newStart, newEnd);
+      onChange(textarea.value);
+      return;
+    }
+
+    if (event.key === 'Backspace' && start === end) {
+      const isEmptyBullet = emptyBulletMatch && beforeCursorOnLine.length === currentLine.length;
+      const isEmptyNumbered = emptyNumberedMatch && beforeCursorOnLine.length === currentLine.length;
+      if (isEmptyBullet || isEmptyNumbered) {
+        event.preventDefault();
+        textarea.setRangeText('', lineStart, lineEnd, 'end');
+        textarea.setSelectionRange(lineStart, lineStart);
+        onChange(textarea.value);
+        return;
+      }
+    }
+  };
+
+  const composedKeyDown = (event: React.KeyboardEvent<HTMLTextAreaElement>) => {
+    handleListKeyDown(event);
+    if (event.defaultPrevented) return;
+    onKeyDown?.(event);
+  };
+
+  const applyMarkdownFormat = (formatType: 'bold' | 'italic' | 'code' | 'bullets' | 'numbered' | 'table') => {
     const textarea = textareaRef.current;
     if (!textarea) return;
 
@@ -397,19 +535,48 @@ export function SectionMarkdownEditor({
       wrapOrUnwrap('*', '*', 'italic');
       return;
     } else if (formatType === 'code') {
-      if (selected) {
+      const hasNewlineInSelection = selected.includes('\n');
+      if (selected && !hasNewlineInSelection) {
         wrapOrUnwrap('`', '`', 'code');
-      } else {
-        const lineStart = value.lastIndexOf('\n', start - 1) + 1;
-        const lineEnd = value.indexOf('\n', start);
-        const currentLine = value.slice(lineStart, lineEnd === -1 ? value.length : lineEnd);
-        if (!currentLine.trim()) {
-          const blockReplacement = '```\ncode\n```';
-          applyReplacement(blockReplacement, lineStart, lineEnd === -1 ? currentLine.length + lineStart : lineEnd, lineStart + 4, lineStart + 8);
-        } else {
-          wrapOrUnwrap('`', '`', 'code');
-        }
+        return;
       }
+      if (selected && hasNewlineInSelection) {
+        const replacement = `\n\n\`\`\`\n${selected}\n\`\`\`\n\n`;
+        applyReplacement(replacement, start, end, start + 5, start + 5 + selected.length);
+        return;
+      }
+      const lineStart = value.lastIndexOf('\n', start - 1) + 1;
+      const lineEnd = value.indexOf('\n', start);
+      const currentLine = value.slice(lineStart, lineEnd === -1 ? value.length : lineEnd);
+      if (!currentLine.trim()) {
+        const blockReplacement = '```\ncode\n```';
+        applyReplacement(blockReplacement, lineStart, lineEnd === -1 ? value.length : lineEnd, lineStart + 4, lineStart + 8);
+      } else {
+        wrapOrUnwrap('`', '`', 'code');
+      }
+      return;
+    }
+
+    if (formatType === 'numbered') {
+      if (!selected) {
+        applyReplacement('1. ', start, end, start + 3, start + 3);
+        return;
+      }
+      const numberedLines = selected.split('\n');
+      const allNumbered = numberedLines.filter((line) => line.trim()).every((line) => /^\s*\d+\.\s+/.test(line));
+      const numberedReplacement = allNumbered
+        ? numberedLines.map((line) => line.replace(/^(\s*)\d+\.\s+/, '$1')).join('\n')
+        : (() => {
+            let counter = 0;
+            return numberedLines
+              .map((line) => {
+                if (!line.trim()) return line;
+                counter += 1;
+                return `${counter}. ${line.replace(/^\s*\d+\.\s+/, '')}`;
+              })
+              .join('\n');
+          })();
+      applyReplacement(numberedReplacement, start, end, start, start + numberedReplacement.length);
       return;
     }
 
@@ -431,7 +598,7 @@ export function SectionMarkdownEditor({
       value={content}
       onChange={onChange}
       onFocus={onFocus}
-      onKeyDown={onKeyDown}
+      onKeyDown={composedKeyDown}
       onPaste={handlePaste}
       placeholder={mergedLabels.writeContent}
       textareaRef={textareaRef}
@@ -513,6 +680,41 @@ export function SectionMarkdownEditor({
             <Button type="button" variant="ghost" size="icon" className="h-8 w-8" title={mergedLabels.bullets} onMouseDown={(e) => e.preventDefault()} onClick={() => applyMarkdownFormat('bullets')}>
               <List className="h-4 w-4" />
             </Button>
+            <Button type="button" variant="ghost" size="icon" className="h-8 w-8" title={mergedLabels.numbered} onMouseDown={(e) => e.preventDefault()} onClick={() => applyMarkdownFormat('numbered')}>
+              <ListOrdered className="h-4 w-4" />
+            </Button>
+            <Popover open={tableOpen} onOpenChange={setTableOpen}>
+              <PopoverTrigger asChild>
+                <Button type="button" variant="ghost" size="icon" className="h-8 w-8" title={mergedLabels.table} onMouseDown={(e) => e.preventDefault()}>
+                  <Table className="h-4 w-4" />
+                </Button>
+              </PopoverTrigger>
+              <PopoverContent className="w-56 space-y-3" align="start">
+                <div className="space-y-1">
+                  <label className="text-xs font-medium text-muted-foreground">{mergedLabels.tableRows}</label>
+                  <Input
+                    type="number"
+                    min={1}
+                    value={tableRows}
+                    onChange={(event) => setTableRows(Math.max(1, parseInt(event.target.value, 10) || 1))}
+                    className="h-8"
+                  />
+                </div>
+                <div className="space-y-1">
+                  <label className="text-xs font-medium text-muted-foreground">{mergedLabels.tableCols}</label>
+                  <Input
+                    type="number"
+                    min={1}
+                    value={tableCols}
+                    onChange={(event) => setTableCols(Math.max(1, parseInt(event.target.value, 10) || 1))}
+                    className="h-8"
+                  />
+                </div>
+                <Button type="button" size="sm" className="w-full" onClick={insertTable}>
+                  {mergedLabels.tableInsert}
+                </Button>
+              </PopoverContent>
+            </Popover>
             <ImageUploadDialog onInsert={insertMarkdownAtCursor}>
               <Button type="button" variant="ghost" size="icon" className="h-8 w-8" title={mergedLabels.image} onMouseDown={(e) => e.preventDefault()}>
                 <ImageIcon className="h-4 w-4" />
@@ -577,13 +779,13 @@ export function SectionMarkdownEditor({
             <ResizableHandle className="w-1 bg-border transition-colors hover:bg-yellow-400 data-[resize-handle-state=drag]:bg-yellow-400" />
             <ResizablePanel defaultSize={normalizedSplitLayout[1]} minSize={25}>
               <div className={cn('h-full overflow-auto p-5', minHeightClassName)}>
-                <MarkdownPreview content={renderedPreviewContent} getImage={getImage ?? getStoredImage} />
+                <MarkdownPreview content={renderedPreviewContent} getImage={getImage ?? getStoredImage} variables={variables} />
               </div>
             </ResizablePanel>
           </ResizablePanelGroup>
         ) : currentMode === 'preview' ? (
           <div className={cn('overflow-auto p-5', minHeightClassName)}>
-            <MarkdownPreview content={renderedPreviewContent} getImage={getImage ?? getStoredImage} />
+            <MarkdownPreview content={renderedPreviewContent} getImage={getImage ?? getStoredImage} variables={variables} />
           </div>
         ) : (
           editor()

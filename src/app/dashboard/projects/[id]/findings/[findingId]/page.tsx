@@ -14,6 +14,7 @@ import { useToast } from '@/hooks/use-toast';
 import { useLanguage } from '@/context/language-context';
 import type { Vulnerability, Finding, Project, ImageAsset, Severity } from '@/lib/types';
 import { useData } from '@/context/data-context';
+import { useUser } from '@/context/user-context';
 import { Combobox } from '@/components/ui/combobox';
 import { DndContext, closestCenter, KeyboardSensor, PointerSensor, useSensor, useSensors, DragEndEvent } from '@dnd-kit/core';
 import { arrayMove, SortableContext, sortableKeyboardCoordinates, useSortable, verticalListSortingStrategy } from '@dnd-kit/sortable';
@@ -43,6 +44,7 @@ type SortableSectionProps = {
   collapsed: boolean;
   onCollapseAll: () => void;
   onCollapsedChange: (sectionId: string, collapsed: boolean) => void;
+  variables?: import('@/lib/markdown-utils').VariableContext;
   labels: {
     section: string;
     untitled: string;
@@ -88,6 +90,7 @@ const SortableSection = ({ section, index, onAddSection, onDelete, labels, ...pr
         onDragHandleClick={props.onCollapseAll}
         dragging={isDragging}
         onCollapsedChange={(collapsed) => props.onCollapsedChange(section.id, collapsed)}
+        variables={props.variables}
         titleFallback="Finding section"
         labels={{
           section: labels.section,
@@ -118,6 +121,7 @@ export default function FindingEditorPage() {
   const { toast } = useToast();
   const { language: uiLanguage } = useLanguage();
   const { projects, clients, findings, vulnerabilities, addFinding, updateFinding, getImage } = useData();
+  const { user } = useUser();
   const sensors = useSensors(
     useSensor(PointerSensor),
     useSensor(KeyboardSensor, { coordinateGetter: sortableKeyboardCoordinates })
@@ -508,7 +512,7 @@ export default function FindingEditorPage() {
                     <Input id="title" value={finding?.title || ''} onChange={e => handleFieldChange('title', e.target.value)} />
                   </div>
                   <div className="space-y-2">
-                    <Label>{t[uiLanguage].importFromDB}</Label>
+                    <Label htmlFor="vuln-template">{t[uiLanguage].importFromDB}</Label>
                     <Combobox
                         options={vulnerabilityOptions}
                         selectedValue=""
@@ -567,6 +571,11 @@ export default function FindingEditorPage() {
                             collapsed={Boolean(collapsedSections[section.id])}
                             onCollapseAll={collapseAllSections}
                             onCollapsedChange={setSectionCollapsed}
+                            variables={{
+                              client: { name: client?.name, contact: client?.contact, phone: client?.phone },
+                              project: project ? { name: project.name, startDate: project.startDate, endDate: project.endDate, language: project.language } : undefined,
+                              pentester: { name: user.name, email: user.email, phone: user.phone },
+                            }}
                             labels={{
                               section: 'Finding section',
                               untitled: 'Finding section',
