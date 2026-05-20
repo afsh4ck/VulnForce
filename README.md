@@ -35,18 +35,15 @@ El flujo de reporting está inspirado en plataformas maduras como SysReptor: el 
 - Gestión de hallazgos con severidad, CVSS, evidencias y contenido Markdown.
 - Plantillas reutilizables de proyecto y vulnerabilidades.
 - Editor de reporte por secciones con modos `Split`, `MD` y `Preview`.
-- El mismo editor Markdown por secciones en informes, hallazgos, plantillas de proyecto y plantillas de vulnerabilidades.
 - Vista dividida redimensionable con previsualización visual de Markdown.
 - Barra de formato para negrita, cursiva, código y listas.
-- Seguimiento de `TODO` en mayúsculas:
+- Seguimiento de `TO DOs` en mayúsculas:
   - Se resaltan en rojo dentro del editor Markdown.
   - Se resaltan en rojo en las previsualizaciones.
   - En el informe se muestran como `TO DO`.
-  - Cada pendiente enlaza de vuelta a la sección editable correspondiente.
-- Previsualización HTML del informe con índice, panel de pendientes, badges de severidad y legibilidad en modo claro/oscuro.
-- Iconografía basada en Phosphor Icons y selectores de icono con miniaturas visuales.
-- Exportación HTML para entrega o revisión offline.
-- Despliegue Docker local con contador de progreso durante la construcción de la imagen.
+  - Cada `TO DO` enlaza de vuelta a la sección editable correspondiente.
+- Previsualización HTML del informe con índice, panel de pendientes, badges de severidad y modo claro/oscuro.
+- Exportación HTML y PDF para entrega o revisión offline.
 
 ## Flujo de trabajo de reporting
 
