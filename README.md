@@ -48,16 +48,22 @@ El flujo de reporting está inspirado en plataformas maduras como SysReptor: el 
 ## Flujo de trabajo de reporting
 
 1. Crear un proyecto y asociarlo a un cliente.
-2. Importar una plantilla de proyecto o una vulnerabilidad desde la biblioteca.
-3. El contenido importado se divide automáticamente en secciones editables usando titulares Markdown de primer y segundo nivel (`#` y `##`).
-4. Editar cada sección en uno de estos modos:
-   - `Split`: editor Markdown y previsualización renderizada lado a lado.
-   - `MD`: editor Markdown a ancho completo.
-   - `Preview`: vista visual renderizada.
-5. Escribir `TODO` en mayúsculas en cualquier punto para marcar trabajo pendiente.
-6. Abrir la previsualización del informe para revisar HTML final, índice y pendientes.
-7. Pulsar cualquier `TO DO` pendiente para volver a la sección editable exacta.
-8. Exportar el informe como HTML cuando no queden pendientes.
+<img width="2332" height="1628" alt="image" src="https://github.com/user-attachments/assets/461f45cd-b3e0-4809-8abc-636631940379" />
+
+2. Importar una plantilla de proyecto.
+<img width="3344" height="1326" alt="image" src="https://github.com/user-attachments/assets/d35c06b2-e1cf-45f8-b272-639f20e8336e" />
+
+3. Importar una plantilla de vulnerabilidad.
+<img width="3358" height="1518" alt="image" src="https://github.com/user-attachments/assets/49bbae77-116c-4d67-b343-5121022a0a7c" />
+
+4. Escribir `TODO` en mayúsculas en cualquier punto para marcarlo cómo trabajo pendiente.
+<img width="2918" height="838" alt="image" src="https://github.com/user-attachments/assets/b07a2bc0-8af6-40ae-8dfb-e489c2a5ff24" />
+
+5. Abrir la previsualización del informe para revisar HTML final, índice y pendientes.
+<img width="3364" height="1772" alt="image" src="https://github.com/user-attachments/assets/bffdf8f1-323a-4f3f-af96-a45351759dd7" />
+ 
+6. Pulsar cualquier `TO DO` pendiente para volver a la sección editable exacta.
+7. Exportar el informe como HTML o PDF cuando no queden pendientes.
 
 ## Tecnologías
 
