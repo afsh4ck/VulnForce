@@ -2,7 +2,7 @@
 
 VulnForce es una plataforma web autoalojada para gestionar proyectos de pentesting, clientes, hallazgos, plantillas reutilizables, biblioteca de vulnerabilidades y reportes finales listos para entregar.
 
-<img width="3214" height="1458" alt="Panel principal de VulnForce" src="https://github.com/user-attachments/assets/16e48dd3-1bed-435b-ab6e-6df9815f47c4" />
+<img width="3450" height="1892" alt="image" src="https://github.com/user-attachments/assets/4e8c1004-879e-4299-818c-726bbabdb54c" />
 
 ## Índice
 
@@ -112,14 +112,14 @@ sudo systemctl enable --now docker
 2. Clona el repositorio.
 
 ```bash
-git clone <repo-url>
-cd <repo-folder>
+git clone https://github.com/afsh4ck/VulnForce.git
+cd VulnForce
 ```
 
 3. Ejecuta el despliegue.
 
 ```bash
-bash deploy.sh
+sudo bash deploy.sh
 ```
 
 4. Abre la aplicación.
@@ -139,6 +139,8 @@ newgrp docker
 
 El flujo recomendado en Windows es usar Docker Desktop con WSL2 habilitado.
 
+### 1. Despliegue con Docker
+
 1. Instala:
 
 - Docker Desktop para Windows.
@@ -149,8 +151,8 @@ El flujo recomendado en Windows es usar Docker Desktop con WSL2 habilitado.
 2. Clona el repositorio desde PowerShell, Git Bash o WSL.
 
 ```powershell
-git clone <repo-url>
-cd <repo-folder>
+git clone https://github.com/afsh4ck/VulnForce.git
+cd VulnForce
 ```
 
 3. Para desarrollo local en Windows:
@@ -166,10 +168,19 @@ Abre `http://localhost:9002`.
 4. Para despliegue Docker, ejecuta el script desde WSL o Git Bash con Docker Desktop iniciado:
 
 ```bash
-bash deploy.sh
+sudo bash deploy.sh
 ```
 
 Abre `http://127.0.0.1:47474`.
+
+### 2. Despliegue con Python
+Esta opción tiene un funcionamiento un poco más lento, ya que compila cada página estática al acceder.
+
+```powershell
+git clone https://github.com/afsh4ck/VulnForce.git
+cd VulnForce
+python3 app.py
+```
 
 ## macOS
 
@@ -182,8 +193,8 @@ Abre `http://127.0.0.1:47474`.
 2. Clona el repositorio.
 
 ```bash
-git clone <repo-url>
-cd <repo-folder>
+git clone https://github.com/afsh4ck/VulnForce.git
+cd VulnForce
 ```
 
 3. Para desarrollo local:
