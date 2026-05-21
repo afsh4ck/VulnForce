@@ -15,7 +15,8 @@ import { useLanguage } from '@/context/language-context';
 import type { Vulnerability, Finding, Project, ImageAsset, Severity } from '@/lib/types';
 import { useData } from '@/context/data-context';
 import { useUser } from '@/context/user-context';
-import { Combobox } from '@/components/ui/combobox';
+import { VulnerabilityTemplatePicker } from '@/components/vulnerability-template-picker';
+import { FileText } from '@/components/icons';
 import { DndContext, closestCenter, KeyboardSensor, PointerSensor, useSensor, useSensors, DragEndEvent } from '@dnd-kit/core';
 import { arrayMove, SortableContext, sortableKeyboardCoordinates, useSortable, verticalListSortingStrategy } from '@dnd-kit/sortable';
 import { CSS } from '@dnd-kit/utilities';
@@ -71,11 +72,13 @@ const SortableSection = ({ section, index, onAddSection, onDelete, labels, ...pr
   
   return (
     <div ref={setNodeRef} style={style} data-finding-section-id={section.id} className="relative group/section scroll-mt-24">
-      <div className="absolute top-0 -left-12 h-full flex items-center gap-1 opacity-0 group-hover/section:opacity-100 transition-opacity">
-         <Button variant="ghost" size="icon" className="h-8 w-8 cursor-pointer" onClick={() => onAddSection(index + 1)}>
-          <Plus className="h-4 w-4"/>
-        </Button>
-      </div>
+      {!isDragging && (
+        <div className="pointer-events-none absolute top-0 -left-12 h-full hidden lg:flex items-center gap-1 opacity-0 group-hover/section:opacity-100 group-hover/section:pointer-events-auto transition-opacity">
+           <Button variant="ghost" size="icon" className="h-8 w-8 cursor-pointer" onClick={() => onAddSection(index + 1)}>
+            <Plus className="h-4 w-4"/>
+          </Button>
+        </div>
+      )}
       <SectionMarkdownEditor
         id={`finding-section-${section.id}`}
         content={section.content}
@@ -143,7 +146,7 @@ export default function FindingEditorPage() {
   const [sectionSplitLayout, setSectionSplitLayout] = useState<number[]>([52, 48]);
   const [collapsedSections, setCollapsedSections] = useState<Record<string, boolean>>({});
   const initializedFindingRef = useRef<string | null>(null);
-  const [importedVulnTemplateId, setImportedVulnTemplateId] = useState<string>('');
+  const [templatePickerOpen, setTemplatePickerOpen] = useState(false);
 
   const client = clients.find(c => c.id === project?.clientId);
 
@@ -273,7 +276,7 @@ export default function FindingEditorPage() {
         }
       return;
     }
-    
+
     setSaveStatus('saving');
     const markdownContent = joinMarkdownSections(sections.map(s => s.content));
 
@@ -283,9 +286,13 @@ export default function FindingEditorPage() {
     };
 
     if (findingId === 'new') {
-      addFinding(findingData);
+      const created = addFinding(findingData);
       if (showToast) toast({ title: t[uiLanguage].saveSuccessTitle, description: `${finding.title} ${t[uiLanguage].saveSuccessNew}` });
-      router.push(`/dashboard/projects/${projectId}`);
+      // Mantener al usuario en la vista del hallazgo recién creado en lugar
+      // de redirigirlo a la lista del proyecto. router.replace evita un
+      // entry extra en el historial y mantiene el estado actual del editor.
+      initializedFindingRef.current = `${projectId}::${created.id}`;
+      router.replace(`/dashboard/projects/${projectId}/findings/${created.id}`);
     } else {
       updateFinding({
         id: findingId,
@@ -293,7 +300,7 @@ export default function FindingEditorPage() {
       });
       if (showToast) toast({ title: t[uiLanguage].saveSuccessTitle, description: `${finding.title} ${t[uiLanguage].saveSuccessUpdate}` });
     }
-    
+
     setTimeout(() => setSaveStatus('saved'), 500);
   };
   
@@ -358,7 +365,6 @@ export default function FindingEditorPage() {
         return arrayMove(items, oldIndex, newIndex);
       });
     }
-    expandAllSections();
   }
 
   const handleSeverityChange = (newSeverity: Severity) => {
@@ -374,13 +380,13 @@ export default function FindingEditorPage() {
     handleFieldChange('cvss', newCvss);
   }
 
-  const getSeverityVariant = (severity: string): 'destructive' | 'high' | 'medium' | 'low' | 'secondary' => {
+  const getSeverityVariant = (severity: string): 'critical' | 'high' | 'medium' | 'low' | 'informational' => {
     switch (severity) {
-      case 'Critical': return 'destructive';
+      case 'Critical': return 'critical';
       case 'High': return 'high';
       case 'Medium': return 'medium';
       case 'Low': return 'low';
-      default: return 'secondary';
+      default: return 'informational';
     }
   }
 
@@ -453,43 +459,29 @@ export default function FindingEditorPage() {
   const getVulnTitle = (vuln: Vulnerability) => {
     return projectLanguage === 'es' ? vuln.title_es : vuln.title_en;
   }
-  
-  const vulnerabilityOptions = React.useMemo(() => vulnerabilities.map(v => ({
-      value: v.id,
-      label: getVulnTitle(v),
-  })), [vulnerabilities, projectLanguage, getVulnTitle]);
 
+  const handleImportFromVulnerability = (vuln: Vulnerability) => {
+    handleFieldChange('title', getVulnTitle(vuln));
+    handleSeverityChange(vuln.severity);
 
-  const handleImport = (vulnId: string) => {
-    if (!vulnId) {
-      setImportedVulnTemplateId('');
-      return;
-    }
-    const vuln = vulnerabilities.find(v => v.id === vulnId);
-    if (vuln) {
-      setImportedVulnTemplateId(vulnId);
-      handleFieldChange('title', getVulnTitle(vuln));
-      handleSeverityChange(vuln.severity);
-      
-      const newSectionsContent = [
-        vuln[`overview_${projectLanguage}`],
-        vuln[`technicalDescription_${projectLanguage}`],
-        vuln[`affectedComponents_${projectLanguage}`],
-        vuln[`impact_${projectLanguage}`],
-        vuln[`immediateActions_${projectLanguage}`],
-        vuln[`details_${projectLanguage}`],
-        vuln[`recommendations_${projectLanguage}`],
-      ];
+    const newSectionsContent = [
+      vuln[`overview_${projectLanguage}`],
+      vuln[`technicalDescription_${projectLanguage}`],
+      vuln[`affectedComponents_${projectLanguage}`],
+      vuln[`impact_${projectLanguage}`],
+      vuln[`immediateActions_${projectLanguage}`],
+      vuln[`details_${projectLanguage}`],
+      vuln[`recommendations_${projectLanguage}`],
+    ];
 
-      const newSections = splitMarkdownIntoSections(joinMarkdownSections(newSectionsContent), { maxHeadingLevel: 3 }).map(content => ({
-        id: `section-imported-${Date.now()}-${Math.random()}`,
-        content: content || ''
-      }));
+    const newSections = splitMarkdownIntoSections(joinMarkdownSections(newSectionsContent), { maxHeadingLevel: 3 }).map(content => ({
+      id: `section-imported-${Date.now()}-${Math.random()}`,
+      content: content || ''
+    }));
 
-      setSections(newSections);
-      setSaveStatus('unsaved');
-    }
-  }
+    setSections(newSections);
+    setSaveStatus('unsaved');
+  };
 
 
   return (
@@ -519,14 +511,11 @@ export default function FindingEditorPage() {
           <Card>
             <CardHeader className="flex flex-row items-center justify-between gap-3">
               <CardTitle>{t[uiLanguage].findingDetails}</CardTitle>
-              <div className="flex items-center gap-2">
-                <Combobox
-                    options={vulnerabilityOptions}
-                    selectedValue={importedVulnTemplateId}
-                    onSelect={handleImport}
-                    placeholder={t[uiLanguage].selectTemplate}
-                    searchPlaceholder={t[uiLanguage].searchVulnerability}
-                />
+              <div className="flex items-center gap-3">
+                <Button variant="outline" onClick={() => setTemplatePickerOpen(true)}>
+                  <FileText className="mr-2 h-4 w-4" />
+                  {uiLanguage === 'es' ? 'Cargar plantilla' : 'Load template'}
+                </Button>
                 {finding?.severity && <Badge variant={getSeverityVariant(finding.severity)}>{finding.severity}</Badge>}
               </div>
             </CardHeader>
@@ -563,8 +552,6 @@ export default function FindingEditorPage() {
               <DndContext
                 sensors={sensors}
                 collisionDetection={closestCenter}
-                onDragStart={collapseAllSections}
-                onDragCancel={expandAllSections}
                 onDragEnd={handleDragEnd}
               >
                 <SortableContext items={sections.map(s => s.id)} strategy={verticalListSortingStrategy}>
@@ -608,7 +595,7 @@ export default function FindingEditorPage() {
                 </SortableContext>
               </DndContext>
 
-              <div className="flex justify-center pt-4">
+              <div className="flex justify-center pt-4 pb-24">
                   <Button variant="outline" onClick={() => handleAddSection()}>
                       <Plus className="mr-2 h-4 w-4" />
                       {t[uiLanguage].addNewSection}
@@ -616,6 +603,13 @@ export default function FindingEditorPage() {
               </div>
           </div>
       </div>
+
+      <VulnerabilityTemplatePicker
+        open={templatePickerOpen}
+        onOpenChange={setTemplatePickerOpen}
+        language={projectLanguage}
+        onPick={handleImportFromVulnerability}
+      />
     </div>
   );
 }

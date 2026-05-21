@@ -1,25 +1,19 @@
 'use client';
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { Languages, Moon, Sun, KeyRound, Eye, EyeOff, Trash2 } from "@/components/icons";
+import { KeyRound, Eye, EyeOff, Trash2 } from "@/components/icons";
 import { useToast } from "@/hooks/use-toast";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import React, { useState } from "react";
 import { useLanguage } from "@/context/language-context";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { useTheme } from "@/context/theme-context";
-import { Switch } from "@/components/ui/switch";
 import { useUser } from "@/context/user-context";
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from "@/components/ui/alert-dialog";
-import { useData } from "@/context/data-context";
 
 export default function SettingsPage() {
   const { toast } = useToast();
-  const { language, setLanguage } = useLanguage();
-  const { theme, setTheme } = useTheme();
-  const { user, changePassword, logout } = useUser();
-  const { wipeAllData } = useData();
+  const { language } = useLanguage();
+  const { changePassword, logout } = useUser();
 
   const [currentPassword, setCurrentPassword] = useState('');
   const [newPassword, setNewPassword] = useState('');
@@ -33,15 +27,6 @@ export default function SettingsPage() {
   const t = {
     en: {
       title: "Settings",
-      languageTitle: "Language",
-      languageDesc: "Change the application language.",
-      selectLanguage: "Select Language",
-      english: "English",
-      spanish: "Spanish",
-      themeTitle: "Appearance",
-      themeDesc: "Switch between light and dark mode.",
-      light: "Light",
-      dark: "Dark",
       changePasswordTitle: "Change Password",
       changePasswordDesc: "Update your account password.",
       currentPasswordLabel: "Current Password",
@@ -61,15 +46,6 @@ export default function SettingsPage() {
     },
     es: {
       title: "Ajustes",
-      languageTitle: "Idioma",
-      languageDesc: "Cambia el idioma de la aplicación.",
-      selectLanguage: "Seleccionar Idioma",
-      english: "Inglés",
-      spanish: "Español",
-      themeTitle: "Apariencia",
-      themeDesc: "Cambia entre el modo claro y oscuro.",
-      light: "Claro",
-      dark: "Oscuro",
       changePasswordTitle: "Cambiar Contraseña",
       changePasswordDesc: "Actualiza la contraseña de tu cuenta.",
       currentPasswordLabel: "Contraseña Actual",
@@ -113,46 +89,6 @@ export default function SettingsPage() {
     <>
       <div className="space-y-6 p-4 sm:p-6">
         <h1 className="font-headline text-3xl font-bold tracking-tight">{t[language].title}</h1>
-        
-        <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
-          <Card>
-              <CardHeader>
-                <CardTitle>{t[language].themeTitle}</CardTitle>
-                <CardDescription>{t[language].themeDesc}</CardDescription>
-              </CardHeader>
-              <CardContent>
-                <div className="flex items-center space-x-2">
-                    <Sun className="h-5 w-5" />
-                    <Switch
-                        id="theme-switch"
-                        checked={theme === 'dark'}
-                        onCheckedChange={(checked) => setTheme(checked ? 'dark' : 'light')}
-                    />
-                    <Moon className="h-5 w-5" />
-                </div>
-              </CardContent>
-            </Card>
-
-          <Card>
-              <CardHeader>
-                <CardTitle>{t[language].languageTitle}</CardTitle>
-                <CardDescription>{t[language].languageDesc}</CardDescription>
-              </CardHeader>
-              <CardContent>
-                <div className="w-full">
-                  <Select value={language} onValueChange={(value) => setLanguage(value as 'en' | 'es')}>
-                    <SelectTrigger>
-                      <SelectValue placeholder={t[language].selectLanguage} />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="en">{t[language].english}</SelectItem>
-                      <SelectItem value="es">{t[language].spanish}</SelectItem>
-                    </SelectContent>
-                  </Select>
-                </div>
-              </CardContent>
-            </Card>
-        </div>
 
         <Card>
             <CardHeader>

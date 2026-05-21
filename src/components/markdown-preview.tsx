@@ -61,14 +61,31 @@ export const MarkdownPreview = ({ content, getImage, isReport, variables }: { co
         });
     };
 
-    const getSeverityVariant = (severity: string): 'destructive' | 'high' | 'medium' | 'low' | 'secondary' => {
-        switch (severity) {
-          case 'Critical': return 'destructive';
-          case 'High': return 'high';
-          case 'Medium': return 'medium';
-          case 'Low': return 'low';
-          default: return 'secondary';
-        }
+        const getSeverityVariant = (severity: string): 'critical' | 'high' | 'medium' | 'low' | 'informational' => {
+                switch (severity) {
+                    case 'Critical': return 'critical';
+                    case 'High': return 'high';
+                    case 'Medium': return 'medium';
+                    case 'Low': return 'low';
+                    default: return 'informational';
+                }
+        };
+
+    // Garantiza IDs únicos por instancia de MarkdownPreview. Si dos headings
+    // colisionan (p.ej. "Recommendations" en varias vulnerabilidades) añadimos
+    // un sufijo incremental. Esto es la única forma fiable de evitar que el
+    // scrollspy ilumine varios items del TOC a la vez. El Map se reinicia
+    // en cada render para que las IDs sean estables y consistentes.
+    const seenIds = new Map<string, number>();
+    const allocateUniqueId = (base: string): string => {
+      const used = seenIds.get(base);
+      if (used === undefined) {
+        seenIds.set(base, 0);
+        return base;
+      }
+      const next = used + 1;
+      seenIds.set(base, next);
+      return `${base}-${next}`;
     };
 
     const CustomHeading = ({ level, children, ...props }: { level: number, children: React.ReactNode, [key: string]: any }) => {
@@ -76,7 +93,8 @@ export const MarkdownPreview = ({ content, getImage, isReport, variables }: { co
 
         const match = textContent.match(/(.*) {#(.*)}/);
         const rawText = stripMarkdownText(match ? match[1].trim() : textContent.trim());
-        const id = match ? match[2].trim() : (rawText.trim().replace(/\s+/g, '-').replace(/[^\w-]+/g, '') || `section-${Math.random().toString(36).substr(2, 9)}`);
+        const baseId = match ? match[2].trim() : (rawText.trim().replace(/\s+/g, '-').replace(/[^\w-]+/g, '') || `section-${Math.random().toString(36).substr(2, 9)}`);
+        const id = allocateUniqueId(baseId);
 
         const severityRegex = /\[SEVERITY:(.*?),CVSS:(.*?)\]/;
         const severityMatch = rawText.match(severityRegex);
@@ -86,12 +104,20 @@ export const MarkdownPreview = ({ content, getImage, isReport, variables }: { co
             const severity = severityMatch[1];
             const cvss = severityMatch[2];
             return (
-            <div id={id}>
-                <div className="flex justify-between items-center mb-2">
-                <h2 {...props} className={cn("text-2xl font-semibold border-b-0 pb-0", isReport && "mt-12 font-headline")}>
+            <div>
+                <div className="flex flex-wrap justify-between items-center gap-3 mb-2">
+                  <h2
+                    {...props}
+                    id={id}
+                    data-severity={severity}
+                    className={cn(
+                      "m-0 text-2xl font-semibold border-b-0 pb-0 font-headline",
+                      isReport && "mt-12",
+                    )}
+                  >
                     {renderTodoText(title)}
-                </h2>
-                <Badge variant={getSeverityVariant(severity)} className="text-base px-3 py-1">{severity}</Badge>
+                  </h2>
+                  <Badge variant={getSeverityVariant(severity)} className="text-sm px-3 py-1 shrink-0">{severity}</Badge>
                 </div>
                 <p className="font-code text-sm text-muted-foreground mt-0 mb-6">CVSS: {cvss}</p>
                 <Separator className="my-6" />
@@ -154,11 +180,47 @@ export const MarkdownPreview = ({ content, getImage, isReport, variables }: { co
                 h2: ({node, children, ...props}) => <CustomHeading level={2} {...props}>{children as any}</CustomHeading>,
                 h3: ({node, children, ...props}) => <CustomHeading level={3} {...props}>{children as any}</CustomHeading>,
                 h4: ({node, children, ...props}) => <CustomHeading level={4} {...props}>{children as any}</CustomHeading>,
-                p: ({node, children, ...props}) => <p {...props}>{renderTodoNodes(children)}</p>,
-                li: ({node, children, ...props}) => <li {...props}>{renderTodoNodes(children)}</li>,
+                p: ({node, children, ...props}) => {
+                    const text = getTextFromChildren(children);
+                    const isTodo = /\b(TODO|TO DO)\b/.test(text);
+                    const el = <p {...props}>{renderTodoNodes(children)}</p>;
+                    if (isTodo) {
+                        return (
+                            <div className="todo-block group/todo relative">
+                                {el}
+                            </div>
+                        );
+                    }
+                    return el;
+                },
+                li: ({node, children, ...props}) => {
+                    const text = getTextFromChildren(children);
+                    const isTodo = /\b(TODO|TO DO)\b/.test(text);
+                    const el = <li {...props}>{renderTodoNodes(children)}</li>;
+                    if (isTodo) {
+                        return (
+                            <div className="todo-block group/todo relative">
+                                {el}
+                            </div>
+                        );
+                    }
+                    return el;
+                },
                 td: ({node, children, ...props}) => <td {...props}>{renderTodoNodes(children)}</td>,
                 th: ({node, children, ...props}) => <th {...props}>{renderTodoNodes(children)}</th>,
-                blockquote: ({node, children, ...props}) => <blockquote {...props}>{renderTodoNodes(children)}</blockquote>,
+                blockquote: ({node, children, ...props}) => {
+                    const text = getTextFromChildren(children);
+                    const isTodo = /\b(TODO|TO DO)\b/.test(text);
+                    const el = <blockquote {...props}>{renderTodoNodes(children)}</blockquote>;
+                    if (isTodo) {
+                        return (
+                            <div className="todo-block group/todo relative">
+                                {el}
+                            </div>
+                        );
+                    }
+                    return el;
+                },
                 strong: ({node, children, ...props}) => <strong {...props}>{renderTodoNodes(children)}</strong>,
                 em: ({node, children, ...props}) => <em {...props}>{renderTodoNodes(children)}</em>,
                 a: ({node, children, className, ...props}) => {

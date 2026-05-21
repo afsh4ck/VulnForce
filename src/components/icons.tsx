@@ -52,6 +52,7 @@ export {
   Minus,
   Moon,
   Network,
+  Palette,
   Sidebar as PanelLeft,
   Plus,
   PlusCircle,

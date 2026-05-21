@@ -2,11 +2,11 @@
 
 'use client';
 
-import React, { useState, useMemo, useEffect, useRef } from 'react';
+import React, { useState, useMemo, useEffect } from 'react';
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardContent } from "@/components/ui/card";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
-import { PlusCircle, Search, ArrowUpDown, Upload, Edit, Trash2 } from "@/components/icons";
+import { PlusCircle, Search, ArrowUpDown, Edit, Trash2 } from "@/components/icons";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Input } from "@/components/ui/input";
 import {
@@ -22,9 +22,9 @@ import { Label } from "@/components/ui/label";
 import { useLanguage } from "@/context/language-context";
 import type { Client } from '@/lib/types';
 import { useToast } from '@/hooks/use-toast';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from "@/components/ui/alert-dialog";
 import { useData } from '@/context/data-context';
+import { ImageUploadButton } from '@/components/image-upload-button';
 
 
 type SortKey = keyof Client;
@@ -43,7 +43,7 @@ export default function ClientsPage() {
   const [newClientContact, setNewClientContact] = useState('');
   const [newClientPhone, setNewClientPhone] = useState('');
   const [newClientLogo, setNewClientLogo] = useState<string | null>(null);
-  const createFileInputRef = useRef<HTMLInputElement>(null);
+  const [newClientLogoWide, setNewClientLogoWide] = useState<string | null>(null);
 
 
   // State for editing a client
@@ -53,7 +53,7 @@ export default function ClientsPage() {
   const [editClientContact, setEditClientContact] = useState('');
   const [editClientPhone, setEditClientPhone] = useState('');
   const [editClientLogo, setEditClientLogo] = useState<string | null>(null);
-  const editFileInputRef = useRef<HTMLInputElement>(null);
+  const [editClientLogoWide, setEditClientLogoWide] = useState<string | null>(null);
 
   useEffect(() => {
     if (editingClient) {
@@ -61,6 +61,7 @@ export default function ClientsPage() {
       setEditClientContact(editingClient.contact);
       setEditClientPhone(editingClient.phone || '');
       setEditClientLogo(editingClient.logoUrl || null);
+      setEditClientLogoWide(editingClient.logoWide || null);
     }
   }, [editingClient]);
   
@@ -69,25 +70,6 @@ export default function ClientsPage() {
     deleteClient(clientToDelete.id);
     toast({ title: t[language].clientDeleted });
     setClientToDelete(null);
-  };
-
-  const handleLogoChange = (e: React.ChangeEvent<HTMLInputElement>, setLogo: (logo: string | null) => void) => {
-    if (e.target.files && e.target.files[0]) {
-      const file = e.target.files[0];
-      if (file.type.startsWith('image/')) {
-        const reader = new FileReader();
-        reader.onloadend = () => {
-          setLogo(reader.result as string);
-        };
-        reader.readAsDataURL(file);
-      } else {
-        toast({
-          variant: 'destructive',
-          title: 'Invalid file type',
-          description: 'Please select an image file.',
-        });
-      }
-    }
   };
 
   const handleEditClick = (client: Client) => {
@@ -105,12 +87,13 @@ export default function ClientsPage() {
       return;
     }
 
-    updateClient({ 
-      ...editingClient, 
-      name: editClientName, 
-      contact: editClientContact, 
+    updateClient({
+      ...editingClient,
+      name: editClientName,
+      contact: editClientContact,
       phone: editClientPhone,
-      logoUrl: editClientLogo || '', 
+      logoUrl: editClientLogo || '',
+      logoWide: editClientLogoWide || undefined,
     });
 
     toast({
@@ -138,6 +121,7 @@ export default function ClientsPage() {
       contact: newClientContact,
       phone: newClientPhone,
       logoUrl: newClientLogo || '',
+      logoWide: newClientLogoWide || undefined,
     };
 
     addClient(newClient);
@@ -151,6 +135,7 @@ export default function ClientsPage() {
     setNewClientContact('');
     setNewClientPhone('');
     setNewClientLogo(null);
+    setNewClientLogoWide(null);
     setIsCreateDialogOpen(false);
   };
 
@@ -219,6 +204,10 @@ export default function ClientsPage() {
       delete: "Delete",
       logoLabel: "Logo",
       uploadLogo: "Upload Logo",
+      logoSquareLabel: "Square logo",
+      logoSquareHint: "Used in tables and cards. 1:1 ratio.",
+      logoWideLabel: "Horizontal logo",
+      logoWideHint: "Used in reports. 4:1 ratio.",
       confirmDeleteTitle: "Are you sure?",
       confirmDeleteDesc: "This action cannot be undone. This will permanently delete the client.",
       cancel: "Cancel",
@@ -249,6 +238,10 @@ export default function ClientsPage() {
       delete: "Eliminar",
       logoLabel: "Logo",
       uploadLogo: "Subir Logo",
+      logoSquareLabel: "Logo cuadrado",
+      logoSquareHint: "Se usa en tablas y tarjetas. Proporción 1:1.",
+      logoWideLabel: "Logo horizontal",
+      logoWideHint: "Se usa en los reportes. Proporción 4:1.",
       confirmDeleteTitle: "¿Estás seguro?",
       confirmDeleteDesc: "Esta acción no se puede deshacer. Esto eliminará permanentemente el cliente.",
       cancel: "Cancelar",
@@ -297,23 +290,34 @@ export default function ClientsPage() {
                   <Label htmlFor="phone" className="text-right">{t[language].phoneLabel}</Label>
                   <Input id="phone" placeholder={t[language].phonePlaceholder} className="col-span-3" value={newClientPhone} onChange={(e) => setNewClientPhone(e.target.value)} />
                 </div>
-                <div className="grid grid-cols-4 items-center gap-4">
-                  <Label htmlFor="new-logo" className="text-right">{t[language].logoLabel}</Label>
-                   <div className="col-span-3 flex items-center gap-4">
-                     <Avatar className="h-10 w-10">
-                        {newClientLogo ? <AvatarImage src={newClientLogo} /> : <AvatarFallback>{newClientName ? newClientName.charAt(0) : '?'}</AvatarFallback>}
-                      </Avatar>
-                    <input
-                        type="file"
-                        ref={createFileInputRef}
-                        onChange={(e) => handleLogoChange(e, setNewClientLogo)}
-                        className="hidden"
-                        accept="image/*"
+                <div className="grid grid-cols-4 items-start gap-4">
+                  <Label className="pt-2 text-right">{t[language].logoSquareLabel}</Label>
+                  <div className="col-span-3 space-y-1">
+                    <ImageUploadButton
+                      value={newClientLogo}
+                      onChange={(dataUrl) => setNewClientLogo(dataUrl || null)}
+                      aspect={1}
+                      cropShape="rect"
+                      previewClassName="h-16 w-16"
+                      cropTitle={t[language].logoSquareLabel}
+                      outputSize={512}
                     />
-                    <Button variant="outline" type="button" onClick={() => createFileInputRef.current?.click()}>
-                        <Upload className="mr-2 h-4 w-4" />
-                        {t[language].uploadLogo}
-                    </Button>
+                    <p className="text-xs text-muted-foreground">{t[language].logoSquareHint}</p>
+                  </div>
+                </div>
+                <div className="grid grid-cols-4 items-start gap-4">
+                  <Label className="pt-2 text-right">{t[language].logoWideLabel}</Label>
+                  <div className="col-span-3 space-y-1">
+                    <ImageUploadButton
+                      value={newClientLogoWide}
+                      onChange={(dataUrl) => setNewClientLogoWide(dataUrl || null)}
+                      aspect={4}
+                      cropShape="rect"
+                      previewClassName="h-12 w-48"
+                      cropTitle={t[language].logoWideLabel}
+                      outputSize={1200}
+                    />
+                    <p className="text-xs text-muted-foreground">{t[language].logoWideHint}</p>
                   </div>
                 </div>
               </div>
@@ -398,23 +402,34 @@ export default function ClientsPage() {
               <Label htmlFor="edit-phone" className="text-right">{t[language].phoneLabel}</Label>
               <Input id="edit-phone" placeholder={t[language].phonePlaceholder} className="col-span-3" value={editClientPhone} onChange={(e) => setEditClientPhone(e.target.value)} />
             </div>
-            <div className="grid grid-cols-4 items-center gap-4">
-              <Label htmlFor="edit-logo" className="text-right">{t[language].logoLabel}</Label>
-              <div className="col-span-3 flex items-center gap-4">
-                  <Avatar className="h-10 w-10">
-                    {editClientLogo ? <AvatarImage src={editClientLogo} /> : <AvatarFallback>{editClientName ? editClientName.charAt(0) : '?'}</AvatarFallback>}
-                  </Avatar>
-                  <input
-                    type="file"
-                    ref={editFileInputRef}
-                    onChange={(e) => handleLogoChange(e, setEditClientLogo)}
-                    className="hidden"
-                    accept="image/*"
-                  />
-                  <Button variant="outline" type="button" onClick={() => editFileInputRef.current?.click()}>
-                    <Upload className="mr-2 h-4 w-4" />
-                    {t[language].uploadLogo}
-                  </Button>
+            <div className="grid grid-cols-4 items-start gap-4">
+              <Label className="pt-2 text-right">{t[language].logoSquareLabel}</Label>
+              <div className="col-span-3 space-y-1">
+                <ImageUploadButton
+                  value={editClientLogo}
+                  onChange={(dataUrl) => setEditClientLogo(dataUrl || null)}
+                  aspect={1}
+                  cropShape="rect"
+                  previewClassName="h-16 w-16"
+                  cropTitle={t[language].logoSquareLabel}
+                  outputSize={512}
+                />
+                <p className="text-xs text-muted-foreground">{t[language].logoSquareHint}</p>
+              </div>
+            </div>
+            <div className="grid grid-cols-4 items-start gap-4">
+              <Label className="pt-2 text-right">{t[language].logoWideLabel}</Label>
+              <div className="col-span-3 space-y-1">
+                <ImageUploadButton
+                  value={editClientLogoWide}
+                  onChange={(dataUrl) => setEditClientLogoWide(dataUrl || null)}
+                  aspect={4}
+                  cropShape="rect"
+                  previewClassName="h-12 w-48"
+                  cropTitle={t[language].logoWideLabel}
+                  outputSize={1200}
+                />
+                <p className="text-xs text-muted-foreground">{t[language].logoWideHint}</p>
               </div>
             </div>
           </div>

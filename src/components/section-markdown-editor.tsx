@@ -535,16 +535,38 @@ export function SectionMarkdownEditor({
       wrapOrUnwrap('*', '*', 'italic');
       return;
     } else if (formatType === 'code') {
-      const hasNewlineInSelection = selected.includes('\n');
-      if (selected && !hasNewlineInSelection) {
-        wrapOrUnwrap('`', '`', 'code');
+      // Recortar newlines de los bordes (p.ej. cuando el browser amplía la
+      // selección con \n por triple-click) para decidir bien si es inline o block.
+      const trimmedSelection = selected.replace(/^\n+/, '').replace(/\n+$/, '');
+      const hasInnerNewline = trimmedSelection.includes('\n');
+
+      if (trimmedSelection && !hasInnerNewline) {
+        // Inline `code` — siempre que quepa en una línea, aunque el browser
+        // haya añadido un \n trailing a la selección.
+        const leadingNewlines = selected.length - selected.replace(/^\n+/, '').length;
+        const trailingNewlines = selected.length - selected.replace(/\n+$/, '').length;
+        const wrapStart = start + leadingNewlines;
+        const wrapEnd = end - trailingNewlines;
+        const wrappedValue = value.slice(0, wrapStart) + '`' + trimmedSelection + '`' + value.slice(wrapEnd);
+        const cursorEnd = wrapStart + 1 + trimmedSelection.length + 1;
+        textarea.value = wrappedValue;
+        onChange(wrappedValue);
+        textarea.focus();
+        window.setTimeout(() => {
+          if (textarea.isConnected) textarea.setSelectionRange(wrapStart + 1, cursorEnd - 1);
+        }, 0);
         return;
       }
-      if (selected && hasNewlineInSelection) {
-        const replacement = `\n\n\`\`\`\n${selected}\n\`\`\`\n\n`;
-        applyReplacement(replacement, start, end, start + 5, start + 5 + selected.length);
+
+      if (trimmedSelection && hasInnerNewline) {
+        // Selección multilínea real → fenced code block.
+        const replacement = `\n\n\`\`\`\n${trimmedSelection}\n\`\`\`\n\n`;
+        applyReplacement(replacement, start, end, start + 5, start + 5 + trimmedSelection.length);
         return;
       }
+
+      // Sin selección: si la línea está vacía, fence block; si tiene texto,
+      // inserta `code` inline en el cursor.
       const lineStart = value.lastIndexOf('\n', start - 1) + 1;
       const lineEnd = value.indexOf('\n', start);
       const currentLine = value.slice(lineStart, lineEnd === -1 ? value.length : lineEnd);

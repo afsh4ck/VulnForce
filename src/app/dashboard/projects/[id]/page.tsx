@@ -9,7 +9,7 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import Link from 'next/link';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
-import { PlusCircle, FileText, ArrowUpDown, Edit, Save, Trash2, CalendarIcon, Plus, GripVertical, Languages, ChevronLeft, CheckCircle, Heading1, Heading2, Heading3, Code, File, List, ListOrdered, Copy, Bold, Italic, ImageIcon } from "@/components/icons";
+import { PlusCircle, FileText, ArrowUpDown, Edit, Save, Trash2, CalendarIcon, Plus, GripVertical, Languages, ChevronLeft, CheckCircle, Heading1, Heading2, Heading3, Code, File, List, ListOrdered, Copy, Bold, Italic, ImageIcon, LayoutTemplate } from "@/components/icons";
 import { useLanguage } from "@/context/language-context";
 import type { Finding, Project, ContentBlock, ProjectTemplate, Vulnerability, ImageAsset } from '@/lib/types';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
@@ -44,6 +44,10 @@ import { ProjectIconSelectItem, projectIconOptions } from '@/components/project-
 import { HighlightedMarkdownTextarea, SectionMarkdownEditor } from '@/components/section-markdown-editor';
 import { parseMarkdownToBlocks, blocksToMarkdown, joinMarkdownSections } from '@/lib/markdown-utils';
 import { ImageUploadDialog } from '@/components/image-upload-dialog';
+import { PentesterDataFields, profileToSnapshot } from '@/components/pentester-data-fields';
+import { VulnerabilityTemplatePicker } from '@/components/vulnerability-template-picker';
+import { ProjectTemplatePicker } from '@/components/project-template-picker';
+import type { PentesterProfile } from '@/lib/types';
 
 
 type SortKey = keyof Finding;
@@ -78,7 +82,9 @@ const getVulnerabilityTemplateMarkdown = (vulnerability: Vulnerability, language
     vulnerability[`recommendations_${language}`],
   ];
 
-  return joinMarkdownSections(sections.map(section => normalizeFirstHeadingLevel(section || '', 2)));
+  // El reporte ya inyecta el título de la vulnerabilidad como H2; las secciones
+  // internas deben ser H3 (Overview/Impact/Recommendations) y las subsecciones H4.
+  return joinMarkdownSections(sections.map(section => normalizeFirstHeadingLevel(section || '', 3)));
 };
 
 const blockToMarkdown = (block: ContentBlock, content = block.content) => {
@@ -698,7 +704,7 @@ export default function ProjectDetailsPage() {
   const searchParams = useSearchParams();
   const { id } = params;
 
-  const { projects, clients, findings, addFinding, deleteFinding, updateProject, deleteProject, duplicateProject, projectTemplates, vulnerabilities, addImage, getImage } = useData();
+  const { projects, clients, findings, addFinding, deleteFinding, updateProject, deleteProject, duplicateProject, projectTemplates, vulnerabilities, addImage, getImage, getAllThemes, activeThemeId } = useData();
   const { user } = useUser();
 
   const [project, setProject] = useState<Project | undefined>();
@@ -706,6 +712,8 @@ export default function ProjectDetailsPage() {
   const [sortConfig, setSortConfig] = useState<{ key: SortKey; direction: 'ascending' | 'descending' } | null>(null);
   const [findingToDelete, setFindingToDelete] = useState<Finding | null>(null);
   const [findingTemplateComboboxValue, setFindingTemplateComboboxValue] = useState('');
+  const [templatePickerOpen, setTemplatePickerOpen] = useState(false);
+  const [projectTemplatePickerOpen, setProjectTemplatePickerOpen] = useState(false);
   const [activeTemplateId, setActiveTemplateId] = useState<string>('');
   const [pendingTemplateId, setPendingTemplateId] = useState<string | null>(null);
   
@@ -715,6 +723,9 @@ export default function ProjectDetailsPage() {
   const [date, setDate] = useState<DateRange | undefined>();
   const [icon, setIcon] = useState<string>('FileText');
   const [projectLanguage, setProjectLanguage] = useState<Project['language']>('en');
+  const [themeId, setThemeId] = useState<string>('');
+  const [includePentester, setIncludePentester] = useState<boolean>(true);
+  const [pentesterSnapshot, setPentesterSnapshot] = useState<PentesterProfile>(() => profileToSnapshot(user));
   
   const [blocks, setBlocks] = useState<ContentBlock[]>([]);
   
@@ -926,6 +937,9 @@ export default function ProjectDetailsPage() {
       unsavedChangesTitle: "Unsaved Changes",
       unsavedChangesDesc: "You have unsaved changes. Are you sure you want to leave?",
       leave: "Leave",
+      theme: "Report theme",
+      themeDefault: "Use global default",
+      themeManage: "Manage themes",
     },
     es: {
       back: 'Volver a Proyectos',
@@ -993,6 +1007,9 @@ export default function ProjectDetailsPage() {
       unsavedChangesTitle: "Cambios sin Guardar",
       unsavedChangesDesc: "¿Tienes cambios sin guardar. Estás seguro que quieres salir?",
       leave: "Salir",
+      theme: "Tema del reporte",
+      themeDefault: "Usar el tema global",
+      themeManage: "Gestionar temas",
     }
   }
 
@@ -1009,16 +1026,8 @@ export default function ProjectDetailsPage() {
     return findingsCopy;
   }, [projectFindings, sortConfig]);
 
-  const handleLoadFindingFromTemplate = useCallback((templateId: string) => {
-    setFindingTemplateComboboxValue(templateId);
-    if (!templateId || !project) return;
-
-    const vulnerability = vulnerabilities.find(v => v.id === templateId);
-    if (!vulnerability) {
-      toast({ variant: 'destructive', title: t[uiLanguage].selectVulnerabilityTemplate });
-      return;
-    }
-
+  const createFindingFromVulnerability = useCallback((vulnerability: Vulnerability) => {
+    if (!project) return;
     const title = projectLanguage === 'es'
       ? (vulnerability.title_es || vulnerability.title_en)
       : (vulnerability.title_en || vulnerability.title_es);
@@ -1031,11 +1040,10 @@ export default function ProjectDetailsPage() {
       cvss: vulnerability.cvss.score,
       markdown,
     });
-
-    setFindingTemplateComboboxValue('');
     toast({ title: t[uiLanguage].findingCreatedFromTemplate, description: title });
+    // Llevar al usuario directamente al editor del hallazgo recién creado.
     router.push(`/dashboard/projects/${project.id}/findings/${newFinding.id}`);
-  }, [addFinding, project, projectLanguage, router, toast, t, uiLanguage, vulnerabilities]);
+  }, [addFinding, project, projectLanguage, router, toast, t, uiLanguage]);
 
   useEffect(() => {
     const currentProject = projects.find(p => p.id === id);
@@ -1047,6 +1055,9 @@ export default function ProjectDetailsPage() {
       setDate({ from: new Date(currentProject.startDate), to: new Date(currentProject.endDate) });
       setIcon(currentProject.icon);
       setProjectLanguage(currentProject.language);
+      setThemeId(currentProject.themeId ?? '');
+      setIncludePentester(currentProject.includePentesterData !== false);
+      setPentesterSnapshot(currentProject.pentesterSnapshot ?? profileToSnapshot(user));
       const filteredFindings = findings.filter(f => f.projectId === currentProject.id);
       setProjectFindings(filteredFindings);
       const initialBlocks = parseMarkdownToBlocks(currentProject.reportBody);
@@ -1157,6 +1168,9 @@ export default function ProjectDetailsPage() {
       startDate: format(date.from, 'yyyy-MM-dd'),
       endDate: format(date.to, 'yyyy-MM-dd'),
       reportBody: blocksToMarkdown(blocks),
+      includePentesterData: includePentester,
+      pentesterSnapshot: includePentester ? pentesterSnapshot : undefined,
+      themeId: themeId || undefined,
     };
 
     updateProject(updatedProjectData);
@@ -1188,13 +1202,13 @@ export default function ProjectDetailsPage() {
     }
   };
 
-  const getSeverityVariant = (severity: string): 'destructive' | 'high' | 'medium' | 'low' | 'secondary' => {
+  const getSeverityVariant = (severity: string): 'critical' | 'high' | 'medium' | 'low' | 'informational' => {
     switch (severity) {
-      case 'Critical': return 'destructive';
+      case 'Critical': return 'critical';
       case 'High': return 'high';
       case 'Medium': return 'medium';
       case 'Low': return 'low';
-      default: return 'secondary';
+      default: return 'informational';
     }
   };
 
@@ -1587,12 +1601,15 @@ export default function ProjectDetailsPage() {
             </div>
           </div>
           <div className="flex items-center gap-2">
-              <Button onClick={handlePreviewReport} variant="outline">
+              <Button onClick={handlePreviewReport} className="h-10">
                 <FileText className="mr-2 h-4 w-4" /> {t[uiLanguage].previewReport}
               </Button>
                <AlertDialog open={isDeleteDialogOpen} onOpenChange={setIsDeleteDialogOpen}>
                   <AlertDialogTrigger asChild>
-                      <Button variant="destructive" size="icon"><Trash2 className="h-4 w-4" /></Button>
+                      <Button variant="destructive" className="h-10">
+                        <Trash2 className="mr-2 h-4 w-4" />
+                        {t[uiLanguage].delete}
+                      </Button>
                   </AlertDialogTrigger>
                   <AlertDialogContent>
                     <AlertDialogHeader>
@@ -1626,30 +1643,19 @@ export default function ProjectDetailsPage() {
             <TabsContent value="content" className="pt-6">
                <div className="w-full" dir="ltr">
                      {isToolbarOpen && <FloatingToolbar position={toolbarPosition} />}
-                     <div className="mb-6 max-w-sm">
-                        <Combobox
-                          options={projectTemplates.map(pt => ({
-                            label: projectLanguage === 'es' ? (pt.name_es || pt.name_en) : (pt.name_en || pt.name_es),
-                            value: pt.id,
-                          }))}
-                          selectedValue={activeTemplateId}
-                          onSelect={(val) => {
-                            if (!val || val === activeTemplateId) return;
-                            if (hasMeaningfulContent && activeTemplateId !== val) {
-                              setPendingTemplateId(val);
-                              return;
-                            }
-                            applyTemplateById(val);
-                          }}
-                          placeholder={t[projectLanguage as 'en'|'es'].selectTemplate}
-                          searchPlaceholder={uiLanguage === 'es' ? 'Buscar plantillas...' : 'Search templates...'}
-                        />
+                     <div className="mb-6 flex items-center gap-3">
+                       <Button
+                         variant="outline"
+                         onClick={() => setProjectTemplatePickerOpen(true)}
+                         className="h-10"
+                       >
+                         <LayoutTemplate className="mr-2 h-4 w-4" />
+                         {uiLanguage === 'es' ? 'Cargar plantilla' : 'Load template'}
+                       </Button>
                      </div>
                      <DndContext
                        sensors={sensors}
                        collisionDetection={closestCenter}
-                       onDragStart={collapseAllSections}
-                       onDragCancel={expandAllSections}
                        onDragEnd={handleDragEnd}
                      >
                         <SortableContext items={blocks.map(b => b.id)} strategy={verticalListSortingStrategy}>
@@ -1698,7 +1704,7 @@ export default function ProjectDetailsPage() {
                         onSelect={handleCommandSelect}
                         triggerRef={activeBlockId ? blockRefs.current[activeBlockId] : null}
                      />
-                    <div className="flex justify-center pt-4 pb-10">
+                    <div className="flex justify-center pt-4 pb-24">
                       <Button variant="outline" onClick={() => handleAddBlock(blocks.length - 1, 'h2', t[projectLanguage as 'en' | 'es'].newSection) }>
                         <Plus className="mr-2 h-4 w-4"/>{t[projectLanguage as 'en' | 'es'].addNewSection}
                       </Button>
@@ -1711,23 +1717,11 @@ export default function ProjectDetailsPage() {
                 <CardHeader>
                   <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
                     <CardTitle>{t[uiLanguage].findings}</CardTitle>
-                    <div className="flex flex-wrap items-end gap-3">
-                      <div className="w-72 space-y-1.5">
-                        <Label className="text-xs text-muted-foreground">{t[uiLanguage].loadFromTemplate}</Label>
-                        <Combobox
-                          options={vulnerabilities.map(vulnerability => ({
-                            label: projectLanguage === 'es'
-                              ? (vulnerability.title_es || vulnerability.title_en)
-                              : (vulnerability.title_en || vulnerability.title_es),
-                            value: vulnerability.id,
-                          }))}
-                          selectedValue={findingTemplateComboboxValue}
-                          onSelect={handleLoadFindingFromTemplate}
-                          placeholder={t[uiLanguage].selectVulnerabilityTemplate}
-                          searchPlaceholder={uiLanguage === 'es' ? 'Buscar plantillas...' : 'Search templates...'}
-                        />
-                      </div>
-                      <Button asChild>
+                    <div className="flex flex-wrap items-center gap-4">
+                      <Button variant="outline" onClick={() => setTemplatePickerOpen(true)} className="h-10">
+                        <FileText className="mr-2 h-4 w-4" /> {t[uiLanguage].loadFromTemplate}
+                      </Button>
+                      <Button asChild className="h-10">
                         <Link href={`/dashboard/projects/${id}/findings/new`}>
                           <PlusCircle className="mr-2 h-4 w-4" /> {t[uiLanguage].newFinding}
                         </Link>
@@ -1735,7 +1729,7 @@ export default function ProjectDetailsPage() {
                     </div>
                   </div>
                 </CardHeader>
-                <CardContent>
+                <CardContent className="overflow-x-auto">
                    <TooltipProvider>
                     <Table>
                       <TableHeader>
@@ -1863,6 +1857,47 @@ export default function ProjectDetailsPage() {
                       </Select>
                     </div>
                   </div>
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div className="space-y-2">
+                      <Label htmlFor="theme">{t[uiLanguage].theme}</Label>
+                      <Select
+                        value={themeId || '__default__'}
+                        onValueChange={(value) => handleFieldChange(setThemeId, value === '__default__' ? '' : value)}
+                      >
+                        <SelectTrigger id="theme"><SelectValue /></SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="__default__">
+                            {t[uiLanguage].themeDefault}
+                            {(() => {
+                              const def = getAllThemes().find(t => t.id === activeThemeId);
+                              return def ? ` (${def.name})` : '';
+                            })()}
+                          </SelectItem>
+                          {getAllThemes().map((th) => (
+                            <SelectItem key={th.id} value={th.id}>{th.name}</SelectItem>
+                          ))}
+                        </SelectContent>
+                      </Select>
+                      <div className="text-xs text-muted-foreground">
+                        <Link href="/dashboard/themes" className="underline hover:text-foreground">
+                          {t[uiLanguage].themeManage}
+                        </Link>
+                      </div>
+                    </div>
+                    <div />
+                  </div>
+                  <PentesterDataFields
+                    include={includePentester}
+                    onIncludeChange={(value) => {
+                      setIncludePentester(value);
+                      setSaveStatus('unsaved');
+                    }}
+                    snapshot={pentesterSnapshot}
+                    onSnapshotChange={(snapshot) => {
+                      setPentesterSnapshot(snapshot);
+                      setSaveStatus('unsaved');
+                    }}
+                  />
                 </CardContent>
               </Card>
             </TabsContent>
@@ -1923,6 +1958,13 @@ export default function ProjectDetailsPage() {
           </AlertDialogFooter>
         </AlertDialogContent>
       </AlertDialog>
+
+      <VulnerabilityTemplatePicker
+        open={templatePickerOpen}
+        onOpenChange={setTemplatePickerOpen}
+        language={projectLanguage}
+        onPick={createFindingFromVulnerability}
+      />
     </>
   );
 }

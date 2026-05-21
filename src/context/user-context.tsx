@@ -22,6 +22,10 @@ interface User {
   email: string;
   avatar: string;
   phone?: string;
+  role?: string;
+  company?: string;
+  website?: string;
+  location?: string;
   passwordHash?: string;
 }
 
@@ -66,15 +70,14 @@ export function UserProvider({ children }: { children: ReactNode }) {
   }, []);
 
   const setUser = (newUser: User) => {
-    // Only update name, email, avatar if password already exists
-    if (user.passwordHash) {
-       const updatedUser = { ...user, name: newUser.name, email: newUser.email, avatar: newUser.avatar };
-       localStorage.setItem('vulnforce-user', JSON.stringify(updatedUser));
-       setUserState(updatedUser);
-    } else {
-        localStorage.setItem('vulnforce-user', JSON.stringify(newUser));
-        setUserState(newUser);
-    }
+    // Preserve passwordHash if it already exists; allow updating any other field freely
+    const updatedUser: User = {
+      ...user,
+      ...newUser,
+      passwordHash: user.passwordHash ?? newUser.passwordHash,
+    };
+    localStorage.setItem('vulnforce-user', JSON.stringify(updatedUser));
+    setUserState(updatedUser);
   };
   
   const logout = (deleteAccount = false) => {

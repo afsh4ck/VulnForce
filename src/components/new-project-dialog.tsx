@@ -9,15 +9,17 @@ import { Combobox } from "@/components/ui/combobox";
 import { Textarea } from "@/components/ui/textarea";
 import { Calendar } from "@/components/ui/calendar";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
-import { CalendarIcon, FilePlus2, PlusCircle, Upload } from "@/components/icons";
+import { CalendarIcon, FilePlus2, PlusCircle } from "@/components/icons";
 import { cn } from "@/lib/utils";
 import { format } from "date-fns";
 import { es } from "date-fns/locale";
-import React, { useEffect, useState, useRef } from "react";
+import React, { useEffect, useState } from "react";
 import { useSearchParams } from "next/navigation";
 import { useToast } from "@/hooks/use-toast";
 import { useData } from "@/context/data-context";
-import type { Project, Client } from "@/lib/types";
+import { useUser } from "@/context/user-context";
+import { PentesterDataFields, profileToSnapshot } from "@/components/pentester-data-fields";
+import type { Project, Client, PentesterProfile } from "@/lib/types";
 import { DateRange } from "react-day-picker";
 import {
   Dialog,
@@ -28,9 +30,9 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { ProjectIconSelectItem, projectIconOptions } from "@/components/project-icon";
 import { joinMarkdownSections } from "@/lib/markdown-utils";
+import { ImageUploadButton } from "@/components/image-upload-button";
 
 const getTemplateReportContent = (
   template: { scope_en: string; scope_es: string; appendix_en?: string; appendix_es?: string },
@@ -52,6 +54,7 @@ export function NewProjectDialog({ open, onOpenChange, onCreated }: NewProjectDi
   const searchParams = useSearchParams();
   const { toast } = useToast();
   const { clients, addProject, projectTemplates, addClient } = useData();
+  const { user } = useUser();
 
   const [name, setName] = useState('');
   const [clientId, setClientId] = useState<string>('');
@@ -61,12 +64,14 @@ export function NewProjectDialog({ open, onOpenChange, onCreated }: NewProjectDi
   const [projectLanguage, setProjectLanguage] = useState<Project['language']>('es');
   const [icon, setIcon] = useState('FileText');
   const [errors, setErrors] = useState<Record<string, boolean>>({});
+  const [includePentester, setIncludePentester] = useState<boolean>(true);
+  const [pentesterSnapshot, setPentesterSnapshot] = useState<PentesterProfile>(() => profileToSnapshot(user));
 
   const [isClientDialogOpen, setIsClientDialogOpen] = useState(false);
   const [newClientName, setNewClientName] = useState('');
   const [newClientContact, setNewClientContact] = useState('');
   const [newClientLogo, setNewClientLogo] = useState<string | null>(null);
-  const createFileInputRef = useRef<HTMLInputElement>(null);
+  const [newClientLogoWide, setNewClientLogoWide] = useState<string | null>(null);
 
   useEffect(() => {
     if (templateId) {
@@ -80,7 +85,10 @@ export function NewProjectDialog({ open, onOpenChange, onCreated }: NewProjectDi
   }, [templateId, projectLanguage, projectTemplates]);
 
   useEffect(() => {
-    if (!open) {
+    if (open) {
+      setIncludePentester(true);
+      setPentesterSnapshot(profileToSnapshot(user));
+    } else {
       setName('');
       setClientId('');
       setScope('');
@@ -90,7 +98,7 @@ export function NewProjectDialog({ open, onOpenChange, onCreated }: NewProjectDi
       setIcon('FileText');
       setErrors({});
     }
-  }, [open]);
+  }, [open, user]);
 
   const handleTemplateChange = (newTemplateId: string) => {
     const template = projectTemplates.find(t => t.id === newTemplateId);
@@ -132,6 +140,8 @@ export function NewProjectDialog({ open, onOpenChange, onCreated }: NewProjectDi
       endDate: date!.to!,
       status: 'In Progress' as const,
       language: projectLanguage,
+      includePentesterData: includePentester,
+      pentesterSnapshot: includePentester ? pentesterSnapshot : undefined,
     };
 
     const newProject = addProject(newProjectData);
@@ -143,25 +153,6 @@ export function NewProjectDialog({ open, onOpenChange, onCreated }: NewProjectDi
 
     onOpenChange(false);
     onCreated?.(newProject.id);
-  };
-
-  const handleLogoChange = (e: React.ChangeEvent<HTMLInputElement>, setLogo: (logo: string | null) => void) => {
-    if (e.target.files && e.target.files[0]) {
-      const file = e.target.files[0];
-      if (file.type.startsWith('image/')) {
-        const reader = new FileReader();
-        reader.onloadend = () => {
-          setLogo(reader.result as string);
-        };
-        reader.readAsDataURL(file);
-      } else {
-        toast({
-          variant: 'destructive',
-          title: 'Invalid file type',
-          description: 'Please select an image file.',
-        });
-      }
-    }
   };
 
   const handleCreateClient = () => {
@@ -178,6 +169,7 @@ export function NewProjectDialog({ open, onOpenChange, onCreated }: NewProjectDi
       name: newClientName,
       contact: newClientContact,
       logoUrl: newClientLogo || '',
+      logoWide: newClientLogoWide || undefined,
     };
 
     addClient(newClient);
@@ -189,6 +181,7 @@ export function NewProjectDialog({ open, onOpenChange, onCreated }: NewProjectDi
     setNewClientName('');
     setNewClientContact('');
     setNewClientLogo(null);
+    setNewClientLogoWide(null);
     setIsClientDialogOpen(false);
   };
 
@@ -223,6 +216,10 @@ export function NewProjectDialog({ open, onOpenChange, onCreated }: NewProjectDi
       createClient: "Create Client",
       logoLabel: "Logo",
       uploadLogo: "Upload Logo",
+      logoSquareLabel: "Square logo",
+      logoSquareHint: "Used in tables and cards. 1:1 ratio.",
+      logoWideLabel: "Horizontal logo",
+      logoWideHint: "Used in reports. 4:1 ratio.",
     },
     es: {
       title: "Crear Nuevo Proyecto",
@@ -254,6 +251,10 @@ export function NewProjectDialog({ open, onOpenChange, onCreated }: NewProjectDi
       createClient: "Crear Cliente",
       logoLabel: "Logo",
       uploadLogo: "Subir Logo",
+      logoSquareLabel: "Logo cuadrado",
+      logoSquareHint: "Se usa en tablas y tarjetas. Proporción 1:1.",
+      logoWideLabel: "Logo horizontal",
+      logoWideHint: "Se usa en los reportes. Proporción 4:1.",
     },
   };
 
@@ -353,17 +354,34 @@ export function NewProjectDialog({ open, onOpenChange, onCreated }: NewProjectDi
                     <Label htmlFor="new-client-contact" className="text-right">{t[uiLanguage].contactLabel}</Label>
                     <Input id="new-client-contact" placeholder={t[uiLanguage].contactPlaceholder} className="col-span-3" value={newClientContact} onChange={(e) => setNewClientContact(e.target.value)} />
                   </div>
-                  <div className="grid grid-cols-4 items-center gap-4">
-                    <Label className="text-right">{t[uiLanguage].logoLabel}</Label>
-                    <div className="col-span-3 flex items-center gap-4">
-                      <Avatar className="h-10 w-10">
-                        {newClientLogo ? <AvatarImage src={newClientLogo} /> : <AvatarFallback>{newClientName ? newClientName.charAt(0) : '?'}</AvatarFallback>}
-                      </Avatar>
-                      <input type="file" ref={createFileInputRef} onChange={(e) => handleLogoChange(e, setNewClientLogo)} className="hidden" accept="image/*" />
-                      <Button variant="outline" type="button" onClick={() => createFileInputRef.current?.click()}>
-                        <Upload className="mr-2 h-4 w-4" />
-                        {t[uiLanguage].uploadLogo}
-                      </Button>
+                  <div className="grid grid-cols-4 items-start gap-4">
+                    <Label className="pt-2 text-right">{t[uiLanguage].logoSquareLabel}</Label>
+                    <div className="col-span-3 space-y-1">
+                      <ImageUploadButton
+                        value={newClientLogo}
+                        onChange={(dataUrl) => setNewClientLogo(dataUrl || null)}
+                        aspect={1}
+                        cropShape="rect"
+                        previewClassName="h-16 w-16"
+                        cropTitle={t[uiLanguage].logoSquareLabel}
+                        outputSize={512}
+                      />
+                      <p className="text-xs text-muted-foreground">{t[uiLanguage].logoSquareHint}</p>
+                    </div>
+                  </div>
+                  <div className="grid grid-cols-4 items-start gap-4">
+                    <Label className="pt-2 text-right">{t[uiLanguage].logoWideLabel}</Label>
+                    <div className="col-span-3 space-y-1">
+                      <ImageUploadButton
+                        value={newClientLogoWide}
+                        onChange={(dataUrl) => setNewClientLogoWide(dataUrl || null)}
+                        aspect={4}
+                        cropShape="rect"
+                        previewClassName="h-12 w-48"
+                        cropTitle={t[uiLanguage].logoWideLabel}
+                        outputSize={1200}
+                      />
+                      <p className="text-xs text-muted-foreground">{t[uiLanguage].logoWideHint}</p>
                     </div>
                   </div>
                 </div>
@@ -425,6 +443,13 @@ export function NewProjectDialog({ open, onOpenChange, onCreated }: NewProjectDi
               </PopoverContent>
             </Popover>
           </div>
+          <PentesterDataFields
+            include={includePentester}
+            onIncludeChange={setIncludePentester}
+            snapshot={pentesterSnapshot}
+            onSnapshotChange={setPentesterSnapshot}
+          />
+
           <div className="flex justify-end gap-2 pt-4">
             <Button variant="outline" type="button" onClick={() => onOpenChange(false)}>
               {t[uiLanguage].cancel}

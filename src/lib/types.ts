@@ -8,6 +8,18 @@ export interface Client {
   contact: string;
   phone?: string;
   logoUrl: string;
+  logoWide?: string;
+}
+
+export interface PentesterProfile {
+  name?: string;
+  role?: string;
+  company?: string;
+  email?: string;
+  phone?: string;
+  website?: string;
+  location?: string;
+  avatar?: string;
 }
 
 export interface Project {
@@ -20,6 +32,13 @@ export interface Project {
   endDate: string;
   status: 'In Progress' | 'Completed' | 'On Hold';
   language: 'en' | 'es';
+  includePentesterData?: boolean;
+  pentesterSnapshot?: PentesterProfile;
+  /**
+   * Tema de reporte aplicado a este proyecto. Si es `undefined` se usa el
+   * `activeThemeId` global del usuario.
+   */
+  themeId?: string;
   createdAt: string;
   updatedAt: string;
 }

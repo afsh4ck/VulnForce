@@ -43,11 +43,15 @@ export function UserNav() {
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
-        <Button variant="ghost" className="relative h-8 w-8 rounded-full">
-          <Avatar className="h-8 w-8">
+        <Button
+          variant="outline"
+          className="relative h-9 w-9 rounded-full p-0 overflow-hidden"
+          aria-label={user.name}
+        >
+          <Avatar className="h-9 w-9">
             <AvatarImage src={user.avatar} alt={user.name} data-ai-hint="person avatar" />
-            <AvatarFallback>
-              {user.avatar ? user.name.charAt(0) : <User className="text-primary" />}
+            <AvatarFallback className="bg-transparent">
+              {user.avatar ? user.name.charAt(0) : <User className="h-4 w-4 text-primary" />}
             </AvatarFallback>
           </Avatar>
         </Button>

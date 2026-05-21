@@ -17,6 +17,7 @@ import { useData } from '@/context/data-context';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
 import { ProjectIcon, projectIconComponents } from '@/components/project-icon';
 import { NewProjectDialog } from '@/components/new-project-dialog';
+import { getProjectStatusLabel, getProjectStatusVariant } from '@/lib/project-status';
 
 type SortKey = keyof Project | 'clientName';
 
@@ -30,23 +31,8 @@ export default function ProjectsPage() {
   const [projectToDelete, setProjectToDelete] = useState<Project | null>(null);
   const [newProjectOpen, setNewProjectOpen] = useState(false);
   
-  const getStatusVariant = (status: string) => {
-    switch (status) {
-      case 'In Progress': return 'default';
-      case 'Completed': return 'secondary';
-      case 'On Hold': return 'outline';
-      default: return 'secondary';
-    }
-  }
-
-  const getStatus = (status: string) => {
-    if (language === 'es') {
-      if (status === 'In Progress') return 'En Progreso';
-      if (status === 'Completed') return 'Completado';
-      if (status === 'On Hold') return 'En Espera';
-    }
-    return status;
-  }
+  const getStatusVariant = (status: string) => getProjectStatusVariant(status) as any;
+  const getStatus = (status: string) => getProjectStatusLabel(status, language as 'en' | 'es');
 
   const handleDeleteProject = () => {
     if (!projectToDelete) return;
@@ -77,8 +63,8 @@ export default function ProjectsPage() {
 
     if (sortConfig !== null) {
       filteredProjects.sort((a, b) => {
-        const aValue = a[sortConfig.key as keyof typeof a];
-        const bValue = b[sortConfig.key as keyof typeof b];
+        const aValue = a[sortConfig.key as keyof typeof a] ?? '';
+        const bValue = b[sortConfig.key as keyof typeof b] ?? '';
         if (aValue < bValue) {
           return sortConfig.direction === 'ascending' ? -1 : 1;
         }

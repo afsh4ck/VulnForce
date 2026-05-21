@@ -4,7 +4,7 @@
 import Link from 'next/link';
 import { usePathname, useRouter } from 'next/navigation';
 import React from 'react';
-import { Home, ShieldCheck, FolderKanban, Users, Settings, FileText, PanelLeft, User, LayoutTemplate, History, Bomb } from '@/components/icons';
+import { Home, ShieldCheck, FolderKanban, Users, Settings, FileText, PanelLeft, User, LayoutTemplate, History, Bomb, Palette } from '@/components/icons';
 
 import {
   Sidebar,
@@ -24,6 +24,7 @@ import { Logo } from '@/components/logo';
 import { useLanguage } from '@/context/language-context';
 import { cn } from '@/lib/utils';
 import { LeavePageContext } from '@/context/leave-page-context';
+import { ThemeToggleButton, LanguageToggleButton } from '@/components/header-controls';
 
 
 function DashboardNav({ children }: { children: React.ReactNode }) {
@@ -63,6 +64,7 @@ function DashboardNav({ children }: { children: React.ReactNode }) {
       backup: 'Backup',
       settings: 'Settings',
       profile: 'Profile',
+      themes: 'Themes',
     },
     es: {
       dashboard: 'Dashboard',
@@ -74,6 +76,7 @@ function DashboardNav({ children }: { children: React.ReactNode }) {
       backup: 'Backup',
       settings: 'Ajustes',
       profile: 'Perfil',
+      themes: 'Temas',
     },
   };
 
@@ -89,6 +92,7 @@ function DashboardNav({ children }: { children: React.ReactNode }) {
   
   const bottomNavItems = [
       { href: '/dashboard/profile', icon: User, label: t[language].profile },
+      { href: '/dashboard/themes', icon: Palette, label: t[language].themes },
       { href: '/dashboard/settings', icon: Settings, label: t[language].settings },
   ]
 
@@ -110,7 +114,7 @@ function DashboardNav({ children }: { children: React.ReactNode }) {
 
   return (
     <LeavePageContext.Provider value={{ setHasUnsavedChanges, handleRequestLeave }}>
-      <Sidebar collapsible="icon" className="border-r border-sidebar-border">
+      <Sidebar collapsible="icon" className="border-r border-sidebar-border no-print">
         <SidebarHeader className={cn("p-2", isCollapsed && "p-2 justify-center")}>
           <Logo isCollapsed={isCollapsed} />
         </SidebarHeader>
@@ -139,12 +143,16 @@ function DashboardNav({ children }: { children: React.ReactNode }) {
         </SidebarHeader>
       </Sidebar>
       <SidebarInset>
-        <header className="sticky top-0 z-20 flex items-center gap-4 border-b bg-background px-4 sm:px-6 h-16">
+        <header className="sticky top-0 z-20 flex items-center gap-3 border-b bg-background/95 backdrop-blur-sm px-4 sm:px-6 h-16 no-print">
            <SidebarTrigger className="md:hidden" />
           <div className="flex-1">
             <SidebarTrigger className="hidden md:flex" />
           </div>
-          <UserNav />
+          <div className="flex items-center gap-2">
+            <ThemeToggleButton />
+            <LanguageToggleButton />
+            <UserNav />
+          </div>
         </header>
         <main className="flex-1">{children}</main>
       </SidebarInset>

@@ -450,13 +450,13 @@ export default function VulnerabilityEditorPage() {
     }
   };
 
-  const getSeverityVariant = (severity?: string): 'destructive' | 'high' | 'medium' | 'low' | 'secondary' => {
+  const getSeverityVariant = (severity?: string): 'critical' | 'high' | 'medium' | 'low' | 'informational' => {
     switch (severity) {
-      case 'Critical': return 'destructive';
+      case 'Critical': return 'critical';
       case 'High': return 'high';
       case 'Medium': return 'medium';
       case 'Low': return 'low';
-      default: return 'secondary';
+      default: return 'informational';
     }
   };
   

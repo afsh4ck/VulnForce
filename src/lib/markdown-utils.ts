@@ -2,18 +2,40 @@ import TurndownService from 'turndown';
 import type { ContentBlock } from './types';
 
 export type VariableContext = {
-  client?: { name?: string; contact?: string; phone?: string };
-  project?: { name?: string; startDate?: string; endDate?: string; language?: string };
-  pentester?: { name?: string; email?: string; phone?: string };
+  client?: { name?: string; contact?: string; phone?: string; logoUrl?: string };
+  project?: { name?: string; startDate?: string; endDate?: string; language?: string; date?: string };
+  assessment?: { window?: string; startDate?: string; endDate?: string };
+  pentester?: {
+    name?: string;
+    role?: string;
+    company?: string;
+    email?: string;
+    phone?: string;
+    website?: string;
+    location?: string;
+  };
+  vulnerabilities?: {
+    count?: number | string;
+    critical?: number | string;
+    high?: number | string;
+    medium?: number | string;
+    low?: number | string;
+    informational?: number | string;
+  };
+};
+
+const VARIABLE_FALLBACKS: Record<string, string> = {
+  unknown: '—',
 };
 
 export function resolveVariables(input: string, ctx: VariableContext = {}): string {
   if (!input) return input;
   return input.replace(/\{\{\s*([a-zA-Z]+)\.([a-zA-Z]+)\s*\}\}/g, (raw, group, key) => {
     const groupValue = (ctx as any)[group];
-    if (!groupValue) return raw;
+    if (groupValue == null) return VARIABLE_FALLBACKS.unknown;
     const value = groupValue[key];
-    return value == null ? raw : String(value);
+    if (value == null || value === '') return VARIABLE_FALLBACKS.unknown;
+    return String(value);
   });
 }
 

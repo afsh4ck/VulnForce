@@ -11,6 +11,13 @@ import { initialProjects } from '@/lib/projects-data';
 import { initialFindings } from '@/lib/findings-data';
 import { initialVulnerabilities } from '@/lib/vulnerabilities-data';
 import { initialProjectTemplates } from '@/lib/project-templates-data';
+import {
+    BUILTIN_THEMES,
+    DEFAULT_THEME_ID,
+    cloneTheme,
+    isBuiltinThemeId,
+    type ReportTheme,
+} from '@/lib/report-themes';
 import { format } from 'date-fns';
 
 const STATE_ENDPOINT = '/api/state';
@@ -22,6 +29,8 @@ type PersistedStateShape = {
     vulnerabilities?: Vulnerability[];
     images?: ImageAsset[];
     projectTemplates?: ProjectTemplate[];
+    themes?: ReportTheme[];
+    activeThemeId?: string;
 };
 
 
@@ -50,6 +59,15 @@ interface DataContextType {
   addProjectTemplate: (template: Omit<ProjectTemplate, 'id'>) => void;
   updateProjectTemplate: (template: ProjectTemplate) => void;
   deleteProjectTemplate: (templateId: string) => void;
+  themes: ReportTheme[];
+  activeThemeId: string;
+  setActiveThemeId: (id: string) => void;
+  getAllThemes: () => ReportTheme[];
+  getThemeById: (id: string | undefined | null) => ReportTheme;
+  addTheme: (theme: ReportTheme) => ReportTheme;
+  updateTheme: (theme: ReportTheme) => void;
+  deleteTheme: (themeId: string) => void;
+  duplicateTheme: (themeId: string) => ReportTheme | undefined;
   exportData: () => void;
   importData: (jsonData: string) => void;
   wipeAllData: () => void;
@@ -100,6 +118,8 @@ export function DataProvider({ children }: { children: ReactNode }) {
     const [vulnerabilities, setVulnerabilities] = usePersistedState<Vulnerability[]>('vulnforce-vulnerabilities-v4', initialVulnerabilities);
     const [images, setImages] = usePersistedState<ImageAsset[]>('vulnforce-images-v4', []);
     const [projectTemplates, setProjectTemplates] = usePersistedState<ProjectTemplate[]>('vulnforce-project-templates-v4', initialProjectTemplates);
+    const [themes, setThemes] = usePersistedState<ReportTheme[]>('vulnforce-themes-v1', []);
+    const [activeThemeId, setActiveThemeIdState] = usePersistedState<string>('vulnforce-active-theme-v1', DEFAULT_THEME_ID);
 
     const remoteHydratedRef = useRef(false);
     const writeTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
@@ -120,6 +140,8 @@ export function DataProvider({ children }: { children: ReactNode }) {
                 if (Array.isArray(remote.vulnerabilities)) setVulnerabilities(remote.vulnerabilities);
                 if (Array.isArray(remote.images)) setImages(remote.images);
                 if (Array.isArray(remote.projectTemplates)) setProjectTemplates(remote.projectTemplates);
+                if (Array.isArray(remote.themes)) setThemes(remote.themes);
+                if (typeof remote.activeThemeId === 'string' && remote.activeThemeId) setActiveThemeIdState(remote.activeThemeId);
             } catch {
                 // Network or server error - keep using localStorage values.
             } finally {
@@ -138,7 +160,7 @@ export function DataProvider({ children }: { children: ReactNode }) {
         if (writeTimerRef.current) clearTimeout(writeTimerRef.current);
         writeTimerRef.current = setTimeout(() => {
             const payload: PersistedStateShape = {
-                clients, projects, findings, vulnerabilities, images, projectTemplates,
+                clients, projects, findings, vulnerabilities, images, projectTemplates, themes, activeThemeId,
             };
             fetch(STATE_ENDPOINT, {
                 method: 'PUT',
@@ -151,7 +173,7 @@ export function DataProvider({ children }: { children: ReactNode }) {
         return () => {
             if (writeTimerRef.current) clearTimeout(writeTimerRef.current);
         };
-    }, [clients, projects, findings, vulnerabilities, images, projectTemplates]);
+    }, [clients, projects, findings, vulnerabilities, images, projectTemplates, themes, activeThemeId]);
 
     const wipeAllData = () => {
         // This function will clear the data from localStorage,
@@ -162,7 +184,62 @@ export function DataProvider({ children }: { children: ReactNode }) {
         localStorage.removeItem('vulnforce-vulnerabilities-v4');
         localStorage.removeItem('vulnforce-images-v4');
         localStorage.removeItem('vulnforce-project-templates-v4');
+        localStorage.removeItem('vulnforce-themes-v1');
+        localStorage.removeItem('vulnforce-active-theme-v1');
         // The user context will handle clearing user data
+    };
+
+    // Theme functions
+    const getAllThemes = (): ReportTheme[] => {
+        // Built-in primero, luego custom; built-in no se pueden sobreescribir.
+        return [...BUILTIN_THEMES, ...themes.filter((t) => !isBuiltinThemeId(t.id))];
+    };
+
+    const getThemeById = (id: string | undefined | null): ReportTheme => {
+        const all = getAllThemes();
+        if (id) {
+            const found = all.find((t) => t.id === id);
+            if (found) return found;
+        }
+        const active = all.find((t) => t.id === activeThemeId);
+        return active ?? BUILTIN_THEMES[0];
+    };
+
+    const setActiveThemeId = (id: string) => {
+        setActiveThemeIdState(id);
+    };
+
+    const addTheme = (theme: ReportTheme): ReportTheme => {
+        const safe: ReportTheme = isBuiltinThemeId(theme.id)
+            ? { ...cloneTheme(theme), id: `custom-${Date.now()}` }
+            : cloneTheme(theme);
+        setThemes((prev) => [...prev, safe]);
+        return safe;
+    };
+
+    const updateTheme = (theme: ReportTheme) => {
+        if (isBuiltinThemeId(theme.id)) return;
+        setThemes((prev) => prev.map((t) => (t.id === theme.id ? cloneTheme(theme) : t)));
+    };
+
+    const deleteTheme = (themeId: string) => {
+        if (isBuiltinThemeId(themeId)) return;
+        setThemes((prev) => prev.filter((t) => t.id !== themeId));
+        if (activeThemeId === themeId) {
+            setActiveThemeIdState(DEFAULT_THEME_ID);
+        }
+    };
+
+    const duplicateTheme = (themeId: string): ReportTheme | undefined => {
+        const source = getAllThemes().find((t) => t.id === themeId);
+        if (!source) return undefined;
+        const copy: ReportTheme = {
+            ...cloneTheme(source),
+            id: `custom-${Date.now()}`,
+            name: `${source.name} (copy)`,
+        };
+        setThemes((prev) => [...prev, copy]);
+        return copy;
     };
 
     // Client functions
@@ -193,9 +270,10 @@ export function DataProvider({ children }: { children: ReactNode }) {
           reportBody = reportBody.replace(/\[TODO Start Date\]/g, format(project.startDate, 'yyyy-MM-dd'));
           reportBody = reportBody.replace(/\[TODO End Date\]/g, format(project.endDate, 'yyyy-MM-dd'));
         }
-        
+
+        const { scope: _scope, ...projectRest } = project;
         const newProject: Project = {
-            ...project,
+            ...projectRest,
             id: `proj-${Date.now()}`,
             icon: project.icon || 'FileText',
             reportBody,
@@ -299,9 +377,9 @@ export function DataProvider({ children }: { children: ReactNode }) {
     // Backup & Import
     const exportData = () => {
         const backupData = {
-          version: '1.0.1',
+          version: '1.0.2',
           createdAt: new Date().toISOString(),
-          data: { clients, projects, findings, vulnerabilities, images, projectTemplates },
+          data: { clients, projects, findings, vulnerabilities, images, projectTemplates, themes, activeThemeId },
         };
         const blob = new Blob([JSON.stringify(backupData, null, 2)], { type: 'application/json' });
         const url = URL.createObjectURL(blob);
@@ -323,6 +401,12 @@ export function DataProvider({ children }: { children: ReactNode }) {
             setVulnerabilities(parsedData.data.vulnerabilities || []);
             setImages(parsedData.data.images || []);
             setProjectTemplates(parsedData.data.projectTemplates || []);
+            if (Array.isArray(parsedData.data.themes)) {
+                setThemes(parsedData.data.themes.filter((t: ReportTheme) => t && !isBuiltinThemeId(t.id)));
+            }
+            if (typeof parsedData.data.activeThemeId === 'string' && parsedData.data.activeThemeId) {
+                setActiveThemeIdState(parsedData.data.activeThemeId);
+            }
         } else {
             throw new Error("Invalid backup file format");
         }
@@ -337,6 +421,10 @@ export function DataProvider({ children }: { children: ReactNode }) {
             addVulnerability, updateVulnerability, deleteVulnerability,
             addImage, getImage,
             addProjectTemplate, updateProjectTemplate, deleteProjectTemplate,
+            themes, activeThemeId,
+            setActiveThemeId,
+            getAllThemes, getThemeById,
+            addTheme, updateTheme, deleteTheme, duplicateTheme,
             exportData, importData,
             wipeAllData
         }}>

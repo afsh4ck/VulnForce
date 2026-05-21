@@ -33,26 +33,30 @@ export default function AllFindingsPage() {
   const [sortConfig, setSortConfig] = useState<{ key: SortKey; direction: 'ascending' | 'descending' } | null>({ key: 'cvss', direction: 'descending' });
   const [severityFilter, setSeverityFilter] = useState<string>(searchParams.get('severity') || 'All');
 
-  const getSeverityVariant = (severity: string): 'destructive' | 'high' | 'medium' | 'low' | 'secondary' => {
+  const getSeverityVariant = (severity: string): 'critical' | 'high' | 'medium' | 'low' | 'informational' => {
     switch (severity) {
-      case 'Critical': return 'destructive';
+      case 'Critical': return 'critical';
       case 'High': return 'high';
       case 'Medium': return 'medium';
       case 'Low': return 'low';
-      default: return 'secondary';
+      default: return 'informational';
     }
   }
   
   const enrichedFindings = useMemo(() => {
-    return findings.map(f => {
-      const project = projects.find(p => p.id === f.projectId);
-      const client = clients.find(c => c.id === project?.clientId);
-      return {
-        ...f,
-        projectName: project?.name || 'N/A',
-        clientName: client?.name || 'N/A'
-      };
-    });
+    // Solo hallazgos pertenecientes a proyectos en estado "In Progress" (En curso)
+    const activeProjectIds = new Set(projects.filter(p => p.status === 'In Progress').map(p => p.id));
+    return findings
+      .filter(f => activeProjectIds.has(f.projectId))
+      .map(f => {
+        const project = projects.find(p => p.id === f.projectId);
+        const client = clients.find(c => c.id === project?.clientId);
+        return {
+          ...f,
+          projectName: project?.name || 'N/A',
+          clientName: client?.name || 'N/A'
+        };
+      });
   }, [findings, projects, clients]);
 
 
@@ -92,7 +96,7 @@ export default function AllFindingsPage() {
 
   const t = {
     en: {
-      title: "All Findings",
+      title: "Active Findings",
       filterBySeverity: "Filter by severity...",
       all: "All",
       findingTitle: "Finding Title",
@@ -101,9 +105,10 @@ export default function AllFindingsPage() {
       client: "Client",
       cvss: "CVSS",
       lastUpdated: "Last Updated",
+      noticeActive: "Only findings from projects currently in progress are shown.",
     },
     es: {
-      title: "Todos los Hallazgos",
+      title: "Hallazgos Activos",
       filterBySeverity: "Filtrar por severidad...",
       all: "Todo",
       findingTitle: "Título del Hallazgo",
@@ -112,6 +117,7 @@ export default function AllFindingsPage() {
       client: "Cliente",
       cvss: "CVSS",
       lastUpdated: "Última Actualización",
+      noticeActive: "Solo se muestran hallazgos pertenecientes a proyectos en curso.",
     }
   }
 
@@ -139,8 +145,10 @@ export default function AllFindingsPage() {
         </div>
       </div>
 
+      <p className="text-sm text-muted-foreground">{t[language].noticeActive}</p>
+
       <Card>
-        <CardContent className="pt-6">
+        <CardContent className="pt-6 overflow-x-auto">
           <Table>
             <TableHeader>
               <TableRow>
