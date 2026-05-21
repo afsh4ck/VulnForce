@@ -166,8 +166,8 @@
   }
   body {
     @apply bg-background text-foreground;
-    /* Evitar scroll horizontal accidental por anchos calculados de Radix popovers */
-    overflow-x: hidden;
+    /* Evitar scroll horizontal accidental sin romper position: sticky en descendientes. */
+    overflow-x: clip;
   }
   main, .min-w-0-cascade > * {
     min-width: 0;

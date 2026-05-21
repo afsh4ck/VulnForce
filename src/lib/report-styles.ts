@@ -120,18 +120,20 @@ export const REPORT_SHARED_CSS = `
   .dark { ${REPORT_THEME_VARIABLES.dark} }
 
   *, *::before, *::after { box-sizing: border-box; }
-  html { scroll-behavior: smooth; overflow-x: hidden; }
+  /* overflow-x: clip evita scroll horizontal sin crear contexto de scroll
+     (necesario para que position:sticky siga funcionando en descendientes). */
+  html { scroll-behavior: smooth; overflow-x: clip; }
   body {
     background: hsl(var(--background));
     color: hsl(var(--foreground));
     font-family: 'Inter', sans-serif;
     margin: 0;
-    overflow-x: hidden;
+    overflow-x: clip;
     max-width: 100vw;
   }
   img, svg, video, canvas, iframe { max-width: 100%; height: auto; }
   pre, code { max-width: 100%; }
-  .report-shell { overflow-x: hidden; max-width: 100vw; }
+  .report-shell { overflow-x: clip; max-width: 100vw; }
   h1, h2, h3, h4, h5, h6 { font-family: 'Space Grotesk', sans-serif; }
   pre, code { font-family: 'Source Code Pro', monospace; }
 
