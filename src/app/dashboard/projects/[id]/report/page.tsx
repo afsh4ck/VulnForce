@@ -421,12 +421,23 @@ export default function ReportPreviewPage() {
     return () => window.removeEventListener('scroll', handleScroll);
   }, [fullReportContent]);
 
-  // Auto-scroll del sidebar: mantiene la sección activa visible y centrada.
+  // Auto-scroll del sidebar SOLO dentro del propio panel (no del window).
+  // scrollIntoView por defecto desplaza también el documento, lo que "empujaba"
+  // al usuario hacia arriba mientras leía. Calculamos el scroll del panel a mano.
   useEffect(() => {
     if (!activeHeading) return;
-    const el = document.querySelector(`[data-toc-id="${CSS.escape(activeHeading)}"]`);
-    if (el && 'scrollIntoView' in el) {
-      (el as HTMLElement).scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+    const item = document.querySelector(`[data-toc-id="${CSS.escape(activeHeading)}"]`) as HTMLElement | null;
+    const panel = item?.closest('.sidebar-panel') as HTMLElement | null;
+    if (!item || !panel) return;
+    const itemRect = item.getBoundingClientRect();
+    const panelRect = panel.getBoundingClientRect();
+    const delta = (itemRect.top - panelRect.top) - panel.clientHeight / 2 + itemRect.height / 2;
+    const target = panel.scrollTop + delta;
+    // Solo aplicamos si el item NO está ya cómodamente visible (evita micro
+    // ajustes constantes que se notan como "tirones").
+    const fullyVisible = itemRect.top >= panelRect.top + 24 && itemRect.bottom <= panelRect.bottom - 24;
+    if (!fullyVisible) {
+      panel.scrollTo({ top: target, behavior: 'smooth' });
     }
   }, [activeHeading]);
 
@@ -516,6 +527,13 @@ export default function ReportPreviewPage() {
     const themeStyleBlock = `:root, .light { ${themeVariablesBlock('light', themeForExport)} } .dark { ${themeVariablesBlock('dark', themeForExport)} } ${themeExtrasCSS(themeForExport)}`;
     const fontsHref = themeFontsHref(themeForExport);
     const fontsLink = fontsHref ? `<link rel="stylesheet" href="${fontsHref}" />` : '';
+
+    // Capturamos el HTML del reporte y eliminamos el logo del hero (ya está en
+    // la cabecera del HTML exportado). Trabajamos sobre un clon para no tocar
+    // el preview en pantalla.
+    const exportRoot = reportContentRef.current.cloneNode(true) as HTMLElement;
+    exportRoot.querySelectorAll('[data-cover-logo="true"]').forEach((node) => node.remove());
+    const reportInnerHtml = exportRoot.innerHTML;
     const tocHtml = headings
       .map((h) => {
         const classes = [
@@ -593,7 +611,7 @@ ${themeStyleBlock}</style>
   </header>
   <div class="report-shell">
     <div class="report-layout">
-      <main class="report-main">${reportContentRef.current.innerHTML}</main>
+      <main class="report-main">${reportInnerHtml}</main>
       <aside id="report-sidebar" class="report-sidebar no-print">
         <button id="sidebar-toggle-close" class="sidebar-rail-btn" type="button" aria-label="Hide sidebar">${chevronRightSvg}</button>
         <div class="sidebar-panel">
@@ -818,7 +836,7 @@ ${themeStyleBlock}</style>
                   <h1 className="cover-title">{project.name}</h1>
                   <p className="cover-client">{client.name}</p>
                 </div>
-                <div className="flex shrink-0 items-center">{clientLogo}</div>
+                <div className="cover-logo flex shrink-0 items-center" data-cover-logo="true">{clientLogo}</div>
               </div>
               <div className="cover-meta">
                 <div className="cover-meta-card">

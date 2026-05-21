@@ -379,6 +379,7 @@ export const REPORT_SHARED_CSS = `
     position: sticky;
     top: 5rem;
     height: calc(100vh - 6rem);
+    align-self: flex-start;
   }
   .sidebar-panel {
     height: 100%;
