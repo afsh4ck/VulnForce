@@ -53,6 +53,8 @@ export {
   Moon,
   Network,
   Palette,
+  PlugsConnected,
+  PlugsConnected as Mcp,
   Sidebar as PanelLeft,
   Plus,
   PlusCircle,

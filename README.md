@@ -15,6 +15,7 @@
 - 🌗 Light / dark mode y traducciones en tiempo real (ES / EN)
 - ✅ Seguimiento de `TODO` con enlaces directos a la sección editable
 - 💾 Backup y restauración completos (incluye temas personalizados)
+- 🔌 Servidor MCP integrado: conecta cualquier cliente de IA (Claude, Cursor, Claude Code…) para crear y editar informes
 
 ## Flujo de trabajo
 
@@ -32,6 +33,27 @@
 
 5. Revisar en la previsualización HTML y exportar cuando esté listo.
 <img width="3364" height="1772" alt="image" src="https://github.com/user-attachments/assets/bffdf8f1-323a-4f3f-af96-a45351759dd7" />
+
+## Servidor MCP (IA)
+
+VulnForce expone su propio servidor [MCP](https://modelcontextprotocol.io) (igual que Figma) en `POST /api/mcp` (transporte Streamable HTTP). Cualquier cliente de IA puede conectarse y crear o editar informes mediante herramientas. La sección **MCP** del dashboard muestra el endpoint, un test de conexión y los snippets de configuración.
+
+Conecta tu cliente al endpoint (en desarrollo, `http://localhost:9002/api/mcp`):
+
+```jsonc
+// Clientes con MCP por HTTP nativo (Cursor, VS Code, Claude Code)
+{ "mcpServers": { "vulnforce": { "url": "http://localhost:9002/api/mcp" } } }
+
+// Clientes que solo hablan stdio (Claude Desktop): puente con mcp-remote
+{ "mcpServers": { "vulnforce": { "command": "npx", "args": ["mcp-remote", "http://localhost:9002/api/mcp"] } } }
+```
+
+```bash
+# Claude Code CLI
+claude mcp add --transport http vulnforce http://localhost:9002/api/mcp
+```
+
+Herramientas disponibles: `list_projects`, `get_report`, `create_report`, `update_report`, `append_to_report`, `list_clients`, `list_findings`. Un informe es el cuerpo Markdown de un proyecto. La IA escribe directamente en el almacén; recarga la app para ver los cambios.
 
 ## Tecnologías
 
@@ -77,10 +99,11 @@ Volúmenes persistentes: `./data`, `./uploads`, `./logs`.
 
 ## Estructura
 
-- `src/app/` — rutas (dashboard, proyectos, hallazgos, plantillas, temas, ajustes)
+- `src/app/` — rutas (dashboard, proyectos, hallazgos, plantillas, temas, MCP, ajustes)
+- `src/app/api/mcp/` — endpoint del servidor MCP (Streamable HTTP)
 - `src/components/` — UI reutilizable
 - `src/context/` — estado global (datos, tema, idioma, usuario)
-- `src/lib/` — design tokens, plantillas, motor de temas y exportadores
+- `src/lib/` — design tokens, plantillas, motor de temas, exportadores y herramientas MCP
 
 ## Notas de seguridad
 

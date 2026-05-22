@@ -359,10 +359,12 @@ Realizar una prueba de penetración completa, demostrando explotación, escalada
     icon: 'FileText',
     scope_en: `# General Information
 
-- **Machine name:** [TODO: Machine name]
+In this writeup we solve the [TODO: machine name] machine from Hack The Box, a Linux box rated [TODO: Easy / Medium / Hard].
+
+- **Machine name:** [TODO: machine name]
 - **IP address:** [TODO: IP address]
 - **Operating system:** Linux
-- **Difficulty:** [TODO: Easy / Medium / Hard / Insane]
+- **Difficulty:** 🟢 Easy | 🟡 Medium | 🔴 Hard [TODO: select difficulty]
 - **Date:** ${format(new Date(), 'dd-MM-yyyy')}
 
 # Initial Reconnaissance
@@ -371,51 +373,68 @@ Map the target attack surface: host resolution, open ports and running services.
 
 ## Add IP to /etc/hosts
 
-\`\`\`bash
-echo "[TODO: IP address] [TODO: machine.htb]" | sudo tee -a /etc/hosts
-\`\`\`
-
-## Port Scanning (Nmap)
-
-First an aggressive full-port discovery, then a targeted enumeration on the interesting ports.
+Add the machine IP to /etc/hosts:
 
 \`\`\`bash
-# Discovery scan
-sudo nmap -p- -sS --min-rate 5000 -v -n -Pn [TODO: IP address] -oN ports
-
-# Targeted scan
-sudo nmap -sCV -p22,80 [TODO: IP address] -oN targeted
+sudo echo "[TODO: IP address] [TODO: machine.htb]" | sudo tee -a /etc/hosts
 \`\`\`
 
-Result: ports **22 (SSH)** and **80 (HTTP)** were found open.
+## Port Scanning
+
+Identify exposed ports and services with Nmap.
+
+### Simple Scan
+
+\`\`\`bash
+sudo nmap -v -sV -T5 [TODO: IP address]
+\`\`\`
+
+\`\`\`
+PORT   STATE SERVICE VERSION
+22/tcp open  ssh     OpenSSH 8.2p1 Ubuntu 4ubuntu0.12 (Ubuntu Linux; protocol 2.0)
+80/tcp open  http    Apache httpd 2.4.41 ((Ubuntu))
+Service Info: OS: Linux; CPE: cpe:/o:linux:linux_kernel
+\`\`\`
+
+Only common ports (22 and 80) were found open. We focus on the web service.
+
+## Web Access
+
+We browse to \`http://[TODO: machine.htb]\` and observe what looks like [TODO: site description, e.g. an online learning platform].
+
+[TODO: add screenshots or useful commands from the initial web access]
 
 # Web Enumeration
 
 Discover endpoints, technologies and hidden content on the exposed web stack.
 
-## Initial Access & Analysis
+## WSTG Scan
 
-- **URL:** \`http://[TODO: machine.htb]\`
-- Useful initial checks:
+This tool automatically performs:
+
+- Web technology enumeration
+- Port and service scanning with Nmap
+- Vulnerability analysis with Nuclei
+- Subdomain fuzzing with ffuf
+- Directory fuzzing with ffuf
+- Spidering / full site mapping
+- Form detection and injection testing
+- API testing (OWASP API Top 10)
+- User enumeration and bruteforce with hydra
 
 \`\`\`bash
-# DNS / headers / fingerprint
-host [TODO: machine.htb]
-curl -I http://[TODO: machine.htb]
-whatweb -a3 -v http://[TODO: machine.htb]
+git clone https://github.com/afsh4ck/WSTG-Scan.git
+cd WSTG-Scan
+python3 wstg-scan.py
 \`\`\`
 
-## Directory Fuzzing
+## Relevant Findings
 
-\`\`\`bash
-dirsearch -u http://[TODO: machine.htb] -x 403,404
-gobuster dir -u http://[TODO: machine.htb] -w /usr/share/wordlists/dirb/common.txt
-ffuf -u http://[TODO: machine.htb]/FUZZ -w /usr/share/seclists/Discovery/Web-Content/common.txt
-\`\`\`
+[TODO: summarise the most relevant findings from the enumeration]
 
-Found directories: [TODO: e.g. /about.php, /contact.php].
+### Subdomain Enumeration (VHosts)
 
-## Subdomain Enumeration (VHosts)
+Check the base Content-Length and fuzz VHosts with FFUF:
 
 \`\`\`bash
 ffuf -w /usr/share/seclists/Discovery/DNS/subdomains-top1million-5000.txt:FUZZ \\
@@ -424,125 +443,199 @@ ffuf -w /usr/share/seclists/Discovery/DNS/subdomains-top1million-5000.txt:FUZZ \
      -fs [TODO: base_response_size]
 \`\`\`
 
-Found subdomain: [TODO: e.g. grafana.planning.htb]. Added to /etc/hosts.
+We find the subdomain: [TODO: e.g. grafana.planning.htb]. We add it to /etc/hosts and reach a [TODO: technology and version, e.g. Grafana v11.0.0] panel.
 
 # Exploitation
 
 Identify the vulnerable surface, weaponise a known exploit and gain a first foothold.
 
-## Vulnerability Research
+## XSS Test
 
-Identified service/version: [TODO: e.g. Grafana v11.0.0]. Searched for exploits on Exploit-DB, sploitus and GitHub.
+We try the following script in the form fields to check whether it is vulnerable to Cross Site Scripting (XSS):
 
-**Selected exploit:** [TODO: Describe the exploit and reference URL].
+\`\`\`html
+[TODO: XSS payload, e.g. <img src=x onerror="fetch('http://[TODO: your IP]:9000')">]
+\`\`\`
+
+We replace the IP with ours and start a Netcat listener on port 9000:
+
+\`\`\`bash
+nc -lvnp 9000
+\`\`\`
+
+We click the Send button and check whether the listener receives a call to confirm the vulnerability.
+
+## CVE / Exploit Research
+
+We look for CVEs related to [TODO: service and version, e.g. Grafana 11.0.0] on sources such as:
+
+- https://sploitus.com
+- https://exploit-db.com
+- https://github.com
+
+**Selected exploit:** [TODO: describe the exploit used and its reference URL]
 
 ## Exploit Execution
 
-[TODO: Step-by-step description of how the exploit was executed to gain initial access.]
+[TODO: step-by-step description of how remote execution or the initial access was achieved]
+
+## Stabilise the Session
+
+We use Penelope to stabilise our session and gain persistence. We use the bash payload from the tun0 section, since we are connected through the VPN.
+
+[TODO: Penelope bash payload (tun0 section)]
+
+We run it on the target machine and automatically receive a PTY shell with persistence. With F12 we can detach the session to interact with it later.
 
 # Initial Access
 
-- **User:** \`whoami\` → [TODO: user]
-- **Environment:** \`uname -a\`, \`id\`, \`sudo -l\`
+Once we have access, we verify the user and system context.
+
+- Current user: \`whoami\`
+- Environment: \`uname -a\`, \`id\`, \`sudo -l\`
 
 ## User Flag
+
+Locate and obtain the user flag:
 
 \`\`\`bash
 cat /home/[TODO: user]/user.txt
 \`\`\`
 
+[TODO: paste the user flag value]
+
 # Privilege Escalation
 
 Enumerate the local environment and abuse misconfigurations to escalate to root.
 
-## Enumeration
+## Privilege Enumeration
 
-- Check sudo permissions: \`sudo -l\`
-- Find SUID/GUID files:
+We do not have sudo as the user [TODO: user, e.g. Oliver]:
 
 \`\`\`bash
-find / -user root -perm -4000 -print 2>/dev/null
+sudo -l
 \`\`\`
 
-- Check running services: \`ss -tuln\`
-- Automated enumeration: \`linpeas.sh\`, \`pspy\`.
+### SUDO Version
+
+[TODO: state the sudo version]. This version is vulnerable to [TODO: CVE, e.g. CVE-2025-32463] and we find several PoCs to exploit it.
+
+### Files with Special Permissions
+
+Searching for files with special permissions we find a suspicious binary [TODO: e.g. ndsudo]:
+
+\`\`\`bash
+find / -perm -4000 2>/dev/null
+\`\`\`
+
+### Internal Running Services
+
+\`\`\`bash
+ss -tuln
+\`\`\`
+
+Tools used: \`sudo -l\`, \`find / -perm -4000 2>/dev/null\`, \`linpeas.sh\`, \`pspy\`.
 
 ## Applied Technique
 
-[TODO: Describe the technique used: SUID binary, misconfigured cronjob, hardcoded credentials, etc.]
+[TODO: describe the technique used: SUID binary, misconfigured cronjob, hardcoded credentials, etc.]
 
-# Root Flag
+# 👑 Root Flag
+
+Obtain the root flag:
 
 \`\`\`bash
 cat /root/root.txt
 \`\`\`
+
+[TODO: paste the root flag value]
 `,
     appendix_en: `# Appendix
 
 - **Network scanner:** Nmap
-- **Web fuzzers:** ffuf, dirsearch, gobuster
-- **Exploitation:** [TODO: e.g. Metasploit, Python script]
+- **Web enumeration:** WSTG-Scan, ffuf, whatweb
+- **Exploitation:** [TODO: exploit/PoC used], Netcat
+- **Shell stabilisation:** Penelope
 - **Privilege escalation:** linpeas.sh, pspy
 `,
     scope_es: `# Información General
 
-- **Nombre de la máquina:** [TODO: Nombre de la máquina]
-- **Dirección IP:** [TODO: Dirección IP]
+En esta ocasión vamos a hacer el writeup de la máquina [TODO: nombre de la máquina] de Hack The Box, una máquina Linux de dificultad [TODO: Fácil / Media / Difícil].
+
+- **Nombre de la máquina:** [TODO: nombre de la máquina]
+- **IP:** [TODO: dirección IP]
 - **Sistema operativo:** Linux
-- **Dificultad:** [TODO: Fácil / Media / Difícil / Insana]
+- **Dificultad:** 🟢 Fácil | 🟡 Media | 🔴 Difícil [TODO: seleccionar dificultad]
 - **Fecha:** ${format(new Date(), 'dd-MM-yyyy')}
 
 # Reconocimiento Inicial
 
-Mapeo de la superficie de ataque: resolución del host, puertos abiertos y servicios en ejecución.
+Mapeamos la superficie de ataque: resolución del host, puertos abiertos y servicios en ejecución.
 
 ## Añadir IP a /etc/hosts
 
-\`\`\`bash
-echo "[TODO: Dirección IP] [TODO: maquina.htb]" | sudo tee -a /etc/hosts
-\`\`\`
-
-## Escaneo de Puertos (Nmap)
-
-Primero un descubrimiento agresivo de todos los puertos y después una enumeración dirigida a los interesantes.
+Añadimos la IP de la máquina al archivo /etc/hosts:
 
 \`\`\`bash
-# Escaneo de descubrimiento
-sudo nmap -p- -sS --min-rate 5000 -v -n -Pn [TODO: Dirección IP] -oN ports
-
-# Escaneo dirigido
-sudo nmap -sCV -p22,80 [TODO: Dirección IP] -oN targeted
+sudo echo "[TODO: dirección IP] [TODO: maquina.htb]" | sudo tee -a /etc/hosts
 \`\`\`
 
-Resultado: se encontraron los puertos **22 (SSH)** y **80 (HTTP)** abiertos.
+## Escaneo de Puertos
+
+Identificamos los puertos y servicios expuestos con Nmap.
+
+### Escaneo Simple
+
+\`\`\`bash
+sudo nmap -v -sV -T5 [TODO: dirección IP]
+\`\`\`
+
+\`\`\`
+PORT   STATE SERVICE VERSION
+22/tcp open  ssh     OpenSSH 8.2p1 Ubuntu 4ubuntu0.12 (Ubuntu Linux; protocol 2.0)
+80/tcp open  http    Apache httpd 2.4.41 ((Ubuntu))
+Service Info: OS: Linux; CPE: cpe:/o:linux:linux_kernel
+\`\`\`
+
+Solo encontramos puertos comunes (22 y 80) abiertos. Nos centraremos en el servicio web.
+
+## Acceso Web
+
+Accedemos a \`http://[TODO: maquina.htb]\` y observamos que parece ser [TODO: descripción del sitio, p. ej. una plataforma de cursos en línea].
+
+[TODO: añadir capturas o comandos útiles del acceso web inicial]
 
 # Enumeración Web
 
-Descubre endpoints, tecnologías y contenido oculto del stack web expuesto.
+Descubrimos endpoints, tecnologías y contenido oculto del stack web expuesto.
 
-## Acceso y Análisis Inicial
+## WSTG Scan
 
-- **URL:** \`http://[TODO: maquina.htb]\`
-- Comprobaciones iniciales útiles:
+Este programa realiza automáticamente:
+
+- Enumeración de tecnologías web
+- Escaneo de puertos y servicios con Nmap
+- Análisis de vulnerabilidades con Nuclei
+- Fuzzing de subdominios con ffuf
+- Fuzzing de directorios con ffuf
+- Spidering / mapeo completo del site
+- Detección de formularios y pruebas de inyección
+- Pruebas de API (OWASP API Top 10)
+- Enumeración de usuarios y bruteforce con hydra
 
 \`\`\`bash
-# DNS / cabeceras / fingerprint
-host [TODO: maquina.htb]
-curl -I http://[TODO: maquina.htb]
-whatweb -a3 -v http://[TODO: maquina.htb]
+git clone https://github.com/afsh4ck/WSTG-Scan.git
+cd WSTG-Scan
+python3 wstg-scan.py
 \`\`\`
 
-## Fuzzing de Directorios
+## Hallazgos relevantes
 
-\`\`\`bash
-dirsearch -u http://[TODO: maquina.htb] -x 403,404
-gobuster dir -u http://[TODO: maquina.htb] -w /usr/share/wordlists/dirb/common.txt
-ffuf -u http://[TODO: maquina.htb]/FUZZ -w /usr/share/seclists/Discovery/Web-Content/common.txt
-\`\`\`
+[TODO: resumir los hallazgos más relevantes de la enumeración]
 
-Directorios encontrados: [TODO: p.ej. /about.php, /contact.php].
+### Enumeración de Subdominios (VHosts)
 
-## Enumeración de Subdominios (VHosts)
+Comprobamos el Content-Length base y hacemos fuzzing de VHosts con FFUF:
 
 \`\`\`bash
 ffuf -w /usr/share/seclists/Discovery/DNS/subdomains-top1million-5000.txt:FUZZ \\
@@ -551,64 +644,119 @@ ffuf -w /usr/share/seclists/Discovery/DNS/subdomains-top1million-5000.txt:FUZZ \
      -fs [TODO: tamaño_respuesta_base]
 \`\`\`
 
-Subdominio encontrado: [TODO: p.ej. grafana.planning.htb]. Añadido a /etc/hosts.
+Encontramos el subdominio: [TODO: p. ej. grafana.planning.htb]. Lo añadimos a /etc/hosts y accedemos a un panel de [TODO: tecnología y versión, p. ej. Grafana v11.0.0].
 
 # Explotación
 
-Identifica la superficie vulnerable, prepara un exploit conocido y consigue un primer punto de apoyo.
+Identificamos la superficie vulnerable, preparamos un exploit conocido y conseguimos un primer punto de apoyo.
 
-## Investigación de Vulnerabilidades
+## Prueba de XSS
 
-Servicio/versión identificado: [TODO: p.ej. Grafana v11.0.0]. Búsqueda de exploits en Exploit-DB, sploitus y GitHub.
+Probamos el siguiente script en los campos del formulario para ver si es vulnerable a Cross Site Scripting (XSS):
 
-**Exploit seleccionado:** [TODO: Describir el exploit y la URL de referencia].
+\`\`\`html
+[TODO: payload XSS, p. ej. <img src=x onerror="fetch('http://[TODO: tu IP]:9000')">]
+\`\`\`
+
+Cambiamos la IP por la nuestra e iniciamos un listener con Netcat en el puerto 9000:
+
+\`\`\`bash
+nc -lvnp 9000
+\`\`\`
+
+Hacemos clic en el botón Send y comprobamos si el listener recibe una llamada para confirmar la vulnerabilidad.
+
+## Investigación de CVEs / Exploits
+
+Exploramos CVEs relacionados con [TODO: servicio y versión, p. ej. Grafana 11.0.0] en fuentes como:
+
+- https://sploitus.com
+- https://exploit-db.com
+- https://github.com
+
+**Exploit seleccionado:** [TODO: describir qué exploit se usó y su URL de referencia]
 
 ## Ejecución del Exploit
 
-[TODO: Descripción paso a paso de cómo se ejecutó el exploit para obtener acceso inicial.]
+[TODO: describir paso a paso cómo se logró la ejecución remota o el primer acceso]
+
+## Estabilizar sesión
+
+Usaremos Penelope para estabilizar nuestra sesión y tener persistencia. Usamos el payload en bash de la sección tun0, ya que estamos conectados por VPN.
+
+[TODO: payload bash de Penelope (sección tun0)]
+
+Lo ejecutamos en la máquina objetivo y automáticamente recibimos la shell PTY con persistencia. Con F12 podemos cerrar la sesión para interactuar con ella más tarde.
 
 # Acceso Inicial
 
-- **Usuario:** \`whoami\` → [TODO: usuario]
-- **Entorno:** \`uname -a\`, \`id\`, \`sudo -l\`
+Una vez obtenido acceso, verificamos el contexto del usuario y del sistema.
+
+- Usuario actual: \`whoami\`
+- Entorno: \`uname -a\`, \`id\`, \`sudo -l\`
 
 ## User Flag
+
+Localizamos y obtenemos la flag del usuario:
 
 \`\`\`bash
 cat /home/[TODO: usuario]/user.txt
 \`\`\`
 
+[TODO: pegar el valor de la user flag]
+
 # Escalada de Privilegios
 
-Enumera el entorno local y abusa de configuraciones erróneas para escalar a root.
+Enumeramos el entorno local y abusamos de configuraciones erróneas para escalar a root.
 
-## Enumeración
+## Enumeración de Privilegios
 
-- Permisos de sudo: \`sudo -l\`
-- Buscar binarios SUID/GUID:
+No tenemos sudo como el usuario [TODO: usuario, p. ej. Oliver]:
 
 \`\`\`bash
-find / -user root -perm -4000 -print 2>/dev/null
+sudo -l
 \`\`\`
 
-- Servicios en ejecución: \`ss -tuln\`
-- Enumeración automatizada: \`linpeas.sh\`, \`pspy\`.
+### Versión de SUDO
+
+[TODO: indicar la versión de sudo]. Esta versión es vulnerable al [TODO: CVE, p. ej. CVE-2025-32463] y encontramos varios PoC para explotarla.
+
+### Enumeración de archivos con permisos especiales
+
+Buscando archivos con permisos especiales encontramos un binario sospechoso [TODO: p. ej. ndsudo]:
+
+\`\`\`bash
+find / -perm -4000 2>/dev/null
+\`\`\`
+
+### Ver servicios internos corriendo
+
+\`\`\`bash
+ss -tuln
+\`\`\`
+
+Herramientas usadas: \`sudo -l\`, \`find / -perm -4000 2>/dev/null\`, \`linpeas.sh\`, \`pspy\`.
 
 ## Técnica Aplicada
 
-[TODO: Describir la técnica usada: binario SUID, cronjob mal configurado, credenciales hardcoded, etc.]
+[TODO: describir la técnica usada: binario con SUID, cronjob mal configurado, credenciales hardcoded, etc.]
 
-# Root Flag
+# 👑 Root Flag
+
+Obtenemos la flag de root:
 
 \`\`\`bash
 cat /root/root.txt
 \`\`\`
+
+[TODO: pegar el valor de la root flag]
 `,
     appendix_es: `# Apéndice
 
 - **Escáner de red:** Nmap
-- **Fuzzers web:** ffuf, dirsearch, gobuster
-- **Explotación:** [TODO: p. ej. Metasploit, script de Python]
+- **Enumeración web:** WSTG-Scan, ffuf, whatweb
+- **Explotación:** [TODO: exploit/PoC usado], Netcat
+- **Estabilización de shell:** Penelope
 - **Escalada de privilegios:** linpeas.sh, pspy
 `,
   },

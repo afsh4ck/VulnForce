@@ -4,7 +4,7 @@
 import Link from 'next/link';
 import { usePathname, useRouter } from 'next/navigation';
 import React from 'react';
-import { Home, ShieldCheck, FolderKanban, Users, Settings, FileText, PanelLeft, User, LayoutTemplate, History, Bomb, Palette } from '@/components/icons';
+import { Home, ShieldCheck, FolderKanban, Users, Settings, FileText, PanelLeft, User, LayoutTemplate, History, Bomb, Palette, Mcp } from '@/components/icons';
 
 import {
   Sidebar,
@@ -65,6 +65,7 @@ function DashboardNav({ children }: { children: React.ReactNode }) {
       settings: 'Settings',
       profile: 'Profile',
       themes: 'Themes',
+      mcp: 'MCP',
     },
     es: {
       dashboard: 'Dashboard',
@@ -77,6 +78,7 @@ function DashboardNav({ children }: { children: React.ReactNode }) {
       settings: 'Ajustes',
       profile: 'Perfil',
       themes: 'Temas',
+      mcp: 'MCP',
     },
   };
 
@@ -93,6 +95,7 @@ function DashboardNav({ children }: { children: React.ReactNode }) {
   const bottomNavItems = [
       { href: '/dashboard/profile', icon: User, label: t[language].profile },
       { href: '/dashboard/themes', icon: Palette, label: t[language].themes },
+      { href: '/dashboard/mcp', icon: Mcp, label: t[language].mcp },
       { href: '/dashboard/settings', icon: Settings, label: t[language].settings },
   ]
 

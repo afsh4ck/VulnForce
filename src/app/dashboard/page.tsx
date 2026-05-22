@@ -201,7 +201,7 @@ export default function DashboardPage() {
       <div>
         <Card>
           <CardHeader>
-            <CardTitle>{t[language].recentProjects}</CardTitle>
+            <CardTitle className="font-headline">{t[language].recentProjects}</CardTitle>
           </CardHeader>
           <CardContent>
             {recentProjects.length > 0 ? (
