@@ -1,6 +1,7 @@
 'use client';
 
 import React, { useEffect, useMemo, useState } from 'react';
+import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter';
 import { useLanguage } from '@/context/language-context';
 import { useToast } from '@/hooks/use-toast';
 import { Button } from '@/components/ui/button';
@@ -8,12 +9,13 @@ import { Badge } from '@/components/ui/badge';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { PlugsConnected, Copy, CheckCircle, AlertCircle } from '@/components/icons';
 import { MCP_TOOLS } from '@/lib/mcp/tool-defs';
+import { syntaxTheme } from '@/components/code-block';
 
 const T = {
   en: {
     title: 'MCP Server',
     subtitle:
-      'VulnForce exposes its own MCP server, like Figma. Connect any AI client (Claude, Cursor, Claude Code…) and let it create and edit your reports through tools.',
+      'VulnForce exposes its own MCP server. Connect any AI client (Claude, Cursor, Claude Code…) and let it create and edit your reports through tools.',
     endpoint: 'Server endpoint',
     test: 'Test connection',
     testing: 'Testing…',
@@ -43,7 +45,7 @@ const T = {
   es: {
     title: 'Servidor MCP',
     subtitle:
-      'VulnForce expone su propio servidor MCP, igual que Figma. Conecta cualquier cliente de IA (Claude, Cursor, Claude Code…) y deja que cree y edite tus informes mediante herramientas.',
+      'VulnForce expone su propio servidor MCP. Conecta cualquier cliente de IA (Claude, Cursor, Claude Code…) y deja que cree y edite tus informes mediante herramientas.',
     endpoint: 'Endpoint del servidor',
     test: 'Probar conexión',
     testing: 'Probando…',
@@ -74,7 +76,7 @@ const T = {
 
 type Status = 'idle' | 'testing' | 'online' | 'error';
 
-function CodeBlock({ code, copyLabel, copiedLabel }: { code: string; copyLabel: string; copiedLabel: string }) {
+function CodeBlock({ code, copyLabel, copiedLabel, language }: { code: string; copyLabel: string; copiedLabel: string; language?: string }) {
   const [copied, setCopied] = useState(false);
   const onCopy = async () => {
     try {
@@ -87,9 +89,25 @@ function CodeBlock({ code, copyLabel, copiedLabel }: { code: string; copyLabel: 
   };
   return (
     <div className="relative">
-      <pre className="overflow-x-auto rounded-md border bg-muted/50 p-3 pr-20 font-code text-xs leading-relaxed">
-        <code>{code}</code>
-      </pre>
+      <div className="overflow-x-auto rounded-md border bg-muted/50 pr-20 text-xs leading-relaxed">
+        {language ? (
+          <SyntaxHighlighter
+            language={language}
+            style={syntaxTheme}
+            customStyle={{
+              margin: 0,
+              padding: '0.75rem',
+              backgroundColor: 'transparent',
+              fontSize: '0.75rem',
+              lineHeight: '1.625',
+            }}
+          >
+            {code}
+          </SyntaxHighlighter>
+        ) : (
+          <pre className="p-3 font-code"><code>{code}</code></pre>
+        )}
+      </div>
       <Button
         size="sm"
         variant="outline"
@@ -230,11 +248,11 @@ export default function McpPage() {
           <CardContent className="space-y-5">
             <div className="space-y-2">
               <p className="text-sm font-medium">{t.httpClients}</p>
-              <CodeBlock code={snippetHttp} copyLabel={t.copy} copiedLabel={t.copied} />
+              <CodeBlock code={snippetHttp} copyLabel={t.copy} copiedLabel={t.copied} language="json" />
             </div>
             <div className="space-y-2">
               <p className="text-sm font-medium">{t.stdioClients}</p>
-              <CodeBlock code={snippetStdio} copyLabel={t.copy} copiedLabel={t.copied} />
+              <CodeBlock code={snippetStdio} copyLabel={t.copy} copiedLabel={t.copied} language="json" />
             </div>
             <div className="space-y-2">
               <p className="text-sm font-medium">{t.cliClients}</p>

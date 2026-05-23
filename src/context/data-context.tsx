@@ -121,7 +121,7 @@ export function DataProvider({ children }: { children: ReactNode }) {
     const [themes, setThemes] = usePersistedState<ReportTheme[]>('vulnforce-themes-v1', []);
     const [activeThemeId, setActiveThemeIdState] = usePersistedState<string>('vulnforce-active-theme-v1', DEFAULT_THEME_ID);
 
-    const remoteHydratedRef = useRef(false);
+    const [remoteHydrated, setRemoteHydrated] = useState(false);
     const writeTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
     // On mount, hydrate from server-side state file if available.
@@ -146,7 +146,7 @@ export function DataProvider({ children }: { children: ReactNode }) {
                 // Network or server error - keep using localStorage values.
             } finally {
                 if (!cancelled) {
-                    remoteHydratedRef.current = true;
+                    setRemoteHydrated(true);
                 }
             }
         })();
@@ -155,8 +155,10 @@ export function DataProvider({ children }: { children: ReactNode }) {
     }, []);
 
     // Debounced sync of all collections to the server-side state file.
+    // remoteHydrated is included so the first sync fires on mount even if no
+    // data changed (e.g. state file missing but localStorage has data).
     useEffect(() => {
-        if (!remoteHydratedRef.current) return;
+        if (!remoteHydrated) return;
         if (writeTimerRef.current) clearTimeout(writeTimerRef.current);
         writeTimerRef.current = setTimeout(() => {
             const payload: PersistedStateShape = {
@@ -173,7 +175,7 @@ export function DataProvider({ children }: { children: ReactNode }) {
         return () => {
             if (writeTimerRef.current) clearTimeout(writeTimerRef.current);
         };
-    }, [clients, projects, findings, vulnerabilities, images, projectTemplates, themes, activeThemeId]);
+    }, [remoteHydrated, clients, projects, findings, vulnerabilities, images, projectTemplates, themes, activeThemeId]);
 
     const wipeAllData = () => {
         // This function will clear the data from localStorage,
