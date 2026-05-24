@@ -1965,6 +1965,13 @@ export default function ProjectDetailsPage() {
         language={projectLanguage}
         onPick={createFindingFromVulnerability}
       />
+
+      <ProjectTemplatePicker
+        open={projectTemplatePickerOpen}
+        onOpenChange={setProjectTemplatePickerOpen}
+        language={projectLanguage}
+        onPick={(tpl) => setPendingTemplateId(tpl.id)}
+      />
     </>
   );
 }
