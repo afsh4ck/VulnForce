@@ -533,6 +533,9 @@ export default function ReportPreviewPage() {
     // el preview en pantalla.
     const exportRoot = reportContentRef.current.cloneNode(true) as HTMLElement;
     exportRoot.querySelectorAll('[data-cover-logo="true"]').forEach((node) => node.remove());
+    // En el HTML exportado los bloques de código solo conservan el botón de
+    // copiar: el selector de lenguaje y el wrap son interactivos del preview.
+    exportRoot.querySelectorAll('[data-code-lang], [data-code-wrap]').forEach((node) => node.remove());
     const reportInnerHtml = exportRoot.innerHTML;
     const tocHtml = headings
       .map((h) => {
@@ -673,6 +676,14 @@ ${themeStyleBlock}</style>
       window.addEventListener('scroll', updateActive, { passive: true });
       window.addEventListener('resize', updateActive, { passive: true });
       updateActive();
+      // Copiar código: el botón ya está en el DOM; reconectamos el click.
+      document.querySelectorAll('[data-code-copy]').forEach(function (btn) {
+        btn.addEventListener('click', function () {
+          var root = btn.closest('[data-code-root]');
+          var pre = root && root.querySelector('pre');
+          if (pre && navigator.clipboard) navigator.clipboard.writeText(pre.innerText);
+        });
+      });
     })();
   </script>
 </body>

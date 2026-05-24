@@ -568,6 +568,18 @@ export const REPORT_PRINT_CSS = `
     .prose table { font-size: 0.78rem !important; }
     .prose td, .prose th { padding: 5px 7px !important; }
     .prose pre, .prose code { font-size: 0.74rem !important; }
+    /* En PDF el código siempre va en wrap para que no se corte por el ancho. */
+    [data-code-root] { overflow: visible !important; }
+    [data-code-toolbar] { display: none !important; }
+    [data-code-root] pre, [data-code-root] code,
+    .prose pre, .prose pre code {
+      white-space: pre-wrap !important;
+      word-break: break-word !important;
+      overflow-wrap: anywhere !important;
+      overflow: visible !important;
+      width: auto !important;
+      min-width: 0 !important;
+    }
     .badge-sev { font-size: 0.68rem !important; padding: 0.18rem 0.55rem !important; }
     .pentester-card { padding: 0.55rem 0.75rem !important; gap: 0.4rem 1rem !important; font-size: 0.78rem !important; }
     .pentester-card .item .value { font-size: 0.78rem !important; }

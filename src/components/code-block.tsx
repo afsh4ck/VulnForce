@@ -122,9 +122,9 @@ export const CodeBlock = ({ initialLanguage, code }: { initialLanguage: string; 
     // If the language is 'text' or not found, render a simple block
     if (language === 'text' || !languageOptions.some(opt => opt.value === language)) {
         return (
-             <div className="relative group my-4 overflow-x-auto rounded-md border border-border" style={{ backgroundColor: 'hsl(var(--code-background))' }}>
-                <div className="absolute top-2 right-2 z-10 flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
-                    <Button variant="ghost" size="icon" className="h-8 w-8 hover:bg-primary/20 hover:text-primary" onClick={handleCopy}>
+             <div data-code-root className="relative group my-4 overflow-x-auto rounded-md border border-border" style={{ backgroundColor: 'hsl(var(--code-background))' }}>
+                <div data-code-toolbar className="absolute top-2 right-2 z-10 flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
+                    <Button data-code-copy variant="ghost" size="icon" className="h-8 w-8 hover:bg-primary/20 hover:text-primary" onClick={handleCopy}>
                         {isCopied ? <Check className="h-4 w-4 text-green-500" /> : <Copy className="h-4 w-4" />}
                     </Button>
                 </div>
@@ -134,20 +134,22 @@ export const CodeBlock = ({ initialLanguage, code }: { initialLanguage: string; 
     }
 
     return (
-        <div className="relative group my-4 overflow-x-auto rounded-md border border-border" style={{ backgroundColor: 'hsl(var(--code-background))' }}>
-             <div className="absolute top-2 right-2 z-10 flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
-                <Combobox
-                    options={languageOptions}
-                    selectedValue={language}
-                    onSelect={setLanguage}
-                    placeholder={getLanguageLabel(language)}
-                    searchPlaceholder={t[currentUiLang].search}
-                />
+        <div data-code-root className="relative group my-4 overflow-x-auto rounded-md border border-border" style={{ backgroundColor: 'hsl(var(--code-background))' }}>
+             <div data-code-toolbar className="absolute top-2 right-2 z-10 flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
+                <span data-code-lang className="inline-flex">
+                    <Combobox
+                        options={languageOptions}
+                        selectedValue={language}
+                        onSelect={setLanguage}
+                        placeholder={getLanguageLabel(language)}
+                        searchPlaceholder={t[currentUiLang].search}
+                    />
+                </span>
 
-                <Button variant="ghost" size="icon" className={cn("h-8 w-8", isWrapped ? "bg-primary text-black hover:bg-primary/90" : "hover:bg-primary/20 hover:text-primary")} onClick={() => setIsWrapped(!isWrapped)}>
+                <Button data-code-wrap variant="ghost" size="icon" className={cn("h-8 w-8", isWrapped ? "bg-primary text-black hover:bg-primary/90" : "hover:bg-primary/20 hover:text-primary")} onClick={() => setIsWrapped(!isWrapped)}>
                     <WrapText className="h-4 w-4" />
                 </Button>
-                <Button variant="ghost" size="icon" className="h-8 w-8 hover:bg-primary/20 hover:text-primary" onClick={handleCopy}>
+                <Button data-code-copy variant="ghost" size="icon" className="h-8 w-8 hover:bg-primary/20 hover:text-primary" onClick={handleCopy}>
                     {isCopied ? <Check className="h-4 w-4 text-green-500" /> : <Copy className="h-4 w-4" />}
                 </Button>
             </div>
