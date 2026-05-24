@@ -699,6 +699,43 @@ export function buildReportHtmlStyles(initialTheme: 'light' | 'dark') {
     @media (max-width: 1023px) {
       .header-icon-btn-mobile { display: inline-flex; }
     }
+
+    /* Bloques de código en el HTML exportado: Tailwind no existe aquí, así que
+       replicamos la posición y los estilos del botón de copiar del preview
+       (arriba a la derecha, dentro de la caja; visible al hover del bloque). */
+    [data-code-root] { position: relative; }
+    [data-code-toolbar] {
+      position: absolute;
+      top: 0.5rem;
+      right: 0.5rem;
+      z-index: 10;
+      display: flex;
+      align-items: center;
+      gap: 0.25rem;
+      opacity: 0;
+      transition: opacity 0.2s ease;
+    }
+    [data-code-root]:hover [data-code-toolbar] { opacity: 1; }
+    [data-code-copy] {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      height: 2rem;
+      width: 2rem;
+      padding: 0;
+      border: 0;
+      border-radius: 0.375rem;
+      background: transparent;
+      color: hsl(var(--foreground));
+      cursor: pointer;
+      transition: background-color 0.2s ease, color 0.2s ease;
+    }
+    [data-code-copy]:hover {
+      background: hsl(var(--primary) / 0.2);
+      color: hsl(var(--primary));
+    }
+    [data-code-copy] svg { height: 1rem; width: 1rem; }
+
     html { color-scheme: ${initialTheme}; }
   `;
 }
