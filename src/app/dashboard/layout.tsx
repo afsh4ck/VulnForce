@@ -105,7 +105,7 @@ function DashboardNav({ children }: { children: React.ReactNode }) {
           asChild
           isActive={isActive}
           tooltip={{ children: item.label, side: 'right' }}
-          className={cn("justify-start h-9", isActive ? "bg-muted/50 text-primary" : "hover:bg-muted/50 hover:text-primary")}
+          className={cn("justify-start h-9", isActive ? "bg-sidebar-accent text-sidebar-primary" : "hover:bg-sidebar-accent hover:text-sidebar-primary")}
         >
           <Link href={item.href} onClick={handleLeaveClick(item.href)}>
             <item.icon className="h-5 w-5 shrink-0" />
