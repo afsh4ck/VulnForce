@@ -231,11 +231,19 @@ export const MarkdownPreview = ({ content, getImage, isReport, variables }: { co
                         </a>
                     );
                 },
+                // react-markdown v9 removed the `inline` prop. A fenced block is
+                // identified by a language- className or multiline content;
+                // everything else is inline code.
                 code: (mdProps: any) => {
-                    const { inline, className, children, ...props } = mdProps;
-                    if (inline) return <code className={className} {...props}>{renderTodoNodes(children)}</code>;
-                    return <CodeBlock initialLanguage={(className || '').replace('language-', '')} code={String(children)} />;
+                    const { className, children, node, ...props } = mdProps;
+                    const raw = String(children ?? '');
+                    const isBlock = /language-/.test(className || '') || raw.includes('\n');
+                    if (!isBlock) return <code className={className} {...props}>{renderTodoNodes(children)}</code>;
+                    return <CodeBlock initialLanguage={(className || '').replace('language-', '') || 'text'} code={raw.replace(/\n$/, '')} />;
                 },
+                // Unwrap the <pre> that react-markdown puts around fenced code so
+                // the block-level CodeBlock is not nested inside <pre>.
+                pre: ({children}: any) => <>{children}</>,
                 img: ({node, ...props}) => <CustomImage {...props} />
             }}>
                 {resolvedContent}
