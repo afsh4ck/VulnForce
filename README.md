@@ -2,7 +2,7 @@
 
 🚀 VulnForce es una aplicación web autoalojada para gestionar proyectos de pentesting, hallazgos y reportes profesionales. Editor por bloques con previsualización en vivo, sistema de temas para reportes y exportación a HTML, PDF y Markdown.
 
-<img width="2560" height="1238" alt="image" src="https://github.com/user-attachments/assets/be354022-2ca9-4155-9484-4dafee4d2b27" />
+<img width="2560" height="1238" alt="image" src="https://github.com/user-attachments/assets/9b9d3e78-3406-4d32-82ef-5c4de4daebc4" />
 
 ## Características
 
@@ -19,22 +19,22 @@
 
 ## Flujo de trabajo
 
-1. Crear un cliente e introducir sus datos.
-<img width="2560" height="1238" alt="image" src="https://github.com/user-attachments/assets/d37f143d-9379-4a79-bf33-a76f6b3dc665" />
+#### 1. Crear un cliente e introducir sus datos.
+<img width="2560" height="1238" alt="image" src="https://github.com/user-attachments/assets/12db6306-2316-4023-9e7a-ab651eaa389c" />
 
-2. Crear un proyecto y asociarlo a un cliente.
-<img width="2560" height="1238" alt="image" src="https://github.com/user-attachments/assets/e050edc9-65eb-4a86-be17-b35758b2d654" />
+#### 2. Crear un proyecto y asociarlo a un cliente.
+<img width="2560" height="1238" alt="image" src="https://github.com/user-attachments/assets/7fab2008-a1f7-43cb-86e2-6ac12ab8260d" />
 
-3. Importar una plantilla de proyecto o de vulnerabilidad.
-<img width="2560" height="1238" alt="image" src="https://github.com/user-attachments/assets/e9e9f59c-a1b6-45dc-8129-b387f1cd2eee" />
+#### 3. Importar una plantilla de proyecto o de vulnerabilidad.
+<img width="2560" height="1238" alt="image" src="https://github.com/user-attachments/assets/2dd0c26c-150c-46ec-9c91-705c2d26fb69" />
 
-4. Escribir contenido y marcar pendientes con `TODO` (se resaltan y vinculan).
+#### 4. Escribir contenido y marcar pendientes con `TODO` (se resaltan y vinculan).
 <img width="2560" height="1238" alt="image" src="https://github.com/user-attachments/assets/1ebddbc2-291c-4450-9ba5-9da4fb9bbc41" />
 
-5. Seleccionar un tema visual para el informe
+#### 5. Seleccionar un tema visual para el informe
 <img width="2560" height="1238" alt="image" src="https://github.com/user-attachments/assets/77be2ab0-0f5d-49e0-842e-d6ae5585addb" />
 
-6. Previsualizar informe y exportarlo cuando esté listo
+#### 6. Previsualizar informe y exportarlo cuando esté listo
 <img width="2560" height="1238" alt="image" src="https://github.com/user-attachments/assets/ecfa10b9-7ddf-49fc-8c0c-8eaa3de2ae74" />
 
 ---
