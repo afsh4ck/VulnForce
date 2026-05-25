@@ -19,23 +19,26 @@
 
 ## Flujo de trabajo
 
-#### 1. Crear un cliente e introducir sus datos.
+#### 1. Crea un cliente e introducir sus datos
 <img width="2560" height="1238" alt="image" src="https://github.com/user-attachments/assets/12db6306-2316-4023-9e7a-ab651eaa389c" />
 
-#### 2. Crear un proyecto y asociarlo a un cliente.
+#### 2. Crea un proyecto y asociarlo a un cliente
 <img width="2560" height="1238" alt="image" src="https://github.com/user-attachments/assets/7fab2008-a1f7-43cb-86e2-6ac12ab8260d" />
 
-#### 3. Importar una plantilla de proyecto o de vulnerabilidad.
+#### 3. Importa una plantilla de proyecto o de vulnerabilidad
 <img width="2560" height="1238" alt="image" src="https://github.com/user-attachments/assets/2dd0c26c-150c-46ec-9c91-705c2d26fb69" />
 
-#### 4. Escribir contenido y marcar pendientes con `TODO` (se resaltan y vinculan).
-<img width="2560" height="1238" alt="image" src="https://github.com/user-attachments/assets/1ebddbc2-291c-4450-9ba5-9da4fb9bbc41" />
+#### 4. Escribe contenido y marcar pendientes con `TODO` (se resaltan y vinculan)
+<img width="2536" height="1234" alt="image" src="https://github.com/user-attachments/assets/8747757f-7f6d-4ddc-ab26-5d71bd33b24b" />
 
-#### 5. Seleccionar un tema visual para el informe
-<img width="2560" height="1238" alt="image" src="https://github.com/user-attachments/assets/77be2ab0-0f5d-49e0-842e-d6ae5585addb" />
+#### 5. Añade hallazgos desde la base de datos (+100 plantillas)
+<img width="2536" height="1232" alt="image" src="https://github.com/user-attachments/assets/67b406aa-6fbe-468e-8c6c-a8a7d5aaa310" />
 
-#### 6. Previsualizar informe y exportarlo cuando esté listo
-<img width="2560" height="1238" alt="image" src="https://github.com/user-attachments/assets/ecfa10b9-7ddf-49fc-8c0c-8eaa3de2ae74" />
+#### 6. Selecciona un tema visual para el informe
+<img width="2536" height="1236" alt="image" src="https://github.com/user-attachments/assets/19a860ea-1bff-4360-8ccf-9b6b4bffd74c" />
+
+#### 7. Previsualiza el informe y expórtalo cuando esté listo
+<img width="2534" height="1234" alt="image" src="https://github.com/user-attachments/assets/eaea1068-0f89-4b55-83a3-30e0446eef81" />
 
 ---
 
