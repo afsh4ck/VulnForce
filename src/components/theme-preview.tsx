@@ -7,6 +7,35 @@ import type { ReportTheme } from '@/lib/report-themes';
 
 type Variant = 'mini' | 'full';
 
+/**
+ * Extracto real del informe demo "Q3 Web App Pentest" (proj-1) para que el
+ * preview muestre contenido auténtico en vez de texto ficticio.
+ */
+const DEMO = {
+  kicker: 'Security Assessment Report',
+  title: 'Q3 Web App Pentest',
+  client: 'Hack The Box',
+  summary: { total: 2, critical: 1, high: 1 },
+  intro:
+    'This report details the findings of the penetration test conducted on Q3 Web App Pentest for Hack The Box. The assessment identified 2 vulnerabilities, including 1 critical and 1 high-risk finding.',
+  findings: [
+    {
+      title: 'SQL Injection on Login Form',
+      severity: 'Critical' as const,
+      body:
+        "The 'username' parameter of the login POST request to /auth/login is vulnerable. By submitting a crafted payload like ' OR '1'='1' --, an attacker can manipulate the backend SQL query and log in as an administrator.",
+      impact:
+        'Successful exploitation grants unauthorized access to the application, leading to full compromise and data exfiltration.',
+    },
+    {
+      title: 'Stored Cross-Site Scripting (XSS) in User Profile',
+      severity: 'High' as const,
+      body:
+        "The 'bio' field in the user profile does not sanitize input before storing and rendering it. A malicious script set as a biography executes when another user views the profile.",
+    },
+  ],
+} as const;
+
 interface ThemePreviewProps {
   theme: ReportTheme;
   mode?: 'light' | 'dark';
@@ -89,7 +118,7 @@ function SeverityChip({ label, kind }: { label: string; kind: 'critical' | 'high
   return <span className={`badge-sev ${kind}`}>{label}</span>;
 }
 
-function MiniPreview({ theme }: { theme: ReportTheme }) {
+function MiniPreview({ theme: _theme }: { theme: ReportTheme }) {
   return (
     <div style={{ display: 'flex', flexDirection: 'column' }}>
       <div
@@ -102,81 +131,84 @@ function MiniPreview({ theme }: { theme: ReportTheme }) {
         }}
       >
         <p style={{ color: 'hsl(var(--brand))', fontSize: '0.55rem', fontWeight: 700, letterSpacing: '0.18em', textTransform: 'uppercase', margin: 0 }}>
-          Security Report
+          {DEMO.kicker}
         </p>
         <h2
           className="cover-title"
           style={{ fontFamily: 'var(--report-font-headline)', fontSize: '1.15rem', margin: '0.35rem 0 0.2rem', color: 'hsl(var(--foreground))', fontWeight: 700, letterSpacing: '-0.01em' }}
         >
-          {theme.name}
+          {DEMO.title}
         </h2>
         <p style={{ margin: 0, color: 'hsl(var(--muted-foreground))', fontSize: '0.7rem' }}>
-          ACME Corp
+          {DEMO.client}
         </p>
         <div style={{ display: 'flex', gap: '0.4rem', marginTop: '0.7rem' }}>
           <SeverityChip label="Critical" kind="critical" />
           <SeverityChip label="High" kind="high" />
         </div>
       </div>
-      <div style={{ padding: '0.75rem 1.2rem 1rem', display: 'grid', gap: '0.45rem' }}>
-        <div
+      <div style={{ padding: '0.8rem 1.2rem 1rem' }}>
+        <h3
+          style={{ fontFamily: 'var(--report-font-headline)', fontSize: '0.8rem', margin: 0, color: 'hsl(var(--foreground))', fontWeight: 700 }}
+        >
+          {DEMO.findings[0].title}
+        </h3>
+        <p
           style={{
-            height: 6,
-            background: 'hsl(var(--brand))',
-            width: '40%',
-            borderRadius: 3,
+            margin: '0.35rem 0 0',
+            color: 'hsl(var(--muted-foreground))',
+            fontSize: '0.62rem',
+            lineHeight: 1.5,
+            display: '-webkit-box',
+            WebkitLineClamp: 3,
+            WebkitBoxOrient: 'vertical',
+            overflow: 'hidden',
           }}
-        />
-        <div style={{ height: 4, background: 'hsl(var(--muted))', width: '90%', borderRadius: 2 }} />
-        <div style={{ height: 4, background: 'hsl(var(--muted))', width: '78%', borderRadius: 2 }} />
-        <div style={{ height: 4, background: 'hsl(var(--muted))', width: '85%', borderRadius: 2 }} />
+        >
+          {DEMO.findings[0].body}
+        </p>
       </div>
     </div>
   );
 }
 
-function FullPreview({ theme }: { theme: ReportTheme }) {
+function FullPreview({ theme: _theme }: { theme: ReportTheme }) {
   return (
     <div style={{ display: 'grid', gridTemplateColumns: 'minmax(0, 1fr) 200px', gap: '0.75rem', padding: '0.75rem', background: 'hsl(var(--background))' }}>
       <div className="report-main" style={{ background: 'hsl(var(--card))' }}>
         <div className="report-cover" style={{ padding: '1.4rem 1.5rem', minHeight: 0, borderBottom: '1px solid hsl(var(--border))', position: 'relative' }}>
           <p style={{ color: 'hsl(var(--brand))', fontSize: '0.65rem', fontWeight: 700, letterSpacing: '0.18em', textTransform: 'uppercase', margin: 0 }}>
-            Security Assessment Report
+            {DEMO.kicker}
           </p>
-          <h1 className="cover-title" style={{ margin: '0.4rem 0 0.3rem' }}>{theme.name}</h1>
-          <p style={{ color: 'hsl(var(--muted-foreground))', margin: 0, fontSize: '0.85rem' }}>ACME Corp</p>
+          <h1 className="cover-title" style={{ margin: '0.4rem 0 0.3rem' }}>{DEMO.title}</h1>
+          <p style={{ color: 'hsl(var(--muted-foreground))', margin: 0, fontSize: '0.85rem' }}>{DEMO.client}</p>
           <div className="hero-summary-row" style={{ marginTop: '1rem' }}>
-            <div className="hero-summary-cell is-total"><p className="hero-label">Total</p><p className="hero-value">12</p></div>
-            <div className="hero-summary-cell sev-critical-cell"><p className="hero-label">Critical</p><p className="hero-value">2</p></div>
-            <div className="hero-summary-cell sev-high-cell"><p className="hero-label">High</p><p className="hero-value">4</p></div>
+            <div className="hero-summary-cell is-total"><p className="hero-label">Total</p><p className="hero-value">{DEMO.summary.total}</p></div>
+            <div className="hero-summary-cell sev-critical-cell"><p className="hero-label">Critical</p><p className="hero-value">{DEMO.summary.critical}</p></div>
+            <div className="hero-summary-cell sev-high-cell"><p className="hero-label">High</p><p className="hero-value">{DEMO.summary.high}</p></div>
           </div>
         </div>
         <div className="report-page prose" style={{ padding: '1rem 1.4rem' }}>
-          <h2>SQL Injection in /login</h2>
-          <p>
-            The login endpoint concatenates user input directly into a query, allowing
-            an attacker to bypass authentication and exfiltrate data.
-          </p>
-          <SeverityChip label="High" kind="high" />
+          <h2>Executive Summary</h2>
+          <p>{DEMO.intro}</p>
+          <h2>{DEMO.findings[0].title}</h2>
+          <p>{DEMO.findings[0].body}</p>
+          <SeverityChip label="Critical" kind="critical" />
           <blockquote>
-            <strong>Recommendation:</strong> use parameterised queries and validate
-            input on the server.
+            <strong>Impact:</strong> {DEMO.findings[0].impact}
           </blockquote>
-          <h2>Insecure CORS Policy</h2>
-          <p>
-            The API accepts any origin via a wildcard CORS header, exposing endpoints
-            to cross-site requests.
-          </p>
-          <SeverityChip label="Medium" kind="medium" />
+          <h2>{DEMO.findings[1].title}</h2>
+          <p>{DEMO.findings[1].body}</p>
+          <SeverityChip label="High" kind="high" />
         </div>
       </div>
       <aside className="sidebar-panel" style={{ alignSelf: 'flex-start' }}>
         <h3 className="sidebar-heading">Contents</h3>
         <ul className="toc-list">
           <li className="toc-level-1"><a className="is-active" href="#a">Executive Summary</a></li>
-          <li className="toc-level-2 toc-vuln"><a href="#b">SQL Injection</a></li>
-          <li className="toc-level-2 toc-vuln"><a href="#c">Insecure CORS</a></li>
-          <li className="toc-level-3"><a href="#d">Detail</a></li>
+          <li className="toc-level-2 toc-vuln"><a href="#b">SQL Injection on Login Form</a></li>
+          <li className="toc-level-2 toc-vuln"><a href="#c">Stored XSS in User Profile</a></li>
+          <li className="toc-level-3"><a href="#d">Technical Description</a></li>
         </ul>
       </aside>
     </div>

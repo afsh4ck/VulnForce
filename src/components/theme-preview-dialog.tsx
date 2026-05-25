@@ -28,10 +28,10 @@ export function ThemePreviewDialog({ open, onOpenChange, theme }: ThemePreviewDi
     es: { title: 'Previsualización del tema', description: 'Previsualización realista del aspecto del reporte con este tema.', light: 'Claro', dark: 'Oscuro' },
   };
   const supportsBoth = theme?.modes !== 'light' && theme?.modes !== 'dark';
-  const initialMode: 'light' | 'dark' = theme?.modes === 'dark' ? 'dark' : 'light';
+  const initialMode: 'light' | 'dark' = theme?.modes === 'light' ? 'light' : 'dark';
   const [mode, setMode] = React.useState<'light' | 'dark'>(initialMode);
   React.useEffect(() => {
-    if (theme) setMode(theme.modes === 'dark' ? 'dark' : 'light');
+    if (theme) setMode(theme.modes === 'light' ? 'light' : 'dark');
   }, [theme]);
 
   if (!theme) return null;

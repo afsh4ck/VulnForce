@@ -5,6 +5,7 @@ import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { useData } from '@/context/data-context';
 import { useLanguage } from '@/context/language-context';
+import { useTheme } from '@/context/theme-context';
 import { useToast } from '@/hooks/use-toast';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -102,6 +103,7 @@ function exportThemeFile(theme: ReportTheme) {
 export default function ThemesPage() {
   const router = useRouter();
   const { language } = useLanguage();
+  const { theme: appMode } = useTheme();
   const { toast } = useToast();
   const t = T[language];
   const {
@@ -217,6 +219,8 @@ export default function ThemesPage() {
         {themes.map((theme) => {
           const builtin = isBuiltinThemeId(theme.id);
           const isActive = theme.id === activeThemeId;
+          const miniMode: 'light' | 'dark' =
+            theme.modes === 'light' ? 'light' : theme.modes === 'dark' ? 'dark' : appMode;
           return (
             <Card key={theme.id} className="overflow-hidden flex flex-col rounded-xl">
               <button
@@ -226,7 +230,7 @@ export default function ThemesPage() {
                 aria-label={t.preview}
               >
                 <div className="overflow-hidden rounded-t-xl">
-                  <ThemePreview theme={theme} mode="light" variant="mini" />
+                  <ThemePreview theme={theme} mode={miniMode} variant="mini" />
                 </div>
               </button>
               <CardContent className="p-4 flex flex-col gap-3 flex-1">

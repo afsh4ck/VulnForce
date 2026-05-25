@@ -62,6 +62,7 @@ export const CURATED_FONTS: CuratedFont[] = [
   sans('Geist'),
   // Serif
   serif('Spectral'),
+  serif('DM Serif Display', 'DM+Serif+Display:ital@0;1'),
   serif('Merriweather', 'Merriweather:wght@400;700;900'),
   serif('Lora'),
   serif('Source Serif 4'),

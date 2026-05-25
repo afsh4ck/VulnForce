@@ -381,7 +381,7 @@ const CARBON: ReportTheme = {
 const SUNRISE: ReportTheme = {
   id: 'builtin-sunrise',
   name: 'Sunrise',
-  description: 'Paleta cálida con serifa Spectral. Ideal para informes ejecutivos.',
+  description: 'Paleta cálida con titulares DM Serif Display. Ideal para informes ejecutivos.',
   author: 'VulnForce',
   modes: 'both',
   version: '1.0.0',
@@ -426,7 +426,7 @@ const SUNRISE: ReportTheme = {
     surfaceCardStrongBorder: '24 18% 24%',
   },
   typography: {
-    familyHeadline: 'Spectral',
+    familyHeadline: 'DM Serif Display',
     familyBody: 'Source Sans 3',
     familyMono: 'Source Code Pro',
     baseSize: 16,
