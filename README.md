@@ -2,7 +2,7 @@
 
 🚀 VulnForce es una aplicación web autoalojada para gestionar proyectos de pentesting, hallazgos y reportes profesionales. Editor por bloques con previsualización en vivo, sistema de temas para reportes y exportación a HTML, PDF y Markdown.
 
-<img width="3450" height="1892" alt="image" src="https://github.com/user-attachments/assets/4e8c1004-879e-4299-818c-726bbabdb54c" />
+<img width="2560" height="1238" alt="image" src="https://github.com/user-attachments/assets/be354022-2ca9-4155-9484-4dafee4d2b27" />
 
 ## Características
 
@@ -20,21 +20,27 @@
 ## Flujo de trabajo
 
 1. Crear un cliente e introducir sus datos.
-<img width="3450" height="1206" alt="image" src="https://github.com/user-attachments/assets/f6649aa0-ee3d-4d10-8255-41cfd2fd4264" />
+<img width="2560" height="1238" alt="image" src="https://github.com/user-attachments/assets/d37f143d-9379-4a79-bf33-a76f6b3dc665" />
 
 2. Crear un proyecto y asociarlo a un cliente.
-<img width="2504" height="1606" alt="image" src="https://github.com/user-attachments/assets/d151bb0e-e3c1-48bd-a046-5ed0b45f3073" />
+<img width="2560" height="1238" alt="image" src="https://github.com/user-attachments/assets/e050edc9-65eb-4a86-be17-b35758b2d654" />
 
 3. Importar una plantilla de proyecto o de vulnerabilidad.
-<img width="3344" height="1326" alt="image" src="https://github.com/user-attachments/assets/d35c06b2-e1cf-45f8-b272-639f20e8336e" />
+<img width="2560" height="1238" alt="image" src="https://github.com/user-attachments/assets/e9e9f59c-a1b6-45dc-8129-b387f1cd2eee" />
 
 4. Escribir contenido y marcar pendientes con `TODO` (se resaltan y vinculan).
-<img width="2918" height="838" alt="image" src="https://github.com/user-attachments/assets/b07a2bc0-8af6-40ae-8dfb-e489c2a5ff24" />
+<img width="2560" height="1238" alt="image" src="https://github.com/user-attachments/assets/1ebddbc2-291c-4450-9ba5-9da4fb9bbc41" />
 
-5. Revisar en la previsualización HTML y exportar cuando esté listo.
-<img width="3364" height="1772" alt="image" src="https://github.com/user-attachments/assets/bffdf8f1-323a-4f3f-af96-a45351759dd7" />
+5. Seleccionar un tema visual para el informe
+<img width="2560" height="1238" alt="image" src="https://github.com/user-attachments/assets/77be2ab0-0f5d-49e0-842e-d6ae5585addb" />
+
+6. Previsualizar informe y exportarlo cuando esté listo
+<img width="2560" height="1238" alt="image" src="https://github.com/user-attachments/assets/ecfa10b9-7ddf-49fc-8c0c-8eaa3de2ae74" />
+
+---
 
 ## Servidor MCP (IA)
+<img width="2560" height="1238" alt="image" src="https://github.com/user-attachments/assets/a2dd80b7-019a-4eaf-b167-665a26374d0b" />
 
 VulnForce expone su propio servidor [MCP](https://modelcontextprotocol.io) (igual que Figma) en `POST /api/mcp` (transporte Streamable HTTP). Cualquier cliente de IA puede conectarse y crear o editar informes mediante herramientas. La sección **MCP** del dashboard muestra el endpoint, un test de conexión y los snippets de configuración.
 
