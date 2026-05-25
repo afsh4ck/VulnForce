@@ -42,7 +42,7 @@
 ## Servidor MCP (IA)
 <img width="2560" height="1238" alt="image" src="https://github.com/user-attachments/assets/a2dd80b7-019a-4eaf-b167-665a26374d0b" />
 
-VulnForce expone su propio servidor [MCP](https://modelcontextprotocol.io) (igual que Figma) en `POST /api/mcp` (transporte Streamable HTTP). Cualquier cliente de IA puede conectarse y crear o editar informes mediante herramientas. La sección **MCP** del dashboard muestra el endpoint, un test de conexión y los snippets de configuración.
+VulnForce expone su propio servidor [MCP](https://modelcontextprotocol.io) en `POST /api/mcp`. Cualquier cliente de IA puede conectarse y crear o editar informes mediante herramientas. La sección **MCP** del dashboard muestra el endpoint, un test de conexión y los snippets de configuración.
 
 Conecta tu cliente al endpoint (en desarrollo, `http://localhost:9002/api/mcp`):
 
