@@ -205,12 +205,14 @@ export const REPORT_SHARED_CSS = `
     margin-top: 2.5rem;
   }
   .cover-meta-card {
-    background: hsl(var(--surface-card-strong));
-    color: hsl(var(--surface-card-strong-foreground));
+    background: hsl(var(--card) / 0.5);
+    color: hsl(var(--card-foreground));
     border-radius: 0.75rem;
     padding: 1rem 1.15rem;
-    border: 1px solid hsl(var(--surface-card-strong-border));
+    border: 1px solid hsl(var(--border) / 0.6);
     box-shadow: 0 6px 16px rgb(0 0 0 / 0.06);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
   }
   .cover-meta-label {
     font-size: 0.7rem;
@@ -237,15 +239,17 @@ export const REPORT_SHARED_CSS = `
   .hero-summary-cell {
     flex: 1 1 0;
     min-width: 0;
-    background: hsl(var(--card));
-    border: 1px solid hsl(var(--border));
+    background: hsl(var(--card) / 0.5);
+    border: 1px solid hsl(var(--border) / 0.6);
     border-radius: 0.75rem;
     padding: 1.1rem 1rem;
     text-align: left;
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
   }
   .hero-summary-cell.is-total {
-    border-color: hsl(var(--brand));
-    background: linear-gradient(180deg, hsl(var(--brand) / 0.08), hsl(var(--card)));
+    border-color: hsl(var(--brand) / 0.7);
+    background: linear-gradient(180deg, hsl(var(--brand) / 0.12), hsl(var(--card) / 0.5));
   }
   .hero-summary-cell.is-total .hero-value { color: hsl(var(--brand)); }
   .hero-label { color: hsl(var(--muted-foreground)); font-size: 0.85rem; margin: 0; }

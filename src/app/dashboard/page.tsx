@@ -12,6 +12,7 @@ import { Badge } from "@/components/ui/badge";
 import { formatDistanceToNow } from 'date-fns';
 import { es } from 'date-fns/locale';
 import { ProjectIcon, projectIconComponents } from "@/components/project-icon";
+import { getProjectStatusLabel, getProjectStatusVariant } from "@/lib/project-status";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 
 type SortKey = 'name' | 'clientName' | 'findingCount' | 'status' | 'updatedAt';
@@ -69,23 +70,8 @@ export default function DashboardPage() {
     return sortConfig.direction === 'ascending' ? ' ▲' : ' ▼';
   };
 
-  const getStatusVariant = (status: string) => {
-    switch (status) {
-      case 'In Progress': return 'default';
-      case 'Completed': return 'secondary';
-      case 'On Hold': return 'outline';
-      default: return 'secondary';
-    }
-  }
-
-  const getStatus = (status: string) => {
-    if (language === 'es') {
-      if (status === 'In Progress') return 'En Progreso';
-      if (status === 'Completed') return 'Completado';
-      if (status === 'On Hold') return 'En Espera';
-    }
-    return status;
-  }
+  const getStatusVariant = (status: string) => getProjectStatusVariant(status) as any;
+  const getStatus = (status: string) => getProjectStatusLabel(status, language as 'en' | 'es');
 
   const t = {
     en: {

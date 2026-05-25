@@ -6,7 +6,6 @@ import { Label } from "@/components/ui/label";
 import { useLanguage } from "@/context/language-context";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Combobox } from "@/components/ui/combobox";
-import { Textarea } from "@/components/ui/textarea";
 import { Calendar } from "@/components/ui/calendar";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { CalendarIcon, FilePlus2, PlusCircle } from "@/components/icons";
@@ -114,7 +113,6 @@ export function NewProjectDialog({ open, onOpenChange, onCreated }: NewProjectDi
     const newErrors: Record<string, boolean> = {};
     if (!name) newErrors.name = true;
     if (!clientId) newErrors.clientId = true;
-    if (!scope) newErrors.scope = true;
     if (!date?.from || !date?.to) newErrors.date = true;
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
@@ -278,6 +276,7 @@ export function NewProjectDialog({ open, onOpenChange, onCreated }: NewProjectDi
                 onSelect={handleTemplateChange}
                 placeholder={t[uiLanguage].selectTemplate}
                 searchPlaceholder={uiLanguage === 'es' ? 'Buscar plantillas...' : 'Search templates...'}
+                className="h-10 w-full justify-between rounded-md border border-input bg-background px-3 py-2 text-sm font-normal text-foreground hover:bg-background hover:text-foreground"
               />
             </div>
             <div className="space-y-2">
@@ -390,17 +389,6 @@ export function NewProjectDialog({ open, onOpenChange, onCreated }: NewProjectDi
                 </DialogFooter>
               </DialogContent>
             </Dialog>
-          </div>
-          <div className="space-y-2">
-            <Label htmlFor="scope">{t[uiLanguage].scopeLabel}</Label>
-            <Textarea
-              id="scope"
-              placeholder={t[uiLanguage].scopePlaceholder}
-              className={cn("font-code min-h-[120px]", errors.scope && 'border-destructive')}
-              value={scope}
-              onChange={e => setScope(e.target.value)}
-              required
-            />
           </div>
           <div className="space-y-2">
             <Label>{t[uiLanguage].datesLabel}</Label>

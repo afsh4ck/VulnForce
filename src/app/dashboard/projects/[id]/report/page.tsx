@@ -11,11 +11,14 @@ import {
   CheckCircle,
   ChevronLeft,
   ChevronRight,
+  ChevronDown,
   Printer,
   Globe,
   X,
   PanelLeft,
   FileText,
+  FileDown,
+  Palette,
   Sun,
   Moon,
 } from '@/components/icons';
@@ -28,6 +31,13 @@ import {
   DialogHeader,
   DialogTitle,
 } from '@/components/ui/dialog';
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from '@/components/ui/dropdown-menu';
+import { ThemePreview } from '@/components/theme-preview';
 import Link from 'next/link';
 import { useLanguage } from '@/context/language-context';
 import { useTheme } from '@/context/theme-context';
@@ -83,7 +93,7 @@ export default function ReportPreviewPage() {
   const { language: uiLanguage } = useLanguage();
   const { theme: appTheme } = useTheme();
   const { id: projectId } = params;
-  const { projects, clients, findings, getImage, getThemeById } = useData();
+  const { projects, clients, findings, getImage, getThemeById, getAllThemes, updateProject, activeThemeId } = useData();
   const { user } = useUser();
 
   const [project, setProject] = useState<Project | undefined>();
@@ -95,6 +105,7 @@ export default function ReportPreviewPage() {
   const [activeHeading, setActiveHeading] = useState<string>('');
   const [pdfDialogOpen, setPdfDialogOpen] = useState(false);
   const [pdfTheme, setPdfTheme] = useState<ReportTheme>((appTheme as ReportTheme) || 'dark');
+  const [themeDialogOpen, setThemeDialogOpen] = useState(false);
 
   const reportContentRef = useRef<HTMLDivElement>(null);
 
@@ -111,6 +122,11 @@ export default function ReportPreviewPage() {
         downloadPDF: 'Download PDF',
         downloadHTML: 'Download HTML',
         downloadMD: 'Download Markdown',
+        download: 'Download',
+        themeButton: 'Theme',
+        themeDialogTitle: 'Report theme',
+        themeDialogDesc: 'Choose the visual style for this report.',
+        current: 'Current',
         finding: 'Finding',
         backToProject: 'Back to Project',
         severity: 'Severity',
@@ -159,6 +175,11 @@ export default function ReportPreviewPage() {
         downloadPDF: 'Descargar PDF',
         downloadHTML: 'Descargar HTML',
         downloadMD: 'Descargar Markdown',
+        download: 'Descargar',
+        themeButton: 'Tema',
+        themeDialogTitle: 'Tema del informe',
+        themeDialogDesc: 'Elige el estilo visual de este informe.',
+        current: 'Actual',
         finding: 'Hallazgo',
         backToProject: 'Volver al Proyecto',
         severity: 'Severidad',
@@ -518,6 +539,12 @@ export default function ReportPreviewPage() {
     window.setTimeout(() => printWithTheme(pdfTheme), 100);
   };
 
+  const applyReportTheme = (themeId: string) => {
+    if (!project) return;
+    updateProject({ ...project, themeId });
+    setThemeDialogOpen(false);
+  };
+
   const handleDownloadHTML = useCallback(() => {
     if (!reportContentRef.current || !project || !client) return;
     const currentClient = client;
@@ -806,33 +833,36 @@ ${themeStyleBlock}</style>
             </Button>
             <Button
               variant="outline"
-              onClick={handleDownloadMarkdown}
-              className="h-9 px-3"
-              disabled={downloadDisabled}
-              title={downloadDisabled ? t[uiLanguage].downloadDisabledTitle : undefined}
-            >
-              <FileText className="mr-2 h-4 w-4" />
-              {t[uiLanguage].downloadMD}
-            </Button>
-            <Button
-              variant="outline"
-              onClick={handleDownloadHTML}
-              disabled={downloadDisabled}
-              title={downloadDisabled ? t[uiLanguage].downloadDisabledTitle : undefined}
+              onClick={() => setThemeDialogOpen(true)}
               className="h-9 px-3"
             >
-              <Globe className="mr-2 h-4 w-4" />
-              {t[uiLanguage].downloadHTML}
+              <Palette className="mr-2 h-4 w-4" />
+              {t[uiLanguage].themeButton}
             </Button>
-            <Button
-              onClick={openPdfDialog}
-              disabled={downloadDisabled}
-              title={downloadDisabled ? t[uiLanguage].downloadDisabledTitle : undefined}
-              className="h-9 px-3"
-            >
-              <Printer className="mr-2 h-4 w-4" />
-              {t[uiLanguage].downloadPDF}
-            </Button>
+            <DropdownMenu modal={false}>
+              <DropdownMenuTrigger asChild>
+                <Button
+                  disabled={downloadDisabled}
+                  title={downloadDisabled ? t[uiLanguage].downloadDisabledTitle : undefined}
+                  className="h-9 px-3"
+                >
+                  <FileDown className="mr-2 h-4 w-4" />
+                  {t[uiLanguage].download}
+                  <ChevronDown className="ml-2 h-4 w-4 opacity-70" />
+                </Button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent align="end">
+                <DropdownMenuItem onClick={openPdfDialog}>
+                  <Printer className="mr-2 h-4 w-4" /> PDF
+                </DropdownMenuItem>
+                <DropdownMenuItem onClick={handleDownloadHTML}>
+                  <Globe className="mr-2 h-4 w-4" /> HTML
+                </DropdownMenuItem>
+                <DropdownMenuItem onClick={handleDownloadMarkdown}>
+                  <FileText className="mr-2 h-4 w-4" /> Markdown
+                </DropdownMenuItem>
+              </DropdownMenuContent>
+            </DropdownMenu>
           </div>
         </div>
       </header>
@@ -1091,6 +1121,37 @@ ${themeStyleBlock}</style>
               {langT.export}
             </Button>
           </DialogFooter>
+        </DialogContent>
+      </Dialog>
+
+      <Dialog open={themeDialogOpen} onOpenChange={setThemeDialogOpen}>
+        <DialogContent className="sm:max-w-3xl max-h-[85vh] overflow-y-auto">
+          <DialogHeader>
+            <DialogTitle>{langT.themeDialogTitle}</DialogTitle>
+            <DialogDescription>{langT.themeDialogDesc}</DialogDescription>
+          </DialogHeader>
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-2">
+            {getAllThemes().map((th) => {
+              const selected = (project.themeId || activeThemeId) === th.id;
+              return (
+                <button
+                  key={th.id}
+                  type="button"
+                  onClick={() => applyReportTheme(th.id)}
+                  className={cn(
+                    'rounded-lg border-2 p-2 text-left transition-colors',
+                    selected ? 'border-primary bg-primary/5' : 'border-border hover:border-primary/40',
+                  )}
+                >
+                  <ThemePreview theme={th} mode={(appTheme as 'light' | 'dark') || 'dark'} variant="mini" />
+                  <div className="mt-2 flex items-center justify-between gap-2 px-1">
+                    <span className="font-medium truncate">{th.name}</span>
+                    {selected && <span className="text-xs font-semibold text-primary">{langT.current}</span>}
+                  </div>
+                </button>
+              );
+            })}
+          </div>
         </DialogContent>
       </Dialog>
     </div>

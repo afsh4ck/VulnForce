@@ -15,7 +15,7 @@ const T = {
   en: {
     title: 'MCP Server',
     subtitle:
-      'VulnForce exposes its own MCP server. Connect any AI client (Claude, Cursor, Claude Code…) and let it create and edit your reports through tools.',
+      'VulnForce exposes its own MCP server. Connect any AI client (Claude, Cursor, Codex, Gemini…) and let it create and edit your reports through tools.',
     endpoint: 'Server endpoint',
     test: 'Test connection',
     testing: 'Testing…',
@@ -45,7 +45,7 @@ const T = {
   es: {
     title: 'Servidor MCP',
     subtitle:
-      'VulnForce expone su propio servidor MCP. Conecta cualquier cliente de IA (Claude, Cursor, Claude Code…) y deja que cree y edite tus informes mediante herramientas.',
+      'VulnForce expone su propio servidor MCP. Conecta cualquier cliente de IA (Claude, Cursor, Codex, Gemini…) y deja que cree y edite tus informes mediante herramientas.',
     endpoint: 'Endpoint del servidor',
     test: 'Probar conexión',
     testing: 'Probando…',
