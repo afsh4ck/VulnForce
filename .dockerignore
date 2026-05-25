@@ -1,5 +1,4 @@
 .git
-.idx
 .next
 .next/**/*
 .pnpm-store
