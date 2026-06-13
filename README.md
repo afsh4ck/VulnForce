@@ -2,7 +2,7 @@
 
 🚀 VulnForce es una aplicación web autoalojada para gestionar proyectos de pentesting, hallazgos y reportes profesionales. Editor por bloques con previsualización en vivo, sistema de temas para reportes y exportación a HTML, PDF y Markdown.
 
-<img width="2560" height="1238" alt="image" src="https://github.com/user-attachments/assets/9b9d3e78-3406-4d32-82ef-5c4de4daebc4" />
+<img width="2880" height="1622" alt="vulnforce-banner" src="https://github.com/user-attachments/assets/adc4cc6a-b808-447d-8368-e0a756de01ac" />
 
 ## Características
 
