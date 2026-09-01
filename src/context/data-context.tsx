@@ -39,7 +39,7 @@ function refreshBuiltInTemplates(current: ProjectTemplate[]): ProjectTemplate[] 
 
 // Sube este número cuando cambien los proyectos/clientes de muestra del seed y
 // quieras que lleguen a instalaciones con estado ya persistido.
-const SEED_MIGRATION_VERSION = 2;
+const SEED_MIGRATION_VERSION = 3;
 
 // Proyectos de muestra retirados del seed que deben eliminarse del estado.
 const RETIRED_SAMPLE_PROJECT_IDS = ['proj-htb-imagery'];
@@ -49,6 +49,20 @@ function withSeedItems<T extends { id: string }>(current: T[], seed: T[]): T[] {
     const known = new Set(current.map(item => item.id));
     const missing = seed.filter(item => !known.has(item.id));
     return missing.length ? [...current, ...missing] : current;
+}
+
+// Actualiza exclusivamente los logos de los clientes de demostración. Así las
+// instalaciones ya existentes reciben los nuevos PNG sin alterar sus clientes.
+function refreshSampleClientLogos(current: Client[]): Client[] {
+    const logos = new Map(
+        initialClients
+            .filter(client => client.id === 'cli-h4ck' || client.id === 'cli-trilocor')
+            .map(client => [client.id, client.logoUrl]),
+    );
+    return current.map(client => {
+        const logoUrl = logos.get(client.id);
+        return logoUrl ? { ...client, logoUrl } : client;
+    });
 }
 type PersistedStateShape = {
     clients?: Client[];
@@ -215,7 +229,7 @@ export function DataProvider({ children }: { children: ReactNode }) {
             );
             return withSeedItems(cleaned, seedSampleProjects);
         });
-        setClients(prev => withSeedItems(prev, initialClients.filter(c => c.id === 'cli-trilocor')));
+        setClients(prev => refreshSampleClientLogos(withSeedItems(prev, initialClients)));
         setImages(prev => withSeedItems(prev, initialImages));
         setSeedMigration(SEED_MIGRATION_VERSION);
     // eslint-disable-next-line react-hooks/exhaustive-deps
