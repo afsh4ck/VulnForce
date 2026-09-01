@@ -278,76 +278,312 @@ La evaluación se realizó entre el **{{project.startDate}}** y el **{{project.e
     id: 'ptpl-4',
     name_en: 'Certification Report',
     name_es: 'Informe de Certificación',
-    description_en: 'A generic and professional template for offensive security certification reports (e.g., OSCP, CPTS). Includes all necessary sections for a complete report.',
-    description_es: 'Una plantilla genérica y profesional para informes de certificaciones de seguridad ofensiva (p. ej., OSCP, CPTS). Incluye todas las secciones necesarias para un informe completo.',
+    description_en: 'Certification exam report mirroring the official HTB CPTS SysReptor design: executive summary, approach, scope, assessment overview, network pentest summary, compromise walkthrough, remediation summary and appendices (host/service discovery, exploited hosts, compromised users, flags).',
+    description_es: 'Informe de examen de certificación que replica el design oficial HTB CPTS de SysReptor: resumen ejecutivo, enfoque, alcance, visión general, resumen del pentest de red, walkthrough de compromiso, resumen de remediación y apéndices (descubrimiento de hosts/servicios, hosts explotados, usuarios comprometidos, flags).',
     icon: 'Award',
-    scope_en: `# Introduction
+    scope_en: `# Executive Summary
 
-This report documents the practical examination performed during the **[TODO: Certification Name]** exam. The objective was to assess the security posture of the provided lab environment by identifying and exploiting vulnerabilities to gain unauthorized access to target systems.
+{{client.name}} contracted {{pentester.name}} to perform a penetration test of {{client.name}}'s network to identify security weaknesses, determine the impact to {{client.name}}, document all findings in a clear and repeatable manner, and provide remediation recommendations.
 
-# Objective
+This report is submitted as part of the **[TODO: Certification Name]** certification exam and documents the assessment methodology, the attack path taken to compromise the target environment, and the findings identified along the way.
 
-Perform a full-scope penetration test, demonstrating exploitation, privilege escalation and post-exploitation in the exam lab. Capture and document every flag required by the certification.
+# Approach
+
+{{pentester.name}} performed testing under a **[TODO: Black Box / Grey Box / White Box]** approach from {{project.startDate}} to {{project.endDate}} without advance knowledge of {{client.name}}'s environment, with the goal of identifying unknown weaknesses. Testing was performed from a non-evasive standpoint with the goal of uncovering as many misconfigurations and vulnerabilities as possible.
+
+Each weakness identified was documented and manually investigated to determine exploitation possibilities and escalation potential. {{pentester.name}} sought to demonstrate the full impact of every vulnerability, up to and including full domain compromise. Where a foothold was obtained, further testing including lateral movement and horizontal and vertical privilege escalation was performed to demonstrate the impact of an internal network compromise.
 
 # Scope
 
-- **Target network:** [TODO: e.g. 10.10.10.0/24]
-- **Exam window:** {{project.startDate}} → {{project.endDate}}
-- **Out of scope:** Exam infrastructure and any system outside the assigned range.
+The scope of this assessment was the target network range(s) assigned for the exam and any hosts or Active Directory domains discovered to be in scope during testing.
 
-# Methodology
+## In Scope Assets
 
-1. Enumeration and information gathering.
-2. Vulnerability research and exploitation.
-3. Local enumeration and privilege escalation.
-4. Lateral movement when applicable.
-5. Proof of access (flag collection) and screenshots.
+| Host / URL / IP Address | Description |
+|:---|:---|
+| [TODO: 10.129.X.X] | [TODO: External target] |
+| [TODO: 172.16.X.0/24] | [TODO: Internal network range] |
+| [TODO: domain.local] | [TODO: Active Directory domain] |
 
-# Findings Summary
+# Assessment Overview and Recommendations
+
+During the penetration test against {{client.name}}, {{pentester.name}} identified {{vulnerabilities.count}} findings that threaten the confidentiality, integrity, and availability of {{client.name}}'s information systems. The findings were categorized by severity level: {{vulnerabilities.critical}} critical, {{vulnerabilities.high}} high, {{vulnerabilities.medium}} medium, {{vulnerabilities.low}} low, and {{vulnerabilities.informational}} informational.
+
+[TODO: Executive-level narrative summarizing the overall security posture, the most significant risks, and their business impact.]
+
+{{client.name}} should create a remediation plan based on the Remediation Summary section of this report, addressing all critical and high findings as soon as possible according to the needs of the business. {{client.name}} should also consider performing periodic vulnerability assessments if they are not already being performed.
+
+# Network Penetration Test Assessment Summary
+
+This section summarizes the testing perspective and the findings identified during the network penetration test.
+
+## Network Summary
+
+{{pentester.name}} began all testing activities from the perspective of an unauthenticated user on the network. {{client.name}} provided network ranges but did not provide additional information such as operating system, credentials, or configuration details.
+
+## Summary of Findings
+
+During the course of testing, {{pentester.name}} uncovered a total of {{vulnerabilities.count}} findings that pose a material risk to {{client.name}}'s information systems. Informational findings are observations for areas of improvement and do not represent security vulnerabilities on their own. The table below summarizes the findings; full technical details for each are provided in the Findings section.
 
 {{findings.table}}
+
+# Internal Network Compromise Walkthrough
+
+This section describes the end-to-end attack path used to compromise the environment.
+
+## Walkthrough Summary
+
+During the assessment {{pentester.name}} was able to gain a foothold, move laterally, and compromise the environment, leading to full administrative control over the [TODO: domain.local] domain. The steps below demonstrate the path taken from initial access to compromise and do not include every vulnerability discovered. Issues not used as part of the path to compromise are listed as standalone findings in the Findings section, ranked by severity.
+
+## Detailed Walkthrough
+
+{{pentester.name}} performed the following to fully compromise the [TODO: domain.local] domain:
+
+1. [TODO: High-level step 1]
+2. [TODO: High-level step 2]
+3. [TODO: High-level step 3]
+
+**Detailed reproduction steps:**
+
+[TODO: Fill in the detailed attack chain with commands, screenshots, and evidence for each step above.]
+
+# Remediation Summary
+
+As a result of this assessment there are several opportunities for {{client.name}} to strengthen its network security. Remediation efforts are prioritized below, starting with those that will likely take the least amount of time and effort to complete. All remediation steps should be carefully planned and tested to prevent service disruption or data loss.
+
+## Short Term
+
+- [TODO: Finding reference] - [TODO: Short-term remediation action]
+- [TODO: Finding reference] - [TODO: Short-term remediation action]
+
+## Medium Term
+
+- [TODO: Finding reference] - [TODO: Medium-term remediation action]
+- [TODO: Finding reference] - [TODO: Medium-term remediation action]
+
+## Long Term
+
+- Perform ongoing internal network vulnerability assessments and password audits.
+- Perform periodic Active Directory security assessments.
+- Educate systems, network administrators, and developers on security hardening best practices.
+- Enhance network segmentation to isolate critical hosts and limit the effect of an internal compromise.
+- [TODO: Additional long-term recommendation]
 `,
     appendix_en: `# Appendix
 
-## Flag Collection
+The following supporting information was collected during the assessment.
 
-| Hostname / IP | Location | Value |
-|---|---|---|
-| [TODO: Hostname/IP] | [TODO: e.g. /root/proof.txt] | [TODO: Flag value] |
+## Finding Severities
+
+Each finding is assigned a severity rating of critical, high, medium, low, or informational. The rating is based on the priority with which each finding should be addressed and the potential impact each has on the confidentiality, integrity, and availability of {{client.name}}'s data.
+
+| Rating | CVSS Score Range |
+|:---|:---|
+| Critical | 9.0 – 10.0 |
+| High | 7.0 – 8.9 |
+| Medium | 4.0 – 6.9 |
+| Low | 0.1 – 3.9 |
+| Informational | 0.0 |
+
+## Host and Service Discovery
+
+| IP Address | Port | Service | Notes |
+|:---|:---|:---|:---|
+| [TODO: IP] | [TODO: Port] | [TODO: Service] | [TODO: Notes] |
+
+## Subdomain Discovery
+
+| URL | Description | Discovery Method |
+|:---|:---|:---|
+| [TODO: Subdomain or VHost] | [TODO: Description] | [TODO: Method] |
+
+## Exploited Hosts
+
+| Host | Scope | Method | Notes |
+|:---|:---|:---|:---|
+| [TODO: Host] | [TODO: Scope] | [TODO: Method] | [TODO: Notes] |
+
+## Compromised Users
+
+| Username | Type | Method | Notes |
+|:---|:---|:---|:---|
+| [TODO: Username] | [TODO: Type] | [TODO: Method] | [TODO: Notes] |
+
+## Changes and Host Cleanup
+
+| Host | Scope | Change or Cleanup Needed |
+|:---|:---|:---|
+| [TODO: Host] | [TODO: Scope] | [TODO: Change or cleanup performed] |
+
+## Flags Discovered
+
+| Flag # | Host | Flag Value | Flag Location | Method Used |
+|:---|:---|:---|:---|:---|
+| 1 | [TODO: Hostname] | [TODO: Flag value] | [TODO: Location] | [TODO: Method] |
+| 2 | | | | |
+| 3 | | | | |
+| 4 | | | | |
+| 5 | | | | |
+| 6 | | | | |
+| 7 | | | | |
+| 8 | | | | |
+| 9 | | | | |
+| 10 | | | | |
+| 11 | | | | |
+| 12 | | | | |
+| 13 | | | | |
 `,
-    scope_es: `# Introducción
+    scope_es: `# Resumen Ejecutivo
 
-Este informe documenta el examen práctico realizado durante la certificación **[TODO: Nombre de la Certificación]**. El objetivo fue evaluar la postura de seguridad del entorno de laboratorio identificando y explotando vulnerabilidades para obtener acceso no autorizado a los sistemas objetivo.
+{{client.name}} contrató a {{pentester.name}} para realizar una prueba de penetración sobre la red de {{client.name}} con el fin de identificar debilidades de seguridad, determinar su impacto para {{client.name}}, documentar todos los hallazgos de forma clara y reproducible, y proporcionar recomendaciones de remediación.
 
-# Objetivo
+Este informe se presenta como parte del examen de certificación **[TODO: Nombre de la Certificación]** y documenta la metodología de la evaluación, la cadena de ataque utilizada para comprometer el entorno objetivo y los hallazgos identificados durante el proceso.
 
-Realizar una prueba de penetración completa, demostrando explotación, escalada de privilegios y post-explotación en el laboratorio. Capturar y documentar todas las flags requeridas por la certificación.
+# Enfoque
+
+{{pentester.name}} realizó las pruebas bajo un enfoque **[TODO: Caja Negra / Caja Gris / Caja Blanca]** desde {{project.startDate}} hasta {{project.endDate}}, sin conocimiento previo del entorno de {{client.name}}, con el objetivo de identificar debilidades desconocidas. Las pruebas se realizaron de forma no evasiva, buscando descubrir el mayor número posible de configuraciones incorrectas y vulnerabilidades.
+
+Cada debilidad identificada fue documentada e investigada manualmente para determinar las posibilidades de explotación y el potencial de escalada. {{pentester.name}} buscó demostrar el impacto completo de cada vulnerabilidad, hasta el compromiso total del dominio. Cuando se obtuvo un punto de apoyo, se realizaron pruebas adicionales de movimiento lateral y escalada de privilegios horizontal y vertical para demostrar el impacto de un compromiso de la red interna.
 
 # Alcance
 
-- **Red objetivo:** [TODO: p. ej. 10.10.10.0/24]
-- **Ventana del examen:** {{project.startDate}} → {{project.endDate}}
-- **Fuera de alcance:** Infraestructura del examen y cualquier sistema fuera del rango asignado.
+El alcance de esta evaluación fueron los rangos de red objetivo asignados para el examen y cualquier host o dominio de Active Directory que se determinara dentro del alcance durante las pruebas.
 
-# Metodología
+## Activos en Alcance
 
-1. Enumeración y recopilación de información.
-2. Investigación y explotación de vulnerabilidades.
-3. Enumeración local y escalada de privilegios.
-4. Movimiento lateral cuando aplique.
-5. Pruebas de acceso (recogida de flags) y capturas.
+| Host / URL / Dirección IP | Descripción |
+|:---|:---|
+| [TODO: 10.129.X.X] | [TODO: Objetivo externo] |
+| [TODO: 172.16.X.0/24] | [TODO: Rango de red interna] |
+| [TODO: domain.local] | [TODO: Dominio de Active Directory] |
 
-# Resumen de Hallazgos
+# Visión General y Recomendaciones
+
+Durante la prueba de penetración contra {{client.name}}, {{pentester.name}} identificó {{vulnerabilities.count}} hallazgos que amenazan la confidencialidad, integridad y disponibilidad de los sistemas de información de {{client.name}}. Los hallazgos se clasificaron por nivel de severidad: {{vulnerabilities.critical}} críticos, {{vulnerabilities.high}} altos, {{vulnerabilities.medium}} medios, {{vulnerabilities.low}} bajos y {{vulnerabilities.informational}} informativos.
+
+[TODO: Narrativa a nivel ejecutivo que resuma la postura de seguridad general, los riesgos más significativos y su impacto de negocio.]
+
+{{client.name}} debería elaborar un plan de remediación basado en la sección Resumen de Remediación de este informe, abordando todos los hallazgos críticos y altos lo antes posible según las necesidades del negocio. {{client.name}} también debería considerar la realización de evaluaciones de vulnerabilidades periódicas si aún no se llevan a cabo.
+
+# Resumen del Pentest de Red
+
+Esta sección resume la perspectiva de las pruebas y los hallazgos identificados durante la prueba de penetración de red.
+
+## Resumen de Red
+
+{{pentester.name}} inició todas las actividades de prueba desde la perspectiva de un usuario no autenticado en la red. {{client.name}} proporcionó los rangos de red pero no información adicional como sistema operativo, credenciales o detalles de configuración.
+
+## Resumen de Hallazgos
+
+Durante las pruebas, {{pentester.name}} descubrió un total de {{vulnerabilities.count}} hallazgos que suponen un riesgo material para los sistemas de información de {{client.name}}. Los hallazgos informativos son observaciones sobre áreas de mejora y no representan vulnerabilidades de seguridad por sí mismos. La siguiente tabla resume los hallazgos; los detalles técnicos completos de cada uno se encuentran en la sección Hallazgos.
 
 {{findings.table}}
+
+# Walkthrough del Compromiso de la Red Interna
+
+Esta sección describe la cadena de ataque completa utilizada para comprometer el entorno.
+
+## Resumen del Walkthrough
+
+Durante la evaluación, {{pentester.name}} logró obtener un punto de apoyo, moverse lateralmente y comprometer el entorno, alcanzando el control administrativo total sobre el dominio [TODO: domain.local]. Los pasos siguientes muestran la ruta seguida desde el acceso inicial hasta el compromiso y no incluyen todas las vulnerabilidades descubiertas. Los problemas no utilizados en la ruta de compromiso se listan como hallazgos independientes en la sección Hallazgos, ordenados por severidad.
+
+## Walkthrough Detallado
+
+{{pentester.name}} realizó lo siguiente para comprometer por completo el dominio [TODO: domain.local]:
+
+1. [TODO: Paso de alto nivel 1]
+2. [TODO: Paso de alto nivel 2]
+3. [TODO: Paso de alto nivel 3]
+
+**Pasos de reproducción detallados:**
+
+[TODO: Completar la cadena de ataque detallada con comandos, capturas y evidencias de cada paso anterior.]
+
+# Resumen de Remediación
+
+Como resultado de esta evaluación, existen varias oportunidades para que {{client.name}} refuerce la seguridad de su red. Los esfuerzos de remediación se priorizan a continuación, empezando por los que probablemente requieran menos tiempo y esfuerzo. Todos los pasos de remediación deben planificarse y probarse cuidadosamente para evitar interrupciones del servicio o pérdida de datos.
+
+## Corto Plazo
+
+- [TODO: Referencia al hallazgo] - [TODO: Acción de remediación a corto plazo]
+- [TODO: Referencia al hallazgo] - [TODO: Acción de remediación a corto plazo]
+
+## Medio Plazo
+
+- [TODO: Referencia al hallazgo] - [TODO: Acción de remediación a medio plazo]
+- [TODO: Referencia al hallazgo] - [TODO: Acción de remediación a medio plazo]
+
+## Largo Plazo
+
+- Realizar evaluaciones de vulnerabilidades y auditorías de contraseñas de la red interna de forma continua.
+- Realizar evaluaciones periódicas de seguridad de Active Directory.
+- Formar a administradores de sistemas y red y a desarrolladores en buenas prácticas de fortificación.
+- Mejorar la segmentación de red para aislar hosts críticos y limitar el efecto de un compromiso interno.
+- [TODO: Recomendación adicional a largo plazo]
 `,
     appendix_es: `# Apéndice
 
-## Recopilación de Flags
+La siguiente información de soporte se recopiló durante la evaluación.
 
-| Hostname / IP | Ubicación | Valor |
-|---|---|---|
-| [TODO: Hostname/IP] | [TODO: p. ej. /root/proof.txt] | [TODO: Valor de la flag] |
+## Severidad de los Hallazgos
+
+A cada hallazgo se le asigna una severidad de crítica, alta, media, baja o informativa. La valoración se basa en la prioridad con la que debe abordarse cada hallazgo y en el impacto potencial sobre la confidencialidad, integridad y disponibilidad de los datos de {{client.name}}.
+
+| Severidad | Rango CVSS |
+|:---|:---|
+| Crítica | 9.0 – 10.0 |
+| Alta | 7.0 – 8.9 |
+| Media | 4.0 – 6.9 |
+| Baja | 0.1 – 3.9 |
+| Informativa | 0.0 |
+
+## Descubrimiento de Hosts y Servicios
+
+| Dirección IP | Puerto | Servicio | Notas |
+|:---|:---|:---|:---|
+| [TODO: IP] | [TODO: Puerto] | [TODO: Servicio] | [TODO: Notas] |
+
+## Descubrimiento de Subdominios
+
+| URL | Descripción | Método de Descubrimiento |
+|:---|:---|:---|
+| [TODO: Subdominio o VHost] | [TODO: Descripción] | [TODO: Método] |
+
+## Hosts Explotados
+
+| Host | Alcance | Método | Notas |
+|:---|:---|:---|:---|
+| [TODO: Host] | [TODO: Alcance] | [TODO: Método] | [TODO: Notas] |
+
+## Usuarios Comprometidos
+
+| Usuario | Tipo | Método | Notas |
+|:---|:---|:---|:---|
+| [TODO: Usuario] | [TODO: Tipo] | [TODO: Método] | [TODO: Notas] |
+
+## Cambios y Limpieza de Hosts
+
+| Host | Alcance | Cambio o Limpieza Necesaria |
+|:---|:---|:---|
+| [TODO: Host] | [TODO: Alcance] | [TODO: Cambio o limpieza realizada] |
+
+## Flags Descubiertas
+
+| Flag # | Host | Valor de la Flag | Ubicación de la Flag | Método Utilizado |
+|:---|:---|:---|:---|:---|
+| 1 | [TODO: Hostname] | [TODO: Valor de la flag] | [TODO: Ubicación] | [TODO: Método] |
+| 2 | | | | |
+| 3 | | | | |
+| 4 | | | | |
+| 5 | | | | |
+| 6 | | | | |
+| 7 | | | | |
+| 8 | | | | |
+| 9 | | | | |
+| 10 | | | | |
+| 11 | | | | |
+| 12 | | | | |
+| 13 | | | | |
 `,
   },
   {
