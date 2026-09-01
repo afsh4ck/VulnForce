@@ -11,10 +11,10 @@ import {
   HeadingLevel,
   ImageRun,
   LevelFormat,
-  PageBreak,
   PageNumber,
   Packer,
   Paragraph,
+  SectionType,
   ShadingType,
   Table,
   TableCell,
@@ -40,7 +40,9 @@ import type { ReportThemeColors } from './report-themes';
 // PDF). Se apoya en el AST de remark (ya presente via react-markdown) en vez
 // de un parser propio, para heredar soporte GFM correcto.
 
-const FONT_BODY = 'Calibri';
+// Helvetica en Mac / Arial en Windows: Word sustituye una por otra, asi que
+// declarar "Arial" da el mismo resultado visual en ambas plataformas.
+const FONT_BODY = 'Arial';
 const FONT_MONO = 'Consolas';
 const MAX_IMAGE_WIDTH_PX = 560;
 const MAX_IMAGE_HEIGHT_PX = 760;
@@ -194,6 +196,32 @@ async function preloadImages(
   }));
 
   return result;
+}
+
+// El logo del cliente se guarda como data URL directa en `Client` (no como
+// `image://id`), asi que se decodifica aparte para la portada. Se prefiere la
+// version ancha si existe. Formatos que Word no entiende (SVG/WebP) se omiten.
+const COVER_LOGO_MAX_WIDTH_PX = 300;
+const COVER_LOGO_MAX_HEIGHT_PX = 96;
+
+async function resolveCoverLogo(client: Client): Promise<ResolvedImage | null> {
+  const src = client.logoWide || client.logoUrl;
+  if (!src) return null;
+  const decoded = decodeDataUrl(src);
+  const type = decoded ? MIME_TO_DOCX_TYPE[decoded.mime] : undefined;
+  if (!decoded || !type) return null;
+  const natural = await loadImageNaturalSize(src);
+  const scale = Math.min(
+    COVER_LOGO_MAX_WIDTH_PX / natural.width,
+    COVER_LOGO_MAX_HEIGHT_PX / natural.height,
+    1,
+  );
+  return {
+    type,
+    data: decoded.bytes,
+    width: Math.max(1, Math.round(natural.width * scale)),
+    height: Math.max(1, Math.round(natural.height * scale)),
+  };
 }
 
 // ---------------------------------------------------------------------------
@@ -429,13 +457,15 @@ function renderBlockquote(node: Mdast.Blockquote, ctx: ConvertCtx): FileChild[] 
   return out;
 }
 
-function blockToDocx(node: Mdast.RootContent, ctx: ConvertCtx): FileChild[] {
+function blockToDocx(node: Mdast.RootContent, ctx: ConvertCtx, isFirst = false): FileChild[] {
   switch (node.type) {
     case 'heading': {
       const depth = node.depth;
       return [new Paragraph({
         heading: HEADING_BY_DEPTH[depth] ?? HeadingLevel.HEADING_4,
-        pageBreakBefore: depth === 1,
+        // El primer bloque del cuerpo ya empieza en pagina propia (corte de
+        // seccion tras el indice): un salto extra dejaria una hoja en blanco.
+        pageBreakBefore: depth === 1 && !isFirst,
         spacing: { before: depth === 1 ? 0 : 280, after: 140 },
         children: inlineToRuns(node.children, {}, ctx),
       })];
@@ -481,7 +511,7 @@ function blockToDocx(node: Mdast.RootContent, ctx: ConvertCtx): FileChild[] {
 }
 
 function blocksToDocx(nodes: Mdast.RootContent[], ctx: ConvertCtx): FileChild[] {
-  return nodes.flatMap((node) => blockToDocx(node, ctx));
+  return nodes.flatMap((node, index) => blockToDocx(node, ctx, index === 0));
 }
 
 /** Texto plano de un nodo heading (para localizar el marcador "Findings Summary"). */
@@ -490,18 +520,16 @@ function headingText(node: Mdast.Heading): string {
 }
 
 /**
- * `buildReportMarkdown` antepone, sin usar aqui, una portada de texto plano
- * (titulo H1, tipo de informe, metadatos, "Prepared by" y la tabla de
- * severidades) pensada para el .md descargable. Aqui se sustituye por una
- * portada disenada a partir de los mismos datos, asi que se recorta todo lo
- * anterior al final de esa seccion ("## Findings Summary" + su tabla).
+ * `buildReportMarkdown` antepone una portada de texto plano (titulo H1, tipo de
+ * informe, metadatos y "Prepared by") pensada para el .md descargable. Aqui se
+ * sustituye por una portada disenada a partir de los mismos datos, asi que se
+ * recorta todo lo anterior a "## Findings Summary". Esa seccion y su tabla si se
+ * conservan: el resumen de hallazgos debe verse tambien en el Word.
  */
 function stripCoverContent(children: Mdast.RootContent[], translations: ReportTranslations): Mdast.RootContent[] {
   const idx = children.findIndex((n) => n.type === 'heading' && n.depth === 2 && headingText(n) === translations.findingsSummary);
   if (idx === -1) return children; // formato inesperado: no se recorta nada, mejor de mas que perder contenido
-  let end = idx + 1;
-  if (children[end]?.type === 'table') end += 1;
-  return children.slice(end);
+  return children.slice(idx);
 }
 
 // ---------------------------------------------------------------------------
@@ -554,6 +582,21 @@ function buildMetaTable(rows: Array<[string, string]>, theme: DocxThemeColors): 
   });
 }
 
+/** Franja de color de marca a todo el ancho: da a la portada un aire de reporte. */
+function brandBand(theme: DocxThemeColors): Table {
+  return new Table({
+    width: { size: 100, type: WidthType.PERCENTAGE },
+    borders: NO_BORDERS,
+    rows: [new TableRow({
+      children: [new TableCell({
+        shading: { type: ShadingType.CLEAR, fill: theme.brand },
+        margins: { top: 0, bottom: 0, left: 0, right: 0 },
+        children: [new Paragraph({ spacing: { before: 0, after: 0, line: 120 }, children: [new TextRun({ text: '', size: 6 })] })],
+      })],
+    })],
+  });
+}
+
 function buildCover(params: {
   project: Project;
   client: Client;
@@ -561,27 +604,45 @@ function buildCover(params: {
   pentester?: PentesterProfile;
   generatedDate: string;
   translations: ReportTranslations;
+  logo?: ResolvedImage | null;
 }, theme: DocxThemeColors): FileChild[] {
-  const { project, client, findings, pentester, generatedDate, translations: t } = params;
+  const { project, client, findings, pentester, generatedDate, translations: t, logo } = params;
   const out: FileChild[] = [];
 
+  out.push(brandBand(theme));
+
+  if (logo) {
+    out.push(new Paragraph({
+      spacing: { before: 320, after: 120 },
+      children: [new ImageRun({
+        type: logo.type,
+        data: logo.data,
+        transformation: { width: logo.width, height: logo.height },
+        altText: { title: `${client.name} logo`, description: `${client.name} logo`, name: 'client-logo' },
+      })],
+    }));
+  }
+
   out.push(new Paragraph({
-    spacing: { after: 160 },
-    children: [new TextRun({ text: t.reportType, bold: true, allCaps: true, characterSpacing: 24, color: theme.brand, size: 20 })],
+    spacing: { before: logo ? 280 : 520, after: 120 },
+    children: [new TextRun({ text: t.reportType, bold: true, allCaps: true, characterSpacing: 28, color: theme.brand, size: 22 })],
   }));
   out.push(new Paragraph({
-    spacing: { after: 100 },
-    children: [new TextRun({ text: project.name, bold: true, size: 64, color: theme.foreground })],
+    spacing: { after: 60 },
+    children: [new TextRun({ text: project.name, bold: true, size: 60, color: theme.foreground })],
   }));
   out.push(new Paragraph({
-    spacing: { after: 420 },
-    children: [new TextRun({ text: `${t.client}: ${client.name}`, size: 26, color: theme.mutedForeground })],
+    spacing: { after: 240 },
+    border: { bottom: { style: BorderStyle.SINGLE, size: 18, color: theme.brand, space: 8 } },
+    children: [new TextRun({ text: client.name, size: 28, color: theme.mutedForeground })],
   }));
 
+  out.push(new Paragraph({ spacing: { after: 200 }, children: [] }));
   out.push(buildSeverityCountRow(findings, t, theme));
-  out.push(new Paragraph({ spacing: { after: 420 }, children: [] }));
+  out.push(new Paragraph({ spacing: { after: 360 }, children: [] }));
 
   const metaRows: Array<[string, string]> = [
+    [t.client, client.name],
     [t.assessmentWindow, `${project.startDate} – ${project.endDate}`],
     [t.generatedOn, generatedDate],
     [t.totalFindings, String(findings.length)],
@@ -599,7 +660,8 @@ function buildCover(params: {
     if (pentesterRows.length > 0) out.push(buildMetaTable(pentesterRows, theme));
   }
 
-  out.push(new Paragraph({ children: [new PageBreak()] }));
+  // El salto a la pagina siguiente lo da el corte de seccion, no un PageBreak
+  // manual (que podia dejar una hoja en blanco tras la portada).
   return out;
 }
 
@@ -627,13 +689,17 @@ export async function buildReportDocx(params: BuildReportDocxParams): Promise<Bl
 
   const markdown = buildReportMarkdown({ project, client, findings, pentester, variables, generatedDate, translations });
   const tree = unified().use(remarkParse).use(remarkGfm).parse(markdown) as Mdast.Root;
-  const images = await preloadImages(tree, getImage);
+  const [images, coverLogo] = await Promise.all([
+    preloadImages(tree, getImage),
+    resolveCoverLogo(client),
+  ]);
   const ctx: ConvertCtx = { images, theme: docxTheme, translations, severityByLabel: buildSeverityByLabel(translations) };
 
-  const cover = buildCover({ project, client, findings, pentester, generatedDate, translations }, docxTheme);
-  const toc = [
-    new TableOfContents('Table of Contents', { hyperlink: true, headingStyleRange: '1-2' }),
-    new Paragraph({ children: [new PageBreak()] }),
+  const cover = buildCover({ project, client, findings, pentester, generatedDate, translations, logo: coverLogo }, docxTheme);
+  const tocTitle = project.language === 'es' ? 'Índice de Contenidos' : 'Table of Contents';
+  const toc: FileChild[] = [
+    new Paragraph({ heading: HeadingLevel.HEADING_1, spacing: { before: 0, after: 200 }, children: [new TextRun({ text: tocTitle })] }),
+    new TableOfContents(tocTitle, { hyperlink: true, headingStyleRange: '1-2' }),
   ];
   const body = blocksToDocx(stripCoverContent(tree.children, translations), ctx);
 
@@ -684,23 +750,26 @@ export async function buildReportDocx(params: BuildReportDocxParams): Promise<Bl
         },
       ],
     },
-    sections: [{
-      properties: {
-        page: { margin: { top: 1134, bottom: 1134, left: 1134, right: 1134 } }, // ~2cm en twips
-      },
-      footers: {
-        default: new Footer({
-          children: [new Paragraph({
-            alignment: AlignmentType.CENTER,
-            children: [
-              new TextRun({ text: `${footerLabel}  ·  `, size: 16, color: docxTheme.mutedForeground }),
-              new TextRun({ children: [PageNumber.CURRENT], size: 16, color: docxTheme.mutedForeground }),
-            ],
-          })],
-        }),
-      },
-      children: [...cover, ...toc, ...body],
-    }],
+    sections: (() => {
+      const page = { margin: { top: 1134, bottom: 1134, left: 1134, right: 1134 } }; // ~2cm en twips
+      const makeFooter = () => new Footer({
+        children: [new Paragraph({
+          alignment: AlignmentType.CENTER,
+          children: [
+            new TextRun({ text: `${footerLabel}  ·  `, size: 16, color: docxTheme.mutedForeground }),
+            new TextRun({ children: [PageNumber.CURRENT], size: 16, color: docxTheme.mutedForeground }),
+          ],
+        })],
+      });
+      // Tres secciones con corte "pagina siguiente": portada, indice y cuerpo
+      // caen cada uno en su propia hoja sin saltos manuales que dejen paginas
+      // en blanco. El pie con numero de pagina solo aparece a partir del indice.
+      return [
+        { properties: { page }, children: [...cover] },
+        { properties: { page, type: SectionType.NEXT_PAGE }, footers: { default: makeFooter() }, children: [...toc] },
+        { properties: { page, type: SectionType.NEXT_PAGE }, footers: { default: makeFooter() }, children: [...body] },
+      ];
+    })(),
   });
 
   return Packer.toBlob(doc);

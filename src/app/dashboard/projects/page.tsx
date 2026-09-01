@@ -73,6 +73,9 @@ export default function ProjectsPage() {
         }
         return 0;
       });
+    } else {
+      // Sin orden explícito: el editado más recientemente va arriba.
+      filteredProjects.sort((a, b) => (b.updatedAt ?? '').localeCompare(a.updatedAt ?? ''));
     }
     return filteredProjects;
   }, [enrichedProjects, searchTerm, sortConfig]);
