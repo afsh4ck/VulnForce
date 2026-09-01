@@ -477,8 +477,8 @@ export const REPORT_SHARED_CSS = `
     padding-left: 8px;
   }
   .toc-level-1 { margin-top: 0.2rem; }
-  .toc-level-2 a { padding-left: 30px; font-weight: 600; }
-  .toc-level-3 a { padding-left: 46px; font-size: 0.78rem; color: hsl(var(--muted-foreground)); }
+  .toc-level-2 a { padding-left: 48px; font-weight: 400; }
+  .toc-level-3 a { padding-left: 68px; font-size: 0.78rem; font-weight: 400; color: hsl(var(--muted-foreground)); }
   .toc-page-number { margin-left: auto; flex: 0 0 auto; font-variant-numeric: tabular-nums; color: hsl(var(--muted-foreground)); }
   /* Solo H2 marcadas como vulnerabilidad llevan la barra verde */
   .toc-vuln {
@@ -491,7 +491,7 @@ export const REPORT_SHARED_CSS = `
   /* Los hallazgos del índice son hijos de la sección técnica: sin el bloque
      amarillo/verde de severidad, solo el título con sangría editorial. */
   .toc-finding { margin-top: 0.1rem; }
-  .toc-finding a { padding-left: 46px; font-weight: 600; color: hsl(var(--foreground)); background: transparent; }
+  .toc-finding a { padding-left: 68px; font-weight: 400; color: hsl(var(--foreground)); background: transparent; }
   .pdf-page-background, .report-print-page-footers, .report-print-footer { display: none; }
 
   /* Sidebar colapsable en HTML exportado */
@@ -628,9 +628,9 @@ export const REPORT_PRINT_CSS = `
       background: transparent !important;
       color: hsl(var(--foreground)) !important;
     }
-    .report-toc .toc-level-2 a { padding-left: 1.9rem !important; }
+    .report-toc .toc-level-2 a { padding-left: 3rem !important; font-weight: 400 !important; }
     .report-toc .toc-level-3 a,
-    .report-toc .toc-finding a { padding-left: 2.9rem !important; }
+    .report-toc .toc-finding a { padding-left: 4.25rem !important; font-weight: 400 !important; }
     .report-print-page-footers {
       display: block !important;
       position: absolute !important;
