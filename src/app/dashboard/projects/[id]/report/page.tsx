@@ -564,48 +564,58 @@ export default function ReportPreviewPage() {
     root.classList.add(theme);
     document.body.classList.add('printing');
 
-    // Chrome activa los estilos de impresión antes de beforeprint. Con el
-    // layout final, el alto físico A4 es 1122.52 CSS px (a 96 dpi), por lo que
-    // podemos escribir los números reales en el índice antes de la captura.
+    // El alto físico A4 es 1122.52 CSS px (a 96 dpi). Chromium dispara
+    // beforeprint con la maqueta de PANTALLA todavía activa, así que medimos
+    // con `.measuring-print`: oculta en caliente lo mismo que @media print
+    // (header del dashboard, sidebars) para que los offsets del documento
+    // coincidan con la hoja impresa. La clase se retira en el mismo tick, de
+    // modo que no hay repintado intermedio ni parpadeo visible.
     const updatePrintPagination = () => {
       const reportRoot = reportContentRef.current;
       if (!reportRoot) return;
-      const pageHeight = 1122.52;
-      const reportTop = reportRoot.getBoundingClientRect().top + window.scrollY;
-      reportRoot.querySelectorAll<HTMLElement>('[data-toc-page-for]').forEach((pageNumber) => {
-        const targetId = pageNumber.dataset.tocPageFor;
-        const target = targetId ? document.getElementById(targetId) : null;
-        if (!target) return;
-        const targetTop = target.getBoundingClientRect().top + window.scrollY;
-        pageNumber.textContent = String(Math.max(1, Math.floor(targetTop / pageHeight) + 1));
-      });
+      document.body.classList.add('measuring-print');
+      try {
+        const pageHeight = 1122.52;
+        // Distancia del pie al borde físico inferior de la hoja, en px CSS.
+        // Queda dentro del margen inferior que `.report-page` reserva en cada
+        // fragmento (1.7 cm), así que el texto nunca puede alcanzarlo.
+        const footerBottomOffset = 34;
+        const reportTop = reportRoot.getBoundingClientRect().top + window.scrollY;
+        reportRoot.querySelectorAll<HTMLElement>('[data-toc-page-for]').forEach((pageNumber) => {
+          const targetId = pageNumber.dataset.tocPageFor;
+          const target = targetId ? document.getElementById(targetId) : null;
+          if (!target) return;
+          const targetTop = target.getBoundingClientRect().top + window.scrollY;
+          pageNumber.textContent = String(Math.max(1, Math.floor(targetTop / pageHeight) + 1));
+        });
 
-      // Chromium no calcula counter(page) en elementos fixed (lo resolvía como
-      // 0). Generamos un pie absoluto por hoja antes de abrir el diálogo de
-      // impresión para que cada uno tenga su número real.
-      const shell = document.querySelector<HTMLElement>('.report-shell');
-      const footerHost = document.querySelector<HTMLElement>('.report-print-page-footers');
-      if (!shell || !footerHost) return;
+        // Chromium no calcula counter(page) en elementos fixed (lo resolvía como
+        // 0). Generamos un pie absoluto por hoja antes de abrir el diálogo de
+        // impresión para que cada uno tenga su número real.
+        const shell = document.querySelector<HTMLElement>('.report-shell');
+        const footerHost = document.querySelector<HTMLElement>('.report-print-page-footers');
+        if (!shell || !footerHost) return;
 
-      const shellTop = shell.getBoundingClientRect().top + window.scrollY;
-      const reportHeight = Math.max(reportRoot.getBoundingClientRect().height, reportRoot.scrollHeight);
-      const firstPage = Math.max(0, Math.floor(reportTop / pageHeight));
-      const lastPage = Math.max(firstPage, Math.ceil((reportTop + reportHeight) / pageHeight) - 1);
-      const label = footerHost.dataset.reportLabel || '';
-      footerHost.replaceChildren();
+        const shellTop = shell.getBoundingClientRect().top + window.scrollY;
+        const reportHeight = Math.max(reportRoot.getBoundingClientRect().height, reportRoot.scrollHeight);
+        const firstPage = Math.max(0, Math.floor(reportTop / pageHeight));
+        const lastPage = Math.max(firstPage, Math.ceil((reportTop + reportHeight) / pageHeight) - 1);
+        const label = footerHost.dataset.reportLabel || '';
+        footerHost.replaceChildren();
 
-      for (let page = firstPage; page <= lastPage; page += 1) {
-        const footer = document.createElement('div');
-        footer.className = 'report-print-footer';
-        // Reserva 0.25 cm en el borde físico inferior para que el pie quede
-        // pegado al final de la hoja sin que se recorte al guardar como PDF.
-        footer.style.top = `${page * pageHeight + pageHeight - 20 - shellTop}px`;
-        const name = document.createElement('span');
-        name.textContent = label;
-        const number = document.createElement('span');
-        number.textContent = String(page + 1);
-        footer.append(name, number);
-        footerHost.appendChild(footer);
+        for (let page = firstPage; page <= lastPage; page += 1) {
+          const footer = document.createElement('div');
+          footer.className = 'report-print-footer';
+          footer.style.top = `${page * pageHeight + pageHeight - footerBottomOffset - shellTop}px`;
+          const name = document.createElement('span');
+          name.textContent = label;
+          const number = document.createElement('span');
+          number.textContent = String(page + 1);
+          footer.append(name, number);
+          footerHost.appendChild(footer);
+        }
+      } finally {
+        document.body.classList.remove('measuring-print');
       }
     };
     window.addEventListener('beforeprint', updatePrintPagination, { once: true });

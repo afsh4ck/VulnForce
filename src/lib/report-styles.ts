@@ -507,6 +507,15 @@ export const REPORT_SHARED_CSS = `
   .report-sidebar .toc-finding a.is-active { font-weight: 400; }
   .pdf-page-background, .report-print-page-footers, .report-print-footer { display: none; }
 
+  /* Medición previa a la impresión. Chromium dispara beforeprint con la
+     maqueta de pantalla activa, así que ocultamos en caliente lo mismo que
+     @media print para que los offsets del documento coincidan con la hoja. */
+  body.measuring-print header.app-header,
+  body.measuring-print .no-print,
+  body.measuring-print #report-sidebar,
+  body.measuring-print aside.report-sidebar { display: none !important; }
+  body.measuring-print [class~="group/sidebar-wrapper"] > div[data-side][data-variant][data-state] { display: none !important; }
+
   /* Sidebar colapsable en HTML exportado */
   .sidebar-rail-btn {
     position: absolute;
@@ -617,7 +626,7 @@ export const REPORT_PRINT_CSS = `
       /* Se replica al fragmentarse: margen seguro superior e inferior en
          cada página interior, no solo en el inicio del documento. */
       /* Margen superior más contenido; el inferior reserva el pie de página. */
-      padding: 1cm 0.9cm 1.55cm !important;
+      padding: 1cm 0.9cm 1.7cm !important;
       background: hsl(var(--card)) !important;
       -webkit-box-decoration-break: clone;
       box-decoration-break: clone;
