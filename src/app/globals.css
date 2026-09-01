@@ -174,6 +174,47 @@
   }
 }
 
+/* ── Scrollbars custom ──────────────────────────────────────────────
+   Finos, de color de marca y visibles solo mientras se hace scroll
+   (la clase `scrolling` en <html> la gestiona <ScrollbarActivity/>) o
+   mientras se arrastra el thumb. */
+@layer base {
+  html,
+  * {
+    scrollbar-width: thin;
+    scrollbar-color: transparent transparent;
+  }
+  html.scrolling,
+  html.scrolling * {
+    scrollbar-color: hsl(var(--brand) / 0.55) transparent;
+  }
+
+  ::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+  }
+  ::-webkit-scrollbar-track,
+  ::-webkit-scrollbar-corner {
+    background: transparent;
+  }
+  ::-webkit-scrollbar-thumb {
+    background-color: transparent;
+    border-radius: 9999px;
+    border: 2px solid transparent;
+    background-clip: padding-box;
+    transition: background-color 0.25s ease;
+  }
+  html.scrolling::-webkit-scrollbar-thumb,
+  html.scrolling ::-webkit-scrollbar-thumb {
+    background-color: hsl(var(--brand) / 0.55);
+  }
+  html.scrolling::-webkit-scrollbar-thumb:hover,
+  html.scrolling ::-webkit-scrollbar-thumb:hover,
+  ::-webkit-scrollbar-thumb:active {
+    background-color: hsl(var(--brand) / 0.8);
+  }
+}
+
 @layer utilities {
   @keyframes flash {
     0% { background-color: hsl(var(--primary) / 0); }

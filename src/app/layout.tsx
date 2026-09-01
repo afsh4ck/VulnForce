@@ -1,5 +1,6 @@
 import type { Metadata } from 'next';
 import { Toaster } from '@/components/ui/toaster';
+import { ScrollbarActivity } from '@/components/scrollbar-activity';
 import './globals.css';
 import { LanguageProvider } from '@/context/language-context';
 import { ThemeProvider } from '@/context/theme-context';
@@ -38,6 +39,7 @@ export default function RootLayout({
               <DataProvider>
                 {children}
                 <Toaster />
+                <ScrollbarActivity />
               </DataProvider>
             </UserProvider>
           </LanguageProvider>
