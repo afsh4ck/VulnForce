@@ -618,9 +618,37 @@ type SortableBlockProps = EditableBlockProps & EditableBlockExtra & {
   onCollapseAll: () => void;
   onCollapsedChange: (blockId: string, collapsed: boolean) => void;
   variables?: import('@/lib/markdown-utils').VariableContext;
+  renderPreviewContent?: (content: string) => string;
+  isReportPreview?: boolean;
 };
 
-const SortableBlock = React.forwardRef(({ block, index, onAdd, onAction, ...editableProps }: SortableBlockProps, ref: React.Ref<HTMLDivElement>) => {
+// Los marcadores de hallazgos también se resuelven en el editor, no solo en la
+// vista final del informe. Los enlaces conservan el ancla técnica internamente,
+// pero muestran una etiqueta que el usuario puede entender.
+const renderFindingsPreview = (content: string, findings: Finding[], language: Project['language']) => {
+  const copy = language === 'es'
+    ? { finding: 'Hallazgo', severity: 'Severidad', cvss: 'CVSS', status: 'Estado', section: 'Sección', open: 'Abierto', details: 'Ver detalle', empty: 'No hay hallazgos registrados.' }
+    : { finding: 'Finding', severity: 'Severity', cvss: 'CVSS', status: 'Status', section: 'Section', open: 'Open', details: 'View details', empty: 'No findings have been registered.' };
+  const ordered = findings.slice().sort((a, b) => b.cvss - a.cvss);
+
+  const table = ordered.length
+    ? [
+        `| ${copy.finding} | ${copy.severity} | ${copy.cvss} | ${copy.status} | ${copy.section} |`,
+        '| --- | --- | --- | --- | --- |',
+        ...ordered.map(f => `| ${f.title.replace(/\|/g, '\\|')} | ${f.severity} | ${f.cvss.toFixed(1)} | ${copy.open} | [${copy.details}](#finding-${f.id}) |`),
+      ].join('\n')
+    : `> ${copy.empty}`;
+
+  const details = ordered.length
+    ? ordered.map(f => `## ${f.title} [SEVERITY:${f.severity},CVSS:${f.cvss.toFixed(1)}] {#finding-${f.id}}\n${f.markdown || ''}`).join('\n\n')
+    : `> ${copy.empty}`;
+
+  return content
+    .replace(/\{\{\s*findings\.table\s*\}\}/g, table)
+    .replace(/\{\{\s*findings\.details\s*\}\}/g, details);
+};
+
+const SortableBlock = React.forwardRef(({ block, index, onAdd, onAction, isReportPreview = false, ...editableProps }: SortableBlockProps, ref: React.Ref<HTMLDivElement>) => {
   const { attributes, listeners, setNodeRef, transform, transition, isDragging } = useSortable({ id: block.id });
   const {
     onUpdate,
@@ -637,7 +665,11 @@ const SortableBlock = React.forwardRef(({ block, index, onAdd, onAction, ...edit
     onCollapseAll,
     onCollapsedChange,
     variables,
+    renderPreviewContent,
   } = editableProps;
+
+  const content = blockToMarkdown(block);
+  const previewContent = renderPreviewContent ? renderPreviewContent(content) : content;
 
   const style = {
     transform: transform ? CSS.Transform.toString(transform) : undefined,
@@ -659,8 +691,8 @@ const SortableBlock = React.forwardRef(({ block, index, onAdd, onAction, ...edit
     <div ref={setRefs} style={style} className="relative group/block rounded-md border bg-card p-4 shadow-sm">
       <SectionMarkdownEditor
         id={`project-section-${block.id}`}
-        content={blockToMarkdown(block)}
-        previewContent={blockToMarkdown(block)}
+        content={content}
+        previewContent={previewContent}
         onChange={onUpdate}
         onFocus={onFocus}
         onDelete={() => onAction('delete', block.id)}
@@ -677,6 +709,7 @@ const SortableBlock = React.forwardRef(({ block, index, onAdd, onAction, ...edit
         dragging={isDragging}
         onCollapsedChange={(nextCollapsed) => onCollapsedChange(block.id, nextCollapsed)}
         variables={variables}
+        isReportPreview
         labels={{
           section: 'Section',
           untitled: sectionTitle || 'Untitled section',
@@ -1705,10 +1738,20 @@ export default function ProjectDetailsPage() {
                                   collapsed={Boolean(collapsedSections[block.id])}
                                   onCollapseAll={collapseAllSections}
                                   onCollapsedChange={setSectionCollapsed}
+                                  renderPreviewContent={(content) => renderFindingsPreview(content, projectFindings, project.language)}
+                                  isReportPreview
                                   variables={{
                                     client: { name: client?.name, contact: client?.contact, phone: client?.phone },
                                     project: { name: project.name, startDate: project.startDate, endDate: project.endDate, language: project.language },
                                     pentester: { name: user.name, email: user.email, phone: user.phone },
+                                    vulnerabilities: {
+                                      count: projectFindings.length,
+                                      critical: projectFindings.filter(f => f.severity === 'Critical').length,
+                                      high: projectFindings.filter(f => f.severity === 'High').length,
+                                      medium: projectFindings.filter(f => f.severity === 'Medium').length,
+                                      low: projectFindings.filter(f => f.severity === 'Low').length,
+                                      informational: projectFindings.filter(f => f.severity === 'Informational').length,
+                                    },
                                   }}
                                 />
                               </div>

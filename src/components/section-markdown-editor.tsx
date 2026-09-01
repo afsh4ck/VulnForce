@@ -79,6 +79,7 @@ type SectionMarkdownEditorProps = {
   onDragHandleClick?: () => void;
   dragging?: boolean;
   variables?: VariableContext;
+  isReportPreview?: boolean;
 };
 
 type HighlightedMarkdownTextareaProps = {
@@ -259,6 +260,7 @@ export function SectionMarkdownEditor({
   onDragHandleClick,
   dragging = false,
   variables,
+  isReportPreview = false,
 }: SectionMarkdownEditorProps) {
   const { addImage, getImage: getStoredImage } = useData();
   const localTextareaRef = useRef<HTMLTextAreaElement>(null);
@@ -801,13 +803,13 @@ export function SectionMarkdownEditor({
             <ResizableHandle className="w-1 bg-border transition-colors hover:bg-yellow-400 data-[resize-handle-state=drag]:bg-yellow-400" />
             <ResizablePanel defaultSize={normalizedSplitLayout[1]} minSize={25}>
               <div className={cn('h-full overflow-auto p-5', minHeightClassName)}>
-                <MarkdownPreview content={renderedPreviewContent} getImage={getImage ?? getStoredImage} variables={variables} />
+                <MarkdownPreview content={renderedPreviewContent} getImage={getImage ?? getStoredImage} variables={variables} isReport={isReportPreview} />
               </div>
             </ResizablePanel>
           </ResizablePanelGroup>
         ) : currentMode === 'preview' ? (
           <div className={cn('overflow-auto p-5', minHeightClassName)}>
-            <MarkdownPreview content={renderedPreviewContent} getImage={getImage ?? getStoredImage} variables={variables} />
+            <MarkdownPreview content={renderedPreviewContent} getImage={getImage ?? getStoredImage} variables={variables} isReport={isReportPreview} />
           </div>
         ) : (
           editor()

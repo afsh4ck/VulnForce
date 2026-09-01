@@ -524,7 +524,9 @@ export const REPORT_SHARED_CSS = `
 // y oculta cualquier elemento marcado como `.no-print`.
 export const REPORT_PRINT_CSS = `
   @media print {
-    @page { size: A4; margin: 0; }
+    /* Margen físico vertical: evita que cualquier fragmento de contenido
+       quede pegado a los bordes superior o inferior de cada página del PDF. */
+    @page { size: A4; margin: 0.8cm 0; }
     html, body {
       background: hsl(var(--background)) !important;
       margin: 0 !important;
@@ -606,8 +608,8 @@ export const REPORT_PRINT_CSS = `
     .hero-value { font-size: 1.5rem !important; }
     /* Portada: ocupa exactamente UNA página y NO añade página en blanco después */
     .report-cover {
-      min-height: calc(100vh - 0px);
-      max-height: 100vh;
+      min-height: 281mm;
+      max-height: 281mm;
       padding: 2.4cm 1.6cm 1.6cm !important;
       border-radius: 0 !important;
       border: 0 !important;

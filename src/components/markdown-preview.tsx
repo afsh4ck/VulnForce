@@ -206,7 +206,21 @@ export const MarkdownPreview = ({ content, getImage, isReport, variables }: { co
                     }
                     return el;
                 },
-                td: ({node, children, ...props}) => <td {...props}>{renderTodoNodes(children)}</td>,
+                td: ({node, children, ...props}) => {
+                    const value = getTextFromChildren(children).trim();
+                    const normalizedSeverity = value
+                        .toLowerCase()
+                        .normalize('NFD')
+                        .replace(/[\u0300-\u036f]/g, '');
+                    const severity = ({
+                        critical: 'Critical', critica: 'Critical', critico: 'Critical',
+                        high: 'High', alta: 'High', alto: 'High',
+                        medium: 'Medium', media: 'Medium', medio: 'Medium',
+                        low: 'Low', baja: 'Low', bajo: 'Low',
+                        informational: 'Informational', informativo: 'Informational', informativa: 'Informational',
+                    } as Record<string, string>)[normalizedSeverity];
+                    return <td {...props}>{severity ? <Badge variant={getSeverityVariant(severity)}>{value}</Badge> : renderTodoNodes(children)}</td>;
+                },
                 th: ({node, children, ...props}) => <th {...props}>{renderTodoNodes(children)}</th>,
                 blockquote: ({node, children, ...props}) => {
                     const text = getTextFromChildren(children);
