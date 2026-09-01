@@ -4,32 +4,41 @@ import remarkGfm from 'remark-gfm';
 import type * as Mdast from 'mdast';
 import {
   AlignmentType,
+  BorderStyle,
   Document,
   ExternalHyperlink,
   Footer,
   HeadingLevel,
   ImageRun,
   LevelFormat,
+  PageBreak,
   PageNumber,
   Packer,
   Paragraph,
   ShadingType,
   Table,
   TableCell,
+  TableOfContents,
   TableRow,
   TextRun,
   WidthType,
+  type IBorderOptions,
   type ParagraphChild,
   type FileChild,
 } from 'docx';
-import type { Finding, ImageAsset, PentesterProfile, Project, Client } from './types';
+import type { Finding, ImageAsset, PentesterProfile, Project, Client, Severity } from './types';
 import type { VariableContext } from './markdown-utils';
 import { buildReportMarkdown, type ReportTranslations } from './report-markdown';
+import type { ReportThemeColors } from './report-themes';
 
 // Convierte el mismo Markdown plano que alimenta la exportacion .md/.html/.pdf
-// en un documento .docx editable en Word. Se apoya en el AST de remark
-// (ya presente en el proyecto via react-markdown) en vez de un parser propio,
-// para heredar soporte GFM (tablas, tachado, listas de tareas) correcto.
+// en un documento .docx editable en Word, con una estetica que se acerca a la
+// del PDF: portada propia con los datos del proyecto, tabla de contenidos
+// nativa de Word, colores del tema activo (marca + severidades), tablas y
+// citas con bordes/sombreado, chips de severidad por hallazgo, y un salto de
+// pagina antes de cada seccion de primer nivel (igual que `.prose h1` en el
+// PDF). Se apoya en el AST de remark (ya presente via react-markdown) en vez
+// de un parser propio, para heredar soporte GFM correcto.
 
 const FONT_BODY = 'Calibri';
 const FONT_MONO = 'Consolas';
@@ -43,12 +52,94 @@ const MIME_TO_DOCX_TYPE: Record<string, 'png' | 'jpg' | 'gif' | 'bmp'> = {
   'image/bmp': 'bmp',
 };
 
-type ResolvedImage = {
-  type: 'png' | 'jpg' | 'gif' | 'bmp';
-  data: Uint8Array;
-  width: number;
-  height: number;
+const NO_BORDER: IBorderOptions = { style: BorderStyle.NONE, size: 0, color: 'FFFFFF' };
+const NO_BORDERS = { top: NO_BORDER, bottom: NO_BORDER, left: NO_BORDER, right: NO_BORDER, insideHorizontal: NO_BORDER, insideVertical: NO_BORDER };
+
+// ---------------------------------------------------------------------------
+// Color del tema: el editor guarda los colores como canales HSL ("142 71% 45%",
+// formato Tailwind); Word necesita hex. Se resuelve una vez por export.
+// ---------------------------------------------------------------------------
+
+function hslChannelsToHex(channels: string): string {
+  const [h, sPct, lPct] = channels.trim().split(/\s+/).map(parseFloat);
+  const s = sPct / 100;
+  const l = lPct / 100;
+  const c = (1 - Math.abs(2 * l - 1)) * s;
+  const x = c * (1 - Math.abs(((h / 60) % 2) - 1));
+  const m = l - c / 2;
+  let r = 0, g = 0, b = 0;
+  if (h < 60) [r, g, b] = [c, x, 0];
+  else if (h < 120) [r, g, b] = [x, c, 0];
+  else if (h < 180) [r, g, b] = [0, c, x];
+  else if (h < 240) [r, g, b] = [0, x, c];
+  else if (h < 300) [r, g, b] = [x, 0, c];
+  else [r, g, b] = [c, 0, x];
+  const toHex = (v: number) => Math.round((v + m) * 255).toString(16).padStart(2, '0');
+  return (toHex(r) + toHex(g) + toHex(b)).toUpperCase();
+}
+
+/** Aclara un color hex hacia blanco. amount=0 -> igual, amount=1 -> blanco. */
+function tintHex(hex: string, amount: number): string {
+  const r = parseInt(hex.slice(0, 2), 16);
+  const g = parseInt(hex.slice(2, 4), 16);
+  const b = parseInt(hex.slice(4, 6), 16);
+  const mix = (c: number) => Math.round(c + (255 - c) * amount);
+  const toHex = (v: number) => v.toString(16).padStart(2, '0');
+  return (toHex(mix(r)) + toHex(mix(g)) + toHex(mix(b))).toUpperCase();
+}
+
+type DocxThemeColors = {
+  brand: string;
+  foreground: string;
+  mutedForeground: string;
+  border: string;
+  cardTint: string;
+  severity: Record<Severity, { bg: string; fg: string }>;
 };
+
+const FALLBACK_THEME: DocxThemeColors = {
+  brand: '2E5BFF',
+  foreground: '1A1F29',
+  mutedForeground: '5E6A7C',
+  border: 'D8DEE9',
+  cardTint: 'EEF2FF',
+  severity: {
+    Critical: { bg: 'C42525', fg: 'FFFFFF' },
+    High: { bg: 'FA7A07', fg: 'FFFFFF' },
+    Medium: { bg: 'EBB408', fg: '3D2C00' },
+    Low: { bg: '2E80F5', fg: 'FFFFFF' },
+    Informational: { bg: '5E6A7C', fg: 'FFFFFF' },
+  },
+};
+
+function resolveDocxTheme(colors?: ReportThemeColors): DocxThemeColors {
+  if (!colors) return FALLBACK_THEME;
+  try {
+    const brand = hslChannelsToHex(colors.brand);
+    return {
+      brand,
+      foreground: hslChannelsToHex(colors.foreground),
+      mutedForeground: hslChannelsToHex(colors.mutedForeground),
+      border: hslChannelsToHex(colors.border),
+      cardTint: tintHex(brand, 0.9),
+      severity: {
+        Critical: { bg: hslChannelsToHex(colors.severityCritical), fg: hslChannelsToHex(colors.severityCriticalForeground) },
+        High: { bg: hslChannelsToHex(colors.severityHigh), fg: hslChannelsToHex(colors.severityHighForeground) },
+        Medium: { bg: hslChannelsToHex(colors.severityMedium), fg: hslChannelsToHex(colors.severityMediumForeground) },
+        Low: { bg: hslChannelsToHex(colors.severityLow), fg: hslChannelsToHex(colors.severityLowForeground) },
+        Informational: { bg: hslChannelsToHex(colors.severityInformational), fg: hslChannelsToHex(colors.severityInformationalForeground) },
+      },
+    };
+  } catch {
+    return FALLBACK_THEME; // canal HSL con formato inesperado: mejor un doc con colores de reserva que uno roto
+  }
+}
+
+// ---------------------------------------------------------------------------
+// Imagenes
+// ---------------------------------------------------------------------------
+
+type ResolvedImage = { type: 'png' | 'jpg' | 'gif' | 'bmp'; data: Uint8Array; width: number; height: number };
 
 function decodeDataUrl(dataUrl: string): { mime: string; bytes: Uint8Array } | null {
   const match = /^data:([^;]+);base64,([\s\S]*)$/.exec(dataUrl);
@@ -74,7 +165,6 @@ function scaleToFit(width: number, height: number): { width: number; height: num
   return { width: Math.max(1, Math.round(width * scale)), height: Math.max(1, Math.round(height * scale)) };
 }
 
-/** Recorre el AST y recolecta los ids de `image://<id>` referenciados. */
 function collectImageIds(node: Mdast.Nodes, ids: Set<string>): void {
   if (node.type === 'image' && node.url?.startsWith('image://')) {
     ids.add(node.url.slice('image://'.length));
@@ -106,9 +196,43 @@ async function preloadImages(
   return result;
 }
 
+// ---------------------------------------------------------------------------
+// Contexto compartido por el recorrido del AST
+// ---------------------------------------------------------------------------
+
+type ConvertCtx = {
+  images: Map<string, ResolvedImage>;
+  theme: DocxThemeColors;
+  translations: ReportTranslations;
+  severityByLabel: Map<string, Severity>;
+};
+
+function buildSeverityByLabel(t: ReportTranslations): Map<string, Severity> {
+  return new Map<string, Severity>([
+    [t.critical, 'Critical'],
+    [t.high, 'High'],
+    [t.medium, 'Medium'],
+    [t.low, 'Low'],
+    [t.informational, 'Informational'],
+  ]);
+}
+
+/** Concatena el texto plano de nodos inline (ignora formato, conserva el texto). */
+function mdastPlainText(nodes: Mdast.PhrasingContent[]): string {
+  return nodes.map((node) => {
+    if (node.type === 'text' || node.type === 'inlineCode') return node.value;
+    if ('children' in node && Array.isArray(node.children)) return mdastPlainText(node.children as Mdast.PhrasingContent[]);
+    return '';
+  }).join('');
+}
+
+// ---------------------------------------------------------------------------
+// Inline
+// ---------------------------------------------------------------------------
+
 type Marks = { bold?: boolean; italic?: boolean; strike?: boolean; code?: boolean };
 
-function inlineToRuns(nodes: Mdast.PhrasingContent[], marks: Marks, images: Map<string, ResolvedImage>): ParagraphChild[] {
+function inlineToRuns(nodes: Mdast.PhrasingContent[], marks: Marks, ctx: ConvertCtx): ParagraphChild[] {
   const runs: ParagraphChild[] = [];
   nodes.forEach((node) => {
     switch (node.type) {
@@ -126,25 +250,25 @@ function inlineToRuns(nodes: Mdast.PhrasingContent[], marks: Marks, images: Map<
         runs.push(new TextRun({ text: node.value, font: FONT_MONO, shading: { type: ShadingType.CLEAR, fill: 'F1F1F1' } }));
         break;
       case 'strong':
-        runs.push(...inlineToRuns(node.children, { ...marks, bold: true }, images));
+        runs.push(...inlineToRuns(node.children, { ...marks, bold: true }, ctx));
         break;
       case 'emphasis':
-        runs.push(...inlineToRuns(node.children, { ...marks, italic: true }, images));
+        runs.push(...inlineToRuns(node.children, { ...marks, italic: true }, ctx));
         break;
       case 'delete':
-        runs.push(...inlineToRuns(node.children, { ...marks, strike: true }, images));
+        runs.push(...inlineToRuns(node.children, { ...marks, strike: true }, ctx));
         break;
       case 'break':
         runs.push(new TextRun({ text: '', break: 1 }));
         break;
       case 'link': {
-        const children = inlineToRuns(node.children, marks, images) as TextRun[];
+        const children = inlineToRuns(node.children, marks, ctx) as TextRun[];
         runs.push(new ExternalHyperlink({ link: node.url, children }));
         break;
       }
       case 'image': {
         const id = node.url?.startsWith('image://') ? node.url.slice('image://'.length) : null;
-        const resolved = id ? images.get(id) : undefined;
+        const resolved = id ? ctx.images.get(id) : undefined;
         if (resolved) {
           runs.push(new ImageRun({
             type: resolved.type,
@@ -153,18 +277,126 @@ function inlineToRuns(nodes: Mdast.PhrasingContent[], marks: Marks, images: Map<
             altText: { title: node.alt || 'image', description: node.alt || '', name: node.alt || 'image' },
           }));
         } else {
-          runs.push(new TextRun({ text: `[${node.alt || 'imagen no incluida'}]`, italics: true }));
+          runs.push(new TextRun({ text: `[${node.alt || 'imagen no incluida'}]`, italics: true, color: ctx.theme.mutedForeground }));
         }
         break;
       }
       default:
         if ('children' in node && Array.isArray((node as any).children)) {
-          runs.push(...inlineToRuns((node as any).children, marks, images));
+          runs.push(...inlineToRuns((node as any).children, marks, ctx));
         }
     }
   });
   return runs;
 }
+
+// ---------------------------------------------------------------------------
+// Chips de severidad / CVSS: `report-markdown.ts` siempre emite, justo bajo
+// cada titulo de hallazgo, una lista con "- **Severity:** X" y "- **CVSS:** Y"
+// (usando exactamente `translations.severity`/`translations.cvss`). Se
+// detectan por ese prefijo para reemplazar el bullet gris por un chip de
+// color, igual que el badge de severidad del PDF.
+// ---------------------------------------------------------------------------
+
+function renderSeverityChip(value: string, severity: Severity | undefined, theme: DocxThemeColors): Table {
+  const colors = severity ? theme.severity[severity] : { bg: theme.mutedForeground, fg: 'FFFFFF' };
+  return new Table({
+    width: { size: 0, type: WidthType.AUTO },
+    borders: NO_BORDERS,
+    rows: [new TableRow({ children: [
+      new TableCell({
+        width: { size: 0, type: WidthType.AUTO },
+        shading: { type: ShadingType.CLEAR, fill: colors.bg },
+        margins: { top: 60, bottom: 60, left: 160, right: 160 },
+        children: [new Paragraph({
+          alignment: AlignmentType.CENTER,
+          children: [new TextRun({ text: value.toUpperCase(), bold: true, color: colors.fg, size: 18, characterSpacing: 10, font: FONT_BODY })],
+        })],
+      }),
+    ] })],
+  });
+}
+
+function renderCvssLine(value: string, translations: ReportTranslations, theme: DocxThemeColors): Paragraph {
+  return new Paragraph({
+    spacing: { before: 100, after: 160 },
+    children: [new TextRun({ text: `${translations.cvss}  ${value}`, bold: true, color: theme.mutedForeground, size: 20, characterSpacing: 6 })],
+  });
+}
+
+// ---------------------------------------------------------------------------
+// Listas
+// ---------------------------------------------------------------------------
+
+function renderList(node: Mdast.List, ctx: ConvertCtx, level: number): FileChild[] {
+  const reference = node.ordered ? 'ordered-list' : 'bullet-list';
+  const out: FileChild[] = [];
+  node.children.forEach((item) => {
+    item.children.forEach((child, childIndex) => {
+      if (child.type === 'list') {
+        out.push(...renderList(child, ctx, level + 1));
+        return;
+      }
+      if (child.type === 'paragraph') {
+        if (level === 0 && childIndex === 0) {
+          const plain = mdastPlainText(child.children).trim();
+          const severityPrefix = `${ctx.translations.severity}:`;
+          const cvssPrefix = `${ctx.translations.cvss}:`;
+          if (plain.startsWith(severityPrefix)) {
+            const value = plain.slice(severityPrefix.length).trim();
+            out.push(renderSeverityChip(value, ctx.severityByLabel.get(value), ctx.theme));
+            return;
+          }
+          if (plain.startsWith(cvssPrefix)) {
+            const value = plain.slice(cvssPrefix.length).trim();
+            out.push(renderCvssLine(value, ctx.translations, ctx.theme));
+            return;
+          }
+        }
+        const prefix = typeof item.checked === 'boolean' && childIndex === 0
+          ? [new TextRun({ text: item.checked ? '☑ ' : '☐ ', font: FONT_BODY })]
+          : [];
+        out.push(new Paragraph({
+          numbering: { reference, level },
+          children: [...prefix, ...inlineToRuns(child.children, {}, ctx)],
+        }));
+        return;
+      }
+      // Otros bloques dentro de un item de lista (code, blockquote, etc.) se
+      // aplanan con la misma sangria, para no perder contenido.
+      out.push(...blockToDocx(child, ctx));
+    });
+  });
+  return out;
+}
+
+// ---------------------------------------------------------------------------
+// Tablas
+// ---------------------------------------------------------------------------
+
+function renderTable(node: Mdast.Table, ctx: ConvertCtx): Table {
+  const border: IBorderOptions = { style: BorderStyle.SINGLE, size: 4, color: ctx.theme.border };
+  const rows = node.children.map((row, rowIndex) => new TableRow({
+    tableHeader: rowIndex === 0,
+    children: row.children.map((cell) => new TableCell({
+      width: { size: 100 / Math.max(1, row.children.length), type: WidthType.PERCENTAGE },
+      shading: rowIndex === 0 ? { type: ShadingType.CLEAR, fill: ctx.theme.cardTint } : undefined,
+      margins: { top: 80, bottom: 80, left: 120, right: 120 },
+      children: [new Paragraph({
+        children: inlineToRuns(cell.children, rowIndex === 0 ? { bold: true } : {}, ctx),
+      })],
+    })),
+  }));
+  return new Table({
+    width: { size: 100, type: WidthType.PERCENTAGE },
+    borders: { top: border, bottom: border, left: border, right: border, insideHorizontal: border, insideVertical: border },
+    rows,
+  });
+}
+
+// ---------------------------------------------------------------------------
+// Bloques
+// ---------------------------------------------------------------------------
 
 const HEADING_BY_DEPTH: Record<number, (typeof HeadingLevel)[keyof typeof HeadingLevel]> = {
   1: HeadingLevel.HEADING_1,
@@ -175,75 +407,57 @@ const HEADING_BY_DEPTH: Record<number, (typeof HeadingLevel)[keyof typeof Headin
   6: HeadingLevel.HEADING_6,
 };
 
-function renderList(node: Mdast.List, images: Map<string, ResolvedImage>, level: number): Paragraph[] {
-  const reference = node.ordered ? 'ordered-list' : 'bullet-list';
-  const out: Paragraph[] = [];
-  node.children.forEach((item, index) => {
-    item.children.forEach((child, childIndex) => {
-      if (child.type === 'list') {
-        out.push(...renderList(child, images, level + 1));
-        return;
-      }
-      if (child.type === 'paragraph') {
-        const prefix = typeof item.checked === 'boolean' && childIndex === 0
-          ? [new TextRun({ text: item.checked ? '☑ ' : '☐ ', font: FONT_BODY })]
-          : [];
-        out.push(new Paragraph({
-          numbering: { reference, level },
-          children: [...prefix, ...inlineToRuns(child.children, {}, images)],
-        }));
-        return;
-      }
-      // Otros bloques dentro de un item de lista (code, blockquote, etc.) se
-      // aplanan como parrafo con la misma sangria, para no perder contenido.
-      blockToParagraphs(child, images).forEach((p) => out.push(p));
-    });
-    void index;
+function renderBlockquote(node: Mdast.Blockquote, ctx: ConvertCtx): FileChild[] {
+  const out: FileChild[] = [];
+  node.children.forEach((child) => {
+    if (child.type === 'paragraph') {
+      out.push(new Paragraph({
+        indent: { left: 480 },
+        border: { left: { style: BorderStyle.SINGLE, size: 24, color: ctx.theme.brand, space: 12 } },
+        shading: { type: ShadingType.CLEAR, fill: ctx.theme.cardTint },
+        spacing: { before: 40, after: 40 },
+        children: inlineToRuns(child.children, { italic: true }, ctx),
+      }));
+    } else {
+      out.push(...blockToDocx(child, ctx));
+    }
   });
+  if (out.length > 0) {
+    // Espacio de cierre tras el bloque de cita completo.
+    out.push(new Paragraph({ spacing: { after: 120 }, children: [] }));
+  }
   return out;
 }
 
-function renderTable(node: Mdast.Table, images: Map<string, ResolvedImage>): Table {
-  const rows = node.children.map((row, rowIndex) => new TableRow({
-    tableHeader: rowIndex === 0,
-    children: row.children.map((cell) => new TableCell({
-      width: { size: 100 / Math.max(1, row.children.length), type: WidthType.PERCENTAGE },
-      shading: rowIndex === 0 ? { type: ShadingType.CLEAR, fill: 'E7EAF0' } : undefined,
-      margins: { top: 60, bottom: 60, left: 100, right: 100 },
-      children: [new Paragraph({
-        children: inlineToRuns(cell.children, rowIndex === 0 ? { bold: true } : {}, images),
-      })],
-    })),
-  }));
-  return new Table({ width: { size: 100, type: WidthType.PERCENTAGE }, rows });
-}
-
-/** Convierte un nodo de bloque a una lista plana de Paragraph (usado dentro de list items). */
-function blockToParagraphs(node: Mdast.RootContent, images: Map<string, ResolvedImage>): Paragraph[] {
-  const nodes = blockToDocx(node, images);
-  return nodes.filter((n): n is Paragraph => n instanceof Paragraph);
-}
-
-function blockToDocx(node: Mdast.RootContent, images: Map<string, ResolvedImage>): FileChild[] {
+function blockToDocx(node: Mdast.RootContent, ctx: ConvertCtx): FileChild[] {
   switch (node.type) {
-    case 'heading':
+    case 'heading': {
+      const depth = node.depth;
       return [new Paragraph({
-        heading: HEADING_BY_DEPTH[node.depth] ?? HeadingLevel.HEADING_4,
-        spacing: { before: 240, after: 120 },
-        children: inlineToRuns(node.children, {}, images),
+        heading: HEADING_BY_DEPTH[depth] ?? HeadingLevel.HEADING_4,
+        pageBreakBefore: depth === 1,
+        spacing: { before: depth === 1 ? 0 : 280, after: 140 },
+        children: inlineToRuns(node.children, {}, ctx),
       })];
+    }
     case 'paragraph':
       return [new Paragraph({
         spacing: { after: 160 },
-        children: inlineToRuns(node.children, {}, images),
+        children: inlineToRuns(node.children, {}, ctx),
       })];
     case 'blockquote':
-      return renderBlockquote(node, images);
+      return renderBlockquote(node, ctx);
     case 'code': {
       const lines = (node.value || '').split('\n');
       return [new Paragraph({
         shading: { type: ShadingType.CLEAR, fill: 'F5F5F5' },
-        spacing: { after: 160 },
+        border: {
+          top: { style: BorderStyle.SINGLE, size: 4, color: ctx.theme.border },
+          bottom: { style: BorderStyle.SINGLE, size: 4, color: ctx.theme.border },
+          left: { style: BorderStyle.SINGLE, size: 4, color: ctx.theme.border },
+          right: { style: BorderStyle.SINGLE, size: 4, color: ctx.theme.border },
+        },
+        spacing: { before: 80, after: 200 },
         children: lines.map((line, i) => new TextRun({
           text: line.length ? line : ' ',
           font: FONT_MONO,
@@ -253,41 +467,145 @@ function blockToDocx(node: Mdast.RootContent, images: Map<string, ResolvedImage>
       })];
     }
     case 'thematicBreak':
-      return [new Paragraph({ border: { bottom: { style: 'single', size: 6, color: 'CCCCCC', space: 1 } }, spacing: { after: 160 } })];
+      return [new Paragraph({ border: { bottom: { style: BorderStyle.SINGLE, size: 6, color: ctx.theme.border, space: 1 } }, spacing: { after: 160 } })];
     case 'list':
-      return renderList(node, images, 0);
+      return renderList(node, ctx, 0);
     case 'table':
-      return [renderTable(node, images), new Paragraph({ text: '', spacing: { after: 160 } })];
+      return [renderTable(node, ctx), new Paragraph({ text: '', spacing: { after: 160 } })];
     default:
       if ('children' in node && Array.isArray((node as any).children)) {
-        return (node as any).children.flatMap((child: Mdast.RootContent) => blockToDocx(child, images));
+        return (node as any).children.flatMap((child: Mdast.RootContent) => blockToDocx(child, ctx));
       }
       return [];
   }
 }
 
-// blockquote necesita reconstruirse desde el nodo original (docx no clona
-// Paragraphs), asi que se resuelve aparte con acceso a los children reales.
-function renderBlockquote(node: Mdast.Blockquote, images: Map<string, ResolvedImage>): FileChild[] {
-  const out: FileChild[] = [];
-  node.children.forEach((child) => {
-    if (child.type === 'paragraph') {
-      out.push(new Paragraph({
-        indent: { left: 480 },
-        border: { left: { style: 'single', size: 12, color: 'B8C2D6', space: 8 } },
-        spacing: { after: 160 },
-        children: inlineToRuns(child.children, { italic: true }, images),
-      }));
-    } else {
-      out.push(...blockToDocx(child, images));
-    }
+function blocksToDocx(nodes: Mdast.RootContent[], ctx: ConvertCtx): FileChild[] {
+  return nodes.flatMap((node) => blockToDocx(node, ctx));
+}
+
+/** Texto plano de un nodo heading (para localizar el marcador "Findings Summary"). */
+function headingText(node: Mdast.Heading): string {
+  return mdastPlainText(node.children).trim();
+}
+
+/**
+ * `buildReportMarkdown` antepone, sin usar aqui, una portada de texto plano
+ * (titulo H1, tipo de informe, metadatos, "Prepared by" y la tabla de
+ * severidades) pensada para el .md descargable. Aqui se sustituye por una
+ * portada disenada a partir de los mismos datos, asi que se recorta todo lo
+ * anterior al final de esa seccion ("## Findings Summary" + su tabla).
+ */
+function stripCoverContent(children: Mdast.RootContent[], translations: ReportTranslations): Mdast.RootContent[] {
+  const idx = children.findIndex((n) => n.type === 'heading' && n.depth === 2 && headingText(n) === translations.findingsSummary);
+  if (idx === -1) return children; // formato inesperado: no se recorta nada, mejor de mas que perder contenido
+  let end = idx + 1;
+  if (children[end]?.type === 'table') end += 1;
+  return children.slice(end);
+}
+
+// ---------------------------------------------------------------------------
+// Portada
+// ---------------------------------------------------------------------------
+
+const SEV_ORDER: Severity[] = ['Critical', 'High', 'Medium', 'Low', 'Informational'];
+
+function severityLabel(sev: Severity, t: ReportTranslations): string {
+  return { Critical: t.critical, High: t.high, Medium: t.medium, Low: t.low, Informational: t.informational }[sev];
+}
+
+function buildSeverityCountRow(findings: Finding[], t: ReportTranslations, theme: DocxThemeColors): Table {
+  const counts: Record<Severity, number> = { Critical: 0, High: 0, Medium: 0, Low: 0, Informational: 0 };
+  findings.forEach((f) => { if (f.severity in counts) counts[f.severity] += 1; });
+
+  const cells = SEV_ORDER.map((sev) => {
+    const c = theme.severity[sev];
+    return new TableCell({
+      width: { size: 20, type: WidthType.PERCENTAGE },
+      shading: { type: ShadingType.CLEAR, fill: c.bg },
+      margins: { top: 160, bottom: 160, left: 80, right: 80 },
+      children: [
+        new Paragraph({ alignment: AlignmentType.CENTER, spacing: { after: 20 }, children: [new TextRun({ text: String(counts[sev]), bold: true, size: 36, color: c.fg })] }),
+        new Paragraph({ alignment: AlignmentType.CENTER, children: [new TextRun({ text: severityLabel(sev, t).toUpperCase(), bold: true, size: 14, color: c.fg, characterSpacing: 8 })] }),
+      ],
+    });
   });
+
+  return new Table({ width: { size: 100, type: WidthType.PERCENTAGE }, borders: NO_BORDERS, rows: [new TableRow({ children: cells })] });
+}
+
+function buildMetaTable(rows: Array<[string, string]>, theme: DocxThemeColors): Table {
+  const divider: IBorderOptions = { style: BorderStyle.SINGLE, size: 4, color: theme.border };
+  return new Table({
+    width: { size: 100, type: WidthType.PERCENTAGE },
+    borders: { ...NO_BORDERS, insideHorizontal: divider },
+    rows: rows.map(([label, value]) => new TableRow({ children: [
+      new TableCell({
+        width: { size: 32, type: WidthType.PERCENTAGE },
+        margins: { top: 100, bottom: 100, left: 0, right: 120 },
+        children: [new Paragraph({ children: [new TextRun({ text: label, bold: true, color: theme.mutedForeground, size: 20 })] })],
+      }),
+      new TableCell({
+        width: { size: 68, type: WidthType.PERCENTAGE },
+        margins: { top: 100, bottom: 100, left: 0, right: 0 },
+        children: [new Paragraph({ children: [new TextRun({ text: value, color: theme.foreground, size: 20 })] })],
+      }),
+    ] })),
+  });
+}
+
+function buildCover(params: {
+  project: Project;
+  client: Client;
+  findings: Finding[];
+  pentester?: PentesterProfile;
+  generatedDate: string;
+  translations: ReportTranslations;
+}, theme: DocxThemeColors): FileChild[] {
+  const { project, client, findings, pentester, generatedDate, translations: t } = params;
+  const out: FileChild[] = [];
+
+  out.push(new Paragraph({
+    spacing: { after: 160 },
+    children: [new TextRun({ text: t.reportType, bold: true, allCaps: true, characterSpacing: 24, color: theme.brand, size: 20 })],
+  }));
+  out.push(new Paragraph({
+    spacing: { after: 100 },
+    children: [new TextRun({ text: project.name, bold: true, size: 64, color: theme.foreground })],
+  }));
+  out.push(new Paragraph({
+    spacing: { after: 420 },
+    children: [new TextRun({ text: `${t.client}: ${client.name}`, size: 26, color: theme.mutedForeground })],
+  }));
+
+  out.push(buildSeverityCountRow(findings, t, theme));
+  out.push(new Paragraph({ spacing: { after: 420 }, children: [] }));
+
+  const metaRows: Array<[string, string]> = [
+    [t.assessmentWindow, `${project.startDate} – ${project.endDate}`],
+    [t.generatedOn, generatedDate],
+    [t.totalFindings, String(findings.length)],
+  ];
+  out.push(buildMetaTable(metaRows, theme));
+
+  if (pentester && (pentester.name || pentester.email || pentester.company)) {
+    out.push(new Paragraph({ spacing: { before: 420, after: 120 }, children: [new TextRun({ text: t.pentesterTitle, bold: true, allCaps: true, characterSpacing: 16, color: theme.brand, size: 18 })] }));
+    const pentesterRows: Array<[string, string]> = [];
+    if (pentester.name) pentesterRows.push(['Name', pentester.name]);
+    if (pentester.role) pentesterRows.push(['Role', pentester.role]);
+    if (pentester.company) pentesterRows.push(['Company', pentester.company]);
+    if (pentester.email) pentesterRows.push(['Email', pentester.email]);
+    if (pentester.phone) pentesterRows.push(['Phone', pentester.phone]);
+    if (pentesterRows.length > 0) out.push(buildMetaTable(pentesterRows, theme));
+  }
+
+  out.push(new Paragraph({ children: [new PageBreak()] }));
   return out;
 }
 
-function blocksToDocx(nodes: Mdast.RootContent[], images: Map<string, ResolvedImage>): FileChild[] {
-  return nodes.flatMap((node) => blockToDocx(node, images));
-}
+// ---------------------------------------------------------------------------
+// Documento
+// ---------------------------------------------------------------------------
 
 export type BuildReportDocxParams = {
   project: Project;
@@ -299,20 +617,49 @@ export type BuildReportDocxParams = {
   translations: ReportTranslations;
   footerLabel: string;
   getImage: (id: string) => ImageAsset | undefined;
+  /** Paleta del tema activo del proyecto (modo claro). Si se omite, usa una paleta neutra de reserva. */
+  theme?: ReportThemeColors;
 };
 
 export async function buildReportDocx(params: BuildReportDocxParams): Promise<Blob> {
   const { project, client, findings, pentester, variables, generatedDate, translations, footerLabel, getImage } = params;
+  const docxTheme = resolveDocxTheme(params.theme);
 
   const markdown = buildReportMarkdown({ project, client, findings, pentester, variables, generatedDate, translations });
   const tree = unified().use(remarkParse).use(remarkGfm).parse(markdown) as Mdast.Root;
   const images = await preloadImages(tree, getImage);
-  const body = blocksToDocx(tree.children, images);
+  const ctx: ConvertCtx = { images, theme: docxTheme, translations, severityByLabel: buildSeverityByLabel(translations) };
 
+  const cover = buildCover({ project, client, findings, pentester, generatedDate, translations }, docxTheme);
+  const toc = [
+    new TableOfContents('Table of Contents', { hyperlink: true, headingStyleRange: '1-2' }),
+    new Paragraph({ children: [new PageBreak()] }),
+  ];
+  const body = blocksToDocx(stripCoverContent(tree.children, translations), ctx);
+
+  const headingBase = { run: { font: FONT_BODY, bold: true, color: docxTheme.foreground } };
   const doc = new Document({
     creator: 'VulnForce',
     title: project.name,
     description: `${translations.reportType} - ${client.name}`,
+    features: { updateFields: true },
+    styles: {
+      default: {
+        document: {
+          run: { font: FONT_BODY, size: 22, color: docxTheme.foreground },
+          paragraph: { spacing: { line: 276 } },
+        },
+        title: { run: { font: FONT_BODY, bold: true, size: 64, color: docxTheme.foreground } },
+        heading1: {
+          ...headingBase,
+          run: { ...headingBase.run, size: 32, color: docxTheme.brand },
+          paragraph: { spacing: { before: 0, after: 200 }, border: { bottom: { style: BorderStyle.SINGLE, size: 8, color: docxTheme.brand, space: 6 } } },
+        },
+        heading2: { ...headingBase, run: { ...headingBase.run, size: 26 } },
+        heading3: { ...headingBase, run: { ...headingBase.run, size: 22, color: docxTheme.mutedForeground } },
+        heading4: { ...headingBase, run: { ...headingBase.run, size: 20 } },
+      },
+    },
     numbering: {
       config: [
         {
@@ -339,26 +686,20 @@ export async function buildReportDocx(params: BuildReportDocxParams): Promise<Bl
     },
     sections: [{
       properties: {
-        page: {
-          margin: { top: 1134, bottom: 1134, left: 1134, right: 1134 }, // ~2cm en twips
-        },
+        page: { margin: { top: 1134, bottom: 1134, left: 1134, right: 1134 } }, // ~2cm en twips
       },
       footers: {
         default: new Footer({
           children: [new Paragraph({
             alignment: AlignmentType.CENTER,
             children: [
-              new TextRun({ text: `${footerLabel}  ·  `, size: 16, color: '888888' }),
-              new TextRun({ children: [PageNumber.CURRENT], size: 16, color: '888888' }),
+              new TextRun({ text: `${footerLabel}  ·  `, size: 16, color: docxTheme.mutedForeground }),
+              new TextRun({ children: [PageNumber.CURRENT], size: 16, color: docxTheme.mutedForeground }),
             ],
           })],
         }),
       },
-      children: [
-        new Paragraph({ heading: HeadingLevel.TITLE, children: [new TextRun({ text: project.name })] }),
-        new Paragraph({ spacing: { after: 240 }, children: [new TextRun({ text: `${translations.client}: ${client.name}`, size: 22 })] }),
-        ...body,
-      ],
+      children: [...cover, ...toc, ...body],
     }],
   });
 

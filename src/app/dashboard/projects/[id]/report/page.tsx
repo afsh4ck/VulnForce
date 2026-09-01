@@ -917,6 +917,7 @@ ${themeStyleBlock}</style>
         },
         footerLabel: `${project.name} · ${client.name}`,
         getImage,
+        theme: activeTheme.light,
       });
       const url = URL.createObjectURL(blob);
       const a = document.createElement('a');
@@ -935,7 +936,7 @@ ${themeStyleBlock}</style>
     } finally {
       setWordExportPending(false);
     }
-  }, [client, getImage, pentesterSnapshot, project, projectFindings, t, toast, variables, wordExportPending]);
+  }, [activeTheme, client, getImage, pentesterSnapshot, project, projectFindings, t, toast, variables, wordExportPending]);
 
   if (!project || !client) {
     return null;
