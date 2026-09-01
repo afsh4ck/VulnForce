@@ -18,7 +18,7 @@ export type McpSkillDef = {
 };
 
 // Discovery manifest for the skills served on demand via get_skill / prompts.
-// Full content lives in src/lib/mcp/skills/*.md (loaded by src/lib/mcp/skills.ts).
+// Full content lives in src/lib/mcp/skills.ts.
 export const MCP_SKILLS: McpSkillDef[] = [
   {
     id: 'vulnforce-reports',
@@ -43,6 +43,90 @@ export type McpToolDef = {
   title: string;
   description: string;
   inputSchema: Record<string, unknown>;
+};
+
+// Localized short descriptions for the dashboard MCP page. The MCP protocol
+// keeps using the verbose English `description` above; this is display only.
+export const MCP_TOOL_I18N: Record<string, { en: string; es: string }> = {
+  list_skills: {
+    en: 'List the report-generation skills (playbooks) this server provides.',
+    es: 'Lista las skills (manuales) de generación de informes de este servidor.',
+  },
+  get_skill: {
+    en: 'Download the full markdown of one skill by its id. Start with vulnforce-reports.',
+    es: 'Descarga el Markdown completo de una skill por su id. Empieza por vulnforce-reports.',
+  },
+  list_projects: {
+    en: 'List every project (report) with its id, name, client, status and language.',
+    es: 'Lista los proyectos (informes) con id, nombre, cliente, estado e idioma.',
+  },
+  get_report: {
+    en: 'Get the full markdown report body of a project by its id.',
+    es: 'Obtiene el cuerpo Markdown completo del informe de un proyecto por su id.',
+  },
+  create_report: {
+    en: 'Create a new project with an initial markdown report body.',
+    es: 'Crea un proyecto nuevo con un cuerpo de informe Markdown inicial.',
+  },
+  update_report: {
+    en: 'Replace the entire markdown report body of a project.',
+    es: 'Reemplaza por completo el cuerpo Markdown del informe de un proyecto.',
+  },
+  append_to_report: {
+    en: 'Append markdown to the end of a project report body.',
+    es: 'Añade Markdown al final del cuerpo del informe de un proyecto.',
+  },
+  list_clients: {
+    en: 'List clients (id and name) to assign one when creating a report.',
+    es: 'Lista los clientes (id y nombre) para asignarlos al crear un informe.',
+  },
+  list_findings: {
+    en: 'List findings, optionally filtered by project, as report context.',
+    es: 'Lista hallazgos, opcionalmente filtrados por proyecto, como contexto del informe.',
+  },
+  get_finding: {
+    en: 'Get a single finding by its id, including its full markdown body.',
+    es: 'Obtiene un hallazgo por su id, con su cuerpo Markdown completo.',
+  },
+  create_finding: {
+    en: 'Create a structured finding (vulnerability record) attached to a project.',
+    es: 'Crea un hallazgo estructurado (registro de vulnerabilidad) asociado a un proyecto.',
+  },
+  update_finding: {
+    en: 'Update fields of a finding. Only the fields you pass change.',
+    es: 'Actualiza campos de un hallazgo. Solo cambia los que envías.',
+  },
+  delete_finding: {
+    en: 'Delete a finding by its id.',
+    es: 'Elimina un hallazgo por su id.',
+  },
+  list_vulnerabilities: {
+    en: 'List the reusable vulnerability library that findings can reference.',
+    es: 'Lista la biblioteca reutilizable de vulnerabilidades que los hallazgos pueden referenciar.',
+  },
+  get_vulnerability: {
+    en: 'Get the full bilingual entry of a library vulnerability by its id.',
+    es: 'Obtiene la entrada bilingüe completa de una vulnerabilidad de la biblioteca por su id.',
+  },
+};
+
+export const MCP_SKILL_I18N: Record<string, { en: string; es: string }> = {
+  'vulnforce-reports': {
+    en: 'Router: load first. MCP tool map and the token-efficient report workflow.',
+    es: 'Router: cárgala primero. Mapa de herramientas MCP y flujo de trabajo eficiente en tokens.',
+  },
+  'vulnforce-report-structure': {
+    en: 'Report structure: section hierarchy, templates, the {{findings.table}} and {{findings.details}} markers, variables.',
+    es: 'Estructura del informe: jerarquía de secciones, plantillas, marcadores {{findings.table}} y {{findings.details}}, variables.',
+  },
+  'vulnforce-findings-workflow': {
+    en: 'Creating and writing findings, finding markdown structure, using the vulnerability library.',
+    es: 'Creación y redacción de hallazgos, estructura Markdown del hallazgo, uso de la biblioteca de vulnerabilidades.',
+  },
+  'vulnforce-cvss-scoring': {
+    en: 'CVSS v3.1 severity bands and finding scoring conventions.',
+    es: 'Bandas de severidad CVSS v3.1 y convenciones de puntuación de hallazgos.',
+  },
 };
 
 export const MCP_TOOLS: McpToolDef[] = [

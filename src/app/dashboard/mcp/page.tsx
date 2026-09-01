@@ -8,7 +8,7 @@ import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { PlugsConnected, Copy, CheckCircle, AlertCircle } from '@/components/icons';
-import { MCP_TOOLS, MCP_SKILLS } from '@/lib/mcp/tool-defs';
+import { MCP_TOOLS, MCP_SKILLS, MCP_TOOL_I18N, MCP_SKILL_I18N } from '@/lib/mcp/tool-defs';
 import { syntaxTheme } from '@/components/code-block';
 
 const T = {
@@ -30,6 +30,7 @@ const T = {
     httpClients: 'Clients with native HTTP MCP (Cursor, VS Code, Claude Code)',
     stdioClients: 'Clients that only speak stdio (Claude Desktop) — bridge with mcp-remote',
     cliClients: 'Claude Code CLI (one command)',
+    codexClients: 'Codex CLI (add, list and health check)',
     toolsTitle: 'Available tools',
     toolsDesc: 'These are the actions an AI client can perform on your reports.',
     skillsTitle: 'Report-generation skills',
@@ -62,6 +63,7 @@ const T = {
     httpClients: 'Clientes con MCP por HTTP nativo (Cursor, VS Code, Claude Code)',
     stdioClients: 'Clientes que solo hablan stdio (Claude Desktop): puente con mcp-remote',
     cliClients: 'Claude Code CLI (un solo comando)',
+    codexClients: 'Codex CLI (añadir, listar y comprobar estado)',
     toolsTitle: 'Herramientas disponibles',
     toolsDesc: 'Estas son las acciones que un cliente de IA puede ejecutar sobre tus informes.',
     skillsTitle: 'Skills de generación de informes',
@@ -202,6 +204,15 @@ export default function McpPage() {
 
   const snippetCli = useMemo(() => `claude mcp add --transport http vulnforce ${endpoint}`, [endpoint]);
 
+  const snippetCodex = useMemo(
+    () =>
+      `codex mcp add vulnforce --url ${endpoint} && codex mcp list && curl -sS -o /dev/null -w '%{http_code}\\n' --max-time 5 ${endpoint}`,
+    [endpoint]
+  );
+
+  const toolDesc = (name: string, fallback: string) => MCP_TOOL_I18N[name]?.[language] ?? fallback;
+  const skillDesc = (id: string, fallback: string) => MCP_SKILL_I18N[id]?.[language] ?? fallback;
+
   return (
     <div className="container mx-auto px-4 py-6 max-w-5xl">
       <div className="space-y-1">
@@ -260,7 +271,11 @@ export default function McpPage() {
             </div>
             <div className="space-y-2">
               <p className="text-sm font-medium">{t.cliClients}</p>
-              <CodeBlock code={snippetCli} copyLabel={t.copy} copiedLabel={t.copied} />
+              <CodeBlock code={snippetCli} copyLabel={t.copy} copiedLabel={t.copied} language="bash" />
+            </div>
+            <div className="space-y-2">
+              <p className="text-sm font-medium">{t.codexClients}</p>
+              <CodeBlock code={snippetCodex} copyLabel={t.copy} copiedLabel={t.copied} language="bash" />
             </div>
           </CardContent>
         </Card>
@@ -274,9 +289,9 @@ export default function McpPage() {
           <CardContent>
             <ul className="divide-y">
               {MCP_TOOLS.map((tool) => (
-                <li key={tool.name} className="flex flex-col gap-0.5 py-2.5 sm:flex-row sm:items-baseline sm:gap-3">
-                  <code className="font-code text-sm text-primary shrink-0">{tool.name}</code>
-                  <span className="text-sm text-muted-foreground">{tool.description}</span>
+                <li key={tool.name} className="grid gap-0.5 py-2.5 sm:grid-cols-[13rem_1fr] sm:gap-4">
+                  <code className="font-code text-sm text-primary">{tool.name}</code>
+                  <span className="text-sm text-muted-foreground">{toolDesc(tool.name, tool.description)}</span>
                 </li>
               ))}
             </ul>
@@ -292,9 +307,9 @@ export default function McpPage() {
           <CardContent>
             <ul className="divide-y">
               {MCP_SKILLS.map((skill) => (
-                <li key={skill.id} className="flex flex-col gap-0.5 py-2.5 sm:flex-row sm:items-baseline sm:gap-3">
-                  <code className="font-code text-sm text-primary shrink-0">{skill.id}</code>
-                  <span className="text-sm text-muted-foreground">{skill.description}</span>
+                <li key={skill.id} className="grid gap-0.5 py-2.5 sm:grid-cols-[15rem_1fr] sm:gap-4">
+                  <code className="font-code text-sm text-primary">{skill.id}</code>
+                  <span className="text-sm text-muted-foreground">{skillDesc(skill.id, skill.description)}</span>
                 </li>
               ))}
             </ul>

@@ -61,6 +61,9 @@ Conecta tu cliente al endpoint (en desarrollo, `http://localhost:9002/api/mcp`):
 ```bash
 # Claude Code CLI
 claude mcp add --transport http vulnforce http://localhost:9002/api/mcp
+
+# Codex CLI (añadir, listar y comprobar estado)
+codex mcp add vulnforce --url http://localhost:9002/api/mcp && codex mcp list && curl -sS -o /dev/null -w '%{http_code}\n' --max-time 5 http://localhost:9002/api/mcp
 ```
 
 Herramientas disponibles: `list_skills`, `get_skill`, `list_projects`, `get_report`, `create_report`, `update_report`, `append_to_report`, `list_clients`, `list_findings`, `get_finding`, `create_finding`, `update_finding`, `delete_finding`, `list_vulnerabilities`, `get_vulnerability`. Un informe es el cuerpo Markdown de un proyecto. La IA escribe directamente en el almacén; recarga la app para ver los cambios.
