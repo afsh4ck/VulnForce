@@ -393,6 +393,33 @@ export default function ReportPreviewPage() {
     return `${mainContent}${findingsSection}`;
   }, [project, client, projectFindings, projectId, t]);
 
+  // El índice de impresión debe mostrar la jerarquía editorial, no cada campo
+  // interno de una vulnerabilidad. Conservamos los títulos de los hallazgos
+  // dentro de "Technical Findings Details" y omitimos sus subsecciones.
+  const documentToc = useMemo(() => {
+    let isInsideFindingsDetails = false;
+
+    return headings.reduce<Array<Heading & { tocLevel: number; isFinding: boolean }>>((items, heading) => {
+      const isFindingsDetails = /technical findings details|detalles t[eé]cnicos|hallazgos t[eé]cnicos/i.test(heading.text);
+      if (heading.level === 1) {
+        isInsideFindingsDetails = isFindingsDetails;
+      } else if (isFindingsDetails) {
+        isInsideFindingsDetails = true;
+      }
+
+      if (isInsideFindingsDetails && !isFindingsDetails && !heading.severity) {
+        return items;
+      }
+
+      items.push({
+        ...heading,
+        tocLevel: heading.severity ? 2 : heading.level,
+        isFinding: Boolean(heading.severity),
+      });
+      return items;
+    }, []);
+  }, [headings]);
+
   useEffect(() => {
     if (!reportContentRef.current) return;
     const headingElements = Array.from(
@@ -536,7 +563,25 @@ export default function ReportPreviewPage() {
     root.classList.remove('light', 'dark');
     root.classList.add(theme);
     document.body.classList.add('printing');
+
+    // Chrome activa los estilos de impresión antes de beforeprint. Con el
+    // layout final, el alto físico A4 es 1122.52 CSS px (a 96 dpi), por lo que
+    // podemos escribir los números reales en el índice antes de la captura.
+    const updateTocPageNumbers = () => {
+      const reportRoot = reportContentRef.current;
+      if (!reportRoot) return;
+      const reportTop = reportRoot.getBoundingClientRect().top;
+      reportRoot.querySelectorAll<HTMLElement>('[data-toc-page-for]').forEach((pageNumber) => {
+        const targetId = pageNumber.dataset.tocPageFor;
+        const target = targetId ? document.getElementById(targetId) : null;
+        if (!target) return;
+        const offset = target.getBoundingClientRect().top - reportTop;
+        pageNumber.textContent = String(Math.max(1, Math.floor(offset / 1122.52) + 1));
+      });
+    };
+    window.addEventListener('beforeprint', updateTocPageNumbers, { once: true });
     window.setTimeout(() => {
+      updateTocPageNumbers();
       window.print();
       window.setTimeout(() => {
         root.className = prev;
@@ -580,11 +625,11 @@ export default function ReportPreviewPage() {
     // copiar: el selector de lenguaje y el wrap son interactivos del preview.
     exportRoot.querySelectorAll('[data-code-lang], [data-code-wrap]').forEach((node) => node.remove());
     const reportInnerHtml = exportRoot.innerHTML;
-    const tocHtml = headings
+    const tocHtml = documentToc
       .map((h) => {
         const classes = [
-          `toc-level-${h.level}`,
-          h.severity ? 'toc-vuln' : '',
+          `toc-level-${h.tocLevel}`,
+          h.isFinding ? 'toc-finding' : '',
         ].filter(Boolean).join(' ');
         return `<li class="${classes}"><a href="#${escapeHtml(h.id)}">${escapeHtml(h.text)}</a></li>`;
       })
@@ -741,7 +786,7 @@ ${themeStyleBlock}</style>
     a.click();
     document.body.removeChild(a);
     URL.revokeObjectURL(url);
-  }, [activeTheme, appTheme, client, headings, project, t, todos]);
+  }, [activeTheme, appTheme, client, documentToc, project, t, todos]);
 
   const handleDownloadMarkdown = useCallback(() => {
     if (!project || !client) return;
@@ -883,6 +928,7 @@ ${themeStyleBlock}</style>
         </div>
       </header>
 
+      <div className="pdf-page-background" aria-hidden="true" />
       <div className="report-layout">
         <main className="report-main flex-1 min-w-0 order-1 printable-content">
           <div ref={reportContentRef}>
@@ -975,12 +1021,15 @@ ${themeStyleBlock}</style>
             <section className="report-toc report-page" aria-label={langT.tableOfContents}>
               <h1 data-toc-heading>{langT.tableOfContents}</h1>
               <ul className="toc-list">
-                {headings.map((heading) => (
+                {documentToc.map((heading) => (
                   <li
                     key={heading.id}
-                    className={cn(`toc-level-${heading.level}`, heading.severity && 'toc-vuln')}
+                    className={cn(`toc-level-${heading.tocLevel}`, heading.isFinding && 'toc-finding')}
                   >
-                    <a href={`#${heading.id}`}>{heading.text}</a>
+                    <a href={`#${heading.id}`}>
+                      <span>{heading.text}</span>
+                      <span className="toc-page-number" data-toc-page-for={heading.id} aria-label="page number" />
+                    </a>
                   </li>
                 ))}
               </ul>
@@ -995,6 +1044,10 @@ ${themeStyleBlock}</style>
               />
             </section>
           </div>
+          <footer className="report-print-footer" aria-hidden="true">
+            <span>{project.name} · {client.name}</span>
+            <span className="report-print-page-number" />
+          </footer>
         </main>
 
         <aside
@@ -1061,13 +1114,13 @@ ${themeStyleBlock}</style>
 
             <h3 className="sidebar-heading">{langT.tableOfContents}</h3>
             <ul className="toc-list">
-              {headings.map((heading) => (
+              {documentToc.map((heading) => (
                 <li
                   key={heading.id}
                   data-toc-id={heading.id}
                   className={cn(
-                    `toc-level-${heading.level}`,
-                    heading.severity && 'toc-vuln',
+                    `toc-level-${heading.tocLevel}`,
+                    heading.isFinding && 'toc-finding',
                   )}
                 >
                   <a
