@@ -83,12 +83,29 @@ export function buildReportMarkdown(params: {
   });
   headerLines.push('');
 
-  const reportBody = resolveVariables(project.reportBody || '', variables);
+  const findingsDetailsMarkdown = sortedFindings
+    .map((finding) => [
+      `## ${finding.title}`,
+      '',
+      `- **${t.severity}:** ${severityLabel(finding.severity, t)}`,
+      `- **${t.cvss}:** ${finding.cvss.toFixed(1)}`,
+      '',
+      resolveVariables(finding.markdown || '', variables).trim(),
+      '',
+    ].join('\n'))
+    .join('\n');
+
+  const rawBody = project.reportBody || '';
+  const hasDetailsMarker = /\{\{\s*findings\.details\s*\}\}/.test(rawBody);
+  const reportBody = resolveVariables(
+    rawBody.replace(/\{\{\s*findings\.details\s*\}\}/g, () => findingsDetailsMarkdown),
+    variables,
+  );
   if (reportBody.trim()) {
     headerLines.push(reportBody.trim(), '');
   }
 
-  if (sortedFindings.length > 0) {
+  if (!hasDetailsMarker && sortedFindings.length > 0) {
     headerLines.push(`# ${t.findings}`, '');
     sortedFindings.forEach((finding) => {
       headerLines.push(

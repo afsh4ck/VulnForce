@@ -323,9 +323,15 @@ This section summarizes the testing perspective and the findings identified duri
 
 ## Summary of Findings
 
-During the course of testing, {{pentester.name}} uncovered a total of {{vulnerabilities.count}} findings that pose a material risk to {{client.name}}'s information systems. Informational findings are observations for areas of improvement and do not represent security vulnerabilities on their own. The table below summarizes the findings; full technical details for each are provided in the Findings section.
+During the course of testing, {{pentester.name}} uncovered a total of {{vulnerabilities.count}} findings that pose a material risk to {{client.name}}'s information systems. Informational findings are observations for areas of improvement and do not represent security vulnerabilities on their own. The table below summarizes the findings; full technical details for each are provided in the Technical Findings Details section.
 
 {{findings.table}}
+
+# Technical Findings Details
+
+The findings below are ordered by severity. Each finding includes a description, evidence, impact, and remediation guidance. If no findings are registered yet, this section will be empty.
+
+{{findings.details}}
 
 # Internal Network Compromise Walkthrough
 
@@ -475,9 +481,15 @@ Esta sección resume la perspectiva de las pruebas y los hallazgos identificados
 
 ## Resumen de Hallazgos
 
-Durante las pruebas, {{pentester.name}} descubrió un total de {{vulnerabilities.count}} hallazgos que suponen un riesgo material para los sistemas de información de {{client.name}}. Los hallazgos informativos son observaciones sobre áreas de mejora y no representan vulnerabilidades de seguridad por sí mismos. La siguiente tabla resume los hallazgos; los detalles técnicos completos de cada uno se encuentran en la sección Hallazgos.
+Durante las pruebas, {{pentester.name}} descubrió un total de {{vulnerabilities.count}} hallazgos que suponen un riesgo material para los sistemas de información de {{client.name}}. Los hallazgos informativos son observaciones sobre áreas de mejora y no representan vulnerabilidades de seguridad por sí mismos. La siguiente tabla resume los hallazgos; los detalles técnicos completos de cada uno se encuentran en la sección Detalles Técnicos de los Hallazgos.
 
 {{findings.table}}
+
+# Detalles Técnicos de los Hallazgos
+
+Los hallazgos siguientes están ordenados por severidad. Cada hallazgo incluye descripción, evidencias, impacto y guía de remediación. Si aún no hay hallazgos registrados, esta sección aparecerá vacía.
+
+{{findings.details}}
 
 # Walkthrough del Compromiso de la Red Interna
 

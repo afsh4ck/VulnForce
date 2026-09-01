@@ -356,7 +356,12 @@ export default function ReportPreviewPage() {
 
     const reportBodyResolved = (project.reportBody || '').replace(/\{\{\s*findings\.table\s*\}\}/g, findingsTable());
 
-    const mainContent = linkifyTodosInMarkdown(
+    // Marcador {{findings.details}}: si la plantilla lo incluye, los hallazgos
+    // detallados se renderizan en esa posición (p. ej. una sección "Technical
+    // Findings Details") en lugar de añadirse al final del informe.
+    const hasDetailsMarker = /\{\{\s*findings\.details\s*\}\}/.test(project.reportBody || '');
+
+    let mainContent = linkifyTodosInMarkdown(
       reportBodyResolved,
       (marker, sectionTitle) => projectTodoHref(marker.detail, sectionTitle),
       langT.reportPreview,
@@ -374,7 +379,13 @@ export default function ReportPreviewPage() {
       })
       .join('\n\n');
 
-    const findingsSection = projectFindings.length
+    const findingsBlock = projectFindings.length ? findingsContent : `> ${langT.execEmpty}`;
+
+    if (hasDetailsMarker) {
+      mainContent = mainContent.replace(/\{\{\s*findings\.details\s*\}\}/g, () => findingsBlock);
+    }
+
+    const findingsSection = !hasDetailsMarker && projectFindings.length
       ? `\n\n# ${langT.findings}\n\n${findingsContent}`
       : '';
 

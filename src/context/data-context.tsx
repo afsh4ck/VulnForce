@@ -22,6 +22,19 @@ import { format } from 'date-fns';
 
 const STATE_ENDPOINT = '/api/state';
 const STATE_DEBOUNCE_MS = 500;
+
+// Sube este número cuando cambie el contenido de las plantillas integradas del
+// seed y quieras que llegue a instalaciones con estado ya persistido.
+const TEMPLATES_MIGRATION_VERSION = 1;
+
+// Refresca las plantillas integradas (las que existen en el seed) con el
+// contenido actual del seed, conservando las plantillas creadas por el usuario
+// (ids ausentes del seed).
+function refreshBuiltInTemplates(current: ProjectTemplate[]): ProjectTemplate[] {
+    const seedIds = new Set(initialProjectTemplates.map(t => t.id));
+    const userTemplates = current.filter(t => !seedIds.has(t.id));
+    return [...initialProjectTemplates, ...userTemplates];
+}
 type PersistedStateShape = {
     clients?: Client[];
     projects?: Project[];
@@ -120,6 +133,7 @@ export function DataProvider({ children }: { children: ReactNode }) {
     const [projectTemplates, setProjectTemplates] = usePersistedState<ProjectTemplate[]>('vulnforce-project-templates-v4', initialProjectTemplates);
     const [themes, setThemes] = usePersistedState<ReportTheme[]>('vulnforce-themes-v1', []);
     const [activeThemeId, setActiveThemeIdState] = usePersistedState<string>('vulnforce-active-theme-v1', DEFAULT_THEME_ID);
+    const [templatesMigration, setTemplatesMigration] = usePersistedState<number>('vulnforce-templates-migration', 0);
 
     const [remoteHydrated, setRemoteHydrated] = useState(false);
     const writeTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
@@ -153,6 +167,17 @@ export function DataProvider({ children }: { children: ReactNode }) {
         return () => { cancelled = true; };
     // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
+
+    // Una sola vez por navegador: sincroniza las plantillas integradas con el
+    // seed. Se ejecuta tras la hidratación remota para no competir con ella.
+    // Las plantillas creadas por el usuario no se tocan.
+    useEffect(() => {
+        if (!remoteHydrated) return;
+        if (templatesMigration >= TEMPLATES_MIGRATION_VERSION) return;
+        setProjectTemplates(prev => refreshBuiltInTemplates(prev));
+        setTemplatesMigration(TEMPLATES_MIGRATION_VERSION);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [remoteHydrated, templatesMigration]);
 
     // Debounced sync of all collections to the server-side state file.
     // remoteHydrated is included so the first sync fires on mount even if no
