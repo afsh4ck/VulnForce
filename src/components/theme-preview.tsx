@@ -124,9 +124,8 @@ function MiniPreview({ theme: _theme }: { theme: ReportTheme }) {
       <div
         className="report-cover"
         style={{
-          padding: '1.1rem 1.2rem 1.4rem',
+          padding: '1.3rem 1.2rem',
           minHeight: 0,
-          borderBottom: '1px solid hsl(var(--border))',
           position: 'relative',
         }}
       >
@@ -141,26 +140,6 @@ function MiniPreview({ theme: _theme }: { theme: ReportTheme }) {
         </h2>
         <p style={{ margin: 0, color: 'hsl(var(--muted-foreground))', fontSize: '0.7rem' }}>
           {DEMO.client}
-        </p>
-        <div style={{ display: 'flex', gap: '0.4rem', marginTop: '0.7rem' }}>
-          <SeverityChip label="Critical" kind="critical" />
-          <SeverityChip label="High" kind="high" />
-        </div>
-      </div>
-      <div style={{ padding: '0.8rem 1.2rem 1rem' }}>
-        <p
-          style={{
-            margin: 0,
-            color: 'hsl(var(--muted-foreground))',
-            fontSize: '0.62rem',
-            lineHeight: 1.5,
-            display: '-webkit-box',
-            WebkitLineClamp: 4,
-            WebkitBoxOrient: 'vertical',
-            overflow: 'hidden',
-          }}
-        >
-          {DEMO.intro}
         </p>
       </div>
     </div>
