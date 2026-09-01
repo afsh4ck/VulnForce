@@ -18,6 +18,7 @@ import {
   PanelLeft,
   FileText,
   FileDown,
+  FileDoc,
   Palette,
   Sun,
   Moon,
@@ -58,6 +59,7 @@ import {
   buildReportHtmlStyles,
 } from '@/lib/report-styles';
 import { buildReportMarkdown } from '@/lib/report-markdown';
+import { useToast } from '@/hooks/use-toast';
 import { profileToSnapshot } from '@/components/pentester-data-fields';
 import { themeExtrasCSS, themeFontsHref, themeVariablesBlock } from '@/lib/theme-to-css';
 import { loadFontFamilies } from '@/lib/report-fonts';
@@ -95,6 +97,7 @@ export default function ReportPreviewPage() {
   const { id: projectId } = params;
   const { projects, clients, findings, getImage, getThemeById, getAllThemes, updateProject, activeThemeId } = useData();
   const { user } = useUser();
+  const { toast } = useToast();
 
   const [project, setProject] = useState<Project | undefined>();
   const [client, setClient] = useState<Client | undefined>();
@@ -106,6 +109,7 @@ export default function ReportPreviewPage() {
   const [pdfDialogOpen, setPdfDialogOpen] = useState(false);
   const [pdfTheme, setPdfTheme] = useState<ReportTheme>((appTheme as ReportTheme) || 'dark');
   const [themeDialogOpen, setThemeDialogOpen] = useState(false);
+  const [wordExportPending, setWordExportPending] = useState(false);
 
   const reportContentRef = useRef<HTMLDivElement>(null);
 
@@ -874,6 +878,65 @@ ${themeStyleBlock}</style>
     URL.revokeObjectURL(url);
   }, [client, pentesterSnapshot, project, projectFindings, t, variables]);
 
+  const handleDownloadWord = useCallback(async () => {
+    if (!project || !client || wordExportPending) return;
+    const reportLang = project.language;
+    const langT = t[reportLang];
+    const generatedDate = new Date().toLocaleDateString(reportLang === 'es' ? 'es-ES' : 'en-US', {
+      year: 'numeric', month: 'long', day: 'numeric',
+    });
+    setWordExportPending(true);
+    try {
+      // Carga diferida: `docx` + remark solo pesan en el bundle del navegador
+      // cuando el usuario realmente pide el .docx, no en cada visita al informe.
+      const { buildReportDocx } = await import('@/lib/report-docx');
+      const blob = await buildReportDocx({
+        project,
+        client,
+        findings: projectFindings,
+        pentester: pentesterSnapshot,
+        variables,
+        generatedDate,
+        translations: {
+          reportType: langT.reportType,
+          generatedOn: langT.generatedOn,
+          client: langT.client,
+          assessmentWindow: langT.assessmentWindow,
+          totalFindings: langT.totalFindings,
+          findingsSummary: langT.findingsSummary,
+          findings: langT.findings,
+          pentesterTitle: langT.pentesterTitle,
+          severity: langT.severity,
+          cvss: langT.cvss,
+          count: langT.count,
+          critical: langT.critical,
+          high: langT.high,
+          medium: langT.medium,
+          low: langT.low,
+          informational: langT.informational,
+        },
+        footerLabel: `${project.name} · ${client.name}`,
+        getImage,
+      });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = `report-${project.name.replace(/\s+/g, '_')}-${new Date().toISOString().split('T')[0]}.docx`;
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      URL.revokeObjectURL(url);
+    } catch (error) {
+      console.error('Error generando el .docx del informe:', error);
+      toast({
+        variant: 'destructive',
+        title: reportLang === 'es' ? 'No se pudo generar el Word' : 'Could not generate the Word file',
+      });
+    } finally {
+      setWordExportPending(false);
+    }
+  }, [client, getImage, pentesterSnapshot, project, projectFindings, t, toast, variables, wordExportPending]);
+
   if (!project || !client) {
     return null;
   }
@@ -963,6 +1026,9 @@ ${themeStyleBlock}</style>
                 </DropdownMenuItem>
                 <DropdownMenuItem onClick={handleDownloadMarkdown}>
                   <FileText className="mr-2 h-4 w-4" /> Markdown
+                </DropdownMenuItem>
+                <DropdownMenuItem onClick={handleDownloadWord} disabled={wordExportPending}>
+                  <FileDoc className="mr-2 h-4 w-4" /> Word (.docx)
                 </DropdownMenuItem>
               </DropdownMenuContent>
             </DropdownMenu>
