@@ -773,6 +773,7 @@ export default function ProjectDetailsPage() {
   
   const history = useRef<ContentBlock[][]>([]);
   const historyIndex = useRef(-1);
+  const initializedIdRef = useRef<string | null>(null);
 
 
   const blockRefs = useRef<Record<string, HTMLDivElement | null>>({});
@@ -1045,37 +1046,53 @@ export default function ProjectDetailsPage() {
     router.push(`/dashboard/projects/${project.id}/findings/${newFinding.id}`);
   }, [addFinding, project, projectLanguage, router, toast, t, uiLanguage]);
 
+  // Inicializa el editor una sola vez por id de proyecto. Cada autosave / cambio
+  // en data-context devuelve un nuevo array `projects` (prev.map); sin este guard
+  // el effect se re-ejecutaría regenerando todos los IDs de bloque y desmontando
+  // los <SortableSection> en plena edición (provoca "Maximum update depth" en los
+  // Popper de la toolbar).
   useEffect(() => {
-    const currentProject = projects.find(p => p.id === id);
-    if (currentProject) {
-      setProject(currentProject);
-      setName(currentProject.name);
-      setClientId(currentProject.clientId);
-      setStatus(currentProject.status);
-      setDate({ from: new Date(currentProject.startDate), to: new Date(currentProject.endDate) });
-      setIcon(currentProject.icon);
-      setProjectLanguage(currentProject.language);
-      setThemeId(currentProject.themeId ?? '');
-      setIncludePentester(currentProject.includePentesterData !== false);
-      setPentesterSnapshot(currentProject.pentesterSnapshot ?? profileToSnapshot(user));
-      const filteredFindings = findings.filter(f => f.projectId === currentProject.id);
-      setProjectFindings(filteredFindings);
-      const initialBlocks = parseMarkdownToBlocks(currentProject.reportBody);
-      setBlocks(initialBlocks);
-      if (initialBlocks.length > 0) {
-        setActiveBlockId(initialBlocks[0].id);
-        pushToHistory(initialBlocks);
-      }
-      // Detect active template by matching the saved report body against known template markdowns.
-      const detected = projectTemplates.find(pt => {
-        const md = getProjectTemplateMarkdown(pt, currentProject.language);
-        return md && currentProject.reportBody && currentProject.reportBody.trim() === md.trim();
-      });
-      setActiveTemplateId(detected?.id || '');
-    } else {
-      router.push('/dashboard/projects');
+    const currentId = typeof id === 'string' ? id : Array.isArray(id) ? id[0] : '';
+    if (initializedIdRef.current === currentId) return;
+
+    const currentProject = projects.find(p => p.id === currentId);
+    if (!currentProject) {
+      if (projects.length > 0) router.push('/dashboard/projects');
+      return;
     }
-  }, [id, projects, findings, router, pushToHistory, projectTemplates]);
+
+    setProject(currentProject);
+    setName(currentProject.name);
+    setClientId(currentProject.clientId);
+    setStatus(currentProject.status);
+    setDate({ from: new Date(currentProject.startDate), to: new Date(currentProject.endDate) });
+    setIcon(currentProject.icon);
+    setProjectLanguage(currentProject.language);
+    setThemeId(currentProject.themeId ?? '');
+    setIncludePentester(currentProject.includePentesterData !== false);
+    setPentesterSnapshot(currentProject.pentesterSnapshot ?? profileToSnapshot(user));
+    setProjectFindings(findings.filter(f => f.projectId === currentProject.id));
+    const initialBlocks = parseMarkdownToBlocks(currentProject.reportBody);
+    setBlocks(initialBlocks);
+    if (initialBlocks.length > 0) {
+      setActiveBlockId(initialBlocks[0].id);
+      pushToHistory(initialBlocks);
+    }
+    // Detect active template by matching the saved report body against known template markdowns.
+    const detected = projectTemplates.find(pt => {
+      const md = getProjectTemplateMarkdown(pt, currentProject.language);
+      return md && currentProject.reportBody && currentProject.reportBody.trim() === md.trim();
+    });
+    setActiveTemplateId(detected?.id || '');
+    initializedIdRef.current = currentId;
+  }, [id, projects, findings, router, pushToHistory, projectTemplates, user]);
+
+  // Mantiene la lista de hallazgos del proyecto en sync sin re-inicializar el
+  // editor (esto sí debe reaccionar a add/delete de hallazgos).
+  useEffect(() => {
+    if (!project) return;
+    setProjectFindings(findings.filter(f => f.projectId === project.id));
+  }, [findings, project]);
 
   const mergeTemplateWithBlocks = useCallback((templateMarkdown: string) => {
     const templateBlocks = parseMarkdownToBlocks(templateMarkdown || '');
