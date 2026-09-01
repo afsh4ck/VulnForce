@@ -7,7 +7,15 @@ import { Edit, Trash2, Upload } from '@/components/icons';
 import { cn } from '@/lib/utils';
 import { useLanguage } from '@/context/language-context';
 import { useToast } from '@/hooks/use-toast';
-import { ImageCropDialog } from '@/components/image-crop-dialog';
+import dynamic from 'next/dynamic';
+
+// react-easy-crop solo hace falta al recortar una imagen, no en cada pagina
+// que tiene un boton de subida (perfil, clientes...); se difiere del bundle
+// inicial.
+const ImageCropDialog = dynamic(
+  () => import('@/components/image-crop-dialog').then((m) => m.ImageCropDialog),
+  { ssr: false }
+);
 
 interface ImageUploadButtonProps {
   value: string | null | undefined;
@@ -38,6 +46,10 @@ export function ImageUploadButton({
 
   const [dialogOpen, setDialogOpen] = useState(false);
   const [dialogSrc, setDialogSrc] = useState<string | null>(null);
+  // El recortador (y react-easy-crop) se monta solo tras la primera apertura,
+  // para que `dynamic()` difiera realmente su carga hasta que haga falta en
+  // vez de en cuanto se monta este botón.
+  const [cropperMounted, setCropperMounted] = useState(false);
 
   const t = {
     en: {
@@ -59,6 +71,7 @@ export function ImageUploadButton({
   const openCropper = (src: string | null) => {
     setDialogSrc(src);
     setDialogOpen(true);
+    setCropperMounted(true);
   };
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -148,16 +161,18 @@ export function ImageUploadButton({
         )}
       </div>
 
-      <ImageCropDialog
-        open={dialogOpen}
-        onOpenChange={setDialogOpen}
-        imageSrc={dialogSrc}
-        aspect={aspect}
-        cropShape={cropShape}
-        outputSize={outputSize}
-        title={cropTitle}
-        onConfirm={(dataUrl) => onChange(dataUrl)}
-      />
+      {cropperMounted && (
+        <ImageCropDialog
+          open={dialogOpen}
+          onOpenChange={setDialogOpen}
+          imageSrc={dialogSrc}
+          aspect={aspect}
+          cropShape={cropShape}
+          outputSize={outputSize}
+          title={cropTitle}
+          onConfirm={(dataUrl) => onChange(dataUrl)}
+        />
+      )}
     </div>
   );
 }

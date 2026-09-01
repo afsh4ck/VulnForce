@@ -9,6 +9,13 @@ import type { Client, Project, Finding, Vulnerability, ImageAsset, ProjectTempla
 import { initialClients } from '@/lib/clients-data';
 import { initialProjects } from '@/lib/projects-data';
 import { initialImages } from '@/lib/images-data';
+import {
+    loadAllImages,
+    saveAllImages,
+    clearAllImages,
+    readLegacyLocalStorageImages,
+    clearLegacyLocalStorageImages,
+} from '@/lib/image-store';
 import { initialFindings } from '@/lib/findings-data';
 import { initialVulnerabilities } from '@/lib/vulnerabilities-data';
 import { initialProjectTemplates } from '@/lib/project-templates-data';
@@ -152,13 +159,60 @@ function usePersistedState<T>(key: string, initialValue: T): [T, React.Dispatch<
     return [state, setState];
 }
 
+// Las imagenes viven en IndexedDB en vez de localStorage (ver `image-store.ts`):
+// no comparten la cuota de ~5MB del resto de colecciones. Migra una unica vez
+// las imagenes que hubiera en la clave antigua de localStorage.
+function useIndexedDbImages(initialValue: ImageAsset[]): [ImageAsset[], React.Dispatch<React.SetStateAction<ImageAsset[]>>, boolean] {
+    const [images, setImages] = useState<ImageAsset[]>(initialValue);
+    const [ready, setReady] = useState(false);
+    const loadedRef = useRef(false);
+
+    useEffect(() => {
+        if (typeof window === 'undefined') return;
+        let cancelled = false;
+        (async () => {
+            try {
+                const fromIdb = await loadAllImages();
+                if (cancelled) return;
+                if (fromIdb.length > 0) {
+                    setImages(fromIdb);
+                } else {
+                    const legacy = readLegacyLocalStorageImages();
+                    if (legacy && legacy.length > 0) {
+                        setImages(legacy);
+                        await saveAllImages(legacy);
+                    }
+                    clearLegacyLocalStorageImages();
+                }
+            } catch (error) {
+                console.error('Error cargando imagenes de IndexedDB:', error);
+            } finally {
+                if (!cancelled) {
+                    loadedRef.current = true;
+                    setReady(true);
+                }
+            }
+        })();
+        return () => { cancelled = true; };
+    }, []);
+
+    useEffect(() => {
+        // Evita pisar IndexedDB con el valor semilla antes de terminar la carga inicial.
+        if (!loadedRef.current) return;
+        saveAllImages(images).catch((error) => {
+            console.error('Error guardando imagenes en IndexedDB:', error);
+        });
+    }, [images]);
+
+    return [images, setImages, ready];
+}
 
 export function DataProvider({ children }: { children: ReactNode }) {
     const [clients, setClients] = usePersistedState<Client[]>('vulnforce-clients-v4', initialClients);
     const [projects, setProjects] = usePersistedState<Project[]>('vulnforce-projects-v4', initialProjects);
     const [findings, setFindings] = usePersistedState<Finding[]>('vulnforce-findings-v4', initialFindings);
     const [vulnerabilities, setVulnerabilities] = usePersistedState<Vulnerability[]>('vulnforce-vulnerabilities-v4', initialVulnerabilities);
-    const [images, setImages] = usePersistedState<ImageAsset[]>('vulnforce-images-v4', initialImages);
+    const [images, setImages, imagesReady] = useIndexedDbImages(initialImages);
     const [projectTemplates, setProjectTemplates] = usePersistedState<ProjectTemplate[]>('vulnforce-project-templates-v4', initialProjectTemplates);
     const [themes, setThemes] = usePersistedState<ReportTheme[]>('vulnforce-themes-v1', []);
     const [activeThemeId, setActiveThemeIdState] = usePersistedState<string>('vulnforce-active-theme-v1', DEFAULT_THEME_ID);
@@ -238,8 +292,10 @@ export function DataProvider({ children }: { children: ReactNode }) {
     // Debounced sync of all collections to the server-side state file.
     // remoteHydrated is included so the first sync fires on mount even if no
     // data changed (e.g. state file missing but localStorage has data).
+    // imagesReady evita que se publique el valor semilla de imagenes mientras
+    // la carga inicial desde IndexedDB todavia esta en curso.
     useEffect(() => {
-        if (!remoteHydrated) return;
+        if (!remoteHydrated || !imagesReady) return;
         if (writeTimerRef.current) clearTimeout(writeTimerRef.current);
         writeTimerRef.current = setTimeout(() => {
             const payload: PersistedStateShape = {
@@ -256,7 +312,7 @@ export function DataProvider({ children }: { children: ReactNode }) {
         return () => {
             if (writeTimerRef.current) clearTimeout(writeTimerRef.current);
         };
-    }, [remoteHydrated, clients, projects, findings, vulnerabilities, images, projectTemplates, themes, activeThemeId]);
+    }, [remoteHydrated, imagesReady, clients, projects, findings, vulnerabilities, images, projectTemplates, themes, activeThemeId]);
 
     const wipeAllData = () => {
         // This function will clear the data from localStorage,
@@ -269,6 +325,8 @@ export function DataProvider({ children }: { children: ReactNode }) {
         localStorage.removeItem('vulnforce-project-templates-v4');
         localStorage.removeItem('vulnforce-themes-v1');
         localStorage.removeItem('vulnforce-active-theme-v1');
+        // Las imagenes viven en IndexedDB, no en localStorage.
+        clearAllImages().catch(() => { /* best-effort */ });
         // The user context will handle clearing user data
     };
 

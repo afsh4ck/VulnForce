@@ -11,6 +11,7 @@ import { Upload, Link, GalleryHorizontal } from '@/components/icons';
 import { useLanguage } from '@/context/language-context';
 import { useData } from '@/context/data-context';
 import type { ImageAsset } from '@/lib/types';
+import { compressImageDataUrl } from '@/lib/image-compress';
 
 export const ImageUploadDialog = ({ onInsert, children }: { onInsert: (markdown: string) => void, children: React.ReactNode }) => {
     const { language } = useLanguage();
@@ -51,8 +52,9 @@ export const ImageUploadDialog = ({ onInsert, children }: { onInsert: (markdown:
         if (selectedFile && selectedFile.type.startsWith('image/')) {
             setFile(selectedFile);
             const reader = new FileReader();
-            reader.onloadend = () => {
-                setPreviewUrl(reader.result as string);
+            reader.onloadend = async () => {
+                const raw = reader.result as string;
+                setPreviewUrl(await compressImageDataUrl(raw));
             };
             reader.readAsDataURL(selectedFile);
         } else {

@@ -24,6 +24,7 @@ import { stripMarkdownText } from '@/lib/todo-utils';
 import type { ImageAsset } from '@/lib/types';
 import { ImageUploadDialog } from '@/components/image-upload-dialog';
 import { useData } from '@/context/data-context';
+import { compressImageDataUrl } from '@/lib/image-compress';
 
 type SectionEditorMode = 'split' | 'markdown' | 'preview';
 
@@ -344,7 +345,7 @@ export function SectionMarkdownEditor({
 
     const markdownImages = await Promise.all(files.map(async (file, index) => {
       const dataUrl = await readFileAsDataUrl(file);
-      const image = addImage(dataUrl);
+      const image = addImage(await compressImageDataUrl(dataUrl));
       const alt = file.name || `Pasted image ${index + 1}`;
       return `![${alt}](image://${image.id})`;
     }));
