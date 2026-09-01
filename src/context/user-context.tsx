@@ -3,18 +3,7 @@
 
 import React, { createContext, useContext, useState, useEffect, ReactNode } from 'react';
 import { useRouter } from 'next/navigation';
-
-// A simple (and not very secure) hashing function for demonstration purposes.
-// In a real application, use a robust library like bcrypt.
-const simpleHash = (str: string) => {
-  let hash = 0;
-  for (let i = 0; i < str.length; i++) {
-    const char = str.charCodeAt(i);
-    hash = (hash << 5) - hash + char;
-    hash |= 0; // Convert to 32bit integer
-  }
-  return hash.toString();
-};
+import { hashPassword, verifyPassword } from '@/lib/password-hash';
 
 
 interface User {
@@ -33,10 +22,10 @@ interface UserContextType {
   user: User;
   setUser: (user: User) => void;
   logout: (deleteAccount?: boolean) => void;
-  login: (name: string, pass: string) => boolean;
-  setPassword: (name: string, pass: string) => void;
+  login: (name: string, pass: string) => Promise<boolean>;
+  setPassword: (name: string, pass: string) => Promise<void>;
   hasPassword: () => boolean;
-  changePassword: (oldPass: string, newPass: string) => boolean;
+  changePassword: (oldPass: string, newPass: string) => Promise<boolean>;
   forgotPassword: () => void;
 }
 
@@ -94,31 +83,38 @@ export function UserProvider({ children }: { children: ReactNode }) {
     window.location.href = '/'; 
   };
 
-  const login = (name: string, pass: string): boolean => {
-    if (!hasPassword()) {
+  const login = async (name: string, pass: string): Promise<boolean> => {
+    if (!hasPassword() || !user.passwordHash) {
         return false;
     }
-    const passHash = simpleHash(pass);
-    if (user.name.toLowerCase() === name.toLowerCase() && user.passwordHash === passHash) {
-      sessionStorage.setItem('vulnforce-authenticated', 'true');
-      return true;
+    const valid = await verifyPassword(pass, user.passwordHash);
+    if (user.name.toLowerCase() !== name.toLowerCase() || !valid) {
+      return false;
     }
-    return false;
+    sessionStorage.setItem('vulnforce-authenticated', 'true');
+    // Migracion transparente: si el hash almacenado era del formato antiguo
+    // (djb2 sin sal), se sustituye por PBKDF2 ahora que se conoce la
+    // contrasena en texto plano.
+    const upgradedHash = await hashPassword(pass);
+    const updatedUser = { ...user, passwordHash: upgradedHash };
+    localStorage.setItem('vulnforce-user', JSON.stringify(updatedUser));
+    setUserState(updatedUser);
+    return true;
   };
 
-  const setPassword = (name: string, pass: string) => {
-    const passHash = simpleHash(pass);
+  const setPassword = async (name: string, pass: string) => {
+    const passHash = await hashPassword(pass);
     const email = `${name.toLowerCase().replace(/\s/g, '.')}@vulnforce.local`;
     const updatedUser = { ...user, name, email, passwordHash: passHash };
     localStorage.setItem('vulnforce-user', JSON.stringify(updatedUser));
     setUserState(updatedUser);
   };
-  
-  const changePassword = (oldPass: string, newPass: string): boolean => {
-    if (user.passwordHash !== simpleHash(oldPass)) {
+
+  const changePassword = async (oldPass: string, newPass: string): Promise<boolean> => {
+    if (!user.passwordHash || !(await verifyPassword(oldPass, user.passwordHash))) {
       return false;
     }
-    const newHash = simpleHash(newPass);
+    const newHash = await hashPassword(newPass);
     const updatedUser = { ...user, passwordHash: newHash };
     localStorage.setItem('vulnforce-user', JSON.stringify(updatedUser));
     setUserState(updatedUser);

@@ -65,12 +65,12 @@ export default function SettingsPage() {
     }
   }
 
-  const handlePasswordChange = () => {
+  const handlePasswordChange = async () => {
     if (newPassword !== confirmNewPassword) {
       toast({ variant: 'destructive', title: t[language].passwordMismatch });
       return;
     }
-    if (changePassword(currentPassword, newPassword)) {
+    if (await changePassword(currentPassword, newPassword)) {
       toast({ title: t[language].passwordUpdateSuccess });
       setCurrentPassword('');
       setNewPassword('');

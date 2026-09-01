@@ -96,7 +96,7 @@ export default function LoginPage() {
     checkPasswordStrength(newPass);
   }
 
-  const handleLogin = (e: React.FormEvent) => {
+  const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!hasPassword()) {
         toast({
@@ -106,7 +106,7 @@ export default function LoginPage() {
         });
         return;
     }
-    if (login(username, password)) {
+    if (await login(username, password)) {
       router.push('/dashboard');
     } else {
       toast({
@@ -117,7 +117,7 @@ export default function LoginPage() {
     }
   };
 
-  const handleSetPassword = (e: React.FormEvent) => {
+  const handleSetPassword = async (e: React.FormEvent) => {
     e.preventDefault();
     if (newPassword.length < 8) {
       toast({ variant: 'destructive', title: t.es.passwordLengthError });
@@ -127,7 +127,7 @@ export default function LoginPage() {
       toast({ variant: 'destructive', title: t.es.passwordMismatch });
       return;
     }
-    setPassword(username, newPassword);
+    await setPassword(username, newPassword);
     toast({ title: t.es.passwordSetSuccess });
   };
 
