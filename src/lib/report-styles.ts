@@ -492,6 +492,14 @@ export const REPORT_SHARED_CSS = `
      amarillo/verde de severidad, solo el título con sangría editorial. */
   .toc-finding { margin-top: 0.1rem; }
   .toc-finding a { padding-left: 68px; font-weight: 400; color: hsl(var(--foreground)); background: transparent; }
+  /* El índice lateral necesita reglas específicas porque su estado activo
+     tiene mayor especificidad que el estilo general del enlace. */
+  .report-sidebar .toc-level-2 a { padding-left: 2.75rem; font-weight: 400; }
+  .report-sidebar .toc-level-3 a,
+  .report-sidebar .toc-finding a { padding-left: 4rem; font-weight: 400; }
+  .report-sidebar .toc-level-2 a.is-active,
+  .report-sidebar .toc-level-3 a.is-active,
+  .report-sidebar .toc-finding a.is-active { font-weight: 400; }
   .pdf-page-background, .report-print-page-footers, .report-print-footer { display: none; }
 
   /* Sidebar colapsable en HTML exportado */
