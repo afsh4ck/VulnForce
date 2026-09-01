@@ -8,7 +8,7 @@ import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { PlugsConnected, Copy, CheckCircle, AlertCircle } from '@/components/icons';
-import { MCP_TOOLS } from '@/lib/mcp/tool-defs';
+import { MCP_TOOLS, MCP_SKILLS } from '@/lib/mcp/tool-defs';
 import { syntaxTheme } from '@/components/code-block';
 
 const T = {
@@ -32,6 +32,8 @@ const T = {
     cliClients: 'Claude Code CLI (one command)',
     toolsTitle: 'Available tools',
     toolsDesc: 'These are the actions an AI client can perform on your reports.',
+    skillsTitle: 'Report-generation skills',
+    skillsDesc: 'On-connect, an AI client fetches these playbooks (get_skill / MCP prompts) to write professional reports with minimal token use.',
     usageTitle: 'How to use it',
     steps: [
       'Keep VulnForce running — this page is the live MCP endpoint.',
@@ -62,6 +64,8 @@ const T = {
     cliClients: 'Claude Code CLI (un solo comando)',
     toolsTitle: 'Herramientas disponibles',
     toolsDesc: 'Estas son las acciones que un cliente de IA puede ejecutar sobre tus informes.',
+    skillsTitle: 'Skills de generación de informes',
+    skillsDesc: 'Al conectar, un cliente de IA descarga estos manuales (get_skill / prompts MCP) para redactar informes profesionales gastando el mínimo de tokens.',
     usageTitle: 'Cómo usarlo',
     steps: [
       'Mantén VulnForce en marcha: esta página es el endpoint MCP en vivo.',
@@ -273,6 +277,24 @@ export default function McpPage() {
                 <li key={tool.name} className="flex flex-col gap-0.5 py-2.5 sm:flex-row sm:items-baseline sm:gap-3">
                   <code className="font-code text-sm text-primary shrink-0">{tool.name}</code>
                   <span className="text-sm text-muted-foreground">{tool.description}</span>
+                </li>
+              ))}
+            </ul>
+          </CardContent>
+        </Card>
+
+        {/* Skills */}
+        <Card>
+          <CardHeader>
+            <CardTitle className="font-headline text-lg">{t.skillsTitle}</CardTitle>
+            <CardDescription>{t.skillsDesc}</CardDescription>
+          </CardHeader>
+          <CardContent>
+            <ul className="divide-y">
+              {MCP_SKILLS.map((skill) => (
+                <li key={skill.id} className="flex flex-col gap-0.5 py-2.5 sm:flex-row sm:items-baseline sm:gap-3">
+                  <code className="font-code text-sm text-primary shrink-0">{skill.id}</code>
+                  <span className="text-sm text-muted-foreground">{skill.description}</span>
                 </li>
               ))}
             </ul>

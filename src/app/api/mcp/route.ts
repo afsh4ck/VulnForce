@@ -7,6 +7,7 @@ import {
   MCP_TOOLS,
 } from '@/lib/mcp/tool-defs';
 import { toolHandlers } from '@/lib/mcp/handlers';
+import { getSkill, listSkills } from '@/lib/mcp/skills';
 
 // VulnForce MCP server (Streamable HTTP transport, stateless).
 // Spec: https://modelcontextprotocol.io/specification/2025-06-18/basic/transports
@@ -46,7 +47,10 @@ async function handleMessage(msg: JsonRpcMessage): Promise<object | null> {
     case 'initialize':
       return result(id ?? null, {
         protocolVersion: negotiateVersion(params?.protocolVersion),
-        capabilities: { tools: { listChanged: false } },
+        capabilities: {
+          tools: { listChanged: false },
+          prompts: { listChanged: false },
+        },
         serverInfo: MCP_SERVER_INFO,
         instructions: MCP_INSTRUCTIONS,
       });
@@ -61,6 +65,34 @@ async function handleMessage(msg: JsonRpcMessage): Promise<object | null> {
 
     case 'tools/list':
       return result(id ?? null, { tools: MCP_TOOLS });
+
+    case 'prompts/list': {
+      const skills = listSkills();
+      return result(id ?? null, {
+        prompts: skills.map((s) => ({
+          name: s.id,
+          title: s.name,
+          description: s.description,
+        })),
+      });
+    }
+
+    case 'prompts/get': {
+      const name = typeof params?.name === 'string' ? params.name : '';
+      const skill = getSkill(name);
+      if (!skill) {
+        return error(id ?? null, -32602, `Unknown prompt: ${name}`);
+      }
+      return result(id ?? null, {
+        description: skill.description,
+        messages: [
+          {
+            role: 'user',
+            content: { type: 'text', text: skill.body },
+          },
+        ],
+      });
+    }
 
     case 'tools/call': {
       const name = typeof params?.name === 'string' ? params.name : '';

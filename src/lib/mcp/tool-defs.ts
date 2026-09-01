@@ -7,18 +7,36 @@ export const MCP_SUPPORTED_PROTOCOL_VERSIONS = ['2025-06-18', '2025-03-26', '202
 export const MCP_DEFAULT_PROTOCOL_VERSION = '2025-06-18';
 
 export const MCP_INSTRUCTIONS =
-  'VulnForce exposes pentest projects as reports plus a structured findings database and a reusable vulnerability library. ' +
-  'A report is the markdown body of a project. Use list_projects to find a project id, get_report to read it, and update_report / append_to_report / create_report to write it.\n\n' +
-  'REPORT STRUCTURE — IMPORTANT: The editor turns every H1 (#) and H2 (##) heading in the body into a SEPARATE editable block; H3 (###) and deeper stay nested inside their parent block. ' +
-  'To keep the report well-structured and avoid fragmenting it into a multitude of tiny editable sections, build the body as a SMALL set of top-level sections. ' +
-  'Use H1 (#) only for the few main sections (e.g. Resumen Ejecutivo, Alcance y Metodología, Inventario de Activos, Narrativa del Ataque, Recomendaciones), ' +
-  'use H2 (##) only for genuine major subsections, and use H3/H4 (###, ####) for everything deeper so each section stays self-contained and hierarchical. ' +
-  'Do not emit a long flat list of H1/H2 headings.\n\n' +
-  'FINDINGS: Do not write individual vulnerabilities into the report body. Create one finding per vulnerability with create_finding (title, severity, cvss, markdown). ' +
-  'The report automatically renders every finding under a Findings section as an H2, so inside a finding\'s markdown use H3/H4 for its subsections (Descripción, Evidencia, Impacto, Remediación). ' +
-  'Embed the live findings summary table in the body with the {{findings.table}} marker. ' +
-  'Read findings with list_findings / get_finding and manage them with create_finding / update_finding / delete_finding. ' +
-  'The vulnerability library (list_vulnerabilities / get_vulnerability) holds reusable, bilingual templates that a finding can reference via vulnerabilityId.';
+  'VulnForce exposes pentest projects as markdown reports plus a structured findings database. ' +
+  'Before writing anything, call list_skills and get_skill("vulnforce-reports") (or the vulnforce-reports MCP prompt) ' +
+  'for the report-generation playbook; load the other area skills only when you need them. ' +
+  'Core rule: never paste vulnerabilities into the report body — create one finding per vulnerability with create_finding.';
+
+export type McpSkillDef = {
+  id: string;
+  description: string;
+};
+
+// Discovery manifest for the skills served on demand via get_skill / prompts.
+// Full content lives in src/lib/mcp/skills/*.md (loaded by src/lib/mcp/skills.ts).
+export const MCP_SKILLS: McpSkillDef[] = [
+  {
+    id: 'vulnforce-reports',
+    description: 'Router: load first. MCP tool map and the token-efficient report workflow.',
+  },
+  {
+    id: 'vulnforce-report-structure',
+    description: 'Report body shape: section hierarchy, project templates, the {{findings.table}} and {{findings.details}} markers, template variables.',
+  },
+  {
+    id: 'vulnforce-findings-workflow',
+    description: 'Creating and writing findings, finding markdown structure, reusing the vulnerability library.',
+  },
+  {
+    id: 'vulnforce-cvss-scoring',
+    description: 'CVSS v3.1 severity bands and scoring conventions for findings.',
+  },
+];
 
 export type McpToolDef = {
   name: string;
@@ -28,6 +46,23 @@ export type McpToolDef = {
 };
 
 export const MCP_TOOLS: McpToolDef[] = [
+  {
+    name: 'list_skills',
+    title: 'List skills',
+    description: 'List the report-generation skills (playbooks) available from this server, with their id and when to use each.',
+    inputSchema: { type: 'object', properties: {}, additionalProperties: false },
+  },
+  {
+    name: 'get_skill',
+    title: 'Get skill',
+    description: 'Get the full markdown of one skill by its id (e.g. vulnforce-reports). Returned with frontmatter so it can be saved as a SKILL.md. Start with vulnforce-reports.',
+    inputSchema: {
+      type: 'object',
+      properties: { id: { type: 'string', description: 'Skill id, e.g. vulnforce-reports.' } },
+      required: ['id'],
+      additionalProperties: false,
+    },
+  },
   {
     name: 'list_projects',
     title: 'List projects',

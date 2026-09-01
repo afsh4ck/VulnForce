@@ -1,4 +1,5 @@
 import { readState, writeState, type PersistedState } from '@/lib/server/state-file';
+import { getSkill, listSkills } from '@/lib/mcp/skills';
 import type { Finding, Project, Severity } from '@/lib/types';
 
 // Tool implementations. Each handler receives the parsed `arguments` object and
@@ -51,6 +52,22 @@ function touchProject(state: PersistedState, projectId: string): void {
 export type ToolHandler = (args: Args) => Promise<string>;
 
 export const toolHandlers: Record<string, ToolHandler> = {
+  async list_skills() {
+    const skills = listSkills();
+    if (skills.length === 0) return 'No skills available.';
+    return JSON.stringify(skills, null, 2);
+  },
+
+  async get_skill(args) {
+    const id = requireStr(args, 'id');
+    const skill = getSkill(id);
+    if (!skill) {
+      const available = listSkills().map((s) => s.id).join(', ');
+      throw new Error(`Skill not found: ${id}. Available: ${available}`);
+    }
+    return skill.content;
+  },
+
   async list_projects() {
     const state = await readState();
     const clients = state.clients ?? [];
