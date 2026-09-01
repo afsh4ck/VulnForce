@@ -36,6 +36,10 @@ export const MCP_SKILLS: McpSkillDef[] = [
     id: 'vulnforce-cvss-scoring',
     description: 'CVSS v3.1 severity bands and scoring conventions for findings.',
   },
+  {
+    id: 'vulnforce-import',
+    description: 'Importing Obsidian or GitBook markdown into a report, keeping images working (GitBook /files/ trap, Obsidian wikilinks).',
+  },
 ];
 
 export type McpToolDef = {
@@ -126,6 +130,10 @@ export const MCP_SKILL_I18N: Record<string, { en: string; es: string }> = {
   'vulnforce-cvss-scoring': {
     en: 'CVSS v3.1 severity bands and finding scoring conventions.',
     es: 'Bandas de severidad CVSS v3.1 y convenciones de puntuación de hallazgos.',
+  },
+  'vulnforce-import': {
+    en: 'Import Obsidian / GitBook markdown into a report, keeping images working.',
+    es: 'Importar Markdown de Obsidian / GitBook a un informe manteniendo las imágenes.',
   },
 };
 

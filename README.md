@@ -76,6 +76,7 @@ Al conectarse, el cliente de IA descarga bajo demanda una serie de *skills* (man
 - `vulnforce-report-structure` — jerarquía de secciones, plantillas y marcadores `{{findings.table}}` / `{{findings.details}}`
 - `vulnforce-findings-workflow` — creación y redacción de hallazgos, biblioteca de vulnerabilidades
 - `vulnforce-cvss-scoring` — bandas de severidad y convenciones CVSS v3.1
+- `vulnforce-import` — importar Markdown de Obsidian o GitBook manteniendo las imágenes
 
 Las instrucciones cargadas en cada conexión son mínimas: solo un puntero a estas skills.
 

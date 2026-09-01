@@ -42,6 +42,7 @@ the report renders automatically.
    - **vulnforce-findings-workflow** - creating and writing findings, the
      reusable vulnerability library.
    - **vulnforce-cvss-scoring** - severity bands and CVSS conventions.
+   - **vulnforce-import** - importing Obsidian or GitBook markdown, with images.
 3. Read current state (\`get_report\`, \`list_findings\`) before writing.
 4. Write with \`update_report\` / \`append_to_report\` for the body and
    \`create_finding\` / \`update_finding\` for findings.
@@ -236,6 +237,60 @@ Vector string format:
   privileges is not Critical just because the impact is high.
 - If you record a full vector in the finding markdown, put it under
   \`### Description\` or a \`### CVSS\` subsection so it renders inside the finding.
+`,
+
+  `---
+name: vulnforce-import
+description: Import Markdown from Obsidian or GitBook into a VulnForce report, keeping images working. Load via the VulnForce MCP when the source content comes from an Obsidian vault or a GitBook export/page.
+---
+
+# VulnForce import
+
+Convert the source Markdown to plain GitHub-flavoured Markdown, then write it
+with \`update_report\` / \`append_to_report\` (or into a finding). First read
+**vulnforce-report-structure** for the heading rules.
+
+## Images: the core concern
+
+The report renders \`![alt](URL)\` with a plain \`<img>\`. A URL only works if it
+is **publicly reachable and returns \`Content-Type: image/*\`**.
+
+- MCP has no image-upload tool. You cannot embed a local file. Images that only
+  exist on disk must be added by the user through the editor's image button;
+  leave a \`[TODO: insert screenshot]\` marker where one belongs.
+- After rewriting an image URL, verify it: a fetch must return an image
+  content-type, not \`text/html\`. If it returns HTML, the link is wrong (see
+  GitBook below).
+- Prefer stable, direct image URLs. Query-signed CDN URLs can expire.
+
+## GitBook
+
+- **\`/files/...\` paths from a Markdown export return an HTML page, not the
+  image.** Never use them. Use the rendered-image proxy instead:
+  \`https://<space>.gitbook.io/<book>/~gitbook/image?url=<encoded-original>&...\`
+  (it responds with \`image/jpeg\`). Copy that URL from the published GitBook
+  page (right-click the image) or from the page HTML \`<img src>\`.
+- \`{% hint style="..." %}...{% endhint %}\` -> blockquote.
+- \`{% code %}\` / \`{% tabs %}\` -> fenced code block / keep the first tab.
+- \`{% content-ref url="..." %}\` and \`{% embed url="..." %}\` -> a normal link.
+- Strip GitBook page frontmatter unless it carries real content.
+
+## Obsidian
+
+- \`![[image.png]]\` (embed) -> \`![image](URL)\` if the image is hosted somewhere
+  reachable, otherwise \`[TODO: insert image.png]\`.
+- \`![[note#heading]]\` (transclusion) -> inline the referenced text, or link it.
+- \`[[note]]\` / \`[[note|alias]]\` (wikilink) -> \`alias\` as plain text, or a link
+  if the target has a URL.
+- Callouts \`> [!note] Title\` / \`> [!warning]\` -> blockquote with a bold title.
+- Strip YAML frontmatter; drop \`%% comments %%\`.
+- \`==highlight==\` -> \`**highlight**\`. Tags like \`#tag\` -> plain text or drop.
+
+## After importing
+
+- Re-check heading depth: collapse a flat run of \`#\`/\`##\` into a small set of
+  top-level sections with \`###\`/\`####\` beneath (see vulnforce-report-structure).
+- Move each vulnerability out of the body into its own \`create_finding\`.
 `,
 ];
 

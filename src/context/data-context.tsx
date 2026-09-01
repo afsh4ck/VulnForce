@@ -8,6 +8,7 @@ import React, { createContext, useContext, useState, useEffect, useRef, ReactNod
 import type { Client, Project, Finding, Vulnerability, ImageAsset, ProjectTemplate } from '@/lib/types';
 import { initialClients } from '@/lib/clients-data';
 import { initialProjects } from '@/lib/projects-data';
+import { initialImages } from '@/lib/images-data';
 import { initialFindings } from '@/lib/findings-data';
 import { initialVulnerabilities } from '@/lib/vulnerabilities-data';
 import { initialProjectTemplates } from '@/lib/project-templates-data';
@@ -34,6 +35,20 @@ function refreshBuiltInTemplates(current: ProjectTemplate[]): ProjectTemplate[] 
     const seedIds = new Set(initialProjectTemplates.map(t => t.id));
     const userTemplates = current.filter(t => !seedIds.has(t.id));
     return [...initialProjectTemplates, ...userTemplates];
+}
+
+// Sube este número cuando cambien los proyectos/clientes de muestra del seed y
+// quieras que lleguen a instalaciones con estado ya persistido.
+const SEED_MIGRATION_VERSION = 2;
+
+// Proyectos de muestra retirados del seed que deben eliminarse del estado.
+const RETIRED_SAMPLE_PROJECT_IDS = ['proj-htb-imagery'];
+
+// Añade una entrada del seed a `current` si no existe ya un elemento con su id.
+function withSeedItems<T extends { id: string }>(current: T[], seed: T[]): T[] {
+    const known = new Set(current.map(item => item.id));
+    const missing = seed.filter(item => !known.has(item.id));
+    return missing.length ? [...current, ...missing] : current;
 }
 type PersistedStateShape = {
     clients?: Client[];
@@ -129,11 +144,12 @@ export function DataProvider({ children }: { children: ReactNode }) {
     const [projects, setProjects] = usePersistedState<Project[]>('vulnforce-projects-v4', initialProjects);
     const [findings, setFindings] = usePersistedState<Finding[]>('vulnforce-findings-v4', initialFindings);
     const [vulnerabilities, setVulnerabilities] = usePersistedState<Vulnerability[]>('vulnforce-vulnerabilities-v4', initialVulnerabilities);
-    const [images, setImages] = usePersistedState<ImageAsset[]>('vulnforce-images-v4', []);
+    const [images, setImages] = usePersistedState<ImageAsset[]>('vulnforce-images-v4', initialImages);
     const [projectTemplates, setProjectTemplates] = usePersistedState<ProjectTemplate[]>('vulnforce-project-templates-v4', initialProjectTemplates);
     const [themes, setThemes] = usePersistedState<ReportTheme[]>('vulnforce-themes-v1', []);
     const [activeThemeId, setActiveThemeIdState] = usePersistedState<string>('vulnforce-active-theme-v1', DEFAULT_THEME_ID);
     const [templatesMigration, setTemplatesMigration] = usePersistedState<number>('vulnforce-templates-migration', 0);
+    const [seedMigration, setSeedMigration] = usePersistedState<number>('vulnforce-seed-migration', 0);
 
     const [remoteHydrated, setRemoteHydrated] = useState(false);
     const writeTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
@@ -178,6 +194,32 @@ export function DataProvider({ children }: { children: ReactNode }) {
         setTemplatesMigration(TEMPLATES_MIGRATION_VERSION);
     // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [remoteHydrated, templatesMigration]);
+
+    // Una sola vez por navegador: retira los proyectos de muestra obsoletos y
+    // añade los nuevos de muestra (Haze, CPTS), el cliente Trilocor y las
+    // imágenes del writeup de Haze si aún no están. No toca datos del usuario.
+    useEffect(() => {
+        if (!remoteHydrated) return;
+        if (seedMigration >= SEED_MIGRATION_VERSION) return;
+        const retired = new Set(RETIRED_SAMPLE_PROJECT_IDS);
+        const seedSampleProjects = initialProjects.filter(p => p.id.startsWith('proj-htb-'));
+        const seedSampleIds = new Set(seedSampleProjects.map(p => p.id));
+        const seedSampleNames = new Set(seedSampleProjects.map(p => p.name));
+        setProjects(prev => {
+            // Retira los proyectos de muestra obsoletos y las copias del usuario
+            // de los proyectos de muestra (mismo nombre, otro id), luego añade
+            // los canónicos del seed.
+            const cleaned = prev.filter(p =>
+                !retired.has(p.id) &&
+                !(seedSampleNames.has(p.name) && !seedSampleIds.has(p.id))
+            );
+            return withSeedItems(cleaned, seedSampleProjects);
+        });
+        setClients(prev => withSeedItems(prev, initialClients.filter(c => c.id === 'cli-trilocor')));
+        setImages(prev => withSeedItems(prev, initialImages));
+        setSeedMigration(SEED_MIGRATION_VERSION);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [remoteHydrated, seedMigration]);
 
     // Debounced sync of all collections to the server-side state file.
     // remoteHydrated is included so the first sync fires on mount even if no
