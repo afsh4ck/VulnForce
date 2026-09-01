@@ -1,6 +1,8 @@
 .git
 .next
 .next/**/*
+.next-dev
+.next-dev/**/*
 .pnpm-store
 node_modules
 node_modules/**

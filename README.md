@@ -99,6 +99,19 @@ Abre `http://localhost:9002`.
 
 Requisitos: Node.js >= 22.13, pnpm >= 11.
 
+### Modo producción local (más rápido)
+
+`pnpm dev` recompila en cada acción. Para un uso fluido, compila una vez y sirve el build:
+
+```bash
+pnpm build
+pnpm start
+```
+
+Abre `http://localhost:9002` (mismo puerto que `dev`).
+
+`pnpm dev` usa el directorio `.next-dev` y `pnpm build` / `pnpm start` usan `.next`, así que ambos conviven: puedes alternar entre `pnpm dev` y `pnpm build && pnpm start` sin recompilar. Tras cambiar código, vuelve a ejecutar `pnpm build` para reflejarlo en `pnpm start`.
+
 ## Despliegue
 
 Despliegue recomendado: Linux + Docker mediante `deploy.sh`. Por defecto la app se sirve en `127.0.0.1:47474`.
@@ -115,9 +128,9 @@ Volúmenes persistentes: `./data`, `./uploads`, `./logs`.
 
 ## Scripts
 
-- `pnpm dev` — desarrollo (puerto `9002`)
-- `pnpm build` — build producción
-- `pnpm start` — arranca build
+- `pnpm dev` — desarrollo con HMR (puerto `9002`, directorio `.next-dev`)
+- `pnpm build` — build de producción (directorio `.next`)
+- `pnpm start` — sirve el build de producción (puerto `9002`)
 - `pnpm typecheck` — comprobación de tipos
 - `pnpm lint` — ESLint
 
