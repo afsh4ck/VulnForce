@@ -1,6 +1,6 @@
 # VulnForce — Professional Hacking Reporting Platform
 
-🚀 VulnForce es una aplicación web autoalojada para gestionar proyectos de pentesting, hallazgos y reportes profesionales. Editor por bloques con previsualización en vivo, sistema de temas para reportes y exportación a HTML, PDF y Markdown.
+🚀 VulnForce es una aplicación web autoalojada para gestionar proyectos de pentesting, hallazgos y reportes profesionales. Editor por bloques con previsualización en vivo, sistema de temas para reportes y exportación a HTML, PDF, Markdown y Word.
 
 <img width="2880" height="1622" alt="vulnforce-banner" src="https://github.com/user-attachments/assets/adc4cc6a-b808-447d-8368-e0a756de01ac" />
 
@@ -11,7 +11,7 @@
 - ✍️ Editor por secciones Markdown con vista `Split` / `MD` / `Preview` redimensionable
 - 🎨 Sistema de temas de reportes (built-in + personalizables, import/export JSON)
 - 🖼️ Editor visual de avatar y logos de cliente (icono cuadrado + horizontal)
-- 📤 Exportación a HTML, PDF y Markdown con paridad visual
+- 📤 Exportación a HTML, PDF, Markdown y Word (`.docx` editable) con paridad visual
 - 🌗 Light / dark mode y traducciones en tiempo real (ES / EN)
 - ✅ Seguimiento de `TODO` con enlaces directos a la sección editable
 - 💾 Backup y restauración completos (incluye temas personalizados)
@@ -85,6 +85,7 @@ Las instrucciones cargadas en cada conexión son mínimas: solo un puntero a est
 - Next.js 15 (App Router) + React + TypeScript
 - Tailwind CSS + Radix UI (shadcn)
 - `react-markdown` (GFM) y `react-easy-crop`
+- `docx` + `remark`/`unified` para la exportación a Word
 - Docker para despliegue self-hosted
 
 ## Inicio rápido
@@ -134,6 +135,7 @@ Volúmenes persistentes: `./data`, `./uploads`, `./logs`.
 - `pnpm start` — sirve el build de producción (puerto `9002`)
 - `pnpm typecheck` — comprobación de tipos
 - `pnpm lint` — ESLint
+- `pnpm test` — tests unitarios (Vitest) de la lógica pura (CVSS, utilidades Markdown/TODO, exportador Word)
 
 ## Estructura
 
