@@ -648,6 +648,9 @@ export default function ReportPreviewPage() {
     // el preview en pantalla.
     const exportRoot = reportContentRef.current.cloneNode(true) as HTMLElement;
     exportRoot.querySelectorAll('[data-cover-logo="true"]').forEach((node) => node.remove());
+    // Los números de página son propios del PDF; un HTML navegable no tiene
+    // paginación física, por lo que el índice descargado solo muestra títulos.
+    exportRoot.querySelectorAll('.toc-page-number').forEach((node) => node.remove());
     // En el HTML exportado los bloques de código solo conservan el botón de
     // copiar: el selector de lenguaje y el wrap son interactivos del preview.
     exportRoot.querySelectorAll('[data-code-lang], [data-code-wrap]').forEach((node) => node.remove());
