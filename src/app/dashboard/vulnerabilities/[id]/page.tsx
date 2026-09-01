@@ -20,6 +20,7 @@ import {
   AccordionTrigger,
 } from "@/components/ui/accordion"
 import { useData } from '@/context/data-context';
+import { getVulnerabilityIcon } from '@/lib/vulnerability-icons';
 import { Badge } from '@/components/ui/badge';
 import { DndContext, closestCenter, KeyboardSensor, PointerSensor, useSensor, useSensors, DragEndEvent } from '@dnd-kit/core';
 import { arrayMove, SortableContext, sortableKeyboardCoordinates, useSortable, verticalListSortingStrategy } from '@dnd-kit/sortable';
@@ -539,6 +540,8 @@ export default function VulnerabilityEditorPage() {
     return null;
   }
 
+  const VulnIcon = getVulnerabilityIcon(vuln.id);
+
   return (
     <div className="w-full space-y-6 pt-6">
       <header className="flex items-center justify-between px-4 sm:px-6">
@@ -549,6 +552,7 @@ export default function VulnerabilityEditorPage() {
                 </Link>
             </Button>
             <div className="flex items-center gap-2">
+                <VulnIcon weight="duotone" className="h-6 w-6 shrink-0 text-primary" />
                 <h1 className="font-headline text-xl font-bold">{vuln.title_en}</h1>
                 {vuln.severity && <Badge variant={getSeverityVariant(vuln.severity)}>{vuln.severity}</Badge>}
             </div>

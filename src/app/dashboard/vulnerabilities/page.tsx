@@ -21,6 +21,7 @@ import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, 
 import { useToast } from '@/hooks/use-toast';
 import { useRouter } from 'next/navigation';
 import { useData } from '@/context/data-context';
+import { getVulnerabilityIcon } from '@/lib/vulnerability-icons';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 
 type SortKey = keyof Vulnerability | 'cvssScore';
@@ -221,11 +222,14 @@ export default function VulnerabilitiesPage() {
               </TableRow>
             </TableHeader>
             <TableBody>
-              {sortedAndFilteredVulnerabilities.map((vuln) => (
+              {sortedAndFilteredVulnerabilities.map((vuln) => {
+                const VulnIcon = getVulnerabilityIcon(vuln.id);
+                return (
                 <TableRow key={vuln.id}>
                   <TableCell className="font-medium">
-                     <Link href={`/dashboard/vulnerabilities/${vuln.id}`} className="hover:text-primary">
-                        {language === 'es' ? vuln.title_es : vuln.title_en}
+                     <Link href={`/dashboard/vulnerabilities/${vuln.id}`} className="flex items-center gap-2.5 hover:text-primary">
+                        <VulnIcon weight="duotone" className="h-4 w-4 shrink-0 text-primary" />
+                        <span>{language === 'es' ? vuln.title_es : vuln.title_en}</span>
                      </Link>
                   </TableCell>
                   <TableCell>
@@ -246,7 +250,8 @@ export default function VulnerabilitiesPage() {
                     </div>
                   </TableCell>
                 </TableRow>
-              ))}
+                );
+              })}
             </TableBody>
           </Table>
         </CardContent>
