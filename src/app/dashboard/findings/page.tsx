@@ -44,19 +44,15 @@ export default function AllFindingsPage() {
   }
   
   const enrichedFindings = useMemo(() => {
-    // Solo hallazgos pertenecientes a proyectos en estado "In Progress" (En curso)
-    const activeProjectIds = new Set(projects.filter(p => p.status === 'In Progress').map(p => p.id));
-    return findings
-      .filter(f => activeProjectIds.has(f.projectId))
-      .map(f => {
-        const project = projects.find(p => p.id === f.projectId);
-        const client = clients.find(c => c.id === project?.clientId);
-        return {
-          ...f,
-          projectName: project?.name || 'N/A',
-          clientName: client?.name || 'N/A'
-        };
-      });
+    return findings.map(f => {
+      const project = projects.find(p => p.id === f.projectId);
+      const client = clients.find(c => c.id === project?.clientId);
+      return {
+        ...f,
+        projectName: project?.name || 'N/A',
+        clientName: client?.name || 'N/A'
+      };
+    });
   }, [findings, projects, clients]);
 
 
@@ -96,7 +92,7 @@ export default function AllFindingsPage() {
 
   const t = {
     en: {
-      title: "Active Findings",
+      title: "All Findings",
       filterBySeverity: "Filter by severity...",
       all: "All",
       findingTitle: "Finding Title",
@@ -105,10 +101,9 @@ export default function AllFindingsPage() {
       client: "Client",
       cvss: "CVSS",
       lastUpdated: "Last Updated",
-      noticeActive: "Only findings from projects currently in progress are shown.",
     },
     es: {
-      title: "Hallazgos Activos",
+      title: "Todos los Hallazgos",
       filterBySeverity: "Filtrar por severidad...",
       all: "Todo",
       findingTitle: "Título del Hallazgo",
@@ -117,7 +112,6 @@ export default function AllFindingsPage() {
       client: "Cliente",
       cvss: "CVSS",
       lastUpdated: "Última Actualización",
-      noticeActive: "Solo se muestran hallazgos pertenecientes a proyectos en curso.",
     }
   }
 
@@ -144,8 +138,6 @@ export default function AllFindingsPage() {
             </Select>
         </div>
       </div>
-
-      <p className="text-sm text-muted-foreground">{t[language].noticeActive}</p>
 
       <Card>
         <CardContent className="pt-6 overflow-x-auto">
