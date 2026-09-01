@@ -348,7 +348,8 @@ export default function ReportPreviewPage() {
         .map((f) => {
           const sev = langT[f.severity.toLowerCase() as 'critical' | 'high' | 'medium' | 'low' | 'informational'] || f.severity;
           const link = `[${f.title}](#finding-${f.id})`;
-          return `| ${link} | ${sev} | ${f.cvss.toFixed(1)} | ${langT.statusOpen} | #finding-${f.id} |`;
+          const detailsLabel = reportLang === 'es' ? 'Ver detalle' : 'View details';
+          return `| ${link} | ${sev} | ${f.cvss.toFixed(1)} | ${langT.statusOpen} | [${detailsLabel}](#finding-${f.id}) |`;
         })
         .join('\n');
       return `${head}\n${sep}\n${rows}`;
@@ -396,6 +397,10 @@ export default function ReportPreviewPage() {
     if (!reportContentRef.current) return;
     const headingElements = Array.from(
       reportContentRef.current.querySelectorAll('h1, h2, h3'),
+    ).filter((heading) =>
+      !heading.closest('.report-cover') &&
+      !heading.closest('.report-toc') &&
+      !heading.hasAttribute('data-toc-heading'),
     ) as HTMLElement[];
 
     // Garantiza IDs únicos: cuando varias vulnerabilidades tienen secciones con
@@ -966,6 +971,20 @@ ${themeStyleBlock}</style>
                 </section>
               )}
             </header>
+
+            <section className="report-toc report-page" aria-label={langT.tableOfContents}>
+              <h1 data-toc-heading>{langT.tableOfContents}</h1>
+              <ul className="toc-list">
+                {headings.map((heading) => (
+                  <li
+                    key={heading.id}
+                    className={cn(`toc-level-${heading.level}`, heading.severity && 'toc-vuln')}
+                  >
+                    <a href={`#${heading.id}`}>{heading.text}</a>
+                  </li>
+                ))}
+              </ul>
+            </section>
 
             <section className="report-page">
               <MarkdownPreview

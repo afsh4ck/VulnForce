@@ -524,9 +524,7 @@ export const REPORT_SHARED_CSS = `
 // y oculta cualquier elemento marcado como `.no-print`.
 export const REPORT_PRINT_CSS = `
   @media print {
-    /* Margen físico vertical: evita que cualquier fragmento de contenido
-       quede pegado a los bordes superior o inferior de cada página del PDF. */
-    @page { size: A4; margin: 0.8cm 0; }
+    @page { size: A4; margin: 0; }
     html, body {
       background: hsl(var(--background)) !important;
       margin: 0 !important;
@@ -573,20 +571,32 @@ export const REPORT_PRINT_CSS = `
       overflow: visible !important;
     }
     .report-page {
-      /* Sin bordes blancos visuales: padding interno mínimo pero seguro */
-      padding: 0.9cm 0.9cm !important;
+      /* Se replica al fragmentarse: margen seguro superior e inferior en
+         cada página interior, no solo en el inicio del documento. */
+      padding: 1.2cm 0.9cm !important;
+      background: hsl(var(--card)) !important;
+      -webkit-box-decoration-break: clone;
+      box-decoration-break: clone;
       page-break-inside: auto;
       break-inside: auto;
     }
+    .report-cover { background: hsl(var(--background)) !important; }
+    .report-toc { page-break-after: always; break-after: page; }
+    .report-toc h1 { margin-top: 0 !important; }
+    .report-toc .toc-list { gap: 0.35rem; }
+    .report-toc .toc-list a { padding: 0.35rem 0.5rem; }
     /* Tipografía más compacta para que entre más contenido por página */
     .prose { font-size: 0.82rem !important; line-height: 1.55 !important; }
-    .prose h1 { font-size: 1.6rem !important; }
+    .prose h1 { font-size: 1.6rem !important; page-break-before: always; break-before: page; }
+    .report-toc + .report-page .prose > h1:first-child { page-break-before: auto; break-before: auto; }
     .prose h2 { font-size: 1.25rem !important; margin-top: 1.1rem !important; }
     .prose h3 { font-size: 1.05rem !important; margin-top: 0.8rem !important; }
     .prose h4 { font-size: 0.95rem !important; }
     .prose p, .prose li { margin: 0.35em 0 !important; }
-    .prose table { font-size: 0.78rem !important; }
+    .prose table { font-size: 0.78rem !important; table-layout: auto !important; }
     .prose td, .prose th { padding: 5px 7px !important; }
+    .prose td:has(.inline-flex) { width: 1% !important; white-space: nowrap !important; }
+    .prose td .inline-flex { white-space: nowrap !important; }
     .prose pre, .prose code { font-size: 0.74rem !important; }
     /* En PDF el código siempre va en wrap para que no se corte por el ancho. */
     [data-code-root] { overflow: visible !important; }
@@ -608,8 +618,9 @@ export const REPORT_PRINT_CSS = `
     .hero-value { font-size: 1.5rem !important; }
     /* Portada: ocupa exactamente UNA página y NO añade página en blanco después */
     .report-cover {
-      min-height: 281mm;
-      max-height: 281mm;
+      height: 297mm;
+      min-height: 297mm;
+      max-height: 297mm;
       padding: 2.4cm 1.6cm 1.6cm !important;
       border-radius: 0 !important;
       border: 0 !important;

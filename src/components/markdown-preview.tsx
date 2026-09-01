@@ -219,7 +219,7 @@ export const MarkdownPreview = ({ content, getImage, isReport, variables }: { co
                         low: 'Low', baja: 'Low', bajo: 'Low',
                         informational: 'Informational', informativo: 'Informational', informativa: 'Informational',
                     } as Record<string, string>)[normalizedSeverity];
-                    return <td {...props}>{severity ? <Badge variant={getSeverityVariant(severity)}>{value}</Badge> : renderTodoNodes(children)}</td>;
+                    return <td {...props}>{severity ? <Badge variant={getSeverityVariant(severity)} className="whitespace-nowrap">{value}</Badge> : renderTodoNodes(children)}</td>;
                 },
                 th: ({node, children, ...props}) => <th {...props}>{renderTodoNodes(children)}</th>,
                 blockquote: ({node, children, ...props}) => {
