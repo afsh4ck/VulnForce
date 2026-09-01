@@ -9,14 +9,16 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@
 import { ArrowUpDown, Bomb, Search } from "@/components/icons";
 import { useLanguage } from "@/context/language-context";
 import type { Finding } from '@/lib/types';
+import type { Icon } from '@phosphor-icons/react';
 import { useData } from '@/context/data-context';
+import { getVulnerabilityIcon } from '@/lib/vulnerability-icons';
 import { Input } from '@/components/ui/input';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { format } from 'date-fns';
 import { es } from 'date-fns/locale';
 
-type SortKey = keyof EnrichedFinding;
-type EnrichedFinding = Finding & { projectName: string, clientName: string };
+type SortKey = keyof Omit<EnrichedFinding, 'icon'>;
+type EnrichedFinding = Finding & { projectName: string, clientName: string, icon: Icon };
 
 const compareValues = (aValue: string | number | undefined, bValue: string | number | undefined) => {
   const aComparable = aValue ?? '';
@@ -28,7 +30,7 @@ const compareValues = (aValue: string | number | undefined, bValue: string | num
 
 export default function AllFindingsPage() {
   const { language } = useLanguage();
-  const { findings, projects, clients } = useData();
+  const { findings, projects, clients, vulnerabilities } = useData();
   const searchParams = useSearchParams();
 
   const [sortConfig, setSortConfig] = useState<{ key: SortKey; direction: 'ascending' | 'descending' } | null>({ key: 'cvss', direction: 'descending' });
@@ -45,17 +47,31 @@ export default function AllFindingsPage() {
     }
   }
   
+  // Los hallazgos creados desde la biblioteca guardan `vulnerabilityId`; los
+  // antiguos solo comparten el titulo, asi que se resuelve tambien por nombre.
+  const vulnerabilityIdByTitle = useMemo(() => {
+    const byTitle = new Map<string, string>();
+    vulnerabilities.forEach((v) => {
+      [v.title_en, v.title_es].forEach((title) => {
+        if (title) byTitle.set(title.trim().toLowerCase(), v.id);
+      });
+    });
+    return byTitle;
+  }, [vulnerabilities]);
+
   const enrichedFindings = useMemo(() => {
     return findings.map(f => {
       const project = projects.find(p => p.id === f.projectId);
       const client = clients.find(c => c.id === project?.clientId);
+      const vulnerabilityId = f.vulnerabilityId || vulnerabilityIdByTitle.get(f.title.trim().toLowerCase());
       return {
         ...f,
         projectName: project?.name || 'N/A',
-        clientName: client?.name || 'N/A'
+        clientName: client?.name || 'N/A',
+        icon: vulnerabilityId ? getVulnerabilityIcon(vulnerabilityId) : Bomb,
       };
     });
-  }, [findings, projects, clients]);
+  }, [findings, projects, clients, vulnerabilityIdByTitle]);
 
 
   const sortedAndFilteredFindings = useMemo(() => {
@@ -188,12 +204,14 @@ export default function AllFindingsPage() {
               </TableRow>
             </TableHeader>
             <TableBody>
-              {sortedAndFilteredFindings.map((finding) => (
+              {sortedAndFilteredFindings.map((finding) => {
+                const FindingIcon = finding.icon;
+                return (
                 <TableRow key={finding.id}>
                   <TableCell className="font-medium">
-                     <Link href={`/dashboard/projects/${finding.projectId}/findings/${finding.id}`} className="hover:text-primary flex items-center gap-2">
-                        <Bomb className="h-4 w-4" />
-                        {finding.title}
+                     <Link href={`/dashboard/projects/${finding.projectId}/findings/${finding.id}`} className="hover:text-primary flex items-center gap-2.5">
+                        <FindingIcon weight="duotone" className="h-4 w-4 shrink-0 text-primary" />
+                        <span>{finding.title}</span>
                      </Link>
                   </TableCell>
                   <TableCell>
@@ -208,7 +226,8 @@ export default function AllFindingsPage() {
                   <TableCell className="text-muted-foreground">{finding.clientName}</TableCell>
                    <TableCell>{format(new Date(finding.updatedAt), 'PP', { locale: language === 'es' ? es : undefined })}</TableCell>
                 </TableRow>
-              ))}
+                );
+              })}
             </TableBody>
           </Table>
         </CardContent>
