@@ -13,7 +13,6 @@ import { Moon, Sun } from '@/components/icons';
 import { useLanguage } from '@/context/language-context';
 import { ThemePreview } from '@/components/theme-preview';
 import type { ReportTheme } from '@/lib/report-themes';
-import { cn } from '@/lib/utils';
 
 interface ThemePreviewDialogProps {
   open: boolean;
@@ -69,7 +68,7 @@ export function ThemePreviewDialog({ open, onOpenChange, theme }: ThemePreviewDi
             )}
           </div>
         </DialogHeader>
-        <div className={cn('max-h-[75vh] overflow-y-auto bg-muted/40 p-4')}>
+        <div className="px-5 pb-5">
           <ThemePreview theme={theme} mode={mode} variant="full" />
         </div>
       </DialogContent>
