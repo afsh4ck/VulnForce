@@ -36,7 +36,7 @@
 <img width="2536" height="1232" alt="image" src="https://github.com/user-attachments/assets/67b406aa-6fbe-468e-8c6c-a8a7d5aaa310" />
 
 #### 6. Selecciona un tema visual para el informe
-<img width="2536" height="1236" alt="image" src="https://github.com/user-attachments/assets/19a860ea-1bff-4360-8ccf-9b6b4bffd74c" />
+<img width="3828" height="1804" alt="image" src="https://github.com/user-attachments/assets/d0b6fd6e-5c33-45bf-9909-3057d95222f0" />
 
 #### 7. Previsualiza el informe y expórtalo cuando esté listo
 <img width="2534" height="1234" alt="image" src="https://github.com/user-attachments/assets/eaea1068-0f89-4b55-83a3-30e0446eef81" />
