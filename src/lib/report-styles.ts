@@ -539,6 +539,17 @@ export const REPORT_PRINT_CSS = `
     aside.report-sidebar {
       display: none !important;
     }
+    /* El sidebar global del dashboard tiene un "gap" hermano que conserva
+       19rem incluso cuando se oculta el sidebar visual. Ocultamos el
+       contenedor completo para que nunca reserve una franja al imprimir. */
+    [class~="group/sidebar-wrapper"] > div[data-side][data-variant][data-state] {
+      display: none !important;
+    }
+    [class~="group/sidebar-wrapper"] > main {
+      width: 100% !important;
+      min-width: 0 !important;
+      flex: 1 1 100% !important;
+    }
     .report-shell { background: hsl(var(--background)) !important; }
     .report-layout {
       padding: 0 !important;
@@ -548,8 +559,11 @@ export const REPORT_PRINT_CSS = `
       display: block !important;
     }
     .report-main {
+      display: block !important;
+      flex: none !important;
       max-width: none !important;
       width: 100% !important;
+      min-width: 0 !important;
       border: 0 !important;
       border-radius: 0 !important;
       box-shadow: none !important;
