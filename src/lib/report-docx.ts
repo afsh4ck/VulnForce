@@ -463,6 +463,9 @@ function blockToDocx(node: Mdast.RootContent, ctx: ConvertCtx, isFirst = false):
       const depth = node.depth;
       return [new Paragraph({
         heading: HEADING_BY_DEPTH[depth] ?? HeadingLevel.HEADING_4,
+        // Nivel de esquema explicito: sin el, Word no sabe situar cada entrada
+        // del indice y todas acaban apuntando a la pagina 1.
+        outlineLevel: Math.min(depth, 6) - 1,
         // El primer bloque del cuerpo ya empieza en pagina propia (corte de
         // seccion tras el indice): un salto extra dejaria una hoja en blanco.
         pageBreakBefore: depth === 1 && !isFirst,
@@ -698,8 +701,20 @@ export async function buildReportDocx(params: BuildReportDocxParams): Promise<Bl
   const cover = buildCover({ project, client, findings, pentester, generatedDate, translations, logo: coverLogo }, docxTheme);
   const tocTitle = project.language === 'es' ? 'Índice de Contenidos' : 'Table of Contents';
   const toc: FileChild[] = [
-    new Paragraph({ heading: HeadingLevel.HEADING_1, spacing: { before: 0, after: 200 }, children: [new TextRun({ text: tocTitle })] }),
-    new TableOfContents(tocTitle, { hyperlink: true, headingStyleRange: '1-2' }),
+    // Titulo del indice como parrafo con estilo (no un H1): asi no se cuela como
+    // una entrada mas dentro del propio indice.
+    new Paragraph({
+      spacing: { before: 0, after: 200 },
+      border: { bottom: { style: BorderStyle.SINGLE, size: 8, color: docxTheme.brand, space: 6 } },
+      children: [new TextRun({ text: tocTitle, bold: true, size: 32, color: docxTheme.brand, font: FONT_BODY })],
+    }),
+    new TableOfContents(tocTitle, {
+      hyperlink: true,
+      headingStyleRange: '1-2',
+      useAppliedParagraphOutlineLevel: true,
+      preserveTabInEntries: true,
+      hideTabAndPageNumbersInWebView: true,
+    }),
   ];
   const body = blocksToDocx(stripCoverContent(tree.children, translations), ctx);
 
