@@ -616,7 +616,8 @@ export const REPORT_PRINT_CSS = `
     .report-page {
       /* Se replica al fragmentarse: margen seguro superior e inferior en
          cada página interior, no solo en el inicio del documento. */
-      padding: 1.2cm 0.9cm !important;
+      /* Margen superior más contenido; el inferior reserva el pie de página. */
+      padding: 1cm 0.9cm 1.55cm !important;
       background: hsl(var(--card)) !important;
       -webkit-box-decoration-break: clone;
       box-decoration-break: clone;

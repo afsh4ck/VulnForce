@@ -597,7 +597,9 @@ export default function ReportPreviewPage() {
       for (let page = firstPage; page <= lastPage; page += 1) {
         const footer = document.createElement('div');
         footer.className = 'report-print-footer';
-        footer.style.top = `${page * pageHeight + pageHeight - 28 - shellTop}px`;
+        // Reserva 0.25 cm en el borde físico inferior para que el pie quede
+        // pegado al final de la hoja sin que se recorte al guardar como PDF.
+        footer.style.top = `${page * pageHeight + pageHeight - 20 - shellTop}px`;
         const name = document.createElement('span');
         name.textContent = label;
         const number = document.createElement('span');
