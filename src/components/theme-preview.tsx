@@ -148,24 +148,19 @@ function MiniPreview({ theme: _theme }: { theme: ReportTheme }) {
         </div>
       </div>
       <div style={{ padding: '0.8rem 1.2rem 1rem' }}>
-        <h3
-          style={{ fontFamily: 'var(--report-font-headline)', fontSize: '0.8rem', margin: 0, color: 'hsl(var(--foreground))', fontWeight: 700 }}
-        >
-          {DEMO.findings[0].title}
-        </h3>
         <p
           style={{
-            margin: '0.35rem 0 0',
+            margin: 0,
             color: 'hsl(var(--muted-foreground))',
             fontSize: '0.62rem',
             lineHeight: 1.5,
             display: '-webkit-box',
-            WebkitLineClamp: 3,
+            WebkitLineClamp: 4,
             WebkitBoxOrient: 'vertical',
             overflow: 'hidden',
           }}
         >
-          {DEMO.findings[0].body}
+          {DEMO.intro}
         </p>
       </div>
     </div>

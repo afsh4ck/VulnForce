@@ -6,10 +6,11 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import Link from 'next/link';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
-import { ArrowUpDown, Bomb } from "@/components/icons";
+import { ArrowUpDown, Bomb, Search } from "@/components/icons";
 import { useLanguage } from "@/context/language-context";
 import type { Finding } from '@/lib/types';
 import { useData } from '@/context/data-context';
+import { Input } from '@/components/ui/input';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { format } from 'date-fns';
 import { es } from 'date-fns/locale';
@@ -32,6 +33,7 @@ export default function AllFindingsPage() {
 
   const [sortConfig, setSortConfig] = useState<{ key: SortKey; direction: 'ascending' | 'descending' } | null>({ key: 'cvss', direction: 'descending' });
   const [severityFilter, setSeverityFilter] = useState<string>(searchParams.get('severity') || 'All');
+  const [searchTerm, setSearchTerm] = useState('');
 
   const getSeverityVariant = (severity: string): 'critical' | 'high' | 'medium' | 'low' | 'informational' => {
     switch (severity) {
@@ -62,7 +64,16 @@ export default function AllFindingsPage() {
     if (severityFilter !== 'All') {
       filtered = filtered.filter(f => f.severity === severityFilter);
     }
-    
+
+    const term = searchTerm.trim().toLowerCase();
+    if (term) {
+      filtered = filtered.filter(f =>
+        f.title.toLowerCase().includes(term) ||
+        f.projectName.toLowerCase().includes(term) ||
+        f.clientName.toLowerCase().includes(term)
+      );
+    }
+
     if (sortConfig !== null) {
       filtered.sort((a, b) => {
         const aValue = a[sortConfig.key];
@@ -73,7 +84,7 @@ export default function AllFindingsPage() {
     }
 
     return filtered;
-  }, [sortConfig, enrichedFindings, severityFilter]);
+  }, [sortConfig, enrichedFindings, severityFilter, searchTerm]);
 
   const requestSort = (key: SortKey) => {
     let direction: 'ascending' | 'descending' = 'ascending';
@@ -93,6 +104,7 @@ export default function AllFindingsPage() {
   const t = {
     en: {
       title: "All Findings",
+      search: "Search findings...",
       filterBySeverity: "Filter by severity...",
       all: "All",
       findingTitle: "Finding Title",
@@ -104,6 +116,7 @@ export default function AllFindingsPage() {
     },
     es: {
       title: "Todos los Hallazgos",
+      search: "Buscar hallazgos...",
       filterBySeverity: "Filtrar por severidad...",
       all: "Todo",
       findingTitle: "Título del Hallazgo",
@@ -123,6 +136,16 @@ export default function AllFindingsPage() {
           <span className="ml-2 text-xl font-medium text-muted-foreground">({sortedAndFilteredFindings.length})</span>
         </h1>
         <div className="flex items-center gap-2">
+            <div className="relative">
+              <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
+              <Input
+                type="search"
+                placeholder={t[language].search}
+                className="w-full rounded-lg bg-background pl-8 md:w-[200px] lg:w-[320px]"
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
+              />
+            </div>
             <Select value={severityFilter} onValueChange={setSeverityFilter}>
                 <SelectTrigger className="w-[180px]">
                     <SelectValue placeholder={t[language].filterBySeverity} />

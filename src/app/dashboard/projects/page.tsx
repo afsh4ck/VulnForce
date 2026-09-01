@@ -137,11 +137,12 @@ export default function ProjectsPage() {
       <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
         <h1 className="font-headline text-3xl font-bold tracking-tight">{t[language].title}</h1>
         <div className="flex items-center gap-2">
-          <div className="relative flex-1">
+          <div className="relative">
             <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
-            <Input 
-              placeholder={t[language].searchPlaceholder} 
-              className="pl-8" 
+            <Input
+              type="search"
+              placeholder={t[language].searchPlaceholder}
+              className="w-full rounded-lg bg-background pl-8 md:w-[200px] lg:w-[320px]"
               value={searchTerm}
               onChange={e => setSearchTerm(e.target.value)}
             />

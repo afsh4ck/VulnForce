@@ -5,7 +5,7 @@ import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { useLanguage } from '@/context/language-context';
-import { PlusCircle, Edit, Trash2, ArrowUpDown, FilePlus2 } from '@/components/icons';
+import { PlusCircle, Edit, Trash2, FilePlus2, Search } from '@/components/icons';
 import Link from 'next/link';
 import { useData } from '@/context/data-context';
 import { Input } from '@/components/ui/input';
@@ -20,7 +20,6 @@ export default function TemplatesPage() {
   const { toast } = useToast();
 
   const [searchTerm, setSearchTerm] = useState('');
-  const [sortDirection, setSortDirection] = useState<'ascending' | 'descending'>('ascending');
   const [templateToDelete, setTemplateToDelete] = useState<ProjectTemplate | null>(null);
 
   const t = {
@@ -29,7 +28,6 @@ export default function TemplatesPage() {
       description: 'Manage reusable project templates.',
       newTemplate: 'New Template',
       search: 'Search templates...',
-      sortName: 'Sort by name',
       edit: 'Edit',
       delete: 'Delete',
       createProject: 'Use Template',
@@ -46,7 +44,6 @@ export default function TemplatesPage() {
       description: 'Gestiona plantillas de proyecto reutilizables.',
       newTemplate: 'Nueva Plantilla',
       search: 'Buscar plantillas...',
-      sortName: 'Ordenar por nombre',
       edit: 'Editar',
       delete: 'Eliminar',
       createProject: 'Usar Plantilla',
@@ -72,12 +69,9 @@ export default function TemplatesPage() {
       template.description_es.toLowerCase().includes(term)
     );
 
-    filtered.sort((a, b) => {
-      const cmp = name(a).localeCompare(name(b));
-      return sortDirection === 'ascending' ? cmp : -cmp;
-    });
+    filtered.sort((a, b) => name(a).localeCompare(name(b)));
     return filtered;
-  }, [projectTemplates, searchTerm, sortDirection, language]);
+  }, [projectTemplates, searchTerm, language]);
 
   const handleDelete = () => {
     if (templateToDelete) {
@@ -95,20 +89,16 @@ export default function TemplatesPage() {
           <p className="text-muted-foreground">{t[language].description}</p>
         </div>
         <div className="flex items-center gap-2">
-          <Input
-            placeholder={t[language].search}
-            className="max-w-sm"
-            value={searchTerm}
-            onChange={(e) => setSearchTerm(e.target.value)}
-          />
-          <Button
-            variant="outline"
-            size="icon"
-            title={t[language].sortName}
-            onClick={() => setSortDirection((d) => (d === 'ascending' ? 'descending' : 'ascending'))}
-          >
-            <ArrowUpDown className="h-4 w-4" />
-          </Button>
+          <div className="relative">
+            <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
+            <Input
+              type="search"
+              placeholder={t[language].search}
+              className="w-full rounded-lg bg-background pl-8 md:w-[200px] lg:w-[320px]"
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+            />
+          </div>
           <Button asChild>
             <Link href="/dashboard/templates/edit/new">
               <PlusCircle className="mr-2 h-4 w-4" /> {t[language].newTemplate}
