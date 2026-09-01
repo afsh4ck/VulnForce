@@ -567,21 +567,48 @@ export default function ReportPreviewPage() {
     // Chrome activa los estilos de impresión antes de beforeprint. Con el
     // layout final, el alto físico A4 es 1122.52 CSS px (a 96 dpi), por lo que
     // podemos escribir los números reales en el índice antes de la captura.
-    const updateTocPageNumbers = () => {
+    const updatePrintPagination = () => {
       const reportRoot = reportContentRef.current;
       if (!reportRoot) return;
-      const reportTop = reportRoot.getBoundingClientRect().top;
+      const pageHeight = 1122.52;
+      const reportTop = reportRoot.getBoundingClientRect().top + window.scrollY;
       reportRoot.querySelectorAll<HTMLElement>('[data-toc-page-for]').forEach((pageNumber) => {
         const targetId = pageNumber.dataset.tocPageFor;
         const target = targetId ? document.getElementById(targetId) : null;
         if (!target) return;
-        const offset = target.getBoundingClientRect().top - reportTop;
-        pageNumber.textContent = String(Math.max(1, Math.floor(offset / 1122.52) + 1));
+        const targetTop = target.getBoundingClientRect().top + window.scrollY;
+        pageNumber.textContent = String(Math.max(1, Math.floor(targetTop / pageHeight) + 1));
       });
+
+      // Chromium no calcula counter(page) en elementos fixed (lo resolvía como
+      // 0). Generamos un pie absoluto por hoja antes de abrir el diálogo de
+      // impresión para que cada uno tenga su número real.
+      const shell = document.querySelector<HTMLElement>('.report-shell');
+      const footerHost = document.querySelector<HTMLElement>('.report-print-page-footers');
+      if (!shell || !footerHost) return;
+
+      const shellTop = shell.getBoundingClientRect().top + window.scrollY;
+      const reportHeight = Math.max(reportRoot.getBoundingClientRect().height, reportRoot.scrollHeight);
+      const firstPage = Math.max(0, Math.floor(reportTop / pageHeight));
+      const lastPage = Math.max(firstPage, Math.ceil((reportTop + reportHeight) / pageHeight) - 1);
+      const label = footerHost.dataset.reportLabel || '';
+      footerHost.replaceChildren();
+
+      for (let page = firstPage; page <= lastPage; page += 1) {
+        const footer = document.createElement('div');
+        footer.className = 'report-print-footer';
+        footer.style.top = `${page * pageHeight + pageHeight - 28 - shellTop}px`;
+        const name = document.createElement('span');
+        name.textContent = label;
+        const number = document.createElement('span');
+        number.textContent = String(page + 1);
+        footer.append(name, number);
+        footerHost.appendChild(footer);
+      }
     };
-    window.addEventListener('beforeprint', updateTocPageNumbers, { once: true });
+    window.addEventListener('beforeprint', updatePrintPagination, { once: true });
     window.setTimeout(() => {
-      updateTocPageNumbers();
+      updatePrintPagination();
       window.print();
       window.setTimeout(() => {
         root.className = prev;
@@ -1044,10 +1071,6 @@ ${themeStyleBlock}</style>
               />
             </section>
           </div>
-          <footer className="report-print-footer" aria-hidden="true">
-            <span>{project.name} · {client.name}</span>
-            <span className="report-print-page-number" />
-          </footer>
         </main>
 
         <aside
@@ -1150,6 +1173,11 @@ ${themeStyleBlock}</style>
           </div>
         )}
       </div>
+      <div
+        className="report-print-page-footers"
+        data-report-label={`${project.name} · ${client.name}`}
+        aria-hidden="true"
+      />
 
       <Dialog open={pdfDialogOpen} onOpenChange={setPdfDialogOpen}>
         <DialogContent>

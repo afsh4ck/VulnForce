@@ -438,7 +438,7 @@ export const REPORT_SHARED_CSS = `
   .toc-list {
     display: flex;
     flex-direction: column;
-    gap: 0.15rem;
+    gap: 0.04rem;
     list-style: none;
     padding: 0;
     margin: 0;
@@ -448,7 +448,7 @@ export const REPORT_SHARED_CSS = `
     display: flex;
     align-items: baseline;
     gap: 0.75rem;
-    padding: 4px 8px;
+    padding: 2px 8px;
     border-radius: 4px;
     color: inherit;
     text-decoration: none;
@@ -476,11 +476,10 @@ export const REPORT_SHARED_CSS = `
     opacity: 0.85;
     padding-left: 8px;
   }
-  .toc-level-1 { margin-top: 0.5rem; }
-  .toc-level-2 a { padding-left: 16px; font-weight: 600; }
-  .toc-level-3 a { padding-left: 28px; font-size: 0.78rem; color: hsl(var(--muted-foreground)); }
+  .toc-level-1 { margin-top: 0.2rem; }
+  .toc-level-2 a { padding-left: 30px; font-weight: 600; }
+  .toc-level-3 a { padding-left: 46px; font-size: 0.78rem; color: hsl(var(--muted-foreground)); }
   .toc-page-number { margin-left: auto; flex: 0 0 auto; font-variant-numeric: tabular-nums; color: hsl(var(--muted-foreground)); }
-  .toc-page-number:empty::before { content: '—'; }
   /* Solo H2 marcadas como vulnerabilidad llevan la barra verde */
   .toc-vuln {
     margin-top: 0.35rem;
@@ -492,8 +491,8 @@ export const REPORT_SHARED_CSS = `
   /* Los hallazgos del índice son hijos de la sección técnica: sin el bloque
      amarillo/verde de severidad, solo el título con sangría editorial. */
   .toc-finding { margin-top: 0.1rem; }
-  .toc-finding a { padding-left: 28px; font-weight: 600; color: hsl(var(--foreground)); background: transparent; }
-  .pdf-page-background, .report-print-footer { display: none; }
+  .toc-finding a { padding-left: 46px; font-weight: 600; color: hsl(var(--foreground)); background: transparent; }
+  .pdf-page-background, .report-print-page-footers, .report-print-footer { display: none; }
 
   /* Sidebar colapsable en HTML exportado */
   .sidebar-rail-btn {
@@ -569,7 +568,7 @@ export const REPORT_PRINT_CSS = `
       min-width: 0 !important;
       flex: 1 1 100% !important;
     }
-    .report-shell { background: hsl(var(--card)) !important; isolation: isolate; }
+    .report-shell { position: relative !important; background: hsl(var(--card)) !important; isolation: isolate; }
     /* Capa fija repetida por Chromium en cada hoja. Evita que el fragmento
        final de una sección oscura herede el blanco del visor PDF. */
     .pdf-page-background {
@@ -621,15 +620,29 @@ export const REPORT_PRINT_CSS = `
       font-size: 1.6rem !important;
       font-weight: 700 !important;
     }
-    .report-toc .toc-list { gap: 0.35rem; }
-    .report-toc .toc-list a { padding: 0.35rem 0.5rem; }
-    .report-toc .toc-finding a { padding-left: 1.75rem !important; background: transparent !important; color: hsl(var(--foreground)) !important; }
+    .report-toc .toc-list { gap: 0.05rem; }
+    .report-toc .toc-list a,
+    .report-toc .toc-list a.is-active,
+    .report-toc .toc-list a:hover {
+      padding: 0.1rem 0.5rem;
+      background: transparent !important;
+      color: hsl(var(--foreground)) !important;
+    }
+    .report-toc .toc-level-2 a { padding-left: 1.9rem !important; }
+    .report-toc .toc-level-3 a,
+    .report-toc .toc-finding a { padding-left: 2.9rem !important; }
+    .report-print-page-footers {
+      display: block !important;
+      position: absolute !important;
+      inset: 0 auto auto 0 !important;
+      width: 100% !important;
+      z-index: 2 !important;
+      pointer-events: none !important;
+    }
     .report-print-footer {
-      position: fixed !important;
+      position: absolute !important;
       left: 0.9cm !important;
       right: 0.9cm !important;
-      bottom: 0.35cm !important;
-      z-index: 2 !important;
       display: flex !important;
       align-items: center !important;
       justify-content: space-between !important;
@@ -638,7 +651,6 @@ export const REPORT_PRINT_CSS = `
       line-height: 1 !important;
       letter-spacing: 0.02em !important;
     }
-    .report-print-page-number::after { content: counter(page); font-variant-numeric: tabular-nums; }
     /* Tipografía más compacta para que entre más contenido por página */
     .prose { font-size: 0.82rem !important; line-height: 1.55 !important; }
     .prose h1 { font-size: 1.6rem !important; page-break-before: always; break-before: page; }
