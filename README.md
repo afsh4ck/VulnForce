@@ -7,7 +7,7 @@
 ## Características
 
 - 🗂️ Proyectos, clientes y hallazgos con severidad, CVSS y evidencias
-- 📚 Biblioteca de plantillas de proyecto y de vulnerabilidad reutilizables
+- 📚 Biblioteca de plantillas de proyecto y de vulnerabilidad reutilizables (incluye plantilla de informe de certificación con la estructura del design CPTS de SysReptor)
 - ✍️ Editor por secciones Markdown con vista `Split` / `MD` / `Preview` redimensionable
 - 🎨 Sistema de temas de reportes (built-in + personalizables, import/export JSON)
 - 🖼️ Editor visual de avatar y logos de cliente (icono cuadrado + horizontal)
@@ -15,7 +15,8 @@
 - 🌗 Light / dark mode y traducciones en tiempo real (ES / EN)
 - ✅ Seguimiento de `TODO` con enlaces directos a la sección editable
 - 💾 Backup y restauración completos (incluye temas personalizados)
-- 🔌 Servidor MCP integrado: conecta cualquier cliente de IA (Claude, Cursor, Claude Code…) para crear y editar informes
+- 🔌 Servidor MCP integrado: conecta cualquier cliente de IA (Claude, Cursor, Claude Code…) para crear y editar informes, con skills de generación descargables bajo demanda
+- 🧩 Marcador `{{findings.details}}` para colocar los hallazgos detallados en la sección del informe que elijas
 
 ## Flujo de trabajo
 
@@ -62,7 +63,18 @@ Conecta tu cliente al endpoint (en desarrollo, `http://localhost:9002/api/mcp`):
 claude mcp add --transport http vulnforce http://localhost:9002/api/mcp
 ```
 
-Herramientas disponibles: `list_projects`, `get_report`, `create_report`, `update_report`, `append_to_report`, `list_clients`, `list_findings`. Un informe es el cuerpo Markdown de un proyecto. La IA escribe directamente en el almacén; recarga la app para ver los cambios.
+Herramientas disponibles: `list_skills`, `get_skill`, `list_projects`, `get_report`, `create_report`, `update_report`, `append_to_report`, `list_clients`, `list_findings`, `get_finding`, `create_finding`, `update_finding`, `delete_finding`, `list_vulnerabilities`, `get_vulnerability`. Un informe es el cuerpo Markdown de un proyecto. La IA escribe directamente en el almacén; recarga la app para ver los cambios.
+
+### Skills de generación de informes
+
+Al conectarse, el cliente de IA descarga bajo demanda una serie de *skills* (manuales en Markdown con frontmatter, guardables como `SKILL.md`) que le enseñan a redactar informes profesionales en la plataforma gastando el mínimo de tokens. Se sirven vía las herramientas `list_skills` / `get_skill` y también como *prompts* MCP (`prompts/list`, `prompts/get`).
+
+- `vulnforce-reports` — router: mapa de herramientas y flujo de trabajo eficiente
+- `vulnforce-report-structure` — jerarquía de secciones, plantillas y marcadores `{{findings.table}}` / `{{findings.details}}`
+- `vulnforce-findings-workflow` — creación y redacción de hallazgos, biblioteca de vulnerabilidades
+- `vulnforce-cvss-scoring` — bandas de severidad y convenciones CVSS v3.1
+
+Las instrucciones cargadas en cada conexión son mínimas: solo un puntero a estas skills.
 
 ## Tecnologías
 
@@ -110,6 +122,7 @@ Volúmenes persistentes: `./data`, `./uploads`, `./logs`.
 
 - `src/app/` — rutas (dashboard, proyectos, hallazgos, plantillas, temas, MCP, ajustes)
 - `src/app/api/mcp/` — endpoint del servidor MCP (Streamable HTTP)
+- `src/lib/mcp/` — herramientas, handlers y skills del servidor MCP
 - `src/components/` — UI reutilizable
 - `src/context/` — estado global (datos, tema, idioma, usuario)
 - `src/lib/` — design tokens, plantillas, motor de temas, exportadores y herramientas MCP
