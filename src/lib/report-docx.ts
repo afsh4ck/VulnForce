@@ -44,6 +44,9 @@ import type { ReportThemeColors } from './report-themes';
 // declarar "Arial" da el mismo resultado visual en ambas plataformas.
 const FONT_BODY = 'Arial';
 const FONT_MONO = 'Consolas';
+// Tipografia de portada para el nombre del cliente (misma familia que usa el
+// preview/HTML/PDF). Si Word no la tiene instalada, sustituye por defecto.
+const FONT_DISPLAY = 'Space Grotesk';
 const MAX_IMAGE_WIDTH_PX = 560;
 const MAX_IMAGE_HEIGHT_PX = 760;
 
@@ -199,24 +202,31 @@ async function preloadImages(
 }
 
 // El logo del cliente se guarda como data URL directa en `Client` (no como
-// `image://id`), asi que se decodifica aparte para la portada. Se prefiere la
-// version ancha si existe. Formatos que Word no entiende (SVG/WebP) se omiten.
-const COVER_LOGO_MAX_WIDTH_PX = 300;
-const COVER_LOGO_MAX_HEIGHT_PX = 96;
+// `image://id`), asi que se decodifica aparte para la portada. Formatos que
+// Word no entiende (SVG/WebP) se omiten.
+//
+// Identidad de portada: el logo ancho (si existe) manda y se muestra solo,
+// sin nombre ni logo cuadrado; sin logo ancho, el cuadrado (si existe)
+// acompana al nombre; sin ningun logo, solo el nombre. Ver `buildCover`.
+const COVER_WIDE_LOGO_MAX_WIDTH_PX = 300;
+const COVER_WIDE_LOGO_MAX_HEIGHT_PX = 96;
+const COVER_SQUARE_LOGO_MAX_PX = 56;
 
-async function resolveCoverLogo(client: Client): Promise<ResolvedImage | null> {
-  const src = client.logoWide || client.logoUrl;
-  if (!src) return null;
+type CoverLogo = ResolvedImage & { kind: 'wide' | 'square' };
+
+async function resolveCoverLogo(client: Client): Promise<CoverLogo | null> {
+  const kind: 'wide' | 'square' | null = client.logoWide ? 'wide' : client.logoUrl ? 'square' : null;
+  if (!kind) return null;
+  const src = kind === 'wide' ? client.logoWide! : client.logoUrl;
   const decoded = decodeDataUrl(src);
   const type = decoded ? MIME_TO_DOCX_TYPE[decoded.mime] : undefined;
   if (!decoded || !type) return null;
   const natural = await loadImageNaturalSize(src);
-  const scale = Math.min(
-    COVER_LOGO_MAX_WIDTH_PX / natural.width,
-    COVER_LOGO_MAX_HEIGHT_PX / natural.height,
-    1,
-  );
+  const maxW = kind === 'wide' ? COVER_WIDE_LOGO_MAX_WIDTH_PX : COVER_SQUARE_LOGO_MAX_PX;
+  const maxH = kind === 'wide' ? COVER_WIDE_LOGO_MAX_HEIGHT_PX : COVER_SQUARE_LOGO_MAX_PX;
+  const scale = Math.min(maxW / natural.width, maxH / natural.height, 1);
   return {
+    kind,
     type,
     data: decoded.bytes,
     width: Math.max(1, Math.round(natural.width * scale)),
@@ -607,14 +617,16 @@ function buildCover(params: {
   pentester?: PentesterProfile;
   generatedDate: string;
   translations: ReportTranslations;
-  logo?: ResolvedImage | null;
+  logo?: CoverLogo | null;
 }, theme: DocxThemeColors): FileChild[] {
   const { project, client, findings, pentester, generatedDate, translations: t, logo } = params;
   const out: FileChild[] = [];
+  const isWideLogo = logo?.kind === 'wide';
 
   out.push(brandBand(theme));
 
-  if (logo) {
+  // Logo ancho: se muestra solo, arriba del titulo, sustituyendo al nombre.
+  if (isWideLogo && logo) {
     out.push(new Paragraph({
       spacing: { before: 320, after: 120 },
       children: [new ImageRun({
@@ -627,17 +639,34 @@ function buildCover(params: {
   }
 
   out.push(new Paragraph({
-    spacing: { before: logo ? 280 : 520, after: 120 },
+    spacing: { before: isWideLogo ? 280 : 520, after: 120 },
     children: [new TextRun({ text: t.reportType, bold: true, allCaps: true, characterSpacing: 28, color: theme.brand, size: 22 })],
   }));
   out.push(new Paragraph({
     spacing: { after: 60 },
     children: [new TextRun({ text: project.name, bold: true, size: 60, color: theme.foreground })],
   }));
+
+  // Identidad del cliente: sin logo ancho, la linea bajo el titulo lleva el
+  // logo cuadrado (si existe) + el nombre en 'Space Grotesk'; con logo ancho
+  // ya mostrado arriba, solo queda el divisor.
+  const identityChildren: ParagraphChild[] = [];
+  if (!isWideLogo) {
+    if (logo?.kind === 'square') {
+      identityChildren.push(new ImageRun({
+        type: logo.type,
+        data: logo.data,
+        transformation: { width: logo.width, height: logo.height },
+        altText: { title: `${client.name} logo`, description: `${client.name} logo`, name: 'client-logo' },
+      }));
+      identityChildren.push(new TextRun({ text: '   ' }));
+    }
+    identityChildren.push(new TextRun({ text: client.name, font: FONT_DISPLAY, size: 28, color: theme.mutedForeground }));
+  }
   out.push(new Paragraph({
     spacing: { after: 240 },
     border: { bottom: { style: BorderStyle.SINGLE, size: 18, color: theme.brand, space: 8 } },
-    children: [new TextRun({ text: client.name, size: 28, color: theme.mutedForeground })],
+    children: identityChildren,
   }));
 
   out.push(new Paragraph({ spacing: { after: 200 }, children: [] }));

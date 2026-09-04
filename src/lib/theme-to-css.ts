@@ -344,12 +344,16 @@ export function themeExtrasCSS(theme: ReportTheme): string {
   `;
 }
 
-/** URL Google Fonts con todas las familias del tema. */
+/**
+ * URL Google Fonts con todas las familias del tema, más 'Space Grotesk': la
+ * portada la usa siempre para el nombre del cliente, sin importar el tema.
+ */
 export function themeFontsHref(theme: ReportTheme): string {
   return googleFontsHref([
     theme.typography.familyBody,
     theme.typography.familyHeadline,
     theme.typography.familyMono,
+    'Space Grotesk',
   ]);
 }
 

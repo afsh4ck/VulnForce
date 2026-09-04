@@ -235,10 +235,13 @@ export default function ReportPreviewPage() {
   }, [activeTheme]);
 
   useEffect(() => {
+    // 'Space Grotesk' se carga siempre: la portada la usa para el nombre del
+    // cliente sin importar la tipografia de titulares del tema activo.
     loadFontFamilies([
       activeTheme.typography.familyBody,
       activeTheme.typography.familyHeadline,
       activeTheme.typography.familyMono,
+      'Space Grotesk',
     ]);
   }, [activeTheme]);
 
@@ -951,21 +954,11 @@ ${themeStyleBlock}</style>
   const assessmentWindow = `${project.startDate} — ${project.endDate}`;
   const sidebarToggleLabel = isSidebarOpen ? t[uiLanguage].hideSidebar : t[uiLanguage].showSidebar;
   const downloadDisabled = todos.length > 0;
-  const customLogoSrc = client.logoWide || client.logoUrl || '';
-  const clientLogo = customLogoSrc ? (
-    <img
-      src={customLogoSrc}
-      alt={`${client.name} logo`}
-      className="h-16 max-h-16 max-w-[260px] w-auto object-contain"
-    />
-  ) : (
-    <div className="flex items-center gap-2.5 font-headline text-2xl font-bold tracking-tight" style={{ color: 'hsl(var(--brand))' }}>
-      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256" width="36" height="36" fill="currentColor" aria-hidden="true">
-        <path d="M216 44.45 136 15.36a23.94 23.94 0 0 0-16 0L40 44.45A24 24 0 0 0 24 67v49.7C24 198.7 93.41 234.51 114.69 243.45a23.85 23.85 0 0 0 18.62 0C154.59 234.51 224 198.7 224 116.7V67a24 24 0 0 0-8-22.55ZM168 136h-32v32a8 8 0 0 1-16 0v-32H88a8 8 0 0 1 0-16h32V88a8 8 0 0 1 16 0v32h32a8 8 0 0 1 0 16Z" />
-      </svg>
-      <span className="text-foreground">VulnForce</span>
-    </div>
-  );
+  // Identidad del cliente en la portada: el logo horizontal (si existe) manda
+  // y se muestra solo -- sin nombre ni logo cuadrado. Sin logo ancho, el
+  // cuadrado (si existe) acompaña al nombre; sin ningun logo, solo el nombre.
+  const hasWideLogo = Boolean(client.logoWide);
+  const hasSquareLogo = !hasWideLogo && Boolean(client.logoUrl);
 
   return (
     <div className="report-shell min-h-screen">
@@ -1046,9 +1039,28 @@ ${themeStyleBlock}</style>
                 <div className="space-y-3 min-w-0">
                   <p className="cover-type">{langT.reportType}</p>
                   <h1 className="cover-title">{project.name}</h1>
-                  <p className="cover-client">{client.name}</p>
+                  {!hasWideLogo && (
+                    <div className="flex items-center gap-3">
+                      {hasSquareLogo && (
+                        <img
+                          src={client.logoUrl}
+                          alt={`${client.name} logo`}
+                          className="h-10 w-10 shrink-0 rounded object-contain"
+                        />
+                      )}
+                      <p className="cover-client">{client.name}</p>
+                    </div>
+                  )}
                 </div>
-                <div className="cover-logo flex shrink-0 items-center" data-cover-logo="true">{clientLogo}</div>
+                {hasWideLogo && (
+                  <div className="cover-logo flex shrink-0 items-center" data-cover-logo="true">
+                    <img
+                      src={client.logoWide}
+                      alt={`${client.name} logo`}
+                      className="h-16 max-h-16 max-w-[260px] w-auto object-contain"
+                    />
+                  </div>
+                )}
               </div>
               <div className="cover-meta">
                 <div className="cover-meta-card">

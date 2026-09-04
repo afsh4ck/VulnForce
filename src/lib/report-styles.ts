@@ -194,6 +194,8 @@ export const REPORT_SHARED_CSS = `
     letter-spacing: -0.01em;
   }
   .report-cover .cover-client {
+    font-family: 'Space Grotesk', sans-serif;
+    font-weight: 600;
     color: hsl(var(--muted-foreground));
     font-size: 1.15rem;
     margin: 0;
